@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="com.teacherclub.business.sequence.model.Sequence">
+
+  <typeAlias alias="sequence" type="com.teacherclub.business.sequence.model.Sequence"/>
+  <!-- 
+  <cacheModel id="sequenceCache" type="LRU" readOnly="true">
+    <flushInterval hours="24"/>
+    <flushOnExecute statement="com.teacherclub.business.sequence.model.Sequence.insert"/>
+    <flushOnExecute statement="com.teacherclub.business.sequence.model.Sequence.update"/>
+    <property name="size" value="100"/>
+  </cacheModel>
+ -->
+  <resultMap id="sequenceResult" class="sequence">
+    <result property="name" column="name"/>
+    <result property="nextid" column="nextid"/>
+  </resultMap>
+  <update id="lockTableSequence">
+    LOCK TABLES t_sequence WRITE;
+  </update>
+  <update id="unLockTableSequence">
+    UNLOCK TABLES;
+  </update>
+  <select id="select" resultMap="sequenceResult" parameterClass="string"><!-- cacheModel="sequenceCache"> -->
+    select name, nextid from t_sequence 
+    <dynamic prepend="WHERE">
+		<isParameterPresent prepend="and">
+			name = #value#
+		</isParameterPresent>
+	</dynamic>
+	<!-- 开发模式下master和slaver指向同一数据库，所以注释掉 for update 行锁，运行模式下在指向不同数据库情况下应该加上，利于不用service操作时处于排队等待状态
+    FOR UPDATE -->
+  </select>
+  <insert id="insert" parameterClass="sequence">
+    insert into t_sequence (name,nextid) values (#name#,#nextid#)
+  </insert>
+  <update id="update" parameterClass="sequence">
+    update t_sequence set nextid = #nextid# where name = #name#
+  </update>
+
+</sqlMap>

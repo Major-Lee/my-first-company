@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>
+		<property name="dialect" value="mysql" />
+	</properties>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="lazyLoadingEnabled" value="false" />
+  		<setting name="multipleResultSetsEnabled" value="true"/>
+  		<setting name="useColumnLabel" value="true"/>
+  		<setting name="useGeneratedKeys" value="false"/>
+  		<setting name="autoMappingBehavior" value="PARTIAL"/>
+  		<setting name="defaultExecutorType" value="SIMPLE"/>
+  		<setting name="defaultStatementTimeout" value="25000"/>
+  		<setting name="safeRowBoundsEnabled" value="false"/>
+  		<setting name="mapUnderscoreToCamelCase" value="false"/>
+  		<setting name="localCacheScope" value="SESSION"/>
+  		<setting name="jdbcTypeForNull" value="OTHER"/>
+  		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+	</settings>
+	<typeAliases>
+	<!-- 
+		<typeAlias alias="justTest" type="com.whisper.business.test.model.JustTest" />
+		
+		<typeAlias alias="test" 	type="com.whisper.business.multipk.model.Test"/>
+  		<typeAlias alias="testPK" 	type="com.whisper.business.multipk.model.TestPK"/>
+  		<typeAlias alias="mySinglePKTest" 	type="com.whisper.api.test.model.MySinglePKTest"/>
+  		
+  		
+		<typeAlias alias="sequence" type="com.whisper.api.sequence.model.Sequence"/>
+		
+		<typeAlias alias="userToken" type="com.whisper.api.user.model.UserToken"/>
+		<typeAlias alias="userExtension" type="com.whisper.api.user.model.UserExtension"/>
+		
+		<typeAlias alias="userAvatarState" 	type="com.whisper.api.user.model.UserAvatarState"/>
+		
+		<typeAlias alias="userFrdRelation" 	type="com.whisper.api.frd.model.UserFrdRelation"/>
+  		<typeAlias alias="userFrdPK" 		type="com.whisper.api.frd.model.UserFrdPK"/>
+  		
+  		<typeAlias alias="userLoginIpState" type="com.whisper.api.user.model.UserLoginIpState"/>
+
+  		<typeAlias alias="userResetPwd" 	type="com.whisper.api.user.model.UserResetPwd"/>
+  		
+  		
+  		<typeAlias alias="userInviteTokensSpecialState" type="com.whisper.api.user.model.UserInviteTokensSpecialState"/>
+  		<typeAlias alias="userInviteTokensState" 		type="com.whisper.api.user.model.UserInviteTokensState"/>
+  		<typeAlias alias="userInviteTokens4SnsState" 	type="com.whisper.api.user.model.UserInviteTokens4SnsState"/>
+  		
+  		
+  		<typeAlias alias="userSnsTokenState" type="com.whisper.api.user.model.UserSnsTokenState"/>
+  		<typeAlias alias="userLocationState" type="com.whisper.api.user.model.UserLocationState"/>
+  		<typeAlias alias="userAddressbookState" type="com.whisper.api.user.model.UserAddressbookState"/>
+  		<typeAlias alias="captchaCode" type="com.whisper.api.captcha.model.CaptchaCode"/>
+  		
+  		<typeAlias alias="userDailyStatics" type="com.whisper.api.statics.model.UserDailyStatics"/>
+  		<typeAlias alias="userDailyCallback" type="com.whisper.api.statics.model.UserDailyCallback"/>
+  		<typeAlias alias="userAUStatics" type="com.whisper.api.statics.model.UserAUStatics"/>
+  		
+  		<typeAlias alias="channelDatePK" type="com.whisper.api.channel.model.ChannelDatePK"/>
+  		<typeAlias alias="channelDate" type="com.whisper.api.channel.model.ChannelDate"/>
+  		<typeAlias alias="channel" type="com.whisper.api.channel.model.Channel"/>
+  		<typeAlias alias="userAdminType" type="com.whisper.api.user.model.UserAdminType"/>
+  		
+  		<typeAlias alias="group" type="com.whisper.api.group.model.Group"/>
+  		<typeAlias alias="handsetFeedback" type="com.whisper.api.feedback.model.HandsetFeedback"/>
+  		
+  		  		<typeAlias alias="subject" 				type="com.vcore.ninemiles.api.thread.model.Subject"/>
+  		<typeAlias alias="comment" 				type="com.vcore.ninemiles.api.thread.model.Comment"/>
+  		<typeAlias alias="tile" 				type="com.vcore.ninemiles.api.tile.model.Tile"/>
+  		<typeAlias alias="userFavouriteState"	type="com.vcore.ninemiles.api.favourite.model.UserFavouriteState"/>
+  		-->
+  		<typeAlias alias="sequence" 			type="com.wecite.toplines.api.sequence.model.Sequence"/>
+  		<typeAlias alias="user" 				type="com.wecite.toplines.api.user.model.User"/>
+		<typeAlias alias="userToken" 			type="com.wecite.toplines.api.user.model.UserToken"/>
+		
+  		<typeAlias alias="handsetRelease" 		type="com.wecite.toplines.api.release.model.HandsetRelease"/>
+  		<typeAlias alias="handsetReleasePK" 	type="com.wecite.toplines.api.release.model.HandsetReleasePK"/>
+    	<typeAlias alias="userLoginState" 		type="com.wecite.toplines.api.user.model.UserLoginState"/>
+  		<typeAlias alias="userDevice" 			type="com.wecite.toplines.api.user.model.UserDevice"/>
+  		<typeAlias alias="userDeviceState" 		type="com.wecite.toplines.api.user.model.UserDeviceState"/>
+  		<typeAlias alias="handsetFeedback" 		type="com.wecite.toplines.api.feedback.model.HandsetFeedback"/>
+  		
+  		<typeAlias alias="subject" 				type="com.wecite.toplines.api.subject.model.Subject"/>
+  		<typeAlias alias="subjectUserAbstract" 	type="com.wecite.toplines.api.subject.model.SubjectUserAbstract"/>
+		<typeAlias alias="userSubject" 			type="com.wecite.toplines.api.subject.model.UserSubject"/>
+  		<typeAlias alias="userAbstract" 		type="com.wecite.toplines.api.subject.model.UserAbstract"/>
+		
+		<typeAlias alias="urlViewClick" 		type="com.wecite.toplines.api.subject.model.UrlViewClick"/>
+		<typeAlias alias="domainUrlClick" 		type="com.wecite.toplines.api.subject.model.DomainUrlClick"/>
+		<typeAlias alias="subjectClick" 		type="com.wecite.toplines.api.subject.model.SubjectClick"/>
+		<typeAlias alias="subjectAbstractClick" type="com.wecite.toplines.api.subject.model.SubjectAbstractClick"/>
+		
+		<typeAlias alias="dailySubjectClick" 	type="com.wecite.toplines.api.subject.model.DailySubjectClick"/>
+		<typeAlias alias="timeFragmentPK" 		type="com.wecite.toplines.api.subject.model.TimeFragmentPK"/>
+		
+		<typeAlias alias="subjectStatisticsYearly" 	type="com.wecite.toplines.api.statistics.model.SubjectStatisticsYearly"/>
+		<typeAlias alias="subjectStatisticsMonthly" type="com.wecite.toplines.api.statistics.model.SubjectStatisticsMonthly"/>
+		<typeAlias alias="subjectStatisticsWeekly" 	type="com.wecite.toplines.api.statistics.model.SubjectStatisticsWeekly"/>
+		<typeAlias alias="subjectStatisticsDaily" 	type="com.wecite.toplines.api.statistics.model.SubjectStatisticsDaily"/>
+		
+		<typeAlias alias="userStatistics" 	type="com.wecite.toplines.api.statistics.model.UserStatistics"/>
+		
+		<typeAlias alias="tag" 	type="com.wecite.toplines.api.tag.model.Tag"/>
+		<typeAlias alias="subjectTagState" 	type="com.wecite.toplines.api.subject.model.SubjectTagState"/>
+		
+		<typeAlias alias="blackList" 	type="com.wecite.toplines.api.filter.model.BlackList"/>
+		<typeAlias alias="subjectWeixinShareClick" 	type="com.wecite.toplines.api.subject.model.SubjectWeixinShareClick"/>
+		
+	</typeAliases>
+	<!-- 
+	<plugins>
+        <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin">
+                <property name="shardingConfig" value="myibatis/shard_ucenter_config.xml"/>
+        </plugin>
+	</plugins>
+	 -->
+	
+	<mappers>
+	<!---->
+		<!--<mapper resource="com/whisper/business/test/model/sqlMapper/JustTest.sqlMap.xml" />-->
+	 <!-- 
+	  	<mapper resource="com/whisper/api/sequence/model/sqlMapper/Sequence.sqlMap.xml"/>
+		
+	    <mapper resource="com/whisper/api/user/model/sqlMapper/UserAvatarState.sqlMap.xml"/>
+	    
+	    <mapper resource="com/whisper/api/user/model/sqlMapper/UserExtension.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserToken.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/frd/model/sqlMapper/UserFrdRelation.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserLoginIpState.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserResetPwd.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/statics/model/sqlMapper/UserDailyStatics.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/statics/model/sqlMapper/UserDailyCallback.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/statics/model/sqlMapper/UserAUStatics.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserInviteTokensState.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserInviteTokens4SnsState.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserInviteTokensSpecialState.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserSnsTokenState.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserLocationState.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserAddressbookState.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/captcha/model/sqlMapper/CaptchaCode.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/business/multipk/model/sqlMapper/Test.sqlMap.xml"/>
+		
+		
+		<mapper resource="com/whisper/api/channel/model/sqlMapper/ChannelDate.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/channel/model/sqlMapper/Channel.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/user/model/sqlMapper/UserAdminType.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/group/model/sqlMapper/Group.sqlMap.xml"/>
+		<mapper resource="com/whisper/api/feedback/model/sqlMapper/HandsetFeedback.sqlMap.xml"/>
+		
+		<mapper resource="com/whisper/api/test/model/sqlMapper/MySinglePKTest.sqlMap.xml"/>
+				<mapper resource="com/vcore/ninemiles/api/thread/model/sqlMapper/Comment.sqlMap.xml"/>
+		<mapper resource="com/vcore/ninemiles/api/thread/model/sqlMapper/Subject.sqlMap.xml"/>
+				<mapper resource="com/vcore/ninemiles/api/tile/model/sqlMapper/Tile.sqlMap.xml"/>
+		<mapper resource="com/vcore/ninemiles/api/favourite/model/sqlMapper/UserFavouriteState.sqlMap.xml"/>
+		 -->
+		 
+		<mapper resource="com/wecite/toplines/api/sequence/model/sqlMapper/Sequence.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/user/model/sqlMapper/User.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/user/model/sqlMapper/UserToken.sqlMap.xml"/>
+
+		<mapper resource="com/wecite/toplines/api/release/model/sqlMapper/HandsetRelease.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/user/model/sqlMapper/UserDeviceState.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/user/model/sqlMapper/UserDevice.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/user/model/sqlMapper/UserLoginState.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/feedback/model/sqlMapper/HandsetFeedback.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/Subject.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/SubjectUserAbstract.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/UserAbstract.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/UserSubject.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/UrlViewClick.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/SubjectClick.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/SubjectAbstractClick.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/DailySubjectClick.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/statistics/model/sqlMapper/SubjectStatisticsYearly.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/statistics/model/sqlMapper/SubjectStatisticsMonthly.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/statistics/model/sqlMapper/SubjectStatisticsWeekly.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/statistics/model/sqlMapper/SubjectStatisticsDaily.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/statistics/model/sqlMapper/UserStatistics.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/DomainUrlClick.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/tag/model/sqlMapper/Tag.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/SubjectTagState.sqlMap.xml"/>
+		
+		<mapper resource="com/wecite/toplines/api/filter/model/sqlMapper/BlackList.sqlMap.xml"/>
+		<mapper resource="com/wecite/toplines/api/subject/model/sqlMapper/SubjectWeixinShareClick.sqlMap.xml"/>
+	</mappers>
+	
+</configuration>

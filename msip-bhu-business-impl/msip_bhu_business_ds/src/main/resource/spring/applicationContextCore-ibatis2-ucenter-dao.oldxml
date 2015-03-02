@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourceUCMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${ucenter.jdbc.master.driverClassName}"/>
+		<property name="url" value="${ucenter.jdbc.master.url}"/>
+		<property name="username" value="${ucenter.jdbc.master.username}"/>
+		<property name="password" value="${ucenter.jdbc.master.password}"/>
+		<!-- 
+		<property name="defaultAutoCommit" value="false" /> -->
+	</bean>
+	
+	<bean id="dataSourceUCSlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${ucenter.jdbc.slaver.driverClassName}"/>
+		<property name="url" value="${ucenter.jdbc.slaver.url}"/>
+		<property name="username" value="${ucenter.jdbc.slaver.username}"/>
+		<property name="password" value="${ucenter.jdbc.slaver.password}"/>
+	</bean>	
+
+    <!-- ibatis Core Master sqlMapClient config -->
+    <bean id="sqlMapClientUCMaster" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:ibatis2/ucenter-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceUCMaster"/>
+        </property>    
+    </bean>
+	
+	<!--根据sqlMapClientA创建一个SqlMapClientTemplate的模版类实例sqlMapClientTemplateA--> 
+    <bean id="sqlMapClientTemplateUCMaster" class="org.springframework.orm.ibatis.SqlMapClientTemplate"> 
+        <property name="sqlMapClient" ref="sqlMapClientUCMaster"/> 
+    </bean> 
+
+    <!-- ibatis Core Slaver sqlMapClient config -->
+    <bean id="sqlMapClientUCSlaver" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:ibatis2/ucenter-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceUCSlaver"/>
+        </property>    
+    </bean>
+	
+	<!--根据sqlMapClientA创建一个SqlMapClientTemplate的模版类实例sqlMapClientTemplateA--> 
+    <bean id="sqlMapClientTemplateUCSlaver" class="org.springframework.orm.ibatis.SqlMapClientTemplate"> 
+        <property name="sqlMapClient" ref="sqlMapClientUCSlaver"/> 
+    </bean> 
+	<bean id="ucTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourceUCMaster"/>
+	</bean>
+</beans>

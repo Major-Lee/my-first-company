@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourceCoreMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${core.jdbc.master.driverClassName}"/>
+		<property name="url" 				value="${core.jdbc.master.url}"/>
+		<property name="username" 			value="${core.jdbc.master.username}"/>
+		<property name="password" 			value="${core.jdbc.master.password}"/>
+		<property name="initialSize" 		value="${core.jdbc.master.pool.initialsize}"/>
+		<property name="maxActive" 			value="${core.jdbc.master.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${core.jdbc.master.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>
+	
+	<bean id="dataSourceCoreSlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${core.jdbc.slaver.driverClassName}"/>
+		<property name="url" 				value="${core.jdbc.slaver.url}"/>
+		<property name="username" 			value="${core.jdbc.slaver.username}"/>
+		<property name="password" 			value="${core.jdbc.slaver.password}"/>
+		<property name="initialSize" 		value="${core.jdbc.slaver.pool.initialsize}"/>
+		<property name="maxActive" 			value="${core.jdbc.slaver.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${core.jdbc.slaver.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>	
+
+    <bean id="sqlSessionCoreMaster" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/core-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceCoreMaster"/>
+        </property>    
+    </bean>
+	
+    <bean id="sqlSessionTemplateCoreMaster"     class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionCoreMaster" />
+    </bean> 
+
+    <bean id="sqlSessionCoreSlaver" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/core-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceCoreSlaver"/>
+        </property>    
+    </bean>
+	
+    <bean id="sqlSessionTemplateCoreSlaver"     class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionCoreSlaver" />
+    </bean> 
+ 
+	<bean id="coreTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourceCoreMaster"/>
+	</bean>
+	<!-- transactionInterceptor配置
+	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+	  <property name="transactionManager" ref="transactionManager" />
+	  <property name="transactionAttributes">
+	   <props>
+	    <prop key="save*">PROPAGATION_REQUIRED</prop>
+	    <prop key="update*">PROPAGATION_REQUIRED</prop>
+	    <prop key="delete*">PROPAGATION_REQUIRED</prop>
+	    <prop key="set*">PROPAGATION_REQUIRED</prop> 
+	    <prop key="change*">PROPAGATION_REQUIRED</prop>   
+	    <prop key="get*">readOnly</prop>
+	    <prop key="*">readOnly</prop>
+	   </props>
+	  </property>
+ 	</bean>
+	-->
+	<!-- transactionInterceptor配置
+	<bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">  
+  		<property name="transactionInterceptor" ref="transactionInterceptor"/>  
+	</bean>  
+   
+	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">  
+	  <property name="transactionManager" ref="coreTransactionManager"/>  
+	  <property name="transactionAttributeSource">  
+	    <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>  
+	  </property>  
+	</bean> 
+	 -->
+	
+</beans>
