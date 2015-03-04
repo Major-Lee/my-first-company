@@ -9,12 +9,12 @@ import org.junit.Test;
 
 import com.bhu.vas.api.subject.model.Subject;
 import com.bhu.vas.business.subject.service.SubjectService;
+import com.bhu.was.business.bucache.redis.serviceimpl.statistics.SubjectStatisticsFragmentService;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
-import com.wecite.toplines.business.bucache.redis.serviceimpl.statistics.SubjectStatisticsFragmentService;
 
 public class SubjectServiceTest extends BaseTest{
 	@Resource
