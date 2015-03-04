@@ -22,7 +22,7 @@
 	</bean>
 	<!--  Message Driven POJO (MDP) -->
     <!-- consumer for queue-->
-    <bean id="deliverMessageQueueConsumer" class="com.bhu.was.business.asyn.web.activemq.queue.consumer.DeliverMessageQueueConsumer" />
+    <bean id="deliverMessageQueueConsumer" class="com.bhu.vas.business.asyn.web.activemq.queue.consumer.DeliverMessageQueueConsumer" />
     <!-- Message Listener for  -->
     <bean id="deliverMessageQueueListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
 		<constructor-arg ref="deliverMessageQueueConsumer" />

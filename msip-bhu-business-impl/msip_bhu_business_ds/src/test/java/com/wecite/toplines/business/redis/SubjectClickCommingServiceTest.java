@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.bhu.was.business.bucache.redis.serviceimpl.statistics.SubjectStatisticsFragmentService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SubjectStatisticsFragmentService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.localunit.BaseTest;
