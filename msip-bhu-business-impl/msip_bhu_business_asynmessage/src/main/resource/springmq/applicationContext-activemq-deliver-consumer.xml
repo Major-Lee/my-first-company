@@ -22,7 +22,7 @@
 	</bean>
 	<!--  Message Driven POJO (MDP) -->
     <!-- consumer for queue-->
-    <bean id="deliverMessageQueueConsumer" class="com.wecite.toplines.business.asyn.web.activemq.queue.consumer.DeliverMessageQueueConsumer" />
+    <bean id="deliverMessageQueueConsumer" class="com.bhu.was.business.asyn.web.activemq.queue.consumer.DeliverMessageQueueConsumer" />
     <!-- Message Listener for  -->
     <bean id="deliverMessageQueueListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
 		<constructor-arg ref="deliverMessageQueueConsumer" />
@@ -43,6 +43,7 @@
 		<!-- 多线程消费数量
 		<property name="concurrentConsumers" value="2" />  -->
 	</bean>
+	<!-- 
 	<bean id="userRegisteredActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserRegisteredActHandler" factory-method="getInstance" lazy-init="false"/>
 	<bean id="userSubjectClickActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectClickActHandler" factory-method="getInstance" lazy-init="false"/>
 	<bean id="userSubjectAbstractClickActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectAbstractClickActHandler" factory-method="getInstance" lazy-init="false"/>
@@ -51,4 +52,5 @@
 	<bean id="userSubjectShareActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectShareActHandler" factory-method="getInstance" lazy-init="false"/>
 	<bean id="userBlackDomainActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserBlackDomainActHandler" factory-method="getInstance" lazy-init="false"/>
 	<bean id="subjectWeixinShareActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.SubjectWeixinShareActHandler" factory-method="getInstance" lazy-init="false"/>
+	 -->
 </beans>

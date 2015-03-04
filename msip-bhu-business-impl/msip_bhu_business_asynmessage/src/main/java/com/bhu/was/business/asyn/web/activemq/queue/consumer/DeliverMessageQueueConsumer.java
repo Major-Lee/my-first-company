@@ -6,17 +6,6 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.was.business.asyn.web.builder.ActionMessageFactoryBuilder;
-import com.bhu.was.business.asyn.web.builder.ActionMessageType;
-import com.bhu.was.business.asyn.web.builder.DeliverMessage;
-import com.bhu.was.business.asyn.web.builder.DeliverMessageFactoryBuilder;
-import com.bhu.was.business.asyn.web.handler.UserBlackDomainActHandler;
-import com.bhu.was.business.asyn.web.handler.UserRegisteredActHandler;
-import com.bhu.was.business.asyn.web.handler.UserSubjectAbstractClickActHandler;
-import com.bhu.was.business.asyn.web.handler.UserSubjectClickActHandler;
-import com.bhu.was.business.asyn.web.handler.UserSubjectEstimateActHandler;
-import com.bhu.was.business.asyn.web.handler.UserSubjectShareActHandler;
-import com.bhu.was.business.asyn.web.handler.UserSubjectTaggingActHandler;
 import com.bhu.was.business.logger.BusinessStatisticsLogger;
 
 /**
@@ -43,14 +32,16 @@ public class DeliverMessageQueueConsumer {
 			@Override
 			public void run() {
 				try{
+					logger.info("receive:"+message);
+					System.out.println("receive:"+message);
 					/*Thread.sleep(1000);
 					System.out.println("receive:"+message);*/
-					DeliverMessage deliverMsg = DeliverMessageFactoryBuilder.fromJson(message);
+					/*DeliverMessage deliverMsg = DeliverMessageFactoryBuilder.fromJson(message);
 			    	switch(deliverMsg.getType()){
 			    		case 'A':
 			    			processActionMessage(deliverMsg);
 			    			break;
-			    	}
+			    	}*/
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("DeliverMessageQueueConsumer", ex);
@@ -60,7 +51,7 @@ public class DeliverMessageQueueConsumer {
     	//System.out.println("********* DeliverMessageQueueConsumer : cost:" + (System.currentTimeMillis() - t0));
 	}
     
-    public void processActionMessage(DeliverMessage deliverMsg){
+    /*public void processActionMessage(DeliverMessage deliverMsg){
     	String messageDataHasPrefix = deliverMsg.getMessagedata();
     	ActionMessageType actType = ActionMessageFactoryBuilder.determineActionType(messageDataHasPrefix);
     	if(actType == null)
@@ -91,5 +82,5 @@ public class DeliverMessageQueueConsumer {
     		default:
     			throw new UnsupportedOperationException(actType.getCname()+" message not yet implement handler process!");
     	}
-    }
+    }*/
 }

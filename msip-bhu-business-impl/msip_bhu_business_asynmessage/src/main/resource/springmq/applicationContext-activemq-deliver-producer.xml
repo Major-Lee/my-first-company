@@ -17,7 +17,7 @@
 		<property name="messageConverter" ref="defaultFeedMessageConverter" />-->
 	</bean>
 	<!-- POJO which send Message uses  Spring JmsTemplate -->
-	<bean id="deliverMessageQueueProducer" class="com.wecite.toplines.business.asyn.web.activemq.queue.producer.DeliverMessageQueueProducer">
+	<bean id="deliverMessageQueueProducer" class="com.bhu.was.business.asyn.web.activemq.queue.producer.DeliverMessageQueueProducer">
 		<property name="template" ref="jmsDeliverMessageTemplate" />
 		<property name="destination" ref="destinationDeliverMessageQueue" />
 	</bean>

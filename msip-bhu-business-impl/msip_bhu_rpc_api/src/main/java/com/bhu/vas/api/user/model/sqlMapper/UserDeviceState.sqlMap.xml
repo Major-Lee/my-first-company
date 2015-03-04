@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wecite.toplines.api.user.model.UserDeviceState">
+<mapper namespace="com.bhu.was.api.user.model.UserDeviceState">
 
   <resultMap id="modelResult" type="userDeviceState">
     <result property="id" column="id"/>
