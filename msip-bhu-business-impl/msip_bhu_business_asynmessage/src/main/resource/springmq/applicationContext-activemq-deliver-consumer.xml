@@ -8,7 +8,7 @@
     <!--  ActiveMQ destinations  -->
     <!--  使用Queue方式-->
 	<bean id="destinationDeliverMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">  
-        <constructor-arg index="0" value="JMS-DeliverMessage-QUEUE" />  
+        <constructor-arg index="0" value="JMS-DeliverMessage-QUEUE?consumer.prefetchSize=1000" />  
         <!-- 同时监听多个queue,同时对queue1进行预取处理
         <constructor-arg index="0" value="queue1?consumer.prefetchSize=100,queue2" />
          -->

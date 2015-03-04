@@ -20,9 +20,9 @@
   		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
 	</settings>
 	<typeAliases>
-  		<typeAlias alias="sequence" 			type="com.bhu.was.api.sequence.model.Sequence"/>
-  		<typeAlias alias="user" 				type="com.bhu.was.api.user.model.User"/>
-		<typeAlias alias="userToken" 			type="com.bhu.was.api.user.model.UserToken"/>
+  		<typeAlias alias="sequence" 			type="com.bhu.vas.api.sequence.model.Sequence"/>
+  		<typeAlias alias="user" 				type="com.bhu.vas.api.user.model.User"/>
+		<typeAlias alias="userToken" 			type="com.bhu.vas.api.user.model.UserToken"/>
 	</typeAliases>
 	<!-- 
 	<plugins>
@@ -34,9 +34,9 @@
 	
 	<mappers>
 		 
-		<mapper resource="com/bhu/was/api/sequence/model/sqlMapper/Sequence.sqlMap.xml"/>
-		<mapper resource="com/bhu/was/api/user/model/sqlMapper/User.sqlMap.xml"/>
-		<mapper resource="com/bhu/was/api/user/model/sqlMapper/UserToken.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/sequence/model/sqlMapper/Sequence.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/user/model/sqlMapper/User.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/user/model/sqlMapper/UserToken.sqlMap.xml"/>
 
 	</mappers>
 	

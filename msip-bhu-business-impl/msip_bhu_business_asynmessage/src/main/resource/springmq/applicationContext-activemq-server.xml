@@ -11,6 +11,7 @@
         <property name="connectionFactory">  
             <bean class="org.apache.activemq.ActiveMQConnectionFactory">  
                 <property name="brokerURL" value="${activemq.server}" />  
+                <property name="useAsyncSend" value="true" />
                 <!-- 	异步发送 可以提高性能
                 		TCP协议时 tcpNoDelay=默认是false ，设置为true可以提高性能
                 <property name="useAsyncSend" value="true" />
@@ -19,7 +20,7 @@
             </bean>  
         </property>  
         <!-- 创建多少连接进行消费和生产
-        <property name="maxConnections" value="10"></property>
+        <property name="maxConnections" value="20"></property>
          -->
     </bean>  
     

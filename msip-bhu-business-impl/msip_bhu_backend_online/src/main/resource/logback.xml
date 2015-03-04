@@ -56,9 +56,8 @@
 		<appender-ref ref="sqllogfile" />
 	</logger>
 -->
-	<logger name="com.bhu.was.business.logger.BusinessStatisticsLogger" additivity="false">
+	<logger name="com.bhu.vas.business.logger.BusinessStatisticsLogger" additivity="false">
 		<level value="INFO"/>
-		<appender-ref ref="stdout" />
 		<appender-ref ref="actionlogfile" />
 	</logger>
 	<!-- 

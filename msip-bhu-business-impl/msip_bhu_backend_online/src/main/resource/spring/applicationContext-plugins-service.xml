@@ -11,5 +11,8 @@
 	 -->
 	<!-- load activemq ticker business conf "classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-producer.xml" -->
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
-	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/>
+	<!-- -->
+	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/> 
+	<!-- 
+	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> -->
 </beans>
