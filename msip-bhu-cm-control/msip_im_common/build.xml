@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<project name="msip_core_plugins_im_common" default="compile" basedir=".">  
+    <property name="product" value="msip_core_plugins_im_common"/>  
+    <property name="version" value="${ver}"/>  
+    <property name="src.dir" value="${basedir}/src"/>  
+    <property name="build.dir" value="${basedir}/build"/>
+	<property name="build.jar.dir" value="${basedir}/build.jar"/>
+	
+    <property name="lib.dir" value="${basedir}/libs"/>  
+	<property name="lib-slf4j.dir" value="${src.home}/am-libs/lib-slf4j/libs"/>
+	<property name="lib-activemq.dir" value="${src.home}/am-libs/lib-activemq/libs"/>
+	<property name="msip_core.jar.dir" value="${src.home}/am-core/msip_core/build.jar"/>
+    <property name="jar.file" value="${product}.${version}.jar"/>  
+  
+    <path id="classpath">  
+
+        <fileset dir="${lib-slf4j.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${lib-activemq.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	
+    	<fileset dir="${msip_core.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+		<fileset dir="${lib.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+ 
+    </path>  
+  
+    <target name="clean">  
+        <echo>clean build dir</echo>  
+        <delete dir="${build.dir}" quiet="true"/>  
+        <delete dir="${build.jar.dir}" quiet="true"/>  
+    </target>  
+  
+    <target name="init" depends="clean">  
+        <mkdir dir="${build.dir}"/> 
+		<mkdir dir="${build.jar.dir}"/> 
+    </target>  
+  
+    <target name="compile" depends="init">  
+        <echo>compile the source</echo>  
+        <javac srcdir="${src.dir}/main/java:${src.dir}/main/resource" destdir="${build.dir}" encoding="UTF-8" debug="on" source="1.7" target="1.7">  
+            <include name="**/*.*"/>  
+            <classpath refid="classpath"/>  
+			<compilerarg value="-Xlint:unchecked"/>
+        </javac>  
+		<copy todir="${build.dir}" overwrite="true" preservelastmodified="true">
+            <fileset dir="${src.dir}/main/resource" excludes="**/*.java, .svn/**"/>
+        </copy>
+    </target>  
+  
+    <target name="jar" depends="compile">  
+        <jar destfile="${build.jar.dir}/${jar.file}">  
+            <fileset dir="${build.dir}">  
+                <include name="**/*.*"/>
+            </fileset>  
+			<!--
+            <manifest>  
+                <attribute name="Main-Class" value="Demo"/>  
+                <attribute name="Class-Path" value="axis.jar commons-discovery-0.2.jar commons-logging.jar jaxrpc.jar saaj.jar wsdl4j-1.5.1.jar"/>  
+            </manifest>
+			-->
+        </jar>  
+    </target>  
+  
+    <target name="run" depends="jar">  
+        <java jar="${build.jar.dir}/${jar.file}" fork="yes">  
+        </java>  
+    </target>  
+</project>
