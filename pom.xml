@@ -19,6 +19,8 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
         <module>msip-bhu-cm-control/msip_im_common</module>
         <module>msip-bhu-cm-control/msip_im_cm</module>
+
+        <module>msip-bhu-unit/msip_unit_bhu_devices</module>
         <!--
         
         <module>msip-wecite-business/msip_wecite_business_ds</module>
@@ -490,7 +492,27 @@
                 <artifactId>geohash</artifactId>
                 <version>1.0.10</version>
             </dependency>
-
+           <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>2.5.3</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>spring</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>                
+            </dependency>
+            <dependency>
+                <groupId>com.github.sgroschupf</groupId>
+                <artifactId>zkclient</artifactId>
+                <version>0.1</version>
+            </dependency>     
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.3.3</version>
+            </dependency> 
 
 
             <dependency>
@@ -550,7 +572,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
