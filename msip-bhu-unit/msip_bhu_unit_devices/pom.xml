@@ -14,7 +14,7 @@
 		</repository>
 	</repositories>
 
-	<artifactId>msip_unit_bhu_devices</artifactId>
+	<artifactId>msip_bhu_unit_devices</artifactId>
 
 	<dependencies>
 		<dependency>

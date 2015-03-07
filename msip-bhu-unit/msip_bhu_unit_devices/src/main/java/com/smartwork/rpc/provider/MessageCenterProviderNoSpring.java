@@ -11,7 +11,7 @@ public class MessageCenterProviderNoSpring {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDevicesRpcProviderApp");
 		System.setProperty("provider.port", "20882");
-		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_unit_bhu_devices/conf/");
+		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_devices/conf/");
 		
 		// 服务实现
 		IDeviceRpcService tokenRpcService = new DeviceRpcService();
