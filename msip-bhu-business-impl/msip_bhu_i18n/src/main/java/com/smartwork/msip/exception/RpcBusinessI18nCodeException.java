@@ -1,11 +1,11 @@
-package com.bhu.vas.exception;
+package com.smartwork.msip.exception;
 
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @SuppressWarnings("serial")
-public class RpcBusinessException extends RuntimeException{
+public class RpcBusinessI18nCodeException extends RuntimeException{
 	private String errorCode;
-	public RpcBusinessException(String errorCode){
+	public RpcBusinessI18nCodeException(String errorCode){
 		this.errorCode = errorCode;
 	}
 	public String getErrorCode() {
