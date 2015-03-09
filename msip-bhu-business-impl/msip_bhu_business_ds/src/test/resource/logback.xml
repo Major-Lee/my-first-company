@@ -3,7 +3,7 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
-	<substitutionProperty name="log.base" value="/VCData/logs/backendonline/backendonline" />
+	<substitutionProperty name="log.base" value="/BHUData/logs/backendonline/backendonline" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->

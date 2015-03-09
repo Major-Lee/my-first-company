@@ -2,8 +2,6 @@ package com.smartwork.rpc.provider;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.smartwork.msip.cores.helper.ReflectionHelper;
-
 public class MessageCenterProvider {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "MessageCenterRpcProviderApp");
