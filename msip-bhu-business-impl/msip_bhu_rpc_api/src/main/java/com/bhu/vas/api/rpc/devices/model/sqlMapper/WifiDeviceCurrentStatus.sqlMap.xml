@@ -2,49 +2,87 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jing.api.favorites.model.FavoritesCmbt">
+<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceCurrentStatus">
 
-  <resultMap id="modelResult" type="favoritesCmbt">
-    <result property="uid" column="uid"/>
-    <result property="cmbt" column="cmbt"/>
-    <result property="afids" column="afids"/>
+  <resultMap id="modelResult" type="wifiDeviceCurrentStatus">
+    <result property="id" column="id"/>
+    <result property="name" column="name"/>
+    <result property="started_at" column="started_at"/>
+    <result property="heartbeated_at" column="heartbeated_at"/>
+    <result property="memory_load" column="memory_load"/>
+    <result property="upflow" column="upflow"/>
+    <result property="downflow" column="downflow"/>
+    <result property="upspeed" column="upspeed"/>
+    <result property="downspeed" column="downspeed"/>
+    <result property="onlinenumbers" column="onlinenumbers"/>
+    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_et_favorites_cmbt
+	    	t_wifi_devices_current_status
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
-	    	uid,
-	    	cmbt,
-	    	afids,
+	    	id,
+	    	name,
+	    	started_at,
+	    	heartbeated_at,
+	    	memory_load,
+	    	upflow,
+	    	downflow,
+	    	upspeed,
+	    	downspeed,
+	    	onlinenumbers,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	afids,
+	    	name,
+	    	started_at,
+	    	heartbeated_at,
+	    	memory_load,
+	    	upflow,
+	    	downflow,
+	    	upspeed,
+	    	downspeed,
+	    	onlinenumbers,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>   
 	
 	<sql id="modelInsertValues">
-			#{uid},
-	    	#{cmbt},
-	    	#{afids},
+			#{id},
+	    	#{name},
+	    	#{started_at},
+	    	#{heartbeated_at},
+	    	#{memory_load},
+	    	#{upflow},
+	    	#{downflow},
+	    	#{upspeed},
+	    	#{downspeed},
+	    	#{onlinenumbers},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	
 	<sql id="modelUpdateValues">
-			afids = #{afids},
+			name = #{name},
+			started_at = #{started_at},
+			heartbeated_at = #{heartbeated_at},
+			memory_load = #{memory_load},
+			upflow = #{upflow},
+			downflow = #{downflow},
+			upspeed = #{upspeed},
+			downspeed = #{downspeed},
+			onlinenumbers = #{onlinenumbers},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -86,77 +124,68 @@
 	
 	<select id="select" resultMap="modelResult">
 	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> 
-			<where>
-		    	<if test="_parameter != null">
-					uid = #{uid} and cmbt = #{cmbt}
-				</if>
-			</where>
-	</select>
-
-	<delete id="deleteByPrimaryKey" parameterType="favoritesCmbtPK">
-		delete from <include refid="modelTableName" />  where uid = #{uid} and cmbt = #{cmbt}
-	</delete>
-	
-	<delete id="delete" parameterType="favoritesCmbt">
-		delete from <include refid="modelTableName" /> 
-			<if test="_parameter != null">
-					where uid = #{uid} and cmbt = #{cmbt}
+	    <where>
+	    	<if test="_parameter != null">
+				id = #{id}
+				<!-- 
+					#{value}
+					#{_parameter}
+				 -->
 			</if>
-	</delete>		
-	 
-	<insert id="insert" parameterType="favoritesCmbt">
-	    insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues"/>)
+		</where>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from <include refid="modelTableName" /> where id=#{id}
+	</delete>
+	
+	<delete id="delete" parameterType="wifiDeviceCurrentStatus">
+		delete from <include refid="modelTableName" />
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+		</where>
+	</delete>
+	
+	<insert id="insert" parameterType="wifiDeviceCurrentStatus">
+		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
-	
-  
-	<update id="update" parameterType="favoritesCmbt">
-	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where uid = #{uid} and cmbt = #{cmbt}
+ 
+	<update id="update" parameterType="wifiDeviceCurrentStatus">
+	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
-	
-	
-	
+		
 	<select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">
-	  	select <include refid="modelColumns" /> from <include refid="modelTableName" /> 
-	  	<!-- 
+	  	select <include refid="modelColumns" /> from <include refid="modelTableName" />
 	  	<where>
-	  		uid IN
+	  		id IN
 	  		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-			    #{item.uid}
-			</foreach>
-			
-			and frdid IN
-	  		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-			    #{item.frdid}
-			</foreach>
-	  	</where> 
-	  	-->
-	  	<where>
-	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (	uid = #{item.uid} and cmbt= #{item.cmbt}	)
+			    #{item}
 			</foreach>
 	  	</where>
-	  	
 	</select>
-	 
+	  
 	<delete id="deleteByIds" parameterType="java.util.List">
-	  	delete from <include refid="modelTableName" />  
+	  	delete from <include refid="modelTableName" />
 	  	<where>
-	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (	uid = #{item.uid} and cmbt= #{item.cmbt}	)
+	  		id IN
+	  		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			    #{item}
 			</foreach>
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="favoritesCmbtPK">
-		select uid,cmbt from <include refid="modelTableName" /> 
+	<select id="pkSelectByModelCriteria" resultType="string">
+		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
-	      	<include refid="model_CRITERIA_SQL_GenCondition" />
+	     	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">
 				order by ${orderByClause}
 	    	</if>
 			<if test="start!=0 or limit!=0">
 				limit #{limit} OFFSET #{start}
-			</if>	
+			</if>
 	    </if>  
 	</select>
 	

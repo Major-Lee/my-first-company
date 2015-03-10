@@ -23,6 +23,8 @@
   		<typeAlias alias="sequence" 			type="com.bhu.vas.api.sequence.model.Sequence"/>
   		<typeAlias alias="user" 				type="com.bhu.vas.api.user.model.User"/>
 		<typeAlias alias="userToken" 			type="com.bhu.vas.api.user.model.UserToken"/>
+		<typeAlias alias="wifiDeviceCurrentStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceCurrentStatus"/>
+		<typeAlias alias="wifiDevice" 			type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
 	</typeAliases>
 	<!-- 
 	<plugins>
@@ -37,7 +39,8 @@
 		<mapper resource="com/bhu/vas/api/sequence/model/sqlMapper/Sequence.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/user/model/sqlMapper/User.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/user/model/sqlMapper/UserToken.sqlMap.xml"/>
-
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceCurrentStatus.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 	</mappers>
 	
 </configuration>
