@@ -7,13 +7,14 @@
 		<version>1.0</version>
 		<relativePath>../..</relativePath>
 	</parent>
-	<!-- 
+	
 	<repositories>
 		<repository>
 			<id>my-internal-site</id>
 			<url>file:${project.basedir}/../../../local_repo</url>
 		</repository>
-	</repositories> -->
+	</repositories>
+	
 	<artifactId>msip_im_common</artifactId>
 	<packaging>jar</packaging>
 
