@@ -4,11 +4,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.daemon.iservice.IWifiDeviceCmdDownRpcService;
 import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
+import com.bhu.vas.business.mq.activemq.ActiveMQDynamicService;
 
 public class MessageCenterConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonProcessorRpcConsumerApp");
-		System.setProperty("zookeeper", "192.168.66.7:2181");
+		System.setProperty("zookeeper", "192.168.66.234:2181");
 		System.setProperty("provider.port", "");
 		//System.setProperty("provider.port", "20882");
 		//System.out.println("~~~~~~~~~~~~~:"+System.getProperty("provider.port"));
@@ -32,6 +33,12 @@ public class MessageCenterConsumer {
 				ex.printStackTrace();
 			}
 		}
+		
+		
+		
+		ActiveMQDynamicService dynamicService = (ActiveMQDynamicService)context.getBean("activeMQDynamicService");
+		
+		dynamicService.onMessage("1234", "dddddddddddddddddd");
 		System.out.println("done");
 	}
 }
