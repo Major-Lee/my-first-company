@@ -7,35 +7,26 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class Device extends BaseStringModel{
 	
-	private String name;
-	//开机时间
-	private Date started_at;
-	//最近心跳时间
-	private Date heartbeated_at;
-	//开机时长 heartbeated_at-started_at
-	//private long operation_time;
-	//内存负载
-	private String memory_load;
-	
-	//本次开机上行流量
-	private String upflow;
-	//本次开机下行流量
-	private String downflow;
-	
-	//本次开机上行速率
-	private String upspeed;
-	//本次开机下行速率
-	private String downspeed;
-	//本次开机到目前为止的在线人数
-	private int onlinenumbers;
+	private String hdtype;	
+	private String orig_vendor;
+	private String orig_model;
+	private String orig_hdver;
+	private String orig_swver;
+	private String oem_vendor;
+	private String oem_model;
+	private String oem_hdver;
+	private String oem_swver;
+	private String sn;
+	private String ip;
+	private String wan_ip;
+	private String config_sequence;
+	private String build_info;
+	private String config_model_ver;
+	private String config_mode;
+	private String work_mode;
+	private Date last_reged_at;
 	private Date created_at;
 	
-	public Date getCreated_at() {
-		return created_at;
-	}
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
-	}
 	
 	@Override
 	public void preInsert() {
@@ -48,58 +39,156 @@ public class Device extends BaseStringModel{
 	public void preUpdate() {
 		super.preUpdate();
 	}
-	public String getName() {
-		return name;
+
+	public String getHdtype() {
+		return hdtype;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setHdtype(String hdtype) {
+		this.hdtype = hdtype;
 	}
-	public Date getStarted_at() {
-		return started_at;
+
+	public String getOrig_vendor() {
+		return orig_vendor;
 	}
-	public void setStarted_at(Date started_at) {
-		this.started_at = started_at;
+
+	public void setOrig_vendor(String orig_vendor) {
+		this.orig_vendor = orig_vendor;
 	}
-	public Date getHeartbeated_at() {
-		return heartbeated_at;
+
+	public String getOrig_model() {
+		return orig_model;
 	}
-	public void setHeartbeated_at(Date heartbeated_at) {
-		this.heartbeated_at = heartbeated_at;
+
+	public void setOrig_model(String orig_model) {
+		this.orig_model = orig_model;
 	}
-	public String getMemory_load() {
-		return memory_load;
+
+	public String getOrig_hdver() {
+		return orig_hdver;
 	}
-	public void setMemory_load(String memory_load) {
-		this.memory_load = memory_load;
+
+	public void setOrig_hdver(String orig_hdver) {
+		this.orig_hdver = orig_hdver;
 	}
-	public String getUpflow() {
-		return upflow;
+
+	public String getOrig_swver() {
+		return orig_swver;
 	}
-	public void setUpflow(String upflow) {
-		this.upflow = upflow;
+
+	public void setOrig_swver(String orig_swver) {
+		this.orig_swver = orig_swver;
 	}
-	public String getDownflow() {
-		return downflow;
+
+	public String getOem_vendor() {
+		return oem_vendor;
 	}
-	public void setDownflow(String downflow) {
-		this.downflow = downflow;
+
+	public void setOem_vendor(String oem_vendor) {
+		this.oem_vendor = oem_vendor;
 	}
-	public String getUpspeed() {
-		return upspeed;
+
+	public String getOem_model() {
+		return oem_model;
 	}
-	public void setUpspeed(String upspeed) {
-		this.upspeed = upspeed;
+
+	public void setOem_model(String oem_model) {
+		this.oem_model = oem_model;
 	}
-	public String getDownspeed() {
-		return downspeed;
+
+	public String getOem_hdver() {
+		return oem_hdver;
 	}
-	public void setDownspeed(String downspeed) {
-		this.downspeed = downspeed;
+
+	public void setOem_hdver(String oem_hdver) {
+		this.oem_hdver = oem_hdver;
 	}
-	public int getOnlinenumbers() {
-		return onlinenumbers;
+
+	public String getOem_swver() {
+		return oem_swver;
 	}
-	public void setOnlinenumbers(int onlinenumbers) {
-		this.onlinenumbers = onlinenumbers;
+
+	public void setOem_swver(String oem_swver) {
+		this.oem_swver = oem_swver;
+	}
+
+	public String getSn() {
+		return sn;
+	}
+
+	public void setSn(String sn) {
+		this.sn = sn;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getWan_ip() {
+		return wan_ip;
+	}
+
+	public void setWan_ip(String wan_ip) {
+		this.wan_ip = wan_ip;
+	}
+
+	public String getConfig_sequence() {
+		return config_sequence;
+	}
+
+	public void setConfig_sequence(String config_sequence) {
+		this.config_sequence = config_sequence;
+	}
+
+	public String getBuild_info() {
+		return build_info;
+	}
+
+	public void setBuild_info(String build_info) {
+		this.build_info = build_info;
+	}
+
+	public String getConfig_model_ver() {
+		return config_model_ver;
+	}
+
+	public void setConfig_model_ver(String config_model_ver) {
+		this.config_model_ver = config_model_ver;
+	}
+
+	public String getConfig_mode() {
+		return config_mode;
+	}
+
+	public void setConfig_mode(String config_mode) {
+		this.config_mode = config_mode;
+	}
+
+	public String getWork_mode() {
+		return work_mode;
+	}
+
+	public void setWork_mode(String work_mode) {
+		this.work_mode = work_mode;
+	}
+
+	public Date getLast_reged_at() {
+		return last_reged_at;
+	}
+
+	public void setLast_reged_at(Date last_reged_at) {
+		this.last_reged_at = last_reged_at;
+	}
+
+	public Date getCreated_at() {
+		return created_at;
+	}
+
+	public void setCreated_at(Date created_at) {
+		this.created_at = created_at;
 	}
 }
