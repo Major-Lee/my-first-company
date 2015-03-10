@@ -26,17 +26,18 @@ public class MessageCenterConsumer {
 		dto.setCm_id("1380");
 		dto.setCm_name("CM001");
 		dto.setMac("34:36:3b:d0:4b:ac");
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<100;i++){
 			try{
 				boolean ret = rpcService.wifiDeviceRegister(dto);//.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
+				//System.out.println(ret);
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
 		}
-		
-		ActiveMQDynamicService dynamicService = (ActiveMQDynamicService)context.getBean("activeMQDynamicService");
-		
-		dynamicService.onMessage("1234", "dddddddddddddddddd");
 		System.out.println("done");
+		//ActiveMQDynamicService dynamicService = (ActiveMQDynamicService)context.getBean("activeMQDynamicService");
+		/*
+		dynamicService.onMessage("1234", "dddddddddddddddddd");
+		System.out.println("done");*/
 	}
 }
