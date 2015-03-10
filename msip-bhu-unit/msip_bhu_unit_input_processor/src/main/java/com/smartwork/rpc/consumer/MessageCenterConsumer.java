@@ -34,8 +34,6 @@ public class MessageCenterConsumer {
 			}
 		}
 		
-		
-		
 		ActiveMQDynamicService dynamicService = (ActiveMQDynamicService)context.getBean("activeMQDynamicService");
 		
 		dynamicService.onMessage("1234", "dddddddddddddddddd");
