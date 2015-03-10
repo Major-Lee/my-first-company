@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
+	<substitutionProperty name="log.base" value="/BHUData/logs/unitlogs/msip-unit-devices/${provider.port}/" />
+	<!-- 
+	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
+	 -->
+	<jmxConfigurator />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>	
+	<!-- 
+	<appender name="bustdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+
+	<appender name="actionlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.actionlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>	 -->
+	<!--
+	<appender name="sqllogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.sqllog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.sqllog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>	
+
+	<appender name="memlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.memlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.memlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>		
+
+	<appender name="searchemptylogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.searchemptylog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.searchemptylog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>	
+	
+	<appender name="securitylogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.securitylog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.securitylog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>			
+	 	
+	<appender name="memlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.memlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.memlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>	 
+	
+	<appender name="searchlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.searchlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.searchlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>	-->	
+	 <!--
+	<logger name="java.sql" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="sqllogfile" />
+	</logger>
+	
+	<logger name="com.et.msip.cores.cache" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="memlogfile" />
+	</logger>
+	
+	<logger name="com.et.msip.cores.fulltextretrieval" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="searchlogfile" />
+	</logger>
+	<logger name="com.et.msip.cores.web.security.springsecurity" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="securitylogfile" />
+	</logger> -->
+	<!--
+	<logger name="com.et.web.search" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="stdout"/>
+		<appender-ref ref="searchlogfile"/>
+	</logger>
+	<logger name="com.et.business.bucache.service.local.impl" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="searchlogfile"/>
+	</logger>
+
+	<logger name="com.et.business.search" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="bustdout"/>
+	</logger>
+
+	<logger name="com.et.web.ucenter" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="bustdout"/>
+	</logger>
+	
+	
+	<logger name="com.et.web" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="stdout"/>
+	</logger>
+	
+	<logger name="com.et.logger.BusinessStatisticsLogger" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="stdout" />
+		<appender-ref ref="actionlogfile" />
+	</logger>
+	 -->
+	<appender name="unitrequestfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.unitrequest.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.unitrequest.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>	
+
+	<logger name="com.smartwork.rpc.service" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="unitrequestfile" />
+	</logger>	
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="logfile" />
+	</root> 
+</configuration>
+
+
