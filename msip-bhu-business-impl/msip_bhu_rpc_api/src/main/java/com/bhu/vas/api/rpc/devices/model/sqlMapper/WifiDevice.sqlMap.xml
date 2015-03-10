@@ -2,56 +2,82 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.devices.model.DeviceCurrentStatus">
+<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDevice">
 
-  <resultMap id="modelResult" type="deviceCurrentStatus">
-    <result property="id" column="id"/>
-    <result property="name" column="name"/>
-    <result property="started_at" column="started_at"/>
-    <result property="heartbeated_at" column="heartbeated_at"/>
-    <result property="memory_load" column="memory_load"/>
-    <result property="upflow" column="upflow"/>
-    <result property="downflow" column="downflow"/>
-    <result property="upspeed" column="upspeed"/>
-    <result property="downspeed" column="downspeed"/>
-    <result property="onlinenumbers" column="onlinenumbers"/>
-    
+  <resultMap id="modelResult" type="wifiDevice">
+    <id property="id" column="id"/>
+    <result property="hdtype" column="hdtype"/>
+    <result property="orig_vendor" column="orig_vendor"/>
+    <result property="orig_model" column="orig_model"/>
+    <result property="orig_hdver" column="orig_hdver"/>
+    <result property="orig_swver" column="orig_swver"/>
+    <result property="oem_vendor" column="oem_vendor"/>
+    <result property="oem_model" column="oem_model"/>
+    <result property="oem_hdver" column="oem_hdver"/>
+    <result property="oem_swver" column="oem_swver"/>
+    <result property="sn" column="sn"/>
+    <result property="ip" column="ip"/>
+    <result property="wan_ip" column="wan_ip"/>
+    <result property="config_sequence" column="config_sequence"/>
+    <result property="build_info" column="build_info"/>
+    <result property="config_model_ver" column="config_model_ver"/>
+    <result property="config_mode" column="config_mode"/>
+    <result property="work_mode" column="work_mode"/>
+    <result property="last_reged_at" column="last_reged_at"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devices_current_status
+	    	t_wifi_devices
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	name,
-	    	started_at,
-	    	heartbeated_at,
-	    	memory_load,
-	    	upflow,
-	    	downflow,
-	    	upspeed,
-	    	downspeed,
-	    	onlinenumbers,
+	    	hdtype,
+	    	orig_vendor,
+	    	orig_model,
+	    	orig_hdver,
+	    	orig_swver,
+	    	oem_vendor,
+	    	oem_model,
+	    	oem_hdver,
+	    	oem_swver,
+	    	sn,
+	    	ip,
+	    	wan_ip,
+	    	config_sequence,
+	    	build_info,
+	    	config_model_ver,
+	    	config_mode,
+	    	work_mode,
+	    	last_reged_at,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	name,
-	    	started_at,
-	    	heartbeated_at,
-	    	memory_load,
-	    	upflow,
-	    	downflow,
-	    	upspeed,
-	    	downspeed,
-	    	onlinenumbers,
+	    	hdtype,
+	    	orig_vendor,
+	    	orig_model,
+	    	orig_hdver,
+	    	orig_swver,
+	    	oem_vendor,
+	    	oem_model,
+	    	oem_hdver,
+	    	oem_swver,
+	    	sn,
+	    	ip,
+	    	wan_ip,
+	    	config_sequence,
+	    	build_info,
+	    	config_model_ver,
+	    	config_mode,
+	    	work_mode,
+	    	last_reged_at,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -59,34 +85,50 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{name},
-	    	#{started_at},
-	    	#{heartbeated_at},
-	    	#{memory_load},
-	    	#{upflow},
-	    	#{downflow},
-	    	#{upspeed},
-	    	#{downspeed},
-	    	#{onlinenumbers},
+	    	#{hdtype},
+	    	#{orig_vendor},
+	    	#{orig_model},
+	    	#{orig_hdver},
+	    	#{orig_swver},
+	    	#{oem_vendor},
+	    	#{oem_model},
+	    	#{oem_hdver},
+	    	#{oem_swver},
+	    	#{sn},
+	    	#{ip},
+	    	#{wan_ip},
+	    	#{config_sequence},
+	    	#{build_info},
+	    	#{config_model_ver},
+	    	#{config_mode},
+	    	#{work_mode},
+	    	#{last_reged_at},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
-	
 	<sql id="modelUpdateValues">
-			name = #{name},
-			started_at = #{started_at},
-			heartbeated_at = #{heartbeated_at},
-			memory_load = #{memory_load},
-			upflow = #{upflow},
-			downflow = #{downflow},
-			upspeed = #{upspeed},
-			downspeed = #{downspeed},
-			onlinenumbers = #{onlinenumbers},
+	    	hdtype = #{hdtype},
+	    	orig_vendor = #{orig_vendor},
+	    	orig_model = #{orig_model},
+	    	orig_hdver = #{orig_hdver},
+	    	orig_swver = #{orig_swver},
+	    	oem_vendor = #{oem_vendor},
+	    	oem_model = #{oem_model},
+	    	oem_hdver = #{oem_hdver},
+	    	oem_swver = #{oem_swver},
+	    	sn = #{sn},
+	    	ip = #{ip},
+	    	wan_ip = #{wan_ip},
+	    	config_sequence = #{config_sequence},
+	    	build_info = #{build_info},
+	    	config_model_ver = #{config_model_ver},
+	    	config_mode = #{config_mode},
+	    	work_mode = #{work_mode},
+	    	last_reged_at = #{last_reged_at},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
-	
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
 			WARNING - @mbggenerated This element is automatically generated by
@@ -139,7 +181,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="deviceCurrentStatus">
+	<delete id="delete" parameterType="wifiDevice">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -148,11 +190,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="deviceCurrentStatus">
+	<insert id="insert" parameterType="wifiDevice">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="deviceCurrentStatus">
+	<update id="update" parameterType="wifiDevice">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

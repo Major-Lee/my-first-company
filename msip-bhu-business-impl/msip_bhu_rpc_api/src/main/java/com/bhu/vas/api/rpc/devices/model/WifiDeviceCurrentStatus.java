@@ -5,7 +5,7 @@ import java.util.Date;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class DeviceCurrentStatus extends BaseStringModel{
+public class WifiDeviceCurrentStatus extends BaseStringModel{
 	
 	private String name;
 	//开机时间

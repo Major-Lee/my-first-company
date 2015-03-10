@@ -5,22 +5,22 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.devices.model.DeviceCurrentStatus;
-import com.bhu.vas.business.device.dao.DeviceCurrentStatusDao;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.device.dao.WifiDeviceDao;
 import com.bhu.vas.business.sequence.service.SequenceService;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
-public class DeviceCurrentStatusService extends AbstractCoreService<String,DeviceCurrentStatus, DeviceCurrentStatusDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, WifiDeviceDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
 	@Resource
 	private SequenceService sequenceService;
 	
 	@Resource
 	@Override
-	public void setEntityDao(DeviceCurrentStatusDao deviceCurrentStatusDao) {
-		super.setEntityDao(deviceCurrentStatusDao);
+	public void setEntityDao(WifiDeviceDao wifiDeviceDao) {
+		super.setEntityDao(wifiDeviceDao);
 	}
 
 }

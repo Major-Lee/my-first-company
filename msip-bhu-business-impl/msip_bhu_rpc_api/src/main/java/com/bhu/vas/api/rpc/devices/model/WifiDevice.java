@@ -3,9 +3,11 @@ package com.bhu.vas.api.rpc.devices.model;
 import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
-
+/*
+ * 
+ */
 @SuppressWarnings("serial")
-public class Device extends BaseStringModel{
+public class WifiDevice extends BaseStringModel{
 	
 	private String hdtype;	
 	private String orig_vendor;
