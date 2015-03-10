@@ -21,6 +21,7 @@
         <module>msip-bhu-cm-control/msip_im_cm</module>
 
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
+        <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <!--
         
         <module>msip-wecite-business/msip_wecite_business_ds</module>
