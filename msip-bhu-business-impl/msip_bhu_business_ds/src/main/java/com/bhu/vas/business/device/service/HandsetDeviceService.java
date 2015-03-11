@@ -18,5 +18,5 @@ public class HandsetDeviceService extends AbstractCoreService<String,HandsetDevi
 	public void setEntityDao(HandsetDeviceDao handsetDeviceDao) {
 		super.setEntityDao(handsetDeviceDao);
 	}
-
+	
 }

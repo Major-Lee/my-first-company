@@ -7,6 +7,7 @@
   <resultMap id="modelResult" type="handsetDevice">
     <result property="id" column="id"/>
     <result property="mobileno" column="mobileno"/>
+    <result property="online" column="online"/>
     <result property="last_wifi_id" column="last_wifi_id"/>
     <result property="last_login_at" column="last_login_at"/>
     
@@ -23,6 +24,7 @@
 	    <![CDATA[
 	    	id,
 	    	mobileno,
+	    	online,
 	    	last_wifi_id,
 	    	last_login_at,
 	    	created_at,
@@ -32,6 +34,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	mobileno,
+	    	online,
 	    	last_wifi_id,
 	    	last_login_at,
 	    	created_at,
@@ -42,6 +45,7 @@
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{mobileno},
+	    	#{online},
 	    	#{last_wifi_id},
 	    	#{last_login_at},
 	    	#{created_at},
@@ -51,6 +55,7 @@
 	
 	<sql id="modelUpdateValues">
 			mobileno = #{mobileno},
+			online = #{online},
 			last_wifi_id = #{last_wifi_id},
 			last_login_at = #{last_login_at},
 	    	created_at = #{created_at},

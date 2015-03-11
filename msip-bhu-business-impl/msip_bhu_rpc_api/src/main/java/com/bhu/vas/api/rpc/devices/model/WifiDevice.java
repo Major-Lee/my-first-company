@@ -41,6 +41,8 @@ public class WifiDevice extends BaseStringModel{
 	private String config_mode;
 	//工作模式, 对应配置模式
 	private String work_mode;
+	//wifi设备是否在线
+	private String online;
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -188,6 +190,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public String getWork_mode() {
 		return work_mode;
+	}
+	
+	public String getOnline() {
+		return online;
+	}
+
+	public void setOnline(String online) {
+		this.online = online;
 	}
 
 	public void setWork_mode(String work_mode) {

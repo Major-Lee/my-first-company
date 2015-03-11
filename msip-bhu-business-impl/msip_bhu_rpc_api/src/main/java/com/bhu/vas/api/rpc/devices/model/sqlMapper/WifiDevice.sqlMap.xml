@@ -23,6 +23,7 @@
     <result property="config_model_ver" column="config_model_ver"/>
     <result property="config_mode" column="config_mode"/>
     <result property="work_mode" column="work_mode"/>
+    <result property="online" column="online"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -53,6 +54,7 @@
 	    	config_model_ver,
 	    	config_mode,
 	    	work_mode,
+	    	online,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -77,6 +79,7 @@
 	    	config_model_ver,
 	    	config_mode,
 	    	work_mode,
+	    	online,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -102,6 +105,7 @@
 	    	#{config_model_ver},
 	    	#{config_mode},
 	    	#{work_mode},
+	    	#{online},
 	    	#{last_reged_at},
 	    	#{created_at},
 	    	#{updated_at}
@@ -125,6 +129,7 @@
 	    	config_model_ver = #{config_model_ver},
 	    	config_mode = #{config_mode},
 	    	work_mode = #{work_mode},
+	    	online = #{online},
 	    	last_reged_at = #{last_reged_at},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}

@@ -10,6 +10,8 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 public class HandsetDevice extends BaseStringModel{
 	//手机号码
 	private String mobileno;
+	//移动设备是否在线
+	private boolean online;
 	//最后一次连入的wifi设备id
 	private String last_wifi_id;
 	//最后一次连入的wifi设备的时间
@@ -35,6 +37,14 @@ public class HandsetDevice extends BaseStringModel{
 
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
+	}
+	
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 
 	public String getLast_wifi_id() {
