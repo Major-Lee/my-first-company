@@ -1,11 +1,15 @@
 package com.smartwork.rpc.service.device;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.devices.dto.DeviceDTO;
+import com.bhu.vas.api.rpc.devices.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
+import com.bhu.vas.business.device.facade.DeviceFacadeService;
 
 /**
  * 去除掉token存储在db中？只使用redis会比较好？
@@ -16,12 +20,26 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 public class DeviceRpcService implements IDeviceRpcService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceRpcService.class);
 
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
+	
 	@Override
 	public boolean deviceRegister(DeviceDTO dto) {
 		System.out.println(dto.toString());
 		return false;
 	}
-
+	
+	/**
+	 * wifi设备上线
+	 * 1：wifi设备基础信息更新
+	 * 2：wifi设备在线更新
+	 */
+	@Override
+	public boolean wifiDeviceRegister(WifiDeviceDTO dto) {
+		System.out.println(dto.toString());
+		return false;
+	}
+	
 	/*//@Resource
 	//private UserTokenService userTokenService;
 	@Override
