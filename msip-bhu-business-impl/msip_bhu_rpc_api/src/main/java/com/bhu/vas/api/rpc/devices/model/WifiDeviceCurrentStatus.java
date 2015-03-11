@@ -3,7 +3,9 @@ package com.bhu.vas.api.rpc.devices.model;
 import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
-
+/*
+ * wifi设备运行环境实时信息
+ */
 @SuppressWarnings("serial")
 public class WifiDeviceCurrentStatus extends BaseStringModel{
 	

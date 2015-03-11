@@ -4,28 +4,44 @@ import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 /*
- * 
+ * wifi设备基础信息
  */
 @SuppressWarnings("serial")
 public class WifiDevice extends BaseStringModel{
-	
+	//原始硬件型号(类型)
 	private String hdtype;	
+	//原始厂商
 	private String orig_vendor;
+	//原始设备型号
 	private String orig_model;
+	//原始硬件版本号
 	private String orig_hdver;
+	//原始软件版本号
 	private String orig_swver;
+	//oem厂商
 	private String oem_vendor;
+	//oem后设备型号
 	private String oem_model;
+	//oem后硬件版本号
 	private String oem_hdver;
+	//oem后软件版本号
 	private String oem_swver;
+	//
 	private String sn;
 	private String ip;
+	//设备连接到网管服务器时所对应的wan ip。由nginx接入服务器填写
 	private String wan_ip;
+	//设备的配置流水号
 	private String config_sequence;
+	//版本信息里的build相关信息
 	private String build_info;
+	//配置模型版本号
 	private String config_model_ver;
+	//配置模式(取值有：basic, expert, fitap)
 	private String config_mode;
+	//工作模式, 对应配置模式
 	private String work_mode;
+	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
 	

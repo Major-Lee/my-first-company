@@ -7,15 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceCurrentStatus;
 import com.bhu.vas.business.device.dao.WifiDeviceCurrentStatusDao;
-import com.bhu.vas.business.sequence.service.SequenceService;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
 public class WifiDeviceCurrentStatusService extends AbstractCoreService<String,WifiDeviceCurrentStatus, WifiDeviceCurrentStatusDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
-	@Resource
-	private SequenceService sequenceService;
 	
 	@Resource
 	@Override
