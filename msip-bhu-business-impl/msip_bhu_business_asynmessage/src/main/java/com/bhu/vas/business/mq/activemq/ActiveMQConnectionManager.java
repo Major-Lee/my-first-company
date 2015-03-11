@@ -74,7 +74,7 @@ public class ActiveMQConnectionManager{
 		}
 	    if(porperties_loaded){
 	    	String activemqUrl = properties.getProperty("mq.activemq.server.url");
-	    	System.out.print("dynamicActivemqUrl:"+activemqUrl);
+	    	System.out.println("dynamicActivemqUrl:"+activemqUrl);
 	    	connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_USER,activemqUrl);//"tcp://192.168.101.251:61616");
 	    	/*connectionFactory = new org.apache.activemq.pool.PooledConnectionFactory();
 	    	connectionFactory.setConnectionFactory(factory);

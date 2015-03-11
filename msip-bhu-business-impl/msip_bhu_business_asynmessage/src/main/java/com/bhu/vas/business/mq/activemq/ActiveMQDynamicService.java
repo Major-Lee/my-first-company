@@ -1,9 +1,11 @@
 package com.bhu.vas.business.mq.activemq;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.mq.activemq.observer.listener.QueueMessageListener;
+import com.bhu.vas.business.processor.BusinessNotifyMsgProcessor;
 
 //@Service
 public class ActiveMQDynamicService implements QueueMessageListener{
@@ -14,10 +16,14 @@ public class ActiveMQDynamicService implements QueueMessageListener{
 		ActiveMQConnectionManager.getInstance();//(this);
 	}
 	
+	@Resource
+	private BusinessNotifyMsgProcessor businessNotifyMsgProcessor;
+	
 	@Override
-	public void onMessage(String ctx, String msg) {
+	public void onMessage(String ctx, String message) {
 		// TODO Auto-generated method stub
-		System.out.println(ctx+"::::"+msg);
+		//System.out.println(ctx+"::::"+msg);
+		businessNotifyMsgProcessor.handler(ctx, message);
 	}
 	
 	

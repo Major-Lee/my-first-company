@@ -3,18 +3,22 @@ package com.bhu.vas.business.asyn.web.activemq.queue.consumer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.annotation.Resource;
 
 import com.bhu.vas.business.logger.BusinessStatisticsLogger;
+import com.bhu.vas.business.processor.NotifyMsgProcessorService;
 
 /**
  * Date: 2008-8-28
  * Time: 17:10:34
  */
 public class DeliverMessageQueueConsumer {
-	private final Logger logger = LoggerFactory.getLogger(DeliverMessageQueueConsumer.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(50);
+	//private final Logger logger = LoggerFactory.getLogger(DeliverMessageQueueConsumer.class);
+	
+	@Resource
+	private NotifyMsgProcessorService notifyMsgProcessorService;
+	
+	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	
 	public ExecutorService getExec() {
 		return exec;
@@ -28,26 +32,25 @@ public class DeliverMessageQueueConsumer {
     	//long t0 = System.currentTimeMillis();
     	//logger.info(message);
     	BusinessStatisticsLogger.doActionMessageLog(message);
-    	exec.submit((new Runnable() {
+    	notifyMsgProcessorService.handler(message);
+    	/*exec.submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
 					logger.info("receive:"+message);
 					System.out.println("receive:"+message);
-					/*Thread.sleep(1000);
-					System.out.println("receive:"+message);*/
-					/*DeliverMessage deliverMsg = DeliverMessageFactoryBuilder.fromJson(message);
+					DeliverMessage deliverMsg = DeliverMessageFactoryBuilder.fromJson(message);
 			    	switch(deliverMsg.getType()){
 			    		case 'A':
 			    			processActionMessage(deliverMsg);
 			    			break;
-			    	}*/
+			    	}
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("DeliverMessageQueueConsumer", ex);
 				}
 			}
-		}));
+		}));*/
     	//System.out.println("********* DeliverMessageQueueConsumer : cost:" + (System.currentTimeMillis() - t0));
 	}
     
