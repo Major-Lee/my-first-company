@@ -27,8 +27,10 @@
 		<typeAlias alias="wifiDevice" 			type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
 		<typeAlias alias="wifiDeviceGroup" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
 		<typeAlias alias="handsetDevice" 			type="com.bhu.vas.api.rpc.devices.model.HandsetDevice"/>
-		
+		<typeAlias alias="wifiDeviceCompletedDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceCompletedDownTask"/>
+		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
 	</typeAliases>
+	
 	<!-- 
 	<plugins>
         <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin">
@@ -46,6 +48,8 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/HandsetDevice.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceCompletedDownTask.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml"/>
 	</mappers>
 	
 </configuration>
