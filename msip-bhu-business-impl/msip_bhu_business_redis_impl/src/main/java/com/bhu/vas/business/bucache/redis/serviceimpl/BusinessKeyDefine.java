@@ -16,6 +16,7 @@ public class BusinessKeyDefine {
 		public static final String UserPushNotifyCountPrefixKey = "UPN";
 		public static final String UserMarkPrefixKey 			= "BMH.";//"BuMarkH.";
 		public static final String SubjectPrefixKey 			= "SP.";//"BuMarkH.";
+		public static final String HandsetWifiDeviceMarkPrefixKey 			= "HWDM";
 	}
 	
 	public static class Statistics{
