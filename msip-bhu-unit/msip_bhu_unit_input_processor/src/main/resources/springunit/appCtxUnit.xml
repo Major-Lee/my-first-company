@@ -9,14 +9,14 @@
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
-       default-lazy-init="false"> 
+       default-lazy-init="true"> 
     <!-- 
     <import resource="classpath*:spring/applicationContextCore-resource.xml"/>
 	<import resource="classpath*:spring/applicationContext-i18n.xml"/>
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/>
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> -->   
 	<import resource="classpath*:spring/applicationContext*.xml"/>
-	<import resource="classpath*:springservice/applicationContext-bhu-input-service.xml"/>
+	<import resource="classpath*:springservice/applicationContext-bhu-input-processor-service.xml"/>
 	<!-- -->
 	<import resource="classpath*:springunit/applicationContextRpcUnitConsumer.xml"/> 
 </beans>

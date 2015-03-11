@@ -2,12 +2,10 @@ package com.bhu.vas.business.mq.activemq;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.stereotype.Service;
-
 import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.mq.activemq.observer.listener.QueueMessageListener;
 
-@Service
+//@Service
 public class ActiveMQDynamicService implements QueueMessageListener{
 	@PostConstruct
 	public void initialize(){
@@ -20,5 +18,11 @@ public class ActiveMQDynamicService implements QueueMessageListener{
 	public void onMessage(String ctx, String msg) {
 		// TODO Auto-generated method stub
 		System.out.println(ctx+"::::"+msg);
+	}
+	
+	
+	public void stop(){
+		ActiveMQConnectionManager.getInstance().stop();
+		ActiveMQConnectionManager.getInstance().destroy();
 	}
 }
