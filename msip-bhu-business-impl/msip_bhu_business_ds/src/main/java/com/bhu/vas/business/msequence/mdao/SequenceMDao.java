@@ -25,8 +25,9 @@ public class SequenceMDao extends BaseMongoDAOImpl<SequenceMDTO> {
 
 		/*FindAndModifyOptions options = new FindAndModifyOptions();
 		options.returnNew(true);*/
-		SequenceMDTO seqId = mongoTemplate.findAndModify(query, update, new FindAndModifyOptions().returnNew(true), SequenceMDTO.class);
-
+		//SequenceMDTO seqId = mongoTemplate.findAndModify(query, update, new FindAndModifyOptions().returnNew(true), SequenceMDTO.class);
+		
+		SequenceMDTO seqId = super.findAndModify(query, update);
 		if (seqId == null) {
 			throw new SequenceException("Unable to get sequence id for key : " + key);
 		}
