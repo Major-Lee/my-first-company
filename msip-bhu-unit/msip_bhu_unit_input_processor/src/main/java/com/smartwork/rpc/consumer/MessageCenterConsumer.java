@@ -19,8 +19,8 @@ public class MessageCenterConsumer {
 		
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"classpath*:springunit/appCtxUnit.xml" });
-		context.start();
-		IWifiDeviceCmdDownRpcService rpcService = (IWifiDeviceCmdDownRpcService)context.getBean("wifiDeviceCmdDownRpcService");
+		//context.start();
+		/*IWifiDeviceCmdDownRpcService rpcService = (IWifiDeviceCmdDownRpcService)context.getBean("wifiDeviceCmdDownRpcService");
 		//System.out.println(tokenRpcService);
 		WifiDeviceContextDTO dto = new WifiDeviceContextDTO();
 		dto.setCm_id("1380");
@@ -34,7 +34,7 @@ public class MessageCenterConsumer {
 				ex.printStackTrace();
 			}
 		}
-		System.out.println("done");
+		System.out.println("done");*/
 		//ActiveMQDynamicService dynamicService = (ActiveMQDynamicService)context.getBean("activeMQDynamicService");
 		/*
 		dynamicService.onMessage("1234", "dddddddddddddddddd");

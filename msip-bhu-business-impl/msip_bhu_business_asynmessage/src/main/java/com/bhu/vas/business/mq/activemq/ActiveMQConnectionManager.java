@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.business.mq.activemq.listener.NotifyMessageConsumerListener;
-import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 
 
 public class ActiveMQConnectionManager{
@@ -60,21 +59,22 @@ public class ActiveMQConnectionManager{
 		boolean porperties_loaded = false;
 		Properties properties = new Properties();
 	    try {
-	    	in = RedisPoolManager.class.getResourceAsStream("/deploy/lazyloadconf/dynamic.activemq.properties");
+	    	in = ActiveMQConnectionManager.class.getResourceAsStream("/deploy/lazyloadconf/dynamic.activemq.properties");
 			properties.load(in);
 			porperties_loaded = true;
 		} catch (Exception e) {
 			try{
-				in = RedisPoolManager.class.getResourceAsStream("/lazyloadconf/dynamic.activemq.properties");
+				in = ActiveMQConnectionManager.class.getResourceAsStream("/lazyloadconf/dynamic.activemq.properties");
 				properties.load(in);
 				porperties_loaded = true;
 			}catch(Exception ex){
 				logger.error("init loading /deploy/lazyloadconf/dynamic.activemq.properties or  /lazyloadconf/dynamic.activemq.properties failed!", e);
-				e.printStackTrace();
+				e.printStackTrace(System.out);
 			}
 		}
 	    if(porperties_loaded){
 	    	String activemqUrl = properties.getProperty("mq.activemq.server.url");
+	    	System.out.print("dynamicActivemqUrl:"+activemqUrl);
 	    	connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,ActiveMQConnection.DEFAULT_USER,activemqUrl);//"tcp://192.168.101.251:61616");
 	    	/*connectionFactory = new org.apache.activemq.pool.PooledConnectionFactory();
 	    	connectionFactory.setConnectionFactory(factory);
