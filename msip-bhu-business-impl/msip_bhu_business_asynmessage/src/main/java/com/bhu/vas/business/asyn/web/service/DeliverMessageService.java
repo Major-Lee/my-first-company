@@ -29,6 +29,10 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.send(message);
 	}
 	
+	public void sendPureText(String message){
+		deliverMessageQueueProducer.sendPureText(message);
+	}
+	
 	public void sendUserRegisteredActionMessage(char type,Integer uid,String channel,String device,String remoteip){
 		UserRegisteredDTO dto = new UserRegisteredDTO();
 		dto.setUid(uid);
