@@ -8,9 +8,13 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceDownTask extends BaseStringModel{
+	public static final int State_Pending = 1;//待处理状态
+	public static final int State_Timeout = 2;//任务超时
+	public static final int State_Failed = 3;//任务失败
+	public static final int State_Completed = 10;//任务已经完成
 	
 	private String payload;
-	private String state;
+	private int state;
 	private String task;
 	private String mac;
 	private String time;
@@ -37,11 +41,11 @@ public class WifiDeviceDownTask extends BaseStringModel{
 		this.payload = payload;
 	}
 
-	public String getState() {
+	public int getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 
