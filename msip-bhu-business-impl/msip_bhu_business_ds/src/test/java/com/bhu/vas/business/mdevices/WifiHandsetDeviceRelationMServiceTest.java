@@ -1,4 +1,4 @@
-package com.wecite.toplines.business.mdevices;
+package com.bhu.vas.business.mdevices;
 
 import java.util.Date;
 

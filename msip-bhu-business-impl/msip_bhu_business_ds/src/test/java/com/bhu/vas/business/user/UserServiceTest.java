@@ -1,4 +1,4 @@
-package com.wecite.toplines.business.user;
+package com.bhu.vas.business.user;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
