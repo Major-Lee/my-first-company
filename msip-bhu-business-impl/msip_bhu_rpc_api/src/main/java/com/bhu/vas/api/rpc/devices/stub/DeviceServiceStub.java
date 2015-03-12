@@ -32,4 +32,10 @@ public class DeviceServiceStub implements IDeviceRpcService{
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return deviceRpcService.wifiDeviceRegister(dto);
 	}
+
+	@Override
+	public boolean wifiDeviceLogout(WifiDeviceDTO dto) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

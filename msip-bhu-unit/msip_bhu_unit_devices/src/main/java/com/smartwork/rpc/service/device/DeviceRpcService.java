@@ -36,7 +36,12 @@ public class DeviceRpcService implements IDeviceRpcService {
 	 */
 	@Override
 	public boolean wifiDeviceRegister(WifiDeviceDTO dto) {
-		System.out.println(dto.toString());
+		deviceFacadeService.wifiDeviceRegister(dto);
+		return true;
+	}
+
+	@Override
+	public boolean wifiDeviceLogout(WifiDeviceDTO dto) {
 		return false;
 	}
 	

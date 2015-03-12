@@ -6,4 +6,5 @@ import com.bhu.vas.api.rpc.devices.dto.WifiDeviceDTO;
 public interface IDeviceRpcService {
 	public boolean deviceRegister(DeviceDTO dto);
 	public boolean wifiDeviceRegister(WifiDeviceDTO dto);
+	public boolean wifiDeviceLogout(WifiDeviceDTO dto);
 }
