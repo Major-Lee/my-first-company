@@ -131,7 +131,6 @@
 	    	work_mode = #{work_mode},
 	    	online = #{online},
 	    	last_reged_at = #{last_reged_at},
-	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

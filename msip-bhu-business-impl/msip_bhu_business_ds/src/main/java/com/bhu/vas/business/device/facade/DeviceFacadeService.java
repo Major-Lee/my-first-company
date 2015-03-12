@@ -31,8 +31,11 @@ public class DeviceFacadeService {
 	 * @param dto
 	 */
 	public void wifiDeviceRegister(WifiDeviceDTO dto){
-		if(dto == null) return;
-		if(StringUtils.isEmpty(dto.getMac())) return;
+		if(dto == null) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getCmId()))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+
 		try{
 			//1:wifi设备基础信息更新
 			WifiDevice wifi_device_entity = wifiDeviceDtoToEntity(dto);
