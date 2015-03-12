@@ -36,6 +36,7 @@ public class DeviceRpcService implements IDeviceRpcService {
 	 */
 	@Override
 	public boolean wifiDeviceRegister(WifiDeviceDTO dto) {
+		logger.info(String.format("wifiDeviceRegister with params: mac[%s]",dto.getMac()));
 		deviceFacadeService.wifiDeviceRegister(dto);
 		return true;
 	}
