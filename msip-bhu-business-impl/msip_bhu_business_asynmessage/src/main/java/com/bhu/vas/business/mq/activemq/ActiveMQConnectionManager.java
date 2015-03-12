@@ -1,7 +1,9 @@
 package com.bhu.vas.business.mq.activemq;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,7 +26,10 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.business.mq.activemq.listener.NotifyMessageConsumerListener;
+import com.bhu.vas.business.mq.activemq.listener.DynaMessageConsumerListener;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 
 public class ActiveMQConnectionManager{
@@ -37,6 +42,7 @@ public class ActiveMQConnectionManager{
 	private Map<String,MessageProducer> testProducers = null;
 	private Properties properties = new Properties();
 	private boolean porperties_loaded = false;
+	private String porperties_file = null;//PropertiesRuntimeTest.class.getResource("/deploy/lazyloadconf/dynamic.activemq.properties").getFile();
 	//ActiveMQDynamicService dynamicService;
 	private static class ActiveMQConnectionManagerHolder{ 
 		private static ActiveMQConnectionManager instance =new ActiveMQConnectionManager(); 
@@ -65,11 +71,13 @@ public class ActiveMQConnectionManager{
 	    try {
 	    	in = ActiveMQConnectionManager.class.getResourceAsStream("/deploy/lazyloadconf/dynamic.activemq.properties");
 			properties.load(in);
+			porperties_file = ActiveMQConnectionManager.class.getResource("/deploy/lazyloadconf/dynamic.activemq.properties").getFile();
 			porperties_loaded = true;
 		} catch (Exception e) {
 			try{
 				in = ActiveMQConnectionManager.class.getResourceAsStream("/lazyloadconf/dynamic.activemq.properties");
 				properties.load(in);
+				porperties_file = ActiveMQConnectionManager.class.getResource("/deploy/lazyloadconf/dynamic.activemq.properties").getFile();
 				porperties_loaded = true;
 			}catch(Exception ex){
 				logger.error("init loading /deploy/lazyloadconf/dynamic.activemq.properties or  /lazyloadconf/dynamic.activemq.properties failed!", e);
@@ -103,15 +111,53 @@ public class ActiveMQConnectionManager{
 
 	public void initConsumerQueues(){
 		if(porperties_loaded){
-			String consumerQueues = properties.getProperty("mq.activemq.server.consumer.queues");
+			String consumerQueues = properties.getProperty(consumers_key);
 			String[] consumerQueue_array = consumerQueues.split(",");
 			for(String consumerQueue:consumerQueue_array){
-				try {
-					setupMessageConsumer("in",consumerQueue);
-				} catch (JMSException e) {
-					e.printStackTrace(System.out);
-				}
+				createNewConsumerQueues("in",consumerQueue,false);
 			}
+		}
+	}
+	
+	private static final String consumers_key = "mq.activemq.server.consumer.queues";
+	private static final String producers_key = "mq.activemq.server.producer.queues";
+	
+	public void createNewConsumerQueues(String prefix,String cmInfo,boolean noExistThenUpdatePropertie){
+		if(porperties_loaded){
+			try {
+				setupMessageConsumer(prefix,cmInfo);
+				if(noExistThenUpdatePropertie){
+					String consumers_defined = properties.getProperty(consumers_key);
+					String producers_defined = properties.getProperty(producers_key);
+					boolean needStoreUpdate = false;
+					if(!consumers_defined.contains(cmInfo)){
+						properties.setProperty(consumers_key, consumers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
+						needStoreUpdate = true;
+					}
+					if(!producers_defined.contains(cmInfo)){
+						properties.setProperty(producers_key, producers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
+						needStoreUpdate = true;
+					} 
+					if(needStoreUpdate){
+						OutputStream outputStream = null;
+						try {
+							outputStream = new FileOutputStream(porperties_file);
+							properties.store(outputStream, "author: liwh@bhunetworks.com"); 
+				            outputStream.close();
+						} catch (IOException e) {
+							e.printStackTrace(System.out);
+						} finally{
+							if(outputStream != null){
+								outputStream = null;
+							}
+						}
+					}
+				}
+			} catch(BusinessI18nCodeException e){
+				e.printStackTrace(System.out);
+			} catch (JMSException e) {
+				e.printStackTrace(System.out);
+			} 
 		}
 	}
 	
@@ -120,7 +166,7 @@ public class ActiveMQConnectionManager{
 	 */
 	public void initConsumerTestProducers(){
 		if(porperties_loaded){
-			String consumerQueues = properties.getProperty("mq.activemq.server.consumer.queues");
+			String consumerQueues = properties.getProperty(producers_key);
 			String[] consumerQueue_array = consumerQueues.split(",");
 			for(String consumerQueue:consumerQueue_array){
 				try {
@@ -236,6 +282,9 @@ public class ActiveMQConnectionManager{
 	}
 	
 	public Session createConnectionAndSession(String key) throws JMSException{
+		if(connections.containsKey(key) || sessions.containsKey(key)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST);
+		}
 		Connection conn = connectionFactory.createConnection();
 		conn.setExceptionListener(new ExceptionListener(){
 			@Override
@@ -272,7 +321,7 @@ public class ActiveMQConnectionManager{
 	private void setupMessageConsumer(final String in,final String c_id_name) throws JMSException {
 		String in_c_id_name = in+"_"+c_id_name;
 		final Session session = createConnectionAndSession(in_c_id_name);
-		NotifyMessageConsumerListener consumerListener = new NotifyMessageConsumerListener(in_c_id_name);
+		DynaMessageConsumerListener consumerListener = new DynaMessageConsumerListener(in_c_id_name);
 		Queue queueReceive 	= new ActiveMQQueue(in_c_id_name+"?consumer.prefetchSize=100");
 		logger.info("初始化MQ监听 Consumer...@Queue:"+in_c_id_name+"初始化成功...");
 		System.out.println("初始化MQ监听 Consumer...@Queue:"+in_c_id_name+"初始化成功...");

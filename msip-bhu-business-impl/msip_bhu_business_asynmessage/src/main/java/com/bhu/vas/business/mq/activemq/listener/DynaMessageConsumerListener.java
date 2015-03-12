@@ -7,18 +7,18 @@ import javax.jms.TextMessage;
 
 import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
 
-public class NotifyMessageConsumerListener implements MessageListener{
+public class DynaMessageConsumerListener implements MessageListener{
 	private String c_id_name;
 	//private final Logger logger = LoggerFactory.getLogger(NotifyMessageConsumerListener.class);
 	//private ConsumerContextInfo contextInfo;
 	//private ExecutorService exec = Executors.newFixedThreadPool(30);
-	public NotifyMessageConsumerListener(String c_id_name){//ConsumerContextInfo contextInfo){///*String name,String key,*/MsgDispatcherServer server){//,ActiveMQConnectionManager manager){
+	public DynaMessageConsumerListener(String c_id_name){//ConsumerContextInfo contextInfo){///*String name,String key,*/MsgDispatcherServer server){//,ActiveMQConnectionManager manager){
 		this.c_id_name = c_id_name;
 	}
 	public void onMessage(final Message m) {
 		try {
 			String message = ((TextMessage)m).getText();
-			QueueMsgObserverManager.MsgCommingObserver.notifyMsgComming(c_id_name, message);
+			QueueMsgObserverManager.DynaMsgCommingObserver.notifyMsgComming(c_id_name, message);
 		} catch (JMSException e) {
 			e.printStackTrace(System.out);
 		}

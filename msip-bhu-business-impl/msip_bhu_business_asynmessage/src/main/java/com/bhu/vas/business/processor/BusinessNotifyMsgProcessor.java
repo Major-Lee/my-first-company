@@ -18,7 +18,9 @@ public class BusinessNotifyMsgProcessor {
 			public void run() {
 				try{
 					logger.info("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
-					System.out.println("BusinessNotifyMsgProcessor receive:"+message);
+					String type = message.substring(0, 8);
+					String payload = message.substring(8);
+					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" payload:"+payload);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("DeliverMessageQueueConsumer", ex);
