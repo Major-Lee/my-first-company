@@ -37,6 +37,10 @@ public class WifiSimulateProducerTest {
 			deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
 		}
 		
+		CmInfo cinfo = new CmInfo("cm003","1","192.168.0.103");
+		deliverMessageService.sendPureText("00010000"+JsonHelper.getJSONString(cinfo));
+		deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
+		
 		ActiveMQDynamicProducer activeMQDynamicProducer =(ActiveMQDynamicProducer) ctx.getBean("activeMQDynamicProducer");
 		//for Input Queue Create test Producers
 		activeMQDynamicProducer.initTestProducers();
