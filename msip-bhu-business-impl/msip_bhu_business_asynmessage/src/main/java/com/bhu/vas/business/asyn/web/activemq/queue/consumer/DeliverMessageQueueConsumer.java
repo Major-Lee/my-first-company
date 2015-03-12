@@ -1,12 +1,9 @@
 package com.bhu.vas.business.asyn.web.activemq.queue.consumer;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.logger.BusinessStatisticsLogger;
-import com.bhu.vas.business.processor.NotifyMsgProcessorService;
+import com.bhu.vas.business.processor.NotifyMsgProcessor;
 
 /**
  * Date: 2008-8-28
@@ -16,13 +13,13 @@ public class DeliverMessageQueueConsumer {
 	//private final Logger logger = LoggerFactory.getLogger(DeliverMessageQueueConsumer.class);
 	
 	@Resource
-	private NotifyMsgProcessorService notifyMsgProcessorService;
+	private NotifyMsgProcessor notifyMsgProcessor;
 	
-	private ExecutorService exec = Executors.newFixedThreadPool(5);
+	/*private ExecutorService exec = Executors.newFixedThreadPool(5);
 	
 	public ExecutorService getExec() {
 		return exec;
-	}
+	}*/
 
 	/**
 	 * 
@@ -32,7 +29,7 @@ public class DeliverMessageQueueConsumer {
     	//long t0 = System.currentTimeMillis();
     	//logger.info(message);
     	BusinessStatisticsLogger.doActionMessageLog(message);
-    	notifyMsgProcessorService.handler(message);
+    	notifyMsgProcessor.handler(message);
     	/*exec.submit((new Runnable() {
 			@Override
 			public void run() {

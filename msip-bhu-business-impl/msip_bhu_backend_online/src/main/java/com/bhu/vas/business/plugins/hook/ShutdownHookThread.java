@@ -14,7 +14,7 @@ public class ShutdownHookThread extends Thread {
 	
     public void run() {
     	System.err.println("BackendOnlineMain Server Hook Starting...");
-    	final DefaultMessageListenerContainer container = (DefaultMessageListenerContainer) ctx.getBean("deliverMessageQueueListenerContainer");
+    	/*final DefaultMessageListenerContainer container = (DefaultMessageListenerContainer) ctx.getBean("deliverMessageQueueListenerContainer");
 		final DeliverMessageQueueConsumer consumer = (DeliverMessageQueueConsumer) ctx.getBean("deliverMessageQueueConsumer");
 		if(container != null){
 			System.out.println("DefaultMessageListenerContainer:starting stop...");
@@ -41,8 +41,7 @@ public class ShutdownHookThread extends Thread {
 					}
 				}
 			}
-			//new Thread(new DaemonExecRunnable(consumer.getExec())).start();
-		}
+		}*/
 		System.err.println("BackendOnlineMain Server halted");
     }
 }

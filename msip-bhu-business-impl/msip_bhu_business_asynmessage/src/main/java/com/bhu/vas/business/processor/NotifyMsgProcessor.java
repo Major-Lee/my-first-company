@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotifyMsgProcessorService {
-	private final Logger logger = LoggerFactory.getLogger(NotifyMsgProcessorService.class);
+public class NotifyMsgProcessor {
+	private final Logger logger = LoggerFactory.getLogger(NotifyMsgProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	
 	public void handler(final String message){
