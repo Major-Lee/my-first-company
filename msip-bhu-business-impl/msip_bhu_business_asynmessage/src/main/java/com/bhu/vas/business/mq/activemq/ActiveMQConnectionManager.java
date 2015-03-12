@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -33,6 +34,7 @@ public class ActiveMQConnectionManager{
 	private Map<String,Connection> connections = null;//new HashMap<String,Connection>();
 	private Map<String,Session> sessions = null;
 	private Map<String,MessageProducer> producers = null;
+	private Map<String,MessageProducer> testProducers = null;
 	private Properties properties = new Properties();
 	private boolean porperties_loaded = false;
 	//ActiveMQDynamicService dynamicService;
@@ -93,8 +95,8 @@ public class ActiveMQConnectionManager{
 			connections = new HashMap<String,Connection>(); 
 			sessions = new HashMap<String,Session>();
 			producers = new HashMap<String,MessageProducer>();
+			testProducers = new HashMap<String,MessageProducer>();
 			logger.info("初始化MQ监听...@Url:"+activemqUrl);
-			
 	    }
 	    
 	}
@@ -112,6 +114,24 @@ public class ActiveMQConnectionManager{
 			}
 		}
 	}
+	
+	/**
+	 * 仅仅测试时候针对消费queue建立producer
+	 */
+	public void initConsumerTestProducers(){
+		if(porperties_loaded){
+			String consumerQueues = properties.getProperty("mq.activemq.server.consumer.queues");
+			String[] consumerQueue_array = consumerQueues.split(",");
+			for(String consumerQueue:consumerQueue_array){
+				try {
+					setupMessageTestProducer("in",consumerQueue);
+				} catch (JMSException e) {
+					e.printStackTrace(System.out);
+				}
+			}
+		}
+	}
+	
 	public void initProducerQueues(){
 		if(porperties_loaded){
 			String producerQueues = properties.getProperty("mq.activemq.server.producer.queues");
@@ -273,4 +293,32 @@ public class ActiveMQConnectionManager{
         producers.put(out_c_id_name, producer);
         return producer;
     }
+	
+	private MessageProducer setupMessageTestProducer(final String in,final String c_id_name) throws JMSException {
+		String in_c_id_name = in+"_"+c_id_name;
+		//Connection connection = createConnection(Sender_KEY);
+		Queue queueSender = new ActiveMQQueue(in_c_id_name);
+		logger.info("初始化MQ TestProducer...@Queue:"+in_c_id_name);
+		System.out.println("初始化MQ监听 TestProducer...@Queue:"+in_c_id_name+"初始化成功...");
+		Session session = createConnectionAndSession(in_c_id_name);//connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		MessageProducer producer = session.createProducer(queueSender);
+        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        testProducers.put(in_c_id_name, producer);
+        return producer;
+    }
+	
+	public Set<String> currentProducerKeys(){
+		return this.producers.keySet();
+	}
+	
+	public Set<String> currentTestProducerKeys(){
+		return this.testProducers.keySet();
+	}
+	
+	public MessageProducer getTestProducer(String key){
+		if(testProducers != null && !testProducers.isEmpty()){
+			return testProducers.get(key);
+		}
+		return null;
+	}
 }
