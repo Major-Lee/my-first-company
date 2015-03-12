@@ -1,4 +1,4 @@
-package com.wecite.toplines.business.user;
+package com.bhu.vas.business.user;
 
 import javax.annotation.Resource;
 

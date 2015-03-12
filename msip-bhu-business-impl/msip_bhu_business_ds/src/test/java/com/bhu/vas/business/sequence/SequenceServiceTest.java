@@ -1,4 +1,4 @@
-package com.wecite.toplines.business.sequence;
+package com.bhu.vas.business.sequence;
 
 import javax.annotation.Resource;
 

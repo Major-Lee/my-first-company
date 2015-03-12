@@ -1,4 +1,4 @@
-package com.wecite.toplines.business.redis;
+package com.bhu.vas.business.redis;
 
 import java.util.ArrayList;
 import java.util.Date;
