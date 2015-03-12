@@ -11,11 +11,7 @@
 	
 	<context:component-scan base-package="com.bhu.vas.business"/>
 	<context:component-scan base-package="com.smartwork.rpc.service.daemon"/>-->
-	<!-- -->
+	 
+	<context:component-scan base-package="com.bhu.vas.business.asyn.web.service"/>
 	<context:component-scan base-package="com.bhu.vas.business.processor"/>
-	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-server.xml"/> 
-	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-consumer.xml"/> 
-	
-	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
-	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/>
 </beans>

@@ -1,5 +1,6 @@
 package com.bhu.vas.business.mq.activemq;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +32,9 @@ public class ActiveMQConnectionManager{
 	//org.apache.activemq.pool.PooledConnectionFactory connectionFactory = null;
 	private Map<String,Connection> connections = null;//new HashMap<String,Connection>();
 	private Map<String,Session> sessions = null;
+	private Map<String,MessageProducer> producers = null;
+	private Properties properties = new Properties();
+	private boolean porperties_loaded = false;
 	//ActiveMQDynamicService dynamicService;
 	private static class ActiveMQConnectionManagerHolder{ 
 		private static ActiveMQConnectionManager instance =new ActiveMQConnectionManager(); 
@@ -56,8 +60,6 @@ public class ActiveMQConnectionManager{
 	public void start(){
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~:start:"+this);
 		InputStream in = null;
-		boolean porperties_loaded = false;
-		Properties properties = new Properties();
 	    try {
 	    	in = ActiveMQConnectionManager.class.getResourceAsStream("/deploy/lazyloadconf/dynamic.activemq.properties");
 			properties.load(in);
@@ -71,6 +73,15 @@ public class ActiveMQConnectionManager{
 				logger.error("init loading /deploy/lazyloadconf/dynamic.activemq.properties or  /lazyloadconf/dynamic.activemq.properties failed!", e);
 				e.printStackTrace(System.out);
 			}
+		}finally{
+			if(in != null){
+				try {
+					in.close();
+					in = null;
+				} catch (IOException e) {
+					e.printStackTrace(System.out);
+				}
+			}
 		}
 	    if(porperties_loaded){
 	    	String activemqUrl = properties.getProperty("mq.activemq.server.url");
@@ -81,8 +92,15 @@ public class ActiveMQConnectionManager{
 	    	connectionFactory.setMaxConnections(20);*/
 			connections = new HashMap<String,Connection>(); 
 			sessions = new HashMap<String,Session>();
+			producers = new HashMap<String,MessageProducer>();
 			logger.info("初始化MQ监听...@Url:"+activemqUrl);
 			
+	    }
+	    
+	}
+
+	public void initConsumerQueues(){
+		if(porperties_loaded){
 			String consumerQueues = properties.getProperty("mq.activemq.server.consumer.queues");
 			String[] consumerQueue_array = consumerQueues.split(",");
 			for(String consumerQueue:consumerQueue_array){
@@ -92,7 +110,10 @@ public class ActiveMQConnectionManager{
 					e.printStackTrace(System.out);
 				}
 			}
-			
+		}
+	}
+	public void initProducerQueues(){
+		if(porperties_loaded){
 			String producerQueues = properties.getProperty("mq.activemq.server.producer.queues");
 			String[] producerQueue_array = producerQueues.split(",");
 			for(String producerQueue:producerQueue_array){
@@ -102,10 +123,9 @@ public class ActiveMQConnectionManager{
 					e.printStackTrace(System.out);
 				}
 			}
-	    }
-	    
+		}
 	}
-
+	
 	public void stop() {
 		String activemqUrl = null;//JingGlobals.getXMLProperty("mq.activemq.url", "failover:(tcp://192.168.1.2:61616)");
 		logger.info("停止MQ监听...@Url:"+activemqUrl);
@@ -216,8 +236,15 @@ public class ActiveMQConnectionManager{
 	boolean fail = false;
 	
 	public Session getSession(String key){
-		if(sessions != null){
+		if(sessions != null && !sessions.isEmpty()){
 			return sessions.get(key);
+		}
+		return null;
+	}
+	
+	public MessageProducer getProducer(String key){
+		if(producers != null && !producers.isEmpty()){
+			return producers.get(key);
 		}
 		return null;
 	}
@@ -227,7 +254,8 @@ public class ActiveMQConnectionManager{
 		final Session session = createConnectionAndSession(in_c_id_name);
 		NotifyMessageConsumerListener consumerListener = new NotifyMessageConsumerListener(in_c_id_name);
 		Queue queueReceive 	= new ActiveMQQueue(in_c_id_name+"?consumer.prefetchSize=100");
-		logger.info("初始化MQ监听...@Queue:"+in_c_id_name+"初始化成功...");
+		logger.info("初始化MQ监听 Consumer...@Queue:"+in_c_id_name+"初始化成功...");
+		System.out.println("初始化MQ监听 Consumer...@Queue:"+in_c_id_name+"初始化成功...");
 		//创建一个消费者，它只接受属于它自己的消息
 		MessageConsumer queueConsumer = session.createConsumer(queueReceive);//, "receiver='" + name + "'");
 		queueConsumer.setMessageListener(consumerListener);///*name, Receiver_KEY,*/server));//, this));
@@ -238,9 +266,11 @@ public class ActiveMQConnectionManager{
 		//Connection connection = createConnection(Sender_KEY);
 		Queue queueSender = new ActiveMQQueue(out_c_id_name);
 		logger.info("初始化MQ Producer...@Queue:"+out_c_id_name);
+		System.out.println("初始化MQ监听 Producer...@Queue:"+out_c_id_name+"初始化成功...");
 		Session session = createConnectionAndSession(out_c_id_name);//connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		MessageProducer producer = session.createProducer(queueSender);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        producers.put(out_c_id_name, producer);
         return producer;
     }
 }
