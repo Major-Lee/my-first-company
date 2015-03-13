@@ -23,6 +23,8 @@
         <module>msip-bhu-unit/msip_bhu_unit_input_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
+
+        <module>msip-bhu-api/msip_bhu_rest</module>
         <!--
         
         <module>msip-wecite-business/msip_wecite_business_ds</module>
