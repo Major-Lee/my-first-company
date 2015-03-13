@@ -9,6 +9,7 @@ public class WifiSimulateConsumerTest {
 		String[] locations = {
 							  "classpath*:com/bhu/vas/business/processor/testCtx.xml",
 							  "classpath*:spring/applicationContextCore-resource.xml",
+							  "classpath*:spring/applicationContext-i18n.xml",
 							  "classpath*:springmq/applicationContext-activemq-server.xml",
 							  "classpath*:springmq/applicationContext-activemq-deliver-consumer.xml",
 							  "classpath*:springmq/applicationContext-activemq-dynamic-server.xml",

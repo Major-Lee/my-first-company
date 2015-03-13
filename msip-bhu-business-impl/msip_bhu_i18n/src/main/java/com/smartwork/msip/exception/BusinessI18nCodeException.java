@@ -1,5 +1,6 @@
 package com.smartwork.msip.exception;
 
+import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @SuppressWarnings("serial")
@@ -33,4 +34,13 @@ public class BusinessI18nCodeException extends RuntimeException{
 	public void setPayload(String[] payload) {
 		this.payload = payload;
 	}
+
+
+	@Override
+	public String getMessage() {
+		return LocalI18NMessageSource.getInstance().getMessage(this.errorCode.i18n());
+		//return (this.errorCode.i18n());
+	}
+	
+	
 }
