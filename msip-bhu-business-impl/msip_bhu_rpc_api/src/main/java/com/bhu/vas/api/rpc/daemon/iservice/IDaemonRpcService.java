@@ -8,5 +8,5 @@ public interface IDaemonRpcService {
 	public boolean cmLeave(CmInfo info);
 	public boolean wifiDeviceOnline(WifiDeviceContextDTO dto);
 	public boolean wifiDeviceOffline(WifiDeviceContextDTO dto);
-	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto,String cmd );
+	public boolean wifiDeviceCmdDown(CmInfo info,String cmd );
 }

@@ -2,7 +2,7 @@ package com.bhu.vas.rpc.provider;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class MessageCenterProvider {
+public class MessageDaemonProvider {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonProcessorRpcProviderApp");
 		System.setProperty("provider.port", "20882");

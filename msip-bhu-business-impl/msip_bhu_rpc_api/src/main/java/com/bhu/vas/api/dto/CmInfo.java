@@ -2,7 +2,8 @@ package com.bhu.vas.api.dto;
 
 import com.smartwork.msip.cores.helper.StringHelper;
 
-public class CmInfo {
+@SuppressWarnings("serial")
+public class CmInfo implements java.io.Serializable{
 	private String name;
 	private String process_seq;
 	private String max_client;

@@ -56,6 +56,7 @@ public class WifiSimulateProducerTest {
 					String.format(wifi_offline_msg_template, winfo.getMac(),winfo.getIp()));
 		}
 		
+		
 	}
 	private static List<WifiInfo> devices = new ArrayList<WifiInfo>();
 	static{

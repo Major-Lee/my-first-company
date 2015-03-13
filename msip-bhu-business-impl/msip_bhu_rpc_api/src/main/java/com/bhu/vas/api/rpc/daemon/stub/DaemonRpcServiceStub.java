@@ -30,10 +30,10 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		return daemonRpcService.wifiDeviceOffline(dto);
 	}
 	@Override
-	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto, String cmd) {
-		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
+	public boolean wifiDeviceCmdDown(CmInfo info, String cmd) {
+		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return daemonRpcService.wifiDeviceCmdDown(dto,cmd);
+		return daemonRpcService.wifiDeviceCmdDown(info,cmd);
 	}
 
 	@Override

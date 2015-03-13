@@ -2,19 +2,20 @@ package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.dto.CmInfo;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 public class MessageDaemonConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonProcessorRpcConsumerApp");
-		System.setProperty("zookeeper", "192.168.66.7:2181");
+		System.setProperty("zookeeper", "192.168.66.234:2181");
 		System.setProperty("provider.port", "");
 		//System.setProperty("provider.port", "20882");
 		//System.out.println("~~~~~~~~~~~~~:"+System.getProperty("provider.port"));
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"classpath*:spring/applicationContextCore-resource.xml",
-				"classpath*:/com/smartwork/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
+				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
 		IDaemonRpcService rpcService = (IDaemonRpcService)context.getBean("daemonRpcService");
 		//System.out.println(tokenRpcService);
@@ -22,13 +23,19 @@ public class MessageDaemonConsumer {
 		dto.setCmId("1380");
 		dto.setCmName("CM001");
 		dto.setMac("34:36:3b:d0:4b:ac");
-		for(int i=0;i<1000;i++){
+		rpcService.wifiDeviceOnline(dto);
+		rpcService.wifiDeviceOffline(dto);
+		CmInfo info = new CmInfo("cm002","1");
+		rpcService.wifiDeviceCmdDown(info, "where are u");
+		rpcService.cmJoinService(info);
+		rpcService.cmLeave(info);
+		/*for(int i=0;i<1000;i++){
 			try{
 				boolean ret = rpcService.wifiDeviceOnline(dto);//.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-		}
+		}*/
 		System.out.println("done");
 	}
 }

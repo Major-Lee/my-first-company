@@ -1,5 +1,6 @@
 package com.bhu.vas.business.processor;
 
+
 public class WifiInfo {
 	private String mac;
 	private String sn;

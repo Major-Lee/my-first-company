@@ -7,7 +7,7 @@ import com.alibaba.dubbo.config.ServiceConfig;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.rpc.service.daemon.DaemonRpcService;
 
-public class MessageCenterProviderNoSpring {
+public class MessageDaemonProviderNoSpring {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonProcessorRpcProviderApp");
 		System.setProperty("provider.port", "20882");

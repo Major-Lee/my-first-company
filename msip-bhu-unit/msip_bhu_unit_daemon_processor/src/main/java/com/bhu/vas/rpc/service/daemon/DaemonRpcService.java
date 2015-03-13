@@ -35,9 +35,9 @@ public class DaemonRpcService implements IDaemonRpcService {
 	}
 
 	@Override
-	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto, String cmd) {
-		System.out.println("wifiDeviceCmdDown:"+dto+" cmd:"+cmd);
-		activeMQDynamicProducer.deliverTestMessage(activeMQDynamicProducer.randomProducerKey(), cmd);
+	public boolean wifiDeviceCmdDown(CmInfo info, String cmd) {
+		System.out.println("wifiDeviceCmdDown:"+info+" cmd:"+cmd);
+		activeMQDynamicProducer.deliverMessage(info.toDownQueueString(), cmd);
 		return false;
 	}
 
