@@ -13,7 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("join_req")
 @SuppressWarnings("serial")
 public class JoinReqDTO implements Serializable{
-	@XStreamAlias("item")
+	@XStreamAlias("ITEM")
 	@XStreamAsAttribute
 	private WifiDeviceDTO dto;
 
