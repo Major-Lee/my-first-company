@@ -1,4 +1,4 @@
-package com.smartwork.rpc.consumer;
+package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,7 +15,7 @@ public class MessageCenterConsumer {
 		//System.out.println("~~~~~~~~~~~~~:"+System.getProperty("provider.port"));
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"classpath*:spring/applicationContextCore-resource.xml",
-				"classpath*:/com/smartwork/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
+				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
 		IDeviceRpcService tokenRpcService = (IDeviceRpcService)context.getBean("deviceRpcService");
 		//System.out.println(tokenRpcService);
@@ -34,12 +34,14 @@ public class MessageCenterConsumer {
 		}
 		System.out.println("done");
 		
-		WifiDeviceDTO dto2 = new WifiDeviceDTO();
-		dto2.setMac("34:36:3b:d0:4b:ac");
-		//tokenRpcService.wifiDeviceRegister(dto2);
-		System.out.println("done2");
+
 		//Thread.sleep(1000000000l);
 		//System.out.println("Press any key to exit.");
 		//System.in.read();
-*/	}
+		 * 
+*/	
+		String message = "";
+		tokenRpcService.wifiDeviceRegister(message, null);
+		System.out.println("done2");
+	}
 }

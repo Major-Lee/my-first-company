@@ -27,14 +27,14 @@ public class DeviceServiceStub implements IDeviceRpcService{
 	}*/
 
 	@Override
-	public boolean wifiDeviceRegister(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto) {
-		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
+	public boolean wifiDeviceRegister(String message, WifiDeviceContextDTO contextDto) {
+		if(StringUtils.isEmpty(message)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return deviceRpcService.wifiDeviceRegister(dto, contextDto);
+		return deviceRpcService.wifiDeviceRegister(message, contextDto);
 	}
 
 	@Override
-	public boolean wifiDeviceLogout(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto) {
+	public boolean wifiDeviceLogout(String message, WifiDeviceContextDTO contextDto) {
 		// TODO Auto-generated method stub
 		return false;
 	}

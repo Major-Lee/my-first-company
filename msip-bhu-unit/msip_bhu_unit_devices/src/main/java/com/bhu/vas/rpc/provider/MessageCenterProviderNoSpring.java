@@ -1,11 +1,11 @@
-package com.smartwork.rpc.provider;
+package com.bhu.vas.rpc.provider;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ProtocolConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
-import com.smartwork.rpc.service.device.DeviceRpcService;
+import com.bhu.vas.rpc.service.device.DeviceRpcService;
 
 public class MessageCenterProviderNoSpring {
 	public static void main(String[] args) throws Exception {

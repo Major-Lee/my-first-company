@@ -1,4 +1,4 @@
-package com.smartwork.rpc.provider;
+package com.bhu.vas.rpc.provider;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

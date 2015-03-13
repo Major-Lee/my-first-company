@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-/*
- * wifi设备基础信息RPC DTO
+/**
+ * wifi设备上线请求DTO
+ * @author tangzichao
+ *
  */
 @XStreamAlias("item")
 @SuppressWarnings("serial")
