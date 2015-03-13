@@ -19,8 +19,8 @@ public class MessageCenterConsumer {
 		IWifiDeviceCmdDownRpcService rpcService = (IWifiDeviceCmdDownRpcService)context.getBean("wifiDeviceCmdDownRpcService");
 		//System.out.println(tokenRpcService);
 		WifiDeviceContextDTO dto = new WifiDeviceContextDTO();
-		dto.setCm_id("1380");
-		dto.setCm_name("CM001");
+		dto.setCmId("1380");
+		dto.setCmName("CM001");
 		dto.setMac("34:36:3b:d0:4b:ac");
 		for(int i=0;i<1000;i++){
 			try{

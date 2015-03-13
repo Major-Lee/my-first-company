@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.devices.stub;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.rpc.devices.dto.DeviceDTO;
+import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.devices.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -18,23 +19,23 @@ public class DeviceServiceStub implements IDeviceRpcService{
     }
 
 	@Override
-	public boolean deviceRegister(DeviceDTO dto) {
+	public boolean deviceRegister(DeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		// TODO Auto-generated method stub
 		//System.out.println("deviceRegister stub:");
 		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return deviceRpcService.deviceRegister(dto);
+		return deviceRpcService.deviceRegister(dto, contextDto);
 	}
 
 	@Override
-	public boolean wifiDeviceRegister(WifiDeviceDTO dto) {
+	public boolean wifiDeviceRegister(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return deviceRpcService.wifiDeviceRegister(dto);
+		return deviceRpcService.wifiDeviceRegister(dto, contextDto);
 	}
 
 	@Override
-	public boolean wifiDeviceLogout(WifiDeviceDTO dto) {
+	public boolean wifiDeviceLogout(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		// TODO Auto-generated method stub
 		return false;
 	}

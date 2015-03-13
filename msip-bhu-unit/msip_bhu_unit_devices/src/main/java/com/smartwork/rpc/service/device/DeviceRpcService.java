@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.devices.dto.DeviceDTO;
+import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.devices.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 import com.bhu.vas.business.device.facade.DeviceFacadeService;
@@ -24,7 +25,7 @@ public class DeviceRpcService implements IDeviceRpcService {
 	private DeviceFacadeService deviceFacadeService;
 	
 	@Override
-	public boolean deviceRegister(DeviceDTO dto) {
+	public boolean deviceRegister(DeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		System.out.println(dto.toString());
 		return false;
 	}
@@ -35,14 +36,14 @@ public class DeviceRpcService implements IDeviceRpcService {
 	 * 2：wifi设备在线更新
 	 */
 	@Override
-	public boolean wifiDeviceRegister(WifiDeviceDTO dto) {
+	public boolean wifiDeviceRegister(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		logger.info(String.format("wifiDeviceRegister with params: mac[%s]",dto.getMac()));
 		deviceFacadeService.wifiDeviceRegister(dto);
 		return true;
 	}
 
 	@Override
-	public boolean wifiDeviceLogout(WifiDeviceDTO dto) {
+	public boolean wifiDeviceLogout(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		return false;
 	}
 	

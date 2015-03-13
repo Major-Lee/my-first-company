@@ -34,7 +34,7 @@ public class MessageCenterConsumerNoSpring {
 		DeviceDTO dto = new DeviceDTO();
 		dto.setMac("34:36:3b:d0:4b:ac");
 		dto.setT(System.currentTimeMillis());
-		boolean ret = deviceRpcService.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
+		boolean ret = deviceRpcService.deviceRegister(dto, null);//.generateUserAccessToken(200082, true, true);
 		System.out.println(ret);
 	}
 }

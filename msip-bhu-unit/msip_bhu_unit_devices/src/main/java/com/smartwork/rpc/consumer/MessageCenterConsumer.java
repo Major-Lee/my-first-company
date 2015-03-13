@@ -24,7 +24,7 @@ public class MessageCenterConsumer {
 		dto.setT(System.currentTimeMillis());
 		for(int i=0;i<1000;i++){
 			try{
-				boolean ret = tokenRpcService.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
+				boolean ret = tokenRpcService.deviceRegister(dto, null);//.generateUserAccessToken(200082, true, true);
 				//System.out.println(ret);
 				//ad.sleep(50);
 			}catch(Exception ex){
