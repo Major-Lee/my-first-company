@@ -30,7 +30,10 @@
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_rpc_api</artifactId>
 		</dependency>
-			
+        <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_asynmessage</artifactId>
+        </dependency>			
        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>

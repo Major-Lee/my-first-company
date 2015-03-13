@@ -10,4 +10,8 @@
 	<context:component-scan base-package="com.teacherclub.business.**.service" />
 	-->
 	<context:component-scan base-package="com.bhu.vas.rpc.service"/>
+	<context:component-scan base-package="com.bhu.vas.business.processor"/>
+	<context:component-scan base-package="com.bhu.vas.processor"/>
+	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-server.xml"/> 
+	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-producer.xml"/> 
 </beans>
