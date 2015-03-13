@@ -1,4 +1,4 @@
-package com.smartwork.rpc.service.daemon;
+package com.bhu.vas.rpc.service.daemon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

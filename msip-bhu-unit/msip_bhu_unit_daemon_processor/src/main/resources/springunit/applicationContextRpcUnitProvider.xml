@@ -31,6 +31,6 @@
     <!-- expose this service through dubbo protocol, through port 20881 -->
     <dubbo:protocol name="dubbo" port="${provider.port}" />
 	<dubbo:monitor protocol="registry"></dubbo:monitor>
-	<dubbo:service delay="-1" timeout="2000" retries="2" loadbalance="random" actives="100" interface="com.bhu.vas.api.rpc.daemon.iservice.IWifiDeviceCmdDownRpcService" ref="wifiDeviceCmdDownRpcService" stub="com.bhu.vas.api.rpc.daemon.stub.WifiDeviceCmdDownRpcServiceStub"/>
+	<dubbo:service delay="-1" timeout="2000" retries="2" loadbalance="random" actives="100" interface="com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService" ref="daemonRpcService" stub="com.bhu.vas.api.rpc.daemon.stub.DaemonRpcServiceStub"/>
 	
 </beans>

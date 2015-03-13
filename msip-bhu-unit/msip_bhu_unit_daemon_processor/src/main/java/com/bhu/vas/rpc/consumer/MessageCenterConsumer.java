@@ -1,9 +1,9 @@
-package com.smartwork.rpc.consumer;
+package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
-import com.bhu.vas.api.rpc.daemon.iservice.IWifiDeviceCmdDownRpcService;
+import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 public class MessageCenterConsumer {
 	public static void main(String[] args) throws Exception {
@@ -16,7 +16,7 @@ public class MessageCenterConsumer {
 				"classpath*:spring/applicationContextCore-resource.xml",
 				"classpath*:/com/smartwork/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
-		IWifiDeviceCmdDownRpcService rpcService = (IWifiDeviceCmdDownRpcService)context.getBean("wifiDeviceCmdDownRpcService");
+		IDaemonRpcService rpcService = (IDaemonRpcService)context.getBean("daemonRpcService");
 		//System.out.println(tokenRpcService);
 		WifiDeviceContextDTO dto = new WifiDeviceContextDTO();
 		dto.setCmId("1380");
@@ -24,7 +24,7 @@ public class MessageCenterConsumer {
 		dto.setMac("34:36:3b:d0:4b:ac");
 		for(int i=0;i<1000;i++){
 			try{
-				boolean ret = rpcService.wifiDeviceRegister(dto);//.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
+				boolean ret = rpcService.wifiDeviceOnline(dto);//.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}

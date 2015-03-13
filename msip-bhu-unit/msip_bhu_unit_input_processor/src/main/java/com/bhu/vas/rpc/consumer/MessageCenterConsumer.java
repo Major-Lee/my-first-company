@@ -1,4 +1,4 @@
-package com.bhu.vas.business.rpc.consumer;
+package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
