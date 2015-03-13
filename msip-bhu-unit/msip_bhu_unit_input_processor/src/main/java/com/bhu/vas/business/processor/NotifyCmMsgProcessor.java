@@ -3,23 +3,36 @@ package com.bhu.vas.business.processor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.CmInfo;
 import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
-import com.smartwork.msip.cores.helper.JsonHelper;
+import com.bhu.vas.business.mq.activemq.observer.listener.CmMessageListener;
 
 @Service
-public class NotifyMsgProcessor {
-	private final Logger logger = LoggerFactory.getLogger(NotifyMsgProcessor.class);
+public class NotifyCmMsgProcessor implements CmMessageListener{
+	private final Logger logger = LoggerFactory.getLogger(NotifyCmMsgProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	//00010000{"name":"cm001","thread":"3","ip":"192.168.0.101"}
-	private static String Online_Prefix = "00010000";
-	private static String Offline_Prefix = "00010001";
 	
-	public void handler(final String message){
+	@PostConstruct
+	public void initialize() {
+		QueueMsgObserverManager.CmMessageObserver.addCmMessageListener(this);
+	}
+	@Override
+	public void onCmOnline(CmInfo info) {
+		
+	}
+
+	@Override
+	public void onCmOffline(CmInfo info) {
+		
+	}
+	/*public void handler(final String message){
 		
 		exec.submit((new Runnable() {
 			@Override
@@ -46,5 +59,6 @@ public class NotifyMsgProcessor {
 				}
 			}
 		}));
-	}
+	}*/
+
 }

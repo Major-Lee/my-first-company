@@ -3,16 +3,28 @@ package com.bhu.vas.business.processor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
+import com.bhu.vas.business.mq.activemq.observer.listener.BusinessMessageListener;
+
 @Service
-public class BusinessNotifyMsgProcessor {
-	private final Logger logger = LoggerFactory.getLogger(BusinessNotifyMsgProcessor.class);
+public class BusinessDynaMsgProcessor implements BusinessMessageListener{
+	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(50);
-	
-	public void handler(final String ctx,final String message){
+	@PostConstruct
+	public void initialize(){
+		QueueMsgObserverManager.BusinessMessageObserver.addBusinessMessageListener(this);
+		//初始化ActiveMQConnectionManager
+		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
+	}
+
+	@Override
+	public void onMessage(final String ctx,final String message) {
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {

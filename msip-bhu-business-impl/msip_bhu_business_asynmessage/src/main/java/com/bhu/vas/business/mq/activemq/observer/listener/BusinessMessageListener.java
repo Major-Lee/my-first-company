@@ -5,6 +5,6 @@ package com.bhu.vas.business.mq.activemq.observer.listener;
  * @author Edmond
  *
  */
-public abstract interface DynaQueueMessageListener {
+public abstract interface BusinessMessageListener {
 	public void onMessage(String ctx,String msg);
 }

@@ -8,7 +8,7 @@
     <!--  ActiveMQ destinations  -->
     <!--  使用Queue方式-->
 	<bean id="destinationDeliverMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">  
-        <constructor-arg index="0" value="JMS-DeliverMessage-QUEUE" />  
+        <constructor-arg index="0" value="mng_queue" />  
     </bean> 
 	<!--  Spring JmsTemplate config -->
 	<bean id="jmsDeliverMessageTemplate" class="org.springframework.jms.core.JmsTemplate">
