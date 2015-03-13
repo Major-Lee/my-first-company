@@ -21,6 +21,7 @@ public class RpcBusinessI18nCodeException extends RuntimeException{
 	
 	@Override
 	public String getMessage() {
+		//return LocalI18NMessageSource.getInstance().getMessage(this.errorCode.i18n());
 		return ResponseErrorCode.getResponseErrorCodeByCode(errorCode).i18n();
 	}
 	

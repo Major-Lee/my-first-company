@@ -37,7 +37,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			@Override
 			public void run() {
 				try{
-					logger.info("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
+					System.out.println("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
 					String type = message.substring(0, 8);
 					String payload = message.substring(8);
 					deviceRpcService.wifiDeviceRegister(payload, new WifiDeviceContextDTO(CmCtxInfo.builderCtx(ctx),""));

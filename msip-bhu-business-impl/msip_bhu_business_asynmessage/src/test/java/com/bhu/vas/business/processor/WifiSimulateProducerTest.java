@@ -52,8 +52,8 @@ public class WifiSimulateProducerTest {
 			activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
 					String.format(wifi_online_msg_template, winfo.getSn(),winfo.getMac(),winfo.getIp()));
 			//wifi下线消息
-			activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
-					String.format(wifi_offline_msg_template, winfo.getMac(),winfo.getIp()));
+			//activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
+			//		String.format(wifi_offline_msg_template, winfo.getMac(),winfo.getIp()));
 		}
 		
 		

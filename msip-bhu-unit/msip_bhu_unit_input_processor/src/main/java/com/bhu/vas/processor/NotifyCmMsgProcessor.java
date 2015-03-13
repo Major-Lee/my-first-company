@@ -27,6 +27,7 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
+	
 	@PostConstruct
 	public void initialize() {
 		QueueMsgObserverManager.CmMessageObserver.addCmMessageListener(this);
@@ -38,7 +39,7 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 			@Override
 			public void run() {
 				try{
-					logger.info("NotifyMsgProcessorService receive:"+message);
+					System.out.println("NotifyMsgProcessorService receive:"+message);
 					String type = message.substring(0, 8);
 					String payload = message.substring(8);
 					CmCtxInfo cmInfo = null;

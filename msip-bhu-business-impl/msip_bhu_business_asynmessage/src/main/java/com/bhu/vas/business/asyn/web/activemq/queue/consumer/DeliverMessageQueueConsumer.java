@@ -22,7 +22,7 @@ public class DeliverMessageQueueConsumer {
     public void receive(final String message) {
     	//contain.st
     	//long t0 = System.currentTimeMillis();
-    	//logger.info(message);
+    	System.out.println(message);
     	BusinessStatisticsLogger.doActionMessageLog(message);
     	QueueMsgObserverManager.CmMessageObserver.notifyMsgComming(message);
     	//deliverMsgProcessor.onMessage(message);
