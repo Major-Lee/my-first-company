@@ -9,7 +9,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
  * @author Edmond
  *
  */
-public class MessageCenterConsumerNoSpringWithServiceUrl {
+public class MessageDaemonConsumerNoSpringWithServiceUrl {
 	public static void main(String[] argv){
 		// 当前应用配置
 		ApplicationConfig application = new ApplicationConfig();

@@ -5,7 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
-public class MessageCenterConsumer {
+public class MessageDaemonConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonProcessorRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");

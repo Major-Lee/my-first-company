@@ -116,7 +116,7 @@ public class ActiveMQConnectionManager{
 			if(StringUtils.isNotEmpty(consumerQueues)){
 				String[] consumerQueue_array = consumerQueues.split(",");
 				for(String consumerQueue:consumerQueue_array){
-					createNewConsumerQueues("in",consumerQueue,false);
+					createNewConsumerQueues("up",consumerQueue,false);
 				}
 			}
 		}
@@ -174,7 +174,7 @@ public class ActiveMQConnectionManager{
 				String[] consumerQueue_array = consumerQueues.split(",");
 				for(String consumerQueue:consumerQueue_array){
 					try {
-						setupMessageTestProducer("in",consumerQueue);
+						setupMessageTestProducer("up",consumerQueue);
 					} catch (JMSException e) {
 						e.printStackTrace(System.out);
 					}
@@ -190,7 +190,7 @@ public class ActiveMQConnectionManager{
 				String[] producerQueue_array = producerQueues.split(",");
 				for(String producerQueue:producerQueue_array){
 					try {
-						setupMessageProducer("out",producerQueue);
+						setupMessageProducer("down",producerQueue);
 					} catch (JMSException e) {
 						e.printStackTrace(System.out);
 					}

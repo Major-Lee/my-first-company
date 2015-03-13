@@ -5,7 +5,7 @@ import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 
-public class MessageCenterConsumerNoSpring {
+public class MessageDaemonConsumerNoSpring {
 	public static void main(String[] argv){
 		// 当前应用配置
 		ApplicationConfig application = new ApplicationConfig();
