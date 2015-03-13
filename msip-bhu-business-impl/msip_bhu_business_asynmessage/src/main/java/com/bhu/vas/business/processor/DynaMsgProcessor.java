@@ -1,4 +1,4 @@
-package com.bhu.vas.business.processor;
+/*package com.bhu.vas.business.processor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,9 +29,9 @@ public class DynaMsgProcessor implements DynaQueueMessageListener{
 			public void run() {
 				try{
 					logger.info("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
-					/*String type = message.substring(0, 8);
+					String type = message.substring(0, 8);
 					String payload = message.substring(8);
-					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" payload:"+payload);*/
+					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" payload:"+payload);
 					QueueMsgObserverManager.BusinessMessageObserver.notifyMsgComming(ctx, message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
@@ -41,3 +41,4 @@ public class DynaMsgProcessor implements DynaQueueMessageListener{
 		}));
 	}
 }
+*/

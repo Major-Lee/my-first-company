@@ -325,10 +325,10 @@ public class ActiveMQConnectionManager{
 		return null;
 	}
 	
-	private void setupMessageConsumer(final String in,final String c_id_name) throws JMSException {
-		String in_c_id_name = in+"_"+c_id_name;
+	private void setupMessageConsumer(final String in,final String cminfo) throws JMSException {
+		String in_c_id_name = in+"_"+cminfo;
 		final Session session = createConnectionAndSession(in_c_id_name);
-		DynaMessageConsumerListener consumerListener = new DynaMessageConsumerListener(in_c_id_name);
+		DynaMessageConsumerListener consumerListener = new DynaMessageConsumerListener(in_c_id_name,cminfo);
 		Queue queueReceive 	= new ActiveMQQueue(in_c_id_name+"?consumer.prefetchSize=100");
 		logger.info("初始化MQ监听 Consumer...@Queue:"+in_c_id_name+"初始化成功...");
 		System.out.println("初始化MQ监听 Consumer...@Queue:"+in_c_id_name+"初始化成功...");

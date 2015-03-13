@@ -2,17 +2,13 @@ package com.bhu.vas.business.mq.activemq;
 
 import javax.annotation.PostConstruct;
 
-import com.bhu.vas.api.dto.CmInfo;
-import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
-import com.bhu.vas.business.mq.activemq.observer.listener.CmMessageListener;
-
-public class ActiveMQDynamicConsumer implements CmMessageListener{//DynaQueueMessageListener,
+public class ActiveMQDynamicConsumer {//implements CmMessageListener{//DynaQueueMessageListener,
 	
 	//@Resource
 	//private ActiveMQDynamicService activeMQDynamicService;
 	@PostConstruct
 	public void initialize(){
-		QueueMsgObserverManager.CmMessageObserver.addCmMessageListener(this);
+		//QueueMsgObserverManager.CmMessageObserver.addCmMessageListener(this);
 		//初始化ActiveMQConnectionManager
 		ActiveMQConnectionManager.getInstance().initConsumerQueues();
 	}
@@ -25,15 +21,15 @@ public class ActiveMQDynamicConsumer implements CmMessageListener{//DynaQueueMes
 		businessNotifyMsgProcessor.handler(ctx, message);
 	}*/
 
-	@Override
+	/*@Override
 	public void onCmOnline(CmInfo info) {
-		ActiveMQConnectionManager.getInstance().createNewConsumerQueues("in", info.toString(),true);
+		ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", info.toString(),true);
 	}
 
 	@Override
 	public void onCmOffline(CmInfo info) {
 		
-	}
+	}*/
 	
 	/*public void stop(){
 		ActiveMQConnectionManager.getInstance().stop();

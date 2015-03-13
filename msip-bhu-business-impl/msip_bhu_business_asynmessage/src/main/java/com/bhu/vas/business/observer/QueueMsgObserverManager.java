@@ -1,4 +1,4 @@
-package com.bhu.vas.business.mq.activemq.observer;
+package com.bhu.vas.business.observer;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.CmInfo;
-import com.bhu.vas.business.mq.activemq.observer.listener.BusinessMessageListener;
-import com.bhu.vas.business.mq.activemq.observer.listener.CmMessageListener;
-import com.bhu.vas.business.mq.activemq.observer.listener.DynaQueueMessageListener;
+import com.bhu.vas.business.observer.listener.BusinessMessageListener;
+import com.bhu.vas.business.observer.listener.CmMessageListener;
+import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 
 public class QueueMsgObserverManager {
 	private static final Logger logger = LoggerFactory.getLogger(QueueMsgObserverManager.class);
@@ -43,8 +43,13 @@ public class QueueMsgObserverManager {
 		public static void removeCmMessageListener(CmMessageListener listener) {
 			cmMessageListeners.remove(listener);
 	    }
-		
-		public static void notifyCmOnline(CmInfo cmInfo){
+		public static void notifyMsgComming(String msg){
+			logger.info(String.format("notifyMsgComming msg[%s]",msg));
+	    	for(CmMessageListener listener:cmMessageListeners){
+	    		listener.onMessage(msg);
+	    	}
+		}
+		/*public static void notifyCmOnline(CmInfo cmInfo){
 			logger.info(String.format("notifyCmOnline msg[%s]", cmInfo));
 	    	for(CmMessageListener listener:cmMessageListeners){
 	    		listener.onCmOnline(cmInfo);
@@ -57,7 +62,7 @@ public class QueueMsgObserverManager {
 	    	for(CmMessageListener listener:cmMessageListeners){
 	    		listener.onCmOffline(cmInfo);
 	    	}
-		}
+		}*/
 	}
 	
 	

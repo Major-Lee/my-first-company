@@ -9,16 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
-import com.bhu.vas.business.mq.activemq.observer.listener.BusinessMessageListener;
+import com.bhu.vas.business.observer.QueueMsgObserverManager;
+import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 
 @Service
-public class BusinessDynaMsgProcessor implements BusinessMessageListener{
+public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(50);
 	@PostConstruct
 	public void initialize(){
-		QueueMsgObserverManager.BusinessMessageObserver.addBusinessMessageListener(this);
+		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
 	}
