@@ -3,7 +3,7 @@ package com.bhu.vas.business.mq.activemq;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.dto.CmInfo;
+import com.bhu.vas.api.dto.CmInfo;
 import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.mq.activemq.observer.listener.CmMessageListener;
 import com.bhu.vas.business.mq.activemq.observer.listener.DynaQueueMessageListener;

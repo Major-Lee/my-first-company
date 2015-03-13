@@ -1,6 +1,5 @@
-package com.bhu.vas.api.rpc.daemon.dto;
+package com.bhu.vas.api.dto;
 
-import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
 
 @SuppressWarnings("serial")
 public class WifiDeviceRegisterDTO implements java.io.Serializable{

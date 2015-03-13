@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.devices.dto;
+package com.bhu.vas.api.dto;
 
 @SuppressWarnings("serial")
 public class DeviceDTO implements java.io.Serializable{

@@ -2,8 +2,8 @@ package com.smartwork.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.rpc.devices.dto.DeviceDTO;
-import com.bhu.vas.api.rpc.devices.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.DeviceDTO;
+import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 
 public class MessageCenterConsumer {

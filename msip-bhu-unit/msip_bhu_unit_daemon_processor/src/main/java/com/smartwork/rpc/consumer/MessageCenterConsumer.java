@@ -2,8 +2,8 @@ package com.smartwork.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IWifiDeviceCmdDownRpcService;
-import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
 
 public class MessageCenterConsumer {
 	public static void main(String[] args) throws Exception {

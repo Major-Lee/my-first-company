@@ -3,9 +3,8 @@ package com.smartwork.rpc.consumer;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.bhu.vas.api.rpc.devices.dto.DeviceDTO;
+import com.bhu.vas.api.dto.DeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
-import com.bhu.vas.api.user.model.UserToken;
 
 public class MessageCenterConsumerNoSpring {
 	public static void main(String[] argv){

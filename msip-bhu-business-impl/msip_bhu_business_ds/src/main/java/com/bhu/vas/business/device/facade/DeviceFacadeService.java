@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.rpc.devices.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.WifiDeviceContextDTO;
+import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.device.service.WifiDeviceService;
@@ -30,7 +31,7 @@ public class DeviceFacadeService {
 	 * 2：wifi设备在线更新
 	 * @param dto
 	 */
-	public void wifiDeviceRegister(WifiDeviceDTO dto){
+	public void wifiDeviceRegister(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto){
 		if(dto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getCmId()))

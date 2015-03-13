@@ -2,10 +2,6 @@ package com.smartwork.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.rpc.daemon.iservice.IWifiDeviceCmdDownRpcService;
-import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
-import com.bhu.vas.business.mq.activemq.ActiveMQDynamicService;
-
 public class MessageCenterConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonProcessorRpcConsumerApp");

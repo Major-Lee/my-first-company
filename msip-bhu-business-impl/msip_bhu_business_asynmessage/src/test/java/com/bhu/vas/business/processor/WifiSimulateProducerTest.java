@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.api.rpc.devices.dto.CmInfo;
+import com.bhu.vas.api.dto.CmInfo;
 import com.bhu.vas.business.asyn.web.service.DeliverMessageService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
 import com.smartwork.msip.cores.helper.JsonHelper;

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.devices.dto.CmInfo;
+import com.bhu.vas.api.dto.CmInfo;
 import com.bhu.vas.business.mq.activemq.observer.QueueMsgObserverManager;
 import com.smartwork.msip.cores.helper.JsonHelper;
 

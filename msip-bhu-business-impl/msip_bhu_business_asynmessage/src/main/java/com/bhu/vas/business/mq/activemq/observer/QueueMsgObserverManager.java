@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.api.rpc.devices.dto.CmInfo;
+import com.bhu.vas.api.dto.CmInfo;
 import com.bhu.vas.business.mq.activemq.observer.listener.CmMessageListener;
 import com.bhu.vas.business.mq.activemq.observer.listener.DynaQueueMessageListener;
 

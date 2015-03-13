@@ -2,8 +2,8 @@ package com.bhu.vas.api.rpc.daemon.stub;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IWifiDeviceCmdDownRpcService;
-import com.bhu.vas.api.rpc.devices.dto.WifiDeviceContextDTO;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 

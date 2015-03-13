@@ -2,9 +2,8 @@ package com.smartwork.rpc.consumer;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
-import com.bhu.vas.api.rpc.devices.dto.DeviceDTO;
+import com.bhu.vas.api.dto.DeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
-import com.bhu.vas.api.user.model.UserToken;
 
 /**
  * 点对点直连
