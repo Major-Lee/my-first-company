@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.DeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
@@ -24,11 +23,11 @@ public class DeviceRpcService implements IDeviceRpcService {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
-	@Override
+	/*@Override
 	public boolean deviceRegister(DeviceDTO dto, WifiDeviceContextDTO contextDto) {
 		System.out.println(dto.toString());
 		return false;
-	}
+	}*/
 	
 	/**
 	 * wifi设备上线

@@ -4,17 +4,18 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 public class CmInfo {
 	private String name;
-	private String thread;
-	private String ip;
-	
-	public CmInfo(String name, String thread, String ip) {
+	private String process_seq;
+	private String max_client;
+	private String state;
+	private int last_frag;
+	public CmInfo(String name, String process_seq) {
 		super();
 		this.name = name;
-		this.thread = thread;
-		this.ip = ip;
+		this.process_seq = process_seq;
 	}
 	public CmInfo() {
 	}
+	
 	public String getName() {
 		return name;
 	}
@@ -22,30 +23,39 @@ public class CmInfo {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getThread() {
-		return thread;
+	
+	public String getProcess_seq() {
+		return process_seq;
 	}
-
-	public void setThread(String thread) {
-		this.thread = thread;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
+	public void setProcess_seq(String process_seq) {
+		this.process_seq = process_seq;
 	}
 	
-	public String toInQueueString(){
-		return "in_".concat(toString());
+	public String getMax_client() {
+		return max_client;
 	}
-	public String toOutQueueString(){
-		return "out_".concat(toString());
+	public void setMax_client(String max_client) {
+		this.max_client = max_client;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public int getLast_frag() {
+		return last_frag;
+	}
+	public void setLast_frag(int last_frag) {
+		this.last_frag = last_frag;
+	}
+	public String toUpQueueString(){
+		return "up_".concat(toString());
+	}
+	public String toDownQueueString(){
+		return "down_".concat(toString());
 	}
 	public String toString(){
-		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(thread);
+		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(process_seq);
 	}
 }

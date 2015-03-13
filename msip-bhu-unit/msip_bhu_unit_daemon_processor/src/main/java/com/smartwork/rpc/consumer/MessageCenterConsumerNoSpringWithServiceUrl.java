@@ -2,7 +2,6 @@ package com.smartwork.rpc.consumer;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
-import com.bhu.vas.api.dto.DeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 
 /**
@@ -23,11 +22,11 @@ public class MessageCenterConsumerNoSpringWithServiceUrl {
 		reference.setInterface(IDeviceRpcService.class);
 		reference.setUrl("dubbo://127.0.0.1:20880/com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService"); 
 		// 和本地bean一样使用xxxService
-		IDeviceRpcService deviceRpcService = reference.get(); // 注意：此代理对象内部封装了所有通讯细节，对象较重，请缓存复用
+		/*IDeviceRpcService deviceRpcService = reference.get(); // 注意：此代理对象内部封装了所有通讯细节，对象较重，请缓存复用
 		DeviceDTO dto = new DeviceDTO();
 		dto.setMac("34:36:3b:d0:4b:ac");
 		dto.setT(System.currentTimeMillis());
 		boolean ret = deviceRpcService.deviceRegister(dto, null);//.generateUserAccessToken(200082, true, true);
-		System.out.println(ret);
+		System.out.println(ret);*/
 	}
 }

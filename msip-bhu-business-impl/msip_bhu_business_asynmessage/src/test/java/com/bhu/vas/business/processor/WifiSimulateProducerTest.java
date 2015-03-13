@@ -37,7 +37,7 @@ public class WifiSimulateProducerTest {
 			deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
 		}
 		
-		CmInfo cinfo = new CmInfo("cm003","1","192.168.0.103");
+		CmInfo cinfo = new CmInfo("cm003","1");
 		deliverMessageService.sendPureText("00010000"+JsonHelper.getJSONString(cinfo));
 		deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
 		
@@ -85,13 +85,13 @@ public class WifiSimulateProducerTest {
 	
 	private static List<CmInfo> cms = new ArrayList<CmInfo>();
 	static{
-		cms.add(new CmInfo("cm001","1","192.168.0.101"));
-		cms.add(new CmInfo("cm001","2","192.168.0.101"));
-		cms.add(new CmInfo("cm001","3","192.168.0.101"));
+		cms.add(new CmInfo("cm001","1"));
+		cms.add(new CmInfo("cm001","2"));
+		cms.add(new CmInfo("cm001","3"));
 		
-		cms.add(new CmInfo("cm002","1","192.168.0.102"));
-		cms.add(new CmInfo("cm002","2","192.168.0.102"));
-		cms.add(new CmInfo("cm002","3","192.168.0.102"));
+		cms.add(new CmInfo("cm002","1"));
+		cms.add(new CmInfo("cm002","2"));
+		cms.add(new CmInfo("cm002","3"));
 	}
 	
 	private static String wifi_online_msg_template = "00000001<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+

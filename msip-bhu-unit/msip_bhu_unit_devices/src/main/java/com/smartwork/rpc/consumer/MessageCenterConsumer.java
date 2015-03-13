@@ -19,7 +19,7 @@ public class MessageCenterConsumer {
 		context.start();
 		IDeviceRpcService tokenRpcService = (IDeviceRpcService)context.getBean("deviceRpcService");
 		//System.out.println(tokenRpcService);
-		DeviceDTO dto = new DeviceDTO();
+		/*DeviceDTO dto = new DeviceDTO();
 		dto.setMac("34:36:3b:d0:4b:ac");
 		dto.setT(System.currentTimeMillis());
 		for(int i=0;i<1000;i++){
@@ -41,5 +41,5 @@ public class MessageCenterConsumer {
 		//Thread.sleep(1000000000l);
 		//System.out.println("Press any key to exit.");
 		//System.in.read();
-	}
+*/	}
 }
