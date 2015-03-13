@@ -88,11 +88,9 @@ public class WifiSimulateProducerTest {
 	static{
 		cms.add(new CmCtxInfo("cm001","1"));
 		cms.add(new CmCtxInfo("cm001","2"));
-		cms.add(new CmCtxInfo("cm001","3"));
 		
 		cms.add(new CmCtxInfo("cm002","1"));
 		cms.add(new CmCtxInfo("cm002","2"));
-		cms.add(new CmCtxInfo("cm002","3"));
 	}
 	
 	private static String wifi_online_msg_template = "00000001<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
