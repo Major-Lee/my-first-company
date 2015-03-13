@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.CmInfo;
+import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.mq.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -41,14 +41,14 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 					logger.info("NotifyMsgProcessorService receive:"+message);
 					String type = message.substring(0, 8);
 					String payload = message.substring(8);
-					CmInfo cmInfo = null;
+					CmCtxInfo cmInfo = null;
 					if(Online_Prefix.equals(type)){
-						cmInfo = JsonHelper.getDTO(payload, CmInfo.class);
+						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						//QueueMsgObserverManager.CmMessageObserver.notifyCmOnline(cmInfo);
 						ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
 						daemonRpcService.cmJoinService(cmInfo);
 					}else if(Offline_Prefix.equals(type)){
-						cmInfo = JsonHelper.getDTO(payload, CmInfo.class);
+						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						//QueueMsgObserverManager.CmMessageObserver.notifyCmOffline(cmInfo);
 					}else{
 						throw new UnsupportedOperationException(message+" message not yet implement handler process!");

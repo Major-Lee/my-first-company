@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.CmInfo;
+import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
@@ -35,20 +35,20 @@ public class DaemonRpcService implements IDaemonRpcService {
 	}
 
 	@Override
-	public boolean wifiDeviceCmdDown(CmInfo info, String cmd) {
-		System.out.println("wifiDeviceCmdDown:"+info+" cmd:"+cmd);
-		activeMQDynamicProducer.deliverMessage(info.toDownQueueString(), cmd);
+	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto, String cmd) {
+		System.out.println("wifiDeviceCmdDown:"+dto+" cmd:"+cmd);
+		activeMQDynamicProducer.deliverMessage(dto.getInfo().toDownQueueString(), cmd);
 		return false;
 	}
 
 	@Override
-	public boolean cmJoinService(CmInfo info) {
+	public boolean cmJoinService(CmCtxInfo info) {
 		System.out.println("cmJoinService:"+info);
 		return false;
 	}
 
 	@Override
-	public boolean cmLeave(CmInfo info) {
+	public boolean cmLeave(CmCtxInfo info) {
 		System.out.println("cmLeave:"+info);
 		return false;
 	}

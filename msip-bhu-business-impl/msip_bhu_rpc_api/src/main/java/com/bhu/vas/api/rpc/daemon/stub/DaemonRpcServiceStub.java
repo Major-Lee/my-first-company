@@ -2,7 +2,7 @@ package com.bhu.vas.api.rpc.daemon.stub;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.dto.CmInfo;
+import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -30,21 +30,21 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		return daemonRpcService.wifiDeviceOffline(dto);
 	}
 	@Override
-	public boolean wifiDeviceCmdDown(CmInfo info, String cmd) {
-		if(info == null) 
+	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto, String cmd) {
+		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return daemonRpcService.wifiDeviceCmdDown(info,cmd);
+		return daemonRpcService.wifiDeviceCmdDown(dto,cmd);
 	}
 
 	@Override
-	public boolean cmJoinService(CmInfo info) {
+	public boolean cmJoinService(CmCtxInfo info) {
 		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.cmJoinService(info);
 	}
 
 	@Override
-	public boolean cmLeave(CmInfo info) {
+	public boolean cmLeave(CmCtxInfo info) {
 		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.cmLeave(info);

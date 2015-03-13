@@ -34,7 +34,7 @@ public class DeviceFacadeService {
 	public void wifiDeviceRegister(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto){
 		if(dto == null || contextDto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
-		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(contextDto.getCmId()))
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(contextDto.getInfo().toString()))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
 
 		try{
@@ -47,7 +47,7 @@ public class DeviceFacadeService {
 				wifiDeviceService.update(wifi_device_entity);
 			}
 			//2：wifi设备在线更新
-			WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), contextDto.getCmId());
+			WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), contextDto.getInfo().toString());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);

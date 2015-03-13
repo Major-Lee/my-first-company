@@ -6,8 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.api.dto.CmInfo;
-import com.bhu.vas.business.observer.listener.BusinessMessageListener;
 import com.bhu.vas.business.observer.listener.CmMessageListener;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 
@@ -65,10 +63,7 @@ public class QueueMsgObserverManager {
 		}*/
 	}
 	
-	
-	
-	
-	private static List<BusinessMessageListener> businessMessageListeners = new CopyOnWriteArrayList<BusinessMessageListener>();
+	/*private static List<BusinessMessageListener> businessMessageListeners = new CopyOnWriteArrayList<BusinessMessageListener>();
 
 	public static class BusinessMessageObserver{
 		public static void addBusinessMessageListener(BusinessMessageListener listener) {
@@ -85,5 +80,5 @@ public class QueueMsgObserverManager {
 	    		listener.onMessage(ctx,msg);
 	    	}
 		}
-	}
+	}*/
 }

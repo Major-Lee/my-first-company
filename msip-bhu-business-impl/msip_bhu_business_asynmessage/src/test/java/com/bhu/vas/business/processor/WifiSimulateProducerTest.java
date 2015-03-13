@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.api.dto.CmInfo;
+import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.business.asyn.web.service.DeliverMessageService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -28,16 +28,16 @@ public class WifiSimulateProducerTest {
 		DeliverMessageService deliverMessageService =(DeliverMessageService) ctx.getBean("deliverMessageService");
 		
 		for(int i=0;i<cms.size();i++){
-			CmInfo cinfo = cms.get(i);
+			CmCtxInfo cinfo = cms.get(i);
 			deliverMessageService.sendPureText("00010000"+JsonHelper.getJSONString(cinfo));
 		}
 		
 		for(int i=0;i<cms.size();i++){
-			CmInfo cinfo = cms.get(i);
+			CmCtxInfo cinfo = cms.get(i);
 			deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
 		}
 		
-		CmInfo cinfo = new CmInfo("cm003","1");
+		CmCtxInfo cinfo = new CmCtxInfo("cm003","1");
 		deliverMessageService.sendPureText("00010000"+JsonHelper.getJSONString(cinfo));
 		deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
 		
@@ -84,15 +84,15 @@ public class WifiSimulateProducerTest {
 	}
 	
 	
-	private static List<CmInfo> cms = new ArrayList<CmInfo>();
+	private static List<CmCtxInfo> cms = new ArrayList<CmCtxInfo>();
 	static{
-		cms.add(new CmInfo("cm001","1"));
-		cms.add(new CmInfo("cm001","2"));
-		cms.add(new CmInfo("cm001","3"));
+		cms.add(new CmCtxInfo("cm001","1"));
+		cms.add(new CmCtxInfo("cm001","2"));
+		cms.add(new CmCtxInfo("cm001","3"));
 		
-		cms.add(new CmInfo("cm002","1"));
-		cms.add(new CmInfo("cm002","2"));
-		cms.add(new CmInfo("cm002","3"));
+		cms.add(new CmCtxInfo("cm002","1"));
+		cms.add(new CmCtxInfo("cm002","2"));
+		cms.add(new CmCtxInfo("cm002","3"));
 	}
 	
 	private static String wifi_online_msg_template = "00000001<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+

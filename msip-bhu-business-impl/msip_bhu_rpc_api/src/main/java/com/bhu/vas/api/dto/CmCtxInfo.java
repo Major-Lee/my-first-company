@@ -1,20 +1,22 @@
 package com.bhu.vas.api.dto;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
-public class CmInfo implements java.io.Serializable{
+public class CmCtxInfo implements java.io.Serializable{
 	private String name;
 	private String process_seq;
 	private String max_client;
 	private String state;
 	private int last_frag;
-	public CmInfo(String name, String process_seq) {
+	public CmCtxInfo(String name, String process_seq) {
 		super();
 		this.name = name;
 		this.process_seq = process_seq;
 	}
-	public CmInfo() {
+	public CmCtxInfo() {
 	}
 	
 	public String getName() {
@@ -58,5 +60,13 @@ public class CmInfo implements java.io.Serializable{
 	}
 	public String toString(){
 		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(process_seq);
+	}
+	
+	
+	public static CmCtxInfo builderCtx(String ctx_name){
+		if(StringUtils.isEmpty(ctx_name)) return null;
+		String[] split = ctx_name.split(StringHelper.UNDERLINE_STRING_GAP);
+		if(split.length != 2) return null;
+		return new CmCtxInfo(split[0],split[1]);
 	}
 }

@@ -2,7 +2,7 @@ package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.dto.CmInfo;
+import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
@@ -19,14 +19,16 @@ public class MessageDaemonConsumer {
 		context.start();
 		IDaemonRpcService rpcService = (IDaemonRpcService)context.getBean("daemonRpcService");
 		//System.out.println(tokenRpcService);
+		CmCtxInfo info = new CmCtxInfo("cm002","1");
 		WifiDeviceContextDTO dto = new WifiDeviceContextDTO();
-		dto.setCmId("1380");
-		dto.setCmName("CM001");
+		dto.setInfo(info);
+		//dto.setCmId("1380");
+		//dto.setCmName("CM001");
 		dto.setMac("34:36:3b:d0:4b:ac");
 		rpcService.wifiDeviceOnline(dto);
 		rpcService.wifiDeviceOffline(dto);
-		CmInfo info = new CmInfo("cm002","1");
-		rpcService.wifiDeviceCmdDown(info, "where are u");
+		
+		rpcService.wifiDeviceCmdDown(dto, "where are u");
 		rpcService.cmJoinService(info);
 		rpcService.cmLeave(info);
 		/*for(int i=0;i<1000;i++){
