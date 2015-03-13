@@ -42,8 +42,6 @@ public class WifiDeviceDTO implements Serializable{
 	private String work_mode;
 	
 	private String join_reason;
-	//wifi设备接入的cm标识
-	private String cmId;
 
 	public String getMac() {
 		return mac;
@@ -195,14 +193,6 @@ public class WifiDeviceDTO implements Serializable{
 
 	public void setJoin_reason(String join_reason) {
 		this.join_reason = join_reason;
-	}
-
-	public String getCmId() {
-		return cmId;
-	}
-
-	public void setCmId(String cmId) {
-		this.cmId = cmId;
 	}
 	
 }
