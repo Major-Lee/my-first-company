@@ -2,8 +2,7 @@ package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.dto.DeviceDTO;
-import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
 
 public class MessageCenterConsumer {
@@ -40,8 +39,13 @@ public class MessageCenterConsumer {
 		//System.in.read();
 		 * 
 */	
-		String message = "";
-		tokenRpcService.wifiDeviceRegister(message, null);
+		String message = "<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H104\" orig_model=\"BXO2000n(2S-Lite)\" orig_hdver=\"B1\" orig_swver=\"2015-03-11-18:27 Revision: 6855\" oem_vendor=\"BHU\" oem_model=\"BXO2000n(2S-Lite)\" oem_hdver=\"B1\" oem_swver=\"2015-03-11-18:27 Revision: 6855\" sn=\"AAA\" mac=\"62:68:75:02:00:06\" ip=\"192.168.66.176\" build_info=\"2015-03-11-18:27 Revision: 6855\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"14\" join_reason=\"0\" wan_ip=\"192.168.66.176\" /></join_req>";
+		WifiDeviceContextDTO contextDto = new WifiDeviceContextDTO();
+		contextDto.setMac("62:68:75:02:00:06");
+		contextDto.setCmName("1");
+		contextDto.setCmId("cm1");
+		
+		tokenRpcService.wifiDeviceRegister(message, contextDto);
 		System.out.println("done2");
 	}
 }
