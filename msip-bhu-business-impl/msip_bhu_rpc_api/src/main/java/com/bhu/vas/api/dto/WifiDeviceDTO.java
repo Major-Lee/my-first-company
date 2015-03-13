@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author tangzichao
  *
  */
-@XStreamAlias("item")
+@XStreamAlias("ITEM")
 @SuppressWarnings("serial")
 public class WifiDeviceDTO implements Serializable{
 	@XStreamAsAttribute

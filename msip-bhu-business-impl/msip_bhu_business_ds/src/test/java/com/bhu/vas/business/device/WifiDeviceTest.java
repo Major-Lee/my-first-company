@@ -24,6 +24,14 @@ public class WifiDeviceTest extends BaseTest{
 	@Resource
 	WifiDeviceService wifiDeviceService;
 
+	@Test
+	public void testInsert(){
+		WifiDevice entity = new WifiDevice();
+		entity.setId("1");
+		entity.setOrig_swver("2015-03-11-18:27 Revision: 6855");
+		wifiDeviceService.insert(entity);
+	}
+	
 	//@Test
 	public void buildAllData(){
 		System.out.println(RandomData.intNumber(1, 9));
