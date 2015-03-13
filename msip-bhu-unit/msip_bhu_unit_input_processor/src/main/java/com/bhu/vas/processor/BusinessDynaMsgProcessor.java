@@ -32,6 +32,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 					logger.info("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
 					String type = message.substring(0, 8);
 					String payload = message.substring(8);
+					
 					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" payload:"+payload);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
