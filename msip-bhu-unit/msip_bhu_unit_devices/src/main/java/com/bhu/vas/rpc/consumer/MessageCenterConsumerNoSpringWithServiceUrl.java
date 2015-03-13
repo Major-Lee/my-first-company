@@ -1,4 +1,4 @@
-package com.smartwork.rpc.consumer;
+package com.bhu.vas.rpc.consumer;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;

@@ -1,46 +1,70 @@
 package com.bhu.vas.api.dto;
 
 import java.io.Serializable;
-/*
- * wifi设备基础信息RPC DTO
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+/**
+ * wifi设备上线请求DTO
+ * @author tangzichao
+ *
  */
+@XStreamAlias("item")
 @SuppressWarnings("serial")
 public class WifiDeviceDTO implements Serializable{
+	@XStreamAsAttribute
 	private String mac;
 	//原始硬件型号(类型)
+	@XStreamAsAttribute
 	private String hdtype;	
 	//原始厂商
+	@XStreamAsAttribute
 	private String orig_vendor;
 	//原始设备型号
+	@XStreamAsAttribute
 	private String orig_model;
 	//原始硬件版本号
+	@XStreamAsAttribute
 	private String orig_hdver;
 	//原始软件版本号
+	@XStreamAsAttribute
 	private String orig_swver;
 	//oem厂商
+	@XStreamAsAttribute
 	private String oem_vendor;
 	//oem后设备型号
+	@XStreamAsAttribute
 	private String oem_model;
 	//oem后硬件版本号
+	@XStreamAsAttribute
 	private String oem_hdver;
 	//oem后软件版本号
+	@XStreamAsAttribute
 	private String oem_swver;
 	//
+	@XStreamAsAttribute
 	private String sn;
+	@XStreamAsAttribute
 	private String ip;
 	//设备连接到网管服务器时所对应的wan ip。由nginx接入服务器填写
+	@XStreamAsAttribute
 	private String wan_ip;
 	//设备的配置流水号
+	@XStreamAsAttribute
 	private String config_sequence;
 	//版本信息里的build相关信息
+	@XStreamAsAttribute
 	private String build_info;
 	//配置模型版本号
+	@XStreamAsAttribute
 	private String config_model_ver;
 	//配置模式(取值有：basic, expert, fitap)
+	@XStreamAsAttribute
 	private String config_mode;
 	//工作模式, 对应配置模式
+	@XStreamAsAttribute
 	private String work_mode;
-	
+	@XStreamAsAttribute
 	private String join_reason;
 
 	public String getMac() {
