@@ -23,6 +23,7 @@ import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,10 +112,12 @@ public class ActiveMQConnectionManager{
 
 	public void initConsumerQueues(){
 		if(porperties_loaded){
-			String consumerQueues = properties.getProperty(consumers_key);
-			String[] consumerQueue_array = consumerQueues.split(",");
-			for(String consumerQueue:consumerQueue_array){
-				createNewConsumerQueues("in",consumerQueue,false);
+			String consumerQueues = properties.getProperty(consumers_key,StringHelper.EMPTY_STRING_GAP);
+			if(StringUtils.isNotEmpty(consumerQueues)){
+				String[] consumerQueue_array = consumerQueues.split(",");
+				for(String consumerQueue:consumerQueue_array){
+					createNewConsumerQueues("in",consumerQueue,false);
+				}
 			}
 		}
 	}
@@ -127,8 +130,8 @@ public class ActiveMQConnectionManager{
 			try {
 				setupMessageConsumer(prefix,cmInfo);
 				if(noExistThenUpdatePropertie){
-					String consumers_defined = properties.getProperty(consumers_key);
-					String producers_defined = properties.getProperty(producers_key);
+					String consumers_defined = properties.getProperty(consumers_key,StringHelper.EMPTY_STRING_GAP);
+					String producers_defined = properties.getProperty(producers_key,StringHelper.EMPTY_STRING_GAP);
 					boolean needStoreUpdate = false;
 					if(!consumers_defined.contains(cmInfo)){
 						properties.setProperty(consumers_key, consumers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
@@ -166,13 +169,15 @@ public class ActiveMQConnectionManager{
 	 */
 	public void initConsumerTestProducers(){
 		if(porperties_loaded){
-			String consumerQueues = properties.getProperty(producers_key);
-			String[] consumerQueue_array = consumerQueues.split(",");
-			for(String consumerQueue:consumerQueue_array){
-				try {
-					setupMessageTestProducer("in",consumerQueue);
-				} catch (JMSException e) {
-					e.printStackTrace(System.out);
+			String consumerQueues = properties.getProperty(producers_key,StringHelper.EMPTY_STRING_GAP);
+			if(StringUtils.isNotEmpty(consumerQueues)){
+				String[] consumerQueue_array = consumerQueues.split(",");
+				for(String consumerQueue:consumerQueue_array){
+					try {
+						setupMessageTestProducer("in",consumerQueue);
+					} catch (JMSException e) {
+						e.printStackTrace(System.out);
+					}
 				}
 			}
 		}
@@ -180,13 +185,15 @@ public class ActiveMQConnectionManager{
 	
 	public void initProducerQueues(){
 		if(porperties_loaded){
-			String producerQueues = properties.getProperty("mq.activemq.server.producer.queues");
-			String[] producerQueue_array = producerQueues.split(",");
-			for(String producerQueue:producerQueue_array){
-				try {
-					setupMessageProducer("out",producerQueue);
-				} catch (JMSException e) {
-					e.printStackTrace(System.out);
+			String producerQueues = properties.getProperty(producers_key,StringHelper.EMPTY_STRING_GAP);
+			if(StringUtils.isNotEmpty(producerQueues)){
+				String[] producerQueue_array = producerQueues.split(",");
+				for(String producerQueue:producerQueue_array){
+					try {
+						setupMessageProducer("out",producerQueue);
+					} catch (JMSException e) {
+						e.printStackTrace(System.out);
+					}
 				}
 			}
 		}
