@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
@@ -30,10 +29,10 @@ public class DeviceFacadeService {
 	 * 2：wifi设备在线更新
 	 * @param dto
 	 */
-	public void wifiDeviceRegister(WifiDeviceDTO dto, WifiDeviceContextDTO contextDto){
-		if(dto == null || contextDto == null) 
+	public void wifiDeviceRegister(String ctx, WifiDeviceDTO dto){
+		if(dto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
-		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(contextDto.getInfo().toString()))
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
 
 		try{
@@ -46,7 +45,7 @@ public class DeviceFacadeService {
 				wifiDeviceService.update(wifi_device_entity);
 			}
 			//2：wifi设备在线更新
-			WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), contextDto.getInfo().toString());
+			WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), ctx);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);

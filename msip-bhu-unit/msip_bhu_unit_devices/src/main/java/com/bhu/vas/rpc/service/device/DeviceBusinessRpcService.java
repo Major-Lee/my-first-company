@@ -30,12 +30,12 @@ public class DeviceBusinessRpcService {
 	 * 1：wifi设备基础信息更新
 	 * 2：wifi设备在线更新
 	 */
-	public boolean wifiDeviceRegister(String message, WifiDeviceContextDTO contextDto) {
-		logger.info(String.format("wifiDeviceRegister with params: message[%s]", message));
-		JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(message, JoinReqDTO.class);
+	public boolean wifiDeviceRegister(String ctx, String payload) {
+		logger.info(String.format("wifiDeviceRegister with params: payload[%s] ctx[%s]", payload, ctx));
+		JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, JoinReqDTO.class);
 		System.out.println(messageDto.getDto().getMac());
 		//System.out.println(messageDto.getDto().getOem_swver().length());
-		deviceFacadeService.wifiDeviceRegister(messageDto.getDto(), contextDto);
+		deviceFacadeService.wifiDeviceRegister(ctx, messageDto.getDto());
 		return true;
 	}
 

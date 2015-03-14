@@ -12,6 +12,17 @@ public class ParserHeader implements java.io.Serializable{
 	public static final int DeviceNotExist_Prefix = 4;
 	public static final int Transfer_Prefix = 5;
 	
+	/********************** transfer message start ************************/
+	
+	public static final int Transfer_mtype_0 = 0;
+	public static final int Transfer_mtype_1 = 1;
+
+//	public static final int Transfer_mtype_0_DeviceOnlineReq = 1;//3.4.2	设备上线请求
+//	public static final int Transfer_mtype_0_DeviceOnilneRep = 2;//3.4.3	设备上线回应
+
+	
+	/********************** transfer message start ************************/
+	
 	private int type;
 	//12字节mac
 	private String mac;
