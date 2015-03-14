@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.mq.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -22,8 +23,8 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(NotifyCmMsgProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	//00010000{"name":"cm001","thread":"3","ip":"192.168.0.101"}
-	private static String Online_Prefix = "00000001";
-	private static String Offline_Prefix = "00000002";
+	/*private static String Online_Prefix = "00000001";
+	private static String Offline_Prefix = "00000002";*/
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -40,15 +41,15 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 			public void run() {
 				try{
 					logger.info(message);
-					String type = message.substring(0, 8);
+					int type = Integer.parseInt(message.substring(0, 8));
 					String payload = message.substring(8);
 					CmCtxInfo cmInfo = null;
-					if(Online_Prefix.equals(type)){
+					if(ParserHeader.Online_Prefix == type){
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						//QueueMsgObserverManager.CmMessageObserver.notifyCmOnline(cmInfo);
 						ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
 						daemonRpcService.cmJoinService(cmInfo);
-					}else if(Offline_Prefix.equals(type)){
+					}else if(ParserHeader.Offline_Prefix == type){
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						//QueueMsgObserverManager.CmMessageObserver.notifyCmOffline(cmInfo);
 					}else{
