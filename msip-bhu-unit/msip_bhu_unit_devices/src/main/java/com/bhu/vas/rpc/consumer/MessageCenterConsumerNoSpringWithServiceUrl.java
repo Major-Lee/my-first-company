@@ -36,6 +36,6 @@ public class MessageCenterConsumerNoSpringWithServiceUrl {
 		//contextDto.setMac("62:68:75:02:00:06");
 		/*contextDto.setCmName("1");
 		contextDto.setCmId("cm1");*/
-		tokenRpcService.messageDispatch("cm1", message, parserHeader);
+		//tokenRpcService.messageDispatch("cm1", message, parserHeader);
 	}
 }

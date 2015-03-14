@@ -88,6 +88,7 @@ public class DeviceFacadeService {
 			if(ctx.equals(ctx_present)){
 				WifiDevicePresentService.getInstance().removePresent(mac);
 				//3:在此wifi上的移动设备的在线状态更新
+				
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
@@ -123,7 +124,7 @@ public class DeviceFacadeService {
 	 * @param ctx
 	 * @param dto
 	 */
-	public void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto){
+	public void handsetDeviceOnline(String ctx, String wifiId, HandsetDeviceDTO dto){
 		if(dto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
@@ -132,6 +133,7 @@ public class DeviceFacadeService {
 		try{
 			//1:移动设备基础信息更新
 			HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+			handset_device_entity.setLast_wifi_id(wifiId);
 			HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(handset_device_entity.getId());
 			if(exist_handset_device_entity == null){
 				handsetDeviceService.insert(handset_device_entity);
@@ -139,8 +141,8 @@ public class DeviceFacadeService {
 				handsetDeviceService.update(handset_device_entity);
 			}
 			//2:移动设备连接wifi设备的流水记录
-			wifiHandsetDeviceRelationMService.addRelation(dto.getMac(), dto.getBssid(), handset_device_entity.
-					getLast_login_at());
+			//wifiHandsetDeviceRelationMService.addRelation(dto.getMac(), wifiId, handset_device_entity.
+			//		getLast_login_at());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
@@ -178,7 +180,7 @@ public class DeviceFacadeService {
 	 * @param ctx
 	 * @param dto
 	 */
-	public void handsetDeviceSync(String ctx, HandsetDeviceDTO dto){
-		this.handsetDeviceOnline(ctx, dto);
+	public void handsetDeviceSync(String ctx, String wifiId, HandsetDeviceDTO dto){
+		this.handsetDeviceOnline(ctx, wifiId, dto);
 	}
 }

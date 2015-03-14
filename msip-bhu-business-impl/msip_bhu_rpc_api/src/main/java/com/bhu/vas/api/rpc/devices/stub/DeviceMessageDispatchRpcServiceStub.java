@@ -17,10 +17,10 @@ public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispat
     }
 
 	@Override
-	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(payload)) 
+	public void msgDispatch(String ctx, String payload, ParserHeader parserHeader) {
+		if(StringUtils.isEmpty(ctx) || parserHeader == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		deviceMessageDispatchRpcService.messageDispatch(ctx, payload, parserHeader);
+		deviceMessageDispatchRpcService.msgDispatch(ctx, payload, parserHeader);
 	}
 
 	@Override
