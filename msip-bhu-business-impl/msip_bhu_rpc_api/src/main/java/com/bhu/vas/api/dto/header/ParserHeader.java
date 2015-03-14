@@ -6,6 +6,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
 public class ParserHeader implements java.io.Serializable{
+	private int type;
 	//12字节mac
 	private String mac;
 	//10字节任务id
@@ -39,9 +40,16 @@ public class ParserHeader implements java.io.Serializable{
 		this.st = st;
 	}
 	
-	public static ParserHeader builder(String header){
-		if(StringUtils.isEmpty(header) || header.length() <34) return null;
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public static ParserHeader builder(String header,int type){
 		ParserHeader pheader = new ParserHeader();
+		pheader.setType(type);
+		if(StringUtils.isEmpty(header) || header.length() <34) return pheader;
 		pheader.setMac(StringHelper.formatMacAddress(header.substring(0, 12)));
 		pheader.setTaskid(Long.parseLong(header.substring(12, 22)));
 		pheader.setMt(Integer.parseInt(header.substring(22, 26)));

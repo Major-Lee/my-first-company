@@ -39,7 +39,7 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 			@Override
 			public void run() {
 				try{
-					System.out.println("NotifyMsgProcessorService receive:"+message);
+					logger.info(message);
 					String type = message.substring(0, 8);
 					String payload = message.substring(8);
 					CmCtxInfo cmInfo = null;
