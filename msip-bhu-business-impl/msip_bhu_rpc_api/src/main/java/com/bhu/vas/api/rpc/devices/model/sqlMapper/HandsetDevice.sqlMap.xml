@@ -6,6 +6,28 @@
 
   <resultMap id="modelResult" type="handsetDevice">
     <result property="id" column="id"/>
+    <result property="phy_tx_rate" column="phy_tx_rate"/>
+    <result property="phy_rx_rate" column="phy_rx_rate"/>
+    <result property="data_tx_rate" column="data_tx_rate"/>
+    <result property="data_rx_rate" column="data_rx_rate"/>
+    <result property="phy_rate" column="phy_rate"/>
+    <result property="tx_power" column="tx_power"/>
+    <result property="rx_chain_num" column="rx_chain_num"/>
+    <result property="rssi" column="rssi"/>
+    <result property="snr" column="snr"/>
+    <result property="idle" column="idle"/>
+    <result property="state" column="state"/>
+    <result property="uptime" column="uptime"/>
+    <result property="rx_pkts" column="rx_pkts"/>
+    <result property="rx_bytes" column="rx_bytes"/>
+    <result property="tx_pkts" column="tx_pkts"/>
+    <result property="tx_bytes" column="tx_bytes"/>
+    <result property="rx_unicast" column="rx_unicast"/>
+    <result property="tx_assoc" column="tx_assoc"/>
+    <result property="ssid" column="ssid"/>
+    <result property="bssid" column="bssid"/>
+    <result property="location" column="location"/>
+    <result property="channel" column="channel"/>
     <result property="mobileno" column="mobileno"/>
     <result property="online" column="online"/>
     <result property="last_wifi_id" column="last_wifi_id"/>
@@ -23,6 +45,28 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	phy_tx_rate,
+	    	phy_rx_rate,
+	    	data_tx_rate,
+	    	data_rx_rate,
+	    	phy_rate,
+	    	tx_power,
+	    	rx_chain_num,
+	    	rssi,
+	    	snr,
+	    	idle,
+	    	state,
+	    	uptime,
+	    	rx_pkts,
+	    	rx_bytes,
+	    	tx_pkts,
+	    	tx_bytes,
+	    	rx_unicast,
+	    	tx_assoc,
+	    	ssid,
+	    	bssid,
+	    	location,
+	    	channel,
 	    	mobileno,
 	    	online,
 	    	last_wifi_id,
@@ -33,6 +77,28 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	phy_tx_rate,
+	    	phy_rx_rate,
+	    	data_tx_rate,
+	    	data_rx_rate,
+	    	phy_rate,
+	    	tx_power,
+	    	rx_chain_num,
+	    	rssi,
+	    	snr,
+	    	idle,
+	    	state,
+	    	uptime,
+	    	rx_pkts,
+	    	rx_bytes,
+	    	tx_pkts,
+	    	tx_bytes,
+	    	rx_unicast,
+	    	tx_assoc,
+	    	ssid,
+	    	bssid,
+	    	location,
+	    	channel,
 	    	mobileno,
 	    	online,
 	    	last_wifi_id,
@@ -44,6 +110,28 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{phy_tx_rate},
+	    	#{phy_rx_rate},
+	    	#{data_tx_rate},
+	    	#{data_rx_rate},
+	    	#{phy_rate},
+	    	#{tx_power},
+	    	#{rx_chain_num},
+	    	#{rssi},
+	    	#{snr},
+	    	#{idle},
+	    	#{state},
+	    	#{uptime},
+	    	#{rx_pkts},
+	    	#{rx_bytes},
+	    	#{tx_pkts},
+	    	#{tx_bytes},
+	    	#{rx_unicast},
+	    	#{tx_assoc},
+	    	#{ssid},
+	    	#{bssid},
+	    	#{location},
+	    	#{channel},
 	    	#{mobileno},
 	    	#{online},
 	    	#{last_wifi_id},
@@ -54,6 +142,28 @@
 	
 	
 	<sql id="modelUpdateValues">
+			phy_tx_rate = #{phy_tx_rate},
+	    	phy_rx_rate = #{phy_rx_rate},
+	    	data_tx_rate = #{data_tx_rate},
+	    	data_rx_rate = #{data_rx_rate},
+	    	phy_rate = #{phy_rate},
+	    	tx_power = #{tx_power},
+	    	rx_chain_num = #{rx_chain_num},
+	    	rssi = #{rssi},
+	    	snr = #{snr},
+	    	idle = #{idle},
+	    	state = #{state},
+	    	uptime = #{uptime},
+	    	rx_pkts = #{rx_pkts},
+	    	rx_bytes = #{rx_bytes},
+	    	tx_pkts = #{tx_pkts},
+	    	tx_bytes = #{tx_bytes},
+	    	rx_unicast = #{rx_unicast},
+	    	tx_assoc = #{tx_assoc},
+	    	ssid = #{ssid},
+	    	bssid = #{bssid},
+	    	location = #{location},
+	    	channel = #{channel},
 			mobileno = #{mobileno},
 			online = #{online},
 			last_wifi_id = #{last_wifi_id},
