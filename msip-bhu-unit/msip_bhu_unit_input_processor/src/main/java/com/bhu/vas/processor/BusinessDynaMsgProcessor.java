@@ -10,11 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
@@ -36,20 +39,21 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 
 	@Override
 	public void onMessage(final String ctx,final String message) {
+		validateStep1(message);
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
 					System.out.println("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
-					String type = message.substring(0, 8);
+					int type = Integer.parseInt(message.substring(0, 8));
 					ParserHeader headers = null;
 					String payload = null;
-					switch(Integer.parseInt(type)){
+					switch(type){
 						case DeviceOffline_Prefix://0000000362687500003e
-							payload = StringHelper.formatMacAddress(payload.substring(8));
+							payload = StringHelper.formatMacAddress(message.substring(8));
 							break;
 						case DeviceNotExist_Prefix:
-							payload = StringHelper.formatMacAddress(payload.substring(8));
+							payload = StringHelper.formatMacAddress(message.substring(8));
 							break;
 						case Transfer_Prefix:
 							headers = ParserHeader.builder(message.substring(8, 42));
@@ -60,7 +64,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 									String.format( "MessageType[%s] not yet implement handler process!full ctx[%s] message[%s]",
 											type,ctx,message));
 					}
-					
+					deviceMessageDispatchRpcService.messageDispatch(type,payload,headers);
 					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
@@ -68,6 +72,11 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 				}
 			}
 		}));
+	}
+	
+	public static void validateStep1(String msg){
+		if(StringUtils.isEmpty(msg) || msg.length()<=8) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 	}
 	
 /*	public static String[] parserTransferMsgHeader(String msg){
