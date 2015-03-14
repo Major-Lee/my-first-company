@@ -103,4 +103,16 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		}
 	}
 
+	@Override
+	public void messageDispatch1(String ctx, String payload) {
+		// TODO Auto-generated method stub
+		System.out.println(String.format("ctx[%s]", ctx));
+	}
+
+	@Override
+	public void test(String ctx, ParserHeader parserHeader) {
+		System.out.println(String.format("ctx[%s] dto[%s]", ctx,parserHeader));
+		
+	}
+
 }
