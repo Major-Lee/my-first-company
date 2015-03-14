@@ -24,9 +24,9 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(50);
 	//private static String Online_Prefix = "00000001";
-	private static final int DeviceOffline_Prefix = 3;
+	/*private static final int DeviceOffline_Prefix = 3;
 	private static final int DeviceNotExist_Prefix = 4;
-	private static final int Transfer_Prefix = 5;
+	private static final int Transfer_Prefix = 5;*/
 	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
 	
@@ -49,15 +49,15 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 					ParserHeader headers = null;
 					String payload = null;
 					switch(type){
-						case DeviceOffline_Prefix://0000000362687500003e
+						case ParserHeader.DeviceOffline_Prefix://0000000362687500003e
 							headers = ParserHeader.builder(null,type);
 							payload = StringHelper.formatMacAddress(message.substring(8));
 							break;
-						case DeviceNotExist_Prefix:
+						case ParserHeader.DeviceNotExist_Prefix:
 							headers = ParserHeader.builder(null,type);
 							payload = StringHelper.formatMacAddress(message.substring(8));
 							break;
-						case Transfer_Prefix:
+						case ParserHeader.Transfer_Prefix:
 							headers = ParserHeader.builder(message.substring(8, 42),type);
 							payload = message.substring(42);
 							break;
