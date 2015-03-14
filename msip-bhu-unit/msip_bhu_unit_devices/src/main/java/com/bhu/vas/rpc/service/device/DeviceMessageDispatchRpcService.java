@@ -22,7 +22,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	private DeviceBusinessRpcService deviceBusinessRpcService;
 
 	@Override
-	public void messageDispatch(ParserHeader parserHeader) {
+	public void messageDispatch(int type, String payload, ParserHeader parserHeader) {
 		logger.info(String.format("DeviceMessageRPC invoke message [%]", ""));
 		int mType = parserHeader.getMt();
 		int sType = parserHeader.getSt();

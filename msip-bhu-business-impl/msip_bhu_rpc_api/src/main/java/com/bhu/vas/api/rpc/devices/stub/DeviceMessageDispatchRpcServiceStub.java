@@ -13,7 +13,7 @@ public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispat
     }
 
 	@Override
-	public void messageDispatch(ParserHeader parserHeader) {
+	public void messageDispatch(int type, String payload, ParserHeader parserHeader) {
 	}
 
 	/*@Override

@@ -7,5 +7,5 @@ public interface IDeviceMessageDispatchRpcService {
 	//public boolean deviceRegister(DeviceDTO dto, WifiDeviceContextDTO contextDto);
 //	public boolean wifiDeviceRegister(String message, WifiDeviceContextDTO contextDto);
 //	public boolean wifiDeviceLogout(String message, WifiDeviceContextDTO contextDto);
-	public void messageDispatch(ParserHeader parserHeader);
+	public void messageDispatch(int type, String payload, ParserHeader parserHeader);
 }
