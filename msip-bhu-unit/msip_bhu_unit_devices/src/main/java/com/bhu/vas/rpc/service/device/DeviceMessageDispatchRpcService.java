@@ -91,6 +91,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 6://3.4.15	设备事件信息
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
+					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload);
 					break;
 				case 8://3.4.17	应用隧道消息
 					break;
