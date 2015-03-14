@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * 
@@ -30,18 +32,19 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
 		logger.info(String.format("DeviceMessageRPC messageDispatch invoke message [%]", payload));
-//		int type = parserHeader.getType();
-//		switch(type){
-//			case ParserHeader.DeviceOffline_Prefix:
-//				break;
-//			case ParserHeader.DeviceNotExist_Prefix:
-//				break;
-//			case ParserHeader.Transfer_Prefix:
-//				transferMessageDispatch(ctx, payload, parserHeader);
-//				break;
-//			default:
-//				throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR.code());
-//		}
+		int type = parserHeader.getType();
+		switch(type){
+			case ParserHeader.DeviceOffline_Prefix:
+				deviceBusinessRpcService.wifiDeviceOffline(ctx, parserHeader.getMac());
+				break;
+			case ParserHeader.DeviceNotExist_Prefix:
+				break;
+			case ParserHeader.Transfer_Prefix:
+				transferMessageDispatch(ctx, payload, parserHeader);
+				break;
+			default:
+				throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR.code());
+		}
 	}
 	
 	/**
@@ -87,6 +90,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 5://3.4.14	文件传输消息(暂不实现)
 					break;
 				case 6://3.4.15	设备事件信息
+					deviceBusinessRpcService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
 					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload);

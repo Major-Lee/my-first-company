@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -35,7 +36,7 @@ public class DeviceFacadeService {
 	 * 
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
-	 * 2：wifi设备在线更新
+	 * 2：wifi设备在线状态Redis更新
 	 * @param dto
 	 */
 	public void wifiDeviceOnline(String ctx, WifiDeviceDTO dto){
@@ -53,8 +54,61 @@ public class DeviceFacadeService {
 			}else{
 				wifiDeviceService.update(wifi_device_entity);
 			}
-			//2：wifi设备在线更新
+			//2：wifi设备在线状态Redis更新
 			WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), ctx);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(ex.getMessage(), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	/**
+	 * wifi设备离线
+	 * 1:wifi设备基础信息表中的在线状态更新
+	 * 2:wifi设备在线状态redis更新
+	 * 3:在此wifi上的移动设备的在线状态更新
+	 * @param ctx
+	 * @param mac
+	 */
+	public void wifiDeviceOffline(String ctx, String mac){
+		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+		
+		try{
+			//1:wifi设备基础信息表中的在线状态更新
+			WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(mac);
+			if(exist_wifi_device_entity != null){
+				exist_wifi_device_entity.setOnline(false);
+				wifiDeviceService.update(exist_wifi_device_entity);
+			}
+			//2:wifi设备在线状态redis更新
+			//首先进行验证,判断ctx信息是否一致,如果一致则删除
+			String ctx_present = WifiDevicePresentService.getInstance().getPresent(mac);
+			if(ctx.equals(ctx_present)){
+				WifiDevicePresentService.getInstance().removePresent(mac);
+				//3:在此wifi上的移动设备的在线状态更新
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(ex.getMessage(), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	/**
+	 * wifi设备告警信息
+	 * @param ctx
+	 * @param dto
+	 */
+	public void wifiDeviceAlarm(String ctx, WifiDeviceAlarmDTO dto){
+		if(dto == null) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+		if(StringUtils.isEmpty(dto.getMac_addr()) || StringUtils.isEmpty(ctx))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+
+		try{
+
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);

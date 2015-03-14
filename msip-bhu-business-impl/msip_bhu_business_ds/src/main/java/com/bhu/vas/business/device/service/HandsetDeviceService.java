@@ -19,4 +19,8 @@ public class HandsetDeviceService extends AbstractCoreService<String,HandsetDevi
 		super.setEntityDao(handsetDeviceDao);
 	}
 	
+	public void udpateOnlineByWifiMac(String wifi_mac){
+		
+	}
+	
 }

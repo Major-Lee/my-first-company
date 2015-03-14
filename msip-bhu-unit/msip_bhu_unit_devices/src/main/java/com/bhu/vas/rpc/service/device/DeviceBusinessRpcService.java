@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.dto.header.EventDTO;
+import com.bhu.vas.api.dto.header.EventTrapDTO;
+import com.bhu.vas.api.dto.header.EventWlanDTO;
 import com.bhu.vas.api.dto.header.JoinReqDTO;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.device.facade.DeviceFacadeService;
@@ -28,15 +29,36 @@ public class DeviceBusinessRpcService {
 	
 	/**
 	 * wifi设备上线
-	 * 1：wifi设备基础信息更新
-	 * 2：wifi设备在线更新
 	 */
 	public void wifiDeviceOnline(String ctx, String payload) {
-		logger.info(String.format("wifiDeviceRegister with params: payload[%s] ctx[%s]", payload, ctx));
+		//logger.info(String.format("wifiDeviceRegister with params: payload[%s] ctx[%s]", payload, ctx));
 		JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, JoinReqDTO.class);
 		System.out.println(messageDto.getDto().getMac());
 
 		deviceFacadeService.wifiDeviceOnline(ctx, messageDto.getDto());
+	}
+	/**
+	 * wifi设备离线
+	 * @param ctx
+	 * @param mac
+	 */
+	public void wifiDeviceOffline(String ctx, String mac) {
+		//logger.info(String.format("wifiDeviceRegister with params: payload[%s] ctx[%s]", payload, ctx));
+		//JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, JoinReqDTO.class);
+		deviceFacadeService.wifiDeviceOffline(ctx, mac);
+	}
+	
+	/**
+	 * wifi设备告警信息
+	 * @param ctx
+	 * @param payload
+	 */
+	public void wifiDeviceAlarm(String ctx, String payload) {
+		//logger.info(String.format("wifiDeviceAlarm with params: payload[%s] ctx[%s]", payload, ctx));
+		EventTrapDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, EventTrapDTO.class);
+		System.out.println(messageDto.getTrapDTO().getDto().getMac_addr());
+
+		deviceFacadeService.wifiDeviceAlarm(ctx, messageDto.getTrapDTO().getDto());
 	}
 	
 	/**
@@ -48,8 +70,8 @@ public class DeviceBusinessRpcService {
 	 * @param payload
 	 */
 	public void handsetDeviceConnectState(String ctx, String payload) {
-		logger.info(String.format("handsetDeviceConnectState with params: payload[%s] ctx[%s]", payload, ctx));
-		EventDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, EventDTO.class);
+		//logger.info(String.format("handsetDeviceConnectState with params: payload[%s] ctx[%s]", payload, ctx));
+		EventWlanDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, EventWlanDTO.class);
 		HandsetDeviceDTO itemDto = messageDto.getWlanDto().getDto();
 		System.out.println(itemDto.getAction());
 		if(HandsetDeviceDTO.Action_Online.equals(itemDto.getAction())){
@@ -62,6 +84,5 @@ public class DeviceBusinessRpcService {
 			deviceFacadeService.handsetDeviceSync(ctx, itemDto);
 		}
 	}
-
 
 }

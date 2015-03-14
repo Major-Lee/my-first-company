@@ -20,7 +20,7 @@ public class MessageCenterConsumerNoSpringWithServiceUrl {
 		// 路径对应service.setPath()的值，如果未设置path，缺省path为接口名
 		reference.setApplication(application);
 		reference.setInterface(IDeviceMessageDispatchRpcService.class);
-		reference.setUrl("dubbo://127.0.0.1:20880/com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService"); 
+		reference.setUrl("dubbo://127.0.0.1:20882/com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService"); 
 		// 和本地bean一样使用xxxService
 		/*IDeviceRpcService deviceRpcService = reference.get(); // 注意：此代理对象内部封装了所有通讯细节，对象较重，请缓存复用
 		DeviceDTO dto = new DeviceDTO();
@@ -28,5 +28,8 @@ public class MessageCenterConsumerNoSpringWithServiceUrl {
 		dto.setT(System.currentTimeMillis());
 		boolean ret = deviceRpcService.deviceRegister(dto, null);//.generateUserAccessToken(200082, true, true);
 		System.out.println(ret);*/
+		
+		IDeviceMessageDispatchRpcService deviceRpcService = reference.get();
+		deviceRpcService.messageDispatch("1", "2", null);
 	}
 }
