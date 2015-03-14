@@ -57,7 +57,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		if(mType == ParserHeader.Transfer_mtype_0){
 			switch(sType){//子类型判断
 				case 1://3.4.2	设备上线请求
-					deviceBusinessRpcService.wifiDeviceRegister(ctx, payload);
+					deviceBusinessRpcService.wifiDeviceOnline(ctx, payload);
 					break;
 				case 2://3.4.3	设备上线回应
 					break;

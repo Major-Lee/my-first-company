@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
@@ -29,7 +30,7 @@ public class DeviceFacadeService {
 	 * 2：wifi设备在线更新
 	 * @param dto
 	 */
-	public void wifiDeviceRegister(String ctx, WifiDeviceDTO dto){
+	public void wifiDeviceOnline(String ctx, WifiDeviceDTO dto){
 		if(dto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
@@ -53,4 +54,28 @@ public class DeviceFacadeService {
 		}
 	}
 	
+	/**
+	 * 移动设备上线
+	 * @param ctx
+	 * @param dto
+	 */
+	public void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto){
+		
+	}
+	/**
+	 * 移动设备下线
+	 * @param ctx
+	 * @param dto
+	 */
+	public void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto){
+		
+	}
+	/**
+	 * 移动设备连接状态sync
+	 * @param ctx
+	 * @param dto
+	 */
+	public void handsetDeviceSync(String ctx, HandsetDeviceDTO dto){
+		
+	}
 }

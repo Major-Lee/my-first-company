@@ -1,0 +1,214 @@
+package com.bhu.vas.api.dto;
+
+import java.io.Serializable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+/**
+ * 移动设备上下线请求DTO
+ * @author tangzichao
+ *
+ */
+@XStreamAlias("ITEM")
+@SuppressWarnings("serial")
+public class HandsetDeviceDTO implements Serializable{
+	public static final String Action_Online = "online";
+	public static final String Action_Offline = "offline";
+	public static final String Action_Sync = "sync";
+	
+	@XStreamAsAttribute
+	private String action;
+	@XStreamAsAttribute
+	private String mac;
+	@XStreamAsAttribute
+	private String phy_tx_rate;
+	@XStreamAsAttribute
+	private String phy_rx_rate;	
+	@XStreamAsAttribute
+	private String data_tx_rate;
+	@XStreamAsAttribute
+	private String data_rx_rate;
+	@XStreamAsAttribute
+	private String phy_rate;
+	@XStreamAsAttribute
+	private String tx_power;
+	@XStreamAsAttribute
+	private String rx_chain_num;
+	@XStreamAsAttribute
+	private String rssi;
+	@XStreamAsAttribute
+	private String snr;
+	@XStreamAsAttribute
+	private String idle;
+	@XStreamAsAttribute
+	private String state;
+	@XStreamAsAttribute
+	private String uptime;
+	@XStreamAsAttribute
+	private String rx_pkts;
+	@XStreamAsAttribute
+	private String rx_bytes;
+	@XStreamAsAttribute
+	private String tx_pkts;
+	@XStreamAsAttribute
+	private String tx_bytes;
+	@XStreamAsAttribute
+	private String rx_unicast;
+	@XStreamAsAttribute
+	private String tx_assoc;
+	@XStreamAsAttribute
+	private String ssid;
+	@XStreamAsAttribute
+	private String bssid;
+	@XStreamAsAttribute
+	private String location;
+	@XStreamAsAttribute
+	private String channel;
+	
+	
+	public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
+	}
+	public String getMac() {
+		return mac;
+	}
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+	public String getPhy_tx_rate() {
+		return phy_tx_rate;
+	}
+	public void setPhy_tx_rate(String phy_tx_rate) {
+		this.phy_tx_rate = phy_tx_rate;
+	}
+	public String getPhy_rx_rate() {
+		return phy_rx_rate;
+	}
+	public void setPhy_rx_rate(String phy_rx_rate) {
+		this.phy_rx_rate = phy_rx_rate;
+	}
+	public String getData_tx_rate() {
+		return data_tx_rate;
+	}
+	public void setData_tx_rate(String data_tx_rate) {
+		this.data_tx_rate = data_tx_rate;
+	}
+	public String getData_rx_rate() {
+		return data_rx_rate;
+	}
+	public void setData_rx_rate(String data_rx_rate) {
+		this.data_rx_rate = data_rx_rate;
+	}
+	public String getPhy_rate() {
+		return phy_rate;
+	}
+	public void setPhy_rate(String phy_rate) {
+		this.phy_rate = phy_rate;
+	}
+	public String getTx_power() {
+		return tx_power;
+	}
+	public void setTx_power(String tx_power) {
+		this.tx_power = tx_power;
+	}
+	public String getRx_chain_num() {
+		return rx_chain_num;
+	}
+	public void setRx_chain_num(String rx_chain_num) {
+		this.rx_chain_num = rx_chain_num;
+	}
+	public String getRssi() {
+		return rssi;
+	}
+	public void setRssi(String rssi) {
+		this.rssi = rssi;
+	}
+	public String getSnr() {
+		return snr;
+	}
+	public void setSnr(String snr) {
+		this.snr = snr;
+	}
+	public String getIdle() {
+		return idle;
+	}
+	public void setIdle(String idle) {
+		this.idle = idle;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getUptime() {
+		return uptime;
+	}
+	public void setUptime(String uptime) {
+		this.uptime = uptime;
+	}
+	public String getRx_pkts() {
+		return rx_pkts;
+	}
+	public void setRx_pkts(String rx_pkts) {
+		this.rx_pkts = rx_pkts;
+	}
+	public String getRx_bytes() {
+		return rx_bytes;
+	}
+	public void setRx_bytes(String rx_bytes) {
+		this.rx_bytes = rx_bytes;
+	}
+	public String getTx_pkts() {
+		return tx_pkts;
+	}
+	public void setTx_pkts(String tx_pkts) {
+		this.tx_pkts = tx_pkts;
+	}
+	public String getTx_bytes() {
+		return tx_bytes;
+	}
+	public void setTx_bytes(String tx_bytes) {
+		this.tx_bytes = tx_bytes;
+	}
+	public String getRx_unicast() {
+		return rx_unicast;
+	}
+	public void setRx_unicast(String rx_unicast) {
+		this.rx_unicast = rx_unicast;
+	}
+	public String getTx_assoc() {
+		return tx_assoc;
+	}
+	public void setTx_assoc(String tx_assoc) {
+		this.tx_assoc = tx_assoc;
+	}
+	public String getSsid() {
+		return ssid;
+	}
+	public void setSsid(String ssid) {
+		this.ssid = ssid;
+	}
+	public String getBssid() {
+		return bssid;
+	}
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public String getChannel() {
+		return channel;
+	}
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+	
+}

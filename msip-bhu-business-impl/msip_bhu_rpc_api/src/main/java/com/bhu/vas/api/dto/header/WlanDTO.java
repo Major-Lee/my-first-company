@@ -2,22 +2,26 @@ package com.bhu.vas.api.dto.header;
 
 import java.io.Serializable;
 
-import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-
-@XStreamAlias("join_req")
+/**
+ * wifi设备上线请求
+ * @author tangzichao
+ *
+ */
+@XStreamAlias("wlan")
 @SuppressWarnings("serial")
-public class JoinReqDTO implements Serializable{
+public class WlanDTO implements Serializable{
 	@XStreamAlias("ITEM")
 	@XStreamAsAttribute
-	private WifiDeviceDTO dto;
+	private HandsetDeviceDTO dto;
 
-	public WifiDeviceDTO getDto() {
+	public HandsetDeviceDTO getDto() {
 		return dto;
 	}
 
-	public void setDto(WifiDeviceDTO dto) {
+	public void setDto(HandsetDeviceDTO dto) {
 		this.dto = dto;
 	}
 }

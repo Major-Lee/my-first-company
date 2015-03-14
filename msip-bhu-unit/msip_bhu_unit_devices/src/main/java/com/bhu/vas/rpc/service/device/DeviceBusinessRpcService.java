@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.WifiDeviceContextDTO;
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.header.EventDTO;
 import com.bhu.vas.api.dto.header.JoinReqDTO;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.device.facade.DeviceFacadeService;
@@ -30,17 +31,37 @@ public class DeviceBusinessRpcService {
 	 * 1：wifi设备基础信息更新
 	 * 2：wifi设备在线更新
 	 */
-	public boolean wifiDeviceRegister(String ctx, String payload) {
+	public void wifiDeviceOnline(String ctx, String payload) {
 		logger.info(String.format("wifiDeviceRegister with params: payload[%s] ctx[%s]", payload, ctx));
 		JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, JoinReqDTO.class);
 		System.out.println(messageDto.getDto().getMac());
-		//System.out.println(messageDto.getDto().getOem_swver().length());
-		deviceFacadeService.wifiDeviceRegister(ctx, messageDto.getDto());
-		return true;
+
+		deviceFacadeService.wifiDeviceOnline(ctx, messageDto.getDto());
+	}
+	
+	/**
+	 * 移动设备连接状态请求
+	 * 1:online
+	 * 2:offline
+	 * 3:sync
+	 * @param ctx
+	 * @param payload
+	 */
+	public void handsetDeviceConnectState(String ctx, String payload) {
+		logger.info(String.format("handsetDeviceConnectState with params: payload[%s] ctx[%s]", payload, ctx));
+		EventDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, EventDTO.class);
+		HandsetDeviceDTO itemDto = messageDto.getWlanDto().getDto();
+		System.out.println(itemDto.getAction());
+		if(HandsetDeviceDTO.Action_Online.equals(itemDto.getAction())){
+			deviceFacadeService.handsetDeviceOnline(ctx, itemDto);
+		}
+		else if(HandsetDeviceDTO.Action_Offline.equals(itemDto.getAction())){
+			deviceFacadeService.handsetDeviceOffline(ctx, itemDto);
+		}
+		else if(HandsetDeviceDTO.Action_Sync.equals(itemDto.getAction())){
+			deviceFacadeService.handsetDeviceSync(ctx, itemDto);
+		}
 	}
 
-	public boolean wifiDeviceLogout(String message, WifiDeviceContextDTO contextDto) {
-		return false;
-	}
 
 }
