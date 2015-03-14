@@ -55,10 +55,12 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 						case ParserHeader.DeviceOffline_Prefix://0000000362687500003e
 							headers = ParserHeader.builder(null,type);
 							payload = StringHelper.formatMacAddress(message.substring(8));
+							headers.setMac(payload);
 							break;
 						case ParserHeader.DeviceNotExist_Prefix:
 							headers = ParserHeader.builder(null,type);
 							payload = StringHelper.formatMacAddress(message.substring(8));
+							headers.setMac(payload);
 							break;
 						case ParserHeader.Transfer_Prefix:
 							headers = ParserHeader.builder(message.substring(8, 42),type);

@@ -13,7 +13,7 @@ public class DaemonCheckTask extends TimerTask{
 	
 	//1. 查询cpu,内存利用率
 	private String query_device_status_cmd_template =   "00001001%s%s<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>";
-	public static final String TableSuffixTemplete = "%10d";
+	public static final String TableSuffixTemplete = "%010d";
 	@Override
 	public void run() {
 		System.out.println("DaemonCheckTask starting...");
@@ -25,5 +25,10 @@ public class DaemonCheckTask extends TimerTask{
     		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_status_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(TableSuffixTemplete, RandomData.intNumber(1005, 10000080))));
     	}
     	System.out.println("DaemonCheckTask ended!");
+	}
+	
+	public static void main(String[] argv){
+		System.out.println(String.format(TableSuffixTemplete, RandomData.intNumber(1005, 10000080)));
+		System.out.println(StringHelper.unformatMacAddress("34:36:3b:d0:4b:ac"));
 	}
 }

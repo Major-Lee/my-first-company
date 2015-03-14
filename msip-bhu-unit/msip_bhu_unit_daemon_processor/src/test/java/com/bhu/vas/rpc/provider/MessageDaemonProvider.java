@@ -4,7 +4,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class MessageDaemonProvider {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUDaemonProcessorRpcProviderApp");
+		System.setProperty("appname", "BHUDaemonSP");
 		System.setProperty("provider.port", "20882");
 		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_daemon_processor/conf/");
 		

@@ -8,7 +8,7 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 public class MessageDaemonConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUDaemonProcessorRpcConsumerApp");
+		System.setProperty("appname", "BHUDaemonSC");
 		System.setProperty("zookeeper", "192.168.66.234:2181");
 		System.setProperty("provider.port", "");
 		//System.setProperty("provider.port", "20882");
@@ -18,6 +18,11 @@ public class MessageDaemonConsumer {
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
 		IDaemonRpcService rpcService = (IDaemonRpcService)context.getBean("daemonRpcService");
+		rpcService.wifiDeviceOnline("cm001_1","34:36:3b:d0:4b:ac");
+		rpcService.wifiDeviceOnline("cm002_1","34:36:38:d0:48:ac");
+		//rpcService.wifiDeviceOffline(dto);
+		
+		
 		//System.out.println(tokenRpcService);
 		/*CmCtxInfo info = new CmCtxInfo("cm002","1");
 		WifiDeviceContextDTO dto = new WifiDeviceContextDTO();

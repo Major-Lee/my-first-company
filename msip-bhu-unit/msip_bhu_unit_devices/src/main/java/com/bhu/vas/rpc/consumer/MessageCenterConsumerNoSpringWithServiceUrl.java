@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.consumer;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
+import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 
 /**
@@ -20,7 +21,23 @@ public class MessageCenterConsumerNoSpringWithServiceUrl {
 		// 路径对应service.setPath()的值，如果未设置path，缺省path为接口名
 		reference.setApplication(application);
 		reference.setInterface(IDeviceMessageDispatchRpcService.class);
-		reference.setUrl("dubbo://127.0.0.1:20880/com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService"); 
+		reference.setUrl("dubbo://192.168.1.4:20882/com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService"); 
+		
+		
+		IDeviceMessageDispatchRpcService tokenRpcService = reference.get(); 
+		ParserHeader parserHeader = new ParserHeader();
+		parserHeader.setMt(0);
+		parserHeader.setSt(1);
+		parserHeader.setType(5);
+		String message = "<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H104\" orig_model=\"BXO2000n(2S-Lite)\" orig_hdver=\"B1\" orig_swver=\"2015-03-11-18:27 Revision: 6855\" oem_vendor=\"BHU\" oem_model=\"BXO2000n(2S-Lite)\" oem_hdver=\"B1\" oem_swver=\"2015-03-11-18:27 Revision: 6855\" sn=\"AAA\" mac=\"62:68:75:02:00:06\" ip=\"192.168.66.176\" build_info=\"2015-03-11-18:27 Revision: 6855\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"14\" join_reason=\"0\" wan_ip=\"192.168.66.176\" /></join_req>";
+		//CmCtxInfo info = new CmCtxInfo("cm001","1");
+		//WifiDeviceContextDTO contextDto = new WifiDeviceContextDTO();
+		//contextDto.setInfo(info);
+		//contextDto.setMac("62:68:75:02:00:06");
+		/*contextDto.setCmName("1");
+		contextDto.setCmId("cm1");*/
+		tokenRpcService.messageDispatch("cm1", message, parserHeader);
+		
 		// 和本地bean一样使用xxxService
 		/*IDeviceRpcService deviceRpcService = reference.get(); // 注意：此代理对象内部封装了所有通讯细节，对象较重，请缓存复用
 		DeviceDTO dto = new DeviceDTO();
