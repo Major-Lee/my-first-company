@@ -38,7 +38,6 @@ public class UserService extends AbstractCoreService<String,User, UserDao>{//Ent
 	 * @return
 	 */
 	public int countAllRecords(){
-		
 		Object obj = this.getEntityCache().get(Total_Users_Cached_Key);
 		if(obj == null){
 			ModelCriteria mc = new ModelCriteria();
