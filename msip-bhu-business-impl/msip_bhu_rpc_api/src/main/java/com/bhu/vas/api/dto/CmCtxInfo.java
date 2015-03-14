@@ -69,4 +69,9 @@ public class CmCtxInfo implements java.io.Serializable{
 		if(split.length != 2) return null;
 		return new CmCtxInfo(split[0],split[1]);
 	}
+	
+	public static String builderDownQueueName(String ctx_name){
+		return "down_".concat(ctx_name);
+	}
+	
 }

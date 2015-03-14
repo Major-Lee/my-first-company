@@ -3,7 +3,6 @@ package com.bhu.vas.api.rpc.daemon.stub;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -18,22 +17,22 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
     }
 
 	@Override
-	public boolean wifiDeviceOnline(WifiDeviceContextDTO dto) {
-		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
+	public boolean wifiDeviceOnline(String ctx,String mac) {
+		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return daemonRpcService.wifiDeviceOnline(dto);
+		return daemonRpcService.wifiDeviceOnline(ctx,mac);
 	}
 	@Override
-	public boolean wifiDeviceOffline(WifiDeviceContextDTO dto) {
-		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
+	public boolean wifiDeviceOffline(String ctx,String mac) {
+		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return daemonRpcService.wifiDeviceOffline(dto);
+		return daemonRpcService.wifiDeviceOffline(ctx,mac);
 	}
 	@Override
-	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto, String cmd) {
-		if(dto == null || StringUtils.isEmpty(dto.getMac())) 
+	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
+		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return daemonRpcService.wifiDeviceCmdDown(dto,cmd);
+		return daemonRpcService.wifiDeviceCmdDown(ctx,mac,cmd);
 	}
 
 	@Override

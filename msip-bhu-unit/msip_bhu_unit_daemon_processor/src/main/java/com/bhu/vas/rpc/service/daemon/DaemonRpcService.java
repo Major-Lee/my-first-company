@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.service.daemon;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -7,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
+import com.bhu.vas.daemon.SessionManager;
+import com.bhu.vas.daemon.observer.DaemonObserverManager;
+import com.bhu.vas.daemon.observer.listener.CmdDownListener;
 
 /**
  * 去除掉token存储在db中？只使用redis会比较好？
@@ -17,27 +20,36 @@ import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
  *
  */
 @Service("daemonRpcService")
-public class DaemonRpcService implements IDaemonRpcService {
+public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	private final Logger logger = LoggerFactory.getLogger(DaemonRpcService.class);
 
 	@Resource
 	private ActiveMQDynamicProducer activeMQDynamicProducer;
+	
+	
+	@PostConstruct
+	public void initialize(){
+		DaemonObserverManager.CmdDownObserver.addCmdDownListener(this);
+	}
+	
 	@Override
-	public boolean wifiDeviceOnline(WifiDeviceContextDTO dto) {
-		System.out.println("wifiDeviceOnline:"+dto);
+	public boolean wifiDeviceOnline(String ctx,String mac) {
+		System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
+		SessionManager.getInstance().addSession(mac, ctx);
 		return false;
 	}
 	
 	@Override
-	public boolean wifiDeviceOffline(WifiDeviceContextDTO dto) {
-		System.out.println("wifiDeviceOffline:"+dto);
+	public boolean wifiDeviceOffline(String ctx,String mac) {
+		System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
+		SessionManager.getInstance().removeSession(mac);
 		return false;
 	}
 
 	@Override
-	public boolean wifiDeviceCmdDown(WifiDeviceContextDTO dto, String cmd) {
-		System.out.println("wifiDeviceCmdDown:"+dto+" cmd:"+cmd);
-		activeMQDynamicProducer.deliverMessage(dto.getInfo().toDownQueueString(), cmd);
+	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
+		System.out.println(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 		return false;
 	}
 

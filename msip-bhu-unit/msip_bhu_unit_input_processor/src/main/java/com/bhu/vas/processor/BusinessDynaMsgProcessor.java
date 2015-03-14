@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
@@ -29,7 +30,9 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private static final int Transfer_Prefix = 5;*/
 	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
-	
+	@Resource
+	private IDaemonRpcService daemonRpcService;
+
 	@PostConstruct
 	public void initialize(){
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
@@ -67,6 +70,12 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 											type,ctx,message));
 					}
 					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+					if(ParserHeader.DeviceOffline_Prefix == type){//设备下线
+						
+					}
+					if(ParserHeader.Transfer_Prefix == type && headers.getMt() == 0 && headers.getSt()==1){//设备上线
+						
+					}
 					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);

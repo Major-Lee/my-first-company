@@ -19,7 +19,7 @@ public class MessageDaemonConsumer {
 		context.start();
 		IDaemonRpcService rpcService = (IDaemonRpcService)context.getBean("daemonRpcService");
 		//System.out.println(tokenRpcService);
-		CmCtxInfo info = new CmCtxInfo("cm002","1");
+		/*CmCtxInfo info = new CmCtxInfo("cm002","1");
 		WifiDeviceContextDTO dto = new WifiDeviceContextDTO();
 		dto.setInfo(info);
 		//dto.setCmId("1380");
@@ -30,7 +30,7 @@ public class MessageDaemonConsumer {
 		
 		rpcService.wifiDeviceCmdDown(dto, "where are u");
 		rpcService.cmJoinService(info);
-		rpcService.cmLeave(info);
+		rpcService.cmLeave(info);*/
 		/*for(int i=0;i<1000;i++){
 			try{
 				boolean ret = rpcService.wifiDeviceOnline(dto);//.deviceRegister(dto);//.generateUserAccessToken(200082, true, true);
