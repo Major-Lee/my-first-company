@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -18,7 +17,7 @@ import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
  * @author tangzichao
  *
  */
-@Service
+
 public class WarmupService {
 	private final Logger logger = LoggerFactory.getLogger(WarmupService.class);
 	
@@ -42,11 +41,11 @@ public class WarmupService {
 	 */
 	public boolean warmup_db(){
 		try{
-			CommonCriteria mc = new CommonCriteria();
-			mc.setStart(0);
-			mc.setSize(10);
-			wifiDeviceService.findModelByCommonCriteria(mc);
-			
+//			CommonCriteria mc = new CommonCriteria();
+//			mc.setStart(0);
+//			mc.setSize(10);
+//			wifiDeviceService.findModelByCommonCriteria(mc);
+			wifiDeviceService.warmup();
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
