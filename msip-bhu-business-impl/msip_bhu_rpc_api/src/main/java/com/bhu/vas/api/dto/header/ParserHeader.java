@@ -6,6 +6,12 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
 public class ParserHeader implements java.io.Serializable{
+	public static final int Online_Prefix = 1;
+	public static final int Offline_Prefix = 2;
+	public static final int DeviceOffline_Prefix = 3;
+	public static final int DeviceNotExist_Prefix = 4;
+	public static final int Transfer_Prefix = 5;
+	
 	private int type;
 	//12字节mac
 	private String mac;
