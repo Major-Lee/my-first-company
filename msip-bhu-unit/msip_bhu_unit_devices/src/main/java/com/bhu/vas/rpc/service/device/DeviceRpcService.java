@@ -39,8 +39,8 @@ public class DeviceRpcService implements IDeviceRpcService {
 	public boolean wifiDeviceRegister(String message, WifiDeviceContextDTO contextDto) {
 		logger.info(String.format("wifiDeviceRegister with params: message[%s]", message));
 		JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(message, JoinReqDTO.class);
-		System.out.println(messageDto.getDto().getOem_swver());
-		System.out.println(messageDto.getDto().getOem_swver().length());
+		System.out.println(messageDto.getDto().getMac());
+		//System.out.println(messageDto.getDto().getOem_swver().length());
 		deviceFacadeService.wifiDeviceRegister(messageDto.getDto(), contextDto);
 		return true;
 	}
