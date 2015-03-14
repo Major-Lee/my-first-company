@@ -21,13 +21,23 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	@Resource
 	private DeviceBusinessRpcService deviceBusinessRpcService;
 
+	/**
+	 * rpc message dispatch
+	 * @param type 消息主类型
+	 * @param payload 消息内容
+	 * @param parserHeader 其他header信息
+	 */
 	@Override
-	public void messageDispatch(int type, String payload, ParserHeader parserHeader) {
-		logger.info(String.format("DeviceMessageRPC invoke message [%]", ""));
-		int mType = parserHeader.getMt();
-		int sType = parserHeader.getSt();
-		if(mType == 0){
-			switch(sType){//子类型判断
+	public void messageDispatch(String payload, ParserHeader parserHeader) {
+		logger.info(String.format("DeviceMessageRPC messageDispatch invoke message [%]", payload));
+		int messageType = parserHeader.getType();
+//		if(type == 5){
+//			
+//		}
+		int masterType = parserHeader.getMt();
+		int subType = parserHeader.getSt();
+		if(masterType == 0){
+			switch(subType){//子类型判断
 				case 1://3.4.2	设备上线请求
 					break;
 				case 2://3.4.3	设备上线回应
@@ -47,8 +57,8 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				default:
 					break;
 			}
-		}else if(mType == 1){
-			switch(sType){//子类型判断
+		}else if(masterType == 1){
+			switch(subType){//子类型判断
 				case 1://3.4.14	文件传输消息(暂不实现)
 					break;
 				case 2://3.4.10	XML请求

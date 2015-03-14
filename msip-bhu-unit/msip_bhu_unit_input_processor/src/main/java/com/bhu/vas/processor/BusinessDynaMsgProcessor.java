@@ -66,7 +66,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 									String.format( "MessageType[%s] not yet implement handler process!full ctx[%s] message[%s]",
 											type,ctx,message));
 					}
-					deviceMessageDispatchRpcService.messageDispatch(type,payload,headers);
+					deviceMessageDispatchRpcService.messageDispatch(payload,headers);
 					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
