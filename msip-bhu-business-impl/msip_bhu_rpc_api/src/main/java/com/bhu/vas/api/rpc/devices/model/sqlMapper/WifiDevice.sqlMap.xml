@@ -249,7 +249,7 @@
     	</if>  
 	</delete>
 	
-	<select id="executeSql" parameterType="String">  
+	<select id="executeSql" parameterType="String" resultType="int">  
     	${value} 
 	</select> 
 </mapper>
