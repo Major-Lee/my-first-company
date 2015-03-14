@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.business.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 /**
  * warmup 主要是防止访问中初始化时间开销相对大的操作而且进行的预热程序
  * 1：数据库连接池预热

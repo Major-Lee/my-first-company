@@ -4,7 +4,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceContextDTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 
 public class MessageCenterConsumer {
 	public static void main(String[] args) throws Exception {
@@ -17,7 +17,7 @@ public class MessageCenterConsumer {
 				"classpath*:spring/applicationContextCore-resource.xml",
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
-		IDeviceRpcService tokenRpcService = (IDeviceRpcService)context.getBean("deviceRpcService");
+		IDeviceMessageDispatchRpcService tokenRpcService = (IDeviceMessageDispatchRpcService)context.getBean("deviceMessageDispatchRpcService");
 		//System.out.println(tokenRpcService);
 		/*DeviceDTO dto = new DeviceDTO();
 		dto.setMac("34:36:3b:d0:4b:ac");
@@ -48,7 +48,7 @@ public class MessageCenterConsumer {
 		/*contextDto.setCmName("1");
 		contextDto.setCmId("cm1");*/
 		
-		tokenRpcService.wifiDeviceRegister(message, contextDto);
+		//tokenRpcService.wifiDeviceRegister(message, contextDto);
 		System.out.println("done2");
 	}
 }

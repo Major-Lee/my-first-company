@@ -10,10 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -27,7 +25,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private static final int DeviceNotExist_Prefix = 4;
 	private static final int Transfer_Prefix = 5;
 	@Resource
-	private IDeviceRpcService deviceRpcService;
+	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
 	
 	@PostConstruct
 	public void initialize(){

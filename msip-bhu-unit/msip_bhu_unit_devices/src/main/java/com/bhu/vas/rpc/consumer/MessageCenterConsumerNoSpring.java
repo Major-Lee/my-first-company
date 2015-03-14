@@ -3,7 +3,7 @@ package com.bhu.vas.rpc.consumer;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 
 public class MessageCenterConsumerNoSpring {
 	public static void main(String[] argv){
@@ -21,10 +21,10 @@ public class MessageCenterConsumerNoSpring {
 		// 注意：ReferenceConfig为重对象，内部封装了与注册中心的连接，以及与服务提供方的连接
 		 
 		// 引用远程服务
-		ReferenceConfig<IDeviceRpcService> reference = new ReferenceConfig<IDeviceRpcService>(); // 此实例很重，封装了与注册中心的连接以及与提供者的连接，请自行缓存，否则可能造成内存和连接泄漏
+		ReferenceConfig<IDeviceMessageDispatchRpcService> reference = new ReferenceConfig<IDeviceMessageDispatchRpcService>(); // 此实例很重，封装了与注册中心的连接以及与提供者的连接，请自行缓存，否则可能造成内存和连接泄漏
 		reference.setApplication(application);
 		reference.setRegistry(registry); // 多个注册中心可以用setRegistries()
-		reference.setInterface(IDeviceRpcService.class);
+		reference.setInterface(IDeviceMessageDispatchRpcService.class);
 		//reference.setVersion("1.0.0");
 		 
 		// 和本地bean一样使用xxxService

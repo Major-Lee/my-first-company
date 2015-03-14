@@ -4,8 +4,8 @@ import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ProtocolConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRpcService;
-import com.bhu.vas.rpc.service.device.DeviceRpcService;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.rpc.service.device.DeviceMessageDispatchRpcService;
 
 public class MessageCenterProviderNoSpring {
 	public static void main(String[] args) throws Exception {
@@ -14,7 +14,7 @@ public class MessageCenterProviderNoSpring {
 		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_devices/conf/");
 		
 		// 服务实现
-		IDeviceRpcService tokenRpcService = new DeviceRpcService();
+		IDeviceMessageDispatchRpcService tokenRpcService = new DeviceMessageDispatchRpcService();
 		 
 		// 当前应用配置
 		ApplicationConfig application = new ApplicationConfig();
@@ -36,11 +36,11 @@ public class MessageCenterProviderNoSpring {
 		// 注意：ServiceConfig为重对象，内部封装了与注册中心的连接，以及开启服务端口
 		 
 		// 服务提供者暴露服务配置
-		ServiceConfig<IDeviceRpcService> service = new ServiceConfig<IDeviceRpcService>(); // 此实例很重，封装了与注册中心的连接，请自行缓存，否则可能造成内存和连接泄漏
+		ServiceConfig<IDeviceMessageDispatchRpcService> service = new ServiceConfig<IDeviceMessageDispatchRpcService>(); // 此实例很重，封装了与注册中心的连接，请自行缓存，否则可能造成内存和连接泄漏
 		service.setApplication(application);
 		service.setRegistry(registry); // 多个注册中心可以用setRegistries()
 		service.setProtocol(protocol); // 多个协议可以用setProtocols()
-		service.setInterface(IDeviceRpcService.class);
+		service.setInterface(IDeviceMessageDispatchRpcService.class);
 		service.setRef(tokenRpcService);
 		//service.setVersion("1.0.0");
 		 
