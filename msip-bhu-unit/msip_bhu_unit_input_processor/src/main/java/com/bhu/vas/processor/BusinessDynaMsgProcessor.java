@@ -35,6 +35,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 
 	@PostConstruct
 	public void initialize(){
+		logger.info("BusinessDynaMsgProcessor initialize...");
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
@@ -42,12 +43,13 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 
 	@Override
 	public void onMessage(final String ctx,final String message) {
+		logger.info(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 		validateStep1(message);
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					System.out.println("BusinessNotifyMsgProcessor receive:"+ctx+"~~~~"+message);
+					System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 					int type = Integer.parseInt(message.substring(0, 8));
 					ParserHeader headers = null;
 					String payload = null;
@@ -73,7 +75,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 											type,ctx,message));
 					}
 					if(headers != null){
-					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 						if(ParserHeader.DeviceOffline_Prefix == type){//设备下线
 							daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 						}

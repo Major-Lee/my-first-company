@@ -31,6 +31,7 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 	
 	@PostConstruct
 	public void initialize() {
+		logger.info("NotifyCmMsgProcessor initialize...");
 		QueueMsgObserverManager.CmMessageObserver.addCmMessageListener(this);
 	}
 	

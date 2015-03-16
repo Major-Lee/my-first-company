@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<substitutionProperty name="log.base" value="/BHUData/logs/unitlogs/msip-bhu-unit-input-processor/${provider.port}/" />
+	<property name="log.base" value="/BHUData/logs/unitlogs/msip-bhu-unit-input-processor/${provider.port}/" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->
