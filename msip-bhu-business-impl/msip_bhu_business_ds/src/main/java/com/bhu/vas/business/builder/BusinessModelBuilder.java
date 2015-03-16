@@ -19,7 +19,7 @@ public class BusinessModelBuilder {
 	
 	public static WifiDevice wifiDeviceDtoToEntity(WifiDeviceDTO dto){
 		WifiDevice wifi_device_entity = new WifiDevice();
-		wifi_device_entity.setId(dto.getMac());
+		wifi_device_entity.setId(dto.getMac().toLowerCase());
 		wifi_device_entity.setHdtype(dto.getHdtype());
 		wifi_device_entity.setOrig_vendor(dto.getOrig_vendor());
 		wifi_device_entity.setOrig_model(dto.getOrig_model());
@@ -48,7 +48,7 @@ public class BusinessModelBuilder {
 		wifi_device_alarm_entity.setTrapname(dto.getTrapname());
 		wifi_device_alarm_entity.setSerial_number(dto.getSerial_number());
 		wifi_device_alarm_entity.setNe_name(dto.getNe_name());
-		wifi_device_alarm_entity.setMac_addr(dto.getMac_addr());
+		wifi_device_alarm_entity.setMac_addr(dto.getMac_addr().toLowerCase());
 		wifi_device_alarm_entity.setAlarm_level(dto.getAlarm_level());
 		wifi_device_alarm_entity.setAlarm_type(dto.getAlarm_type());
 		wifi_device_alarm_entity.setAlarm_cause(dto.getAlarm_cause());
@@ -63,7 +63,7 @@ public class BusinessModelBuilder {
 	
 	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
 		HandsetDevice wifi_device_entity = new HandsetDevice();
-		wifi_device_entity.setId(dto.getMac());
+		wifi_device_entity.setId(dto.getMac().toLowerCase());
 		wifi_device_entity.setPhy_tx_rate(dto.getPhy_tx_rate());
 		wifi_device_entity.setPhy_rx_rate(dto.getPhy_rx_rate());
 		wifi_device_entity.setData_tx_rate(dto.getData_tx_rate());

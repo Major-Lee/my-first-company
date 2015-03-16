@@ -81,21 +81,21 @@ public class DeviceFacadeService {
 	public void wifiDeviceOffline(String ctx, String mac){
 		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		
+		String lowercase_mac = mac.toLowerCase();
 //		try{
 		//1:wifi设备基础信息表中的在线状态更新
-		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(mac);
+		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_mac);
 		if(exist_wifi_device_entity != null){
 			exist_wifi_device_entity.setOnline(false);
 			wifiDeviceService.update(exist_wifi_device_entity);
 		}
 		//2:wifi设备在线状态redis更新
 		//首先进行验证,判断ctx信息是否一致,如果一致则删除
-		String ctx_present = WifiDevicePresentService.getInstance().getPresent(mac);
+		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_mac);
 		if(ctx.equals(ctx_present)){
-			WifiDevicePresentService.getInstance().removePresent(mac);
+			WifiDevicePresentService.getInstance().removePresent(lowercase_mac);
 			//3:在此wifi上的移动设备的在线状态更新
-			List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(mac);
+			List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(lowercase_mac);
 			if(!handset_devices_online_entitys.isEmpty()){
 				for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
 					handset_devices_online_entity.setOnline(false);
@@ -156,8 +156,8 @@ public class DeviceFacadeService {
 			handsetDeviceService.update(handset_device_entity);
 		}
 		//2:移动设备连接wifi设备的流水记录
-		//wifiHandsetDeviceRelationMService.addRelation(dto.getMac(), wifiId, handset_device_entity.
-		//		getLast_login_at());
+		wifiHandsetDeviceRelationMService.addRelation(dto.getMac(), wifiId, handset_device_entity.
+				getLast_login_at());
 //		}catch(Exception ex){
 //			ex.printStackTrace(System.out);
 //			logger.error(ex.getMessage(), ex);
@@ -177,9 +177,9 @@ public class DeviceFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 
 //		try{
-			//1:更新移动设备的online状态为false
+		//1:更新移动设备的online状态为false
 			//HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac());
+		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(exist_handset_device_entity != null){
 			exist_handset_device_entity.setOnline(false);
 			handsetDeviceService.update(exist_handset_device_entity);
