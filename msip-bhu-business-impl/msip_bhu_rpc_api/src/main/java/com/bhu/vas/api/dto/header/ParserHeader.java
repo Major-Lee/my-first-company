@@ -78,4 +78,15 @@ public class ParserHeader implements java.io.Serializable{
 		array[2] = msg.substring(22, 26);//设备报文主类型(4字节)
 		array[3] = msg.substring(26, 34);//子类型(8字节)
 */	}
+	@Override
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("type=").append(type).append(StringHelper.COMMA_STRING_GAP);
+		if(!StringUtils.isEmpty(mac))
+			sb.append("mac=").append(mac).append(StringHelper.COMMA_STRING_GAP);
+		sb.append("taskid=").append(taskid).append(StringHelper.COMMA_STRING_GAP);
+		sb.append("mt=").append(mt).append(StringHelper.COMMA_STRING_GAP);
+		sb.append("st=").append(st);
+		return sb.toString();
+	}
 }

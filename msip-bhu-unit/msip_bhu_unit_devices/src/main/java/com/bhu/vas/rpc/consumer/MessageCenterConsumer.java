@@ -17,33 +17,7 @@ public class MessageCenterConsumer {
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
 		IDeviceMessageDispatchRpcService tokenRpcService = (IDeviceMessageDispatchRpcService)context.getBean("deviceMessageDispatchRpcService");
-		//System.out.println(tokenRpcService);
-		/*DeviceDTO dto = new DeviceDTO();
-		dto.setMac("34:36:3b:d0:4b:ac");
-		dto.setT(System.currentTimeMillis());
-		for(int i=0;i<1000;i++){
-			try{
-				boolean ret = tokenRpcService.deviceRegister(dto, null);//.generateUserAccessToken(200082, true, true);
-				//System.out.println(ret);
-				//ad.sleep(50);
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-			//System.out.println(i);
-		}
-		System.out.println("done");
-		
 
-		//Thread.sleep(1000000000l);
-		//System.out.println("Press any key to exit.");
-		//System.in.read();
-		 * 
-*/	
-		
-		/*DeviceDTO dto = new DeviceDTO();
-		dto.setMac("34:36:3b:d0:4b:ac");
-		//dto.setT(System.currentTimeMillis());
-		tokenRpcService.test("gogog", dto);*/
 		String message = null;
 		ParserHeader parserHeader = new ParserHeader();
 		//ParserHeader parserHeader = new ParserHeader();
@@ -79,8 +53,8 @@ public class MessageCenterConsumer {
 		parserHeader.setMt(1);
 		parserHeader.setSt(6);
 		parserHeader.setMac("62:68:75:02:00:06");
-		message = null;
+		message = "123";
 		tokenRpcService.messageDispatch("cm1", message, parserHeader);
-		System.out.println("done3");
+//		System.out.println("done4");
 	}
 }
