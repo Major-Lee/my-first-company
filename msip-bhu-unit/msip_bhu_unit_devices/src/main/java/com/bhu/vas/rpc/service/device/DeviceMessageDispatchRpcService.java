@@ -31,20 +31,37 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 */
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-//		logger.info(String.format("DeviceMessageRPC messageDispatch invoke message [%]", payload));
-		int type = parserHeader.getType();
-		switch(type){
-			case ParserHeader.DeviceOffline_Prefix:
-				deviceBusinessRpcService.wifiDeviceOffline(ctx, parserHeader.getMac());
-				break;
-			case ParserHeader.DeviceNotExist_Prefix:
-				break;
-			case ParserHeader.Transfer_Prefix:
-				transferMessageDispatch(ctx, payload, parserHeader);
-				break;
-			default:
-				throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR.code());
+		logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
+		
+		try{
+			int type = parserHeader.getType();
+			switch(type){
+				case ParserHeader.DeviceOffline_Prefix:
+					deviceBusinessRpcService.wifiDeviceOffline(ctx, parserHeader.getMac());
+					break;
+				case ParserHeader.DeviceNotExist_Prefix:
+					break;
+				case ParserHeader.Transfer_Prefix:
+					transferMessageDispatch(ctx, payload, parserHeader);
+					break;
+				default:
+					messageDispatchUnsupport(ctx, payload, parserHeader);
+					break;
+			}
+			
+			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
+					ctx, payload, parserHeader));
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC messageDispatch failed ctx [%s] payload [%s] header[%s]", 
+					ctx, payload, parserHeader));
+			throw ex;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceMessageRPC messageDispatch exception ctx [%s] payload [%s] header[%s] exmsg[%s]",
+					ctx, payload, parserHeader, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
+		
 	}
 	
 	/**
@@ -75,6 +92,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 8://3.4.9	保活响应
 					break;
 				default:
+					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
 		}else if(mType == ParserHeader.Transfer_mtype_1){
@@ -98,10 +116,17 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 8://3.4.17	应用隧道消息
 					break;
 				default:
+					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
+		}else{
+			messageDispatchUnsupport(ctx, payload, parserHeader);
 		}
 	}
 
+	public void messageDispatchUnsupport(String ctx, String payload, ParserHeader parserHeader){
+		logger.info(String.format("DeviceMessageRPC messageDispatch unsupport msg ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
+		throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR.code());
+	}
 
 }

@@ -178,11 +178,18 @@
 		</encoder>
 	</appender>	
 
-	<logger name="com.smartwork.rpc.service" additivity="false">
+	<logger name="com.bhu.vas.rpc.service" additivity="false">
 		<level value="INFO" />
 		<appender-ref ref="stdout" />
 		<appender-ref ref="unitrequestfile" />
 	</logger>	
+	<!-- 
+	<logger name="com.bhu.vas.business.facade" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="unitrequestfile" />
+	</logger>
+	 -->
 	<root>
 		<level value="WARN" />
 		<appender-ref ref="stdout" />
