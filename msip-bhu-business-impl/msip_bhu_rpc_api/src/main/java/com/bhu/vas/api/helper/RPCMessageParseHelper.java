@@ -13,14 +13,14 @@ public class RPCMessageParseHelper {
 	
 	public static <T> T generateDTOFromMessage(String message, Class<T> clazz){
 		if(StringUtils.isEmpty(message)){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 		}
 		
 		try{
 			return parserMessageByDom4j(message, clazz);
 		}catch(Exception ex){
 			//ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_ILEGAL.code());
 		}
 	}
 	

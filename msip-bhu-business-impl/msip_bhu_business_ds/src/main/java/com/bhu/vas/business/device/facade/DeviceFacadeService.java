@@ -48,9 +48,9 @@ public class DeviceFacadeService {
 	 */
 	public void wifiDeviceOnline(String ctx, WifiDeviceDTO dto){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 
 //		try{
 		//1:wifi设备基础信息更新
@@ -80,7 +80,7 @@ public class DeviceFacadeService {
 	 */
 	public void wifiDeviceOffline(String ctx, String mac){
 		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 		
 //		try{
 		//1:wifi设备基础信息表中的在线状态更新
@@ -117,9 +117,9 @@ public class DeviceFacadeService {
 	 */
 	public void wifiDeviceAlarm(String ctx, WifiDeviceAlarmDTO dto){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac_addr()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 
 //		try{
 		WifiDeviceAlarm wifi_device_alarm_entity = BusinessModelBuilder.wifiDeviceAlarmDtoToEntity(dto);
@@ -141,9 +141,9 @@ public class DeviceFacadeService {
 	 */
 	public void handsetDeviceOnline(String ctx, String wifiId, HandsetDeviceDTO dto){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 
 //		try{
 		//1:移动设备基础信息更新
@@ -172,9 +172,9 @@ public class DeviceFacadeService {
 	 */
 	public void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_VALIDATE_EMPTY.code());
 
 //		try{
 			//1:更新移动设备的online状态为false

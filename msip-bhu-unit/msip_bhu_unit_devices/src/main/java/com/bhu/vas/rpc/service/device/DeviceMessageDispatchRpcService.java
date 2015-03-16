@@ -126,7 +126,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 
 	public void messageDispatchUnsupport(String ctx, String payload, ParserHeader parserHeader){
 		logger.info(String.format("DeviceMessageRPC messageDispatch unsupport msg ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
-		throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR.code());
+		throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 	}
 
 }

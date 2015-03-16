@@ -9,6 +9,9 @@ public enum ResponseErrorCode {
 	validate.userOrpwd.error = 用户名密码错误
 	validate.request.post.method = 只支持post请求*/
 	RPC_PARAMS_VALIDATE_ILLEGAL("10000", "rpc.params.validate.illegal"),
+	RPC_PARAMS_VALIDATE_EMPTY("10001", "rpc.params.validate.empty"),
+	RPC_MESSAGE_UNSUPPORT("10002", "rpc.message.unsupport"),
+	
 	STORE_ITEM_NOTEXIST("10001", "store.item.notexist"),
 	STORE_ITEM_NOTPUBLISHED("10002", "store.item.notpublished"),
 	STORE_ITEM_ALREADY_PUCHASED("10003", "store.item.already.purchased"),
