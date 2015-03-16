@@ -3,8 +3,6 @@ package com.bhu.vas.rpc.service.daemon;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
@@ -21,7 +19,7 @@ import com.bhu.vas.daemon.observer.listener.CmdDownListener;
  */
 @Service("daemonRpcService")
 public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
-	private final Logger logger = LoggerFactory.getLogger(DaemonRpcService.class);
+	//private final Logger logger = LoggerFactory.getLogger(DaemonRpcService.class);
 
 	@Resource
 	private ActiveMQDynamicProducer activeMQDynamicProducer;
