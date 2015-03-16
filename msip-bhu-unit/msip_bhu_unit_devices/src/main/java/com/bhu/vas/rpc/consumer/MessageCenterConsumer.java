@@ -53,7 +53,7 @@ public class MessageCenterConsumer {
 		parserHeader.setMt(1);
 		parserHeader.setSt(6);
 		parserHeader.setMac("62:68:75:02:00:06");
-		message = "123";
+		message = "<event><trap><ITEM name=\"apAcTimeSyncFailureTrap\" serial_number=\"BN009BC100056AA\" ne_name=\"\" mac_addr=\"62:68:75:00:00:3e\" alarm_level=\"1\" alarm_type=\"0\" alarm_cause=\"1\" alarm_reason=\"System Time Synchronize Failure\" alarm_event_time=\"1426325752\" alarm_status=\"1\" alarm_title=\"System Time Synchronize Failure Trap\" alarm_content=\"\" alarm_serial_id=\"1\" /></trap></event>";
 		tokenRpcService.messageDispatch("cm1", message, parserHeader);
 //		System.out.println("done4");
 	}

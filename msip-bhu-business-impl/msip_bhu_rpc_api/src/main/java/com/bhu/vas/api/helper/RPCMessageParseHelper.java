@@ -19,7 +19,7 @@ public class RPCMessageParseHelper {
 		try{
 			return parserMessageByDom4j(message, clazz);
 		}catch(Exception ex){
-			//ex.printStackTrace(System.out);
+			ex.printStackTrace(System.out);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		}
 	}

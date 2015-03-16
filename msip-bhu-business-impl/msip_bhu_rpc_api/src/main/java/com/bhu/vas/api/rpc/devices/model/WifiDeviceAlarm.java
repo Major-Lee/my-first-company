@@ -8,7 +8,8 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceAlarm extends BaseIntModel{
-	
+	//告警名称
+	private String name;
 	//告警英文名称
 	private String trapname;
 	//设备序列号
@@ -48,6 +49,14 @@ public class WifiDeviceAlarm extends BaseIntModel{
 	@Override
 	public void preUpdate() {
 		super.preUpdate();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getTrapname() {

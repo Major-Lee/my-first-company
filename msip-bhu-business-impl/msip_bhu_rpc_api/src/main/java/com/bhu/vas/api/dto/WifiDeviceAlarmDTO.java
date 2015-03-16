@@ -12,6 +12,9 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("ITEM")
 @SuppressWarnings("serial")
 public class WifiDeviceAlarmDTO implements Serializable{
+	//告警名称
+	@XStreamAsAttribute
+	private String name;
 	//告警英文名称
 	@XStreamAsAttribute
 	private String trapname;
@@ -52,6 +55,12 @@ public class WifiDeviceAlarmDTO implements Serializable{
 	@XStreamAsAttribute
 	private String alarm_serial_id;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getTrapname() {
 		return trapname;
 	}

@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="wifiDeviceAlarm">
     <id property="id" column="id"/>
+    <result property="name" column="name"/>
     <result property="trapname" column="trapname"/>
     <result property="serial_number" column="serial_number"/>
     <result property="ne_name" column="ne_name"/>
@@ -31,6 +32,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	name,
 	    	trapname,
 	    	serial_number,
 	    	ne_name,
@@ -50,6 +52,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	name,
 	    	trapname,
 	    	serial_number,
 	    	ne_name,
@@ -70,6 +73,7 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{name},
 	    	#{trapname},
 	    	#{serial_number},
 	    	#{ne_name},
@@ -88,6 +92,7 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			name = #{name},
 	    	trapname = #{trapname},
 	    	serial_number = #{serial_number},
 	    	ne_name = #{ne_name},

@@ -45,6 +45,7 @@ public class BusinessModelBuilder {
 	
 	public static WifiDeviceAlarm wifiDeviceAlarmDtoToEntity(WifiDeviceAlarmDTO dto){
 		WifiDeviceAlarm wifi_device_alarm_entity = new WifiDeviceAlarm();
+		wifi_device_alarm_entity.setName(dto.getName());
 		wifi_device_alarm_entity.setTrapname(dto.getTrapname());
 		wifi_device_alarm_entity.setSerial_number(dto.getSerial_number());
 		wifi_device_alarm_entity.setNe_name(dto.getNe_name());
