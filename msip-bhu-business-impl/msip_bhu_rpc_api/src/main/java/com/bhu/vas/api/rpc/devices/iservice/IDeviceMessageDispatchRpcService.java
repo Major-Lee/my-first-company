@@ -4,8 +4,5 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 
 
 public interface IDeviceMessageDispatchRpcService {
-	public void msgDispatch(String ctx, String payload, ParserHeader parserHeader);
-	public void messageDispatch1(String ctx, String payload);
-	
-	public void test(String ctx, ParserHeader parserHeader);
+	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader);
 }

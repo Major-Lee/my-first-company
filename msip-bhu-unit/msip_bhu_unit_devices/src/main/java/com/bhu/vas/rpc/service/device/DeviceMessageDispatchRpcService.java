@@ -30,7 +30,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 * @param parserHeader 其他header信息
 	 */
 	@Override
-	public void msgDispatch(String ctx, String payload, ParserHeader parserHeader) {
+	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
 //		logger.info(String.format("DeviceMessageRPC messageDispatch invoke message [%]", payload));
 		int type = parserHeader.getType();
 		switch(type){
@@ -103,16 +103,5 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		}
 	}
 
-	@Override
-	public void messageDispatch1(String ctx, String payload) {
-		// TODO Auto-generated method stub
-		System.out.println(String.format("ctx[%s]", ctx));
-	}
-
-	@Override
-	public void test(String ctx, ParserHeader parserHeader) {
-		System.out.println(String.format("ctx[%s] dto[%s]", ctx,parserHeader));
-		
-	}
 
 }
