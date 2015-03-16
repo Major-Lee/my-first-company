@@ -3,9 +3,11 @@ package com.bhu.vas.business.builder;
 import java.util.Date;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
@@ -41,6 +43,24 @@ public class BusinessModelBuilder {
 		return wifi_device_entity;
 	}
 	
+	public static WifiDeviceAlarm wifiDeviceAlarmDtoToEntity(WifiDeviceAlarmDTO dto){
+		WifiDeviceAlarm wifi_device_alarm_entity = new WifiDeviceAlarm();
+		wifi_device_alarm_entity.setTrapname(dto.getTrapname());
+		wifi_device_alarm_entity.setSerial_number(dto.getSerial_number());
+		wifi_device_alarm_entity.setNe_name(dto.getNe_name());
+		wifi_device_alarm_entity.setMac_addr(dto.getMac_addr());
+		wifi_device_alarm_entity.setAlarm_level(dto.getAlarm_level());
+		wifi_device_alarm_entity.setAlarm_type(dto.getAlarm_type());
+		wifi_device_alarm_entity.setAlarm_cause(dto.getAlarm_cause());
+		wifi_device_alarm_entity.setAlarm_reason(dto.getAlarm_reason());
+		wifi_device_alarm_entity.setAlarm_event_time(dto.getAlarm_event_time());
+		wifi_device_alarm_entity.setAlarm_status(dto.getAlarm_status());
+		wifi_device_alarm_entity.setAlarm_title(dto.getAlarm_title());
+		wifi_device_alarm_entity.setAlarm_content(dto.getAlarm_content());
+		wifi_device_alarm_entity.setAlarm_serial_id(dto.getAlarm_serial_id());
+		return wifi_device_alarm_entity;
+	}
+	
 	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
 		HandsetDevice wifi_device_entity = new HandsetDevice();
 		wifi_device_entity.setId(dto.getMac());
@@ -71,4 +91,6 @@ public class BusinessModelBuilder {
 		wifi_device_entity.setOnline(true);
 		return wifi_device_entity;
 	}
+	
+	
 }

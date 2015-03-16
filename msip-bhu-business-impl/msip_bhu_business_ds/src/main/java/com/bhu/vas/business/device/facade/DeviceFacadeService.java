@@ -1,5 +1,7 @@
 package com.bhu.vas.business.device.facade;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -12,9 +14,11 @@ import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.builder.BusinessModelBuilder;
 import com.bhu.vas.business.device.service.HandsetDeviceService;
+import com.bhu.vas.business.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.device.service.WifiDeviceService;
 import com.bhu.vas.business.device.service.WifiHandsetDeviceRelationMService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -26,6 +30,9 @@ public class DeviceFacadeService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceAlarmService wifiDeviceAlarmService;
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
@@ -88,7 +95,13 @@ public class DeviceFacadeService {
 			if(ctx.equals(ctx_present)){
 				WifiDevicePresentService.getInstance().removePresent(mac);
 				//3:在此wifi上的移动设备的在线状态更新
-				
+				List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(mac);
+				if(!handset_devices_online_entitys.isEmpty()){
+					for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
+						handset_devices_online_entity.setOnline(false);
+					}
+					handsetDeviceService.updateAll(handset_devices_online_entitys);
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
@@ -109,7 +122,9 @@ public class DeviceFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY.code());
 
 		try{
-
+			WifiDeviceAlarm wifi_device_alarm_entity = BusinessModelBuilder.wifiDeviceAlarmDtoToEntity(dto);
+			wifiDeviceAlarmService.insert(wifi_device_alarm_entity);
+			//wifiDeviceAlarmService
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
