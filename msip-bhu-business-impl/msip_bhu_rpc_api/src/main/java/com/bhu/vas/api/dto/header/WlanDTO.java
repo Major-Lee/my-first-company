@@ -14,7 +14,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @SuppressWarnings("serial")
 public class WlanDTO implements Serializable{
 	@XStreamAlias("ITEM")
-	@XStreamAsAttribute
 	private HandsetDeviceDTO dto;
 
 	public HandsetDeviceDTO getDto() {

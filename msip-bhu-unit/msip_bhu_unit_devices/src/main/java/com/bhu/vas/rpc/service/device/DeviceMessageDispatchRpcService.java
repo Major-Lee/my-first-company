@@ -31,7 +31,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 */
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		logger.info(String.format("DeviceMessageRPC messageDispatch invoke message [%]", payload));
+//		logger.info(String.format("DeviceMessageRPC messageDispatch invoke message [%]", payload));
 		int type = parserHeader.getType();
 		switch(type){
 			case ParserHeader.DeviceOffline_Prefix:
@@ -93,7 +93,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					deviceBusinessRpcService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
-					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload);
+					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload, parserHeader);
 					break;
 				case 8://3.4.17	应用隧道消息
 					break;
@@ -103,16 +103,5 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		}
 	}
 
-	@Override
-	public void messageDispatch1(String ctx, String payload) {
-		// TODO Auto-generated method stub
-		System.out.println(String.format("ctx[%s]", ctx));
-	}
-
-	@Override
-	public void test(String ctx, ParserHeader parserHeader) {
-		System.out.println(String.format("ctx[%s] dto[%s]", ctx,parserHeader));
-		
-	}
 
 }

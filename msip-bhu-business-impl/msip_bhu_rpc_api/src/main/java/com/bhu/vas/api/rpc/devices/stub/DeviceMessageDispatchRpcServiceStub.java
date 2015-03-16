@@ -18,21 +18,10 @@ public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispat
 
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(payload)) 
+		if(StringUtils.isEmpty(ctx) || parserHeader == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		deviceMessageDispatchRpcService.messageDispatch(ctx, payload, parserHeader);
 	}
 
-	@Override
-	public void messageDispatch1(String ctx, String payload) {
-		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(payload)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		deviceMessageDispatchRpcService.messageDispatch1(ctx, payload);
-	}
-
-	@Override
-	public void test(String ctx, ParserHeader parserHeader) {
-		deviceMessageDispatchRpcService.test(ctx, parserHeader);
-	}
 
 }

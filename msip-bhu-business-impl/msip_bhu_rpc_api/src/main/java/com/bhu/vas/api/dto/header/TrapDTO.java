@@ -14,7 +14,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @SuppressWarnings("serial")
 public class TrapDTO implements Serializable{
 	@XStreamAlias("ITEM")
-	@XStreamAsAttribute
 	private WifiDeviceAlarmDTO dto;
 
 	public WifiDeviceAlarmDTO getDto() {
