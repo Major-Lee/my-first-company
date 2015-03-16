@@ -10,6 +10,7 @@ import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.business.asyn.web.service.DeliverMessageService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 public class WifiSimulateProducerTest {
 	
@@ -25,7 +26,7 @@ public class WifiSimulateProducerTest {
 		};
 		ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
 		
-		DeliverMessageService deliverMessageService =(DeliverMessageService) ctx.getBean("deliverMessageService");
+		/*DeliverMessageService deliverMessageService =(DeliverMessageService) ctx.getBean("deliverMessageService");
 		
 		for(int i=0;i<cms.size();i++){
 			CmCtxInfo cinfo = cms.get(i);
@@ -40,7 +41,7 @@ public class WifiSimulateProducerTest {
 		CmCtxInfo cinfo = new CmCtxInfo("cm003","1");
 		deliverMessageService.sendPureText("00010000"+JsonHelper.getJSONString(cinfo));
 		deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
-		
+		*/
 		ActiveMQDynamicProducer activeMQDynamicProducer =(ActiveMQDynamicProducer) ctx.getBean("activeMQDynamicProducer");
 		//for Input Queue Create test Producers
 		activeMQDynamicProducer.initTestProducers();
@@ -50,7 +51,7 @@ public class WifiSimulateProducerTest {
 			System.out.println(Queue_Key);
 			//wifi上线消息
 			activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
-					String.format(wifi_online_msg_template, winfo.getSn(),winfo.getMac(),winfo.getIp()));
+					String.format(wifi_online_msg_template,StringHelper.unformatMacAddress(winfo.getMac()), winfo.getSn(),winfo.getMac(),winfo.getIp()));
 			//wifi下线消息
 			//activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
 			//		String.format(wifi_offline_msg_template, winfo.getMac(),winfo.getIp()));
@@ -92,8 +93,8 @@ public class WifiSimulateProducerTest {
 		cms.add(new CmCtxInfo("cm002","1"));
 		cms.add(new CmCtxInfo("cm002","2"));
 	}
-	
-	private static String wifi_online_msg_template = "00000001<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+	//0000000562687500003e0000000000000000000001
+	private static String wifi_online_msg_template = "00000005%s0000000000000000000001<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
 									 "<join_req>"+										
 									  	"<ITEM orig_vendor=\"BHU\" hdtype=\"H104\" orig_model=\"BXO2000n(2S-Lite)\" orig_hdver=\"B1\" orig_swver=\"AP104P07V1.2.9Build6755\" oem_vendor=\"BHU\" oem_model=\"BXO2000n(2S-Lite)\" oem_hdver=\"B1\" oem_swver=\"AP104P07V1.2.9Build6755\" sn=\"%s\" mac=\"%s\" ip=\"%s\" build_info=\"2015-02-16-11:09 Revision: 6755\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"bridge-ap\" config_sequence=\"63\" join_reason=\"3\" />"+
 									 "</join_req>";

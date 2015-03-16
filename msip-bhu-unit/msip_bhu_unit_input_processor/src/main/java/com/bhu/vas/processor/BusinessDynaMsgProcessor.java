@@ -56,6 +56,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							headers = ParserHeader.builder(null,type);
 							payload = StringHelper.formatMacAddress(message.substring(8));
 							headers.setMac(payload);
+							
 							break;
 						case ParserHeader.DeviceNotExist_Prefix:
 							headers = ParserHeader.builder(null,type);
@@ -71,12 +72,14 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 									String.format( "MessageType[%s] not yet implement handler process!full ctx[%s] message[%s]",
 											type,ctx,message));
 					}
+					if(headers != null){
 					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
-					if(ParserHeader.DeviceOffline_Prefix == type){//设备下线
-						
-					}
-					if(ParserHeader.Transfer_Prefix == type && headers.getMt() == 0 && headers.getSt()==1){//设备上线
-						
+						if(ParserHeader.DeviceOffline_Prefix == type){//设备下线
+							daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
+						}
+						if(ParserHeader.Transfer_Prefix == type && headers.getMt() == 0 && headers.getSt()==1){//设备上线
+							daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+						}
 					}
 					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){

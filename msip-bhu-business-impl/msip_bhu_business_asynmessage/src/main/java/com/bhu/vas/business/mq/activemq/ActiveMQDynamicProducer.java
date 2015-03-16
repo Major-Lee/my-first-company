@@ -48,7 +48,7 @@ public class ActiveMQDynamicProducer{
 			return;
 		}
 		//String jsonMsg = JsonHelper.getJSONString(message);
-		logger.info(String.format("Destination[%s] Msg[%s]", "Sender_KEY",message));
+		logger.info(String.format("Destination[%s] Msg[%s]", Sender_KEY,message));
 		try {
 			Message replyMessage = des_session.createTextMessage(message);
 			//replyMessage.setStringProperty("selector-receiver", String.valueOf(new Random().nextInt(5)));
