@@ -11,7 +11,7 @@ public class SessionManager {
 	}
 
 	private SessionManager(){
-		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 20*1000,20*1000);//5*60*1000,5*60*1000);//5*60*1000);
+		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 60*1000,60*1000);//5*60*1000,5*60*1000);//5*60*1000);
 	}
 	
 	/**

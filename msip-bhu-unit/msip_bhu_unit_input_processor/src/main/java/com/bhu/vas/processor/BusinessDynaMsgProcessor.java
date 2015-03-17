@@ -76,7 +76,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 					}
 					if(headers != null){
 						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
-						if(ParserHeader.DeviceOffline_Prefix == type){//设备下线
+						if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
 							daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 						}
 						if(ParserHeader.Transfer_Prefix == type && headers.getMt() == 0 && headers.getSt()==1){//设备上线

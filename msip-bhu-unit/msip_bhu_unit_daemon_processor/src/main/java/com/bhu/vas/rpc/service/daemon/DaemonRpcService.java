@@ -3,8 +3,8 @@ package com.bhu.vas.rpc.service.daemon;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
@@ -35,7 +35,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean wifiDeviceOnline(String ctx,String mac) {
 		System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
-		logger.info(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
+		logger.info("info"+String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().addSession(mac, ctx);
 		return false;
 	}
@@ -43,7 +43,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean wifiDeviceOffline(String ctx,String mac) {
 		System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
-		logger.info(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
+		logger.info("info"+String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().removeSession(mac);
 		return false;
 	}
@@ -51,7 +51,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
 		System.out.println(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
-		logger.info(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+		logger.info("info"+String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 		return false;
 	}
@@ -59,14 +59,14 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		System.out.println("cmJoinService:"+info);
-		logger.info("cmJoinService:"+info);
+		logger.info("info"+"cmJoinService:"+info);
 		return false;
 	}
 
 	@Override
 	public boolean cmLeave(CmCtxInfo info) {
 		System.out.println("cmLeave:"+info);
-		logger.info("cmLeave:"+info);
+		logger.info("info"+"cmLeave:"+info);
 		return false;
 	}
 }

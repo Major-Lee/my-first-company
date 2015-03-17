@@ -13,6 +13,14 @@ public class DaemonCheckTask extends TimerTask{
 	
 	//1. 查询cpu,内存利用率
 	private String query_device_status_cmd_template =   "00001001%s%s<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>";
+	
+	
+	//1. 查询wifi地理位置命令第一步
+	private String query_device_location_step1_cmd_template = "00001001%s%s<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>";
+	
+	//1. 查询wifi地理位置命令第二步
+	private String query_device_location_step2_cmd_template = "<report><ITEM cmd=\"sysdebug\" serial=\"1\" op=\"get\"/></report>";
+	
 	public static final String TableSuffixTemplete = "%010d";
 	@Override
 	public void run() {
@@ -23,6 +31,7 @@ public class DaemonCheckTask extends TimerTask{
     		String ctx = SessionManager.getInstance().getSession(wifi_mac);//.get(key);
     		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac)));
     		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_status_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(TableSuffixTemplete, RandomData.intNumber(1005, 10000080))));
+    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(TableSuffixTemplete, RandomData.intNumber(1005, 10000080))));
     	}
     	System.out.println("DaemonCheckTask ended!");
 	}
