@@ -21,6 +21,7 @@ import com.bhu.vas.business.device.service.HandsetDeviceService;
 import com.bhu.vas.business.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.device.service.WifiDeviceService;
 import com.bhu.vas.business.device.service.WifiHandsetDeviceRelationMService;
+import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -98,10 +99,15 @@ public class DeviceFacadeService {
 		if(ctx.equals(ctx_present)){
 			WifiDevicePresentService.getInstance().removePresent(lowercase_mac);
 			//3:在此wifi上的移动设备的在线状态更新
+//			CommonCriteria mc = new CommonCriteria();
+//			mc.createCriteria().andColumnEqualTo("online", true)
+//							   .andColumnEqualTo("last_wifi_id", lowercase_mac);
+//			List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByCommonCriteria(mc);
 			List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(lowercase_mac);
 			if(!handset_devices_online_entitys.isEmpty()){
 				for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
 					handset_devices_online_entity.setOnline(false);
+					//handsetDeviceService.update(handset_devices_online_entity);
 				}
 				handsetDeviceService.updateAll(handset_devices_online_entitys);
 			}
