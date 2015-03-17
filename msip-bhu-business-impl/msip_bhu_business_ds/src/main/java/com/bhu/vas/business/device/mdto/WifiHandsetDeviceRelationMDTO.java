@@ -4,28 +4,48 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.smartwork.msip.cores.helper.StringHelper;
 /**
- * 移动设备接入wifi设备的流水记录
+ * 移动设备接入wifi设备的接入记录
+ * 一个移动设备接入同一个wifi设备多次，只有一条记录
+ * id = wifiId_handsetId
  * @author tangzichao
  *
  */
 @Document(collection = "t_wifi_handset_relation")
 public class WifiHandsetDeviceRelationMDTO{
 	@Id
-	private long id;
+	private String id;
 	//@Field
 	//wifi id
 	private String wifiId;
 	//handset id
 	private String handsetId;
-	//登录wifi的时间
-	private Date login_at;
+	//最后登录wifi的时间
+	private Date last_login_at;
+	
+	public WifiHandsetDeviceRelationMDTO(){
+		
+	}
+	
+	public WifiHandsetDeviceRelationMDTO(String wifiId, String handsetId){
+		this.id = generateId(wifiId, handsetId);
+		this.wifiId = wifiId;
+		this.handsetId = handsetId;
+	}
+	
+	public String generateId(String wifiId, String handsetId){
+		StringBuffer idstring = new StringBuffer();
+		idstring.append(wifiId).append(StringHelper.UNDERLINE_STRING_GAP).append(handsetId);
+		return idstring.toString();
+	}
 	
 	//getter, setter, toString, Constructors
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getWifiId() {
@@ -40,10 +60,10 @@ public class WifiHandsetDeviceRelationMDTO{
 	public void setHandsetId(String handsetId) {
 		this.handsetId = handsetId;
 	}
-	public Date getLogin_at() {
-		return login_at;
+	public Date getLast_login_at() {
+		return last_login_at;
 	}
-	public void setLogin_at(Date login_at) {
-		this.login_at = login_at;
+	public void setLast_login_at(Date last_login_at) {
+		this.last_login_at = last_login_at;
 	}
 }

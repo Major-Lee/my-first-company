@@ -22,7 +22,7 @@ public class WifiHandsetDeviceRelationMServiceTest extends BaseTest{
 	
 	@Test
 	public void testFindRelations(){
-		Pagination<WifiHandsetDeviceRelationMDTO> result = wifiHandsetDeviceRelationMService.findRelations("w1", 1, 10);
+		Pagination<WifiHandsetDeviceRelationMDTO> result = wifiHandsetDeviceRelationMService.findRelationsByWifiId("w1", 1, 10);
 		System.out.println(result.getTotalCount());
 		for(WifiHandsetDeviceRelationMDTO mdto : result.getDatas()){
 			System.out.println(mdto.getHandsetId());

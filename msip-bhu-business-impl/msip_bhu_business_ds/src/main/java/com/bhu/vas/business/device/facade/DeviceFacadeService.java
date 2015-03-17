@@ -158,8 +158,8 @@ public class DeviceFacadeService {
 		}else{
 			handsetDeviceService.update(handset_device_entity);
 		}
-		//2:移动设备连接wifi设备的流水记录
-		wifiHandsetDeviceRelationMService.addRelation(dto.getMac(), wifiId, handset_device_entity.
+		//2:移动设备连接wifi设备的接入记录(非流水)
+		wifiHandsetDeviceRelationMService.addRelation(wifiId, dto.getMac(), handset_device_entity.
 				getLast_login_at());
 //		}catch(Exception ex){
 //			ex.printStackTrace(System.out);
