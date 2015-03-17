@@ -59,6 +59,9 @@ public class DeviceFacadeService {
 		if(exist_wifi_device_entity == null){
 			wifiDeviceService.insert(wifi_device_entity);
 		}else{
+			if(exist_wifi_device_entity.isOnline()){
+				//说明设备离线消息未能到达，需要对wifi对应的移动设备列表进行清除，清除掉wifi设备本次时间之前的数据
+			}
 			wifiDeviceService.update(wifi_device_entity);
 		}
 		//2：wifi设备在线状态Redis更新
