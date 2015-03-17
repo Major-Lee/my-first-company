@@ -37,6 +37,7 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 	
 	@Override
 	public void onMessage(final String message){
+		logger.info(String.format("NotifyCmMsgProcessor receive message[%s]", message));
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
@@ -56,10 +57,10 @@ public class NotifyCmMsgProcessor implements CmMessageListener{
 					}else{
 						throw new UnsupportedOperationException(message+" message not yet implement handler process!");
 					}
-					System.out.println("NotifyMsgProcessorService receive type:"+type+" payload:"+payload);
+					//System.out.println("NotifyMsgProcessorService receive type:"+type+" payload:"+payload);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
-					logger.error("DeliverMessageQueueConsumer", ex);
+					logger.error("NotifyCmMsgProcessor", ex);
 				}
 			}
 		}));

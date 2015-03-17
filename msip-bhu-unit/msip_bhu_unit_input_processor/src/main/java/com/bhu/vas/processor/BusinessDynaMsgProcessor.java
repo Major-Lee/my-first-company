@@ -6,10 +6,12 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+/*import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -83,10 +85,10 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 						}
 					}
-					System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
+					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
-					logger.error("DeliverMessageQueueConsumer", ex);
+					logger.error("BusinessDynaMsgProcessor", ex);
 				}
 			}
 		}));
