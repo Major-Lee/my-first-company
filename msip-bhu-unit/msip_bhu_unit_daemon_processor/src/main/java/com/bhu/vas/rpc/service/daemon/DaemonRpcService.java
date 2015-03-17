@@ -3,8 +3,10 @@ package com.bhu.vas.rpc.service.daemon;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+//import com.alibaba.dubbo.common.logger.Logger;
+//import com.alibaba.dubbo.common.logger.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
