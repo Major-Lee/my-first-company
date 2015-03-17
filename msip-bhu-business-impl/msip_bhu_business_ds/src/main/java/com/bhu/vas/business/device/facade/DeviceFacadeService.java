@@ -59,6 +59,9 @@ public class DeviceFacadeService {
 		if(exist_wifi_device_entity == null){
 			wifiDeviceService.insert(wifi_device_entity);
 		}else{
+			if(exist_wifi_device_entity.isOnline()){
+				//说明设备离线消息未能到达，需要对wifi对应的移动设备列表进行清除，清除掉wifi设备本次时间之前的数据
+			}
 			wifiDeviceService.update(wifi_device_entity);
 		}
 		//2：wifi设备在线状态Redis更新
@@ -192,10 +195,16 @@ public class DeviceFacadeService {
 	}
 	/**
 	 * 移动设备连接状态sync
+	 * TODO: 单条同步数据 移动设备的在线状态有可能会清理不掉 比如 移动设备在cm断线期间下线 单条数据同步过来不方便清理已经不在线的移动设备状态
 	 * @param ctx
 	 * @param dto
 	 */
 	public void handsetDeviceSync(String ctx, String wifiId, HandsetDeviceDTO dto){
-		this.handsetDeviceOnline(ctx, wifiId, dto);
+		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac());
+		if(exist_handset_device_entity.isOnline()){
+			
+		}else{
+			this.handsetDeviceOnline(ctx, wifiId, dto);
+		}
 	}
 }

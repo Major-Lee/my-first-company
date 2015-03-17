@@ -28,6 +28,8 @@ public class BusinessKeyDefine {
 		public static final String TileRelation  					= "TR";
 		public static final String WorldRelation  					= "WR";
 		public static final String TileHourFragmentRelation  		= "THFR";
+		
+		public static final String WifiDeviceStatistics 		= "WDS";
 	}
 	
 }
