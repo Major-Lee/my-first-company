@@ -17,6 +17,7 @@ public class BusinessKeyDefine {
 		public static final String UserMarkPrefixKey 			= "BMH.";//"BuMarkH.";
 		public static final String SubjectPrefixKey 			= "SP.";//"BuMarkH.";
 		public static final String WifiDevicePresentPrefixKey 			= "WDP";
+		public static final String WifiDeviceHandsetPresentPrefixKey 			= "WDHP";
 	}
 	
 	public static class Statistics{

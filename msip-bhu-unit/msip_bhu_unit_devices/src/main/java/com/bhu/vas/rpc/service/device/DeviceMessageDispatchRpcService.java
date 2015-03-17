@@ -40,6 +40,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					deviceBusinessRpcService.wifiDeviceOffline(ctx, parserHeader.getMac());
 					break;
 				case ParserHeader.DeviceNotExist_Prefix:
+					deviceBusinessRpcService.wifiDeviceNotExist(ctx, parserHeader.getMac());
 					break;
 				case ParserHeader.Transfer_Prefix:
 					transferMessageDispatch(ctx, payload, parserHeader);
@@ -111,7 +112,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					deviceBusinessRpcService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
-					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload, parserHeader);
+					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload, parserHeader.getMac());
 					break;
 				case 8://3.4.17	应用隧道消息
 					break;

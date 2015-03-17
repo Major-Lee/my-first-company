@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
-import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.device.facade.DeviceFacadeService;
 
@@ -42,10 +41,20 @@ public class DeviceBusinessRpcService {
 	 * @param ctx
 	 * @param mac
 	 */
-	public void wifiDeviceOffline(String ctx, String mac) {
+	public void wifiDeviceOffline(String ctx, String wifiId) {
 		//logger.info(String.format("wifiDeviceRegister with params: payload[%s] ctx[%s]", payload, ctx));
 		//JoinReqDTO messageDto = RPCMessageParseHelper.generateDTOFromMessage(payload, JoinReqDTO.class);
-		deviceFacadeService.wifiDeviceOffline(ctx, mac);
+		deviceFacadeService.wifiDeviceOffline(ctx, wifiId);
+	}
+	
+	
+	/**
+	 * wifi设备不存在
+	 * @param ctx
+	 * @param mac
+	 */
+	public void wifiDeviceNotExist(String ctx, String wifiId) {
+		deviceFacadeService.wifiDeviceOffline(ctx, wifiId);
 	}
 	
 	/**
@@ -69,20 +78,20 @@ public class DeviceBusinessRpcService {
 	 * @param ctx
 	 * @param payload
 	 */
-	public void handsetDeviceConnectState(String ctx, String payload, ParserHeader parserHeader) {
+	public void handsetDeviceConnectState(String ctx, String payload, String wifiId) {
 		//System.out.println(payload);
 		//logger.info(String.format("handsetDeviceConnectState with params: payload[%s] ctx[%s]", payload, ctx));
 		HandsetDeviceDTO itemDto = RPCMessageParseHelper.generateDTOFromMessage(payload, HandsetDeviceDTO.class);
 		//HandsetDeviceDTO itemDto = messageDto.getWlanDto().getDto();
 		//System.out.println(itemDto.getAction());
 		if(HandsetDeviceDTO.Action_Online.equals(itemDto.getAction())){
-			deviceFacadeService.handsetDeviceOnline(ctx, parserHeader.getMac(), itemDto);
+			deviceFacadeService.handsetDeviceOnline(ctx, wifiId, itemDto);
 		}
 		else if(HandsetDeviceDTO.Action_Offline.equals(itemDto.getAction())){
 			deviceFacadeService.handsetDeviceOffline(ctx, itemDto);
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(itemDto.getAction())){
-			deviceFacadeService.handsetDeviceSync(ctx, parserHeader.getMac(), itemDto);
+			deviceFacadeService.handsetDeviceSync(ctx, wifiId, itemDto);
 		}
 	}
 
