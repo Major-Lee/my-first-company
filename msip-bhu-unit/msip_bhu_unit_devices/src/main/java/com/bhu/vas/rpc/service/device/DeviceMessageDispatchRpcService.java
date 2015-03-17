@@ -112,7 +112,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					deviceBusinessRpcService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
-					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload, parserHeader.getMac());
+					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload);
 					break;
 				case 8://3.4.17	应用隧道消息
 					break;
