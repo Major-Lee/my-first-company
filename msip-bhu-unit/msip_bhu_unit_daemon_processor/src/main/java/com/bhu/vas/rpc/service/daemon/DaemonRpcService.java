@@ -3,12 +3,12 @@ package com.bhu.vas.rpc.service.daemon;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-//import com.alibaba.dubbo.common.logger.Logger;
-//import com.alibaba.dubbo.common.logger.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/*import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;*/
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
@@ -17,7 +17,6 @@ import com.bhu.vas.daemon.observer.DaemonObserverManager;
 import com.bhu.vas.daemon.observer.listener.CmdDownListener;
 
 /**
- * 去除掉token存储在db中？只使用redis会比较好？
  * @author Edmond
  *
  */

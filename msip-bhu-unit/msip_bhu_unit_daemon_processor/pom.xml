@@ -25,7 +25,10 @@
 			<groupId>com.smartwork</groupId>
 			<artifactId>msip_core_cachedext</artifactId>
 		</dependency>	
-		
+		<dependency>
+			<groupId>com.smartwork</groupId>
+			<artifactId>msip_core_dubbo_logger_ext</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_rpc_api</artifactId>
