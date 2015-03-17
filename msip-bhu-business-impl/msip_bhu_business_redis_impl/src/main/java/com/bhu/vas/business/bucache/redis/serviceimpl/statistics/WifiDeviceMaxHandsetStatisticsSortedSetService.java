@@ -12,53 +12,52 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
- * 	用于展示设备地域分布图
- *  记录统计的地域wifi设备数量信息
+ *  用于展示最繁忙的wifi设备TOP5
  *  ZSET 
  *  	key：固定 
- *  	score 该地域的wifi设备数量
- *  	value 该地域的wifi设备数量信息 (json) example:{"count":1000,"region":"北京"}
+ *  	score 总接入用户数
+ *  	value wifiId
  *  包括	
  *  	聊天离线消息
  * @author lawliet
  *
  */
-public class WifiDeviceCountRegionStatisticsSortedSetService extends AbstractRelationSortedSetCache{
+public class WifiDeviceMaxHandsetStatisticsSortedSetService extends AbstractRelationSortedSetCache{
 	
 	private static class ServiceHolder{ 
-		private static WifiDeviceCountRegionStatisticsSortedSetService instance =new WifiDeviceCountRegionStatisticsSortedSetService(); 
+		private static WifiDeviceMaxHandsetStatisticsSortedSetService instance =new WifiDeviceMaxHandsetStatisticsSortedSetService(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static WifiDeviceCountRegionStatisticsSortedSetService getInstance() { 
+	public static WifiDeviceMaxHandsetStatisticsSortedSetService getInstance() { 
 		return ServiceHolder.instance; 
 	}
 	
-	private WifiDeviceCountRegionStatisticsSortedSetService(){
+	private WifiDeviceMaxHandsetStatisticsSortedSetService(){
 	}
 	
-	private static final String WifiDeviceCountRegionPrefixKey = "CRP";
+	private static final String WifiDeviceMaxHandsetPrefixKey = "MHP";
 	
 	private static String generateKey(){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.WifiDeviceStatistics);
-		sb.append(StringHelper.POINT_CHAR_GAP).append(WifiDeviceCountRegionPrefixKey);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(WifiDeviceMaxHandsetPrefixKey);
 		return sb.toString();
 	}
 	
-	public void addWifiDeviceCountRegion(String value, long count){
-		super.zadd(generateKey(), count, value);
+	public void addWifiDeviceMaxHandset(String wifiId, long handset_count){
+		super.zadd(generateKey(), handset_count, wifiId);
 	}
 	
-	public void clearWifiDeviceCountRegion(){
+	public void clearWifiDeviceMaxHandset(){
 		super.del(generateKey());
 	}
 	
 	/**
-	 * 返回所有统计的地域wifi设备数量信息
+	 * 返回所有统计的最繁忙的设备列表
 	 */
-	public Set<String> allWifiDeviceCountRegion(){
+	public Set<String> allWifiDeviceMaxHandset(){
 		String key = generateKey();
 		long count = super.zcard(key);
 		if(count > 0){
@@ -75,7 +74,7 @@ public class WifiDeviceCountRegionStatisticsSortedSetService extends AbstractRel
 	
 	@Override
 	public String getName() {
-		return WifiDeviceCountRegionStatisticsSortedSetService.class.getName();
+		return WifiDeviceMaxHandsetStatisticsSortedSetService.class.getName();
 	}
 	
 	@Override
