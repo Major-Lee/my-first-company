@@ -25,7 +25,6 @@ public class SessionManager {
 	//wifi mac --> cm  caches
 	private DefaultCacheImpl<String> sessions = new DefaultCacheImpl<String>(60,10);
 	
-	
 	public String getSession(String wifi_mac) {
 		return sessions.get(wifi_mac);
     }
