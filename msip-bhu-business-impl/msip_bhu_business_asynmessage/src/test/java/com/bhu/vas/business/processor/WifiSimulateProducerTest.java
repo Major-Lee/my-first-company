@@ -7,9 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.business.asyn.web.service.DeliverMessageService;
 import com.bhu.vas.business.mq.activemq.ActiveMQDynamicProducer;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class WifiSimulateProducerTest {
