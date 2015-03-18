@@ -28,6 +28,7 @@ public class BusinessKeyDefine {
 		public static final String TileRelation  					= "TR";
 		public static final String WorldRelation  					= "WR";
 		public static final String TileHourFragmentRelation  		= "THFR";*/
+		public static final String SystemStatistics		= "SS.";
 		public static final String DailyStatistics		= "DS.";
 		public static final String DailyStatisticsUserInnerPrefixKey	= "U.";
 		public static final String DailyStatisticsDeviceInnerPrefixKey	= "D.";
