@@ -1,4 +1,4 @@
-package com.bhu.vas.processor;
+package com.bhu.vas.business.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,13 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -24,9 +20,9 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 @Service
-public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
-	private final Logger logger = LoggerFactory.getLogger(NotifyCmMsgProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(5);
+public class AnsyncMsgBackendProcessor implements SpringQueueMessageListener{
+	private final Logger logger = LoggerFactory.getLogger(AnsyncMsgBackendProcessor.class);
+	private ExecutorService exec = Executors.newFixedThreadPool(50);
 	//00010000{"name":"cm001","thread":"3","ip":"192.168.0.101"}
 	/*private static String Online_Prefix = "00000001";
 	private static String Offline_Prefix = "00000002";*/
@@ -36,19 +32,20 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 	
 	@PostConstruct
 	public void initialize() {
-		logger.info("NotifyCmMsgProcessor initialize...");
+		logger.info("AnsyncMsgBackendProcessor initialize...");
 		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
 	
 	@Override
 	public void onMessage(final String message){
-		logger.info(String.format("NotifyCmMsgProcessor receive message[%s]", message));
+		logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", message));
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
 					logger.info(message);
-					int type = Integer.parseInt(message.substring(0, 8));
+					System.out.println(message);
+					/*int type = Integer.parseInt(message.substring(0, 8));
 					String payload = message.substring(8);
 					CmCtxInfo cmInfo = null;
 					if(ParserHeader.Online_Prefix == type){
@@ -61,11 +58,11 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 						//QueueMsgObserverManager.CmMessageObserver.notifyCmOffline(cmInfo);
 					}else{
 						throw new UnsupportedOperationException(message+" message not yet implement handler process!");
-					}
+					}*/
 					//System.out.println("NotifyMsgProcessorService receive type:"+type+" payload:"+payload);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
-					logger.error("NotifyCmMsgProcessor", ex);
+					logger.error("AnsyncMsgProcessor", ex);
 				}
 			}
 		}));

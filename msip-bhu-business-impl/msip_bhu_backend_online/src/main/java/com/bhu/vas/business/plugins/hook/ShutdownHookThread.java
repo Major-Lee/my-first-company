@@ -1,9 +1,6 @@
 package com.bhu.vas.business.plugins.hook;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
-
-import com.bhu.vas.business.asyn.web.activemq.queue.consumer.DeliverMessageQueueConsumer;
 
 public class ShutdownHookThread extends Thread {
 	private ApplicationContext ctx;

@@ -22,6 +22,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
+/**
+ * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
+ * @author Edmond
+ *
+ */
 @Service
 public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
