@@ -60,6 +60,11 @@
 		<level value="INFO"/>
 		<appender-ref ref="actionlogfile" />
 	</logger>
+	
+	<logger name="com.bhu.vas.business.asyncprocessor" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="logfile" />
+	</logger>
 	<!-- 
 	<logger name="com.wecite.toplines.business.asyn.web.activemq.queue.consumer" additivity="false">
 		<level value="INFO"/>
