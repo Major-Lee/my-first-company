@@ -8,7 +8,7 @@
     <!--  ActiveMQ destinations  -->
     <!--  使用Queue方式-->
 	<bean id="destinationDeliverMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">  
-        <constructor-arg index="0" value="mng_queue" />  
+        <constructor-arg index="0" value="${activemq.queue.name}" />  
     </bean> 
 	<!--  Spring JmsTemplate config -->
 	<bean id="jmsDeliverMessageTemplate" class="org.springframework.jms.core.JmsTemplate">
@@ -17,7 +17,7 @@
 		<property name="messageConverter" ref="defaultFeedMessageConverter" />-->
 	</bean>
 	<!-- POJO which send Message uses  Spring JmsTemplate -->
-	<bean id="deliverMessageQueueProducer" class="com.bhu.vas.business.asyn.web.activemq.queue.producer.DeliverMessageQueueProducer">
+	<bean id="deliverMessageQueueProducer" class="com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer">
 		<property name="template" ref="jmsDeliverMessageTemplate" />
 		<property name="destination" ref="destinationDeliverMessageQueue" />
 	</bean>

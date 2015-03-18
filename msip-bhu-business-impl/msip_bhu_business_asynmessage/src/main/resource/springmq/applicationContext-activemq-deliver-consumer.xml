@@ -8,7 +8,7 @@
     <!--  ActiveMQ destinations  -->
     <!--  使用Queue方式-->
 	<bean id="destinationDeliverMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">  
-        <constructor-arg index="0" value="mng_queue?consumer.prefetchSize=1000" />  
+        <constructor-arg index="0" value="${activemq.queue.name}" />  
         <!-- 同时监听多个queue,同时对queue1进行预取处理
         <constructor-arg index="0" value="queue1?consumer.prefetchSize=100,queue2" />
          -->
@@ -22,7 +22,7 @@
 	</bean>
 	<!--  Message Driven POJO (MDP) -->
     <!-- consumer for queue-->
-    <bean id="deliverMessageQueueConsumer" class="com.bhu.vas.business.asyn.web.activemq.queue.consumer.DeliverMessageQueueConsumer" />
+    <bean id="deliverMessageQueueConsumer" class="com.bhu.vas.business.asyn.spring.activemq.queue.consumer.DeliverMessageQueueConsumer" />
     <!-- Message Listener for  -->
     <bean id="deliverMessageQueueListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
 		<constructor-arg ref="deliverMessageQueueConsumer" />

@@ -3,11 +3,11 @@ package com.bhu.vas.business.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.business.asyn.web.builder.ActionDTO;
-import com.bhu.vas.business.asyn.web.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.web.builder.DeliverMessage;
-import com.bhu.vas.business.asyn.web.builder.DeliverMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.web.builder.DeliverMessageType;
+import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
+import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
+import com.bhu.vas.business.asyn.spring.builder.DeliverMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.builder.DeliverMessageType;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class BusinessStatisticsLogger {

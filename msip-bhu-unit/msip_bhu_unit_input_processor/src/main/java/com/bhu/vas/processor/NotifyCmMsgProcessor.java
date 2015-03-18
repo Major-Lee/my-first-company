@@ -13,11 +13,16 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.business.mq.activemq.ActiveMQConnectionManager;
+import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.CmMessageListener;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
+/**
+ * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
+ * @author Edmond
+ *
+ */
 @Service
 public class NotifyCmMsgProcessor implements CmMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(NotifyCmMsgProcessor.class);

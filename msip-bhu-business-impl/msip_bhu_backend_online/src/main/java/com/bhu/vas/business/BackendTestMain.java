@@ -3,8 +3,8 @@ package com.bhu.vas.business;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.business.asyn.web.builder.DeliverMessageType;
-import com.bhu.vas.business.asyn.web.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.builder.DeliverMessageType;
 
 public class BackendTestMain {
 	public static void main(String[] args) throws InterruptedException {
