@@ -5,15 +5,11 @@ import java.util.Map;
 
 public enum ActionMessageType {
 	
+	WIFIDeviceOnline("Wifi设备上线","wdonline","WN"),
+	WIFIDeviceOffline("Wifi设备下线","wdoffline","WF"),
+	HANDSETDeviceOnline("Wifi设备上线","hdonline","HN"),
+	HANDSETDeviceOffline("Wifi设备上线","hdoffline","HF"),
 	
-	REGISTERED("用户注册成功","registered","RS"),//用户注册成功
-	USERSUBJECTCLICK("用户点击文章","usersubjectclick","SC"),
-	USERSUBJECTTAGGING("文章标签变更","subjecttagchanged","ST"),
-	USERSUBJECTABSTRACTCLICK("用户点击文章摘要","usersubjectabstractclick","AC"),
-	USERSUBJECTESTIMATE("用户点击文章摘要","usersubjectabstractclick","UE"),
-	USERSUBJECTSHARE("用户点击文章摘要","usersubjectshare","US"),
-	USERBLACKDOMAIN("用户点击文章摘要","userblackdomain","BD"),
-	SUBJECTWEIXINSHARE("文章分享微信","subjectweixinshare","WS"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

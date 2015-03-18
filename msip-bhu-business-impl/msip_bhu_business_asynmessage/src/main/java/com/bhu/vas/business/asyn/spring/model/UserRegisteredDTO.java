@@ -1,4 +1,4 @@
-package com.bhu.vas.business.asyn.spring.model;
+/*package com.bhu.vas.business.asyn.spring.model;
 
 import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
@@ -8,7 +8,7 @@ public class UserRegisteredDTO extends ActionDTO {
 	private String channel;
 	private String d;
 	private String remoteip;
-	/*public String getInvitetoken() {
+	public String getInvitetoken() {
 		return invitetoken;
 	}
 
@@ -22,7 +22,7 @@ public class UserRegisteredDTO extends ActionDTO {
 
 	public void setInviteuid(Integer inviteuid) {
 		this.inviteuid = inviteuid;
-	}*/
+	}
 
 	public String getD() {
 		return d;
@@ -55,3 +55,4 @@ public class UserRegisteredDTO extends ActionDTO {
 	
 	
 }
+*/

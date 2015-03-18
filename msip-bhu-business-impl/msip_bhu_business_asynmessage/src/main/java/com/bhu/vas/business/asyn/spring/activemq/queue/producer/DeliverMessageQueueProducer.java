@@ -28,9 +28,13 @@ public class DeliverMessageQueueProducer {
         this.destination = destination;
     }
 
-    public void send(DeliverMessage message) {
+   /* public void send(DeliverMessage message) {
         template.convertAndSend(this.destination, DeliverMessageFactoryBuilder.toJson(message));
-    }
+    }*/
+    
+    /*public void send(DeliverMessage message) {
+        template.convertAndSend(this.destination, DeliverMessageFactoryBuilder.toJson(message));
+    }*/
     
     public void sendPureText(String message) {
         template.convertAndSend(this.destination, message);

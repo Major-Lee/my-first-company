@@ -6,36 +6,30 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 
 @Service
 public class DeliverMessageService {
 	@Resource(name="deliverMessageQueueProducer")
 	private DeliverMessageQueueProducer deliverMessageQueueProducer;
 	
-	public void sendDeliverMessage(char type,int uid,String messagedata){
+	/*public void sendDeliverMessage(char type,int uid,String messagedata){
 		DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, messagedata);
 		deliverMessageQueueProducer.send(message);
-	}
+	}*/
 	
 	public void sendPureText(String message){
 		deliverMessageQueueProducer.sendPureText(message);
 	}
 	
-	public void sendUserRegisteredActionMessage(char type,Integer uid,String channel,String device,String remoteip){
-		UserRegisteredDTO dto = new UserRegisteredDTO();
-		dto.setUid(uid);
-		dto.setChannel(channel);
-		//dto.setInviteuid(inviteuid);
-		//dto.setInvitetoken(invitetoken);
+	public void sendWifiDeviceOnlineActionMessage(char type,String mac,String remoteip){
+		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
+		dto.setMac(mac);
 		dto.setRemoteip(remoteip);
-		dto.setD(device);
 		dto.setTs(System.currentTimeMillis());
-		
-		DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		deliverMessageQueueProducer.send(message);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
 	}
 	/*
 	public void sendUserSubjectClickActionMessage(char type,int uid,int sid,String act,long incr){

@@ -101,11 +101,10 @@ public class ActionMessageFactoryBuilder {
 		if(StringUtils.isEmpty(messagejsonHasPrefix)) return null;
     	return messagejsonHasPrefix.substring(2);
 	}
-/*	public static ActionDTO fromJson(String messagejson){
+	public static <T extends ActionDTO> T fromJson(String messagejson,Class<T> classz){
 		if(StringUtils.isEmpty(messagejson)) return null;
-		
-		return JsonHelper.getDTO(messagejson, DeliverMessage.class);
-	}	*/
+		return JsonHelper.getDTO(messagejson, classz);
+	}
 	public static String toJsonHasPrefix(ActionDTO message){
 		StringBuilder sb = new StringBuilder();
 		sb.append(message.getActionType()).append(toJson(message));
@@ -115,4 +114,11 @@ public class ActionMessageFactoryBuilder {
 		return JsonHelper.getJSONString(message,false);
 	}
 	
+	/*public static ActionDTO fromJsonHasPrefix(String messagejson){
+		if(StringUtils.isEmpty(messagejson)) return null;
+		char prefix = messagejson.charAt(0);
+		DeliverMessageType type = DeliverMessageType.fromPrefix(prefix);
+		if(type == null) return null;
+		return JsonHelper.getDTO(messagejson.substring(1), DeliverMessage.class);
+	}*/
 }

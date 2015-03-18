@@ -3,13 +3,6 @@ package com.bhu.vas.business.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessageType;
-import com.smartwork.msip.cores.helper.JsonHelper;
-
 public class BusinessStatisticsLogger {
 	private static final Logger logger = LoggerFactory.getLogger(BusinessStatisticsLogger.class);
 	/*
@@ -28,12 +21,12 @@ public class BusinessStatisticsLogger {
 		//System.out.println("+++++++++++++++ doActionMessageLog : " + json);
 		logger.info(messagejson);
 	}
-	
+	/*
 	public static void doActionMessageLog(ActionDTO dto){
 		DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(DeliverMessageType.AC.getPrefix(), dto.getUid(), ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//System.out.println("+++++++++++++++ doActionMessageLog : " + json);
 		logger.info(JsonHelper.getJSONString(message,false));
-	}
+	}*/
 	
 	public static void main(String[] argv){
 		//BusinessStatisticsLogger.doSignedLog(100097, System.currentTimeMillis(), System.currentTimeMillis());
