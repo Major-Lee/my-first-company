@@ -3,16 +3,13 @@ package com.bhu.vas.business;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessageType;
-
 public class BackendTestMain {
 	public static void main(String[] args) throws InterruptedException {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
 		String[] locations = {"classpath*:/spring/appCtxBackend.xml"};
 		ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
 		
-		DeliverMessageService deliverMessageService =(DeliverMessageService) ctx.getBean("deliverMessageService");
+		/*DeliverMessageService deliverMessageService =(DeliverMessageService) ctx.getBean("deliverMessageService");
 		
 		deliverMessageService.sendUserRegisteredActionMessage(DeliverMessageType.AC.getPrefix(), 1001, "wandojia", "ADR", "192.168.0.1");
 		
@@ -23,7 +20,7 @@ public class BackendTestMain {
 			}
 		}
 		long cost = System.currentTimeMillis() - ts;
-		System.out.println("cost:"+cost/1000);
+		System.out.println("cost:"+cost/1000);*/
 		//Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(ctx));
 //		Thread.sleep(5000);
 //		Object obj = ctx.getBean("remoteCommandServer");
