@@ -357,11 +357,11 @@ public class ActiveMQConnectionManager{
 	
 	private MessageProducer setupMessageProducer(final String out,final String c_id_name) throws JMSException {
 		String out_c_id_name = out+"_"+c_id_name;
+		final Session session = createConnectionAndSession(out_c_id_name);//connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		//Connection connection = createConnection(Sender_KEY);
 		Queue queueSender = new ActiveMQQueue(out_c_id_name);
 		logger.info("初始化MQ Producer...@Queue:"+out_c_id_name);
 		System.out.println("初始化MQ监听 Producer...@Queue:"+out_c_id_name+"初始化成功...");
-		Session session = createConnectionAndSession(out_c_id_name);//connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		MessageProducer producer = session.createProducer(queueSender);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producers.put(out_c_id_name, producer);
