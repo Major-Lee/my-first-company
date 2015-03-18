@@ -4,7 +4,8 @@ import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class WifiDeviceOnlineDTO extends ActionDTO {
-	private String remoteip;
+	//wifi设备上线的时间
+	private long login_ts;
 
 
 	@Override
@@ -12,13 +13,11 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 		return ActionMessageType.WifiDeviceOnline.getPrefix();
 	}
 
-	public String getRemoteip() {
-		return remoteip;
+	public long getLogin_ts() {
+		return login_ts;
 	}
 
-	public void setRemoteip(String remoteip) {
-		this.remoteip = remoteip;
-	}
-	
-	
+	public void setLogin_ts(long login_ts) {
+		this.login_ts = login_ts;
+	}	
 }
