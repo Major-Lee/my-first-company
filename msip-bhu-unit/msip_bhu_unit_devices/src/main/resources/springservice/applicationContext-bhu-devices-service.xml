@@ -9,7 +9,6 @@
 	<!-- 默认值如果适合，该项可以不用修改 
 	<context:component-scan base-package="com.teacherclub.business.**.service" />
 	-->
-	<context:component-scan base-package="com.bhu.vas.business"/>
 	<context:component-scan base-package="com.bhu.vas.rpc.service"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/> 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/>

@@ -6,8 +6,8 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.bhu.vas.business.device.mdto.WifiHandsetDeviceRelationMDTO;
-import com.bhu.vas.business.device.service.WifiHandsetDeviceRelationMService;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.localunit.BaseTest;
 

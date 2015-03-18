@@ -4,8 +4,8 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.bhu.vas.business.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.bhu.vas.business.device.service.WifiHandsetDeviceLoginCountMService;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.localunit.BaseTest;
 

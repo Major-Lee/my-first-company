@@ -25,7 +25,7 @@ public class HandsetDeviceOnlineDTO extends ActionDTO {
 
 	@Override
 	public String getActionType() {
-		return ActionMessageType.WifiDeviceOffline.getPrefix();
+		return ActionMessageType.HandsetDeviceOnline.getPrefix();
 	}
 
 }

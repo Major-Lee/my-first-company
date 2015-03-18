@@ -2,15 +2,13 @@ package com.bhu.vas.business.asyn.spring.activemq.service;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
-
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 
-@Service
+
 public class DeliverMessageService {
 	@Resource(name="deliverMessageQueueProducer")
 	private DeliverMessageQueueProducer deliverMessageQueueProducer;

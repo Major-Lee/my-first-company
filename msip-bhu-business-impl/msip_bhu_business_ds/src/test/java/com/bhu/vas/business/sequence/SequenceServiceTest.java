@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.bhu.vas.business.sequence.service.SequenceService;
+import com.bhu.vas.business.ds.sequence.service.SequenceService;
 import com.smartwork.msip.localunit.BaseTest;
 
 public class SequenceServiceTest extends BaseTest{

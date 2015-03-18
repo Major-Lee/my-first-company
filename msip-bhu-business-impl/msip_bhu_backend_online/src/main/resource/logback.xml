@@ -53,7 +53,7 @@
 	
 	<appender name="wifideviceflowlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<Encoding>UTF-8</Encoding>
-		<File>${datalog.base}.wifideviceflowlog.log</File>
+		<File>${flowlog.base}.wifideviceflowlog.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${datalog.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
 		</rollingPolicy>
@@ -78,7 +78,7 @@
 		<appender-ref ref="wifideviceflowlogfile" />
 	</logger>
 	
-	<logger name="com.bhu.vas.business.asyncprocessor" additivity="false">
+	<logger name="com.bhu.vas.business.backendonline.asyncprocessor" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="logfile" />
 	</logger>
@@ -100,7 +100,7 @@
 	</logger>
  	-->
 	<root>
-		<level value="INFO" />
+		<level value="WARN" />
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
 	</root> 

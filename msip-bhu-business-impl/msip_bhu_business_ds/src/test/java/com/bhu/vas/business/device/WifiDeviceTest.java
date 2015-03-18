@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
@@ -60,7 +60,7 @@ public class WifiDeviceTest extends BaseTest{
 		//wifiDeviceService.insertMulti(entitys);
 	}	
 	
-	@Test
+	//@Test
 	public void countAllRecords(){
 		int all = wifiDeviceService.countByCommonCriteria(new CommonCriteria());
 		System.out.println(all);

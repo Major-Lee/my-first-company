@@ -6,7 +6,7 @@
     </client>
     <socketpool name="pool0" failover="true" initConn="5" minConn="3" maxConn="20" maintSleep="0"
         nagle="false" socketTO="3000" aliveCheck="true">
-        <servers>192.168.66.7:11212</servers>
+        <servers>192.168.66.7:11211</servers>
         <!-- ,192.168.101.13:11212 ${memcached.socketpool.pool0.servers}-->
     </socketpool>  
 </memcached>

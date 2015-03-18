@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bhu.vas.api.user.model.User;
-import com.bhu.vas.business.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.AssertHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;

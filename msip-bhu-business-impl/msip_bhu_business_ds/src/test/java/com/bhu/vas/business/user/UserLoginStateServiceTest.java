@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.bhu.vas.api.user.model.UserLoginState;
-import com.bhu.vas.business.user.service.UserLoginStateService;
+import com.bhu.vas.business.ds.user.service.UserLoginStateService;
 import com.smartwork.msip.localunit.BaseTest;
 
 public class UserLoginStateServiceTest extends BaseTest{

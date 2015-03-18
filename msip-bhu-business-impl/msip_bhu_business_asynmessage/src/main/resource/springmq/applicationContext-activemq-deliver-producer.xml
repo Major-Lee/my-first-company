@@ -22,4 +22,6 @@
 		<property name="destination" ref="destinationDeliverMessageQueue" />
 	</bean>
 	
+	<bean id="deliverMessageService" class="com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService">
+	</bean>
 </beans>
