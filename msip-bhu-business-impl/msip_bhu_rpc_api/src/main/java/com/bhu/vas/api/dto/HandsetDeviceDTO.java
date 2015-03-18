@@ -18,50 +18,67 @@ public class HandsetDeviceDTO implements Serializable{
 	
 	@XStreamAsAttribute
 	private String action;
+	//移动设备mac
 	@XStreamAsAttribute
 	private String mac;
+	//物理发送速率
 	@XStreamAsAttribute
 	private String phy_tx_rate;
+	//物理接收速率
 	@XStreamAsAttribute
 	private String phy_rx_rate;	
 	@XStreamAsAttribute
 	private String data_tx_rate;
 	@XStreamAsAttribute
 	private String data_rx_rate;
+	//废弃
 	@XStreamAsAttribute
 	private String phy_rate;
+	//AP对针对此设备的发射功率
 	@XStreamAsAttribute
 	private String tx_power;
 	@XStreamAsAttribute
 	private String rx_chain_num;
+	//AP接收到的终端的信号强度
 	@XStreamAsAttribute
 	private String rssi;
+	//信噪比
 	@XStreamAsAttribute
 	private String snr;
+	//空闲时间
 	@XStreamAsAttribute
 	private String idle;
 	@XStreamAsAttribute
 	private String state;
+	//关联时间
 	@XStreamAsAttribute
 	private String uptime;
+	//接收包数
 	@XStreamAsAttribute
 	private String rx_pkts;
+	//接收字节数
 	@XStreamAsAttribute
 	private String rx_bytes;
+	//发送包数
 	@XStreamAsAttribute
 	private String tx_pkts;
+	//发送字节数
 	@XStreamAsAttribute
 	private String tx_bytes;
 	@XStreamAsAttribute
 	private String rx_unicast;
 	@XStreamAsAttribute
 	private String tx_assoc;
+	//终端关联的ssid
 	@XStreamAsAttribute
 	private String ssid;
+	//终端关联的bssid = wifiId
 	@XStreamAsAttribute
 	private String bssid;
+	//AP位置（ap界面上配置的位置信息）
 	@XStreamAsAttribute
 	private String location;
+	//当前信道
 	@XStreamAsAttribute
 	private String channel;
 	

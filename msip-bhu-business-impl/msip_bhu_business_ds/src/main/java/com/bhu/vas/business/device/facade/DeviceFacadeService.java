@@ -138,6 +138,7 @@ public class DeviceFacadeService {
 	 * 2:wifi设备对应handset在线列表redis添加
 	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
 	 * 4:移动设备连接wifi设备的流水log (backend)
+	 * 5:wifi设备接入移动设备的接入数量 (backend)
 	 * @param ctx
 	 * @param dto
 	 */
@@ -219,4 +220,5 @@ public class DeviceFacadeService {
 	
 	
 	/*********************************** RPC Business End **************************************/
+	
 }
