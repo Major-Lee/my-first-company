@@ -168,21 +168,30 @@ public class DeviceBusinessRpcService {
 	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
 	 * 4:移动设备连接wifi设备的流水log (backend)
 	 * 5:wifi设备接入移动设备的接入数量 (backend)
+	 * 6:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
+	 * 7:统计增量 移动设备的daily启动次数增量(backend)
 	 */
 	public void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto){
 		if(dto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-
+		//移动设备是否是新设备
+		boolean newHandset = false;
+		//移动设备上一次登录时间
+		long last_login_at = 0;
 		//1:移动设备基础信息更新
 		HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
 		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(handset_device_entity.getId());
 		if(exist_handset_device_entity == null){
 			handsetDeviceService.insert(handset_device_entity);
+			newHandset = true;
 		}else{
+			last_login_at = exist_handset_device_entity.getLast_login_at().getTime();
 			handsetDeviceService.update(handset_device_entity);
 		}
+		//本次移动设备登录时间
+		long this_login_at = handset_device_entity.getLast_login_at().getTime();
 		
 		String wifiId = handset_device_entity.getBssid();
 		//2:wifi设备对应handset在线列表redis添加
@@ -193,15 +202,18 @@ public class DeviceBusinessRpcService {
 		 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
 		 * 4:移动设备连接wifi设备的流水log (backend)
 		 * 5:wifi设备接入移动设备的接入数量 (backend)
+		 * 6:统计增量 移动设备的daily新增用户或活跃用户增量
+		 * 7:统计增量 移动设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendHandsetDeviceOnlineActionMessage(wifiId, handset_device_entity.getId(),
-				handset_device_entity.getLast_login_at().getTime());
+				this_login_at, last_login_at, newHandset);
 	}
 	
 	/**
 	 * 移动设备下线
 	 * 1:更新移动设备的online状态为false
 	 * 2:wifi设备对应handset在线列表redis移除
+	 * 3:统计增量 移动设备的daily访问时长增量 (backend)
 	 * @param ctx
 	 * @param dto
 	 */
@@ -217,10 +229,17 @@ public class DeviceBusinessRpcService {
 		if(exist_handset_device_entity != null){
 			exist_handset_device_entity.setOnline(false);
 			handsetDeviceService.update(exist_handset_device_entity);
+			
+			//2:wifi设备对应handset在线列表redis移除
+			WifiDeviceHandsetPresentSortedSetService.getInstance().removePresent(exist_handset_device_entity.
+					getLast_wifi_id(), lowercase_mac);
+			/*
+			 * 3:统计增量 移动设备的daily访问时长增量
+			 */
+			deliverMessageService.sendHandsetDeviceOfflineActionMessage(exist_handset_device_entity.getLast_wifi_id(), 
+					exist_handset_device_entity.getId(), dto.getUptime());
 		}
-		//2:wifi设备对应handset在线列表redis移除
-		WifiDeviceHandsetPresentSortedSetService.getInstance().removePresent(exist_handset_device_entity.
-				getLast_wifi_id(), lowercase_mac);
+
 	}
 	
 	/**
