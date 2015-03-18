@@ -44,6 +44,12 @@ public class WifiHandsetDeviceRelationMService {
 //		mdto = wifiHandsetDeviceRelationMDao.save(mdto);
 //	}
 	
+	public void saveRelation(String wifiId, String handsetId, Date last_login_at){
+		WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
+		mdto.setLast_login_at(last_login_at);
+		wifiHandsetDeviceRelationMDao.save(mdto);
+	}
+	
 	public void addRelation(String wifiId, String handsetId, Date last_login_at){
 		if(StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(handsetId)) return;
 		if(last_login_at == null) last_login_at = new Date();
@@ -52,8 +58,21 @@ public class WifiHandsetDeviceRelationMService {
 		mdto.setLast_login_at(last_login_at);
 		
 		Query query = new Query(Criteria.where("_id").is(mdto.getId()));
-		Update update = Update.update("last_login_at", last_login_at);
+		Update update = new Update();
+		update.set("wifiId", wifiId);
+		update.set("handsetId", handsetId);
+		update.set("last_login_at", last_login_at);
 		wifiHandsetDeviceRelationMDao.upsert(query, update);
+	}
+	
+	public WifiHandsetDeviceRelationMDTO getRelation(String wifiId, String handsetId){
+		return wifiHandsetDeviceRelationMDao.findById(WifiHandsetDeviceRelationMDTO.generateId(wifiId, handsetId));
+	}
+	
+	public boolean hasRelation(String wifiId, String handsetId){
+		WifiHandsetDeviceRelationMDTO mdto = this.getRelation(wifiId, handsetId);
+		if(mdto == null) return false;
+		return true;
 	}
 	
 	public Pagination<WifiHandsetDeviceRelationMDTO> findRelationsByWifiId(String wifiId, int pageNo, int pageSize){

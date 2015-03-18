@@ -15,12 +15,14 @@ public class WifiHandsetDeviceRelationMServiceTest extends BaseTest{
 	@Resource
 	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 	
-	//@Test
+	@Test
 	public void testSave(){
-		wifiHandsetDeviceRelationMService.addRelation("h1", "w1", new Date());
+		//wifiHandsetDeviceRelationMService.saveRelation("h2", "w2", new Date());
+		wifiHandsetDeviceRelationMService.addRelation("h3", "w3", new Date());
 	}
 	
-	@Test
+	
+	//@Test
 	public void testFindRelations(){
 		Pagination<WifiHandsetDeviceRelationMDTO> result = wifiHandsetDeviceRelationMService.findRelationsByWifiId("w1", 1, 10);
 		System.out.println(result.getTotalCount());

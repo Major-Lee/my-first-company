@@ -35,7 +35,7 @@ public class WifiHandsetDeviceRelationMDTO{
 		this.handsetId = handsetId;
 	}
 	
-	public String generateId(String wifiId, String handsetId){
+	public static String generateId(String wifiId, String handsetId){
 		StringBuffer idstring = new StringBuffer();
 		idstring.append(wifiId).append(StringHelper.UNDERLINE_STRING_GAP).append(handsetId);
 		return idstring.toString();
