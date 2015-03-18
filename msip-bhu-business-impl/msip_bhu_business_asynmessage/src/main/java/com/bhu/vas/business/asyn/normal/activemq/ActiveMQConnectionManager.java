@@ -130,31 +130,7 @@ public class ActiveMQConnectionManager{
 			try {
 				setupMessageConsumer(prefix,cmInfo);
 				if(noExistThenUpdatePropertie){
-					String consumers_defined = properties.getProperty(consumers_key,StringHelper.EMPTY_STRING_GAP);
-					String producers_defined = properties.getProperty(producers_key,StringHelper.EMPTY_STRING_GAP);
-					boolean needStoreUpdate = false;
-					if(!consumers_defined.contains(cmInfo)){
-						properties.setProperty(consumers_key, consumers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
-						needStoreUpdate = true;
-					}
-					if(!producers_defined.contains(cmInfo)){
-						properties.setProperty(producers_key, producers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
-						needStoreUpdate = true;
-					} 
-					if(needStoreUpdate){
-						OutputStream outputStream = null;
-						try {
-							outputStream = new FileOutputStream(porperties_file);
-							properties.store(outputStream, "author: liwh@bhunetworks.com"); 
-				            outputStream.close();
-						} catch (IOException e) {
-							e.printStackTrace(System.out);
-						} finally{
-							if(outputStream != null){
-								outputStream = null;
-							}
-						}
-					}
+					storeProperties(cmInfo);
 				}
 			} catch(BusinessI18nCodeException e){
 				e.printStackTrace(System.out);
@@ -164,6 +140,48 @@ public class ActiveMQConnectionManager{
 		}
 	}
 	
+	public void createNewProducerQueues(String prefix,String cmInfo,boolean noExistThenUpdatePropertie){
+		if(porperties_loaded){
+			try {
+				setupMessageProducer(prefix,cmInfo);
+				if(noExistThenUpdatePropertie){
+					storeProperties(cmInfo);
+				}
+			} catch(BusinessI18nCodeException e){
+				e.printStackTrace(System.out);
+			} catch (JMSException e) {
+				e.printStackTrace(System.out);
+			} 
+		}
+	}
+	
+	private void storeProperties(String cmInfo){
+		String consumers_defined = properties.getProperty(consumers_key,StringHelper.EMPTY_STRING_GAP);
+		String producers_defined = properties.getProperty(producers_key,StringHelper.EMPTY_STRING_GAP);
+		boolean needStoreUpdate = false;
+		if(!consumers_defined.contains(cmInfo)){
+			properties.setProperty(consumers_key, consumers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
+			needStoreUpdate = true;
+		}
+		if(!producers_defined.contains(cmInfo)){
+			properties.setProperty(producers_key, producers_defined.concat(StringHelper.COMMA_STRING_GAP).concat(cmInfo));
+			needStoreUpdate = true;
+		} 
+		if(needStoreUpdate){
+			OutputStream outputStream = null;
+			try {
+				outputStream = new FileOutputStream(porperties_file);
+				properties.store(outputStream, "author: liwh@bhunetworks.com"); 
+	            outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace(System.out);
+			} finally{
+				if(outputStream != null){
+					outputStream = null;
+				}
+			}
+		}
+	}
 	/**
 	 * 仅仅测试时候针对消费queue建立producer
 	 */

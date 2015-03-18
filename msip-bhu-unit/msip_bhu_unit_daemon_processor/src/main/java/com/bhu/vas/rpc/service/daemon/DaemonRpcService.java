@@ -5,12 +5,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
@@ -60,6 +62,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	public boolean cmJoinService(CmCtxInfo info) {
 		//System.out.println("cmJoinService:"+info);
 		logger.info("info"+"cmJoinService:"+info);
+		ActiveMQConnectionManager.getInstance().createNewProducerQueues("down", info.toString(), true);
 		return false;
 	}
 
@@ -67,6 +70,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	public boolean cmLeave(CmCtxInfo info) {
 		//System.out.println("cmLeave:"+info);
 		logger.info("info"+"cmLeave:"+info);
+		//createNewConsumerQueues("up", cmInfo.toString(),true);
 		return false;
 	}
 }
