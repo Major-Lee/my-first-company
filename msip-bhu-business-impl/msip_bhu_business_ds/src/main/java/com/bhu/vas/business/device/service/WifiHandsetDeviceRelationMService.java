@@ -14,7 +14,9 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.business.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.device.mdto.WifiHandsetDeviceRelationMDTO;
+import com.mongodb.WriteResult;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 /**
  * 移动设备接入wifi设备的接入记录 (mongodb)
@@ -44,25 +46,33 @@ public class WifiHandsetDeviceRelationMService {
 //		mdto = wifiHandsetDeviceRelationMDao.save(mdto);
 //	}
 	
-	public void saveRelation(String wifiId, String handsetId, Date last_login_at){
-		WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
-		mdto.setLast_login_at(last_login_at);
-		wifiHandsetDeviceRelationMDao.save(mdto);
-	}
+//	public void saveRelation(String wifiId, String handsetId, Date last_login_at){
+//		WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
+//		mdto.setLast_login_at(last_login_at);
+//		wifiHandsetDeviceRelationMDao.save(mdto);
+//	}
+	public static final int AddRelation_Insert = 1;
+	public static final int AddRelation_Update = 2;
+	public static final int AddRelation_Fail = -1;
 	
-	public void addRelation(String wifiId, String handsetId, Date last_login_at){
-		if(StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(handsetId)) return;
+	public int addRelation(String wifiId, String handsetId, Date last_login_at){
+		if(StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(handsetId)) return AddRelation_Fail;
 		if(last_login_at == null) last_login_at = new Date();
 		
 		WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
-		mdto.setLast_login_at(last_login_at);
+		mdto.setLast_login_at(DateTimeHelper.formatDate(last_login_at, DateTimeHelper.FormatPattern1));
 		
 		Query query = new Query(Criteria.where("_id").is(mdto.getId()));
 		Update update = new Update();
 		update.set("wifiId", wifiId);
 		update.set("handsetId", handsetId);
 		update.set("last_login_at", last_login_at);
-		wifiHandsetDeviceRelationMDao.upsert(query, update);
+		WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
+		if(writeResult.isUpdateOfExisting()){
+			return AddRelation_Update;
+		}else{
+			return AddRelation_Insert;
+		}
 	}
 	
 	public WifiHandsetDeviceRelationMDTO getRelation(String wifiId, String handsetId){

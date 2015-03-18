@@ -1,7 +1,5 @@
 package com.bhu.vas.business.device.mdto;
 
-import java.util.Date;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,8 +20,8 @@ public class WifiHandsetDeviceRelationMDTO{
 	private String wifiId;
 	//handset id
 	private String handsetId;
-	//最后登录wifi的时间
-	private Date last_login_at;
+	//最后登录wifi的时间 用string存储格式化好的日期 因为直接用date，mongodb就会用标准时间存储
+	private String last_login_at; 
 	
 	public WifiHandsetDeviceRelationMDTO(){
 		
@@ -60,10 +58,10 @@ public class WifiHandsetDeviceRelationMDTO{
 	public void setHandsetId(String handsetId) {
 		this.handsetId = handsetId;
 	}
-	public Date getLast_login_at() {
+	public String getLast_login_at() {
 		return last_login_at;
 	}
-	public void setLast_login_at(Date last_login_at) {
+	public void setLast_login_at(String last_login_at) {
 		this.last_login_at = last_login_at;
 	}
 }

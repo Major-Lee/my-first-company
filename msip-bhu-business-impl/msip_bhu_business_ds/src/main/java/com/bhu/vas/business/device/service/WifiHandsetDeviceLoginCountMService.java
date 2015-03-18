@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.device.dao.WifiHandsetDeviceLoginCountMDao;
 import com.bhu.vas.business.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.bhu.vas.business.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 
 /**

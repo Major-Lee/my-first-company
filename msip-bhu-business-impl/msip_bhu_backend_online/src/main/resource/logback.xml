@@ -5,6 +5,7 @@
 	
 	<property name="log.base" 		value="/BHUData/logs/backendonline/backendonline" />
 	<Property name="datalog.base" 	value="/BHUData/bulogs/actionlogs/business-data-action" />
+	<Property name="flowlog.base" 	value="/BHUData/bulogs/flowlogs/business-data-flow" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->
@@ -49,6 +50,17 @@
 			<pattern>%msg%n</pattern>
 		</layout>
 	</appender>	
+	
+	<appender name="wifideviceflowlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${datalog.base}.wifideviceflowlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${datalog.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>	
 	<!--
 	<logger name="java.sql" additivity="false">
 		<level value="DEBUG" />
@@ -59,6 +71,11 @@
 	<logger name="com.bhu.vas.business.logger.BusinessStatisticsLogger" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="actionlogfile" />
+	</logger>
+	
+	<logger name="com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="wifideviceflowlogfile" />
 	</logger>
 	
 	<logger name="com.bhu.vas.business.asyncprocessor" additivity="false">
