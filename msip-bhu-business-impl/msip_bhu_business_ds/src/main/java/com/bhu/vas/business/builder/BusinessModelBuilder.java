@@ -84,11 +84,11 @@ public class BusinessModelBuilder {
 		wifi_device_entity.setRx_unicast(dto.getRx_unicast());
 		wifi_device_entity.setTx_assoc(dto.getTx_assoc());
 		wifi_device_entity.setSsid(dto.getSsid());
-		wifi_device_entity.setBssid(dto.getBssid());
+		wifi_device_entity.setBssid(dto.getBssid().toLowerCase());
 		wifi_device_entity.setLocation(dto.getLocation());
 		wifi_device_entity.setChannel(dto.getChannel());
 		wifi_device_entity.setLast_login_at(new Date());
-		wifi_device_entity.setLast_wifi_id(dto.getBssid());
+		wifi_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		wifi_device_entity.setOnline(true);
 		return wifi_device_entity;
 	}

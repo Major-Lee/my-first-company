@@ -55,6 +55,14 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		super.zrem(generateKey(wifiId), handsetId);
 	}
 	
+	public void clearPresents(String wifiId){
+		super.del(generateKey(wifiId));
+	}
+	
+	public void clearPresents(String wifiId, long max_login_at){
+		super.zremrangeByScore(generateKey(wifiId), 0, max_login_at);
+	}
+	
 	/**
 	 * 按移动设备接入时间，从大到小排序
 	 * @param wifiId wifi mac

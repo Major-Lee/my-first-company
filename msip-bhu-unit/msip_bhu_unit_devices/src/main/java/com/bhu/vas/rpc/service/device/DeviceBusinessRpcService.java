@@ -85,13 +85,13 @@ public class DeviceBusinessRpcService {
 		//HandsetDeviceDTO itemDto = messageDto.getWlanDto().getDto();
 		//System.out.println(itemDto.getAction());
 		if(HandsetDeviceDTO.Action_Online.equals(itemDto.getAction())){
-			deviceFacadeService.handsetDeviceOnline(ctx, itemDto.getBssid(), itemDto);
+			deviceFacadeService.handsetDeviceOnline(ctx, itemDto);
 		}
 		else if(HandsetDeviceDTO.Action_Offline.equals(itemDto.getAction())){
 			deviceFacadeService.handsetDeviceOffline(ctx, itemDto);
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(itemDto.getAction())){
-			deviceFacadeService.handsetDeviceSync(ctx, itemDto.getBssid(), itemDto);
+			deviceFacadeService.handsetDeviceSync(ctx, itemDto);
 		}
 	}
 
