@@ -14,6 +14,7 @@ import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.builder.BusinessModelBuilder;
@@ -46,8 +47,8 @@ public class DeviceBusinessRpcService {
 	@Resource
 	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 	
-//	@Resource
-//	private DeliverMessageService deliverMessageService;
+	@Resource
+	private DeliverMessageService deliverMessageService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -66,13 +67,13 @@ public class DeviceBusinessRpcService {
 		if(exist_wifi_device_entity == null){
 			wifiDeviceService.insert(wifi_device_entity);
 		}else{
-			if(exist_wifi_device_entity.isOnline()){
-				//说明设备离线消息未能到达，需要对wifi对应的移动设备列表进行清除，清除掉wifi设备本次时间之前的数据
-			}
 			wifiDeviceService.update(wifi_device_entity);
 		}
 		//2:wifi设备在线状态Redis更新
 		WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), ctx);
+		//3:wifi设备对应handset在线列表redis初始化(backend)
+		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), 
+				wifi_device_entity.getLast_reged_at().getTime());
 	}
 	/**
 	 * wifi设备离线
@@ -93,9 +94,17 @@ public class DeviceBusinessRpcService {
 		if(exist_wifi_device_entity != null){
 			exist_wifi_device_entity.setOnline(false);
 			wifiDeviceService.update(exist_wifi_device_entity);
+			
+			//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
+			WifiDevicePresentService.getInstance().removePresent(lowercase_wifi_id);
+			
+			/*
+			 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
+			 * 4:wifi设备对应handset在线列表redis清除 (backend)
+			 */
+			deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id);
 		}
-		//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
-		WifiDevicePresentService.getInstance().removePresent(lowercase_wifi_id);
+
 //		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_mac);
 //		if(ctx.equals(ctx_present)){
 //			WifiDevicePresentService.getInstance().removePresent(lowercase_mac);
@@ -147,6 +156,8 @@ public class DeviceBusinessRpcService {
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(dto.getAction())){
 			handsetDeviceSync(ctx, dto);
+		}else{
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 		}
 	}
 	
@@ -176,6 +187,14 @@ public class DeviceBusinessRpcService {
 		String wifiId = handset_device_entity.getBssid();
 		//2:wifi设备对应handset在线列表redis添加
 		WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
+				handset_device_entity.getLast_login_at().getTime());
+		
+		/*
+		 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
+		 * 4:移动设备连接wifi设备的流水log (backend)
+		 * 5:wifi设备接入移动设备的接入数量 (backend)
+		 */
+		deliverMessageService.sendHandsetDeviceOnlineActionMessage(wifiId, handset_device_entity.getId(),
 				handset_device_entity.getLast_login_at().getTime());
 	}
 	
