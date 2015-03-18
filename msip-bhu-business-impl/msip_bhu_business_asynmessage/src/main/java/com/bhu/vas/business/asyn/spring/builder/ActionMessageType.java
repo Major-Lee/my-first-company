@@ -5,10 +5,10 @@ import java.util.Map;
 
 public enum ActionMessageType {
 	
-	WIFIDeviceOnline("Wifi设备上线","wdonline","WN"),
-	WIFIDeviceOffline("Wifi设备下线","wdoffline","WF"),
-	HANDSETDeviceOnline("Wifi设备上线","hdonline","HN"),
-	HANDSETDeviceOffline("Wifi设备上线","hdoffline","HF"),
+	WifiDeviceOnline("Wifi设备上线","wdonline","WN"),
+	WifiDeviceOffline("Wifi设备下线","wdoffline","WF"),
+	HandsetDeviceOnline("Wifi设备上线","hdonline","HN"),
+	HandsetDeviceOffline("Wifi设备上线","hdoffline","HF"),
 	
 	;
 	

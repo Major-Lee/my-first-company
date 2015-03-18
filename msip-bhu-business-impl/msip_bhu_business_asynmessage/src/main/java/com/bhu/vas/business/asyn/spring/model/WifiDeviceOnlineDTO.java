@@ -9,7 +9,7 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 
 	@Override
 	public String getActionType() {
-		return ActionMessageType.WIFIDeviceOnline.getPrefix();
+		return ActionMessageType.WifiDeviceOnline.getPrefix();
 	}
 
 	public String getRemoteip() {
