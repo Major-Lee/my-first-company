@@ -6,8 +6,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.business.observer.listener.CmMessageListener;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
+import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 
 public class QueueMsgObserverManager {
 	private static final Logger logger = LoggerFactory.getLogger(QueueMsgObserverManager.class);
@@ -31,19 +31,19 @@ public class QueueMsgObserverManager {
 	}
 	
 	
-	private static List<CmMessageListener> cmMessageListeners = new CopyOnWriteArrayList<CmMessageListener>();
+	private static List<SpringQueueMessageListener> spingQueueMessageListeners = new CopyOnWriteArrayList<SpringQueueMessageListener>();
 
-	public static class CmMessageObserver{
-		public static void addCmMessageListener(CmMessageListener listener) {
-			cmMessageListeners.add(listener);
+	public static class SpringQueueMessageObserver{
+		public static void addSpringQueueMessageListener(SpringQueueMessageListener listener) {
+			spingQueueMessageListeners.add(listener);
 	    }
 		
-		public static void removeCmMessageListener(CmMessageListener listener) {
-			cmMessageListeners.remove(listener);
+		public static void removeSpringQueueMessageListener(SpringQueueMessageListener listener) {
+			spingQueueMessageListeners.remove(listener);
 	    }
 		public static void notifyMsgComming(String msg){
 			logger.info(String.format("notifyMsgComming msg[%s]",msg));
-	    	for(CmMessageListener listener:cmMessageListeners){
+	    	for(SpringQueueMessageListener listener:spingQueueMessageListeners){
 	    		listener.onMessage(msg);
 	    	}
 		}
@@ -63,22 +63,4 @@ public class QueueMsgObserverManager {
 		}*/
 	}
 	
-	/*private static List<BusinessMessageListener> businessMessageListeners = new CopyOnWriteArrayList<BusinessMessageListener>();
-
-	public static class BusinessMessageObserver{
-		public static void addBusinessMessageListener(BusinessMessageListener listener) {
-			businessMessageListeners.add(listener);
-	    }
-		
-		public static void removeBusinessMessageListener(CmMessageListener listener) {
-			businessMessageListeners.remove(listener);
-	    }
-		
-		public static void notifyMsgComming(String ctx,String msg){
-			logger.info(String.format("notifyMsgComming ctx[%s] msg[%s]", ctx,msg));
-	    	for(BusinessMessageListener listener:businessMessageListeners){
-	    		listener.onMessage(ctx,msg);
-	    	}
-		}
-	}*/
 }

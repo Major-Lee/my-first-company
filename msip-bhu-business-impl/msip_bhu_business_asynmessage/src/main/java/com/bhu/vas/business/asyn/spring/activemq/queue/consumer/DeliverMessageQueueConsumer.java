@@ -24,7 +24,7 @@ public class DeliverMessageQueueConsumer {
     	//long t0 = System.currentTimeMillis();
     	System.out.println(message);
     	BusinessStatisticsLogger.doActionMessageLog(message);
-    	QueueMsgObserverManager.CmMessageObserver.notifyMsgComming(message);
+    	QueueMsgObserverManager.SpringQueueMessageObserver.notifyMsgComming(message);
     	//deliverMsgProcessor.onMessage(message);
     	/*exec.submit((new Runnable() {
 			@Override
