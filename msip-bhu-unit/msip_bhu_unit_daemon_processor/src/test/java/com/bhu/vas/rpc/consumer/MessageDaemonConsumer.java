@@ -20,6 +20,7 @@ public class MessageDaemonConsumer {
 		IDaemonRpcService rpcService = (IDaemonRpcService)context.getBean("daemonRpcService");
 		rpcService.wifiDeviceOnline("cm001_1","34:36:3b:d0:4b:ac");
 		rpcService.wifiDeviceOnline("cm002_1","34:36:38:d0:48:ac");
+		rpcService.cmJoinService(new CmCtxInfo("cm009","1"));
 		//rpcService.wifiDeviceOffline(dto);
 		
 		
