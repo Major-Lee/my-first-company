@@ -1,0 +1,57 @@
+package com.bhu.vas.api.vto;
+
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class WifiDeviceVTO implements Serializable{
+	private String wid;//wifi id
+	private boolean ol;//online wifi设备是否在线
+	private String wdt;//wifi device type wifi设备类型
+	private String ast;//added services template 增值服务模板
+	private String uof;//up outflow 上行流量
+	private String dof;//down outflow 下行流量
+	private String cohc;//current online handset count 在线移动设备数量
+	
+	public String getWid() {
+		return wid;
+	}
+	public void setWid(String wid) {
+		this.wid = wid;
+	}
+	public boolean isOl() {
+		return ol;
+	}
+	public void setOl(boolean ol) {
+		this.ol = ol;
+	}
+	public String getWdt() {
+		return wdt;
+	}
+	public void setWdt(String wdt) {
+		this.wdt = wdt;
+	}
+	public String getAst() {
+		return ast;
+	}
+	public void setAst(String ast) {
+		this.ast = ast;
+	}
+	public String getUof() {
+		return uof;
+	}
+	public void setUof(String uof) {
+		this.uof = uof;
+	}
+	public String getDof() {
+		return dof;
+	}
+	public void setDof(String dof) {
+		this.dof = dof;
+	}
+	public String getCohc() {
+		return cohc;
+	}
+	public void setCohc(String cohc) {
+		this.cohc = cohc;
+	}
+}

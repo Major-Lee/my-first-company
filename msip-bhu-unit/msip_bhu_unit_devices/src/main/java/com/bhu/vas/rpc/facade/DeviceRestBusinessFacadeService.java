@@ -10,10 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * device Rest RPC组件的业务service
@@ -26,6 +31,9 @@ public class DeviceRestBusinessFacadeService {
 
 	@Resource
 	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
@@ -51,5 +59,15 @@ public class DeviceRestBusinessFacadeService {
 			vtos.add(vto);
 		}
 		return vtos;
+	}
+	
+	/**
+	 * 获取在线的wifi设备列表
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public TailPage<WifiDevice> fetchWDevicesOnline(int pageNo, int pageSize){
+		 return wifiDeviceService.findModelByOnline(pageNo, pageSize);
 	}
 }
