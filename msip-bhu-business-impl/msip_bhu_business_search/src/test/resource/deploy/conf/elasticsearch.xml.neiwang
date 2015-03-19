@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    This file stores bootstrap properties needed by Connection Managers.
+    Property names must be in the format: "prop.name.is.blah=value"
+    That will be stored as:
+        <prop>
+            <name>
+                <is>
+                    <blah>value</blah>
+                </is>
+            </name>
+        </prop>
+-->
+<!-- root element, all properties must be under this element -->
+<es>
+    <!-- Name of the cluster server to connect. This property is required. -->  
+    <cluster>
+    	<name>Test</name>
+    	<nodes>
+    		<node1>192.168.1.6:9300</node1>  
+        	<!-- <node2>192.168.1.2:9300</node2>  -->
+        </nodes>
+    </cluster>
+    <indices>
+    	<response>
+	    	<shard>5</shard>
+	    	<replica>1</replica>
+    	</response>
+    </indices>
+    <client>
+    	<transport>
+    		<sniff>true</sniff>
+    		<timeout>30s</timeout>
+    	</transport>
+    </client>
+</es>

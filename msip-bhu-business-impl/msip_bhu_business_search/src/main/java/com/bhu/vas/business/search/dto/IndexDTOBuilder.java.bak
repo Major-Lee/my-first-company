@@ -1,0 +1,49 @@
+//package com.naola.business.search.dto;
+//
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.List;
+//import java.util.Map;
+//
+//import org.elasticsearch.search.SearchHit;
+//import org.elasticsearch.search.SearchHits;
+//
+//import com.naola.api.user.dto.UserDTO;
+//import com.naola.business.search.mapable.UserMapableComponent;
+///**
+// * 索引dto生成封装类
+// * @author lawliet
+// *
+// */
+//public class IndexDTOBuilder {
+//	
+//	public static UserDTO buildUserDto(Map<String,Object> sourceDataMap){
+//		if(sourceDataMap == null || sourceDataMap.isEmpty()){
+//			return null;
+//		}
+//		UserDTO dto = new UserDTO();
+//		dto.setId(Integer.parseInt(sourceDataMap.get(UserMapableComponent.M_id).toString()));
+//		dto.setNick(sourceDataMap.get(UserMapableComponent.M_showname).toString());
+//		dto.setAvatar(sourceDataMap.get(UserMapableComponent.M_avatar).toString());
+//		dto.setType(Integer.parseInt(sourceDataMap.get(UserMapableComponent.M_usertype).toString()));
+//		dto.setUc(Integer.parseInt(sourceDataMap.get(UserMapableComponent.M_usedcount).toString()));
+//		return dto;
+//	}
+//	
+//	public static List<UserDTO> buildUserDtos(SearchHits hits){
+//		if(hits.getTotalHits() == 0){
+//			return Collections.emptyList();
+//		}
+//		List<UserDTO> dtos = new ArrayList<UserDTO>();
+//		UserDTO dto = null;
+//		for (SearchHit hit : hits) {
+//			System.out.println("queryUsers --分数:" + hit.getScore() + ",ID:"
+//					+ hit.id() + ", 名称:" + hit.getSource().get("showname")
+//					+ ", indexname:" + hit.getIndex() + ", indextype:"
+//					+ hit.getType());
+//			dto = buildUserDto(hit.getSource());
+//			dtos.add(dto);
+//		}
+//		return dtos;
+//	}
+//}

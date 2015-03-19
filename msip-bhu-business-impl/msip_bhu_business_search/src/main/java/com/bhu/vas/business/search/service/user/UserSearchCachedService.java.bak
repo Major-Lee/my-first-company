@@ -1,0 +1,138 @@
+//package com.naola.business.search.service.user;
+//
+//import java.util.Collections;
+//import java.util.List;
+//
+//import javax.annotation.Resource;
+//
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.stereotype.Service;
+//
+//import com.naola.api.user.dto.UserDTO;
+//import com.naola.business.search.QueryResponse;
+//import com.naola.business.search.cached.SearchCachedService;
+//import com.smartwork.msip.cores.helper.StringHelper;
+//import com.smartwork.msip.es.index.resolver.IndexableResolver;
+//
+///**
+// * 搜索用户的业务service cached类 
+// * 1:执行搜索条件 
+// * 2:处理业务缓存
+// * 
+// * @author lawliet
+// *
+// */
+//@Service
+//public class UserSearchCachedService{
+//	
+//	private final Logger logger = LoggerFactory.getLogger(UserSearchCachedService.class);
+//	
+//	//用户数据每次缓存200条
+//	public static final int QUsersCache_FetchSize = 200;
+//	//当keyword数据不存在时, 表示全匹配的缓存keyword
+//	public static final String Query_MatchAllKeywords = "_match_all$";
+//	
+//	@Resource
+//	private UserSearchService userSearchService;
+//	
+//	@Resource
+//	private SearchCachedService searchCachedService;
+//	
+//	/**
+//	 * 
+//	 * 前缀方式搜索用户
+//	 * 包含cached
+//	 * cache中的数据如果在取值范围内, 则就在cache中取. 如果超出cache范围, 直接搜索(no cache)
+//	 * @param uid
+//	 * @param keyword 关键词(可选, 如果没有关键词, 为全匹配)
+//	 * @param usertype 用户类型(可选)
+//	 * @param start
+//	 * @param size
+//	 * @return
+//	 */
+//	public QueryResponse<List<UserDTO>> preifxQueryUsers(Integer uid, String keyword, Integer usertype,
+//			int start, int size) {
+//		
+//		String standardKeyword = IndexableResolver.standardString(keyword);
+//
+//		int qhashcode = generateQUsersHashCode(standardKeyword, usertype);
+//		List<UserDTO> cachedUserDtos = searchCachedService.getUsersCacheByQ(qhashcode);
+//		int total = 0;
+//		//cache expired
+//		if(cachedUserDtos == null){
+//			//直接查询QUsersCache_FetchSize为数量的用户数据
+//			QueryResponse<List<UserDTO>> queryResult = userSearchService.preifxQueryUsers(uid, standardKeyword, 
+//					usertype, 0, QUsersCache_FetchSize);
+//			total = queryResult.getTotal();
+//			//如果有数据
+//			if(total > 0){
+//				cachedUserDtos = queryResult.getResult();
+//				if(!cachedUserDtos.isEmpty()){
+//					//存入cache中
+//					searchCachedService.storeQUsersCacheResult(qhashcode, cachedUserDtos);
+//				}
+//			}
+//		}
+//		//如果cachedUserDtos为空, 说明确实没有数据
+//		if(cachedUserDtos == null || cachedUserDtos.isEmpty()){
+//			List<UserDTO> emptyDtos = Collections.emptyList();
+//			return new QueryResponse<List<UserDTO>>(0, emptyDtos);
+//		}
+//		
+//		
+//		int cachedSize = cachedUserDtos.size();
+//		//1:cache中的数据比预定的要少, 说明cache中已经是全部数据
+//		//2:cache中的数据包含取值范围, 直接从cache中提取
+//		if(cachedSize < QUsersCache_FetchSize || cachedSize >= (start + size)){
+//			logger.info(String.format("[%s] function q[%s] be hit from local cache key[%s] ,cache list size:[%s]",
+//					new Object[] {"Preifx Query Users", keyword, searchCachedService.generateQUsersCacheKeyBy(qhashcode)
+//					,String.valueOf(cachedUserDtos.size())}));
+//			
+//			int start4list = Math.min(start, cachedSize);
+//			int end4list 	= Math.min(start + size, cachedSize);
+//			//直接从cache中取数据
+//			List<UserDTO> subList = cachedUserDtos.subList(start4list, end4list);
+//			return new QueryResponse<List<UserDTO>>(total, subList);
+//		}
+//		
+//		//cache中的数据如果在取值范围内, 则就在cache中取. 如果超出cache范围, 直接搜索(no cache)
+////		if(cachedSize >= (start + size)){
+////			logger.info(String.format("[%s] function q[%s] be hit from local cache key[%s] ,cache list size:[%s]",
+////					new Object[] {"Preifx Query Users", keyword, businessSearchCachedService.generateQUsersCacheKeyBy(qhashcode)
+////					,String.valueOf(cachedUserDtos.size())}));
+////			//直接从cache中取数据
+////			List<UserDTO> subList = cachedUserDtos.subList(start, size);
+////			return new QueryBusinessResponse<List<UserDTO>>(total, subList);
+////		}
+//		
+//		//直接搜索(no cache)
+//		return  userSearchService.preifxQueryUsers(uid, standardKeyword, usertype, start, size);
+//		
+//	}
+//	
+//	/**
+//	 * 生成用户搜索数据的hashcode
+//	 * @param keyword
+//	 * @param usertype
+//	 * @return hashcode
+//	 */
+//	public int generateQUsersHashCode(String keyword, Integer usertype){
+//		StringBuffer qhashcode_string = new StringBuffer();
+//		if(StringHelper.isNotEmpty(keyword)){
+//			qhashcode_string.append(keyword);
+//		}else{
+//			qhashcode_string.append(Query_MatchAllKeywords);
+//		}
+//		
+//		if(usertype != null){
+//			qhashcode_string.append(usertype);
+//		}
+//		return qhashcode_string.toString().hashCode();
+//	}
+//	
+////	@Override
+////	public Cache getCache(){
+////		return super.getCacheService().addCache(this.getClass().getName(),10*10000,2 * 3600);//2小时
+////	}
+//}
