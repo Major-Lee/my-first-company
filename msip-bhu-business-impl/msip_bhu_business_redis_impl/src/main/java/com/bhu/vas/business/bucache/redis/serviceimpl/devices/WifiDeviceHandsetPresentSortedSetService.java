@@ -20,8 +20,10 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *  	key：wifiId 
  *  	score 移动设备上线时间
  *  	value 移动设备的mac
- *  包括	
- *  	聊天离线消息
+ *  
+ * 1：移动设备上线新增，下线删除，sync更新数据
+ * 2：由于移动设备sync消息是多条单item消息，后台服务无法准确的去掉已经下线的移动设备数据，需要后台定时程序来进行维护
+ * 例如 后台定时程序每2个小时会以2小时前的时间作为最大阀值，来进行zremrangeByScore来进行删除已下线的移动设备数据
  * @author lawliet
  *
  */
