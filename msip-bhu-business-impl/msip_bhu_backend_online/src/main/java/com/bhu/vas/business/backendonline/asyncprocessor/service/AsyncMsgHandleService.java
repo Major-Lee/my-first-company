@@ -41,6 +41,8 @@ public class AsyncMsgHandleService {
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
+	 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
+	 * 5:统计增量 wifi设备的daily启动次数增量 (backend)
 	 * @param message
 	 */
 	public void wifiDeviceOnlineHandle(String message){
@@ -49,6 +51,22 @@ public class AsyncMsgHandleService {
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		//3:wifi设备对应handset在线列表初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备
 		WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac(), dto.getLogin_ts());
+		//判断移动设备是否是新设备
+		if(dto.isNewWifi()){
+			//4:统计增量 wifi设备的daily新增设备
+			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+					DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_News, 1);
+		}else{
+			//判断本次登录时间和上次登录时间是否是同一天, 如果不是, 则wifi设备的daily增量活跃wifi设备
+			if(!DateTimeHelper.isSameDay(dto.getLast_login_at(), dto.getLogin_ts())){
+				//4:统计增量 wifi设备的daily活跃设备增量
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Actives, 1);
+			}
+		}
+		//5:统计增量 wifi设备的daily启动次数增量
+		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
@@ -57,6 +75,7 @@ public class AsyncMsgHandleService {
 	 * wifi设备下线
 	 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
 	 * 4:wifi设备对应handset在线列表redis清除 (backend)
+	 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
 	 * @param message
 	 */
 	public void wifiDeviceOfflineHandle(String message){
@@ -73,6 +92,14 @@ public class AsyncMsgHandleService {
 		}
 		//4:wifi设备对应handset在线列表redis清除
 		WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac());
+		//5:统计增量 wifi设备的daily访问时长增量
+		if(dto.getLast_login_at() > 0){
+			long uptime = dto.getTs() - dto.getLast_login_at();
+			if(uptime > 0){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Times, uptime);
+			}
+		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s] successful", message));
 	}
@@ -105,18 +132,18 @@ public class AsyncMsgHandleService {
 		if(dto.isNewHandset()){
 			//6:统计增量 移动设备的daily新增用户
 			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-					DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_News, 1);
+					DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_News, 1);
 		}else{
 			//判断本次登录时间和上次登录时间是否是同一天, 如果不是, 则移动设备的daily增量活跃移动设备
 			if(!DateTimeHelper.isSameDay(dto.getLast_login_at(), dto.getLogin_ts())){
 				//6:统计增量 移动设备的daily活跃移动设备增量
 				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-						DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_Actives, 1);
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Actives, 1);
 			}
 		}
 		//7:统计增量 移动设备的daily启动次数增量
 		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-				DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
+				DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
 		//4:移动设备连接wifi设备的流水log
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(message);
 		
@@ -135,7 +162,7 @@ public class AsyncMsgHandleService {
 		//3:统计增量 移动设备的daily访问时长增量
 		if(!StringUtils.isEmpty(dto.getUptime())){
 			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-					DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_Times, Long.parseLong(dto.getUptime()));
+					DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Times, Long.parseLong(dto.getUptime()));
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
