@@ -21,7 +21,7 @@ public class WifiHandsetDeviceLoginCountMServiceTest extends BaseTest{
 	
 	@Test
 	public void testFind(){
-		Pagination<WifiHandsetDeviceLoginCountMDTO> result = wifiHandsetDeviceLoginCountMService.findLoginCountsSortByCountDesc(1, 10);
+		Pagination<WifiHandsetDeviceLoginCountMDTO> result = wifiHandsetDeviceLoginCountMService.findWifiDevicesOrderMaxHandset(1, 10);
 		System.out.println(result.getTotalCount());
 		for(WifiHandsetDeviceLoginCountMDTO mdto : result.getDatas()){
 			System.out.println(mdto.getCount());
