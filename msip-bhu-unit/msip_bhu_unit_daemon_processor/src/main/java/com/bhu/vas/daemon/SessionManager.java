@@ -1,6 +1,8 @@
 package com.bhu.vas.daemon;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.smartwork.msip.cores.cache.entitycache.impl.local.DefaultCacheImpl;
 import com.smartwork.msip.cores.helper.task.TaskEngine;
@@ -12,6 +14,7 @@ public class SessionManager {
 
 	private SessionManager(){
 		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 60*1000,60*1000);//5*60*1000,5*60*1000);//5*60*1000);
+		TaskEngine.getInstance().schedule(new DaemonCheckSerialTask(), 3*60*1000,3*60*1000);//5*60*1000,5*60*1000);//5*60*1000);
 	}
 	
 	/**
@@ -25,6 +28,7 @@ public class SessionManager {
 	//wifi mac --> cm  caches
 	private DefaultCacheImpl<String> sessions = new DefaultCacheImpl<String>(60,10);
 	
+	private Map<String,SerialTask> serialTaskmap = new ConcurrentHashMap<String,SerialTask>();
 	public String getSession(String wifi_mac) {
 		return sessions.get(wifi_mac);
     }
@@ -48,5 +52,13 @@ public class SessionManager {
 	
 	public Set<String> keySet() {
 		return sessions.keySet();
+	}
+
+	public Map<String, SerialTask> getSerialTaskmap() {
+		return serialTaskmap;
+	}
+
+	public void setSerialTaskmap(Map<String, SerialTask> serialTaskmap) {
+		this.serialTaskmap = serialTaskmap;
 	}
 }

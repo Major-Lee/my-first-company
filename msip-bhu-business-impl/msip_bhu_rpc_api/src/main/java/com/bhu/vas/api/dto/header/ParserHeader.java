@@ -27,7 +27,7 @@ public class ParserHeader implements java.io.Serializable{
 	//12字节mac
 	private String mac;
 	//10字节任务id
-	private long taskid;
+	private int taskid;
 	//报文主类型
 	private int mt;
 	//子类型(8字节)
@@ -38,10 +38,10 @@ public class ParserHeader implements java.io.Serializable{
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-	public long getTaskid() {
+	public int getTaskid() {
 		return taskid;
 	}
-	public void setTaskid(long taskid) {
+	public void setTaskid(int taskid) {
 		this.taskid = taskid;
 	}
 	public int getMt() {
@@ -68,7 +68,7 @@ public class ParserHeader implements java.io.Serializable{
 		pheader.setType(type);
 		if(StringUtils.isEmpty(header) || header.length() <34) return pheader;
 		pheader.setMac(StringHelper.formatMacAddress(header.substring(0, 12)));
-		pheader.setTaskid(Long.parseLong(header.substring(12, 22)));
+		pheader.setTaskid(Integer.parseInt(header.substring(12, 22)));
 		pheader.setMt(Integer.parseInt(header.substring(22, 26)));
 		pheader.setSt(Integer.parseInt(header.substring(26, 34)));
 		return pheader;

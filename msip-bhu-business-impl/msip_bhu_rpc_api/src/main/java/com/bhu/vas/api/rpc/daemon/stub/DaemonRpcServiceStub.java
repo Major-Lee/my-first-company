@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.daemon.stub;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -49,6 +50,14 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		return daemonRpcService.cmLeave(info);
 	}
 
+	@Override
+	public boolean wifiDeviceSerialTaskComming(String ctx, String payload, ParserHeader parserHeader){//String mac,QuerySerialReturnDTO dto) {
+		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(payload) || parserHeader == null) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload,parserHeader);
+	}
+
+	
 	/*@Override
 	public boolean deviceRegister(DeviceDTO dto) {
 		// TODO Auto-generated method stub

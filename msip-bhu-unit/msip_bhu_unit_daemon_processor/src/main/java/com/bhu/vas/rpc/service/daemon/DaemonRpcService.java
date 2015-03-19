@@ -5,17 +5,19 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
-import com.bhu.vas.daemon.CMDBuilder;
+import com.bhu.vas.daemon.SerialTask;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
 import com.bhu.vas.daemon.observer.listener.CmdDownListener;
@@ -69,7 +71,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		//System.out.println("cmJoinService:"+info);
 		logger.info("info"+"cmJoinService:"+info);
 		ActiveMQConnectionManager.getInstance().createNewProducerQueues("down", info.toString(), true);
-		return false;
+		return true;
 	}
 
 	@Override
@@ -77,6 +79,18 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		//System.out.println("cmLeave:"+info);
 		logger.info("info"+"cmLeave:"+info);
 		//createNewConsumerQueues("up", cmInfo.toString(),true);
-		return false;
+		return true;
+	}
+
+	@Override
+	public boolean wifiDeviceSerialTaskComming(String ctx,String payload,ParserHeader header){
+		logger.info("info"+String.format("wifiDeviceSerialTaskComming ctx[%s] header[%s] payload[%s]",ctx,header,payload));
+		try{
+			QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(payload, QuerySerialReturnDTO.class);
+			SessionManager.getInstance().getSerialTaskmap().put(header.getMac()+retDTO.getSerial(), new SerialTask(header.getMac(),header.getTaskid(),retDTO.getSerial()));
+		}catch(Exception ex){
+			logger.error("wifiDeviceSerialTaskComming paser payload", ex);
+		}
+		return true;
 	}
 }

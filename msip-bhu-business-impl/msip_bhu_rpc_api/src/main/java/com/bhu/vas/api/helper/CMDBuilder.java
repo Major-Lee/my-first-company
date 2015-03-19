@@ -1,4 +1,4 @@
-package com.bhu.vas.daemon;
+package com.bhu.vas.api.helper;
 
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -13,6 +13,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class CMDBuilder {
+	
 	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次
 	private static final String query_device_teminals_cmd_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>";
 	
@@ -38,10 +39,19 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
-		return String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete,taskid));
+		return String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete,location_taskid_fragment.getNextSequence()));
 	}
 	
 	public static String builderDeviceLocationStep2Query(String wifi_mac,int taskid,String serialno){
 		return String.format(query_device_location_step2_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete,taskid),serialno);
+	}
+	
+	
+	
+	//任务号分段：对于查询wifi地理位置任务 区间段未1~2000
+	private static TaskSequenceFragment location_taskid_fragment = new TaskSequenceFragment(1,2000);
+	
+	public static boolean wasLocationQueryTaskid(int taskid){
+		return location_taskid_fragment.wasInFragment(taskid);
 	}
 }

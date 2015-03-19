@@ -6,6 +6,8 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -86,9 +91,19 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 						if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
 							daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 						}
-						if(ParserHeader.Transfer_Prefix == type && headers.getMt() == 0 && headers.getSt()==1){//设备上线
-							daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+						if(ParserHeader.Transfer_Prefix == type){
+							if(headers.getMt() == 0 && headers.getSt()==1){//设备上线
+								daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+							}
+							if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
+								//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+								if(CMDBuilder.wasLocationQueryTaskid(headers.getTaskid())){//任务查询反馈消息
+									//QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(payload, QuerySerialReturnDTO.class);
+									daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);//, retDTO);
+								}
+							}
 						}
+						
 					}
 					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){

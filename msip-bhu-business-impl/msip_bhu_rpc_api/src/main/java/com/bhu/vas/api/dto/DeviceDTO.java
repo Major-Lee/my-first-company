@@ -2,7 +2,6 @@ package com.bhu.vas.api.dto;
 
 import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.dto.header.ParserHeader;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
