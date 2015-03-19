@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.TimerTask;
 
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.localunit.RandomData;
 /**
  * 上端下发消息：
