@@ -80,44 +80,44 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 1://3.4.2	设备上线请求
 					deviceBusinessFacadeService.wifiDeviceOnline(ctx, payload);
 					break;
-				case 2://3.4.3	设备上线回应
-					break;
-				case 3://3.4.4	连接重定向消息
-					break;
-				case 4://3.4.5	时间同步请求
-					break;
-				case 5://3.4.6	时间同步响应
-					break;
-				case 6://3.4.7	管理参数下发
-					break;
-				case 7://3.4.8	保活请求
-					break;
-				case 8://3.4.9	保活响应
-					break;
+//				case 2://3.4.3	设备上线回应
+//					break;
+//				case 3://3.4.4	连接重定向消息
+//					break;
+//				case 4://3.4.5	时间同步请求
+//					break;
+//				case 5://3.4.6	时间同步响应
+//					break;
+//				case 6://3.4.7	管理参数下发
+//					break;
+//				case 7://3.4.8	保活请求
+//					break;
+//				case 8://3.4.9	保活响应
+//					break;
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
 		}else if(mType == ParserHeader.Transfer_mtype_1){
 			switch(sType){//子类型判断
-				case 1://3.4.14	文件传输消息(暂不实现)
-					break;
-				case 2://3.4.10	XML请求
-					break;
-				case 3://3.4.11	XML请求回应
-					break;
-				case 4://3.4.13	文件传输响应
-					break;
-				case 5://3.4.14	文件传输消息(暂不实现)
-					break;
+//				case 1://3.4.14	文件传输消息(暂不实现)
+//					break;
+//				case 2://3.4.10	XML请求
+//					break;
+//				case 3://3.4.11	XML请求回应
+//					break;
+//				case 4://3.4.13	文件传输响应
+//					break;
+//				case 5://3.4.14	文件传输消息(暂不实现)
+//					break;
 				case 6://3.4.15	设备事件信息
 					deviceBusinessFacadeService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
 					deviceBusinessFacadeService.handsetDeviceConnectState(ctx, payload);
 					break;
-				case 8://3.4.17	应用隧道消息
-					break;
+//				case 8://3.4.17	应用隧道消息
+//					break;
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
