@@ -2,8 +2,10 @@ package com.bhu.vas.business.ds.task.facade;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
 
@@ -26,9 +28,18 @@ public class TaskFacadeService {
 		
 	}
 	
-	public void newTaskComming(int taskid){
-		
+	public static final int Task_Illegal = -1;
+	public static final int Task_Already_Exist = 0;
+	public static final int Task_Already_Completed = 1;
+	public static final int Task_Startup_OK = 2;
+	public int taskComming(WifiDeviceDownTask downtask){
+		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) ||StringUtils.isEmpty(downtask.getPayload())) return Task_Illegal;
+		if(StringUtils.isNotEmpty(downtask.get)){
+			
+		}
+		return 0;
 	}
+	
 	
 	public void cancelTask(int taskid){
 		

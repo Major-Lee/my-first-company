@@ -13,12 +13,16 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public static final int State_Failed = 3;//任务失败
 	public static final int State_Completed = 10;//任务已经完成
 	
+	public static final String Task_LOCAL_CHANNEL = "VAS";
 	private String payload;
 	private int state;
 	private String task;
 	private String mac;
 	private String time;
 	private String serial;
+	//给外部其他应用提供的channel值，每个外部应用有个编号
+	private String channel = Task_LOCAL_CHANNEL;
+	private int channel_taskid;
 	private Date created_at;
 	
 	@Override
@@ -88,4 +92,22 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
 	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public int getChannel_taskid() {
+		return channel_taskid;
+	}
+
+	public void setChannel_taskid(int channel_taskid) {
+		this.channel_taskid = channel_taskid;
+	}
+	
+	
 }

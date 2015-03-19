@@ -12,6 +12,8 @@
     <result property="mac" column="mac"/>
     <result property="time" column="time"/>
     <result property="serial" column="serial"/>
+    <result property="channel" column="channel"/>
+    <result property="channel_taskid" column="channel_taskid"/>    
     <result property="completed_at" column="completed_at"/>
     
     <result property="created_at" column="created_at"/>
@@ -32,6 +34,8 @@
 	    	mac,
 	    	time,
 	    	serial,
+	    	channel,
+	    	channel_taskid,
 	    	completed_at,
 	    	created_at,
 	    	updated_at
@@ -45,6 +49,8 @@
 	    	mac,
 	    	time,
 	    	serial,
+	    	channel,
+	    	channel_taskid,	    	
 	    	completed_at,
 	    	created_at,
 	    	updated_at
@@ -59,6 +65,8 @@
 	    	#{mac},
 	    	#{time},
 	    	#{serial},
+	    	#{channel},
+	    	#{channel_taskid},
 	    	#{completed_at},
 	    	#{created_at},
 	    	#{updated_at}
@@ -72,6 +80,8 @@
 			mac = #{mac},
 			time = #{time},
 			serial = #{serial},
+			channel = #{channel},
+	    	channel_taskid = #{channel_taskid},
 			completed_at = #{completed_at},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
