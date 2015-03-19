@@ -1,6 +1,9 @@
 package com.bhu.vas.api.vto;
 
-public class SystemGeneralVTO {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class SystemGeneralVTO implements Serializable{
 	private long wdc;//wifi device count 总wifi设备数量
 	private long cohc;//current online handset count 在线移动设备数量
 	private long hdc;//handset device count 总移动设备数量

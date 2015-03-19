@@ -1,6 +1,9 @@
 package com.bhu.vas.api.vto;
 
-public class WifiDeviceMaxBusyVTO {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class WifiDeviceMaxBusyVTO implements Serializable{
 	private String wid;//wifi id
 	private long hdc;//handset device count 移动设备接入的总数量
 	
