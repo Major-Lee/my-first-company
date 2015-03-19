@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.ds.task.service.WifiDeviceCompletedDownTaskService;
+import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
 
 @Service
@@ -13,7 +13,7 @@ public class TaskFacadeService {
 	private WifiDeviceDownTaskService wifiDeviceDownTaskService;
 	
 	@Resource
-	private WifiDeviceCompletedDownTaskService wifiDeviceCompletedDownTaskService;
+	private WifiDeviceDownTaskCompletedService wifiDeviceDownTaskCompletedService;
 	
 	
 	
