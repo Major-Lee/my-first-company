@@ -13,18 +13,19 @@
 	<import resource="classpath*:com/et/plugins/quartz/applicationContext-quartz.xml"/>
 	 -->
 	<!-- load activemq ticker business conf "classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-producer.xml" 
-	-->
-	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
 	
+	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
+	-->
 	<!-- 
 	<import resource="classpath*:springmq/applicationContext-activemq-message-producer.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-instant-producer.xml"/>
-	 -->
+	 
 	 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-notify-producer.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-sns-producer.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-incrementindex-producer.xml"/>
+	-->
 	 <!--
 	<import resource="classpath*:springmq/applicationContext-activemq-indexupdate-producer.xml"/>
 	 -->
