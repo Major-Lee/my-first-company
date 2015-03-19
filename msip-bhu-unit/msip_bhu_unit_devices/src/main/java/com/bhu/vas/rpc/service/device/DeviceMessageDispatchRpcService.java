@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.rpc.facade.DeviceBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
- * 
+ * device rpc组件服务service 对外暴露接口
+ * 处理设备上行消息
  * @author tangzichao
  *
  */
@@ -21,7 +23,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	private final Logger logger = LoggerFactory.getLogger(DeviceMessageDispatchRpcService.class);
 
 	@Resource
-	private DeviceBusinessRpcService deviceBusinessRpcService;
+	private DeviceBusinessFacadeService deviceBusinessFacadeService;
 
 	/**
 	 * rpc message dispatch
@@ -37,10 +39,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			int type = parserHeader.getType();
 			switch(type){
 				case ParserHeader.DeviceOffline_Prefix:
-					deviceBusinessRpcService.wifiDeviceOffline(ctx, parserHeader.getMac());
+					deviceBusinessFacadeService.wifiDeviceOffline(ctx, parserHeader.getMac());
 					break;
 				case ParserHeader.DeviceNotExist_Prefix:
-					deviceBusinessRpcService.wifiDeviceNotExist(ctx, parserHeader.getMac());
+					deviceBusinessFacadeService.wifiDeviceNotExist(ctx, parserHeader.getMac());
 					break;
 				case ParserHeader.Transfer_Prefix:
 					transferMessageDispatch(ctx, payload, parserHeader);
@@ -76,7 +78,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		if(mType == ParserHeader.Transfer_mtype_0){
 			switch(sType){//子类型判断
 				case 1://3.4.2	设备上线请求
-					deviceBusinessRpcService.wifiDeviceOnline(ctx, payload);
+					deviceBusinessFacadeService.wifiDeviceOnline(ctx, payload);
 					break;
 				case 2://3.4.3	设备上线回应
 					break;
@@ -109,10 +111,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 5://3.4.14	文件传输消息(暂不实现)
 					break;
 				case 6://3.4.15	设备事件信息
-					deviceBusinessRpcService.wifiDeviceAlarm(ctx, payload);
+					deviceBusinessFacadeService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
-					deviceBusinessRpcService.handsetDeviceConnectState(ctx, payload);
+					deviceBusinessFacadeService.handsetDeviceConnectState(ctx, payload);
 					break;
 				case 8://3.4.17	应用隧道消息
 					break;

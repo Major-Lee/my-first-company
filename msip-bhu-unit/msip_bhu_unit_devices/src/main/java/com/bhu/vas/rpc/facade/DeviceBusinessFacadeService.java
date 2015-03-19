@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.service.device;
+package com.bhu.vas.rpc.facade;
 
 import javax.annotation.Resource;
 
@@ -26,14 +26,13 @@ import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
- * device组件的业务service
- * 不暴露接口
+ * device RPC组件的业务service
  * @author tangzichao
  *
  */
 @Service
-public class DeviceBusinessRpcService {
-	private final Logger logger = LoggerFactory.getLogger(DeviceBusinessRpcService.class);
+public class DeviceBusinessFacadeService {
+	private final Logger logger = LoggerFactory.getLogger(DeviceBusinessFacadeService.class);
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
