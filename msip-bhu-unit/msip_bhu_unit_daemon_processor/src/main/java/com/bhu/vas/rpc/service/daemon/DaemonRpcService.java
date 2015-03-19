@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
@@ -14,9 +15,11 @@ import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
+import com.bhu.vas.daemon.CMDBuilder;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
 import com.bhu.vas.daemon.observer.listener.CmdDownListener;
+import com.smartwork.msip.localunit.RandomData;
 
 /**
  * @author Edmond
@@ -39,6 +42,9 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		logger.info("info"+String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().addSession(mac, ctx);
+		//设备上行首先发送查询地理位置指令
+		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, RandomData.intNumber(1, 100000)));
+		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, mac, CMDBuilder.builderDeviceLocationStep1Query(mac, RandomData.intNumber(1, 100000)));
 		return false;
 	}
 	

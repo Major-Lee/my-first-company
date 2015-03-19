@@ -18,36 +18,27 @@ import com.smartwork.msip.localunit.RandomData;
  *
  */
 public class DaemonCheckTask extends TimerTask{
-	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次
-	private String query_device_teminals_cmd_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>";
-	
-	//1. 查询cpu,内存利用率
-	private String query_device_status_cmd_template =   "00001001%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>";
-	
-	
-	//1. 查询wifi地理位置命令第一步
-	private String query_device_location_step1_cmd_template = "00001001%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>";
-	
-	//1. 查询wifi地理位置命令第二步
-	private String query_device_location_step2_cmd_template = "<report><ITEM cmd=\"sysdebug\" serial=\"1\" op=\"get\"/></report>";
-	
-	public static final String SuffixTemplete = "%010d";
 	@Override
 	public void run() {
 		System.out.println("DaemonCheckTask starting...");
     	Iterator<String> iter = SessionManager.getInstance().keySet().iterator();
+    	int i=0;
     	while(iter.hasNext()){
     		String wifi_mac = iter.next();
     		String ctx = SessionManager.getInstance().getSession(wifi_mac);//.get(key);
-    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac)));//,String.format(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)), RandomData.intNumber(1005, 10000080))));
-    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_status_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));
-    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));
+    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, CMDBuilder.builderDeviceOnlineTeminalQuery(wifi_mac));
+    				//String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac)));//,String.format(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)), RandomData.intNumber(1005, 10000080))));
+    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, CMDBuilder.builderDeviceStatusQuery(wifi_mac, RandomData.intNumber(1, 100000)));
+    				//String.format(query_device_status_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));
+    		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, 
+    		//		String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));
+    		i++;
     	}
-    	System.out.println("DaemonCheckTask ended!");
+    	System.out.println("DaemonCheckTask ended! ["+i+"] devices");
 	}
 	
 	public static void main(String[] argv){
-		System.out.println(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)));
-		System.out.println(StringHelper.unformatMacAddress("34:36:3b:d0:4b:ac"));
+		//System.out.println(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)));
+		//System.out.println(StringHelper.unformatMacAddress("34:36:3b:d0:4b:ac"));
 	}
 }
