@@ -8,16 +8,22 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 @Service
@@ -76,6 +82,8 @@ public class AsyncMsgHandleService {
 	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
 	 * 4:移动设备连接wifi设备的流水log (backend)
 	 * 5:wifi设备接入移动设备的接入数量增量 (backend)
+	 * 6:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
+	 * 7:统计增量 移动设备的daily启动次数增量(backend)
 	 * @param message
 	 */
 	public void handsetDeviceOnlineHandle(String message){
@@ -93,6 +101,22 @@ public class AsyncMsgHandleService {
 			wifiHandsetDeviceLoginCountMService.incrCount(dto.getWifiId());
 		}
 		
+		//判断移动设备是否是新设备
+		if(dto.isNewHandset()){
+			//6:统计增量 移动设备的daily新增用户
+			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+					DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_News, 1);
+		}else{
+			//判断本次登录时间和上次登录时间是否是同一天, 如果不是, 则移动设备的daily增量活跃移动设备
+			if(!DateTimeHelper.isSameDay(dto.getLast_login_at(), dto.getLogin_ts())){
+				//6:统计增量 移动设备的daily活跃移动设备增量
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_Actives, 1);
+			}
+		}
+		//7:统计增量 移动设备的daily启动次数增量
+		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+				DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
 		//4:移动设备连接wifi设备的流水log
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(message);
 		
@@ -101,9 +125,19 @@ public class AsyncMsgHandleService {
 	
 	/**
 	 * 移动设备下线
+	 * 3:统计增量 移动设备的daily访问时长增量 (backend)
 	 * @param message
 	 */
 	public void handsetDeviceOfflineHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s]", message));
 		
+		HandsetDeviceOfflineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOfflineDTO.class);
+		//3:统计增量 移动设备的daily访问时长增量
+		if(!StringUtils.isEmpty(dto.getUptime())){
+			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+					DailyStatisticsUserInnerPrefixKey, DailyStatisticsDTO.Field_Times, Long.parseLong(dto.getUptime()));
+		}
+		
+		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
 	}
 }

@@ -37,7 +37,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Override
 	public void onMessage(final String messagejsonHasPrefix){
-		logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", messagejsonHasPrefix));
+		//logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", messagejsonHasPrefix));
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {

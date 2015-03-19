@@ -5,7 +5,9 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class HandsetDeviceOnlineDTO extends ActionDTO {
 	private String wifiId;//连接的wifi mac
-	private long login_ts;//移动设备接入时间
+	private long login_ts;//移动设备本次接入时间
+	private long last_login_at;//移动设备上次接入时间
+	private boolean newHandset;//是否是新增移动设备
 	
 	public String getWifiId() {
 		return wifiId;
@@ -21,6 +23,22 @@ public class HandsetDeviceOnlineDTO extends ActionDTO {
 
 	public void setLogin_ts(long login_ts) {
 		this.login_ts = login_ts;
+	}
+
+	public boolean isNewHandset() {
+		return newHandset;
+	}
+
+	public void setNewHandset(boolean newHandset) {
+		this.newHandset = newHandset;
+	}
+
+	public long getLast_login_at() {
+		return last_login_at;
+	}
+
+	public void setLast_login_at(long last_login_at) {
+		this.last_login_at = last_login_at;
 	}
 
 	@Override

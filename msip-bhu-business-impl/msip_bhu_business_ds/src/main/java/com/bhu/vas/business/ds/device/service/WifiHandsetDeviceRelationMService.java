@@ -66,7 +66,7 @@ public class WifiHandsetDeviceRelationMService {
 		Update update = new Update();
 		update.set("wifiId", wifiId);
 		update.set("handsetId", handsetId);
-		update.set("last_login_at", last_login_at);
+		update.set("last_login_at", mdto.getLast_login_at());
 		WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 		if(writeResult.isUpdateOfExisting()){
 			return AddRelation_Update;
