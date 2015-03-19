@@ -44,7 +44,7 @@ public class WifiHandsetDeviceLoginCountMService {
 	 * @param pageSize
 	 * @return
 	 */
-	public Pagination<WifiHandsetDeviceLoginCountMDTO> findLoginCountsSortByCountDesc(int pageNo, int pageSize){
+	public Pagination<WifiHandsetDeviceLoginCountMDTO> findWifiDevicesOrderMaxHandset(int pageNo, int pageSize){
 		Query query = new Query();
 		query.with(new Sort(Direction.DESC,"count"));
 		return wifiHandsetDeviceLoginCountMDao.findPagination(pageNo, pageSize, query);
