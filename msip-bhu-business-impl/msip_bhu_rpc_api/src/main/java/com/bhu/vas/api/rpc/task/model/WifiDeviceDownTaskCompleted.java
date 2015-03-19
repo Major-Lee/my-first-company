@@ -5,7 +5,7 @@ import java.util.Date;
  * 下行wifi设备的并且wifi设备返回完成确认的任务  
  */
 @SuppressWarnings("serial")
-public class WifiDeviceCompletedDownTask extends WifiDeviceDownTask{
+public class WifiDeviceDownTaskCompleted extends WifiDeviceDownTask{
 	
 	//任务的完成时间
 	private Date completed_at;
