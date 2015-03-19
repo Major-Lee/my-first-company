@@ -54,26 +54,38 @@ public class DeviceBusinessRpcService {
 	 * 1：wifi设备基础信息更新
 	 * 2：wifi设备在线状态Redis更新
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
+	 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
+	 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 	 */
 	public void wifiDeviceOnline(String ctx, String payload) {
 		WifiDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceDTO.class);
 		
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-
+		//wifi设备是否是新设备
+		boolean newWifi = false;
+		//wifi设备上一次登录时间
+		long last_login_at = 0;
 		//1:wifi设备基础信息更新
 		WifiDevice wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(wifi_device_entity.getId());
 		if(exist_wifi_device_entity == null){
 			wifiDeviceService.insert(wifi_device_entity);
+			newWifi = true;
 		}else{
 			wifiDeviceService.update(wifi_device_entity);
 		}
+		//本次wifi设备登录时间
+		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		//2:wifi设备在线状态Redis更新
 		WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), ctx);
-		//3:wifi设备对应handset在线列表redis初始化(backend)
+		/*
+		 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
+		 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
+		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
+		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), 
-				wifi_device_entity.getLast_reged_at().getTime());
+				this_login_at, last_login_at, newWifi);
 	}
 	/**
 	 * wifi设备离线
@@ -81,6 +93,7 @@ public class DeviceBusinessRpcService {
 	 * 2:wifi设备在线状态redis移除
 	 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
 	 * 4:wifi设备对应handset在线列表redis清除 (backend)
+	 * 5:统计增量 wifi设备的daily访问时长增量 (backend) TODO:wifi设备由于基本不离线, 可能需要通过后台定时程序每天进行时长结算
 	 * @param ctx
 	 * @param wifiId
 	 */
@@ -101,8 +114,12 @@ public class DeviceBusinessRpcService {
 			/*
 			 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
 			 * 4:wifi设备对应handset在线列表redis清除 (backend)
+			 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
 			 */
-			deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id);
+			//wifi设备上次登录的时间
+			long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
+			
+			deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id, last_login_at);
 		}
 
 //		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_mac);

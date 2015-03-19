@@ -30,7 +30,7 @@ public class BusinessKeyDefine {
 		public static final String TileHourFragmentRelation  		= "THFR";*/
 		public static final String SystemStatistics		= "SS.";
 		public static final String DailyStatistics		= "DS.";
-		public static final String DailyStatisticsUserInnerPrefixKey	= "U.";
+		public static final String DailyStatisticsHandsetInnerPrefixKey	= "H.";
 		public static final String DailyStatisticsDeviceInnerPrefixKey	= "D.";
 		//UserPrefixKey
 		

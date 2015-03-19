@@ -4,9 +4,10 @@ import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class WifiDeviceOnlineDTO extends ActionDTO {
-	//wifi设备上线的时间
-	private long login_ts;
-
+	
+	private long login_ts;//wifi设备本次登录的时间
+	private long last_login_at;//wifi设备上次的登录时间
+	private boolean newWifi;//是否是新增wifi设备
 
 	@Override
 	public String getActionType() {
@@ -19,5 +20,21 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 
 	public void setLogin_ts(long login_ts) {
 		this.login_ts = login_ts;
+	}
+
+	public long getLast_login_at() {
+		return last_login_at;
+	}
+
+	public void setLast_login_at(long last_login_at) {
+		this.last_login_at = last_login_at;
+	}
+
+	public boolean isNewWifi() {
+		return newWifi;
+	}
+
+	public void setNewWifi(boolean newWifi) {
+		this.newWifi = newWifi;
 	}	
 }
