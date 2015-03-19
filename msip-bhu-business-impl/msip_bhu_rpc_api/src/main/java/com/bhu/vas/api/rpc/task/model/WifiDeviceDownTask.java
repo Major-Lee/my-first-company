@@ -22,7 +22,7 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	private String serial;
 	//给外部其他应用提供的channel值，每个外部应用有个编号
 	private String channel = Task_LOCAL_CHANNEL;
-	private int channel_taskid;
+	private int channel_taskid = 0;
 	private Date created_at;
 	
 	@Override

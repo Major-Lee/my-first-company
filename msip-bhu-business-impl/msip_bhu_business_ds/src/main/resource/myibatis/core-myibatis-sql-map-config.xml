@@ -20,16 +20,16 @@
   		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
 	</settings>
 	<typeAliases>
-  		<typeAlias alias="sequence" 			type="com.bhu.vas.api.sequence.model.Sequence"/>
-  		<typeAlias alias="user" 				type="com.bhu.vas.api.user.model.User"/>
-		<typeAlias alias="userToken" 			type="com.bhu.vas.api.user.model.UserToken"/>
-		<typeAlias alias="wifiDeviceCurrentStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceCurrentStatus"/>
-		<typeAlias alias="wifiDevice" 			type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
+  		<typeAlias alias="sequence" 				type="com.bhu.vas.api.sequence.model.Sequence"/>
+  		<typeAlias alias="user" 					type="com.bhu.vas.api.user.model.User"/>
+		<typeAlias alias="userToken" 				type="com.bhu.vas.api.user.model.UserToken"/>
+		<typeAlias alias="wifiDeviceCurrentStatus" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceCurrentStatus"/>
+		<typeAlias alias="wifiDevice" 				type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
 		<typeAlias alias="wifiDeviceGroup" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
 		<typeAlias alias="wifiDeviceAlarm" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm"/>
 		<typeAlias alias="handsetDevice" 			type="com.bhu.vas.api.rpc.devices.model.HandsetDevice"/>
-		<typeAlias alias="wifiDeviceCompletedDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceCompletedDownTask"/>
-		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
+		<typeAlias alias="wifiDeviceDownTaskCompleted" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
+		<typeAlias alias="wifiDeviceDownTask" 		type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
 	</typeAliases>
 	
 	<!-- 
@@ -49,7 +49,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/HandsetDevice.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceCompletedDownTask.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTaskCompleted.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceAlarm.sqlMap.xml"/>
 	</mappers>
