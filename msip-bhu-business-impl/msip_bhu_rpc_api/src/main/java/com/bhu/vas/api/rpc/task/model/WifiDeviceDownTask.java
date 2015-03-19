@@ -2,12 +2,12 @@ package com.bhu.vas.api.rpc.task.model;
 
 import java.util.Date;
 
-import com.smartwork.msip.cores.orm.model.BaseStringModel;
+import com.smartwork.msip.cores.orm.model.BaseIntModel;
 /*
  * 下行wifi设备的任务  
  */
 @SuppressWarnings("serial")
-public class WifiDeviceDownTask extends BaseStringModel{
+public class WifiDeviceDownTask extends BaseIntModel{
 	public static final int State_Pending = 1;//待处理状态
 	public static final int State_Timeout = 2;//任务超时
 	public static final int State_Failed = 3;//任务失败
