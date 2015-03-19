@@ -3,7 +3,9 @@ package com.bhu.vas.rpc.service.daemon;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+
 
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
@@ -42,7 +44,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean wifiDeviceOnline(String ctx,String mac) {
 		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
-		logger.info("info"+String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
+		logger.info(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().addSession(mac, ctx);
 		//设备上行首先发送查询地理位置指令
 		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, RandomData.intNumber(1, 100000)));
@@ -53,7 +55,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean wifiDeviceOffline(String ctx,String mac) {
 		//System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
-		logger.info("info"+String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
+		logger.info(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().removeSession(mac);
 		return false;
 	}
@@ -61,7 +63,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
 		//System.out.println(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
-		logger.info("info"+String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+		logger.info(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 		return false;
 	}
@@ -69,7 +71,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		//System.out.println("cmJoinService:"+info);
-		logger.info("info"+"cmJoinService:"+info);
+		logger.info("cmJoinService:"+info);
 		ActiveMQConnectionManager.getInstance().createNewProducerQueues("down", info.toString(), true);
 		return true;
 	}
@@ -77,17 +79,19 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@Override
 	public boolean cmLeave(CmCtxInfo info) {
 		//System.out.println("cmLeave:"+info);
-		logger.info("info"+"cmLeave:"+info);
+		logger.info("cmLeave:"+info);
 		//createNewConsumerQueues("up", cmInfo.toString(),true);
 		return true;
 	}
 
 	@Override
 	public boolean wifiDeviceSerialTaskComming(String ctx,String payload,ParserHeader header){
-		logger.info("info"+String.format("wifiDeviceSerialTaskComming ctx[%s] header[%s] payload[%s]",ctx,header,payload));
+		logger.info(String.format("wifiDeviceSerialTaskComming ctx[%s] header[%s] payload[%s]",ctx,header,payload));
 		try{
 			QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(payload, QuerySerialReturnDTO.class);
-			SessionManager.getInstance().getSerialTaskmap().put(header.getMac()+retDTO.getSerial(), new SerialTask(header.getMac(),header.getTaskid(),retDTO.getSerial()));
+			if(StringUtils.isNotEmpty(retDTO.getSerial())){//如果此类消息没有serial则忽略掉
+				SessionManager.getInstance().getSerialTaskmap().put(header.getMac()+retDTO.getSerial(), new SerialTask(header.getMac(),header.getTaskid(),retDTO.getSerial()));
+			}
 		}catch(Exception ex){
 			logger.error("wifiDeviceSerialTaskComming paser payload", ex);
 		}

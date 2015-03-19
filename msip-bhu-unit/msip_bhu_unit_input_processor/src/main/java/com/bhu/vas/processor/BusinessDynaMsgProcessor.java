@@ -6,8 +6,6 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -16,9 +14,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -55,13 +51,13 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 
 	@Override
 	public void onMessage(final String ctx,final String message) {
-		logger.info(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+		logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 		validateStep1(message);
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 					int type = Integer.parseInt(message.substring(0, 8));
 					ParserHeader headers = null;
 					String payload = null;
@@ -87,7 +83,6 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 											type,ctx,message));
 					}
 					if(headers != null){
-						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 						if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
 							daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 						}
@@ -103,7 +98,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 								}
 							}
 						}
-						
+						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 					}
 					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){

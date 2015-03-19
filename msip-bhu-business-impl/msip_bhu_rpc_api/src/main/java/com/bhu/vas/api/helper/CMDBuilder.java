@@ -48,8 +48,12 @@ public class CMDBuilder {
 	
 	
 	
-	//任务号分段：对于查询wifi地理位置任务 区间段未1~2000
-	private static TaskSequenceFragment location_taskid_fragment = new TaskSequenceFragment(1,2000);
+	//任务号分段：
+	//对于查询wifi地理位置任务 区间段未1~2000
+	public static TaskSequenceFragment location_taskid_fragment = new TaskSequenceFragment(1,2000);
+	//对于查询查询cpu,内存利用率 区间段未2001~5000
+	public static TaskSequenceFragment timer_device_status_taskid_fragment = new TaskSequenceFragment(2001,5000);
+	
 	
 	public static boolean wasLocationQueryTaskid(int taskid){
 		return location_taskid_fragment.wasInFragment(taskid);

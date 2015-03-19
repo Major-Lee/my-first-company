@@ -5,7 +5,6 @@ import java.util.TimerTask;
 
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
-import com.smartwork.msip.localunit.RandomData;
 /**
  * 上端下发消息：
 	1001. 任务下发：消息体格式12字节mac地址，后接10字节任务id。
@@ -28,7 +27,7 @@ public class DaemonCheckTask extends TimerTask{
     		String ctx = SessionManager.getInstance().getSession(wifi_mac);//.get(key);
     		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, CMDBuilder.builderDeviceOnlineTeminalQuery(wifi_mac));
     				//String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac)));//,String.format(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)), RandomData.intNumber(1005, 10000080))));
-    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, CMDBuilder.builderDeviceStatusQuery(wifi_mac, RandomData.intNumber(1, 100000)));
+    		DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, CMDBuilder.builderDeviceStatusQuery(wifi_mac, CMDBuilder.timer_device_status_taskid_fragment.getNextSequence()));
     				//String.format(query_device_status_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));
     		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, 
     		//		String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));

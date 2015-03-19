@@ -17,6 +17,7 @@ public class DaemonCheckSerialTask extends TimerTask{
 		long current = System.currentTimeMillis();
     	Iterator<Map.Entry<String,SerialTask>> iter = SessionManager.getInstance().getSerialTaskmap().entrySet().iterator();
     	int i=0;
+    	int unsended = 0;
     	int sended = 0;
     	int notExistMac = 0;
     	while(iter.hasNext()){
@@ -33,9 +34,11 @@ public class DaemonCheckSerialTask extends TimerTask{
     			}else{
     				notExistMac++;
     			}
+    		}else{
+    			unsended++;
     		}
     		i++;
     	}
-    	System.out.println(String.format("DaemonCheckSerialTask ended! Total[%s] Sended[%s] notExistMac[%s]",i,sended,notExistMac));
+    	System.out.println(String.format("DaemonCheckSerialTask ended! Total[%s] Sended[%s] UnSended[%s] notExistMac[%s]",i,sended,unsended,notExistMac));
 	}
 }
