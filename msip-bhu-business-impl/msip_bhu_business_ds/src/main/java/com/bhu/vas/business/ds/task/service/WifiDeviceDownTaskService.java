@@ -11,7 +11,7 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
-public class WifiDeviceDownTaskService extends AbstractCoreService<String,WifiDeviceDownTask, WifiDeviceDownTaskDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class WifiDeviceDownTaskService extends AbstractCoreService<Integer,WifiDeviceDownTask, WifiDeviceDownTaskDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
 	@Resource
 	@Override

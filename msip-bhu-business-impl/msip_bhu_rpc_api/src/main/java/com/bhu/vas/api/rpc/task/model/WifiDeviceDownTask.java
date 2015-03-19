@@ -15,7 +15,7 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	
 	public static final String Task_LOCAL_CHANNEL = "VAS";
 	private String payload;
-	private int state;
+	private int state = State_Pending;
 	private String task;
 	private String mac;
 	private String time;
