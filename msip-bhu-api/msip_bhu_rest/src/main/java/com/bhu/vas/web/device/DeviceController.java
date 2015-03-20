@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -84,6 +85,24 @@ public class DeviceController {
 		
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
 
+	}
+	/**
+	 * 获取统计通用数据展示
+		页面中统计数据体现：
+		a、总设备数、总用户数、在线设备数、在线用户数、总接入次数、总用户访问时长
+		b、今日新增、活跃用户、接入次数|人均、新用户占比、平均时长、活跃率
+		c、昨日新增、活跃用户、接入次数|人均、新用户占比、平均时长、活跃率
+	 * @param request
+	 * @param response
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch_statistics_general",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_statistics_general(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		StatisticsGeneralVTO vto = deviceRestRpcService.fetchStatisticsGeneral();
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 	}
 	
 }
