@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import redis.clients.jedis.JedisPool;
 
+import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.updown.UserBuinessMarkHashService;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
@@ -16,18 +17,18 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 /**
- * 承载业务 用户和设备
- * 	1、用户每天的新增A、活跃用户（非今天注册的但今天登录了的用户）B、启动次数C、使用时长（分钟）D
- *  2、人均启动次数F=（启动次数/(A+B)） 日活跃率 G=（A+B）/总用户
- * 	2、文章评星业务
- * @author edmond
+ * wifi设备和移动设备 用于显示daily的统计数据
+ * 
+ * 当日的数据有其中有增量的数据，直接可用于显示
+ * 有些数据需要显示的时候进行实时计算,当日内不存入redis中
+ * 每晚后台定时程序会计算出当日没有存储的数据，再存入redis中以备后续访问
+ * @author tangzichao
  *
  */
 public class DailyStatisticsHashService extends AbstractRelationHashCache{
 	
 	private static class ServiceHolder{ 
 		private static DailyStatisticsHashService instance =new DailyStatisticsHashService(); 
-		//BeanUtils
 	}
 	/**
 	 * 获取工厂单例
@@ -57,6 +58,8 @@ public class DailyStatisticsHashService extends AbstractRelationHashCache{
 	}
 	public DailyStatisticsDTO getStatistics(String businessKey,String date){
 		Map<String,String> all = this.hgetall(generateDailyPrefixKey(businessKey,date));
+		if(all == null) return null;
+		
 		DailyStatisticsDTO dto = new DailyStatisticsDTO();
 		try {
 			BeanUtils.copyProperties(dto,all);
@@ -88,8 +91,7 @@ public class DailyStatisticsHashService extends AbstractRelationHashCache{
 		Map<String,Object> all = new HashMap<String,Object>();
 		all.put(DailyStatisticsDTO.Field_News, "55");
 		all.put(DailyStatisticsDTO.Field_Actives, 65);
-		all.put(DailyStatisticsDTO.Field_Startups, "1055");
-		all.put(DailyStatisticsDTO.Field_Times, "55009");
+		System.out.println(all.keySet());
 		DailyStatisticsDTO dto = new DailyStatisticsDTO();
 		try {
 			BeanUtils.copyProperties(dto,all);
@@ -99,7 +101,6 @@ public class DailyStatisticsHashService extends AbstractRelationHashCache{
 		
 		System.out.println(dto.getNews());
 		System.out.println(dto.getActives());
-		System.out.println(dto.getTimes());
-		System.out.println(dto.getStartups());
+		
 	}
 }

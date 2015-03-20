@@ -2,14 +2,18 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
+import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
@@ -17,9 +21,11 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
@@ -31,6 +37,9 @@ public class AsyncMsgHandleService {
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgHandleService.class);
 	
 	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
 	private HandsetDeviceService handsetDeviceService;
 	
 	@Resource
@@ -38,6 +47,10 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
+	
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
+	
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -66,7 +79,7 @@ public class AsyncMsgHandleService {
 		}
 		//5:统计增量 wifi设备的daily启动次数增量
 		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
+				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
@@ -97,7 +110,7 @@ public class AsyncMsgHandleService {
 			long uptime = dto.getTs() - dto.getLast_login_at();
 			if(uptime > 0){
 				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Times, uptime);
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
 			}
 		}
 		
@@ -143,7 +156,7 @@ public class AsyncMsgHandleService {
 		}
 		//7:统计增量 移动设备的daily启动次数增量
 		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-				DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
+				DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		//4:移动设备连接wifi设备的流水log
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(message);
 		
@@ -162,9 +175,89 @@ public class AsyncMsgHandleService {
 		//3:统计增量 移动设备的daily访问时长增量
 		if(!StringUtils.isEmpty(dto.getUptime())){
 			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-					DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Times, Long.parseLong(dto.getUptime()));
+					DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Duration, Long.parseLong(dto.getUptime()));
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
+	}
+	
+	/**
+	 * 统计计算系统数据并写入redis
+	 * 1:总wifi设备数
+	 * 2:总移动设备数
+	 * 3:在线wifi设备数
+	 * 4:在线移动设备数
+	 * 5:总移动设备接入次数 (通过每日定时程序来生成)
+	 * 6:总移动设备访问时长 (通过每日定时程序来生成)
+	 */
+	public void systemStatisticsEvery5min(){
+		try{
+			Map<String, String> system_statistics_map = deviceFacadeService.buildSystemStatisticsMap();
+			SystemStatisticsHashService.getInstance().initOrReset2Statistics(system_statistics_map);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+	}
+	
+	/**
+	 * 每天凌晨0点5分启动的定时程序 
+	 * a:系统统计数据计算
+	 * 	1:总wifi设备数
+	 * 	2:总移动设备数
+	 * 	3:在线wifi设备数
+	 * 	4:在线移动设备数
+	 * 	5:总移动设备接入次数 (当前数量+昨日数量) 
+	 * 	6:总移动设备访问时长 (当前数量+昨日数量)
+	 * b:昨日daily的统计数据其中实时计算的数据正式计算存入redis
+	 * 	1:设备接入次数平均（3/(1+2)）(实时计算)
+	 * 	2:设备活跃率（1+2）/总设备 (实时计算)
+	 * 	3:设备接入时长平均（4/(1+2)）(实时计算)
+	 * 	4:新设备占比（1/(1+2)）(实时计算)
+	 */
+	@SuppressWarnings("unchecked")
+	public void statisticsEveryDay0Clock(){
+		try{
+			/******************              a:系统统计数据计算           ********************/
+			
+			//昨日的daily数据中的移动设备接入次数和移动设备访问时长，与总移动设备接入次数和总移动设备访问时长分别求合
+			String yesterday_format = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1), DateTimeHelper.FormatPattern5);
+			DailyStatisticsDTO dailyStatisticsYesterdayDto = DailyStatisticsHashService.getInstance().getStatistics(BusinessKeyDefine.Statistics.
+					DailyStatisticsHandsetInnerPrefixKey, yesterday_format);
+			
+			//SystemStatisticsDTO systemStatisticsDto = null;
+			
+			if(dailyStatisticsYesterdayDto != null){
+				/**
+				 * 	1:总wifi设备数
+				 * 	2:总移动设备数
+				 * 	3:在线wifi设备数
+				 * 	4:在线移动设备数
+				 */
+				SystemStatisticsDTO systemStatisticsDto = deviceFacadeService.buildSystemStatisticsDto();
+				/**
+				 * 5:总移动设备接入次数 (当前数量+昨日数量) 
+				 * 6:总移动设备访问时长 (当前数量+昨日数量)
+				 */
+				systemStatisticsDto = deviceFacadeService.systemStatisticsArith(systemStatisticsDto, dailyStatisticsYesterdayDto);
+
+				SystemStatisticsHashService.getInstance().initOrReset2Statistics(systemStatisticsDto);
+			}
+			
+			/******************    b:昨日daily的统计数据其中实时计算的数据正式计算存入redis    ********************/
+			
+			/**
+			 * 	1:设备接入次数平均（3/(1+2)）
+			 * 	2:设备活跃率（1+2）/总设备 
+			 * 	3:设备接入时长平均（4/(1+2)）
+			 * 	4:新设备占比（1/(1+2)）
+			 */
+			if(dailyStatisticsYesterdayDto != null){
+				dailyStatisticsYesterdayDto = deviceFacadeService.dailyStatisticsArith(dailyStatisticsYesterdayDto);
+				DailyStatisticsHashService.getInstance().initOrReset2Statistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, yesterday_format, BeanUtils.describe(dailyStatisticsYesterdayDto));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 }

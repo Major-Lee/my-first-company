@@ -1,13 +1,13 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.statistics;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 
 import redis.clients.jedis.JedisPool;
 
+import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.updown.UserBuinessMarkHashService;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
@@ -15,20 +15,20 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 
 /**
- * 承载业务 系统统计数据
- * 	1、总设备数
- *  2、总用户数
- * 	3、当前在线设备数
- *  4、当前在线用户数
- *  5、总平均访问时长
- * @author edmond
+ * 承载业务 系统统计数据 通过后台定时程序生成这些数据
+ * 1:总wifi设备数
+ * 2:总移动设备数
+ * 3:在线wifi设备数
+ * 4:在线移动设备数
+ * 5:总移动设备接入次数
+ * 6:总移动设备访问时长
+ * @author tangzichao
  *
  */
 public class SystemStatisticsHashService extends AbstractRelationHashCache{
 	
 	private static class ServiceHolder{ 
 		private static SystemStatisticsHashService instance =new SystemStatisticsHashService(); 
-		//BeanUtils
 	}
 	/**
 	 * 获取工厂单例
@@ -42,22 +42,12 @@ public class SystemStatisticsHashService extends AbstractRelationHashCache{
 	}
 	private static String generatePrefixKey(){
 		return BusinessKeyDefine.Statistics.SystemStatistics;
-		/*StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.SystemStatistics);
-		return sb.toString();*/
 	}
-	/*private static String generateDailyPrefixKey(String businessKey){
-		return generateDailyPrefixKey(businessKey,DateTimeHelper.formatDate( DateTimeHelper.FormatPattern5));
-	}
-	
-	public Long incrStatistics(String businessKey,String field,long increment){
-		return this.hincrby(generateDailyPrefixKey(businessKey), field, increment);
-	}
-	
-	public SystemStatisticsDTO getSystemStatistics(){
-		return getStatistics(generatePrefixKey());
-	}*/
+
 	public SystemStatisticsDTO getStatistics(){
 		Map<String,String> all = this.hgetall(generatePrefixKey());
+		if(all != null) return null;
+		
 		SystemStatisticsDTO dto = new SystemStatisticsDTO();
 		try {
 			BeanUtils.copyProperties(dto,all);
@@ -71,6 +61,17 @@ public class SystemStatisticsHashService extends AbstractRelationHashCache{
 		return this.hmset(generatePrefixKey(), map);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public String initOrReset2Statistics(SystemStatisticsDTO dto){
+		Map<String,String> all = null;
+		try {
+			all = BeanUtils.describe(dto);
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			e.printStackTrace(System.out);
+		}
+		return initOrReset2Statistics(all);
+	}
+	
 	@Override
 	public String getRedisKey() {
 		return null;
@@ -81,26 +82,6 @@ public class SystemStatisticsHashService extends AbstractRelationHashCache{
 	}
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
-	}
-	
-		
-	public static void main(String[] argv){
-		Map<String,Object> all = new HashMap<String,Object>();
-		all.put(DailyStatisticsDTO.Field_News, "55");
-		all.put(DailyStatisticsDTO.Field_Actives, 65);
-		all.put(DailyStatisticsDTO.Field_Startups, "1055");
-		all.put(DailyStatisticsDTO.Field_Times, "55009");
-		DailyStatisticsDTO dto = new DailyStatisticsDTO();
-		try {
-			BeanUtils.copyProperties(dto,all);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace(System.out);
-		}
-		
-		System.out.println(dto.getNews());
-		System.out.println(dto.getActives());
-		System.out.println(dto.getTimes());
-		System.out.println(dto.getStartups());
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.STATISTICS);
 	}
 }

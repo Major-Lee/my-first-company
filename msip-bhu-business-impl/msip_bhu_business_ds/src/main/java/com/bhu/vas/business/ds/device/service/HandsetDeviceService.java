@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.business.ds.device.dao.HandsetDeviceDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
@@ -32,5 +33,15 @@ public class HandsetDeviceService extends AbstractCoreService<String,HandsetDevi
 		mc.createCriteria().andColumnEqualTo("online", true)
 						   .andColumnEqualTo("last_wifi_id", wifiId);
 		return super.findModelByCommonCriteria(mc);
+	}
+	
+	public long countByOnline(){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("online", true);
+		return super.countByModelCriteria(mc);
+	}
+	
+	public long count(){
+		return super.countByModelCriteria(new ModelCriteria());
 	}
 }

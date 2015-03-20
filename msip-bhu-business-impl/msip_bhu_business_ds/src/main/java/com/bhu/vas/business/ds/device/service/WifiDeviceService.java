@@ -28,4 +28,14 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 		mc.setPageSize(pageSize);
 		return super.findModelTailPageByModelCriteria(mc);
 	}
+	
+	public long countByOnline(){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("online", true);
+		return super.countByModelCriteria(mc);
+	}
+	
+	public long count(){
+		return super.countByModelCriteria(new ModelCriteria());
+	}
 }
