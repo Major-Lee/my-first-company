@@ -29,6 +29,12 @@
         </dependency>
         
         <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds</artifactId>
+        </dependency>
+        
+        
+        <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core_plugins_shardbatis</artifactId>
                 <version>2.0.0B</version>

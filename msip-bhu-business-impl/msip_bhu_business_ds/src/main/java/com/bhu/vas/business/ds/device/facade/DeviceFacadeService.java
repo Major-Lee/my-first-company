@@ -30,10 +30,6 @@ public class DeviceFacadeService {
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
 	
-//	public SystemStatisticsDTO fetchSystemStatistics(){
-//		SystemStatisticsDTO systemStatisticsDto = SystemStatisticsHashService.getInstance().getStatistics();
-//		
-//	}
 	
 	/**
 	 * 用于填充当日daily的统计数据中的实际计算数据

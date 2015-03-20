@@ -2,6 +2,7 @@ package com.bhu.vas.api.vto;
 
 import java.io.Serializable;
 
+import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 /**
  * 用于展现统计的通用数据vto
@@ -15,8 +16,8 @@ import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 @SuppressWarnings("serial")
 public class StatisticsGeneralVTO implements Serializable{
 	private SystemStatisticsDTO system;
-	private SystemStatisticsDTO today_daily;
-	private SystemStatisticsDTO yesterday_daily;
+	private DailyStatisticsDTO today_daily;
+	private DailyStatisticsDTO yesterday_daily;
 	
 	public SystemStatisticsDTO getSystem() {
 		return system;
@@ -24,16 +25,16 @@ public class StatisticsGeneralVTO implements Serializable{
 	public void setSystem(SystemStatisticsDTO system) {
 		this.system = system;
 	}
-	public SystemStatisticsDTO getToday_daily() {
+	public DailyStatisticsDTO getToday_daily() {
 		return today_daily;
 	}
-	public void setToday_daily(SystemStatisticsDTO today_daily) {
+	public void setToday_daily(DailyStatisticsDTO today_daily) {
 		this.today_daily = today_daily;
 	}
-	public SystemStatisticsDTO getYesterday_daily() {
+	public DailyStatisticsDTO getYesterday_daily() {
 		return yesterday_daily;
 	}
-	public void setYesterday_daily(SystemStatisticsDTO yesterday_daily) {
+	public void setYesterday_daily(DailyStatisticsDTO yesterday_daily) {
 		this.yesterday_daily = yesterday_daily;
 	}
 }
