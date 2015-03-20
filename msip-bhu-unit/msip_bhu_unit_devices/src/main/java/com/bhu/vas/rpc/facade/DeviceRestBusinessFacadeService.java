@@ -91,6 +91,7 @@ public class DeviceRestBusinessFacadeService {
 	public StatisticsGeneralVTO fetchStatisticsGeneral(){
 		StatisticsGeneralVTO vto = new StatisticsGeneralVTO();
 		SystemStatisticsDTO systemStatisticsDto = SystemStatisticsHashService.getInstance().getStatistics();
+		if(systemStatisticsDto == null) systemStatisticsDto = new SystemStatisticsDTO();
 		deviceFacadeService.systemStatisticsArith(systemStatisticsDto);
 		vto.setSystem(systemStatisticsDto);
 		

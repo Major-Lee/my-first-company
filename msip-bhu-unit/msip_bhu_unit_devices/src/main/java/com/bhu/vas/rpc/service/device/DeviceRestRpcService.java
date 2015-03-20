@@ -51,13 +51,13 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	 */
 	@Override
 	public TailPage<WifiDevice> fetchWDevicesOnline(int pageNo, int pageSize) {
-		logger.info(String.format("DeviceRestRPC fetchWDevicesOrderMaxHandset invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
+		logger.info(String.format("DeviceRestRPC fetchWDevicesOnline invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
 		
 		try{
 			return deviceRestBusinessFacadeService.fetchWDevicesOnline(pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceRestRPC fetchWDevicesOrderMaxHandset exception pageNo [%s] pageSize [%s] exmsg[%s]",
+			logger.error(String.format("DeviceRestRPC fetchWDevicesOnline exception pageNo [%s] pageSize [%s] exmsg[%s]",
 					pageNo, pageSize, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}

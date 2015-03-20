@@ -46,7 +46,7 @@ public class SystemStatisticsHashService extends AbstractRelationHashCache{
 
 	public SystemStatisticsDTO getStatistics(){
 		Map<String,String> all = this.hgetall(generatePrefixKey());
-		if(all != null) return null;
+		if(all == null) return null;
 		
 		SystemStatisticsDTO dto = new SystemStatisticsDTO();
 		try {

@@ -7,8 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
@@ -22,7 +20,7 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 
 @Service
 public class DeviceFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
+	//private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -63,9 +61,12 @@ public class DeviceFacadeService {
 		//(1+2)
 		long news_add_actives = dailyStatisticsDto.getNews() + dailyStatisticsDto.getActives();
 		//1:设备接入次数平均（3/(1+2)）
-		String accesscount_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getAccesscount(),
-				news_add_actives, 2));
-		dailyStatisticsDto.setAccesscount_avg(accesscount_avg);
+		if(news_add_actives > 0){
+			String accesscount_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getAccesscount(),
+					news_add_actives, 1));
+			dailyStatisticsDto.setAccesscount_avg(accesscount_avg);
+		}
+
 		//2:设备活跃率（1+2）/总设备
 		SystemStatisticsDTO systemStatisticsDto = SystemStatisticsHashService.getInstance().getStatistics();
 		long total_handsets = 0;
@@ -76,16 +77,24 @@ public class DeviceFacadeService {
 			//只有系统运行第一天可能会出现此情况
 			total_handsets = news_add_actives;
 		}
-		String active_pet = String.valueOf(ArithHelper.percent(news_add_actives, total_handsets, 2));
-		dailyStatisticsDto.setActive_pet(active_pet);
+		
+		if(total_handsets > 0){
+			String active_pet = String.valueOf(ArithHelper.percent(news_add_actives, total_handsets, 0));
+			dailyStatisticsDto.setActive_pet(active_pet);
+		}
+
 		//3:设备接入时长平均（4/(1+2)）
-		String duration_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getDuration(),
-				news_add_actives, 2));
-		dailyStatisticsDto.setDuration_avg(duration_avg);
+		if(news_add_actives > 0){
+			String duration_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getDuration(),
+					news_add_actives, 1));
+			dailyStatisticsDto.setDuration_avg(duration_avg);
+		}
 		//4:新设备占比（1/(1+2)）
-		String news_pet = String.valueOf(ArithHelper.percent(dailyStatisticsDto.getNews(),
-				news_add_actives, 2));
-		dailyStatisticsDto.setNews_pet(news_pet);
+		if(news_add_actives > 0){
+			String news_pet = String.valueOf(ArithHelper.percent(dailyStatisticsDto.getNews(),
+					news_add_actives, 0));
+			dailyStatisticsDto.setNews_pet(news_pet);
+		}
 		
 		return dailyStatisticsDto;
 	}
