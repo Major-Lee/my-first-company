@@ -19,8 +19,8 @@ public class CMDBuilder {
 	
 	//1. 查询cpu,内存利用率
 	private static final String query_device_status_cmd_template =   "00001001%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>";
-	
-	
+	//1. 查询设备流量
+	private static final String query_device_flow_cmd_template 	 =   "00001001%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"if_stat\"/></cmd>";
 	//1. 查询wifi地理位置命令第一步
 	private static final String query_device_location_step1_cmd_template = "00001001%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>";
 	
@@ -38,6 +38,10 @@ public class CMDBuilder {
 		return String.format(query_device_status_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete,taskid));
 	}
 	
+	public static String builderDeviceFlowQuery(String wifi_mac,int taskid){
+		return String.format(query_device_flow_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete,taskid));
+	}
+	
 	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
 		return String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete,location_taskid_fragment.getNextSequence()));
 	}
@@ -53,7 +57,8 @@ public class CMDBuilder {
 	public static TaskSequenceFragment location_taskid_fragment = new TaskSequenceFragment(1,2000);
 	//对于查询查询cpu,内存利用率 区间段未2001~5000
 	public static TaskSequenceFragment timer_device_status_taskid_fragment = new TaskSequenceFragment(2001,5000);
-	
+	//对于查询设备流量 区间段未5001~8000
+	public static TaskSequenceFragment timer_device_flow_taskid_fragment = new TaskSequenceFragment(5001,8000);
 	
 	public static boolean wasLocationQueryTaskid(int taskid){
 		return location_taskid_fragment.wasInFragment(taskid);
