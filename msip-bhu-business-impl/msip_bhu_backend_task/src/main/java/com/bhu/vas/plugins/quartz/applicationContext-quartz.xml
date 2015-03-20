@@ -24,7 +24,7 @@
 	<!-- Cron式Trigger定义 -->
 	<bean id="retryInitCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="retryInitCheckerJobDetail" />
-		<!-- 每天凌晨00:15启动任务   0 15 00 ? * *  -->
+		<!-- 朝1晚23工作时间内每1分钟   0 0/01 1-23 * * ?  -->
 		<property name="cronExpression" value="0 0/01 1-23 * * ?" />
 	</bean>
 
