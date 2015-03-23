@@ -1,5 +1,6 @@
 package com.bhu.vas.api.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -9,6 +10,7 @@ import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -72,7 +74,7 @@ public class RPCMessageParseHelper {
 	public static final String Match_Lat_Word = "latitude:";
 	public static final String Match_Lon_Word = "longitude:";
 	/**
-	 * 解析获取wifi设备地理坐标的xml解析
+	 * 解析获取wifi设备地理坐标的xml
 	 * <return>
         	<ITEM cmd="sysdebug" status="done" >
                 <text>
@@ -90,29 +92,82 @@ public class RPCMessageParseHelper {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static LocationDTO generateQueryDeviceLocationS2(Document doc){
-		List<Object> nodes = doc.selectNodes("//SUB");
-		if(nodes == null || nodes.isEmpty()){
-			return null;
-		}
-
-		LocationDTO dto = new LocationDTO();
-		Attribute attr = null;
-		for(Object node : nodes){
-			attr = ((Element)node).attribute("text");
-			if(attr.getValue().startsWith(Match_Lat_Word)){
-				dto.setLat(attr.getValue().substring(Match_Lat_Word.length()));
-			}else if(attr.getValue().startsWith(Match_Lon_Word)){
-				dto.setLon(attr.getValue().substring(Match_Lon_Word.length()));
+	public static LocationDTO generateDTOFromQueryDeviceLocationS2(Document doc){
+		LocationDTO dto = null;
+		try{
+			List<Element> elements = doc.selectNodes("//SUB");
+			if(elements == null || elements.isEmpty()){
+				return null;
 			}
+	
+			dto = new LocationDTO();
+			Attribute attr = null;
+			for(Element element : elements){
+				attr = element.attribute("text");
+				if(attr.getValue().startsWith(Match_Lat_Word)){
+					dto.setLat(attr.getValue().substring(Match_Lat_Word.length()));
+				}else if(attr.getValue().startsWith(Match_Lon_Word)){
+					dto.setLon(attr.getValue().substring(Match_Lon_Word.length()));
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		}
 		return dto;
+	}
+	
+	/**
+	 * 解析获取wifi设备流量的xml
+		<return>
+        	<ITEM index="1" cmd="if_stat" status="done" >
+                <if_stat_sub>
+                        <SUB name="eth0" rx_pkts="0" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" 
+                        rx_err_frames="0" rx_multicast_pkts="0" rx_bytes="0" tx_pkts="0" 
+                        tx_err_pkts="0" tx_drop_pkts="0" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="0" />
+                        <SUB name="eth1" rx_pkts="934" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" rx_err_frames="0" rx_multicast_pkts="555" rx_bytes="228108" tx_pkts="431" tx_err_pkts="0" tx_drop_pkts="0" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="44778" />
+                        <SUB name="wlan0" rx_pkts="0" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" rx_err_frames="0" rx_multicast_pkts="0" rx_bytes="0" tx_pkts="447" tx_err_pkts="0" tx_drop_pkts="16" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="93849" />
+                        <SUB name="wlan2" rx_pkts="0" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" rx_err_frames="0" rx_multicast_pkts="0" rx_bytes="0" tx_pkts="0" tx_err_pkts="0" tx_drop_pkts="0" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="0" />
+                        <SUB name="wlan3" rx_pkts="0" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" rx_err_frames="0" rx_multicast_pkts="0" rx_bytes="0" tx_pkts="0" tx_err_pkts="0" tx_drop_pkts="0" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="0" />
+                        <SUB name="wlan1" rx_pkts="0" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" rx_err_frames="0" rx_multicast_pkts="0" rx_bytes="0" tx_pkts="0" tx_err_pkts="0" tx_drop_pkts="0" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="0" />
+                        <SUB name="br-lan" rx_pkts="0" rx_err_pkts="0" rx_drop_pkts="0" rx_over_pkts="0" rx_err_frames="0" rx_multicast_pkts="0" rx_bytes="0" tx_pkts="8" tx_err_pkts="0" tx_drop_pkts="0" tx_over_pkts="0" tx_err_carrier="0" tx_bytes="576" />
+                </if_stat_sub>
+        	</ITEM>
+		</return>
+	 * @param doc
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<WifiDeviceFlowDTO> generateDTOFromQueryDeviceFlow(Document doc){
+		List<WifiDeviceFlowDTO> dtos = null;
+		try{
+			List<Element> elements = doc.selectNodes("//SUB");
+			if(elements == null || elements.isEmpty()){
+				return null;
+			}
+	
+			dtos = new ArrayList<WifiDeviceFlowDTO>();
+			for(Element element : elements){
+				dtos.add(Dom4jHelper.fromElement(element, WifiDeviceFlowDTO.class));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+		return dtos;
 	}
 	
 	public static void main(String[] args) {
 		String message = "<return><ITEM cmd=\"sysdebug\" status=\"done\" ><text><SUB text=\"OK\" /><SUB text=\"latitude:40.017286\" /><SUB text=\"longitude:116.345614\" /><SUB text=\"address-line:学清路\" /><SUB text=\"city:Beijing\" /><SUB text=\"state:Beijing\" /><SUB text=\"country:China\" /></text></ITEM></return>";
 		Document doc = parserMessage(message);
-		LocationDTO dto = generateQueryDeviceLocationS2(doc);
-		System.out.println(dto.getLat()+","+dto.getLon());
+		LocationDTO locationDto = generateDTOFromQueryDeviceLocationS2(doc);
+		System.out.println(locationDto.getLat()+","+locationDto.getLon());
+		
+		message = "<return><ITEM index=\"1\" cmd=\"if_stat\" status=\"done\" ><if_stat_sub><SUB name=\"eth0\" rx_pkts=\"0\" rx_err_pkts=\"0\" rx_drop_pkts=\"0\" rx_over_pkts=\"0\" rx_err_frames=\"0\" rx_multicast_pkts=\"0\" rx_bytes=\"0\" tx_pkts=\"0\" tx_err_pkts=\"0\" tx_drop_pkts=\"0\" tx_over_pkts=\"0\" tx_err_carrier=\"0\" tx_bytes=\"0\" /><SUB name=\"eth1\" rx_pkts=\"934\" rx_err_pkts=\"0\" rx_drop_pkts=\"0\" rx_over_pkts=\"0\" rx_err_frames=\"0\" rx_multicast_pkts=\"555\" rx_bytes=\"228108\" tx_pkts=\"431\" tx_err_pkts=\"0\" tx_drop_pkts=\"0\" tx_over_pkts=\"0\" tx_err_carrier=\"0\" tx_bytes=\"44778\" /></if_stat_sub></ITEM></return>";
+		doc = parserMessage(message);
+		List<WifiDeviceFlowDTO> dtos = generateDTOFromQueryDeviceFlow(doc);
+		for(WifiDeviceFlowDTO dto : dtos){
+			System.out.println(dto.getName() + "-" + dto.getRx_bytes());
+		}
 	}
 }

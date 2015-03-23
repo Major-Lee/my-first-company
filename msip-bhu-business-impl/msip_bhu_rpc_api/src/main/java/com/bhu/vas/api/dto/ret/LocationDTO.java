@@ -3,7 +3,11 @@ package com.bhu.vas.api.dto.ret;
 import java.io.Serializable;
 
 import org.springframework.util.StringUtils;
-
+/**
+ * 地理位置DTO
+ * @author tangzichao
+ *
+ */
 @SuppressWarnings("serial")
 public class LocationDTO implements Serializable{
 	//纬度

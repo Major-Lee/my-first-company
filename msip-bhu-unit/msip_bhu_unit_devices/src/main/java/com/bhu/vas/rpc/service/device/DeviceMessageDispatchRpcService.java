@@ -140,14 +140,18 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		String opt = parserHeader.getOpt();
 		if(!StringUtils.isEmpty(opt)){
 			if(OperationCMD.QueryDeviceStatus.equals(opt)){
-				
-			}else if(OperationCMD.QueryDeviceFlow.equals(opt)){
-				
-			}else if(OperationCMD.QueryDeviceLocationS1.equals(opt)){
-				
-			}else if(OperationCMD.QueryDeviceLocationS2.equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+			}
+			else if(OperationCMD.QueryDeviceFlow.equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+			}
+			else if(OperationCMD.QueryDeviceLocationS1.equals(opt)){
+				//do nothing
+			}
+			else if(OperationCMD.QueryDeviceLocationS2.equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
-			}else{
+			}
+			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
 			}
 		}
