@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
@@ -17,8 +18,8 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
@@ -38,6 +39,10 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
+	
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
+	
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -66,7 +71,7 @@ public class AsyncMsgHandleService {
 		}
 		//5:统计增量 wifi设备的daily启动次数增量
 		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
+				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
@@ -97,7 +102,7 @@ public class AsyncMsgHandleService {
 			long uptime = dto.getTs() - dto.getLast_login_at();
 			if(uptime > 0){
 				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Times, uptime);
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
 			}
 		}
 		
@@ -143,7 +148,7 @@ public class AsyncMsgHandleService {
 		}
 		//7:统计增量 移动设备的daily启动次数增量
 		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-				DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Startups, 1);
+				DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		//4:移动设备连接wifi设备的流水log
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(message);
 		
@@ -162,7 +167,7 @@ public class AsyncMsgHandleService {
 		//3:统计增量 移动设备的daily访问时长增量
 		if(!StringUtils.isEmpty(dto.getUptime())){
 			DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-					DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Times, Long.parseLong(dto.getUptime()));
+					DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Duration, Long.parseLong(dto.getUptime()));
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));

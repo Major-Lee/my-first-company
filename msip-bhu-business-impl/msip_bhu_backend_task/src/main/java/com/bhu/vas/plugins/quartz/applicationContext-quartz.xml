@@ -9,8 +9,10 @@
 		<!-- Triggers集成 -->
 		<property name="triggers">
 			<list>
-				<!-- 朝1晚23工作时间内每1分钟 -->
-				<ref bean="retryInitCheckerCronTrigger" />
+				<!-- 每隔5分钟执行一次 -->
+				<ref bean="systemStatisticsLoaderCronTrigger" />
+				<!-- 每天凌晨0点1分执行一次 -->
+				<ref bean="statisticsLoaderCronTrigger" />
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -22,21 +24,39 @@
 	</bean>
 
 	<!-- Cron式Trigger定义 -->
-	<bean id="retryInitCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="retryInitCheckerJobDetail" />
-		<!-- 朝1晚23工作时间内每1分钟   0 0/01 1-23 * * ?  -->
-		<property name="cronExpression" value="0 0/01 1-23 * * ?" />
+	<bean id="systemStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="systemStatisticsLoaderJobDetail" />
+		<!-- 每隔5分钟执行一次   0 0/1 * * * ?  -->
+		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
 
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
-	<bean id="retryInitCheckerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="retryInitCheckerJob" />
+	<bean id="systemStatisticsLoaderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="systemStatisticsLoaderJob" />
 		<property name="targetMethod" value="execute" />
 		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
 		<property name="concurrent" value="false" />
 	</bean>
 
 	<!-- 被Cron执行的普通Spring Bean -->
-	<bean id="retryInitCheckerJob" class="com.bhu.vas.plugins.quartz.RetryInitChecker" />
+	<bean id="systemStatisticsLoaderJob" class="com.bhu.vas.plugins.quartz.SystemStatisticsLoader" />
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="statisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="statisticsLoaderJobDetail" />
+		<!-- 每天凌晨0点1分执行一次   0 1 0 * * ?  -->
+		<property name="cronExpression" value="0 1 0 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="statisticsLoaderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="statisticsLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="statisticsLoaderJob" class="com.bhu.vas.plugins.quartz.StatisticsLoader" />
 	
 </beans>

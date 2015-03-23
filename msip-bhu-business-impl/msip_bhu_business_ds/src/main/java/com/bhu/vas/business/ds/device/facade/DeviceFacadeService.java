@@ -1,208 +1,173 @@
 package com.bhu.vas.business.ds.device.facade;
-//package com.bhu.vas.business.device.facade;
-//
-//import java.util.List;
-//
-//import javax.annotation.Resource;
-//
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.stereotype.Service;
-//import org.springframework.util.StringUtils;
-//
-//import com.bhu.vas.api.dto.HandsetDeviceDTO;
-//import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
-//import com.bhu.vas.api.dto.WifiDeviceDTO;
-//import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
-//import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-//import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
-//import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-//import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
-//import com.bhu.vas.business.builder.BusinessModelBuilder;
-//import com.bhu.vas.business.device.service.HandsetDeviceService;
-//import com.bhu.vas.business.device.service.WifiDeviceAlarmService;
-//import com.bhu.vas.business.device.service.WifiDeviceService;
-//import com.bhu.vas.business.device.service.WifiHandsetDeviceRelationMService;
-//import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
-//import com.smartwork.msip.jdo.ResponseErrorCode;
-//
-//@Service
-//public class DeviceFacadeService {
-//	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
-//	
-//	@Resource
-//	private WifiDeviceService wifiDeviceService;
-//	
-//	@Resource
-//	private WifiDeviceAlarmService wifiDeviceAlarmService;
-//	
-//	@Resource
-//	private HandsetDeviceService handsetDeviceService;
-//	
-//	@Resource
-//	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
-//	
-//	/*********************************** RPC Business Start **************************************/
-//	
-//	/**
-//	 * 
-//	 * wifi设备上线
-//	 * 1：wifi设备基础信息更新
-//	 * 2：wifi设备在线状态Redis更新
-//	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
-//	 * @param dto
-//	 */
-//	public void wifiDeviceOnline(String ctx, WifiDeviceDTO dto){
-//		if(dto == null) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//
-//		//1:wifi设备基础信息更新
-//		WifiDevice wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
-//		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(wifi_device_entity.getId());
-//		if(exist_wifi_device_entity == null){
-//			wifiDeviceService.insert(wifi_device_entity);
-//		}else{
-//			if(exist_wifi_device_entity.isOnline()){
-//				//说明设备离线消息未能到达，需要对wifi对应的移动设备列表进行清除，清除掉wifi设备本次时间之前的数据
-//			}
-//			wifiDeviceService.update(wifi_device_entity);
-//		}
-//		//2:wifi设备在线状态Redis更新
-//		WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), ctx);
-//	}
-//	
-//	/**
-//	 * wifi设备离线
-//	 * 1:wifi设备基础信息表中的在线状态更新为离线
-//	 * 2:wifi设备在线状态redis移除
-//	 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
-//	 * 4:wifi设备对应handset在线列表redis清除 (backend)
-//	 * @param ctx
-//	 * @param mac
-//	 */
-//	public void wifiDeviceOffline(String ctx, String mac){
-//		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//		String lowercase_mac = mac.toLowerCase();
-//
-//		//1:wifi设备基础信息表中的在线状态更新
-//		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_mac);
-//		if(exist_wifi_device_entity != null){
-//			exist_wifi_device_entity.setOnline(false);
-//			wifiDeviceService.update(exist_wifi_device_entity);
-//		}
-//		//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
-//		WifiDevicePresentService.getInstance().removePresent(lowercase_mac);
-////		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_mac);
-////		if(ctx.equals(ctx_present)){
-////			WifiDevicePresentService.getInstance().removePresent(lowercase_mac);
-//		
-////		}
-//	}
-//	
-//	/**
-//	 * wifi设备告警信息
-//	 * 1:告警信息存入告警信息表中
-//	 * @param ctx
-//	 * @param dto
-//	 */
-//	public void wifiDeviceAlarm(String ctx, WifiDeviceAlarmDTO dto){
-//		if(dto == null) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//		if(StringUtils.isEmpty(dto.getMac_addr()) || StringUtils.isEmpty(ctx))
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//
-//		WifiDeviceAlarm wifi_device_alarm_entity = BusinessModelBuilder.wifiDeviceAlarmDtoToEntity(dto);
-//		wifiDeviceAlarmService.insert(wifi_device_alarm_entity);
-//
-//	}
-//	
-//	/**
-//	 * 移动设备上线
-//	 * 1:移动设备基础信息更新
-//	 * 2:wifi设备对应handset在线列表redis添加
-//	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
-//	 * 4:移动设备连接wifi设备的流水log (backend)
-//	 * 5:wifi设备接入移动设备的接入数量 (backend)
-//	 * @param ctx
-//	 * @param dto
-//	 */
-//	public void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto){
-//		if(dto == null) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//
-//		//1:移动设备基础信息更新
-//		HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-//		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(handset_device_entity.getId());
-//		if(exist_handset_device_entity == null){
-//			handsetDeviceService.insert(handset_device_entity);
-//		}else{
-//			handsetDeviceService.update(handset_device_entity);
-//		}
-//		
-//		String wifiId = handset_device_entity.getBssid();
-//		//2:wifi设备对应handset在线列表redis添加
-//		WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
-//				handset_device_entity.getLast_login_at().getTime());
-//	}
-//	/**
-//	 * 移动设备下线
-//	 * 1:更新移动设备的online状态为false
-//	 * 2:wifi设备对应handset在线列表redis移除
-//	 * @param ctx
-//	 * @param dto
-//	 */
-//	public void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto){
-//		if(dto == null) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-//
-//		String lowercase_mac = dto.getMac().toLowerCase();
-//		//1:更新移动设备的online状态为false
-//		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_mac);
-//		if(exist_handset_device_entity != null){
-//			exist_handset_device_entity.setOnline(false);
-//			handsetDeviceService.update(exist_handset_device_entity);
-//		}
-//		//2:wifi设备对应handset在线列表redis移除
-//		WifiDeviceHandsetPresentSortedSetService.getInstance().removePresent(exist_handset_device_entity.
-//				getLast_wifi_id(), lowercase_mac);
-//	}
-//	/**
-//	 * 移动设备连接状态sync
-//	 * a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
-//	 * b:如果移动设备目前在线
-//	 * 	1:移动设备基础信息更新
-//	 *  2:wifi设备对应handset在线列表redis更新
-//	 * @param ctx
-//	 * @param dto
-//	 */
-//	public void handsetDeviceSync(String ctx, HandsetDeviceDTO dto){
-//		//a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
-//		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac());
-//		if(exist_handset_device_entity == null || !exist_handset_device_entity.isOnline()){
-//			this.handsetDeviceOnline(ctx, dto);
-//			return;
-//		}
-//		//b:如果移动设备目前在线
-//		if(exist_handset_device_entity.isOnline()){
-//			//1:移动设备基础信息更新
-//			HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-//			handsetDeviceService.update(handset_device_entity);
-//			
-//			String wifiId = handset_device_entity.getBssid();
-//			//2:wifi设备对应handset在线列表redis更新
-//			WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
-//					handset_device_entity.getLast_login_at().getTime());
-//		}
-//	}
-//	
-//	
-//	/*********************************** RPC Business End **************************************/
-//	
-//}
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
+import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
+import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.helper.ArithHelper;
+
+@Service
+public class DeviceFacadeService {
+	//private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private HandsetDeviceService handsetDeviceService;
+	
+	
+	/**
+	 * 用于填充当日daily的统计数据中的实际计算数据
+	 * 1:设备接入次数平均（3/(1+2)）(实时计算)
+	 * 2:设备活跃率（1+2）/总设备 (实时计算)
+	 * 3:设备接入时长平均（4/(1+2)）(实时计算)
+	 * 4:新设备占比（1/(1+2)）(实时计算)
+	 * @return
+	 */
+	public DailyStatisticsDTO dailyHandsetStatisticsArith(){
+		DailyStatisticsDTO dailyStatisticsDto = DailyStatisticsHashService.getInstance().getStatistics(
+				BusinessKeyDefine.Statistics.DailyStatisticsHandsetInnerPrefixKey);
+		if(dailyStatisticsDto == null) {
+			return new DailyStatisticsDTO();
+		}
+		return dailyStatisticsArith(dailyStatisticsDto);
+	}
+	
+	/**
+	 * 用于填充任何日期daily的统计数据中的实际计算数据
+	 * 1:设备接入次数平均（3/(1+2)）(实时计算)
+	 * 2:设备活跃率（1+2）/总设备 (实时计算)
+	 * 3:设备接入时长平均（4/(1+2)）(实时计算)
+	 * 4:新设备占比（1/(1+2)）(实时计算)
+	 * @param dailyStatisticsDto 任何日期的dailyDto
+	 * @return
+	 */
+	public DailyStatisticsDTO dailyStatisticsArith(DailyStatisticsDTO dailyStatisticsDto){
+		if(dailyStatisticsDto == null) return null;
+		
+		//(1+2)
+		long news_add_actives = dailyStatisticsDto.getNews() + dailyStatisticsDto.getActives();
+		//1:设备接入次数平均（3/(1+2)）
+		if(news_add_actives > 0){
+			String accesscount_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getAccesscount(),
+					news_add_actives, 1));
+			dailyStatisticsDto.setAccesscount_avg(accesscount_avg);
+		}
+
+		//2:设备活跃率（1+2）/总设备
+		SystemStatisticsDTO systemStatisticsDto = SystemStatisticsHashService.getInstance().getStatistics();
+		long total_handsets = 0;
+		
+		if(systemStatisticsDto != null && systemStatisticsDto.getHandsets() > 0){
+			total_handsets = systemStatisticsDto.getHandsets();
+		}else{
+			//只有系统运行第一天可能会出现此情况
+			total_handsets = news_add_actives;
+		}
+		
+		if(total_handsets > 0){
+			String active_pet = String.valueOf(ArithHelper.percent(news_add_actives, total_handsets, 0));
+			dailyStatisticsDto.setActive_pet(active_pet);
+		}
+
+		//3:设备接入时长平均（4/(1+2)）
+		if(news_add_actives > 0){
+			String duration_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getDuration(),
+					news_add_actives, 1));
+			dailyStatisticsDto.setDuration_avg(duration_avg);
+		}
+		//4:新设备占比（1/(1+2)）
+		if(news_add_actives > 0){
+			String news_pet = String.valueOf(ArithHelper.percent(dailyStatisticsDto.getNews(),
+					news_add_actives, 0));
+			dailyStatisticsDto.setNews_pet(news_pet);
+		}
+		
+		return dailyStatisticsDto;
+	}
+	
+	/**
+	 * 以当日daily的统计数据与system的统计数据求和 
+	 * 1：总移动设备接入次数 (当前数量+当日daily数量) 
+	 * 2：总移动设备访问时长 (当前数量+当日daily数量)
+	 * @param systemStatisticsDto
+	 * @return
+	 */
+	public SystemStatisticsDTO systemStatisticsArith(SystemStatisticsDTO systemStatisticsDto){
+		DailyStatisticsDTO dailyStatisticsDto = DailyStatisticsHashService.getInstance().getStatistics(
+				BusinessKeyDefine.Statistics.DailyStatisticsHandsetInnerPrefixKey);
+		if(dailyStatisticsDto == null) {
+			return systemStatisticsDto;
+		}
+		return systemStatisticsArith(systemStatisticsDto, dailyStatisticsDto);
+	}
+	
+	/**
+	 * 以daily的统计数据与system的统计数据求和 
+	 * 1：总移动设备接入次数 (当前数量+daily数量) 
+	 * 2：总移动设备访问时长 (当前数量+daily数量)
+	 * @param systemStatisticsDto
+	 * @param dailyStatisticsDto
+	 * @return
+	 */
+	public SystemStatisticsDTO systemStatisticsArith(SystemStatisticsDTO systemStatisticsDto, DailyStatisticsDTO dailyStatisticsDto){
+		if(dailyStatisticsDto == null || systemStatisticsDto == null) return systemStatisticsDto;
+
+		long total_handset_accesscount = dailyStatisticsDto.getAccesscount() + systemStatisticsDto.getHandset_accesscount();
+		long total_handset_duration = dailyStatisticsDto.getDuration() + systemStatisticsDto.getHandset_duration();
+		systemStatisticsDto.setHandset_accesscount(total_handset_accesscount);
+		systemStatisticsDto.setHandset_duration(total_handset_duration);
+		return systemStatisticsDto;
+	}
+	
+	/**
+	 * 以最新的数据生成系统统计dto 
+	 * 1:总wifi设备数 通过查询wifi设备基础信息表来获取
+	 * 2:总移动设备数 通过查询移动设备基础信息表来获取
+	 * 3:在线wifi设备数 通过查询wifi设备基础信息表来获取
+	 * 4:在线移动设备数 通过查询移动设备基础信息表来获取
+	 * 生成的数据中不包含
+	 * 1:总移动设备接入次数
+	 * 2:总移动设备访问时长
+	 * @return
+	 */
+	public SystemStatisticsDTO buildSystemStatisticsDto() throws IllegalAccessException, InvocationTargetException{
+		SystemStatisticsDTO dto = new SystemStatisticsDTO();
+		BeanUtils.copyProperties(dto, buildSystemStatisticsMap());
+		return dto;
+	}
+	
+	
+	/**
+	 * 以最新的数据生成系统统计map 
+	 * 1:总wifi设备数 通过查询wifi设备基础信息表来获取
+	 * 2:总移动设备数 通过查询移动设备基础信息表来获取
+	 * 3:在线wifi设备数 通过查询wifi设备基础信息表来获取
+	 * 4:在线移动设备数 通过查询移动设备基础信息表来获取
+	 * 生成的数据中不包含
+	 * 5:总移动设备接入次数
+	 * 6:总移动设备访问时长
+	 * @return
+	 */
+	public Map<String,String> buildSystemStatisticsMap(){
+		Map<String,String> system_statistics_map = new HashMap<String,String>();
+		system_statistics_map.put(SystemStatisticsDTO.Field_Devices, String.valueOf(wifiDeviceService.count()));
+		system_statistics_map.put(SystemStatisticsDTO.Field_Handsets, String.valueOf(handsetDeviceService.count()));
+		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineDevices, String.valueOf(wifiDeviceService.countByOnline()));
+		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf(handsetDeviceService.countByOnline()));
+		return system_statistics_map;
+	}
+}

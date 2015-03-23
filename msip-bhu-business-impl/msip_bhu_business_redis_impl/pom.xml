@@ -22,7 +22,12 @@
             <artifactId>msip_core</artifactId>
             <version>3.0-SNAPSHOT</version>
         </dependency>
-
+        
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_rpc_api</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>com.smartwork</groupId>
             <artifactId>msip_fsstorerule</artifactId>

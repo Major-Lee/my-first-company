@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -45,17 +46,35 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
-
+	/**
+	 * 获取在线设备列表
+	 */
 	@Override
 	public TailPage<WifiDevice> fetchWDevicesOnline(int pageNo, int pageSize) {
-		logger.info(String.format("DeviceRestRPC fetchWDevicesOrderMaxHandset invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
+		logger.info(String.format("DeviceRestRPC fetchWDevicesOnline invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
 		
 		try{
 			return deviceRestBusinessFacadeService.fetchWDevicesOnline(pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceRestRPC fetchWDevicesOrderMaxHandset exception pageNo [%s] pageSize [%s] exmsg[%s]",
+			logger.error(String.format("DeviceRestRPC fetchWDevicesOnline exception pageNo [%s] pageSize [%s] exmsg[%s]",
 					pageNo, pageSize, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	/**
+	 * 获取统计通用数据展示
+	 */
+	@Override
+	public StatisticsGeneralVTO fetchStatisticsGeneral() {
+		logger.info(String.format("DeviceRestRPC fetchStatisticsGeneral invoke"));
+		
+		try{
+			return deviceRestBusinessFacadeService.fetchStatisticsGeneral();
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchStatisticsGeneral exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
