@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -91,11 +93,17 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 								daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 							}
 							if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
+								OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
+								if(cmd_opt != null){
+									if(cmd_opt == OperationCMD.QueryDeviceLocationS1){
+										daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
+									}
+								}
 								//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
-								if(CMDBuilder.wasLocationQueryTaskid(headers.getTaskid())){//任务查询反馈消息
+								/*if(CMDBuilder.wasLocationQueryTaskid(headers.getTaskid())){//任务查询反馈消息
 									//QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(payload, QuerySerialReturnDTO.class);
 									daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);//, retDTO);
-								}
+								}*/
 							}
 						}
 						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);

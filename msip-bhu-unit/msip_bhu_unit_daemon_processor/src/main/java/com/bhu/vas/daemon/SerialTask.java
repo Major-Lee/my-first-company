@@ -49,4 +49,8 @@ public class SerialTask {
 	public boolean canBeExecute(long now){
 		return ((now-rects)>3*60*1000 );
 	}
+	
+	public String toString(){
+		return String.format("mac[%s] taskid[%s] serialno[%s] rects[%s]", mac,taskid,serialno,rects);
+	}
 }

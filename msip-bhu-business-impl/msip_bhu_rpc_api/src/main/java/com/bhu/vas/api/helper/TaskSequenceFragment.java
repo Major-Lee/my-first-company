@@ -44,6 +44,10 @@ public class TaskSequenceFragment {
 	}
 	
 	public boolean wasInFragment(long taskid){
-		return ( taskid>=start && taskid <=end);
+		if(end != -1){
+			return ( taskid>=start && taskid <=end);
+		}else{//end =-1 代表无穷大
+			return taskid>=start;
+		}
 	}
 }

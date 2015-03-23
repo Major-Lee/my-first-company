@@ -5,13 +5,16 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.bhu.vas.business.logger.BusinessStatisticsLogger;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 
 public class DynaMessageConsumerListener implements MessageListener{
+	private final Logger logger = LoggerFactory.getLogger(DynaMessageConsumerListener.class);
 	private String cminfo;
 	private String queue_name;
-	//private final Logger logger = LoggerFactory.getLogger(NotifyMessageConsumerListener.class);
 	//private ConsumerContextInfo contextInfo;
 	//private ExecutorService exec = Executors.newFixedThreadPool(30);
 	public DynaMessageConsumerListener(String queue_name,String cminfo){//ConsumerContextInfo contextInfo){///*String name,String key,*/MsgDispatcherServer server){//,ActiveMQConnectionManager manager){
@@ -22,7 +25,7 @@ public class DynaMessageConsumerListener implements MessageListener{
 	public void onMessage(final Message m) {
 		try {
 			String message = ((TextMessage)m).getText();
-			System.out.println(message);
+			logger.info(message);
 			BusinessStatisticsLogger.doActionMessageLog(message);
 			QueueMsgObserverManager.DynaMsgCommingObserver.notifyMsgComming(cminfo, message);
 		} catch (JMSException e) {
