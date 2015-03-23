@@ -43,6 +43,14 @@ public class WifiDevice extends BaseStringModel{
 	private String work_mode;
 	//wifi设备是否在线
 	private boolean online;
+	//下行流量
+	private long rx_bytes;
+	//上行流量
+	private long tx_bytes;
+	//地理位置坐标 纬度
+	private String lat;
+	//地理位置坐标 经度
+	private String lon;
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -198,6 +206,38 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setOnline(boolean online) {
 		this.online = online;
+	}
+	
+	public long getRx_bytes() {
+		return rx_bytes;
+	}
+
+	public void setRx_bytes(long rx_bytes) {
+		this.rx_bytes = rx_bytes;
+	}
+
+	public long getTx_bytes() {
+		return tx_bytes;
+	}
+
+	public void setTx_bytes(long tx_bytes) {
+		this.tx_bytes = tx_bytes;
+	}
+
+	public String getLat() {
+		return lat;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+
+	public String getLon() {
+		return lon;
+	}
+
+	public void setLon(String lon) {
+		this.lon = lon;
 	}
 
 	public void setWork_mode(String work_mode) {

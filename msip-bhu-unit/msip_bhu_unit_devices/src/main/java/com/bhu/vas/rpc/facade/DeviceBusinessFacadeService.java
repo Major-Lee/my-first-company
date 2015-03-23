@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import javax.annotation.Resource;
 
+import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,13 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
@@ -22,6 +26,7 @@ import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
+import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -48,6 +53,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
+	
+	@Resource
+	private TaskFacadeService taskFacadeService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -284,6 +292,54 @@ public class DeviceBusinessFacadeService {
 			//2:wifi设备对应handset在线列表redis更新
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
 					handset_device_entity.getLast_login_at().getTime());
+		}
+	}
+	
+	
+	/******************           task response         *************************/
+	
+	/**
+	 * 获取wifi设备地理位置任务响应处理
+	 * 1:记录wifi设备的坐标 (backend)
+	 * 2:根据坐标提取地理位置详细信息 (backend)
+	 * 3:任务callback
+	 * @param ctx
+	 * @param payload
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceLocationS2(String ctx, String payload, String wifiId, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(payload);
+		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
+		if(serialDto.isDone()){
+			LocationDTO locationDto = RPCMessageParseHelper.generateQueryDeviceLocationS2(doc);
+			if(locationDto != null && locationDto.validate()){
+				deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
+//				WifiDevice wifi_device_entity = wifiDeviceService.getById(wifiId);
+//				if(wifi_device_entity != null){
+//					wifi_device_entity.setLat(locationDto.getLat());
+//					wifi_device_entity.setLon(locationDto.getLon());
+//					wifiDeviceService.update(wifi_device_entity);
+//				}
+			}
+		}
+		doTaskCallback(serialDto, taskid);
+	}
+	
+	/**
+	 * 处理任务相应的通用函数 
+	 * 针对任务数据的状态修改和转移
+	 * @param serialDto
+	 */
+	public void doTaskCallback(QuerySerialReturnDTO serialDto, int taskid){
+		if(serialDto == null) return;
+		
+		if(serialDto.isDone()){
+			taskFacadeService.taskExecuteCallback(taskid, WifiDeviceDownTask.State_Completed);
+		}else if(serialDto.isDoing()){
+			
+		}else if(serialDto.isNone()){
+			
 		}
 	}
 }

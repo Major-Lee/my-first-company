@@ -30,6 +30,10 @@
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
        </dependency>
+       <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+       </dependency>
     </dependencies>
 <!-- 
     <build>

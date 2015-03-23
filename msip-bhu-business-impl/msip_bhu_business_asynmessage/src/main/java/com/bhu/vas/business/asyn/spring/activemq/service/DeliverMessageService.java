@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.model.DeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
@@ -54,6 +55,15 @@ public class DeliverMessageService {
 		dto.setMac(handsetId);
 		dto.setWifiId(wifiId);
 		dto.setUptime(uptime);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendQueryDeviceLocationActionMessage(String wifiId, String lat, String lon){
+		DeviceLocationDTO dto = new DeviceLocationDTO();
+		dto.setMac(wifiId);
+		dto.setLat(lat);
+		dto.setLon(lon);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

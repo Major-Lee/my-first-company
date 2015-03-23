@@ -24,6 +24,10 @@
     <result property="config_mode" column="config_mode"/>
     <result property="work_mode" column="work_mode"/>
     <result property="online" column="online"/>
+    <result property="rx_bytes" column="rx_bytes"/>
+    <result property="tx_bytes" column="tx_bytes"/>
+    <result property="lat" column="lat"/>
+    <result property="lon" column="lon"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -55,6 +59,10 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
+	    	rx_bytes,
+	    	tx_bytes,
+	    	lat,
+	    	lon,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -80,6 +88,10 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
+	    	rx_bytes,
+	    	tx_bytes,
+	    	lat,
+	    	lon,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -106,6 +118,10 @@
 	    	#{config_mode},
 	    	#{work_mode},
 	    	#{online},
+	    	#{rx_bytes},
+	    	#{tx_bytes},
+	    	#{lat},
+	    	#{lon},
 	    	#{last_reged_at},
 	    	#{created_at},
 	    	#{updated_at}
@@ -130,6 +146,10 @@
 	    	config_mode = #{config_mode},
 	    	work_mode = #{work_mode},
 	    	online = #{online},
+	    	rx_bytes = #{rx_bytes},
+	    	tx_bytes = #{tx_bytes},
+	    	lat = #{lat},
+	    	lon = #{lon},
 	    	last_reged_at = #{last_reged_at},
 	    	updated_at = #{updated_at}
 	</sql>
