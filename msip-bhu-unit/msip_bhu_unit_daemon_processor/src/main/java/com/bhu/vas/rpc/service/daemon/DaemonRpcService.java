@@ -1,11 +1,12 @@
 package com.bhu.vas.rpc.service.daemon;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-
 
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
@@ -39,6 +40,18 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	@PostConstruct
 	public void initialize(){
 		DaemonObserverManager.CmdDownObserver.addCmdDownListener(this);
+	}
+	
+	@Override
+	public boolean wifiDevicesOnline(String ctx,List<String> macs) {
+		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
+		logger.info(String.format("wifiDeviceOnline ctx[%s] macs[%s]",ctx,macs));
+		for(String mac:macs){
+			SessionManager.getInstance().addSession(mac, ctx);
+			//设备上行首先发送查询地理位置指令
+			activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, RandomData.intNumber(1, 100000)));
+		}
+		return false;
 	}
 	
 	@Override
