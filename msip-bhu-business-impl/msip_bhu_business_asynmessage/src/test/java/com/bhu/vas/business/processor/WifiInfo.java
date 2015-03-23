@@ -30,5 +30,17 @@ public class WifiInfo {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	@Override
+	public int hashCode() {
+		return mac.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		WifiInfo winfo = (WifiInfo)obj;
+		if(this.getMac().equals(winfo)) return true;
+		return false;
+	}
+	
 	
 }
