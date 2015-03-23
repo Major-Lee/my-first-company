@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -11,6 +13,7 @@ public class CmCtxInfo implements java.io.Serializable{
 	private String max_client;
 	private String state;
 	private int last_frag;
+	private List<WifiDeviceDTO> client;
 	public CmCtxInfo(String name, String process_seq) {
 		super();
 		this.name = name;
@@ -62,7 +65,12 @@ public class CmCtxInfo implements java.io.Serializable{
 		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(process_seq);
 	}
 	
-	
+	public List<WifiDeviceDTO> getClient() {
+		return client;
+	}
+	public void setClient(List<WifiDeviceDTO> client) {
+		this.client = client;
+	}
 	public static CmCtxInfo builderCtx(String ctx_name){
 		if(StringUtils.isEmpty(ctx_name)) return null;
 		String[] split = ctx_name.split(StringHelper.UNDERLINE_STRING_GAP);

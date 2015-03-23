@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.daemon.stub;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
@@ -55,6 +57,13 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(payload) || parserHeader == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload,parserHeader);
+	}
+
+	@Override
+	public boolean wifiDevicesOnline(String ctx, List<String> macs) {
+		if(StringUtils.isEmpty(ctx) || macs == null || macs.isEmpty()) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return daemonRpcService.wifiDevicesOnline(ctx,macs);
 	}
 
 	

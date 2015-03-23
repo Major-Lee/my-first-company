@@ -4,7 +4,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+
+
 
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
@@ -139,4 +142,30 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			i++;
 		}
 	}*/
+	
+	@PreDestroy
+	public void destory(){
+		if(exec != null){
+			String simplename = this.getClass().getSimpleName();
+			System.out.println(simplename+" exec正在shutdown");
+			exec.shutdown();
+			System.out.println(simplename+" exec正在shutdown成功");
+			while(true){
+				System.out.println(simplename+" 正在判断exec是否执行完毕");
+				if(exec.isTerminated()){
+					System.out.println(simplename+" exec是否执行完毕,终止exec...");
+					exec.shutdownNow();
+					System.out.println(simplename+" exec是否执行完毕,终止exec成功");
+					break;
+				}else{
+					System.out.println(simplename+" exec未执行完毕...");
+					try {
+						Thread.sleep(2*1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 }

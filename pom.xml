@@ -20,13 +20,16 @@
         
         <module>msip-bhu-cm-control/msip_im_common</module>
         <module>msip-bhu-cm-control/msip_im_cm</module>
-
+        <module>msip-bhu-cm-control/msip_jorion</module>
+        
         <module>msip-bhu-unit/msip_bhu_unit_input_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
+
+
         <!--
         
         <module>msip-wecite-business/msip_wecite_business_ds</module>
