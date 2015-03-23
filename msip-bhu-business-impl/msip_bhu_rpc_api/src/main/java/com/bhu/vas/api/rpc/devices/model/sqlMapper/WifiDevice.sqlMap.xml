@@ -30,6 +30,7 @@
     <result property="lon" column="lon"/>
     <result property="country" column="country"/>
     <result property="province" column="province"/>
+    <result property="city" column="city"/>
     <result property="district" column="district"/>
     <result property="street" column="street"/>
     <result property="formatted_address" column="formatted_address"/>
@@ -70,6 +71,7 @@
 	    	lon,
 	    	country,
 	    	province,
+	    	city,
 	    	district,
 	    	street,
 	    	formatted_address,
@@ -104,6 +106,7 @@
 	    	lon,
 	    	country,
 	    	province,
+	    	city,
 	    	district,
 	    	street,
 	    	formatted_address,
@@ -139,6 +142,7 @@
 	    	#{lon},
 	    	#{country},
 	    	#{province},
+	    	#{city},
 	    	#{district},
 	    	#{street},
 	    	#{formatted_address},
@@ -172,6 +176,7 @@
 	    	lon = #{lon},
 	    	country = #{country},
 	    	province = #{province},
+	    	city = #{city},
 	    	district = #{district},
 	    	street = #{street},
 	    	formatted_address = #{formatted_address},

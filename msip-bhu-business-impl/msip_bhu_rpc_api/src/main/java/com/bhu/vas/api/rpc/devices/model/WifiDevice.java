@@ -55,6 +55,8 @@ public class WifiDevice extends BaseStringModel{
 	private String country;
 	//省名
 	private String province;
+	//城市名
+	private String city;
 	//区县名
 	private String district;
 	//街道名
@@ -289,6 +291,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setFormatted_address(String formatted_address) {
 		this.formatted_address = formatted_address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public void setWork_mode(String work_mode) {
