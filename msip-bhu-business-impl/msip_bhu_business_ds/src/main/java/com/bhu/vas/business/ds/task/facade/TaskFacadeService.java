@@ -28,20 +28,21 @@ public class TaskFacadeService {
 	 * @param taskid
 	 * @param status
 	 */
-	public boolean taskExecuteCallback(int taskid,int state){
+	public boolean taskExecuteCallback(int taskid,String state){
 		/*if(taskid >=0 && taskid <100000){//保留任务号，用户触发定时任务的id号
 			
 		}*/
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
 		if(downtask != null) {
-			if(state == WifiDeviceDownTask.State_Completed){
+			if(WifiDeviceDownTask.State_Done.equals(state)){
+//			if(state == WifiDeviceDownTask.State_Completed){
 				WifiDeviceDownTaskCompleted completed = new WifiDeviceDownTaskCompleted();
 				try {
 					BeanUtils.copyProperties(completed, downtask);
 				} catch (IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 				}
-				completed.setState(WifiDeviceDownTask.State_Completed);
+				completed.setState(WifiDeviceDownTask.State_Done);
 				completed.setCompleted_at(new Date());
 				wifiDeviceDownTaskCompletedService.insert(completed);
 			}else{

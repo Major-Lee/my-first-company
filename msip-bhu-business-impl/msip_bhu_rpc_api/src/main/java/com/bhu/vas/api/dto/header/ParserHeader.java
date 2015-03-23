@@ -35,7 +35,8 @@ public class ParserHeader implements java.io.Serializable{
 	//子类型(8字节)
 	private int st;
 	public String getMac() {
-		return mac;
+		if(StringUtils.isEmpty(mac)) return mac;
+		return mac.toLowerCase();
 	}
 	public void setMac(String mac) {
 		this.mac = mac;

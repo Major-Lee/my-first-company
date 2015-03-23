@@ -3,7 +3,7 @@ package com.bhu.vas.business.asyn.spring.model;
 import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
-public class DeviceLocationDTO extends ActionDTO {
+public class WifiDeviceLocationDTO extends ActionDTO {
 	private String lat;//连接的wifi mac
 	private String lon;//移动设备的连接状态的持续时间
 

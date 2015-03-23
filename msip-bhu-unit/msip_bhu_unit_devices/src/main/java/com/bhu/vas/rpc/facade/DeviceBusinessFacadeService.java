@@ -320,14 +320,14 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceLocationS2(String ctx, String payload, String wifiId, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(serialDto.isDone()){
+		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
 			LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
 			if(locationDto != null && locationDto.validate()){
 				deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
 			}
 		}
 		//2:任务callback
-		doTaskCallback(serialDto, taskid);
+		doTaskCallback(taskid, serialDto.getStatus());
 	}
 	
 	/**
@@ -341,7 +341,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceStatus(String ctx, String payload, String wifiId, int taskid){
 		WifiDeviceStatusDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceStatusDTO.class);
-		if(dto.isDone()){
+		if(WifiDeviceDownTask.State_Doing.equals(dto.getStatus())){
 			//1:记录wifi设备的当前状态数据
 			WifiDeviceStatus entity = BusinessModelBuilder.wifiDeviceStatusDtoToEntity(dto);
 			entity.setId(wifiId);
@@ -354,7 +354,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		//2:任务callback
-		doTaskCallback(dto, taskid);
+		doTaskCallback(taskid, dto.getStatus());
 	}
 	
 	/**
@@ -369,7 +369,7 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceFlow(String ctx, String payload, String wifiId, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(serialDto.isDone()){
+		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
 			//1:计算并记录wifi设备的上下行流量
 			List<WifiDeviceFlowDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceFlow(doc);
 			if(dtos != null && !dtos.isEmpty()){
@@ -391,7 +391,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		//2:任务callback
-		doTaskCallback(serialDto, taskid);
+		doTaskCallback(taskid, serialDto.getStatus());
 	}
 	
 	/**
@@ -399,20 +399,9 @@ public class DeviceBusinessFacadeService {
 	 * 针对任务数据的状态修改和转移
 	 * @param serialDto
 	 */
-	public void doTaskCallback(QuerySerialReturnDTO serialDto, int taskid){
-		if(serialDto == null) return;
+	public void doTaskCallback(int taskid, String status){
+		if(StringUtils.isEmpty(status)) return;
 		
-		int state = 0;
-		
-		if(serialDto.isDone()){
-			state = WifiDeviceDownTask.State_Completed;
-		}else if(serialDto.isDoing()){
-			
-		}else if(serialDto.isNone()){
-			
-		}
-		
-		if(state > 0)
-			taskFacadeService.taskExecuteCallback(taskid, state);
+		taskFacadeService.taskExecuteCallback(taskid, status);
 	}
 }

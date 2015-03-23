@@ -28,6 +28,11 @@
     <result property="tx_bytes" column="tx_bytes"/>
     <result property="lat" column="lat"/>
     <result property="lon" column="lon"/>
+    <result property="country" column="country"/>
+    <result property="province" column="province"/>
+    <result property="district" column="district"/>
+    <result property="street" column="street"/>
+    <result property="formatted_address" column="formatted_address"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -63,6 +68,11 @@
 	    	tx_bytes,
 	    	lat,
 	    	lon,
+	    	country,
+	    	province,
+	    	district,
+	    	street,
+	    	formatted_address,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -92,6 +102,11 @@
 	    	tx_bytes,
 	    	lat,
 	    	lon,
+	    	country,
+	    	province,
+	    	district,
+	    	street,
+	    	formatted_address,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -122,6 +137,11 @@
 	    	#{tx_bytes},
 	    	#{lat},
 	    	#{lon},
+	    	#{country},
+	    	#{province},
+	    	#{district},
+	    	#{street},
+	    	#{formatted_address},
 	    	#{last_reged_at},
 	    	#{created_at},
 	    	#{updated_at}
@@ -150,6 +170,11 @@
 	    	tx_bytes = #{tx_bytes},
 	    	lat = #{lat},
 	    	lon = #{lon},
+	    	country = #{country},
+	    	province = #{province},
+	    	district = #{district},
+	    	street = #{street},
+	    	formatted_address = #{formatted_address},
 	    	last_reged_at = #{last_reged_at},
 	    	updated_at = #{updated_at}
 	</sql>

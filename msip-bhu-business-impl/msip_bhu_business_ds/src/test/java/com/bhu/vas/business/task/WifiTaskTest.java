@@ -73,7 +73,7 @@ public class WifiTaskTest extends BaseTest{
     	}
     	
 	}	
-	static Integer[] states = {WifiDeviceDownTask.State_Failed,WifiDeviceDownTask.State_Pending,WifiDeviceDownTask.State_Completed,WifiDeviceDownTask.State_Timeout};
+	static String[] states = {WifiDeviceDownTask.State_Failed,WifiDeviceDownTask.State_Pending,WifiDeviceDownTask.State_Completed,WifiDeviceDownTask.State_Timeout};
 	
 	@Test
 	public void taskCallbackTest(){

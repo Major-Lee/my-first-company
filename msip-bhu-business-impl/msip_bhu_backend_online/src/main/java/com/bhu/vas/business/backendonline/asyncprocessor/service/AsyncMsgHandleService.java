@@ -12,8 +12,10 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -21,15 +23,21 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
+import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 
 @Service
 public class AsyncMsgHandleService {
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgHandleService.class);
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
@@ -171,5 +179,46 @@ public class AsyncMsgHandleService {
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
+	}
+	
+	/**
+	 * 根据wifi设备的经纬度调用第三方服务获取地理位置的详细信息
+	 * 1:记录wifi设备的坐标 (backend)
+	 * 2:根据坐标提取地理位置详细信息 (backend)
+	 * @param message
+	 */
+	public void wifiDeviceLocationHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s]", message));
+		
+		WifiDeviceLocationDTO dto = JsonHelper.getDTO(message, WifiDeviceLocationDTO.class);
+		//1:记录wifi设备的坐标 (backend)
+		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
+		if(entity != null){
+			//如果经纬度和记录的一样(如果经纬度有波动,可以考虑按误差值来判定), 并且地理信息已经提取, 就不再进行提取了
+			if(dto.getLat().equals(entity.getLat()) && dto.getLon().equals(entity.getLon())){
+				return;
+			}
+			
+			entity.setLat(dto.getLat());
+			entity.setLon(dto.getLon());
+			
+			try{
+				//2:根据坐标提取地理位置详细信息 (backend)
+				GeocodingDTO geocodingDto = GeocodingHelper.geocodingGet(String.valueOf(dto.getLat()), 
+						String.valueOf(dto.getLon()));
+				if(geocodingDto != null && geocodingDto.getStatus() == GeocodingDTO.Success_Status){
+					
+				}else{
+					logger.error(String.format("GeocodingHelper fail lat[%s] lon[%s] status[%s]",
+							dto.getLat(),dto.getLon(), geocodingDto != null ? geocodingDto.getStatus() : ""));
+				}
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+				logger.error(String.format("GeocodingHelper exception lat[%s] lon[%s] exmsg[%s]",
+						dto.getLat(),dto.getLon(), ex.getMessage()), ex);
+			}
+			wifiDeviceService.update(entity);
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
 	}
 }

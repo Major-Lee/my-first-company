@@ -51,6 +51,17 @@ public class WifiDevice extends BaseStringModel{
 	private String lat;
 	//地理位置坐标 经度
 	private String lon;
+	//国家
+	private String country;
+	//省名
+	private String province;
+	//区县名
+	private String district;
+	//街道名
+	private String street;
+	//结构化地址 如北京市海淀区后八家路
+	private String formatted_address;
+	
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -238,6 +249,46 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setLon(String lon) {
 		this.lon = lon;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getFormatted_address() {
+		return formatted_address;
+	}
+
+	public void setFormatted_address(String formatted_address) {
+		this.formatted_address = formatted_address;
 	}
 
 	public void setWork_mode(String work_mode) {
