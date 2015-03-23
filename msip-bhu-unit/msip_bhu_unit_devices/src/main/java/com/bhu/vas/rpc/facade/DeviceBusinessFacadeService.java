@@ -333,7 +333,7 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceLocationS2(String ctx, String payload, String wifiId, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
 			if(locationDto != null && locationDto.validate()){
 				deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
@@ -354,7 +354,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceStatus(String ctx, String payload, String wifiId, int taskid){
 		WifiDeviceStatusDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceStatusDTO.class);
-		if(WifiDeviceDownTask.State_Doing.equals(dto.getStatus())){
+		if(WifiDeviceDownTask.State_Done.equals(dto.getStatus())){
 			//1:记录wifi设备的当前状态数据
 			WifiDeviceStatus entity = BusinessModelBuilder.wifiDeviceStatusDtoToEntity(dto);
 			entity.setId(wifiId);
@@ -382,7 +382,7 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceFlow(String ctx, String payload, String wifiId, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			//1:计算并记录wifi设备的上下行流量
 			List<WifiDeviceFlowDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceFlow(doc);
 			if(dtos != null && !dtos.isEmpty()){
