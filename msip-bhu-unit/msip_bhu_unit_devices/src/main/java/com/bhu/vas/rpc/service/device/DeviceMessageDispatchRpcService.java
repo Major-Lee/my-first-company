@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -7,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
@@ -160,6 +163,14 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	public void messageDispatchUnsupport(String ctx, String payload, ParserHeader parserHeader){
 		logger.info(String.format("DeviceMessageRPC messageDispatch unsupport msg ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
 		//throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
+	}
+
+	/**
+	 * CM与控制层的连接断开以后 会分批次批量发送在此CM上的wifi设备信息
+	 */
+	@Override
+	public void wifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
+		
 	}
 
 }

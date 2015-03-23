@@ -20,6 +20,13 @@ public class Test {
 //		System.out.println(result);
 		System.out.println(list.subList(0, 1));
 		url();
+		
+//		WifiDeviceStatusDTO dto = new WifiDeviceStatusDTO();
+//		dto.setIndex(1);
+//		dto.setCurrent_cpu_usage("1");
+//		WifiDeviceStatus entity = new WifiDeviceStatus();
+//		BeanUtils.copyProperties(dto, entity);
+//		System.out.println(entity.getCurrent_cpu_usage());
 	}
 	
 

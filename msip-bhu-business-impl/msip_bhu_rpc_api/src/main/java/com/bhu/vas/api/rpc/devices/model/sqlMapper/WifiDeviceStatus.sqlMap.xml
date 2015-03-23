@@ -2,56 +2,46 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceCurrentStatus">
+<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus">
 
-  <resultMap id="modelResult" type="wifiDeviceCurrentStatus">
+  <resultMap id="modelResult" type="wifiDeviceStatus">
     <result property="id" column="id"/>
-    <result property="name" column="name"/>
-    <result property="started_at" column="started_at"/>
-    <result property="heartbeated_at" column="heartbeated_at"/>
-    <result property="memory_load" column="memory_load"/>
-    <result property="upflow" column="upflow"/>
-    <result property="downflow" column="downflow"/>
-    <result property="upspeed" column="upspeed"/>
-    <result property="downspeed" column="downspeed"/>
-    <result property="onlinenumbers" column="onlinenumbers"/>
-    
+    <result property="current_cpu_usage" column="current_cpu_usage"/>
+    <result property="average_cpu_usage" column="average_cpu_usage"/>
+    <result property="max_cpu_usage" column="max_cpu_usage"/>
+    <result property="current_mem_usage" column="current_mem_usage"/>
+    <result property="average_mem_usage" column="average_mem_usage"/>
+    <result property="max_mem_usage" column="max_mem_usage"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devices_current_status
+	    	t_wifi_devices_status
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	name,
-	    	started_at,
-	    	heartbeated_at,
-	    	memory_load,
-	    	upflow,
-	    	downflow,
-	    	upspeed,
-	    	downspeed,
-	    	onlinenumbers,
+	    	current_cpu_usage,
+	    	average_cpu_usage,
+	    	max_cpu_usage,
+	    	current_mem_usage,
+	    	average_mem_usage,
+	    	max_mem_usage,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	name,
-	    	started_at,
-	    	heartbeated_at,
-	    	memory_load,
-	    	upflow,
-	    	downflow,
-	    	upspeed,
-	    	downspeed,
-	    	onlinenumbers,
+	    	current_cpu_usage,
+	    	average_cpu_usage,
+	    	max_cpu_usage,
+	    	current_mem_usage,
+	    	average_mem_usage,
+	    	max_mem_usage,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -59,31 +49,24 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{name},
-	    	#{started_at},
-	    	#{heartbeated_at},
-	    	#{memory_load},
-	    	#{upflow},
-	    	#{downflow},
-	    	#{upspeed},
-	    	#{downspeed},
-	    	#{onlinenumbers},
+	    	#{current_cpu_usage},
+	    	#{average_cpu_usage},
+	    	#{max_cpu_usage},
+	    	#{current_mem_usage},
+	    	#{average_mem_usage},
+	    	#{max_mem_usage},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	
 	<sql id="modelUpdateValues">
-			name = #{name},
-			started_at = #{started_at},
-			heartbeated_at = #{heartbeated_at},
-			memory_load = #{memory_load},
-			upflow = #{upflow},
-			downflow = #{downflow},
-			upspeed = #{upspeed},
-			downspeed = #{downspeed},
-			onlinenumbers = #{onlinenumbers},
-	    	created_at = #{created_at},
+			current_cpu_usage = #{current_cpu_usage},
+			average_cpu_usage = #{average_cpu_usage},
+			max_cpu_usage = #{max_cpu_usage},
+			current_mem_usage = #{current_mem_usage},
+			average_mem_usage = #{average_mem_usage},
+			max_mem_usage = #{max_mem_usage},
 	    	updated_at = #{updated_at}
 	</sql>
 	
@@ -139,7 +122,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiDeviceCurrentStatus">
+	<delete id="delete" parameterType="wifiDeviceStatus">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -148,11 +131,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="wifiDeviceCurrentStatus">
+	<insert id="insert" parameterType="wifiDeviceStatus">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="wifiDeviceCurrentStatus">
+	<update id="update" parameterType="wifiDeviceStatus">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

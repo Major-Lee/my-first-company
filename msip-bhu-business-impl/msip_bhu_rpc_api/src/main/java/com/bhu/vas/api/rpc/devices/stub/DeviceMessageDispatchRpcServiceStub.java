@@ -1,7 +1,10 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
+import java.util.List;
+
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -23,5 +26,10 @@ public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispat
 		deviceMessageDispatchRpcService.messageDispatch(ctx, payload, parserHeader);
 	}
 
-
+	@Override
+	public void wifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
+		if(StringUtils.isEmpty(ctx)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		deviceMessageDispatchRpcService.wifiDeviceOnlines(ctx, dtos);
+	}
 }

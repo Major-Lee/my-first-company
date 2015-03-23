@@ -5,9 +5,11 @@ import java.util.Date;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
@@ -93,5 +95,15 @@ public class BusinessModelBuilder {
 		return wifi_device_entity;
 	}
 	
+	public static WifiDeviceStatus wifiDeviceStatusDtoToEntity(WifiDeviceStatusDTO dto){
+		WifiDeviceStatus wifi_device_status_entity = new WifiDeviceStatus();
+		wifi_device_status_entity.setCurrent_cpu_usage(Integer.parseInt(dto.getCurrent_cpu_usage()));
+		wifi_device_status_entity.setAverage_cpu_usage(Integer.parseInt(dto.getAverage_cpu_usage()));
+		wifi_device_status_entity.setMax_cpu_usage(Integer.parseInt(dto.getMax_cpu_usage()));
+		wifi_device_status_entity.setCurrent_mem_usage(Integer.parseInt(dto.getCurrent_mem_usage()));
+		wifi_device_status_entity.setAverage_mem_usage(Integer.parseInt(dto.getAverage_mem_usage()));
+		wifi_device_status_entity.setMax_mem_usage(Integer.parseInt(dto.getMax_mem_usage()));
+		return wifi_device_status_entity;
+	}
 	
 }

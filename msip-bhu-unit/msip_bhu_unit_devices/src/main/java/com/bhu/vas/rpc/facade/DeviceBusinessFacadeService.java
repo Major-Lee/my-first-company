@@ -21,6 +21,7 @@ import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -29,6 +30,7 @@ import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -48,6 +50,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceAlarmService wifiDeviceAlarmService;
+	
+	@Resource
+	private WifiDeviceStatusService wifiDeviceStatusService;
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
@@ -327,7 +332,8 @@ public class DeviceBusinessFacadeService {
 	
 	/**
 	 * 获取wifi设备的当前状态任务响应处理 (比如cpu,内存利用率)
-	 * 1:任务callback
+	 * 1:记录wifi设备的当前状态数据
+	 * 2:任务callback
 	 * @param ctx
 	 * @param payload
 	 * @param wifiId
@@ -336,7 +342,16 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceStatus(String ctx, String payload, String wifiId, int taskid){
 		WifiDeviceStatusDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceStatusDTO.class);
 		if(dto.isDone()){
-			//TODO:数据记录
+			//1:记录wifi设备的当前状态数据
+			WifiDeviceStatus entity = BusinessModelBuilder.wifiDeviceStatusDtoToEntity(dto);
+			entity.setId(wifiId);
+			
+			WifiDeviceStatus exist_entity = wifiDeviceStatusService.getById(wifiId);
+			if(exist_entity == null){
+				wifiDeviceStatusService.insert(entity);
+			}else{
+				wifiDeviceStatusService.update(entity);
+			}
 		}
 		//2:任务callback
 		doTaskCallback(dto, taskid);
