@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -84,6 +85,8 @@ public class DeviceBusinessFacadeService {
 		long last_login_at = 0;
 		//1:wifi设备基础信息更新
 		WifiDevice wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
+		//wifi_device_entity.setLast_reged_at(new Date());
+		
 		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(wifi_device_entity.getId());
 		if(exist_wifi_device_entity == null){
 			wifiDeviceService.insert(wifi_device_entity);
@@ -103,6 +106,16 @@ public class DeviceBusinessFacadeService {
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), 
 				this_login_at, last_login_at, newWifi);
 	}
+	
+	/**
+	 * CM与控制层的连接断开以后 会分批次批量发送在此CM上的wifi设备在线信息 (backend)
+	 * @param ctx
+	 * @param dtos
+	 */
+	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> devices) {
+		deliverMessageService.sendCMUPWithWifiDeviceOnlinesActionMessage(ctx, devices);
+	}
+	
 	/**
 	 * wifi设备离线
 	 * 1:wifi设备基础信息表中的在线状态更新为离线

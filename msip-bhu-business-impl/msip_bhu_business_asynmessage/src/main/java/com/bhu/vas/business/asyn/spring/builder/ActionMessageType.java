@@ -10,6 +10,7 @@ public enum ActionMessageType {
 	HandsetDeviceOnline("Handset设备上线","hdonline","HN"),
 	HandsetDeviceOffline("Handset设备上线","hdoffline","HF"),
 	WifiDeviceLocation("wifi设备位置回报","wdlocation","WL"),
+	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

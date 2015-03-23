@@ -27,9 +27,9 @@ public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispat
 	}
 
 	@Override
-	public void wifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
+	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> devices) {
 		if(StringUtils.isEmpty(ctx)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		deviceMessageDispatchRpcService.wifiDeviceOnlines(ctx, dtos);
+		deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, devices);
 	}
 }

@@ -9,5 +9,5 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 public interface IDeviceMessageDispatchRpcService {
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader);
 	
-	public void wifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos);
+	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> devices);
 }

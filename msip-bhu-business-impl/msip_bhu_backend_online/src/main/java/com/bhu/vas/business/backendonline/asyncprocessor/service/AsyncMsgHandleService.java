@@ -1,5 +1,6 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
@@ -20,7 +23,9 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
+import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -84,6 +89,100 @@ public class AsyncMsgHandleService {
 				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
+	}
+	
+	/**
+	 *  a:如果设备是新上线的
+	 * 	1：wifi设备基础信息更新(backend)
+	 * 	2：wifi设备在线状态Redis更新(backend)
+	 * 	3:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
+	 * 	4:统计增量 wifi设备的daily启动次数增量(backend)
+	 * b:如果设备本身是在线的
+	 * 	do nothing
+	 */
+	public void cmupWithWifiDeviceOnlinesHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor cmupWithWifiDeviceOnlinesHandle message[%s]", message));
+		
+		CMUPWithWifiDeviceOnlinesDTO cmupWithOnlinesDto = JsonHelper.getDTO(message, CMUPWithWifiDeviceOnlinesDTO.class);
+		List<WifiDeviceDTO> dtos = cmupWithOnlinesDto.getDevices();
+		if(dtos != null && !dtos.isEmpty()){
+			List<String> ids = new ArrayList<String>();
+			for(WifiDeviceDTO dto : dtos){
+				ids.add(dto.getMac().toLowerCase());
+			}
+			List<WifiDevice> entitys = wifiDeviceService.findByIds(ids, true, true);
+			//新上线的设备列表(非新注册)
+			List<WifiDevice> entityNewOnlines = new ArrayList<WifiDevice>();
+			//新上线的并且是新注册的设备列表
+			List<WifiDevice> entityNewRegisters = new ArrayList<WifiDevice>();
+			//不在线的设备的ids
+			List<String> offline_ids = new ArrayList<String>();
+			int cursor = 0;
+			for(WifiDevice entity : entitys){
+				if(entity != null && entity.isOnline()){
+					continue;
+				}
+				WifiDeviceDTO dto = dtos.get(cursor);
+				if(entity == null){
+					entityNewRegisters.add(BusinessModelBuilder.wifiDeviceDtoToEntity(dto));
+				}else{
+					entityNewOnlines.add(BusinessModelBuilder.wifiDeviceDtoToEntity(dto));
+				}
+				offline_ids.add(dto.getMac());
+				cursor++;
+			}
+			//3:统计增量 wifi设备的daily新增设备增量
+			int incr_statistics_news = 0;
+			//3:统计增量 wifi设备的daily活跃设备增量
+			int incr_statistics_active = 0;
+			//4:统计增量 wifi设备的daily启动次数增量
+			int incr_statistics_accesscount = 0;
+			//有新上线的设备(非新注册)
+			int newOnline_length = entityNewOnlines.size();
+			if(newOnline_length > 0){
+				incr_statistics_accesscount += newOnline_length;
+				//今天的时间
+				Date today = new Date();
+				for(WifiDevice entity: entityNewOnlines){
+					//如果最后的登录时间和今天不一样，说明今天是第一次登录
+					if(!DateTimeHelper.isSameDay(entity.getLast_reged_at(), today)){
+						incr_statistics_active++;
+					}
+				}
+				//1：wifi设备基础信息更新
+				wifiDeviceService.updateAll(entityNewOnlines);
+			}
+			//新上线的并且是新注册的设备列表
+			int newRegister_length = entityNewRegisters.size();
+			if(newRegister_length > 0){
+				incr_statistics_accesscount += newRegister_length;
+				incr_statistics_news += newRegister_length;
+				//1：wifi设备基础信息更新
+				wifiDeviceService.insertAll(entityNewRegisters);
+			}
+			
+			//2:wifi设备在线状态Redis更新
+			if(!offline_ids.isEmpty()){
+				WifiDevicePresentService.getInstance().addPresents(offline_ids, cmupWithOnlinesDto.getCtx());
+			}
+			
+			//3:统计增量 wifi设备的daily新增设备增量
+			if(incr_statistics_news > 0){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_News, incr_statistics_news);
+			}
+			//3:统计增量 wifi设备的daily活跃设备增量
+			if(incr_statistics_active > 0){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Actives, incr_statistics_active);
+			}
+			//4:统计增量 wifi设备的daily启动次数增量
+			if(incr_statistics_accesscount > 0){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, incr_statistics_accesscount);
+			}
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor cmupWithWifiDeviceOnlinesHandle message[%s] successful", message));
 	}
 	
 	/**

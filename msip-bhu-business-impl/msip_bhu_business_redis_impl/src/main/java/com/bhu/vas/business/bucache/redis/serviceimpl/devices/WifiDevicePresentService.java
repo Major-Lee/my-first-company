@@ -48,6 +48,15 @@ public class WifiDevicePresentService extends AbstractRelationStringCache{
 		super.set(generateKey(wifiId), ctx);
 	}
 	
+	public void addPresents(List<String> wifiIds, String ctx){
+		String[] keys = this.generateKeys(wifiIds);
+		String[] values = new String[keys.length];
+		for(int i = 0;i<values.length;i++){
+			values[i] = ctx;
+		}
+		super.mset(keys, values);
+	}
+	
 	public String getPresent(String wifiId){
 		return super.get(generateKey(wifiId));
 	}

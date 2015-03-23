@@ -166,11 +166,25 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	}
 
 	/**
-	 * CM与控制层的连接断开以后 会分批次批量发送在此CM上的wifi设备信息
+	 * CM与控制层的连接断开以后 会分批次批量发送在此CM上的wifi设备在线信息
 	 */
 	@Override
-	public void wifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
-		
+	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
+		try{
+			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines invoke ctx [%s] ", ctx));
+			
+			deviceBusinessFacadeService.cmupWithWifiDeviceOnlines(ctx, dtos);
+			
+			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines successful ctx [%s] ",ctx));
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines failed ctx [%s] ", ctx));
+			throw ex;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines exception ctx [%s] exmsg[%s]",
+					ctx, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
 	}
 
 }
