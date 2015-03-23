@@ -70,7 +70,7 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 								macs.add(dto.getMac());
 							}
 							daemonRpcService.wifiDevicesOnline(ctx, macs);
-							deviceMessageDispatchRpcService.wifiDeviceOnlines(ctx, cmInfo.getClient());
+							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
 						}
 					}else if(ParserHeader.Offline_Prefix == type){
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
