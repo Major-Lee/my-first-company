@@ -74,11 +74,11 @@ public class WifiTaskTest extends BaseTest{
     	
 	}	
 	static String[] states = {WifiDeviceDownTask.State_Failed,WifiDeviceDownTask.State_Pending,WifiDeviceDownTask.State_Completed,WifiDeviceDownTask.State_Timeout};
-	
+	static String[] responses = {"1234","5678","2345","4567"};
 	@Test
 	public void taskCallbackTest(){
 		for(int i=0;i<100;i++){
-			taskFacadeService.taskExecuteCallback(i, RandomPicker.pick(states));
+			taskFacadeService.taskExecuteCallback(i, RandomPicker.pick(states),RandomPicker.pick(responses));
 		}
 		
 	}

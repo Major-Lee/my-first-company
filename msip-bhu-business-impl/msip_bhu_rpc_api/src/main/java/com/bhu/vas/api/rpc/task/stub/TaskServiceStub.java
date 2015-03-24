@@ -15,12 +15,20 @@ public class TaskServiceStub implements ITaskRpcService{
         this.taskRpcService = taskRpcService;
     }
 
-	@Override
+	/*@Override
 	public boolean taskCompleted(String taskid) {
 		if(StringUtils.isEmpty(taskid)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return taskRpcService.taskCompleted(taskid);
-	}
+	}*/
 
+	@Override
+	public boolean createNewTask(String mac, String opt, String payload,
+			String channel, String channel_taskid) {
+		if(StringUtils.isEmpty(mac)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return taskRpcService.createNewTask(mac, opt, payload,
+				channel, channel_taskid);
+	}
 
 }
