@@ -52,7 +52,7 @@ public class WifiSimulateProducerTest {
 			System.out.println(Queue_Key);
 			//wifi上线消息
 			activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
-					String.format(wifi_online_msg_template,StringHelper.unformatMacAddress(winfo.getMac()),
+					String.format(wifi_online_msg_template,
 							StringHelper.unformatMacAddress(winfo.getMac()), winfo.getSn(),winfo.getMac(),winfo.getIp()));
 			//wifi下线消息
 			//activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
@@ -98,7 +98,7 @@ public class WifiSimulateProducerTest {
 			if(ret){
 				size++;
 			}
-			if(size >=10000)
+			if(size >=1000)
 				break;
 			else
 				System.out.println(size);
