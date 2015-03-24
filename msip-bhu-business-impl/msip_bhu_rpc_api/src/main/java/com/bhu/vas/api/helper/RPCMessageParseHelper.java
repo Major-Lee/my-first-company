@@ -10,6 +10,7 @@ import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
@@ -160,11 +161,14 @@ public class RPCMessageParseHelper {
 	public static void main(String[] args) {
 		String message = "<return><ITEM cmd=\"sysdebug\" status=\"done\" ><text><SUB text=\"OK\" /><SUB text=\"latitude:40.017286\" /><SUB text=\"longitude:116.345614\" /><SUB text=\"address-line:学清路\" /><SUB text=\"city:Beijing\" /><SUB text=\"state:Beijing\" /><SUB text=\"country:China\" /></text></ITEM></return>";
 		Document doc = parserMessage(message);
+
 		LocationDTO locationDto = generateDTOFromQueryDeviceLocationS2(doc);
 		System.out.println(locationDto.getLat()+","+locationDto.getLon());
 		
 		message = "<return><ITEM index=\"1\" cmd=\"if_stat\" status=\"done\" ><if_stat_sub><SUB name=\"eth0\" rx_pkts=\"0\" rx_err_pkts=\"0\" rx_drop_pkts=\"0\" rx_over_pkts=\"0\" rx_err_frames=\"0\" rx_multicast_pkts=\"0\" rx_bytes=\"0\" tx_pkts=\"0\" tx_err_pkts=\"0\" tx_drop_pkts=\"0\" tx_over_pkts=\"0\" tx_err_carrier=\"0\" tx_bytes=\"0\" /><SUB name=\"eth1\" rx_pkts=\"934\" rx_err_pkts=\"0\" rx_drop_pkts=\"0\" rx_over_pkts=\"0\" rx_err_frames=\"0\" rx_multicast_pkts=\"555\" rx_bytes=\"228108\" tx_pkts=\"431\" tx_err_pkts=\"0\" tx_drop_pkts=\"0\" tx_over_pkts=\"0\" tx_err_carrier=\"0\" tx_bytes=\"44778\" /></if_stat_sub></ITEM></return>";
 		doc = parserMessage(message);
+		QuerySerialReturnDTO serialDto = generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
+		System.out.println(serialDto.getStatus());
 		List<WifiDeviceFlowDTO> dtos = generateDTOFromQueryDeviceFlow(doc);
 		for(WifiDeviceFlowDTO dto : dtos){
 			System.out.println(dto.getName() + "-" + dto.getRx_bytes());

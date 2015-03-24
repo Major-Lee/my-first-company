@@ -11,7 +11,6 @@ package com.bhu.vas.api.dto.ret;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceStatusDTO extends QuerySerialReturnDTO{
-	private long index;
 	//当前cpu占用
 	private String current_cpu_usage;
 	//平均cpu占用
@@ -25,12 +24,6 @@ public class WifiDeviceStatusDTO extends QuerySerialReturnDTO{
 	//最大内存占用
 	private String max_mem_usage;
 	
-	public long getIndex() {
-		return index;
-	}
-	public void setIndex(long index) {
-		this.index = index;
-	}
 	public String getCurrent_cpu_usage() {
 		return current_cpu_usage;
 	}

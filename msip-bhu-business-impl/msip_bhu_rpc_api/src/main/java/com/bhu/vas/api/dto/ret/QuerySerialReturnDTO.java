@@ -7,6 +7,7 @@ public class QuerySerialReturnDTO implements Serializable{
 	private String cmd;//="sysdebug" serial="4" status="doing"
 	private String serial;
 	private String status;
+	private String index;
 	
 	public String getCmd() {
 		return cmd;
@@ -25,6 +26,12 @@ public class QuerySerialReturnDTO implements Serializable{
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getIndex() {
+		return index;
+	}
+	public void setIndex(String index) {
+		this.index = index;
 	}
 	
 //	public boolean isDone(){
