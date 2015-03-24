@@ -12,6 +12,8 @@
     <result property="mac" column="mac"/>
     <result property="time" column="time"/>
     <result property="serial" column="serial"/>
+    <result property="response" column="response"/>
+    
     <result property="channel" column="channel"/>
     <result property="channel_taskid" column="channel_taskid"/>    
     <result property="completed_at" column="completed_at"/>
@@ -28,12 +30,14 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	opt,
 	    	payload,
 	    	state,
 	    	task,
 	    	mac,
 	    	time,
 	    	serial,
+	    	response,
 	    	channel,
 	    	channel_taskid,
 	    	completed_at,
@@ -43,12 +47,14 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	opt,
 	    	payload,
 	    	state,
 	    	task,
 	    	mac,
 	    	time,
 	    	serial,
+	    	response,
 	    	channel,
 	    	channel_taskid,	    	
 	    	completed_at,
@@ -59,12 +65,14 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{opt},
 	    	#{payload},
 	    	#{state},
 	    	#{task},
 	    	#{mac},
 	    	#{time},
 	    	#{serial},
+	    	#{response},
 	    	#{channel},
 	    	#{channel_taskid},
 	    	#{completed_at},
@@ -74,12 +82,14 @@
 	
 	
 	<sql id="modelUpdateValues">
+			opt = #{opt},
 			payload = #{payload},
 			state = #{state},
 			task = #{task},
 			mac = #{mac},
 			time = #{time},
 			serial = #{serial},
+			response = #{response},
 			channel = #{channel},
 	    	channel_taskid = #{channel_taskid},
 			completed_at = #{completed_at},

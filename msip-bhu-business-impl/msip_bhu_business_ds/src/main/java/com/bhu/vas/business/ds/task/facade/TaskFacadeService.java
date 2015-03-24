@@ -28,7 +28,7 @@ public class TaskFacadeService {
 	 * @param taskid
 	 * @param status
 	 */
-	public boolean taskExecuteCallback(int taskid,String state){
+	public boolean taskExecuteCallback(int taskid,String state,String response){
 		/*if(taskid >=0 && taskid <100000){//保留任务号，用户触发定时任务的id号
 			
 		}*/
@@ -36,14 +36,15 @@ public class TaskFacadeService {
 		if(downtask != null) {
 			if(WifiDeviceDownTask.State_Done.equals(state)){
 //			if(state == WifiDeviceDownTask.State_Completed){
-				WifiDeviceDownTaskCompleted completed = new WifiDeviceDownTaskCompleted();
+				WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, state, response);
+				/*WifiDeviceDownTaskCompleted completed = new WifiDeviceDownTaskCompleted();
 				try {
 					BeanUtils.copyProperties(completed, downtask);
 				} catch (IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 				}
 				completed.setState(WifiDeviceDownTask.State_Done);
-				completed.setCompleted_at(new Date());
+				completed.setCompleted_at(new Date());*/
 				wifiDeviceDownTaskCompletedService.insert(completed);
 			}else{
 				downtask.setState(state);
@@ -60,6 +61,7 @@ public class TaskFacadeService {
 	public static final int Task_Already_Exist = 0;
 	public static final int Task_Already_Completed = 1;
 	public static final int Task_Startup_OK = 2;
+	
 	public int taskComming(WifiDeviceDownTask downtask){
 		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) return Task_Illegal;
 		if(downtask.getChannel_taskid()>0 && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务

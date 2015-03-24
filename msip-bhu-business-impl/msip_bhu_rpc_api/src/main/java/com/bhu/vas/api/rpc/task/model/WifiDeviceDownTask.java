@@ -19,10 +19,16 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public static final String State_Completed = "Completed";//任务已经完成
 	
 	public static final String Task_LOCAL_CHANNEL = "VAS";
+	//下发指令内容
 	private String payload;
+	//任务状态
 	private String state = State_Pending;
+	//任务类型 OperationCMD no
+	private String opt;
 	private String task;
+	//任务下发的具体设备的mac地址
 	private String mac;
+	//
 	private String time;
 	private String serial;
 	//给外部其他应用提供的channel值，每个外部应用有个编号
@@ -113,6 +119,13 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public void setChannel_taskid(int channel_taskid) {
 		this.channel_taskid = channel_taskid;
 	}
-	
+
+	public String getOpt() {
+		return opt;
+	}
+
+	public void setOpt(String opt) {
+		this.opt = opt;
+	}
 	
 }
