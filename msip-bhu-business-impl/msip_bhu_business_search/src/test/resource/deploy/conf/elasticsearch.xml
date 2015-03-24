@@ -16,7 +16,7 @@
 <es>
     <!-- Name of the cluster server to connect. This property is required. -->  
     <cluster>
-    	<name>wallpaper</name>
+    	<name>bhu</name>
     	<nodes>
     		<node1>127.0.0.1:9300</node1>  
         	<!-- <node2>192.168.1.2:9300</node2>  -->
