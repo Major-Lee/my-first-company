@@ -7,7 +7,7 @@
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
@@ -17,31 +17,40 @@
 			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>	
-
 	<appender name="unitqueuerecv" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<File>${log.base}.unitqueuerecv.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.unitqueuerecv.zip</FileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>	
+	<appender name="unitqueueprocessor" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.unitqueueprocessor.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.unitqueueprocessor.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>	
 
 	<logger name="com.bhu.vas.processor" additivity="false" level="INFO">
-		<appender-ref ref="stdout" />
-		<appender-ref ref="unitqueuerecv" />
+		<appender-ref ref="unitqueueprocessor" />
 	</logger>	
-	
-	<root level="WARN">
+	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
+		<appender-ref ref="unitqueuerecv" />
+	</logger>
+	<root>
+		<level value="WARN" />
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
 	</root> 
 </configuration>
-
-
