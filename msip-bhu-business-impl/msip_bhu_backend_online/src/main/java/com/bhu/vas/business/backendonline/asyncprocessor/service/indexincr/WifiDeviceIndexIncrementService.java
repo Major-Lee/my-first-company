@@ -55,7 +55,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @throws Exception
 	 */
 	public void wifiDeviceLocationIndexIncrement(WifiDevice entity) throws Exception{
-		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s]", entity.getId()));
+		logger.info(String.format("wifiDeviceLocationIndexIncrement wifiId[%s]", entity.getId()));
 
 		WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity);
 		Long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(entity.getId());
@@ -65,7 +65,7 @@ public class WifiDeviceIndexIncrementService {
 		indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 		wifiDeviceIndexService.createIndexComponent(indexDto);
 		
-		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s] successful", entity.getId()));
+		logger.info(String.format("wifiDeviceLocationIndexIncrement wifiId[%s] successful", entity.getId()));
 	}
 	
 	/**

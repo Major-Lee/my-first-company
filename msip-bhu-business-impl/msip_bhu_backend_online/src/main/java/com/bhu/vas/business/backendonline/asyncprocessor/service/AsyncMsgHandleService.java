@@ -410,9 +410,11 @@ public class AsyncMsgHandleService {
 	 * 根据wifi设备的经纬度调用第三方服务获取地理位置的详细信息
 	 * 1:记录wifi设备的坐标 (backend)
 	 * 2:根据坐标提取地理位置详细信息 (backend)
+	 * 3:增量索引
 	 * @param message
+	 * @throws Exception 
 	 */
-	public void wifiDeviceLocationHandle(String message){
+	public void wifiDeviceLocationHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s]", message));
 		
 		WifiDeviceLocationDTO dto = JsonHelper.getDTO(message, WifiDeviceLocationDTO.class);
@@ -454,6 +456,9 @@ public class AsyncMsgHandleService {
 						dto.getLat(),dto.getLon(), ex.getMessage()), ex);
 			}
 			wifiDeviceService.update(entity);
+			
+			//3:增量索引
+			wifiDeviceIndexIncrementService.wifiDeviceLocationIndexIncrement(entity);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
 	}
