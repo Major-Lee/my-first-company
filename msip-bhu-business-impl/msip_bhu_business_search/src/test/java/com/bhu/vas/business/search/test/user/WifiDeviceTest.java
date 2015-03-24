@@ -10,11 +10,11 @@ import javax.annotation.Resource;
 import org.elasticsearch.ElasticsearchException;
 import org.junit.Test;
 
+import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
+import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.business.search.indexable.WifiDeviceIndexableComponent;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
-import com.bhu.vas.business.search.service.device.dto.WifiDeviceIndexDTO;
-import com.bhu.vas.business.search.service.device.dto.WifiDeviceSearchDTO;
 import com.smartwork.msip.es.exception.ESException;
 import com.smartwork.msip.es.exception.ESQueryValidateException;
 import com.smartwork.msip.es.request.QueryResponse;

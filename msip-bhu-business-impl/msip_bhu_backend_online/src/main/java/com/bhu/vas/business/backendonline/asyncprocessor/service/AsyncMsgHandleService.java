@@ -23,6 +23,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
@@ -60,14 +61,19 @@ public class AsyncMsgHandleService {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
+	@Resource
+	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
 	 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
 	 * 5:统计增量 wifi设备的daily启动次数增量 (backend)
+	 * 6:wifi设备增量索引
 	 * @param message
+	 * @throws Exception 
 	 */
-	public void wifiDeviceOnlineHandle(String message){
+	public void wifiDeviceOnlineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s]", message));
 		
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
@@ -90,6 +96,8 @@ public class AsyncMsgHandleService {
 		DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
 				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
+		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
+		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	
@@ -101,8 +109,10 @@ public class AsyncMsgHandleService {
 	 * 	4:统计增量 wifi设备的daily启动次数增量(backend)
 	 * b:如果设备本身是在线的
 	 * 	do nothing
+	 *  5:增量索引
+	 * @throws Exception 
 	 */
-	public void cmupWithWifiDeviceOnlinesHandle(String message){
+	public void cmupWithWifiDeviceOnlinesHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor cmupWithWifiDeviceOnlinesHandle message[%s]", message));
 		
 		CMUPWithWifiDeviceOnlinesDTO cmupWithOnlinesDto = JsonHelper.getDTO(message, CMUPWithWifiDeviceOnlinesDTO.class);
@@ -183,6 +193,8 @@ public class AsyncMsgHandleService {
 				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
 						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, incr_statistics_accesscount);
 			}
+			//5:增量索引
+			wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor cmupWithWifiDeviceOnlinesHandle message[%s] successful", message));
 	}
@@ -192,9 +204,11 @@ public class AsyncMsgHandleService {
 	 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
 	 * 4:wifi设备对应handset在线列表redis清除 (backend)
 	 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
+	 * 6:增量索引
 	 * @param message
+	 * @throws Exception 
 	 */
-	public void wifiDeviceOfflineHandle(String message){
+	public void wifiDeviceOfflineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s]", message));
 		
 		WifiDeviceOfflineDTO dto = JsonHelper.getDTO(message, WifiDeviceOfflineDTO.class);
@@ -216,6 +230,9 @@ public class AsyncMsgHandleService {
 						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
 			}
 		}
+		
+		//6:增量索引
+		wifiDeviceIndexIncrementService.wifiDeviceOfflineIndexIncrement(dto.getMac());
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s] successful", message));
 	}

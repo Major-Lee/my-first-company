@@ -89,5 +89,4 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
-	
 }
