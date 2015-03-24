@@ -6,13 +6,11 @@ package com.bhu.vas.business.search.constants;
  *
  */
 public class IndexConstants {
-	public static final String UserShards = "5";
-	public static final String UserReplicas = "1";
-	public static final String UserIndex = "user_index";//用户数据索引库名字
-	public static final String UserLocationIndex = "userlocation_index";//用户地理位置数据索引库名字
+	public static final String CommonShards = "5";
+	public static final String CommonReplicas = "1";
+	public static final String WifiDeviceIndex = "wifi_device_index";//wifi设备数据索引库名字
 	
 	public static interface Types {
-		public static final String UserType = "user";//用户数据索引库类别
-		public static final String UserLocationType = "userlocation";//用户地理位置数据索引库类别
+		public static final String WifiDeviceType = "wifiDevice";//wifi设备数据索引库类别
 	}
 }

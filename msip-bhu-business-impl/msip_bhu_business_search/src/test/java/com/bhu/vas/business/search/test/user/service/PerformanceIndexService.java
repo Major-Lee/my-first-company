@@ -39,7 +39,7 @@ public class PerformanceIndexService extends IndexService{
 	 * @throws IOException 
 	 */
 	public void createPerformanceResponse() throws IOException, ESException{
-		boolean created = super.createResponse(IndexStructureConstants.PerformanceIndex, IndexConstants.UserShards, IndexConstants.UserReplicas);
+		boolean created = super.createResponse(IndexStructureConstants.PerformanceIndex, IndexConstants.CommonShards, IndexConstants.CommonReplicas);
 		if(created){
 			createPerformanceMapping();
 		}

@@ -61,7 +61,10 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							asyncMsgHandleService.handsetDeviceOfflineHandle(message);
 							break;
 						case WifiDeviceLocation:
-							asyncMsgHandleService.handsetDeviceOfflineHandle(message);
+							asyncMsgHandleService.wifiDeviceLocationHandle(message);
+							break;
+						case CMUPWithWifiDeviceOnlines:
+							asyncMsgHandleService.cmupWithWifiDeviceOnlinesHandle(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
