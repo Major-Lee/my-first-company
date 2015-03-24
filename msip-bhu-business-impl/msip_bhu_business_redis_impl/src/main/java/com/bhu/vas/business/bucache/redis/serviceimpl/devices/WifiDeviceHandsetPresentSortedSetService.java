@@ -65,6 +65,14 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		super.zremrangeByScore(generateKey(wifiId), 0, max_login_at);
 	}
 	
+	private static final long Condition_Offline_TimeGap  = 1*24*60*60*1000l;
+	
+	public Long presentNotOfflineSize(String wifiId){
+		return this.zcard(generateKey(wifiId));
+		/*long ts = System.currentTimeMillis();
+		return this.zcount(generateKey(wifiId), ts-Condition_Offline_TimeGap, ts);*/
+	}
+	
 	/**
 	 * 按移动设备接入时间，从大到小排序
 	 * @param wifiId wifi mac
