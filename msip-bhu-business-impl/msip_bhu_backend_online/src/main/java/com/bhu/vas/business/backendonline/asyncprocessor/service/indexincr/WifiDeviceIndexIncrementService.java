@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 import com.smartwork.msip.es.exception.ESException;
@@ -47,6 +48,24 @@ public class WifiDeviceIndexIncrementService {
 			wifiDeviceIndexService.createIndexComponent(indexDto);
 		}
 		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s] successful", wifiId));
+	}
+	/**
+	 * 当获取到wifi设备的坐标位置时候增量索引
+	 * @param wifiId
+	 * @throws Exception
+	 */
+	public void wifiDeviceLocationIndexIncrement(WifiDevice entity) throws Exception{
+		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s]", entity.getId()));
+
+		WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity);
+		Long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(entity.getId());
+		if(count != null){
+			indexDto.setCount(count.intValue());
+		}
+		indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+		wifiDeviceIndexService.createIndexComponent(indexDto);
+		
+		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s] successful", entity.getId()));
 	}
 	
 	/**
