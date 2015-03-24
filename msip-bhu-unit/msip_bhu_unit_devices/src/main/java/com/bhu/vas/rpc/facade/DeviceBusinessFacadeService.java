@@ -1,6 +1,5 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -193,15 +192,21 @@ public class DeviceBusinessFacadeService {
 	 * @param payload
 	 */
 	public void handsetDeviceConnectState(String ctx, String payload) {
-		HandsetDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, HandsetDeviceDTO.class);
-		if(HandsetDeviceDTO.Action_Online.equals(dto.getAction())){
-			handsetDeviceOnline(ctx, dto);
+		//HandsetDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, HandsetDeviceDTO.class);
+		List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
+				HandsetDeviceDTO.class);
+		if(dtos == null || dtos.isEmpty()) return;
+		
+		HandsetDeviceDTO fristDto = dtos.get(0);
+		if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+			handsetDeviceOnline(ctx, fristDto);
 		}
-		else if(HandsetDeviceDTO.Action_Offline.equals(dto.getAction())){
-			handsetDeviceOffline(ctx, dto);
+		else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+			handsetDeviceOffline(ctx, fristDto);
 		}
-		else if(HandsetDeviceDTO.Action_Sync.equals(dto.getAction())){
-			handsetDeviceSync(ctx, dto);
+		else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
+			String wifiId = fristDto.getBssid();
+			handsetDeviceSync(ctx, wifiId, dtos);
 		}else{
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 		}
@@ -290,31 +295,39 @@ public class DeviceBusinessFacadeService {
 	
 	/**
 	 * 移动设备连接状态sync
-	 * a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
-	 * b:如果移动设备目前在线
-	 * 	1:移动设备基础信息更新
-	 *  2:wifi设备对应handset在线列表redis更新
+	 * 1:清除wifi设备对应handset在线列表redis 并重新写入 (backend)
+	 * 2:移动设备基础信息更新 (backend)
+	 * 3:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
+	 * 4:统计增量 移动设备的daily启动次数增量(backend)
+	 * 	a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
+	 * 		1:移动设备连接wifi设备的接入记录(非流水) (backend)
+	 * 		2:移动设备连接wifi设备的流水log (backend)
+	 * 		3:wifi设备接入移动设备的接入数量 (backend)
 	 * @param ctx
 	 * @param dto
 	 */
-	public void handsetDeviceSync(String ctx, HandsetDeviceDTO dto){
-		//a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
-		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac());
-		if(exist_handset_device_entity == null || !exist_handset_device_entity.isOnline()){
-			this.handsetDeviceOnline(ctx, dto);
-			return;
-		}
-		//b:如果移动设备目前在线
-		if(exist_handset_device_entity.isOnline()){
-			//1:移动设备基础信息更新
-			HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-			handsetDeviceService.update(handset_device_entity);
-			
-			String wifiId = handset_device_entity.getBssid();
-			//2:wifi设备对应handset在线列表redis更新
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
-					handset_device_entity.getLast_login_at().getTime());
-		}
+	public void handsetDeviceSync(String ctx, String wifiId, List<HandsetDeviceDTO> dtos){
+		if(StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(ctx))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		
+		deliverMessageService.sendHandsetDeviceSyncActionMessage(wifiId.toLowerCase(), dtos);
+//		//a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
+//		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac());
+//		if(exist_handset_device_entity == null || !exist_handset_device_entity.isOnline()){
+//			this.handsetDeviceOnline(ctx, dto);
+//			return;
+//		}
+//		//b:如果移动设备目前在线
+//		if(exist_handset_device_entity.isOnline()){
+//			//1:移动设备基础信息更新
+//			HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+//			handsetDeviceService.update(handset_device_entity);
+//			
+//			String wifiId = handset_device_entity.getBssid();
+//			//2:wifi设备对应handset在线列表redis更新
+//			WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
+//					handset_device_entity.getLast_login_at().getTime());
+//		}
 	}
 	
 	
