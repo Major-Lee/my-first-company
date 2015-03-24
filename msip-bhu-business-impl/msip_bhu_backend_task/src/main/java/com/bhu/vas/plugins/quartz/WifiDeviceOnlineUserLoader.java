@@ -15,8 +15,8 @@ import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
-public class WifiDeviceOnlineUser {
-	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineUser.class);
+public class WifiDeviceOnlineUserLoader {
+	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineUserLoader.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -25,8 +25,7 @@ public class WifiDeviceOnlineUser {
 		logger.info("WifiDeviceOnlineUser starting...");
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria()
-				.andColumnEqualTo("locked", false)
-				.andColumnEqualTo("validated", true);
+				.andColumnEqualTo("online", 1);
 		//mc.setOrderByClause(" created_at ");
     	mc.setPageNumber(1);
     	mc.setPageSize(500);

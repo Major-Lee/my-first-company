@@ -68,9 +68,9 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	private static final long Condition_Offline_TimeGap  = 1*24*60*60*1000l;
 	
 	public Long presentNotOfflineSize(String wifiId){
-		//this.zcard(generateKey(wifiId));
-		long ts = System.currentTimeMillis();
-		return this.zcount(generateKey(wifiId), ts-Condition_Offline_TimeGap, ts);
+		return this.zcard(generateKey(wifiId));
+		/*long ts = System.currentTimeMillis();
+		return this.zcount(generateKey(wifiId), ts-Condition_Offline_TimeGap, ts);*/
 	}
 	
 	/**

@@ -79,5 +79,5 @@
 	</bean>
 
 	<!-- 被Cron执行的普通Spring Bean -->
-	<bean id="wifiDeviceOnlineUserJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineUser" />
+	<bean id="wifiDeviceOnlineUserJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineUserLoader" />
 </beans>
