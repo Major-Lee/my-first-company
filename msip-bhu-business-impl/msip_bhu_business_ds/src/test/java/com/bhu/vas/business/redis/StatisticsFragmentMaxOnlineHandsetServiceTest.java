@@ -54,7 +54,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		List<String> yearly_keys = new ArrayList<String>();
 		for(int j=0;j<40;j++){//模拟后100天的数据
 			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)+1);
-			List<String> fragments = DateTimeExtHelper.generateServalDateFormat(c.getTime(), false);
+			List<String> fragments = DateTimeExtHelper.generateServalDateFormat(c.getTime());
 			
 			String value_ymd = fragments.get(DateTimeExtHelper.YEAR_MONTH_DD);
 			if(!daily_keys.contains(value_ymd)){
