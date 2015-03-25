@@ -1,11 +1,11 @@
 package com.bhu.vas.business.search.test.user.mapping;
 
+import com.bhu.vas.business.search.test.user.index.IndexBusinessStructureConstants;
 import com.smartwork.msip.es.analyze.AnalyzerSupport;
 import com.smartwork.msip.es.mapping.component.MapableComponent;
 import com.smartwork.msip.es.mapping.field.CompletionSuggestMapableField;
 import com.smartwork.msip.es.mapping.field.StringMapableField;
 import com.smartwork.msip.es.mapping.field.type.IMapableFieldType;
-import com.smartwork.msip.es.test.index.IndexStructureConstants;
 
 public class CompletionSuggestMappingComponent extends MapableComponent{
 	
@@ -38,7 +38,7 @@ public class CompletionSuggestMappingComponent extends MapableComponent{
 
 	@Override
 	public String indextype() {
-		return IndexStructureConstants.PerformanceIndexTypes.SuggestType;
+		return IndexBusinessStructureConstants.PerformanceIndexTypes.SuggestType;
 	}
 	
 }

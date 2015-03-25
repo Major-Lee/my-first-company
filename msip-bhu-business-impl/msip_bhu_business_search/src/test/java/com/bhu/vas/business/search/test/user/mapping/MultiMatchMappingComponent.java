@@ -1,10 +1,10 @@
 package com.bhu.vas.business.search.test.user.mapping;
 
+import com.bhu.vas.business.search.test.user.index.IndexBusinessStructureConstants;
 import com.smartwork.msip.es.analyze.AnalyzerSupport;
 import com.smartwork.msip.es.mapping.component.MapableComponent;
 import com.smartwork.msip.es.mapping.field.StringMapableField;
 import com.smartwork.msip.es.mapping.field.type.IMapableFieldType;
-import com.smartwork.msip.es.test.index.IndexStructureConstants;
 /**
  * 用于测试multi match query搜索的结构模型
  * @author lawliet
@@ -47,7 +47,7 @@ public class MultiMatchMappingComponent extends MapableComponent{
 
 	@Override
 	public String indextype() {
-		return IndexStructureConstants.PerformanceIndexTypes.MultiMatchType;
+		return IndexBusinessStructureConstants.PerformanceIndexTypes.MultiMatchType;
 	}
 	
 }

@@ -1,10 +1,10 @@
 package com.bhu.vas.business.search.test.user.mapping;
 
+import com.bhu.vas.business.search.test.user.index.IndexBusinessStructureConstants;
 import com.smartwork.msip.es.analyze.AnalyzerSupport;
 import com.smartwork.msip.es.mapping.component.MapableComponent;
 import com.smartwork.msip.es.mapping.field.StringMapableField;
 import com.smartwork.msip.es.mapping.field.type.IMapableFieldType;
-import com.smartwork.msip.es.test.index.IndexStructureConstants;
 /**
  * 用于测试prefix搜索的结构模型
  * @author lawliet
@@ -46,7 +46,7 @@ public class PrefixMappingComponent extends MapableComponent{
 
 	@Override
 	public String indextype() {
-		return IndexStructureConstants.PerformanceIndexTypes.PrefixType;
+		return IndexBusinessStructureConstants.PerformanceIndexTypes.PrefixType;
 	}
 	
 }
