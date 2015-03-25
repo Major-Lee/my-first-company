@@ -53,7 +53,7 @@ public class WifiDeviceOnlineLoader {
 			mc.createCriteria().andColumnEqualTo("online", 1);
 			//mc.setOrderByClause(" created_at ");
 	    	mc.setPageNumber(1);
-	    	mc.setPageSize(500);
+	    	mc.setPageSize(400);
 			EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
 					,WifiDevice.class, wifiDeviceService.getEntityDao(), mc);
 			while(it.hasNext()){
@@ -64,6 +64,7 @@ public class WifiDeviceOnlineLoader {
 			logger.error(ex.getMessage(), ex);
 		}finally{
 			wifiDeviceIndexService.openIndexRefresh();
+			wifiDeviceIndexService.destroy();
 		}
 		
 		logger.info(String.format("WifiDeviceOnlineUser ended, total index [%s] bluk success [%s] fail [%s]", 

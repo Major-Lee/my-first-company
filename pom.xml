@@ -17,7 +17,8 @@
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
-        
+        <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
+
         <module>msip-bhu-cm-control/msip_im_common</module>
         <module>msip-bhu-cm-control/msip_im_cm</module>
         <!--
@@ -123,6 +124,12 @@
 			<dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_search</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_dataimport</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
