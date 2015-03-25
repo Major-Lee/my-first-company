@@ -55,7 +55,7 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 		this.count = count;
 	}
 	public void addLocations(double[]... lats_lons){
-		if(lats_lons == null) return;
+		if(lats_lons == null || lats_lons.length == 0) return;
 		
 		GeoPointsIndexableField location = this.getGhash();
 		if(location == null){

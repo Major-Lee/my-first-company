@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd" default-lazy-init="true">
+	<!-- local Ehcached defined-->
+	<!--
+	<bean id="coreCacheService" class="com.sinousa.msip.cores.cache.impl.ehcache.EhCacheService">
+        <property name="nullMode" value="false"/>
+    </bean> 
+    
+	<bean id="testCacheService" class="com.huanju8.smartwork.cores.cache.impl.ehcache.EhCacheService">
+        <property name="nullMode" value="true"/>
+    </bean>
+    -->
+    <!-- local Spy Memcached defined
+    <bean id="coreCacheService" class="com.sinousa.msip.cores.cache.impl.memcached.spy.SpyMemCacheService">
+        <property name="serverURLs" value="localhost:11211"/>
+        <property name="nullMode" value="false"/>
+    </bean>
+    -->
+    <!--   local Alisoft Memcached defined -->
+    <bean id="relationListCacheService" class="com.et.msip.cores.cache.relationcache.impl.redis.linkedlist.JedisRedisListCacheService" destroy-method="destory">
+        <property name="configFile" value="cached/redis.xml"/>
+        <property name="nullMode" value="false"/>
+        <!-- 
+        <property name="requirepass" value="foobared"/>
+         -->
+    </bean>
+    <bean id="relationSetCacheService" class="com.et.msip.cores.cache.relationcache.impl.redis.set.JedisRedisSetCacheService" destroy-method="destory">
+        <property name="configFile" value="cached/redis.xml"/>
+        <property name="nullMode" value="false"/>
+        <!-- 
+        <property name="requirepass" value="foobared"/>
+         -->
+    </bean>
+    
+    <bean id="relationHashCacheService" class="com.et.msip.cores.cache.relationcache.impl.redis.hash.JedisRedisHashCacheService" destroy-method="destory">
+        <property name="configFile" value="cached/redis.xml"/>
+        <property name="nullMode" value="false"/>
+    </bean> 
+    
+    <bean id="relationSortedSetCacheService" class="com.et.msip.cores.cache.relationcache.impl.redis.sortedset.JedisRedisSortedSetCacheService" destroy-method="destory">
+        <property name="configFile" value="cached/redis.xml"/>
+        <property name="nullMode" value="false"/>
+        <!-- 
+        <property name="requirepass" value="foobared"/>
+         -->
+    </bean>
+	<bean id="stringCacheService" class="com.et.msip.cores.cache.relationcache.impl.redis.string.JedisRedisStringCacheService" destroy-method="destory">
+        <property name="configFile" value="cached/redis.xml"/>
+        <property name="nullMode" value="false"/>
+    </bean>    
+</beans>

@@ -37,6 +37,17 @@
 		<appender-ref ref="stdout" />
 		<appender-ref ref="unitrequestfile" />
 	</logger>	
+	
+	<logger name="com.bhu.vas.business.ds.warmup" additivity="false" level="INFO">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="unitrequestfile" />
+	</logger>	
+	
+	<logger name="com.bhu.vas.business.search.warmup" additivity="false" level="INFO">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="unitrequestfile" />
+	</logger>	
+	
 	<root value="WARN">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
