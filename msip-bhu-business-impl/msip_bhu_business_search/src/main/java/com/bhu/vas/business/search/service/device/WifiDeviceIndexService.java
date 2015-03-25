@@ -42,7 +42,7 @@ public class WifiDeviceIndexService extends IndexService<WifiDeviceMapableCompon
 	public WifiDeviceIndexableComponent buildIndexableComponent(WifiDeviceIndexDTO indexDto){
 		WifiDeviceIndexableComponent component = new WifiDeviceIndexableComponent();
 		component.setId(indexDto.getWifiId());
-		component.addLocations(indexDto.getPoint());
+		component.addLocation(indexDto.getPoint());
 		component.setOnline(indexDto.getOnline());
 		component.setCount(indexDto.getCount());
 		component.setRegister_at(indexDto.getRegister_at());

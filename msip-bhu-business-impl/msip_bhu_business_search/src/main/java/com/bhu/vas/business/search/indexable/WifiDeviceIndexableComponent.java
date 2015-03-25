@@ -54,17 +54,17 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public void addLocations(double[]... lats_lons){
-		if(lats_lons == null || lats_lons.length == 0) return;
+	public void addLocation(double[] lats_lons){
+		if(lats_lons == null || lats_lons.length != 2) return;
 		
 		GeoPointsIndexableField location = this.getGhash();
 		if(location == null){
 			location = new GeoPointsIndexableField();
 		}
 		
-		for(double[] lat_lon : lats_lons){
-			location.addLatlon(lat_lon[0], lat_lon[1]);
-		}
+//		for(double[] lat_lon : lats_lons){
+		location.addLatlon(lats_lons[0], lats_lons[1]);
+//		}
 		this.setGhash(location);
 	}
 	public long getRegister_at() {
@@ -88,5 +88,9 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 		return null;
 	}
 	
+//	public static void main(String[] args){
+//		WifiDeviceIndexableComponent a = new WifiDeviceIndexableComponent();
+//		a.addLocation(null);
+//	}
 	
 }
