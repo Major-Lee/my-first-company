@@ -38,12 +38,24 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		//System.out.println("uid : " + sourceMap.get(UserMapableComponent.M_id).toString() + " = " + JsonHelper.getJSONString(sourceMap));
 		WifiDeviceSearchDTO dto = new WifiDeviceSearchDTO();
 		dto.setId(sourceMap.get(WifiDeviceMapableComponent.M_id).toString());
-		dto.setAddress(sourceMap.get(WifiDeviceMapableComponent.M_show_address).toString());
-		dto.setWorkmodel(sourceMap.get(WifiDeviceMapableComponent.M_workmodel).toString());
-		dto.setDevicetype(sourceMap.get(WifiDeviceMapableComponent.M_devicetype).toString());
-		dto.setCount(Integer.parseInt(sourceMap.get(WifiDeviceMapableComponent.M_count).toString()));
-		dto.setOnline(Integer.parseInt(sourceMap.get(WifiDeviceMapableComponent.M_online).toString()));
-		dto.setRegister_at(Long.parseLong(sourceMap.get(WifiDeviceMapableComponent.M_register_at).toString()));
+		
+		Object show_address = sourceMap.get(WifiDeviceMapableComponent.M_show_address);
+		if(show_address != null) dto.setAddress(show_address.toString());
+		
+		Object workmodel = sourceMap.get(WifiDeviceMapableComponent.M_workmodel);
+		if(workmodel != null) dto.setWorkmodel(workmodel.toString());
+		
+		Object devicetype = sourceMap.get(WifiDeviceMapableComponent.M_devicetype);
+		if(devicetype != null) dto.setDevicetype(devicetype.toString());
+		
+		Object count = sourceMap.get(WifiDeviceMapableComponent.M_count);
+		if(count != null) dto.setCount(Integer.parseInt(count.toString()));
+		
+		Object online = sourceMap.get(WifiDeviceMapableComponent.M_online);
+		if(online != null) dto.setOnline(Integer.parseInt(online.toString()));
+		
+		Object registerat = sourceMap.get(WifiDeviceMapableComponent.M_register_at);
+		if(registerat != null) dto.setRegister_at(Long.parseLong(registerat.toString()));
 		return dto;
 	}
 	
