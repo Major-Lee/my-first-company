@@ -149,7 +149,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
 			}
 			else if(OperationCMD.QueryDeviceLocationS1.getNo().equals(opt)){
-				//do nothing
+				//do nothing 由input processor解析后直接转到daemon
 			}
 			else if(OperationCMD.QueryDeviceLocationS2.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
