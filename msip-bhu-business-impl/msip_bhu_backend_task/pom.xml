@@ -141,12 +141,12 @@
                             <Class-Path>../conf/</Class-Path>
                         </manifestEntries>
                     </archive>
-
+					<!-- 
                     <excludes>
                         <exclude>**/*.xml</exclude>
                         <exclude>**/*.properties</exclude>
                         <exclude>**/*.conf</exclude>
-                    </excludes>
+                    </excludes> -->
                 </configuration>
             </plugin>
         </plugins>
@@ -156,6 +156,7 @@
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.xml</include>
+                    <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
@@ -163,6 +164,7 @@
                 <directory>src/main/resource</directory>
                 <includes>
                     <include>**/*.xml</include>
+                    <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
