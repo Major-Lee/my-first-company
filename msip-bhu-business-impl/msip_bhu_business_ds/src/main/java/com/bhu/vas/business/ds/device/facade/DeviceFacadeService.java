@@ -79,7 +79,7 @@ public class DeviceFacadeService {
 		}
 		
 		if(total_handsets > 0){
-			String active_pet = String.valueOf(ArithHelper.percent(news_add_actives, total_handsets, 0));
+			String active_pet = ArithHelper.percent(news_add_actives, total_handsets, 0);
 			dailyStatisticsDto.setActive_pet(active_pet);
 		}
 
@@ -91,8 +91,7 @@ public class DeviceFacadeService {
 		}
 		//4:新设备占比（1/(1+2)）
 		if(news_add_actives > 0){
-			String news_pet = String.valueOf(ArithHelper.percent(dailyStatisticsDto.getNews(),
-					news_add_actives, 0));
+			String news_pet = ArithHelper.percent(dailyStatisticsDto.getNews(),news_add_actives, 0);
 			dailyStatisticsDto.setNews_pet(news_pet);
 		}
 		

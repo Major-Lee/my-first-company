@@ -9,17 +9,21 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
+import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCountRegionStatisticsStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -27,6 +31,8 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMServic
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.es.exception.ESQueryValidateException;
@@ -100,7 +106,9 @@ public class DeviceRestBusinessFacadeService {
 			vtos = Collections.emptyList();
 		}
 		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
-		if(!searchDtos.isEmpty()){
+		if(searchDtos.isEmpty()) {
+			vtos = Collections.emptyList();
+		}else{
 			List<String> wifiIds = new ArrayList<String>();
 			for(WifiDeviceSearchDTO searchDto : searchDtos){
 				wifiIds.add(searchDto.getId());
@@ -116,8 +124,11 @@ public class DeviceRestBusinessFacadeService {
 				vto.setWid(searchDto.getId());
 				vto.setOl(searchDto.getOnline());
 				vto.setCohc(searchDto.getCount());
+				vto.setAdr(searchDto.getAddress());
+				vto.setDt(searchDto.getDevicetype());
 				if(entity != null){
-					//TODO
+					vto.setDof(entity.getRx_bytes() > 0 ? (entity.getRx_bytes()/1024)+"KB" : "0KB");
+					vto.setUof(entity.getTx_bytes() > 0 ? (entity.getTx_bytes()/1024)+"KB" : "0KB");
 				}
 				vtos.add(vto);
 				cursor++;
@@ -152,5 +163,91 @@ public class DeviceRestBusinessFacadeService {
 				Statistics.DailyStatisticsHandsetInnerPrefixKey, yesterday_format);
 		vto.setYesterday_daily(daily_yesterdayDto);
 		return vto;
+	}
+	
+	/**
+	 * 获取wifi设备地域分布饼图
+	 * @param regions 地域名称 按逗号分隔
+	 * @return
+	 * @throws ESQueryValidateException 
+	 */
+	public String fetchWDeviceRegionCount(String regions) throws ESQueryValidateException{
+		if(StringUtils.isEmpty(regions)) return null;
+		
+		String regionCountJson = WifiDeviceCountRegionStatisticsStringService.getInstance().getWifiDeviceCountRegion();
+		if(StringUtils.isEmpty(regionCountJson)){
+			//如果缓存失效 则从搜索引擎直接获取 (如果以后地域非常多,获取数据会相对耗时,可以放在定时程序去更新缓存)
+			//获取总共的wifi设备数量
+			long total_count = wifiDeviceSearchService.countByKeyword(null);
+			long total_region_count = 0;
+			List<RegionCountDTO> dtos = new ArrayList<RegionCountDTO>();
+			String[] regions_array = regions.split(StringHelper.COMMA_STRING_GAP);
+			for(String region : regions_array){
+				RegionCountDTO region_dto = new RegionCountDTO();
+				//地域的wifi设备数量
+				long region_count = 0;
+				//地域对应显示内容
+				String value = "0 0%";
+				if(total_count > 0){
+					region_count = wifiDeviceSearchService.countByKeyword(region);
+					value = RegionCountDTO.builderValue(region_count, total_count);
+				}
+				region_dto.setR(region);
+				region_dto.setV(value);
+				dtos.add(region_dto);
+				
+				total_region_count = total_region_count + region_count;
+			}
+			//其他地域的wifi设备数量
+			if(total_count > 0){
+				RegionCountDTO other_region_dto = new RegionCountDTO();
+				other_region_dto.setR("其他");
+				other_region_dto.setV(RegionCountDTO.builderValue(total_count-total_region_count, total_count));
+				dtos.add(other_region_dto);
+			}
+			regionCountJson = JsonHelper.getJSONString(dtos);
+			//存入redis中
+			WifiDeviceCountRegionStatisticsStringService.getInstance().setWifiDeviceCountRegion(regionCountJson);
+		}
+		return regionCountJson;
+	}
+	
+	/**
+	 * 获取近期接入的wifi设备列表
+	 * 近期 (最近30天)
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public TailPage<WifiDeviceRecentVTO> fetchRecentWDevice(int pageNo, int pageSize) 
+			throws ESQueryValidateException{
+		List<WifiDeviceRecentVTO> vtos = null;
+		
+		long minRegisterAt = System.currentTimeMillis() - (30 * 3600 * 24 * 1000);
+		
+		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchGtByRegisterAt(minRegisterAt, 
+				(pageNo*pageSize)-pageSize, pageSize);
+		
+		int total = search_result.getTotal();
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}
+		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
+		if(searchDtos.isEmpty()) {
+			vtos = Collections.emptyList();
+		}else{
+			vtos = new ArrayList<WifiDeviceRecentVTO>();
+			WifiDeviceRecentVTO vto = null;
+			for(WifiDeviceSearchDTO searchDto : searchDtos){
+				vto = new WifiDeviceRecentVTO();
+				vto.setWid(searchDto.getId());
+				vto.setAdr(searchDto.getAddress());
+				vto.setTs(searchDto.getRegister_at());
+				vto.setWm(searchDto.getWorkmodel());
+				vtos.add(vto);
+			}
+		}
+		return new CommonPage<WifiDeviceRecentVTO>(pageNo, pageSize, total, vtos);
 	}
 }

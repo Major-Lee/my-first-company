@@ -14,6 +14,8 @@ public class IndexDTOBuilder {
 		indexDto.setDistrict(entity.getDistrict());
 		indexDto.setStreet(entity.getStreet());
 		indexDto.setFormat_address(entity.getFormatted_address());
+		indexDto.setWorkmodel(entity.getWork_mode());
+		indexDto.setDevicetype(entity.getHdtype());
 //		indexDto.setCount(1);
 //		indexDto.setOnline(1);
 		indexDto.setLat(entity.getLat());

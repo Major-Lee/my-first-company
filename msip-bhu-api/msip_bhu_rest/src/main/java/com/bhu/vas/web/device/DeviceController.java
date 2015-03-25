@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -85,4 +86,39 @@ public class DeviceController {
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 	}
 	
+	/**
+	 * 获取wifi设备地域分布饼图
+	 * @param request
+	 * @param response
+	 * @param regions 地域名称 逗号分割
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch_region_count",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_region_count(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) String regions) {
+		
+		String region_json = deviceRestRpcService.fetchWDeviceRegionCount(regions);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(region_json));
+	}
+	
+	/**
+	 * 获取最近30天内接入的wifi设备列表
+	 * @param request
+	 * @param response
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch_wifidevices_by_registerat",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_wifidevices_by_registerat(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
+		
+		TailPage<WifiDeviceRecentVTO> result = deviceRestRpcService.fetchRecentWDevice(pageNo, pageSize);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+	}
 }

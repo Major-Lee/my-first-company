@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.unit.DistanceUnit;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,8 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		WifiDeviceSearchDTO dto = new WifiDeviceSearchDTO();
 		dto.setId(sourceMap.get(WifiDeviceMapableComponent.M_id).toString());
 		dto.setAddress(sourceMap.get(WifiDeviceMapableComponent.M_show_address).toString());
+		dto.setWorkmodel(sourceMap.get(WifiDeviceMapableComponent.M_workmodel).toString());
+		dto.setDevicetype(sourceMap.get(WifiDeviceMapableComponent.M_devicetype).toString());
 		dto.setCount(Integer.parseInt(sourceMap.get(WifiDeviceMapableComponent.M_count).toString()));
 		dto.setOnline(Integer.parseInt(sourceMap.get(WifiDeviceMapableComponent.M_online).toString()));
 		dto.setRegister_at(Long.parseLong(sourceMap.get(WifiDeviceMapableComponent.M_register_at).toString()));
@@ -69,16 +74,42 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	}
 	
 	/**
+	 * 搜索注册时间大于此时间的数据
+	 * @param register_at
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public QueryResponse<List<WifiDeviceSearchDTO>> searchGtByRegisterAt(long register_at,
+			int start, int size) throws ESQueryValidateException {
+		
+		if(register_at <= 0){
+			return emptyQueryListResponse();
+		}
+		
+		FilterBuilder filter = FilterBuilders.rangeFilter(WifiDeviceMapableComponent.M_register_at).gt(register_at);
+		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
+				BusinessIndexConstants.Types.WifiDeviceType, QueryBuilders.matchAllQuery(), null, filter, start, size);
+		queryRequest.addSort(sortByRegisterAt());
+		return super.searchListByQuery(queryRequest);
+	}
+	
+	/**
 	 * 根据地理位置keyword来搜索数量
-	 * @param keyword
+	 * @param keyword 如果为空,则全匹配
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
 	public long countByKeyword(String keyword) throws ESQueryValidateException{
-		if(StringUtils.isEmpty(keyword)) return 0;
+		QueryBuilder query = null;
+		if(StringUtils.isEmpty(keyword)) {
+			query = QueryBuilders.matchAllQuery();
+		}else{
+			String standardKeyword = IndexableResolver.standardString(keyword);
+			query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+		}
 		
-		String standardKeyword = IndexableResolver.standardString(keyword);
-		QueryBuilder query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
 		QueryRequest queryRequest = super.builderQueryRequest(BusinessIndexConstants.WifiDeviceIndex, 
 				BusinessIndexConstants.Types.WifiDeviceType, query, null, null);
 		return super.searchCountByQuery(queryRequest);
@@ -166,5 +197,9 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	
 	public SortBuilder sortByCount(){
 		return QueryHelper.sortBuilder(WifiDeviceMapableComponent.M_count, true);
+	}
+	
+	public SortBuilder sortByRegisterAt(){
+		return QueryHelper.sortBuilder(WifiDeviceMapableComponent.M_register_at, true);
 	}
 }

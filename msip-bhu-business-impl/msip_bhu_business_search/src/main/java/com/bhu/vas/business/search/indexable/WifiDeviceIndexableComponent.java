@@ -13,6 +13,8 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	private GeoPointsIndexableField ghash;
 	private String address;
 	private String showaddress;
+	private String workmodel;
+	private String devicetype;
 	private int online;
 	private int count;
 	private long register_at;
@@ -41,6 +43,18 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	}
 	public void setShowaddress(String showaddress) {
 		this.showaddress = showaddress;
+	}
+	public String getWorkmodel() {
+		return workmodel;
+	}
+	public void setWorkmodel(String workmodel) {
+		this.workmodel = workmodel;
+	}
+	public String getDevicetype() {
+		return devicetype;
+	}
+	public void setDevicetype(String devicetype) {
+		this.devicetype = devicetype;
 	}
 	public int getOnline() {
 		return online;

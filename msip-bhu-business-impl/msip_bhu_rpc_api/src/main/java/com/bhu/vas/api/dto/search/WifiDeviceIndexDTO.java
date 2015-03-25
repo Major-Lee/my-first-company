@@ -29,6 +29,10 @@ public class WifiDeviceIndexDTO {
 	private String street;
 	//规格化地址信息
 	private String format_address;
+	//工作模式
+	private String workmodel;
+	//设备类型
+	private String devicetype;
 	//wifi设备是否在线
 	private int online;
 	//接入的移动设备数量
@@ -117,6 +121,18 @@ public class WifiDeviceIndexDTO {
 	}
 	public void setFormat_address(String format_address) {
 		this.format_address = format_address;
+	}
+	public String getWorkmodel() {
+		return workmodel;
+	}
+	public void setWorkmodel(String workmodel) {
+		this.workmodel = workmodel;
+	}
+	public String getDevicetype() {
+		return devicetype;
+	}
+	public void setDevicetype(String devicetype) {
+		this.devicetype = devicetype;
 	}
 	public int getOnline() {
 		return online;
