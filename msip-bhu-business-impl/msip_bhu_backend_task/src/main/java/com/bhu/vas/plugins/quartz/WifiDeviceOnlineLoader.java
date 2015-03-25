@@ -36,9 +36,17 @@ public class WifiDeviceOnlineLoader {
 	@Resource
 	private WifiDeviceIndexService wifiDeviceIndexService;
 	
+	public void init(){
+		bulk_success = 0;
+		bulk_fail = 0;
+		index_count = 0;
+	}
+	
 	public void execute() {
 		logger.info("WifiDeviceOnlineUser starting...");
 		try{
+			init();
+			
 			wifiDeviceIndexService.disableIndexRefresh();
 			
 			ModelCriteria mc = new ModelCriteria();
