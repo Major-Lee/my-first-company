@@ -18,5 +18,6 @@ db/*.sqlite3
 **/.settings/*
 **/.classpath
 **/.project
+**/msip-bhu-deploy/deploy/*
 .idea
 *.iml
