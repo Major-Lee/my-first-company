@@ -62,7 +62,12 @@ public class WifiDeviceIndexService extends IndexService<WifiDeviceMapableCompon
 	public String getIndexTypeName() {
 		return BusinessIndexConstants.Types.WifiDeviceType;
 	}
-
+	
+	@Override
+	public String getIndexRefresh(){
+		return null;
+	}
+	
 	@Override
 	public Class<WifiDeviceMapableComponent> getMapableComponent() {
 		return WifiDeviceMapableComponent.class;

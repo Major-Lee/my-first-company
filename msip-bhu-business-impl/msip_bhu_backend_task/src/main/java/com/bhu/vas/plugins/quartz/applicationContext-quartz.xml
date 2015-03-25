@@ -13,7 +13,7 @@
 				<ref bean="systemStatisticsLoaderCronTrigger" />
 				<!-- 每天凌晨0点1分执行一次 -->
 				<ref bean="statisticsLoaderCronTrigger" />
-				<!-- 朝九晚11工作时间内每1小时执行一次  -->
+				<!-- 每30分钟执行一次  -->
 				<ref bean="wifiDeviceOnlineCronTrigger" />
 				
 			</list>
@@ -30,7 +30,7 @@
 	<bean id="systemStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="systemStatisticsLoaderJobDetail" />
 		<!-- 每隔5分钟执行一次   0 0/1 * * * ?  -->
-		<property name="cronExpression" value="0 0/1 * * * ?" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
 	</bean>
 
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
@@ -66,8 +66,8 @@
 	<!-- Cron式Trigger定义 -->
 	<bean id="wifiDeviceOnlineCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="wifiDeviceOnlineJobDetail" />
-		<!-- 朝九晚11工作时间内每1小时执行一次   0 0/60 9-23 * * ?  -->
-		<property name="cronExpression" value="0 0/60 9-23 * * ?" />
+		<!-- 每30分钟执行一次   0 0/30 * * * ?  -->
+		<property name="cronExpression" value="0 0/30 * * * ?" />
 	</bean>
 
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->

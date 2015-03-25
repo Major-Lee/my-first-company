@@ -17,9 +17,18 @@ import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-
+/**
+ * 每30分钟执行一次
+ * 所有的在线设备进行索引增量,主要用于更新wifi设备的在线移动设备数
+ * @author tangzichao
+ *
+ */
 public class WifiDeviceOnlineLoader {
 	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineLoader.class);
+	
+	public int bulk_success = 0;
+	public int bulk_fail = 0;
+	public int index_count = 0;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -29,47 +38,59 @@ public class WifiDeviceOnlineLoader {
 	
 	public void execute() {
 		logger.info("WifiDeviceOnlineUser starting...");
-		int bulk_success = 0;
-		int bulk_fail = 0;
-		int index_count = 0;
-		
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria()
-				.andColumnEqualTo("online", 1);
-		//mc.setOrderByClause(" created_at ");
-    	mc.setPageNumber(1);
-    	mc.setPageSize(500);
-		EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
-				,WifiDevice.class, wifiDeviceService.getEntityDao(), mc);
-		while(it.hasNext()){
-			try{
-				List<WifiDevice> entitys = it.next();
-				List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
-				WifiDeviceIndexDTO indexDto = null;
-				for(WifiDevice device:entitys){
-					String wifi_mac = device.getId();
-					long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
-					indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
-					indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
-					indexDto.setCount((int)count);
-					indexDtos.add(indexDto);
-				}
-				
-				if(!indexDtos.isEmpty()){
-					boolean bulk_result = wifiDeviceIndexService.createIndexComponents(indexDtos);
-					if(bulk_result){
-						bulk_success++;
-					}else{
-						bulk_fail++;
-					}
-					index_count = index_count + indexDtos.size();
-				}
-			}catch(Exception ex){
-				ex.printStackTrace(System.out);
-				logger.error(ex.getMessage(), ex);
+		try{
+			wifiDeviceIndexService.disableIndexRefresh();
+			
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andColumnEqualTo("online", 1);
+			//mc.setOrderByClause(" created_at ");
+	    	mc.setPageNumber(1);
+	    	mc.setPageSize(500);
+			EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
+					,WifiDevice.class, wifiDeviceService.getEntityDao(), mc);
+			while(it.hasNext()){
+				wifiDeviceIndexIncrement(it.next());
 			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(ex.getMessage(), ex);
+		}finally{
+			wifiDeviceIndexService.openIndexRefresh();
 		}
+		
 		logger.info(String.format("WifiDeviceOnlineUser ended, total index [%s] bluk success [%s] fail [%s]", 
 				index_count, bulk_success, bulk_fail));
+	}
+	
+	/**
+	 * 增量索引
+	 * @param entitys
+	 */
+	public void wifiDeviceIndexIncrement(List<WifiDevice> entitys){
+		try{
+			List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
+			WifiDeviceIndexDTO indexDto = null;
+			for(WifiDevice device:entitys){
+				String wifi_mac = device.getId();
+				long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
+				indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
+				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+				indexDto.setCount((int)count);
+				indexDtos.add(indexDto);
+			}
+			
+			if(!indexDtos.isEmpty()){
+				boolean bulk_result = wifiDeviceIndexService.createIndexComponents(indexDtos);
+				if(bulk_result){
+					bulk_success++;
+				}else{
+					bulk_fail++;
+				}
+				index_count = index_count + indexDtos.size();
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(ex.getMessage(), ex);
+		}
 	}
 }
