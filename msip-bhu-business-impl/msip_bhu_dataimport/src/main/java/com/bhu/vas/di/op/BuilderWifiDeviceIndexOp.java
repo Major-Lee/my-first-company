@@ -86,11 +86,12 @@ public class BuilderWifiDeviceIndexOp {
 			System.out.println("数据全量导入，总耗时"+((System.currentTimeMillis()-t0)/1000)+"s 成功批量次数:" 
 					+  bulk_success + " 失败批量次数:" + bulk_fail + " 一共索引数量:" + index_count);
 
-		
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}finally{
 			wifiDeviceIndexService.openIndexRefresh();
+			
+			wifiDeviceIndexService.optimize();
 			//关闭es连接
 			wifiDeviceIndexService.destroy();
 		}
