@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.service.device.dto;
+package com.bhu.vas.api.dto.search;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class WifiDeviceIndexDTO {
+	public static final int Online_Status = 1;
+	public static final int offline_Status = 0;
 	//wifi设备mac
 	private String wifiId;
 	//经度

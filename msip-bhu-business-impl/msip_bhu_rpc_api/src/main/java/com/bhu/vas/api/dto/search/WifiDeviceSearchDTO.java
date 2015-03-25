@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.service.device.dto;
+package com.bhu.vas.api.dto.search;
 
 import java.io.Serializable;
 

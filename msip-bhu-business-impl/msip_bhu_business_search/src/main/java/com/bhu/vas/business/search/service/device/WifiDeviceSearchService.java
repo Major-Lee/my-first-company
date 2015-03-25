@@ -10,9 +10,9 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.business.search.constants.BusinessIndexConstants;
 import com.bhu.vas.business.search.mapable.WifiDeviceMapableComponent;
-import com.bhu.vas.business.search.service.device.dto.WifiDeviceSearchDTO;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.es.exception.ESQueryValidateException;
 import com.smartwork.msip.es.index.resolver.IndexableResolver;

@@ -32,6 +32,19 @@ public class RPCMessageParseHelper {
 		}
 	}
 	
+	public static <T> List<T> generateDTOListFromMessage(String message, Class<T> clazz){
+		if(StringUtils.isEmpty(message)){
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		}
+		
+		try{
+			return parserMessageListByDom4j(message, clazz);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+	}
+	
 	public static <T> T generateDTOFromMessage(Document doc, Class<T> clazz){
 		if(doc == null){
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
@@ -51,6 +64,20 @@ public class RPCMessageParseHelper {
 	
 	public static <T> T parserMessageByDom4j(String message, Class<T> clazz) throws Exception{
 		return parserMessageByDom4j(parserDocumentByDom4j(message), clazz);
+	}
+	
+	public static <T> List<T> parserMessageListByDom4j(String message, Class<T> clazz) throws Exception{
+		return parserMessageListByDom4j(parserDocumentByDom4j(message), clazz);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> parserMessageListByDom4j(Document doc, Class<T> clazz) throws Exception{
+		List<T> list = new ArrayList<T>();
+		List<Element> item_elements = (List<Element>)doc.selectNodes("//ITEM");
+		for(Element item_element : item_elements){
+			list.add(Dom4jHelper.fromElement(item_element, clazz));
+		}
+		return list;
 	}
 	
 	public static <T> T parserMessageByDom4j(Document doc, Class<T> clazz) throws Exception{

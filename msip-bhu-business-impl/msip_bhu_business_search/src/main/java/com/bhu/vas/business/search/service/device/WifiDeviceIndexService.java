@@ -1,12 +1,18 @@
 package com.bhu.vas.business.search.service.device;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.business.search.constants.BusinessIndexConstants;
 import com.bhu.vas.business.search.indexable.WifiDeviceIndexableComponent;
 import com.bhu.vas.business.search.mapable.WifiDeviceMapableComponent;
-import com.bhu.vas.business.search.service.device.dto.WifiDeviceIndexDTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.es.exception.ESException;
 import com.smartwork.msip.es.service.IndexService;
 
 /**
@@ -16,6 +22,22 @@ import com.smartwork.msip.es.service.IndexService;
  */
 @Service
 public class WifiDeviceIndexService extends IndexService<WifiDeviceMapableComponent,WifiDeviceIndexableComponent>{
+	
+	public void createIndexComponent(WifiDeviceIndexDTO indexDto) throws IOException, ESException{
+		super.createIndexComponent(buildIndexableComponent(indexDto));
+	}
+	
+	public boolean createIndexComponents(List<WifiDeviceIndexDTO> indexDtos) throws IOException, ESException{
+		List<WifiDeviceIndexableComponent> components = new ArrayList<WifiDeviceIndexableComponent>();
+		for(WifiDeviceIndexDTO indexDto : indexDtos){
+			components.add(buildIndexableComponent(indexDto));
+		}
+		BulkResponse repsonse = super.createIndexComponents(components);
+		if(repsonse.hasFailures()){
+			return false;
+		}
+		return true;
+	}
 	
 	public WifiDeviceIndexableComponent buildIndexableComponent(WifiDeviceIndexDTO indexDto){
 		WifiDeviceIndexableComponent component = new WifiDeviceIndexableComponent();
@@ -28,6 +50,7 @@ public class WifiDeviceIndexService extends IndexService<WifiDeviceMapableCompon
 		component.setAddress(indexDto.getAddress());
 		component.setI_update_at(DateTimeHelper.getDateTime());
 		return component;
+		
 	}
 		
 	@Override
