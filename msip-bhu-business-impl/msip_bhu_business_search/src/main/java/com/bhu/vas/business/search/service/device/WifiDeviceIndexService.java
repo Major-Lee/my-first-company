@@ -53,6 +53,10 @@ public class WifiDeviceIndexService extends IndexService<WifiDeviceMapableCompon
 		
 	}
 		
+	public void warmup() throws Exception{
+		super.createResponseAndMapping();
+	}
+	
 	@Override
 	public String getIndexName() {
 		return BusinessIndexConstants.WifiDeviceIndex;

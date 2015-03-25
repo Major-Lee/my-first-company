@@ -29,7 +29,7 @@ public class WifiDeviceTest extends BaseTest{
 	@Resource
 	WifiDeviceIndexService wifiDeviceIndexService;
 	
-	//@Test
+	@Test
 	public void init() throws ElasticsearchException, IOException, ESException, InstantiationException, IllegalAccessException{
 		//userIndexService.deleteUserResponse();
 		wifiDeviceIndexService.createResponseAndMapping();
@@ -169,7 +169,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testCountByGeoBoundingBox() throws ESQueryValidateException{
 		double[] topleft_coordinate = {40.651693098789316,-73.95274658203124};
 		double[] bottomRight_coordinate = {40.648241736557516,-73.94648094177245};
