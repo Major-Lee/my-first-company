@@ -64,7 +64,7 @@ public class WifiDeviceOnlineLoader {
 			logger.error(ex.getMessage(), ex);
 		}finally{
 			wifiDeviceIndexService.openIndexRefresh();
-			wifiDeviceIndexService.destroy();
+			//wifiDeviceIndexService.destroy();
 		}
 		
 		logger.info(String.format("WifiDeviceOnlineUser ended, total index [%s] bluk success [%s] fail [%s]", 
