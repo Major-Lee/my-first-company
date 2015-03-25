@@ -8,14 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.es.request.QueryResponse;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -77,6 +76,32 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchStatisticsGeneral exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	/**
+	 * 获取wifi设备地域分布饼图
+	 */
+	@Override
+	public String fetchWDeviceRegionCount(String regions) {
+		logger.info(String.format("DeviceRestRPC fetchWDeviceRegionCount invoke regions [%s] ", regions));
+		try{
+			return deviceRestBusinessFacadeService.fetchWDeviceRegionCount(regions);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchWDeviceRegionCount exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	@Override
+	public TailPage<WifiDeviceRecentVTO> fetchRecentWDevice(int pageNo, int pageSize) {
+		logger.info(String.format("DeviceRestRPC fetchRecentWDevice invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
+		try{
+			return deviceRestBusinessFacadeService.fetchRecentWDevice(pageNo, pageSize);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchRecentWDevice exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}

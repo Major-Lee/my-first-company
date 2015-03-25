@@ -19,6 +19,8 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	public static final String M_ghash = "ghash";//地理位置的geohash
 	public static final String M_address = "address";//地理位置的详细地址
 	public static final String M_show_address = "showaddress";//地理位置的详细地址
+	public static final String M_workmodel = "workmodel";//工作模式
+	public static final String M_devicetype = "devicetype";//设备类型
 	public static final String M_online = "online";//wifi设备是否在线
 	public static final String M_count = "count";//wifi设备上的移动设备在线数量
 	public static final String M_register_at = "register_at";//wifi设备的注册时间
@@ -28,6 +30,8 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	private GeoPointsMapableField ghash;
 	private StringMapableField address;
 	private StringMapableField showaddress;
+	private StringMapableField workmodel;
+	private StringMapableField devicetype;
 	private IntegerMapableField online;
 	private IntegerMapableField count;
 	private LongMapableField register_at;
@@ -39,6 +43,8 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 		address = new StringMapableField(M_address, IMapableFieldType.Store_YES, 
 				IMapableFieldType.Index_Analyzed, AnalyzerSupport.EDGENGRAM_WHITESPACE_ANALYZER);
 		showaddress = new StringMapableField(M_show_address, StringMapableField.TYPE_STORED_NOT_INDEX);
+		workmodel = new StringMapableField(M_workmodel, StringMapableField.TYPE_STORED_NOT_ANALYZED);
+		devicetype = new StringMapableField(M_devicetype, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		online = new IntegerMapableField(M_online, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
 		count = new IntegerMapableField(M_count, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
 		register_at = new LongMapableField(M_register_at, LongMapableField.TYPE_STORED_NOT_ANALYZED);
@@ -59,6 +65,14 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 
 	public StringMapableField getShowaddress() {
 		return showaddress;
+	}
+	
+	public StringMapableField getWorkmodel() {
+		return workmodel;
+	}
+
+	public StringMapableField getDevicetype() {
+		return devicetype;
 	}
 
 	public IntegerMapableField getOnline() {

@@ -6,8 +6,10 @@ import java.io.Serializable;
 public class WifiDeviceVTO implements Serializable{
 	private String wid;//wifi id
 	private int ol;//online wifi设备是否在线 1表示在线 0标识离线
-	private String wdt;//wifi device type wifi设备类型
-	private String ast;//added services template 增值服务模板
+	private String adr;//所在地域的格式化地址
+	//private String wdt;//wifi device type wifi设备类型
+	//private String ast;//added services template 增值服务模板
+	private String dt;//device type 设备类型
 	private String uof;//up outflow 上行流量
 	private String dof;//down outflow 下行流量
 	private int cohc;//current online handset count 在线移动设备数量
@@ -17,18 +19,6 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setWid(String wid) {
 		this.wid = wid;
-	}
-	public String getWdt() {
-		return wdt;
-	}
-	public void setWdt(String wdt) {
-		this.wdt = wdt;
-	}
-	public String getAst() {
-		return ast;
-	}
-	public void setAst(String ast) {
-		this.ast = ast;
 	}
 	public String getUof() {
 		return uof;
@@ -53,5 +43,17 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setOl(int ol) {
 		this.ol = ol;
+	}
+	public String getAdr() {
+		return adr;
+	}
+	public void setAdr(String adr) {
+		this.adr = adr;
+	}
+	public String getDt() {
+		return dt;
+	}
+	public void setDt(String dt) {
+		this.dt = dt;
 	}
 }
