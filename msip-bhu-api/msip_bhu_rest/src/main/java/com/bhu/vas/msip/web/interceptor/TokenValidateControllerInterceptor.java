@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -24,6 +26,8 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  *
  */
 public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapter {
+	private final Logger logger = LoggerFactory.getLogger(TokenValidateControllerInterceptor.class);
+	
 	private static final String pingurl = "/ping/v1";
 	private static final String commonurl = "/common";
 	private static final String dashboardurl = "/dashboard";
@@ -79,6 +83,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		/*if(uri.indexOf("config") != -1){
 			output = true;
 		}*/
+		logger.info(String.format("Rest Request URL [%s] Params [%s]", request.getRequestURI(), request.getParameterMap()));
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
