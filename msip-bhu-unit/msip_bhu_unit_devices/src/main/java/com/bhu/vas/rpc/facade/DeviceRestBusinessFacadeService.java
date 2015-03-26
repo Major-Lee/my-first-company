@@ -192,14 +192,11 @@ public class DeviceRestBusinessFacadeService {
 				RegionCountDTO region_dto = new RegionCountDTO();
 				//地域的wifi设备数量
 				long region_count = 0;
-				//地域对应显示内容
-				String value = "0 0%";
 				if(total_count > 0){
 					region_count = wifiDeviceSearchService.countByKeyword(region);
-					value = RegionCountDTO.builderValue(region_count, total_count);
 				}
 				region_dto.setR(region);
-				region_dto.setV(value);
+				region_dto.setV(region_count);
 				dtos.add(region_dto);
 				
 				total_region_count = total_region_count + region_count;
@@ -208,7 +205,7 @@ public class DeviceRestBusinessFacadeService {
 			if(total_count > 0){
 				RegionCountDTO other_region_dto = new RegionCountDTO();
 				other_region_dto.setR("其他");
-				other_region_dto.setV(RegionCountDTO.builderValue(total_count-total_region_count, total_count));
+				other_region_dto.setV(total_count-total_region_count);
 				dtos.add(other_region_dto);
 			}
 			regionCountJson = JsonHelper.getJSONString(dtos);
