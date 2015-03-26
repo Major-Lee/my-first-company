@@ -137,31 +137,28 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		String lowercase_wifi_id = wifiId.toLowerCase();
 
-		//1:wifi设备基础信息表中的在线状态更新
-		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_wifi_id);
-		if(exist_wifi_device_entity != null){
-			exist_wifi_device_entity.setOnline(false);
-			wifiDeviceService.update(exist_wifi_device_entity);
-			
-			//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
-			WifiDevicePresentService.getInstance().removePresent(lowercase_wifi_id);
-			
-			/*
-			 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
-			 * 4:wifi设备对应handset在线列表redis清除 (backend)
-			 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
-			 */
-			//wifi设备上次登录的时间
-			long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
-			
-			deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id, last_login_at);
+		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_wifi_id);
+		if(ctx.equals(ctx_present)){
+			//1:wifi设备基础信息表中的在线状态更新
+			WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_wifi_id);
+			if(exist_wifi_device_entity != null){
+				exist_wifi_device_entity.setOnline(false);
+				wifiDeviceService.update(exist_wifi_device_entity);
+				
+				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
+				WifiDevicePresentService.getInstance().removePresent(lowercase_wifi_id);
+				
+				/*
+				 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
+				 * 4:wifi设备对应handset在线列表redis清除 (backend)
+				 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
+				 */
+				//wifi设备上次登录的时间
+				long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
+				
+				deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id, last_login_at);
+			}
 		}
-
-//		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_mac);
-//		if(ctx.equals(ctx_present)){
-//			WifiDevicePresentService.getInstance().removePresent(lowercase_mac);
-		
-//		}
 	}
 	
 	
