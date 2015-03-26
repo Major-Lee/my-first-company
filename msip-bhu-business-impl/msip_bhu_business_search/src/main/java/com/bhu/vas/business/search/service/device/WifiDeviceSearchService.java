@@ -9,6 +9,7 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.springframework.stereotype.Service;
@@ -77,9 +78,11 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 			return emptyQueryListResponse();
 		}
 		String standardKeyword = IndexableResolver.standardString(keyword);
-		QueryBuilder query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+		//QueryBuilder query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+		//QueryFilterBuilder filter = FilterBuilders.queryFilter(query);
+		TermFilterBuilder filter = FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, standardKeyword);
 		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
-				BusinessIndexConstants.Types.WifiDeviceType, query, null, null, start, size);
+				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
 		queryRequest.addSort(sortByOnline());
 		queryRequest.addSort(sortByCount());
 		return super.searchListByQuery(queryRequest);
@@ -102,7 +105,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		
 		FilterBuilder filter = FilterBuilders.rangeFilter(WifiDeviceMapableComponent.M_register_at).gt(register_at);
 		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
-				BusinessIndexConstants.Types.WifiDeviceType, QueryBuilders.matchAllQuery(), null, filter, start, size);
+				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
 		queryRequest.addSort(sortByRegisterAt());
 		return super.searchListByQuery(queryRequest);
 	}
@@ -115,11 +118,15 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 */
 	public long countByKeyword(String keyword) throws ESQueryValidateException{
 		QueryBuilder query = null;
+//		FilterBuilder filter = null;
 		if(StringUtils.isEmpty(keyword)) {
 			query = QueryBuilders.matchAllQuery();
+			//filter = FilterBuilders.matchAllFilter();
 		}else{
 			String standardKeyword = IndexableResolver.standardString(keyword);
-			query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+			query = QueryHelper.termQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+			//query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+			//filter = FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, standardKeyword);
 		}
 		
 		QueryRequest queryRequest = super.builderQueryRequest(BusinessIndexConstants.WifiDeviceIndex, 

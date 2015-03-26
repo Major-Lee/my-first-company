@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
@@ -56,7 +57,7 @@ public class DeviceController {
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/fetch_wifidevices_by_keyword",method={RequestMethod.GET,RequestMethod.POST})
-	public void fetch_wifidevices_online_list(
+	public void fetch_wifidevices_by_keyword(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false, defaultValue="北京市", value = "q") String keyword,
@@ -119,6 +120,27 @@ public class DeviceController {
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
 		TailPage<WifiDeviceRecentVTO> result = deviceRestRpcService.fetchRecentWDevice(pageNo, pageSize);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+	}
+	
+	/**
+	 * 根据wifi设备的id获取在线移动设备列表
+	 * @param request
+	 * @param response
+	 * @param wifiId
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch_handsetdevices_online",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_handsetdevices_online(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true, value = "wid") String wifiId,
+			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
+		
+		TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }

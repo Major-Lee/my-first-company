@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -11,16 +12,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import redis.clients.jedis.Tuple;
+
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCountRegionStatisticsStringService;
@@ -224,7 +229,7 @@ public class DeviceRestBusinessFacadeService {
 			throws ESQueryValidateException{
 		List<WifiDeviceRecentVTO> vtos = null;
 		
-		long minRegisterAt = System.currentTimeMillis() - (30 * 3600 * 24 * 1000);
+		long minRegisterAt = System.currentTimeMillis() - (30 * 3600 * 24 * 1000l);
 		
 		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchGtByRegisterAt(minRegisterAt, 
 				(pageNo*pageSize)-pageSize, pageSize);
@@ -249,5 +254,37 @@ public class DeviceRestBusinessFacadeService {
 			}
 		}
 		return new CommonPage<WifiDeviceRecentVTO>(pageNo, pageSize, total, vtos);
+	}
+	/**
+	 * 根据wifi设备的id获取在线的移动设备列表
+	 * @param wifiId
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize){
+		List<HandsetDeviceVTO> vtos = null;
+		
+		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifiId);
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}else{
+			Set<Tuple> hdevicesList = WifiDeviceHandsetPresentSortedSetService.getInstance().
+					fetchPresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
+			if(hdevicesList.isEmpty()){
+				vtos = Collections.emptyList();
+			}else{
+				vtos = new ArrayList<HandsetDeviceVTO>();
+				HandsetDeviceVTO vto = null;
+				for(Tuple tuple : hdevicesList){
+					vto = new HandsetDeviceVTO();
+					vto.setWid(wifiId);
+					vto.setTs(new Double(tuple.getScore()).longValue());
+					vto.setHid(tuple.getElement());
+					vtos.add(vto);
+				}
+			}
+		}
+		return new CommonPage<HandsetDeviceVTO>(pageNo, pageSize, (int)total, vtos);
 	}
 }

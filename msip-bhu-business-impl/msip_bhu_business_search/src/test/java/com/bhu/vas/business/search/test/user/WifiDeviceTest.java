@@ -29,7 +29,7 @@ public class WifiDeviceTest extends BaseTest{
 	@Resource
 	WifiDeviceIndexService wifiDeviceIndexService;
 	
-	@Test
+	//@Test
 	public void init() throws ElasticsearchException, IOException, ESException, InstantiationException, IllegalAccessException{
 		//userIndexService.deleteUserResponse();
 		wifiDeviceIndexService.createResponseAndMapping();
@@ -120,8 +120,8 @@ public class WifiDeviceTest extends BaseTest{
 	
 	//@Test
 	public void testSearchByKeyword() throws ESQueryValidateException{
-		//String keyword = "黄寺";
-		String keyword = "西城区";
+		String keyword = "北京";
+		//String keyword = "西城区";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeyword(keyword, 0, 10);
 		System.out.println(result.getTotal());
 		for(WifiDeviceSearchDTO dto : result.getResult()){
@@ -129,7 +129,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void countSearchByKeyword() throws ESQueryValidateException{
 		//String keyword = "黄寺";
 		String keyword = "黄";
@@ -176,5 +176,21 @@ public class WifiDeviceTest extends BaseTest{
 		long count= wifiDeviceSearchService.countByGeoBoundingBox(
 				topleft_coordinate, bottomRight_coordinate);
 		System.out.println(count);
+	}
+	
+	//@Test
+	public void testSearchGtByRegisterAt() throws ESQueryValidateException{
+		System.out.println(System.currentTimeMillis());
+		System.out.println(new Date().getTime());
+		long d30_ts = 30 * 3600 * 24 * 1000l;
+		System.out.println(d30_ts);
+		long minRegisterAt = System.currentTimeMillis() - d30_ts;
+		System.out.println(minRegisterAt);
+		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.
+				searchGtByRegisterAt(minRegisterAt, 0, 10);
+		System.out.println(result.getTotal());
+		for(WifiDeviceSearchDTO dto : result.getResult()){
+			System.out.println("id:"+dto.getId() + "="+dto.getAddress());
+		}
 	}
 }
