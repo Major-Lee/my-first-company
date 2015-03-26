@@ -7,20 +7,28 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
+import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
+import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
 
 @Service
 public class DeviceFacadeService {
-	//private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
+	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -29,6 +37,43 @@ public class DeviceFacadeService {
 	private HandsetDeviceService handsetDeviceService;
 	
 	
+	/**
+	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充
+	 * @param entity
+	 */
+	public boolean wifiDeiviceGeocoding(WifiDevice entity){
+		if(entity == null) return false;
+		if(StringUtils.isEmpty(entity.getLat()) || StringUtils.isEmpty(entity.getLon())) return false;
+		
+		try{
+			//2:根据坐标提取地理位置详细信息 (backend)
+			GeocodingDTO geocodingDto = GeocodingHelper.geocodingGet(String.valueOf(entity.getLat()), 
+					String.valueOf(entity.getLon()));
+			if(geocodingDto != null && geocodingDto.getStatus() == GeocodingDTO.Success_Status){
+				GeocodingResultDTO resultDto = geocodingDto.getResult();
+				if(resultDto != null){
+					entity.setFormatted_address(resultDto.getFormatted_address());
+					GeocodingAddressDTO addressDto = geocodingDto.getResult().getAddressComponent();
+					if(addressDto != null){
+						entity.setCountry(addressDto.getCountry());
+						entity.setProvince(addressDto.getProvince());
+						entity.setCity(addressDto.getCity());
+						entity.setDistrict(addressDto.getDistrict());
+						entity.setStreet(addressDto.getStreet());
+						return true;
+					}
+				}
+			}else{
+				logger.error(String.format("GeocodingHelper fail lat[%s] lon[%s] status[%s]",
+						entity.getLat(), entity.getLon(), geocodingDto != null ? geocodingDto.getStatus() : ""));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("GeocodingHelper exception lat[%s] lon[%s] exmsg[%s]",
+					entity.getLat(),entity.getLon(), ex.getMessage()), ex);
+		}
+		return false;
+	}
 	/**
 	 * 用于填充当日daily的统计数据中的实际计算数据
 	 * 1:设备接入次数平均（3/(1+2)）(实时计算)

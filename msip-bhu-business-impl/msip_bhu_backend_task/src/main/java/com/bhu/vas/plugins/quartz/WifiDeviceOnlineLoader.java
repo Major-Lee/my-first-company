@@ -7,11 +7,13 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
@@ -20,6 +22,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 /**
  * 每30分钟执行一次
  * 所有的在线设备进行索引增量,主要用于更新wifi设备的在线移动设备数
+ * 如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
  * @author tangzichao
  *
  */
@@ -35,6 +38,9 @@ public class WifiDeviceOnlineLoader {
 	
 	@Resource
 	private WifiDeviceIndexService wifiDeviceIndexService;
+	
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
 	
 	public void init(){
 		bulk_success = 0;
@@ -86,6 +92,10 @@ public class WifiDeviceOnlineLoader {
 				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 				indexDto.setCount((int)count);
 				indexDtos.add(indexDto);
+				//如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
+				if(validateCoordinateAndGet(device)){
+					wifiDeviceService.update(device);
+				}
 			}
 			
 			if(!indexDtos.isEmpty()){
@@ -101,5 +111,17 @@ public class WifiDeviceOnlineLoader {
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
 		}
+	}
+	
+	/**
+	 * 如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
+	 */
+	public boolean validateCoordinateAndGet(WifiDevice device){
+		if(StringUtils.isEmpty(device.getFormatted_address())){
+			if(!StringUtils.isEmpty(device.getLat()) && !StringUtils.isEmpty(device.getLon())){
+				return deviceFacadeService.wifiDeiviceGeocoding(device);
+			}
+		}
+		return false;
 	}
 }

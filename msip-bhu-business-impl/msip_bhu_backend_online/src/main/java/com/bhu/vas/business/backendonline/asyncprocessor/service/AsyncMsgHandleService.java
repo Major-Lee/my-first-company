@@ -38,10 +38,6 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
-import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
-import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
-import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
 
 @Service
 public class AsyncMsgHandleService {
@@ -439,33 +435,9 @@ public class AsyncMsgHandleService {
 			
 			entity.setLat(dto.getLat());
 			entity.setLon(dto.getLon());
-			
-			try{
-				//2:根据坐标提取地理位置详细信息 (backend)
-				GeocodingDTO geocodingDto = GeocodingHelper.geocodingGet(String.valueOf(dto.getLat()), 
-						String.valueOf(dto.getLon()));
-				if(geocodingDto != null && geocodingDto.getStatus() == GeocodingDTO.Success_Status){
-					GeocodingResultDTO resultDto = geocodingDto.getResult();
-					if(resultDto != null){
-						entity.setFormatted_address(resultDto.getFormatted_address());
-						GeocodingAddressDTO addressDto = geocodingDto.getResult().getAddressComponent();
-						if(addressDto != null){
-							entity.setCountry(addressDto.getCountry());
-							entity.setProvince(addressDto.getProvince());
-							entity.setCity(addressDto.getCity());
-							entity.setDistrict(addressDto.getDistrict());
-							entity.setStreet(addressDto.getStreet());
-						}
-					}
-				}else{
-					logger.error(String.format("GeocodingHelper fail lat[%s] lon[%s] status[%s]",
-							dto.getLat(),dto.getLon(), geocodingDto != null ? geocodingDto.getStatus() : ""));
-				}
-			}catch(Exception ex){
-				ex.printStackTrace(System.out);
-				logger.error(String.format("GeocodingHelper exception lat[%s] lon[%s] exmsg[%s]",
-						dto.getLat(),dto.getLon(), ex.getMessage()), ex);
-			}
+			//2:根据坐标提取地理位置详细信息
+			deviceFacadeService.wifiDeiviceGeocoding(entity);
+
 			wifiDeviceService.update(entity);
 			
 			//3:增量索引
