@@ -86,16 +86,17 @@ public class WifiDeviceOnlineLoader {
 			List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
 			WifiDeviceIndexDTO indexDto = null;
 			for(WifiDevice device:entitys){
+				//如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
+				if(validateCoordinateAndGet(device)){
+					wifiDeviceService.update(device);
+				}
+				
 				String wifi_mac = device.getId();
 				long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
 				indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
 				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 				indexDto.setCount((int)count);
 				indexDtos.add(indexDto);
-				//如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
-				if(validateCoordinateAndGet(device)){
-					wifiDeviceService.update(device);
-				}
 			}
 			
 			if(!indexDtos.isEmpty()){
