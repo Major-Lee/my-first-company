@@ -61,7 +61,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	public void fragmentAllSet(Date current,int count){
 		if(count < 0) return;
 		String count_str = String.valueOf(count);
-		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(current, false);
+		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(current);
 		//每日数据更新
 		this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD)),
 				fragments.get(DateTimeExtHelper.YEAR_MONTH_DD_HH), count_str);
