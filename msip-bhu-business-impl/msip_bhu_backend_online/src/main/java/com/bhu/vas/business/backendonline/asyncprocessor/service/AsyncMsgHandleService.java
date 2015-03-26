@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -138,9 +139,12 @@ public class AsyncMsgHandleService {
 				if(entity == null){
 					entityNewRegisters.add(BusinessModelBuilder.wifiDeviceDtoToEntity(dto));
 				}else{
-					entityNewOnlines.add(BusinessModelBuilder.wifiDeviceDtoToEntity(dto));
+					BeanUtils.copyProperties(dto, entity);
+					entity.setLast_reged_at(new Date());
+					entity.setOnline(true);
+					entityNewOnlines.add(entity);
 				}
-				offline_ids.add(dto.getMac());
+				offline_ids.add(dto.getMac().toLowerCase());
 				cursor++;
 			}
 			//3:统计增量 wifi设备的daily新增设备增量
@@ -342,17 +346,24 @@ public class AsyncMsgHandleService {
 					if(entity == null){
 						entityNewRegisters.add(BusinessModelBuilder.handsetDeviceDtoToEntity(dto));
 					}else{
-						entityNewOnlines.add(BusinessModelBuilder.handsetDeviceDtoToEntity(dto));
+						BeanUtils.copyProperties(dto, entity);
+						entity.setLast_login_at(new Date());
+						entity.setLast_wifi_id(dto.getBssid().toLowerCase());
+						entity.setOnline(true);
+						entityNewOnlines.add(entity);
 					}
+					String handsetId = dto.getMac().toLowerCase();
+					//1:wifi设备对应handset在线列表redis 重新写入
+					WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handsetId, sync_dto.getTs());
 					//3:移动设备连接wifi设备的接入记录(非流水)
-					int result_status = wifiHandsetDeviceRelationMService.addRelation(wifiId, dto.getMac(), new Date(sync_dto.getTs()));
+					int result_status = wifiHandsetDeviceRelationMService.addRelation(wifiId, handsetId, new Date(sync_dto.getTs()));
 					//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
 					if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert){
 						//5:wifi设备接入移动设备的接入数量增量
 						wifiHandsetDeviceLoginCountMService.incrCount(wifiId);
 					}
 					//4:移动设备连接wifi设备的流水log
-					BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(wifiId, dto.getMac(), sync_dto.getTs());
+					BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(wifiId, handsetId, sync_dto.getTs());
 					cursor++;
 				}
 
