@@ -29,7 +29,7 @@ public class WifiDeviceTest extends BaseTest{
 	@Resource
 	WifiDeviceIndexService wifiDeviceIndexService;
 	
-	@Test
+	//@Test
 	public void init() throws ElasticsearchException, IOException, ESException, InstantiationException, IllegalAccessException{
 		//userIndexService.deleteUserResponse();
 		wifiDeviceIndexService.createResponseAndMapping();
@@ -118,10 +118,10 @@ public class WifiDeviceTest extends BaseTest{
 		wifiDeviceIndexService.createIndexComponents(components);
 	}
 	
-	//@Test
+	@Test
 	public void testSearchByKeyword() throws ESQueryValidateException{
-		//String keyword = "黄寺";
-		String keyword = "西城区";
+		String keyword = "北京";
+		//String keyword = "西城区";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeyword(keyword, 0, 10);
 		System.out.println(result.getTotal());
 		for(WifiDeviceSearchDTO dto : result.getResult()){
@@ -129,7 +129,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void countSearchByKeyword() throws ESQueryValidateException{
 		//String keyword = "黄寺";
 		String keyword = "黄";
@@ -137,7 +137,7 @@ public class WifiDeviceTest extends BaseTest{
 		System.out.println(count);
 	}
 	
-	//@Test
+	@Test
 	public void testSearchByDistance() throws ESQueryValidateException{
 		double[] coordinate = {40.7143528,-74.0059731};
 		String distance = "2km";
@@ -149,7 +149,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void testCountByDistance() throws ESQueryValidateException{
 		double[] coordinate = {40.7143528,-74.0059731};
 		String distance = "2km";
@@ -157,7 +157,7 @@ public class WifiDeviceTest extends BaseTest{
 		System.out.println(count);
 	}
 	
-	//@Test
+	@Test
 	public void testSearchByGeoBoundingBox() throws ESQueryValidateException{
 		double[] topleft_coordinate = {40.651693098789316,-73.95274658203124};
 		double[] bottomRight_coordinate = {40.648241736557516,-73.94648094177245};
@@ -169,12 +169,28 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void testCountByGeoBoundingBox() throws ESQueryValidateException{
 		double[] topleft_coordinate = {40.651693098789316,-73.95274658203124};
 		double[] bottomRight_coordinate = {40.648241736557516,-73.94648094177245};
 		long count= wifiDeviceSearchService.countByGeoBoundingBox(
 				topleft_coordinate, bottomRight_coordinate);
 		System.out.println(count);
+	}
+	
+	@Test
+	public void testSearchGtByRegisterAt() throws ESQueryValidateException{
+		System.out.println(System.currentTimeMillis());
+		System.out.println(new Date().getTime());
+		long d30_ts = 30 * 3600 * 24 * 1000l;
+		System.out.println(d30_ts);
+		long minRegisterAt = System.currentTimeMillis() - d30_ts;
+		System.out.println(minRegisterAt);
+		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.
+				searchGtByRegisterAt(minRegisterAt, 0, 10);
+		System.out.println(result.getTotal());
+		for(WifiDeviceSearchDTO dto : result.getResult()){
+			System.out.println("id:"+dto.getId() + "="+dto.getAddress());
+		}
 	}
 }

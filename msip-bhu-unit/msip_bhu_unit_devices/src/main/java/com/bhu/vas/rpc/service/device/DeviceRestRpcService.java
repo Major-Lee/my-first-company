@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
@@ -106,4 +107,15 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}
 	}
 	
+	@Override
+	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize){
+		logger.info(String.format("DeviceRestRPC fetchHDevicesOnline invoke wifiId [%s] pageNo [%s] pageSize [%s]", wifiId, pageNo, pageSize));
+		try{
+			return deviceRestBusinessFacadeService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchHDevicesOnline exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 }

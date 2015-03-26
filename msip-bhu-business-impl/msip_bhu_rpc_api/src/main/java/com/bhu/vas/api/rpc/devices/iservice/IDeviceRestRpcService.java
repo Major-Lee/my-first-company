@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.devices.iservice;
 
 import java.util.List;
 
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
@@ -16,4 +17,5 @@ public interface IDeviceRestRpcService {
 	public StatisticsGeneralVTO fetchStatisticsGeneral();
 	public String fetchWDeviceRegionCount(String regions);
 	public TailPage<WifiDeviceRecentVTO> fetchRecentWDevice(int pageNo, int pageSize);
+	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize);
 }
