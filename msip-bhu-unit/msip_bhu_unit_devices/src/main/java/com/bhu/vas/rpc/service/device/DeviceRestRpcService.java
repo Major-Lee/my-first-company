@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -84,7 +85,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	 * 获取wifi设备地域分布饼图
 	 */
 	@Override
-	public String fetchWDeviceRegionCount(String regions) {
+	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions) {
 		logger.info(String.format("DeviceRestRPC fetchWDeviceRegionCount invoke regions [%s] ", regions));
 		try{
 			return deviceRestBusinessFacadeService.fetchWDeviceRegionCount(regions);
