@@ -176,29 +176,27 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 * @throws ESQueryValidateException 
 	 */
-	public String fetchWDeviceRegionCount(String regions) throws ESQueryValidateException{
+	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions) throws ESQueryValidateException{
 		if(StringUtils.isEmpty(regions)) return null;
 		
 		String regionCountJson = WifiDeviceCountRegionStatisticsStringService.getInstance().getWifiDeviceCountRegion();
+		List<RegionCountDTO> dtos = null;
 		if(StringUtils.isEmpty(regionCountJson)){
 			//如果缓存失效 则从搜索引擎直接获取 (如果以后地域非常多,获取数据会相对耗时,可以放在定时程序去更新缓存)
 			//获取总共的wifi设备数量
 			long total_count = wifiDeviceSearchService.countByKeyword(null);
 			long total_region_count = 0;
-			List<RegionCountDTO> dtos = new ArrayList<RegionCountDTO>();
+			dtos = new ArrayList<RegionCountDTO>();
 			String[] regions_array = regions.split(StringHelper.COMMA_STRING_GAP);
 			for(String region : regions_array){
 				RegionCountDTO region_dto = new RegionCountDTO();
 				//地域的wifi设备数量
 				long region_count = 0;
-				//地域对应显示内容
-				String value = "0 0%";
 				if(total_count > 0){
 					region_count = wifiDeviceSearchService.countByKeyword(region);
-					value = RegionCountDTO.builderValue(region_count, total_count);
 				}
 				region_dto.setR(region);
-				region_dto.setV(value);
+				region_dto.setV(region_count);
 				dtos.add(region_dto);
 				
 				total_region_count = total_region_count + region_count;
@@ -207,14 +205,16 @@ public class DeviceRestBusinessFacadeService {
 			if(total_count > 0){
 				RegionCountDTO other_region_dto = new RegionCountDTO();
 				other_region_dto.setR("其他");
-				other_region_dto.setV(RegionCountDTO.builderValue(total_count-total_region_count, total_count));
+				other_region_dto.setV(total_count-total_region_count);
 				dtos.add(other_region_dto);
 			}
 			regionCountJson = JsonHelper.getJSONString(dtos);
 			//存入redis中
 			WifiDeviceCountRegionStatisticsStringService.getInstance().setWifiDeviceCountRegion(regionCountJson);
+		}else{
+			dtos = JsonHelper.getDTOList(regionCountJson, RegionCountDTO.class);
 		}
-		return regionCountJson;
+		return dtos;
 	}
 	
 	/**

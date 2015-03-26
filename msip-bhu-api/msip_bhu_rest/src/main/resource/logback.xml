@@ -28,7 +28,7 @@
 	</appender>
 	  -->
 	<root>
-		<level value="WARN" />
+		<level value="INFO" />
 		<appender-ref ref="stdout" />
 		<!-- 
 		<appender-ref ref="logfile" />

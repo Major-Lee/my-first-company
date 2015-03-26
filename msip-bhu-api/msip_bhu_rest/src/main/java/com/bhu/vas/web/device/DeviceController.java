@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -100,8 +101,8 @@ public class DeviceController {
 			HttpServletResponse response,
 			@RequestParam(required = true) String regions) {
 		
-		String region_json = deviceRestRpcService.fetchWDeviceRegionCount(regions);
-		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(region_json));
+		List<RegionCountDTO> dtos = deviceRestRpcService.fetchWDeviceRegionCount(regions);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
 	}
 	
 	/**

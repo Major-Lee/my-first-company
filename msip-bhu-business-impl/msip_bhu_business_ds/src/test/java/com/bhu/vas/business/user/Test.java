@@ -1,5 +1,7 @@
 package com.bhu.vas.business.user;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,7 +11,7 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 
 public class Test {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedEncodingException {
 		// TODO Auto-generated method stub
 		List<Integer> list = new ArrayList<Integer>();
 		list.add(1);
@@ -27,6 +29,8 @@ public class Test {
 //		WifiDeviceStatus entity = new WifiDeviceStatus();
 //		BeanUtils.copyProperties(dto, entity);
 //		System.out.println(entity.getCurrent_cpu_usage());
+		//System.out.println(URLEncoder.encode("北京市", "utf-8"));
+		System.out.println(ArithHelper.percent(13495, 13496, 2));
 	}
 	
 

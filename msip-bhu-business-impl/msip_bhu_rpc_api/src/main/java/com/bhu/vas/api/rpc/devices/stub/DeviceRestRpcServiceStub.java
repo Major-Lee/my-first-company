@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -40,7 +41,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 	
 	@Override
-	public String fetchWDeviceRegionCount(String regions){
+	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions){
 		if(StringUtils.isEmpty(regions)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		

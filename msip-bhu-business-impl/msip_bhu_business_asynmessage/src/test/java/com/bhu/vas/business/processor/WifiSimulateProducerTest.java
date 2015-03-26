@@ -94,11 +94,12 @@ public class WifiSimulateProducerTest {
 		Set<WifiInfo> tmps = new HashSet<WifiInfo>();
 		int size = 0;
 		while(true){
-			boolean ret = tmps.add(new WifiInfo(randomMacAddress(),RandomPicker.pick(devices_sn),RandomPicker.pick(devices_ip)));
+			//boolean ret = tmps.add(new WifiInfo(randomMacAddress(),RandomPicker.pick(devices_sn),RandomPicker.pick(devices_ip)));
+			boolean ret = tmps.add(new WifiInfo("62:68:75:02:ff:05",RandomPicker.pick(devices_sn),RandomPicker.pick(devices_ip)));
 			if(ret){
 				size++;
 			}
-			if(size >=1000)
+			if(size >=1)
 				break;
 			else
 				System.out.println(size);

@@ -120,7 +120,7 @@ public class WifiDeviceTest extends BaseTest{
 	
 	@Test
 	public void testSearchByKeyword() throws ESQueryValidateException{
-		String keyword = "北京";
+		String keyword = "中国北京";
 		//String keyword = "西城区";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeyword(keyword, 0, 10);
 		System.out.println(result.getTotal());
@@ -129,7 +129,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void countSearchByKeyword() throws ESQueryValidateException{
 		//String keyword = "黄寺";
 		String keyword = "黄";
@@ -137,7 +137,7 @@ public class WifiDeviceTest extends BaseTest{
 		System.out.println(count);
 	}
 	
-	@Test
+	//@Test
 	public void testSearchByDistance() throws ESQueryValidateException{
 		double[] coordinate = {40.7143528,-74.0059731};
 		String distance = "2km";
@@ -149,7 +149,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testCountByDistance() throws ESQueryValidateException{
 		double[] coordinate = {40.7143528,-74.0059731};
 		String distance = "2km";
@@ -157,7 +157,7 @@ public class WifiDeviceTest extends BaseTest{
 		System.out.println(count);
 	}
 	
-	@Test
+	//@Test
 	public void testSearchByGeoBoundingBox() throws ESQueryValidateException{
 		double[] topleft_coordinate = {40.651693098789316,-73.95274658203124};
 		double[] bottomRight_coordinate = {40.648241736557516,-73.94648094177245};
@@ -169,7 +169,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testCountByGeoBoundingBox() throws ESQueryValidateException{
 		double[] topleft_coordinate = {40.651693098789316,-73.95274658203124};
 		double[] bottomRight_coordinate = {40.648241736557516,-73.94648094177245};
@@ -178,7 +178,7 @@ public class WifiDeviceTest extends BaseTest{
 		System.out.println(count);
 	}
 	
-	@Test
+	//@Test
 	public void testSearchGtByRegisterAt() throws ESQueryValidateException{
 		System.out.println(System.currentTimeMillis());
 		System.out.println(new Date().getTime());

@@ -20,6 +20,7 @@ public class IndexDTOBuilder {
 //		indexDto.setOnline(1);
 		indexDto.setLat(entity.getLat());
 		indexDto.setLon(entity.getLon());
+		//System.out.println(entity.getId() + "-" +entity.getCreated_at());
 		indexDto.setRegister_at(entity.getCreated_at().getTime());
 		return indexDto;
 	}

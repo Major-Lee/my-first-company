@@ -24,12 +24,18 @@ public class WifiDeviceTest extends BaseTest{
 	@Resource
 	WifiDeviceService wifiDeviceService;
 
-	@Test
+	//@Test
 	public void testInsert(){
 		WifiDevice entity = new WifiDevice();
 		entity.setId("1");
 		entity.setOrig_swver("2015-03-11-18:27 Revision: 6855");
 		wifiDeviceService.insert(entity);
+	}
+	
+	@Test
+	public void testGetById(){
+		WifiDevice entity = wifiDeviceService.getById("84:82:f4:05:54:27");
+		System.out.println(entity.getCreated_at().getTime());
 	}
 	
 	//@Test
