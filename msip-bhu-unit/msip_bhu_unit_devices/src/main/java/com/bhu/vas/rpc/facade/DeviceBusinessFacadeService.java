@@ -84,11 +84,15 @@ public class DeviceBusinessFacadeService {
 		boolean newWifi = false;
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
-		//1:wifi设备基础信息更新
+		
 		//WifiDevice wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 		//wifi_device_entity.setLast_reged_at(new Date());
+		String wifiId = dto.getMac().toLowerCase();
 		
-		WifiDevice wifi_device_entity = wifiDeviceService.getById(dto.getMac().toLowerCase());
+		//2:wifi设备在线状态Redis更新
+		WifiDevicePresentService.getInstance().addPresent(wifiId, ctx);
+		//1:wifi设备基础信息更新
+		WifiDevice wifi_device_entity = wifiDeviceService.getById(wifiId);
 		if(wifi_device_entity == null){
 			wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 			wifiDeviceService.insert(wifi_device_entity);
@@ -102,8 +106,7 @@ public class DeviceBusinessFacadeService {
 		}
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
-		//2:wifi设备在线状态Redis更新
-		WifiDevicePresentService.getInstance().addPresent(wifi_device_entity.getId(), ctx);
+
 		/*
 		 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
 		 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
