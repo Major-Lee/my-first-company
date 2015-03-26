@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,6 +8,7 @@ import javax.annotation.Resource;
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -83,14 +85,19 @@ public class DeviceBusinessFacadeService {
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
 		//1:wifi设备基础信息更新
-		WifiDevice wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
+		//WifiDevice wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 		//wifi_device_entity.setLast_reged_at(new Date());
 		
-		WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(wifi_device_entity.getId());
-		if(exist_wifi_device_entity == null){
+		WifiDevice wifi_device_entity = wifiDeviceService.getById(dto.getMac().toLowerCase());
+		if(wifi_device_entity == null){
+			wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 			wifiDeviceService.insert(wifi_device_entity);
 			newWifi = true;
 		}else{
+			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
+			BeanUtils.copyProperties(dto, wifi_device_entity);
+			wifi_device_entity.setLast_reged_at(new Date());
+			wifi_device_entity.setOnline(true);
 			wifiDeviceService.update(wifi_device_entity);
 		}
 		//本次wifi设备登录时间
@@ -232,13 +239,18 @@ public class DeviceBusinessFacadeService {
 		//移动设备上一次登录时间
 		long last_login_at = 0;
 		//1:移动设备基础信息更新
-		HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(handset_device_entity.getId());
-		if(exist_handset_device_entity == null){
+		HandsetDevice handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
+		if(handset_device_entity == null){
+			handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
 			handsetDeviceService.insert(handset_device_entity);
 			newHandset = true;
 		}else{
-			last_login_at = exist_handset_device_entity.getLast_login_at().getTime();
+			last_login_at = handset_device_entity.getLast_login_at().getTime();
+			
+			BeanUtils.copyProperties(dto, handset_device_entity);
+			handset_device_entity.setLast_login_at(new Date());
+			handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
+			handset_device_entity.setOnline(true);
 			handsetDeviceService.update(handset_device_entity);
 		}
 		//本次移动设备登录时间
@@ -369,13 +381,15 @@ public class DeviceBusinessFacadeService {
 		WifiDeviceStatusDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, WifiDeviceStatusDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(dto.getStatus())){
 			//1:记录wifi设备的当前状态数据
-			WifiDeviceStatus entity = BusinessModelBuilder.wifiDeviceStatusDtoToEntity(dto);
-			entity.setId(wifiId);
+			//WifiDeviceStatus entity = BusinessModelBuilder.wifiDeviceStatusDtoToEntity(dto);
 			
-			WifiDeviceStatus exist_entity = wifiDeviceStatusService.getById(wifiId);
-			if(exist_entity == null){
+			WifiDeviceStatus entity = wifiDeviceStatusService.getById(wifiId);
+			if(entity == null){
+				entity = BusinessModelBuilder.wifiDeviceStatusDtoToEntity(dto);
+				entity.setId(wifiId);
 				wifiDeviceStatusService.insert(entity);
 			}else{
+				BeanUtils.copyProperties(dto, entity);
 				wifiDeviceStatusService.update(entity);
 			}
 		}

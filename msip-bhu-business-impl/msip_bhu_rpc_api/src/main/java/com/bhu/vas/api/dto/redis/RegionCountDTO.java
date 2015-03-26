@@ -29,7 +29,7 @@ public class RegionCountDTO {
 		StringBuffer v_sb = new StringBuffer();
 		v_sb.append(region_count);
 		v_sb.append(StringHelper.WHITESPACE_STRING_GAP);
-		v_sb.append(ArithHelper.percent(region_count, count, 0));
+		v_sb.append(ArithHelper.percent(region_count, count, 2));
 		return v_sb.toString();
 	}
 }

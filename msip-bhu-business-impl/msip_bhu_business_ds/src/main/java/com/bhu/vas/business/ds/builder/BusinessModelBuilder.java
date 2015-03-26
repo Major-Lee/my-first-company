@@ -65,34 +65,34 @@ public class BusinessModelBuilder {
 	}
 	
 	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
-		HandsetDevice wifi_device_entity = new HandsetDevice();
-		wifi_device_entity.setId(dto.getMac().toLowerCase());
-		wifi_device_entity.setPhy_tx_rate(dto.getPhy_tx_rate());
-		wifi_device_entity.setPhy_rx_rate(dto.getPhy_rx_rate());
-		wifi_device_entity.setData_tx_rate(dto.getData_tx_rate());
-		wifi_device_entity.setData_rx_rate(dto.getData_rx_rate());
-		wifi_device_entity.setPhy_rate(dto.getPhy_rate());
-		wifi_device_entity.setTx_power(dto.getTx_power());
-		wifi_device_entity.setRx_chain_num(dto.getRx_chain_num());
-		wifi_device_entity.setRssi(dto.getRssi());
-		wifi_device_entity.setSnr(dto.getSnr());
-		wifi_device_entity.setIdle(dto.getIdle());
-		wifi_device_entity.setState(dto.getState());
-		wifi_device_entity.setUptime(dto.getUptime());
-		wifi_device_entity.setRx_pkts(dto.getRx_pkts());
-		wifi_device_entity.setRx_bytes(dto.getRx_bytes());
-		wifi_device_entity.setTx_pkts(dto.getTx_pkts());
-		wifi_device_entity.setTx_bytes(dto.getTx_bytes());
-		wifi_device_entity.setRx_unicast(dto.getRx_unicast());
-		wifi_device_entity.setTx_assoc(dto.getTx_assoc());
-		wifi_device_entity.setSsid(dto.getSsid());
-		wifi_device_entity.setBssid(dto.getBssid().toLowerCase());
-		wifi_device_entity.setLocation(dto.getLocation());
-		wifi_device_entity.setChannel(dto.getChannel());
-		wifi_device_entity.setLast_login_at(new Date());
-		wifi_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
-		wifi_device_entity.setOnline(true);
-		return wifi_device_entity;
+		HandsetDevice handset_device_entity = new HandsetDevice();
+		handset_device_entity.setId(dto.getMac().toLowerCase());
+		handset_device_entity.setPhy_tx_rate(dto.getPhy_tx_rate());
+		handset_device_entity.setPhy_rx_rate(dto.getPhy_rx_rate());
+		handset_device_entity.setData_tx_rate(dto.getData_tx_rate());
+		handset_device_entity.setData_rx_rate(dto.getData_rx_rate());
+		handset_device_entity.setPhy_rate(dto.getPhy_rate());
+		handset_device_entity.setTx_power(dto.getTx_power());
+		handset_device_entity.setRx_chain_num(dto.getRx_chain_num());
+		handset_device_entity.setRssi(dto.getRssi());
+		handset_device_entity.setSnr(dto.getSnr());
+		handset_device_entity.setIdle(dto.getIdle());
+		handset_device_entity.setState(dto.getState());
+		handset_device_entity.setUptime(dto.getUptime());
+		handset_device_entity.setRx_pkts(dto.getRx_pkts());
+		handset_device_entity.setRx_bytes(dto.getRx_bytes());
+		handset_device_entity.setTx_pkts(dto.getTx_pkts());
+		handset_device_entity.setTx_bytes(dto.getTx_bytes());
+		handset_device_entity.setRx_unicast(dto.getRx_unicast());
+		handset_device_entity.setTx_assoc(dto.getTx_assoc());
+		handset_device_entity.setSsid(dto.getSsid());
+		handset_device_entity.setBssid(dto.getBssid().toLowerCase());
+		handset_device_entity.setLocation(dto.getLocation());
+		handset_device_entity.setChannel(dto.getChannel());
+		handset_device_entity.setLast_login_at(new Date());
+		handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
+		handset_device_entity.setOnline(true);
+		return handset_device_entity;
 	}
 	
 	public static WifiDeviceStatus wifiDeviceStatusDtoToEntity(WifiDeviceStatusDTO dto){
