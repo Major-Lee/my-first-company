@@ -1,5 +1,6 @@
 package com.bhu.vas.daemon;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +42,19 @@ public class SessionManager {
 		if(wifi_mac == null) return;
 		sessions.remove(wifi_mac);
     }
+	
+	public void removeSessionByCtx(String ctx) {
+		if(ctx == null) return;
+		Iterator<String> iterator = this.sessions.keySet().iterator();
+		while(iterator.hasNext()){
+			String wifi_mac = iterator.next();
+			String session_ctx = this.getSession(wifi_mac);
+			if(ctx.equals(session_ctx)){
+				this.removeSession(wifi_mac);
+			}
+		}
+    }
+	
 	
 	public boolean contains(String wifi_mac){
 		return sessions.containsKey(wifi_mac);

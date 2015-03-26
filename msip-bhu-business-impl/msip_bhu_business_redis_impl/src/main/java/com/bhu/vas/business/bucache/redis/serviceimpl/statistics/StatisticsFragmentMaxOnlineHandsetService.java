@@ -43,9 +43,9 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	private StatisticsFragmentMaxOnlineHandsetService(){
 	}
 	
-	private static String generateKey(String fragment){//,String buPrefixKey){
+	private static String generateKey(String fragment,String buPrefixKey){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.FragmentOnline);
-		sb./*append(buPrefixKey).append(StringHelper.POINT_CHAR_GAP).*/append(fragment);
+		sb.append(buPrefixKey).append(fragment);
 		return sb.toString();
 	}
 	
@@ -54,7 +54,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	 * 日 key yyyy-MM-dd 	field  yyyy-MM-dd HH	 Value count
 	 * 周 key yyyy-w		 	field  yyyy-MM-dd		 Value count
 	 * 月 key yyyy-MM	 	field  yyyy-MM-dd		 Value count
-	 * 季度 key yyyy-QQ	 	field  yyyy-MM-dd		 Value count
+	 * 季度 key yyyy-QQ	 	field  yyyy-w		 Value count
 	 * 年 key yyyy	 		field  yyyy-MM		 	 Value count
 	 * @param count
 	 */
@@ -63,11 +63,12 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		String count_str = String.valueOf(count);
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(current);
 		//每日数据更新
-		this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD)),
-				fragments.get(DateTimeExtHelper.YEAR_MONTH_DD_HH), count_str);
+		this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey),
+				fragments.get(DateTimeExtHelper.HH), count_str);
 		boolean larger = false;
 		//判定count值是否比redis中存储的当日中的最大值还大
-		String value1 = this.hget(generateKey(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK)), fragments.get(DateTimeExtHelper.YEAR_MONTH_DD));
+		String value1 = this.hget(generateKey(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey), 
+				fragments.get(DateTimeExtHelper.YEAR_MONTH_DD));
 		if(StringUtils.isEmpty(value1)){
 			larger = true;
 		}else{
@@ -78,26 +79,37 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		}
 		if(larger){
 			//每周数据更新
-			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK)), fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), count_str);
+			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey), 
+					fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), count_str);
 			//每月数据更新
-			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_MONTH)), fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), count_str);
-			//每季度数据更新
-			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_QUARTER)), fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), count_str);
+			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_MONTH),BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey), 
+					fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), count_str);
 		}
-		String value2 = this.hget(generateKey(fragments.get(DateTimeExtHelper.YEAR)), fragments.get(DateTimeExtHelper.YEAR_MONTH));
+		
+		String value2 = this.hget(generateKey(fragments.get(DateTimeExtHelper.YEAR_QUARTER),BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey), 
+				fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK));
 		if(StringUtils.isEmpty(value2) || count > Integer.parseInt(value2)){
+			//每季度数据更新
+			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_QUARTER),BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey), 
+					fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), count_str);
+		}
+		
+		String value3 = this.hget(generateKey(fragments.get(DateTimeExtHelper.YEAR),BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey), 
+				fragments.get(DateTimeExtHelper.YEAR_MONTH));
+		if(StringUtils.isEmpty(value3) || count > Integer.parseInt(value3)){
 			//每年数据更新
-			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR)), fragments.get(DateTimeExtHelper.YEAR_MONTH), count_str);
+			this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR),BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey), 
+					fragments.get(DateTimeExtHelper.YEAR_MONTH), count_str);
 		}
 	}
 	
-	public Map<String,String> fragmentGet(String fragment){
-		Map<String,String> all = this.hgetall(generateKey(fragment));
+	public Map<String,String> fragmentGet(String fragment,String buPrefixKey){
+		Map<String,String> all = this.hgetall(generateKey(fragment,buPrefixKey));
 		return sortMapByKey(all);
 	}
 	
-	public Long cleanFragment(String fragment){
-		return this.expire(fragment, 0);
+	public Long cleanFragment(String fragment,String buPrefixKey){
+		return this.expire(generateKey(fragment,buPrefixKey), 0);
 	}
 	
 	@Override
@@ -117,7 +129,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	
 	public static Map<String, String> sortMapByKey(Map<String, String> map) {  
         if (map == null || map.isEmpty()) {  
-            return null;  
+            return map;  
         }
         Map<String, String> sortMap = new TreeMap<String, String>(new MapKeyComparator());  
         sortMap.putAll(map);  

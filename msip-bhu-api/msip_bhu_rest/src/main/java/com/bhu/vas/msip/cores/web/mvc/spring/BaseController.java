@@ -14,8 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
-import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseStatus;
 
 
 public abstract class BaseController implements ServletContextAware {
@@ -23,6 +23,8 @@ public abstract class BaseController implements ServletContextAware {
 	protected static ServletContext servletContext;
 	protected static String contextPath = "";
 	protected String defaultErrorMessage = "操作错误，请重试";
+	
+	
 	//protected final static String defaultErrorMessage = "操作错误，请重试";
 	protected void prepareModelAndView(ModelAndView mv){
 		
@@ -62,30 +64,21 @@ public abstract class BaseController implements ServletContextAware {
 	
 	@ExceptionHandler(BusinessException.class)
     protected ModelAndView businessException(BusinessException ex, HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("1---------BusinessException");
-		System.out.println("1---------request:"+request);
         logging(ex, request);
-        System.out.println("2---------BusinessException");
+        response.setStatus(ex.getResponse_status().getStatus());
         if (isJsonRequest(request)) {
-        	/*if(isJsonUploadRequest(request))
-        		SpringMVCHelper.renderHtml(response,JsonHelper.getJSONString(resp));
-        	else*/
-        	System.out.println("3---------BusinessException"+ex.getErrorCode());
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
         		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(),ex.getPayload()));
         	else	
         		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(),ex.getPayload()));
-        	System.out.println("4---------BusinessException"+ex.getErrorCode());
             return null;
         }
         if(isXmlRequest(request)){
         	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(),ex.getPayload()));
             return null;        	
         }
-        System.out.println("5---------BusinessException"+ex.getErrorCode());
         ModelAndView mv = new ModelAndView();
-        
         StaticResultController.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
         return mv;
     }
@@ -100,22 +93,22 @@ public abstract class BaseController implements ServletContextAware {
      */
     @ExceptionHandler(RuntimeException.class)
     protected ModelAndView runtimeException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response) {
-        logging(ex, request);
-        Response resp = new Response(false,ex.getMessage());
+    	logging(ex, request);
+    	response.setStatus(ResponseStatus.InternalServerError.getStatus());
+        //Response resp = new Response(false,ex.getMessage());
         if (isJsonRequest(request)) {
         	/*if(isJsonUploadRequest(request))
         		SpringMVCHelper.renderHtml(response,JsonHelper.getJSONString(resp));
         	else*/
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, resp);
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.BUSINESS_ERROR);
         	else	
-        		SpringMVCHelper.renderJson(response, resp);
+        		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
             return null;
         }
-        
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, resp);
+        	SpringMVCHelper.renderXml(response, ResponseError.BUSINESS_ERROR);
             return null;        	
         }
 
@@ -136,20 +129,20 @@ public abstract class BaseController implements ServletContextAware {
     @ExceptionHandler(Exception.class)
     protected ModelAndView exceptionHandler(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         logging(ex, request);
-        Response resp = new Response(false,ex.getMessage());
+        //Response resp = new Response(false,ex.getMessage());
         if (isJsonRequest(request)) {
         	/*if(isJsonUploadRequest(request))
         		SpringMVCHelper.renderHtml(response,JsonHelper.getJSONString(resp));
         	else*/
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, resp);
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.SYSTEM_ERROR);
         	else	
-        		SpringMVCHelper.renderJson(response, resp);
+        		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, resp);
+        	SpringMVCHelper.renderXml(response, ResponseError.SYSTEM_ERROR);
             return null;        	
         }
         ModelAndView mv = new ModelAndView();

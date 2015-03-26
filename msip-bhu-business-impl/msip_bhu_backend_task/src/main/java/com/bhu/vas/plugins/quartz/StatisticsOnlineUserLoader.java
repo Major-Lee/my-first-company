@@ -1,7 +1,6 @@
 package com.bhu.vas.plugins.quartz;
 
 import java.util.Date;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.StatisticsFragmentMaxOnlineHandsetService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -43,10 +41,10 @@ public class StatisticsOnlineUserLoader {
 	//TODO：TBD是否需要补齐？
 	//补齐数据，补齐指定日期内（包括前一日、后一日）三天的数据
 	public void polishingData(Date current){
-		String fragment = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
+		/*String fragment = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
 		Map<String,String> result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment);
 		int hopeSize = DateTimeExtHelper.getDayOfMonth(current);
-		if(hopeSize == result.size())	return;
+		if(hopeSize == result.size())	return;*/
 		
 		
 		

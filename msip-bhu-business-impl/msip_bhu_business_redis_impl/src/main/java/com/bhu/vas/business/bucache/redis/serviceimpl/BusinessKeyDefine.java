@@ -22,11 +22,11 @@ public class BusinessKeyDefine {
 	
 	public static class Statistics{
 		public static final String FragmentOnline  					= "FO.";
-		/*public static final String FragmentOnlineDailySuffixKey 	= "D.";
+		public static final String FragmentOnlineDailySuffixKey 	= "D.";
 		public static final String FragmentOnlineWeeklySuffixKey 	= "W.";
 		public static final String FragmentOnlineMonthlySuffixKey 	= "M.";
 		public static final String FragmentOnlineQuarterlySuffixKey = "Q.";
-		public static final String FragmentOnlineYearlySuffixKey 	= "Y.";*/
+		public static final String FragmentOnlineYearlySuffixKey 	= "Y.";
 		
 		public static final String SubjectFragment  				= "SF";
 		/*public static final String SubjectRelaton  					= "SR";

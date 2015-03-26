@@ -1,7 +1,11 @@
 package com.bhu.vas.processor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,6 +44,9 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 	
+	
+	private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
+	
 	@PostConstruct
 	public void initialize() {
 		logger.info("NotifyCmMsgProcessor initialize...");
@@ -60,31 +67,48 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 					if(ParserHeader.Online_Prefix == type){
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						String ctx = cmInfo.toString();
-						//QueueMsgObserverManager.CmMessageObserver.notifyCmOnline(cmInfo);
 						ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
-						daemonRpcService.cmJoinService(cmInfo);
-						if(cmInfo != null && cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){//有同步过来的在线用户
-							logger.info("~~~~~~~~~Client:"+cmInfo.getClient().size());
-							List<String> macs = new ArrayList<String>();
-							for(WifiDeviceDTO dto:cmInfo.getClient()){
-								macs.add(dto.getMac());
+						if(cmInfo.getLast_frag() == 1){//最后一条拆包指令,数据发送成功后需要清除缓存中的ctx数据
+							if(cmInfo != null && cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){//有同步过来的在线用户
+								put2CtxLocalCache(ctx,cmInfo.getClient());
+								Set<WifiDeviceDTO> localSet = localCaches.get(ctx);
+								logger.info("~~~~~~~共~~Client:"+localSet.size());
+								if(!localSet.isEmpty()){
+									List<String> macs = new ArrayList<String>();
+									for(WifiDeviceDTO dto:localSet){
+										macs.add(dto.getMac());
+									}
+									daemonRpcService.wifiDevicesOnline(ctx, macs);
+									deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, new ArrayList<WifiDeviceDTO>(localSet));
+								}
 							}
-							daemonRpcService.wifiDevicesOnline(ctx, macs);
-							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
+							daemonRpcService.cmJoinService(cmInfo);
+						}else{//不是最后一条拆包指令，则缓存相关client数据
+							put2CtxLocalCache(ctx,cmInfo.getClient());
 						}
-					}else if(ParserHeader.Offline_Prefix == type){
+					}else if(ParserHeader.Offline_Prefix == type){//移除所有属于此cm的用户，并且down queue不能写入数据
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
-						//QueueMsgObserverManager.CmMessageObserver.notifyCmOffline(cmInfo);
 					}else{
 						throw new UnsupportedOperationException(message+" message not yet implement handler process!");
 					}
-					//System.out.println("NotifyMsgProcessorService receive type:"+type+" payload:"+payload);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("NotifyCmMsgProcessor", ex);
 				}
 			}
 		}));
+	}
+	
+	private synchronized void put2CtxLocalCache(String ctx,List<WifiDeviceDTO> dtos){
+		if(dtos == null || dtos.isEmpty()) return;
+		Set<WifiDeviceDTO> localSet = localCaches.get(ctx);
+		if(localSet == null){
+			localSet = new HashSet<WifiDeviceDTO>();
+			localSet.addAll(dtos);
+			localCaches.put(ctx, localSet);
+		}else{
+			localSet.addAll(dtos);
+		}
 	}
 	
 	@PreDestroy
@@ -113,42 +137,4 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 		}
 	}
 	
-	/*@Override
-	public void onCmOnline(CmInfo info) {
-		
-	}
-
-	@Override
-	public void onCmOffline(CmInfo info) {
-		
-	}*/
-	/*public void handler(final String message){
-		
-		exec.submit((new Runnable() {
-			@Override
-			public void run() {
-				try{
-					logger.info("NotifyMsgProcessorService receive:"+message);
-					String type = message.substring(0, 8);
-					String payload = message.substring(8);
-					CmInfo cmInfo = null;
-					if(Online_Prefix.equals(type)){
-						cmInfo = JsonHelper.getDTO(payload, CmInfo.class);
-						QueueMsgObserverManager.CmMessageObserver.notifyCmOnline(cmInfo);
-					}else if(Offline_Prefix.equals(type)){
-						cmInfo = JsonHelper.getDTO(payload, CmInfo.class);
-						QueueMsgObserverManager.CmMessageObserver.notifyCmOffline(cmInfo);
-					}else{
-						throw new UnsupportedOperationException(message+" message not yet implement handler process!");
-					}
-					
-					System.out.println("NotifyMsgProcessorService receive type:"+type+" payload:"+payload);
-				}catch(Exception ex){
-					ex.printStackTrace(System.out);
-					logger.error("DeliverMessageQueueConsumer", ex);
-				}
-			}
-		}));
-	}*/
-
 }

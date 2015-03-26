@@ -218,5 +218,20 @@ public class WifiDeviceDTO implements Serializable{
 	public void setJoin_reason(String join_reason) {
 		this.join_reason = join_reason;
 	}
+
+	@Override
+	public int hashCode() {
+		if(this.mac == null) return 0;
+		return this.mac.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		WifiDeviceDTO dto = (WifiDeviceDTO)obj;
+		return dto.getMac().equals(this.getMac());
+	}
+	
+	
 	
 }
