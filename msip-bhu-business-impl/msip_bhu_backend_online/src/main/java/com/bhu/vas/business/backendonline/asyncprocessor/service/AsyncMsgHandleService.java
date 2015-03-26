@@ -140,8 +140,6 @@ public class AsyncMsgHandleService {
 					entityNewRegisters.add(BusinessModelBuilder.wifiDeviceDtoToEntity(dto));
 				}else{
 					BeanUtils.copyProperties(dto, entity);
-					entity.setLast_reged_at(new Date());
-					entity.setOnline(true);
 					entityNewOnlines.add(entity);
 				}
 				offline_ids.add(dto.getMac().toLowerCase());
@@ -164,6 +162,8 @@ public class AsyncMsgHandleService {
 					if(!DateTimeHelper.isSameDay(entity.getLast_reged_at(), today)){
 						incr_statistics_active++;
 					}
+					entity.setLast_reged_at(new Date());
+					entity.setOnline(true);
 				}
 				//1：wifi设备基础信息更新
 				wifiDeviceService.updateAll(entityNewOnlines);
@@ -347,9 +347,6 @@ public class AsyncMsgHandleService {
 						entityNewRegisters.add(BusinessModelBuilder.handsetDeviceDtoToEntity(dto));
 					}else{
 						BeanUtils.copyProperties(dto, entity);
-						entity.setLast_login_at(new Date());
-						entity.setLast_wifi_id(dto.getBssid().toLowerCase());
-						entity.setOnline(true);
 						entityNewOnlines.add(entity);
 					}
 					String handsetId = dto.getMac().toLowerCase();
@@ -384,6 +381,9 @@ public class AsyncMsgHandleService {
 						if(!DateTimeHelper.isSameDay(entity.getLast_login_at(), today)){
 							incr_statistics_active++;
 						}
+						entity.setLast_login_at(new Date());
+						entity.setLast_wifi_id(wifiId);
+						entity.setOnline(true);
 					}
 					//2:移动设备基础信息更新 
 					handsetDeviceService.updateAll(entityNewOnlines);
