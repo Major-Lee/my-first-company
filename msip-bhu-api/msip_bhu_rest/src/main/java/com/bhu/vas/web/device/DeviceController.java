@@ -49,8 +49,13 @@ public class DeviceController {
 	}
 	
 	/**
-	 * 获取根据keyword查询地点获取wifi设备分页
+	 * 根据条件搜索wifi设备列表
+	 * region表示 需要包含的地域名称
+	 * excepts表示 需要不包含的地域名称 逗号分割
 	 * 排序以当前在线和当前在线移动设备数量
+	 * @param keyword 可以是 mac 或 地理名称
+	 * @param region 北京市
+	 * @param excepts 广东省,上海市
 	 * @param request
 	 * @param response
 	 * @param pageNo
