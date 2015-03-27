@@ -32,12 +32,21 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.fetchWDevicesOrderMaxHandset(pageNo, pageSize);
 	}
 
+//	@Override
+//	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize) {
+//		if(pageNo < 0 || pageSize < 0) 
+//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+//		
+//		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, pageNo, pageSize);
+//	}
+	
 	@Override
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize) {
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword,
+			String region, String excepts, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, pageNo, pageSize);
+		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, region, excepts, pageNo, pageSize);
 	}
 	
 	@Override
@@ -70,5 +79,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	public StatisticsGeneralVTO fetchStatisticsGeneral(){
 		return deviceRestRpcService.fetchStatisticsGeneral();
 	}
+
+
 
 }

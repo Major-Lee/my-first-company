@@ -61,11 +61,14 @@ public class DeviceController {
 	public void fetch_wifidevices_by_keyword(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false, defaultValue="北京市", value = "q") String keyword,
+			@RequestParam(required = false, value = "q") String keyword,
+			@RequestParam(required = false, defaultValue="北京市", value = "region") String region,
+			@RequestParam(required = false, value = "excepts") String excepts,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
-		TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeyword(keyword, pageNo, pageSize);
+		TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeyword(keyword, region, 
+				excepts, pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
 
 	}

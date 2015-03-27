@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.unit.DistanceUnit;
+import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.springframework.stereotype.Service;
@@ -64,23 +64,92 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	public static final String GeoPoint_Distance = "2km";
 	//public static final String GeoPoint_Distance = "2000m";
 	/**
-	 * 根据地理位置keyword来搜索
-	 * @param keyword
+	 * 根据keyword进行分词来搜索地理位置
+	 * @param keyword 可以是 mac 或 地理名称
 	 * @param start
 	 * @param size
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeyword(String keyword,
-			int start, int size) throws ESQueryValidateException {
+//	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeyword(String keyword,
+//			int start, int size) throws ESQueryValidateException {
+//		
+//		if(StringUtils.isEmpty(keyword)){
+//			return emptyQueryListResponse();
+//		}
+//		FilterBuilder filter = null;
+//		if(StringHelper.isValidMac(keyword)){
+//			filter = FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, keyword.toLowerCase());
+//		}
+//		//如果不是mac 去地理位置域进行搜索
+//		else{
+//			String standardKeyword = IndexableResolver.standardString(keyword);
+//			filter = FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, standardKeyword);
+//		}
+//		
+//		//QueryBuilder query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
+//		//QueryFilterBuilder filter = FilterBuilders.queryFilter(query);
+//		
+//		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
+//				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
+//		queryRequest.addSort(sortByOnline());
+//		queryRequest.addSort(sortByCount());
+//		return super.searchListByQuery(queryRequest);
+//	}
+	
+	
+	/**
+	 * region表示 需要包含的地域名称
+	 * excepts表示 需要不包含的地域名称 逗号分割
+	 * 根据keyword进行分词来搜索地理位置
+	 * @param keyword 可以是 mac 或 地理名称
+	 * @param region 北京市
+	 * @param excepts 广东省,上海市
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeyword(String keyword, String region,
+			String excepts, int start, int size) throws ESQueryValidateException {
 		
-		if(StringUtils.isEmpty(keyword)){
+		if(StringUtils.isEmpty(keyword) && StringUtils.isEmpty(region) && StringUtils.isEmpty(excepts)){
 			return emptyQueryListResponse();
 		}
-		String standardKeyword = IndexableResolver.standardString(keyword);
+		
+		BoolFilterBuilder filter = FilterBuilders.boolFilter();
+		
+		if(!StringUtils.isEmpty(keyword)){
+			filter.must(FilterBuilders.orFilter(
+					FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, keyword.toLowerCase()),
+					FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, IndexableResolver.standardString(keyword)))
+					);
+//			if(StringHelper.isValidMac(keyword)){
+//				filter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, keyword.toLowerCase()));
+//			}
+//			//如果不是mac 去地理位置域进行搜索
+//			else{
+//				String standardKeyword = IndexableResolver.standardString(keyword);
+//				filter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, standardKeyword));
+//			}
+		}
+		
+		if(!StringUtils.isEmpty(region)){
+			//String standardRegion = IndexableResolver.standardString(region);
+			filter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, region));
+		}
+		
+		if(!StringUtils.isEmpty(excepts)){
+			//String standardRegion = IndexableResolver.standardString(excepts);
+			String[] except_array = excepts.split(StringHelper.COMMA_STRING_GAP);
+			for(String except : except_array){
+				filter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, except));
+			}
+		}
+		
 		//QueryBuilder query = QueryHelper.stringQueryBuilder(WifiDeviceMapableComponent.M_address, standardKeyword);
 		//QueryFilterBuilder filter = FilterBuilders.queryFilter(query);
-		TermFilterBuilder filter = FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, standardKeyword);
+		
 		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
 				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
 		queryRequest.addSort(sortByOnline());

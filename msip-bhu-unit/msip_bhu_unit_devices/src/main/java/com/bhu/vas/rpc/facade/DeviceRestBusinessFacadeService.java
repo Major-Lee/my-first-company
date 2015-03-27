@@ -91,20 +91,21 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	/**
-	 * 根据keyword来查询wifi设备
+	   根据keyword来搜索wifi设备数据
+	 * keyword 可以是 mac 或 地理名称
 	 * 以当前在线和当前在线移动设备数量排序
-	 * @param keyword
+	 * @param keyword 可以是 mac 或 地理名称
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws ESQueryValidateException 
 	 */
-	public TailPage<WifiDeviceVTO> fetchWDeviceByKeyword(String keyword, int pageNo, int pageSize) 
-			throws ESQueryValidateException{
+	public TailPage<WifiDeviceVTO> fetchWDeviceByKeyword(String keyword, String region,
+			String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
 		List<WifiDeviceVTO> vtos = null;
 		
 		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeyword(keyword, 
-				(pageNo*pageSize)-pageSize, pageSize);
+				region, excepts, (pageNo*pageSize)-pageSize, pageSize);
 		
 		int total = search_result.getTotal();
 		if(total == 0){

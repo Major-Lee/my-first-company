@@ -50,14 +50,38 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}
 	}
 	/**
-	 * 获取在线设备列表
+	 * 根据keyword来搜索wifi设备数据
+	 * keyword 可以是 mac 或 地理名称
+	 */
+//	@Override
+//	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize) {
+//		logger.info(String.format("DeviceRestRPC fetchWDevicesByKeyword invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
+//		
+//		try{
+//			return deviceRestBusinessFacadeService.fetchWDeviceByKeyword(keyword, pageNo, pageSize);
+//		}catch(Exception ex){
+//			ex.printStackTrace(System.out);
+//			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeyword exception pageNo [%s] pageSize [%s] exmsg[%s]",
+//					pageNo, pageSize, ex.getMessage()), ex);
+//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+//		}
+//	}
+	
+	/**
+	 * region表示 需要包含的地域名称
+	 * excepts表示 需要不包含的地域名称 逗号分割
+	 * 根据keyword进行分词来搜索地理位置
+	 * @param keyword 可以是 mac 或 地理名称
+	 * @param region 北京市
+	 * @param excepts 广东省,上海市
 	 */
 	@Override
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize) {
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, String region,
+			String excepts, int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchWDevicesByKeyword invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
 		
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceByKeyword(keyword, pageNo, pageSize);
+			return deviceRestBusinessFacadeService.fetchWDeviceByKeyword(keyword, region, excepts, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeyword exception pageNo [%s] pageSize [%s] exmsg[%s]",
