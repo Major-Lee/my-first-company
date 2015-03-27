@@ -79,13 +79,27 @@ public class DeviceRestBusinessFacadeService {
 			return Collections.emptyList();
 		}
 		
-		List<WifiDeviceMaxBusyVTO> vtos = new ArrayList<WifiDeviceMaxBusyVTO>();
-		WifiDeviceMaxBusyVTO vto = null;
+		List<String> wifiIds = new ArrayList<String>();
 		for(WifiHandsetDeviceLoginCountMDTO mdto : mdtos){
+			wifiIds.add(mdto.getId());
+		}
+		
+		List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
+		int cursor = 0;
+		WifiDeviceMaxBusyVTO vto = null;
+		WifiHandsetDeviceLoginCountMDTO mdto = null;
+		List<WifiDeviceMaxBusyVTO> vtos = new ArrayList<WifiDeviceMaxBusyVTO>();
+		for(WifiDevice entity : entitys){
 			vto = new WifiDeviceMaxBusyVTO();
+			mdto = mdtos.get(cursor);
 			vto.setWid(mdto.getId());
 			vto.setHdc(mdto.getCount());
+			if(entity != null){
+				vto.setWm(entity.getWork_mode());
+				vto.setAdr(entity.getFormatted_address());
+			}
 			vtos.add(vto);
+			cursor++;
 		}
 		return vtos;
 	}
