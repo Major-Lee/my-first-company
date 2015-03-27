@@ -49,7 +49,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)+1);
 			for(int i=0;i<24;i++){
 				c.set(Calendar.HOUR_OF_DAY, i);
-				StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(c.getTime(), RandomData.intNumber(300,600));
+				StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(c.getTime(), RandomData.intNumber(200,2000));
 				//System.out.println(DateTimeHelper.formatDate(c.getTime(), DateTimeHelper.FormatPattern9));
 			}
 			System.out.println(DateTimeHelper.formatDate(c.getTime(), DateTimeHelper.FormatPattern9));
