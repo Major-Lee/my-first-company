@@ -39,7 +39,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void doInitTest(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		//int count = RandomData.intNumber(300,500);
@@ -56,7 +56,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void doGet(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		Calendar c = Calendar.getInstance();

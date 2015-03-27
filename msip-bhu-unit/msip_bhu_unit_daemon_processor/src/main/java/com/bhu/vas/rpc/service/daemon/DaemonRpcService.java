@@ -70,7 +70,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		//System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		String sessionCtx = SessionManager.getInstance().getSession(mac);
-		if(sessionCtx.equals(ctx)){
+		if(sessionCtx != null && sessionCtx.equals(ctx)){
 			SessionManager.getInstance().removeSession(mac);
 		}else{
 			;//TODO:如何处理
