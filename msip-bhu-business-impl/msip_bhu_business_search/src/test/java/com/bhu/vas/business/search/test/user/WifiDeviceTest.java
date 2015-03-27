@@ -120,9 +120,9 @@ public class WifiDeviceTest extends BaseTest{
 	
 	@Test
 	public void testSearchByKeyword() throws ESQueryValidateException{
-		String keyword = "黄寺大街";
-		String region = "西城区";
-		String excepts = "";
+		String keyword = "辽宁";
+		String region = "";
+		String excepts = "北京市,广东省,浙江省,上海市";
 		//String keyword = "西城区";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeyword(keyword, region, 
 				excepts,0, 10);

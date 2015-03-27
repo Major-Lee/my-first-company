@@ -67,7 +67,7 @@ public class DeviceController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false, value = "q") String keyword,
-			@RequestParam(required = false, defaultValue="北京市", value = "region") String region,
+			@RequestParam(required = false, value = "region") String region,
 			@RequestParam(required = false, value = "excepts") String excepts,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
