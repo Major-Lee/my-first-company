@@ -34,6 +34,7 @@ public class DaemonCheckSerialTask extends TimerTask{
     				System.out.println("removed ok:"+task.toString()+" map now exist:"+SessionManager.getInstance().getSerialTaskmap().containsKey(key));
     				sended++;
     			}else{
+    				iter.remove();
     				notExistMac++;
     			}
     		}else{
