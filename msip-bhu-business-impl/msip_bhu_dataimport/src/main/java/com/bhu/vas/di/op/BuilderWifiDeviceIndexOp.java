@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
@@ -30,20 +31,31 @@ public class BuilderWifiDeviceIndexOp {
 	public static int index_count = 0;//建立的索引数据条数
 	
 	public static WifiDeviceIndexService wifiDeviceIndexService = null;
+	public static DeviceFacadeService deviceFacadeService = null;
 	public static WifiDeviceService wifiDeviceService = null;
 	
 	public static void main(String[] argv) throws ElasticsearchException, ESException, IOException, ParseException{
 		
 		try{
+			//是否需要更新索引库mapping
 			boolean updated_mapping = false;
-			if(argv != null && argv.length == 1){
-				updated_mapping = Boolean.valueOf(argv[0]);
+			//是否需要更新wifi设备的地理位置
+			boolean updated_geocoding = false;
+			if(argv != null){
+				if(argv.length == 1){
+					updated_mapping = Boolean.valueOf(argv[0]);
+				}
+				else if(argv.length == 2){
+					updated_mapping = Boolean.valueOf(argv[0]);
+					updated_geocoding = Boolean.valueOf(argv[1]);
+				}
 			}
 			
 			ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 	
 			wifiDeviceIndexService = (WifiDeviceIndexService)ctx.getBean("wifiDeviceIndexService");
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
+			deviceFacadeService = (DeviceFacadeService)ctx.getBean("deviceFacadeService");
 			
 			long t0 = System.currentTimeMillis();
 			//建立索引库, 如果库存在, 不会重新创建
@@ -66,6 +78,11 @@ public class BuilderWifiDeviceIndexOp {
 				WifiDeviceIndexDTO indexDto = null;
 				for(WifiDevice device:entitys){
 					String wifi_mac = device.getId();
+					if(updated_geocoding){
+						if(deviceFacadeService.wifiDeiviceGeocoding(device)){
+							wifiDeviceService.update(device);
+						}
+					}
 					long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
 					indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
 					indexDto.setOnline(device.isOnline() ? 1 : 0);
