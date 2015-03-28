@@ -44,9 +44,9 @@ public class WifiDevice extends BaseStringModel{
 	//wifi设备是否在线
 	private boolean online;
 	//下行流量
-	private long rx_bytes;
+	private String rx_bytes;
 	//上行流量
-	private long tx_bytes;
+	private String tx_bytes;
 	//地理位置坐标 纬度
 	private String lat;
 	//地理位置坐标 经度
@@ -221,19 +221,19 @@ public class WifiDevice extends BaseStringModel{
 		this.online = online;
 	}
 	
-	public long getRx_bytes() {
+	public String getRx_bytes() {
 		return rx_bytes;
 	}
-
-	public void setRx_bytes(long rx_bytes) {
+	
+	public void setRx_bytes(String rx_bytes) {
 		this.rx_bytes = rx_bytes;
 	}
 
-	public long getTx_bytes() {
+	public String getTx_bytes() {
 		return tx_bytes;
 	}
 
-	public void setTx_bytes(long tx_bytes) {
+	public void setTx_bytes(String tx_bytes) {
 		this.tx_bytes = tx_bytes;
 	}
 

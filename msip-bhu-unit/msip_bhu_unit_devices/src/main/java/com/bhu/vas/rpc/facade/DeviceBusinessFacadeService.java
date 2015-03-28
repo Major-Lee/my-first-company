@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -416,16 +417,20 @@ public class DeviceBusinessFacadeService {
 				WifiDevice entity = wifiDeviceService.getById(wifiId);
 				if(entity != null){
 					//下行总流量 (合并多个网卡的记录)
-					long total_rx_bytes = 0;
+					//long total_rx_bytes = 0;
+					BigInteger total_rx_bytes = new BigInteger("0");
 					//上行总流量 (合并多个网卡的记录)
-					long total_tx_bytes = 0;
+					//long total_tx_bytes = 0;
+					BigInteger total_tx_bytes = new BigInteger("0");
 					
 					for(WifiDeviceFlowDTO dto : dtos){
-						total_rx_bytes = total_rx_bytes + Long.parseLong(dto.getRx_bytes());
-						total_tx_bytes = total_tx_bytes + Long.parseLong(dto.getTx_bytes());
+						//total_rx_bytes = total_rx_bytes + Long.parseLong(dto.getRx_bytes());
+						total_rx_bytes = total_rx_bytes.add(new BigInteger(dto.getRx_bytes()));
+						//total_tx_bytes = total_tx_bytes + Long.parseLong(dto.getTx_bytes());
+						total_tx_bytes = total_tx_bytes.add(new BigInteger(dto.getTx_bytes()));
 					}
-					entity.setRx_bytes(total_rx_bytes);
-					entity.setTx_bytes(total_tx_bytes);
+					entity.setRx_bytes(total_rx_bytes.toString());
+					entity.setTx_bytes(total_tx_bytes.toString());
 					wifiDeviceService.update(entity);
 				}
 			}

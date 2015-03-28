@@ -147,8 +147,10 @@ public class DeviceRestBusinessFacadeService {
 				vto.setAdr(searchDto.getAddress());
 				vto.setDt(searchDto.getDevicetype());
 				if(entity != null){
-					vto.setDof(entity.getRx_bytes() > 0 ? (entity.getRx_bytes()/1024)+"KB" : "0KB");
-					vto.setUof(entity.getTx_bytes() > 0 ? (entity.getTx_bytes()/1024)+"KB" : "0KB");
+					//vto.setDof(entity.getRx_bytes() > 0 ? (entity.getRx_bytes()/1024)+"KB" : "0KB");
+					vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
+					//vto.setUof(entity.getTx_bytes() > 0 ? (entity.getTx_bytes()/1024)+"KB" : "0KB");
+					vto.setUof(StringHelper.formateBytes(entity.getTx_bytes()));
 				}
 				vtos.add(vto);
 				cursor++;
