@@ -34,7 +34,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 @Service
 public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(50);
+	private ExecutorService exec = Executors.newFixedThreadPool(100);
 	//private static String Online_Prefix = "00000001";
 	/*private static final int DeviceOffline_Prefix = 3;
 	private static final int DeviceNotExist_Prefix = 4;
