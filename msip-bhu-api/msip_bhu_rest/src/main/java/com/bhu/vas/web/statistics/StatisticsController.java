@@ -21,6 +21,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -80,7 +81,7 @@ public class StatisticsController extends BaseController{
 			result = null;
 		}
 		Map<String,Object> dataFull = new HashMap<String,Object>();
-		dataFull.put(hint, result);
+		dataFull.put(hint, SortMapHelper.sortMapByKey(result));
 		return dataFull;
 	}
 	/*private Map<String,Map<String,String>> build4Chart(int type,int ml){

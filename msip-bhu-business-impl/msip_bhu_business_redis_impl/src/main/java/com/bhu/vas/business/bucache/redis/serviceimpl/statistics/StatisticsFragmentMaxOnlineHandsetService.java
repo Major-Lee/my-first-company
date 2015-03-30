@@ -1,10 +1,8 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.statistics;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.springframework.util.StringUtils;
 
@@ -15,6 +13,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 
 /**
  *  用户收到所有聊天消息信息存储空间
@@ -105,7 +104,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	
 	public Map<String,String> fragmentGet(String fragment,String buPrefixKey){
 		Map<String,String> all = this.hgetall(generateKey(fragment,buPrefixKey));
-		return sortMapByKey(all);
+		return SortMapHelper.sortMapByKey(all);
 	}
 	
 	public Long cleanFragment(String fragment,String buPrefixKey){
@@ -127,18 +126,18 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
 	
-	public static Map<String, String> sortMapByKey(Map<String, String> map) {  
+	/*public static Map<String, String> sortMapByKey(Map<String, String> map) {  
         if (map == null || map.isEmpty()) {  
             return map;  
         }
         Map<String, String> sortMap = new TreeMap<String, String>(new MapKeyComparator());  
         sortMap.putAll(map);  
         return sortMap;  
-    } 
+    } */
 	
 }
-class MapKeyComparator implements Comparator<String>{  
+/*class MapKeyComparator implements Comparator<String>{  
     public int compare(String str1, String str2) {  
         return str1.compareTo(str2);  
     }  
-}
+}*/
