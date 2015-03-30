@@ -24,7 +24,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
 
-public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
+public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
 
 	//@Test
 	public void doInitTest1(){
@@ -39,7 +39,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void doInitTest(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		//int count = RandomData.intNumber(300,500);
@@ -56,7 +56,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void doGet(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		Calendar c = Calendar.getInstance();
@@ -185,7 +185,8 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		
 	}
 	
-	//@Test
+	
+	@Test
 	public void testBuild4Chart(){
 		System.out.println(JsonHelper.getJSONString(build4Chart(DateTimeExtHelper.YEAR_MONTH_DD,3)));
 		System.out.println(JsonHelper.getJSONString(build4Chart(DateTimeExtHelper.YEAR_WHICH_WEEK,3)));
@@ -218,7 +219,7 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		return result;
 	}*/
 	
-	private List<Map<String,String>> build4Chart(int type,int ml){
+	private Map<String,List<String>> build4Chart(int type,int ml){
 		if(type == DateTimeExtHelper.YEAR_MONTH_DD){
 			return build4DailyChart(ml);
 		}else if(type == DateTimeExtHelper.YEAR_WHICH_WEEK){
@@ -233,111 +234,99 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
 		return null;
 	}
 	
-	private List<Map<String,String>> build4DailyChart(int ml){
-		List<Map<String,String>> result = new ArrayList<Map<String,String>>();
-		for(int i=0;i<24;i++){
-			Map<String,String> map = new HashMap<String,String>(); 
-			map.put("key"+i, String.format("%02d", i));
-			result.add(map);
-		}
+	private Map<String,List<String>> build4DailyChart(int ml){
+		Map<String,List<String>> result = new HashMap<String,List<String>>();
 		Date current = new Date();
-		//for(int i=ml;i>=0;i--){
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_MONTH_DD);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+			if(fragment_result.isEmpty()) continue;
+			List<String> elements = new ArrayList<String>();
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				String keyStr = next.getKey();
-				if(keyStr.length()>2) continue;
-				int key = Integer.parseInt(next.getKey());//小时的key
-				result.get(key).put(fragment, next.getValue());
+				String po = next.getKey();
+				String va = next.getValue();
+				elements.add(new PointDTO(po,va).toString());
 			}
+			result.put(fragment, elements);
 		}
 		return result;
 	}
 	
-	private List<Map<String,String>> build4WeeklyChart(int ml){
-		List<Map<String,String>> result = new ArrayList<Map<String,String>>();
-		for(int i=0;i<7;i++){
-			Map<String,String> map = new HashMap<String,String>(); 
-			map.put("key"+i+1, String.format("%02d", i+1));
-			result.add(map);
-		}
+	private Map<String,List<String>> build4WeeklyChart(int ml){
+		Map<String,List<String>> result = new HashMap<String,List<String>>();
 		Date current = new Date();
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i*7);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_WHICH_WEEK);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+			if(fragment_result.isEmpty()) continue;
+			List<String> elements = new ArrayList<String>();
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			int j = 0;
+			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				result.get(j).put(fragment, next.getValue());
+				String po = next.getKey();
+				String va = next.getValue();
+				elements.add(new PointDTO(po,va).toString());//String.format("%02d", j)
 				j++;
 			}
+			result.put(fragment, elements);
 		}
 		return result;
 	}
 	
-	private List<Map<String,String>> build4MonthlyChart(int ml){
-		List<Map<String,String>> result = new ArrayList<Map<String,String>>();
-		for(int i=0;i<31;i++){
-			Map<String,String> map = new HashMap<String,String>(); 
-			map.put(String.format("key%02d", i+1), String.format("%02d", i+1));
-			result.add(map);
-		}
+	private Map<String,List<String>> build4MonthlyChart(int ml){
+		Map<String,List<String>> result = new HashMap<String,List<String>>();
 		Date current = new Date();
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateFirstDayOfMonthAgo(current,i);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_MONTH);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
-			//System.out.println(fragment+"~~~~"+fragment_result+"    :"+fragment_result.size());
+			if(fragment_result.isEmpty()) continue;
+			List<String> elements = new ArrayList<String>();
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			int j = 0;
+			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				result.get(j).put(fragment, next.getValue());
+				String po = next.getKey();
+				String va = next.getValue();
+				elements.add(new PointDTO(po,va).toString());
 				j++;
 			}
+			result.put(fragment, elements);
 		}
 		return result;
 	}
 	
-	private List<Map<String,String>> build4QuarterlyChart(int ml){
-		List<Map<String,String>> result = new ArrayList<Map<String,String>>();
-		for(int i=0;i<13;i++){
-			Map<String,String> map = new HashMap<String,String>(); 
-			map.put(String.format("key%02d", i+1), String.format("%02d", i+1));
-			result.add(map);
-		}
+	private Map<String,List<String>> build4QuarterlyChart(int ml){
+		Map<String,List<String>> result = new HashMap<String,List<String>>();
 		Date current = new Date();
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateFirstDayOfMonthAgo(current,i*3);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_QUARTER);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey);
-			System.out.println(fragment+"~~~~"+fragment_result+"    :"+fragment_result.size());
+			if(fragment_result.isEmpty()) continue;
+			List<String> elements = new ArrayList<String>();
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			int j = 0;
+			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				result.get(j).put(fragment, next.getValue());
+				String po = next.getKey();
+				String va = next.getValue();
+				elements.add(new PointDTO(po,va).toString());
 				j++;
 			}
+			result.put(fragment, elements);
 		}
 		return result;
 	}
 	
-	private List<Map<String,String>> build4YearlyChart(int ml){
-		List<Map<String,String>> result = new ArrayList<Map<String,String>>();
-		for(int i=0;i<12;i++){
-			Map<String,String> map = new HashMap<String,String>(); 
-			map.put(String.format("key%02d", i+1), String.format("%02d", i+1));
-			result.add(map);
-		}
+	private Map<String,List<String>> build4YearlyChart(int ml){
+		Map<String,List<String>> result = new HashMap<String,List<String>>();
 		Date current = new Date();
-		
 		Calendar c = Calendar.getInstance();
         c.setFirstDayOfWeek(Calendar.MONDAY); //设置每周的第一天为星期一  
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//每周从周一开始  
@@ -345,20 +334,23 @@ public class StatisticsFragmentMaxOnlineHandsetServiceTest extends BaseTest{
         c.setMinimalDaysInFirstWeek(7);  //设置每周最少为7天  
 		c.setTime(current);
 		int year = c.get(Calendar.YEAR);
-		
 		for(int i=0;i<ml;i++){
 			c.set(Calendar.YEAR, year-i);
 			//Date current_ago = DateTimeHelper.getDateFirstDayOfMonthAgo(current,i*3);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(c.getTime(), DateTimeExtHelper.YEAR);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey);
-			System.out.println(fragment+"~~~~"+fragment_result+"    :"+fragment_result.size());
+			if(fragment_result.isEmpty()) continue;
+			List<String> elements = new ArrayList<String>();
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			int j = 0;
+			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				result.get(j).put(fragment, next.getValue());
+				String po = next.getKey();
+				String va = next.getValue();
+				elements.add(new PointDTO(po,va).toString());
 				j++;
 			}
+			result.put(fragment, elements);
 		}
 		return result;
 	}
