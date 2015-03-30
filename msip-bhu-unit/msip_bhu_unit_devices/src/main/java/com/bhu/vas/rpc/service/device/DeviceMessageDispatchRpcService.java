@@ -38,7 +38,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 */
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
+		//logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
 		
 		try{
 			int type = parserHeader.getType();
@@ -57,8 +57,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					break;
 			}
 			
-			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
-					ctx, payload, parserHeader));
+			//logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
+			//		ctx, payload, parserHeader));
+			logger.info("1");
 		}catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC messageDispatch failed ctx [%s] payload [%s] header[%s]", 
 					ctx, payload, parserHeader));
