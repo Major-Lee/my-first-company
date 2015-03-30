@@ -24,7 +24,7 @@ import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 @Service
 public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgBackendProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(50);
+	private ExecutorService exec = Executors.newFixedThreadPool(100);
 	
 	@Resource
 	private AsyncMsgHandleService asyncMsgHandleService;

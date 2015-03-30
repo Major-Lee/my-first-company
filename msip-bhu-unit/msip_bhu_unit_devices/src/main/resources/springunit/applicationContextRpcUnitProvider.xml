@@ -32,6 +32,6 @@
     <dubbo:protocol name="dubbo" port="${provider.port}" />
 	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<!--  accesslog="/Users/tangzichao/access.log"-->
-	<dubbo:service delay="5000" timeout="2000" retries="2" loadbalance="random" actives="100" interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService" ref="deviceMessageDispatchRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceMessageDispatchRpcServiceStub" />
-	<dubbo:service delay="5000" timeout="2000" retries="2" loadbalance="random" actives="100" interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService" ref="deviceRestRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceRestRpcServiceStub" />
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" loadbalance="random"  interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService" ref="deviceMessageDispatchRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceMessageDispatchRpcServiceStub" />
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService" ref="deviceRestRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceRestRpcServiceStub" />
 </beans>
