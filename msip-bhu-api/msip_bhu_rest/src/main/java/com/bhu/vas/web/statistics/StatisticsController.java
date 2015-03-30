@@ -39,8 +39,8 @@ public class StatisticsController extends BaseController{
 	 * @param response
 	 * @param t 年-0 季度-1 月-2 周-3 日-4
 	 * @param ml 代表显示几条曲线的数据 1-本日（周、月、季度、年） 2-本日、前一天（周、月、季度、年） 3-本日、前一天、前两天（周、月、季度、年）,依次类推
-	 * 	public static final int YEAR = 0;年
-		public static final int YEAR_QUARTER = 1;季度
+	 * 	public static final int YEAR = 0;
+		public static final int YEAR_QUARTER = 1;
 		public static final int YEAR_MONTH = 2;
 		public static final int YEAR_WHICH_WEEK = 3;
 		public static final int YEAR_MONTH_DD = 4;
