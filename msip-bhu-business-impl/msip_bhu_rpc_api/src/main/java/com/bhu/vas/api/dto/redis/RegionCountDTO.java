@@ -6,7 +6,8 @@ package com.bhu.vas.api.dto.redis;
  * @author tangzichao
  *
  */
-public class RegionCountDTO {
+@SuppressWarnings("serial")
+public class RegionCountDTO implements java.io.Serializable{
 	private String r;//地域名称
 	private long v;//wifi设备数量
 	
