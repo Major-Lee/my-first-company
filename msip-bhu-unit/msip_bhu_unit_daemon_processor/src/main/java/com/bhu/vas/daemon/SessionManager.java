@@ -26,16 +26,16 @@ public class SessionManager {
 		return SessionCacheFacadeHolder.instance; 
 	}
 	
-	//wifi mac --> cm  caches
-	private DefaultCacheImpl<String> sessions = new DefaultCacheImpl<String>(60,10);
+	//wifi mac --> sessioninfo  caches
+	private DefaultCacheImpl<SessionInfo> sessions = new DefaultCacheImpl<SessionInfo>(60,10);
 	
 	private Map<String,SerialTask> serialTaskmap = new ConcurrentHashMap<String,SerialTask>();
-	public String getSession(String wifi_mac) {
+	public SessionInfo getSession(String wifi_mac) {
 		return sessions.get(wifi_mac);
     }
 	
 	public void addSession(String wifi_mac, String ctx) {
-		sessions.put(wifi_mac, ctx);
+		sessions.put(wifi_mac, new SessionInfo(wifi_mac,ctx));
     }
 
 	public void removeSession(String wifi_mac) {
@@ -48,8 +48,8 @@ public class SessionManager {
 		Iterator<String> iterator = this.sessions.keySet().iterator();
 		while(iterator.hasNext()){
 			String wifi_mac = iterator.next();
-			String session_ctx = this.getSession(wifi_mac);
-			if(ctx.equals(session_ctx)){
+			SessionInfo sessioninfo = this.getSession(wifi_mac);
+			if(sessioninfo != null && ctx.equals(sessioninfo.getCtx())){
 				this.removeSession(wifi_mac);
 			}
 		}
@@ -74,5 +74,9 @@ public class SessionManager {
 
 	public void setSerialTaskmap(Map<String, SerialTask> serialTaskmap) {
 		this.serialTaskmap = serialTaskmap;
+	}
+	
+	public Map<String,SessionInfo>[] sessionInfoCaches(){
+		return this.sessions.getCaches();
 	}
 }

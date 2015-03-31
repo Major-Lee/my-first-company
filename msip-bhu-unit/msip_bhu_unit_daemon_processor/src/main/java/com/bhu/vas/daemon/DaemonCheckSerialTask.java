@@ -26,10 +26,10 @@ public class DaemonCheckSerialTask extends TimerTask{
     		SerialTask task = element.getValue();
     		if(task.canBeExecute(current)){
     			String wifi_mac = task.getMac();
-    			String ctx = SessionManager.getInstance().getSession(wifi_mac);
-    			if(StringUtils.isNotEmpty(ctx)){//找不到wifimac对应的ctx了
-    				DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, StringHelper.unformatMacAddress(task.getMac()), CMDBuilder.builderDeviceLocationStep2Query(task.getMac(), task.getTaskid(), task.getSerialno()));
-    				////SessionManager.getInstance().getSerialTaskmap().remove(key);
+    			SessionInfo session = SessionManager.getInstance().getSession(wifi_mac);
+    			if(session != null && StringUtils.isNotEmpty(session.getCtx())){//找不到wifimac对应的ctx了
+    				DaemonObserverManager.CmdDownObserver.notifyCmdDown(session.getCtx(), StringHelper.unformatMacAddress(task.getMac()), 
+    						CMDBuilder.builderDeviceLocationStep2Query(task.getMac(), task.getTaskid(), task.getSerialno()));
     				iter.remove();
     				System.out.println("removed ok:"+task.toString()+" map now exist:"+SessionManager.getInstance().getSerialTaskmap().containsKey(key));
     				sended++;

@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
 import com.bhu.vas.daemon.SerialTask;
+import com.bhu.vas.daemon.SessionInfo;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
 import com.bhu.vas.daemon.observer.listener.CmdDownListener;
@@ -69,8 +70,8 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	public boolean wifiDeviceOffline(String ctx,String mac) {
 		//System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
-		String sessionCtx = SessionManager.getInstance().getSession(mac);
-		if(sessionCtx != null && sessionCtx.equals(ctx)){
+		SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
+		if(sessionCtx != null && ctx.equals(sessionCtx.getCtx())){
 			SessionManager.getInstance().removeSession(mac);
 		}else{
 			;//TODO:如何处理

@@ -1,6 +1,8 @@
 package com.bhu.vas.daemon;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimerTask;
 
 import com.bhu.vas.api.helper.CMDBuilder;
@@ -20,6 +22,41 @@ public class DaemonCheckTask extends TimerTask{
 	@Override
 	public void run() {
 		System.out.println("DaemonCheckTask starting...");
+		int total=0;
+    	int unsended = 0;
+    	int sended = 0;
+    	int removed = 0;
+		long current = System.currentTimeMillis();
+		Map<String, SessionInfo>[] sessionInfoCaches = SessionManager.getInstance().sessionInfoCaches();
+		for (Map<String, SessionInfo> cache : sessionInfoCaches) {
+			Iterator<Entry<String, SessionInfo>> iter = cache.entrySet().iterator();
+			while(iter.hasNext()){
+				total++;
+				Entry<String, SessionInfo> next = iter.next();
+				SessionInfo info = next.getValue();
+				if(info != null){
+					if(info.canBeExecute(current)){
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
+						//String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac)));//,String.format(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)), RandomData.intNumber(1005, 10000080))));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceStatusQuery(info.getMac(), CMDBuilder.timer_device_status_taskid_fragment.getNextSequence()));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceFlowQuery(info.getMac(), CMDBuilder.timer_device_flow_taskid_fragment.getNextSequence()));
+						info.setRects(current);
+						sended++;
+					}else{
+						unsended++;
+					}
+				}else{
+					iter.remove();
+					removed++;
+					continue;
+				}
+			}
+			System.out.println(String.format("DaemonCheckTask ended! Total[%s] Sended[%s] UnSended[%s] removed[%s]",total,sended,unsended,removed));
+		}
+		/*for (Map<String, T> cache : caches) {
+			values.addAll(cache.values());
+		}
+		
     	Iterator<String> iter = SessionManager.getInstance().keySet().iterator();
     	int i=0;
     	while(iter.hasNext()){
@@ -33,8 +70,7 @@ public class DaemonCheckTask extends TimerTask{
     		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, wifi_mac, 
     		//		String.format(query_device_location_step1_cmd_template, StringHelper.unformatMacAddress(wifi_mac),String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080))));//, RandomData.intNumber(1005, 10000080))));
     		i++;
-    	}
-    	System.out.println("DaemonCheckTask ended! ["+i+"] devices");
+    	}*/
 	}
 	
 	public static void main(String[] argv){
