@@ -30,6 +30,9 @@ cp ../../msip-bhu-business-impl/msip_bhu_backend_task/target/msip_bhu_backend_ta
 echo '拷贝文件 msip_bhu_dataimport-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-bin.zip ./$CuDateDir
 
+echo '拷贝文件 msip_bhu_rest.war到'$CuDateDir
+cp ../../msip-bhu-api/msip_bhu_rest/target/msip_bhu_rest.war ./$CuDateDir
+
 cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
@@ -48,6 +51,7 @@ unzip -qo msip_bhu_backend_task/bin/msip_bhu_backend_task.jar -d msip_bhu_backen
 unzip -q msip_bhu_dataimport-bin.zip
 unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport/classes/
 
+unzip -qo msip_bhu_rest.war -d msip_bhu_rest
 echo '文件解压过程成功'
 
 echo '准备发布业务组件到'$Deploy2Server
@@ -84,5 +88,12 @@ echo 'deploy msip_bhu_dataimport to ...@'$Deploy2Server
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar  		root@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/ 		root@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server
+echo '发布其他服务成功'
+
+
+echo 'deploy msip_bhu_rest to ...@'192.168.66.7
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/lib/msip_*.jar  	root@192.168.66.7:/BHUData/apps/msip_bhu_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/classes/com/ 		root@192.168.66.7:/BHUData/apps/msip_bhu_rest/WEB-INF/classes/com/
+echo 'deploy msip_bhu_dataimport successfully @'192.168.66.7
 echo '发布其他服务成功'
 

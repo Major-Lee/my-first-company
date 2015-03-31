@@ -31,4 +31,15 @@ public class TaskServiceStub implements ITaskRpcService{
 				channel, channel_taskid);
 	}
 
+	@Override
+	public void taskStatusFetch(int taskid) {
+		taskRpcService.taskStatusFetch(taskid);
+	}
+
+	@Override
+	public void taskStatusFetch4ThirdParties(String channel,
+			String channel_taskid) {
+		taskRpcService.taskStatusFetch4ThirdParties(channel, channel_taskid);
+	}
+
 }

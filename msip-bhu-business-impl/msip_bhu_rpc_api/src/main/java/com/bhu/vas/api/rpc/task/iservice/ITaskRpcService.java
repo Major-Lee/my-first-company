@@ -8,5 +8,14 @@ public interface ITaskRpcService {
 			String payload,
 			String channel,
 			String channel_taskid);
+	
+	public void taskStatusFetch(
+			int taskid
+			);
+	
+	public void taskStatusFetch4ThirdParties(
+			String channel,
+			String channel_taskid
+			);
 	//public boolean taskCompleted(String taskid);
 }
