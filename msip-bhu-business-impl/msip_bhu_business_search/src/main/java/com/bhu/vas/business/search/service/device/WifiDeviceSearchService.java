@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.common.geo.GeoHashUtils;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolFilterBuilder;
+import org.elasticsearch.index.query.ExistsFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -36,6 +39,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	
 	@Override
 	public WifiDeviceSearchDTO buildDto(Map<String,Object> sourceMap) {
+		//System.out.println(JsonHelper.getJSONString(sourceMap));
 		//System.out.println("uid : " + sourceMap.get(UserMapableComponent.M_id).toString() + " = " + JsonHelper.getJSONString(sourceMap));
 		WifiDeviceSearchDTO dto = new WifiDeviceSearchDTO();
 		dto.setId(sourceMap.get(WifiDeviceMapableComponent.M_id).toString());
@@ -57,6 +61,18 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		
 		Object registerat = sourceMap.get(WifiDeviceMapableComponent.M_register_at);
 		if(registerat != null) dto.setRegister_at(Long.parseLong(registerat.toString()));
+		
+		Object ghash = sourceMap.get(WifiDeviceMapableComponent.M_ghash);
+		if(ghash != null){
+			String[] ghash_array = (String[])ghash;
+			if(ghash_array.length > 0){
+				GeoPoint point = GeoHashUtils.decode(ghash_array[0]);
+				if(point != null){
+					dto.setLat(point.getLat());
+					dto.setLon(point.getLon());
+				}
+			}
+		}
 		return dto;
 	}
 	
@@ -259,6 +275,22 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		QueryBuilder query = QueryHelper.geoBoundingBoxQueryFilter(null, WifiDeviceMapableComponent.M_ghash, topleft_coordinate, bottomRight_coordinate);
 		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
 				BusinessIndexConstants.Types.WifiDeviceType, query, null, null, start, size);
+		return super.searchListByQuery(queryRequest);
+	}
+	
+	/**
+	 * 搜索存在地理位置的数据
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public QueryResponse<List<WifiDeviceSearchDTO>> searchExistAddress(int start, int size) throws ESQueryValidateException {
+		ExistsFilterBuilder filter = FilterBuilders.existsFilter(WifiDeviceMapableComponent.M_address);
+		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
+				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
+		queryRequest.addSort(sortByOnline());
+		queryRequest.addSort(sortByCount());
 		return super.searchListByQuery(queryRequest);
 	}
 	

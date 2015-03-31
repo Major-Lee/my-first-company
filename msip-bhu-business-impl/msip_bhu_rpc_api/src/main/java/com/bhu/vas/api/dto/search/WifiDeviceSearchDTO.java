@@ -19,6 +19,10 @@ public class WifiDeviceSearchDTO implements Serializable{
 	private int count;
 	//wifi设备的注册时间
 	private long register_at;
+	//纬度
+	private double lat;
+	//经度
+	private double lon;
 	
 	public String getId() {
 		return id;
@@ -31,6 +35,18 @@ public class WifiDeviceSearchDTO implements Serializable{
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public double getLat() {
+		return lat;
+	}
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+	public double getLon() {
+		return lon;
+	}
+	public void setLon(double lon) {
+		this.lon = lon;
 	}
 	public String getWorkmodel() {
 		return workmodel;

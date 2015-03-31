@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -150,6 +151,22 @@ public class DeviceController {
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
 		TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+	}
+	
+	/**
+	 * 获取地图设备数据
+	 * 暂时采用读取500条wifi设备全量返回
+	 * @param request
+	 * @param response
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch_geo_map",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_geo_map(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		List<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }

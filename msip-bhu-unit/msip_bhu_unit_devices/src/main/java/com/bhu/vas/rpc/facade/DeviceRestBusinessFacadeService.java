@@ -7,8 +7,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +17,8 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.vto.GeoMapDeviceVTO;
+import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -34,6 +34,7 @@ import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
+import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -50,7 +51,7 @@ import com.smartwork.msip.es.request.QueryResponse;
  */
 @Service
 public class DeviceRestBusinessFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
+	//private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
 
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -63,6 +64,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceSearchService wifiDeviceSearchService;
+	
+	@Resource
+	private BusinessDeviceCacheService businessDeviceCacheService;
 	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
@@ -303,5 +307,51 @@ public class DeviceRestBusinessFacadeService {
 			}
 		}
 		return new CommonPage<HandsetDeviceVTO>(pageNo, pageSize, (int)total, vtos);
+	}
+	
+	public static final int GeoMap_Fetch_Count = 500;
+	public List<GeoMapVTO> fetchGeoMap() throws ESQueryValidateException{
+		List<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();
+		if(vtos == null){
+			QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchExistAddress(0, GeoMap_Fetch_Count);
+			int total = search_result.getTotal();
+			if(total == 0){
+				return Collections.emptyList();
+			}else{
+				List<WifiDeviceSearchDTO> search_dtos = search_result.getResult();
+				if(search_dtos.isEmpty()){
+					return Collections.emptyList();
+				}else{
+					List<String> ids = new ArrayList<String>();
+					for(WifiDeviceSearchDTO dto : search_dtos){
+						ids.add(dto.getId());
+					}
+					List<WifiDevice> entitys = wifiDeviceService.findByIds(ids, true, true);
+	
+					vtos = new ArrayList<GeoMapVTO>();
+					int cursor = 0;
+					for(WifiDeviceSearchDTO dto : search_dtos){
+						GeoMapVTO vto = new GeoMapVTO();
+						vto.setLat(String.valueOf(dto.getLat()));
+						vto.setLng(String.valueOf(dto.getLon()));
+						WifiDevice entity = entitys.get(cursor);
+						if(entity != null){
+							List<GeoMapDeviceVTO> rows = new ArrayList<GeoMapDeviceVTO>();
+							GeoMapDeviceVTO sub_vto = new GeoMapDeviceVTO();
+							sub_vto.setName(entity.getOrig_model());
+							sub_vto.setIp(entity.getWan_ip());
+							sub_vto.setMac(entity.getId());
+							sub_vto.setStatus(entity.isOnline() ? 1 : 0);
+							rows.add(sub_vto);	
+							vto.setRows(rows);
+						}
+						vtos.add(vto);
+						cursor++;
+					}
+					businessDeviceCacheService.storeDeviceGeoMapCacheResult(vtos);
+				}
+			}
+		}
+		return vtos;
 	}
 }

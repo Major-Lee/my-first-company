@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -78,6 +79,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public StatisticsGeneralVTO fetchStatisticsGeneral(){
 		return deviceRestRpcService.fetchStatisticsGeneral();
+	}
+
+	@Override
+	public List<GeoMapVTO> fetchGeoMap() {
+		return deviceRestRpcService.fetchGeoMap();
 	}
 
 
