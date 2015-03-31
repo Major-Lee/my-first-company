@@ -128,7 +128,7 @@ public class WifiDeviceTest extends BaseTest{
 				excepts,0, 10);
 		System.out.println(result.getTotal());
 		for(WifiDeviceSearchDTO dto : result.getResult()){
-			System.out.println("id:"+dto.getId() + "="+dto.getAddress());
+			System.out.println("id:"+dto.getId() + "="+dto.getAddress()+"="+dto.getLat());
 		}
 	}
 	

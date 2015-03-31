@@ -37,6 +37,7 @@ import com.smartwork.msip.es.service.SearchService;
 @Service
 public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public WifiDeviceSearchDTO buildDto(Map<String,Object> sourceMap) {
 		//System.out.println(JsonHelper.getJSONString(sourceMap));
@@ -64,9 +65,9 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		
 		Object ghash = sourceMap.get(WifiDeviceMapableComponent.M_ghash);
 		if(ghash != null){
-			String[] ghash_array = (String[])ghash;
-			if(ghash_array.length > 0){
-				GeoPoint point = GeoHashUtils.decode(ghash_array[0]);
+			List<String> ghash_list = (List<String>)ghash;
+			if(!ghash_list.isEmpty()){
+				GeoPoint point = GeoHashUtils.decode(ghash_list.get(0));
 				if(point != null){
 					dto.setLat(point.getLat());
 					dto.setLon(point.getLon());
