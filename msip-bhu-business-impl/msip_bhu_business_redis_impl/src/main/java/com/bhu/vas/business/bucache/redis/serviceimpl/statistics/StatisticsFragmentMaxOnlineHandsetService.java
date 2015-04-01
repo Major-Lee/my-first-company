@@ -122,6 +122,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH),BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_QUARTER),BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR),BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey);
 	}
 	/**

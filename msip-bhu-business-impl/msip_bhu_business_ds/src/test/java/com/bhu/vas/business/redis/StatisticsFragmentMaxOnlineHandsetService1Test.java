@@ -41,11 +41,11 @@ public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
 	
 	@Test
 	public void doInitTest(){
-		Date current = DateTimeHelper.getDateDaysAgo(15);
+		Date current = DateTimeHelper.getDateDaysAgo(500);
 		//int count = RandomData.intNumber(300,500);
 		Calendar c = Calendar.getInstance();
 		c.setTime(current);
-		for(int j=0;j<15;j++){//模拟后100天的数据
+		for(int j=0;j<500;j++){//模拟后100天的数据
 			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)+1);
 			for(int i=0;i<24;i++){
 				c.set(Calendar.HOUR_OF_DAY, i);
@@ -56,7 +56,7 @@ public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void doGet(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		Calendar c = Calendar.getInstance();
