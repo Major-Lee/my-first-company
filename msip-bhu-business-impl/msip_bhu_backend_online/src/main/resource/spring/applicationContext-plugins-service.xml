@@ -14,6 +14,8 @@
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
 	<!-- -->
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/> 
+	
+	<import resource="classpath*:springmongo/applicationContext-mongo.xml"/>
 	<!-- 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> -->
 </beans>
