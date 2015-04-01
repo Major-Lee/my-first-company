@@ -3,13 +3,14 @@ package com.bhu.vas.web.statistics;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,6 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
@@ -145,9 +145,21 @@ public class StatisticsController extends BaseController{
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i*7);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_WHICH_WEEK);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
-			Map<String,String> fragment_tmp_result = new HashMap<String,String>();
 			if(fragment_result.isEmpty()) continue;
-			/*{//2015年的11周日期 开始~结束 补齐数据
+			Map<String,String> fragment_tmp_result = new HashMap<String,String>(); 
+			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
+			int j = 1;
+			while(iter.hasNext()){
+				Entry<String, String> next = iter.next();
+				//String po = next.getKey();
+				String va = next.getValue();
+				fragment_tmp_result.put(String.format("第%02d天", j), va);
+				//elements.add(new PointDTO(po,va).toString());
+				j++;
+			}
+			/*
+			 Map<String,String> fragment_tmp_result = new HashMap<String,String>(); 
+			 {//2015年的11周日期 开始~结束 补齐数据
 				int day = 7;
 				if(i == 0){//获取当天是此周的第几天
 					day = DateTimeExtHelper.getWeekDay(current);
@@ -180,17 +192,19 @@ public class StatisticsController extends BaseController{
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_MONTH);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
 			if(fragment_result.isEmpty()) continue;
-			/*List<String> elements = new ArrayList<String>();
+			
+			Map<String,String> fragment_tmp_result = new HashMap<String,String>(); 
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
 			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				String po = next.getKey();
+				//String po = next.getKey();
 				String va = next.getValue();
-				elements.add(new PointDTO(po,va).toString());
+				fragment_tmp_result.put(String.format("第%02d天", j), va);
 				j++;
-			}*/
-			result.put(fragment, fragment_result);
+			}
+			
+			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
 		return result;
 	}
@@ -203,6 +217,17 @@ public class StatisticsController extends BaseController{
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_QUARTER);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey);
 			if(fragment_result.isEmpty()) continue;
+			
+			Map<String,String> fragment_tmp_result = new HashMap<String,String>(); 
+			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
+			int j = 1;
+			while(iter.hasNext()){
+				Entry<String, String> next = iter.next();
+				//String po = next.getKey();
+				String va = next.getValue();
+				fragment_tmp_result.put(String.format("第%02d周", j), va);
+				j++;
+			}
 			/*List<String> elements = new ArrayList<String>();
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
 			int j = 1;
@@ -213,7 +238,7 @@ public class StatisticsController extends BaseController{
 				elements.add(new PointDTO(po,va).toString());
 				j++;
 			}*/
-			result.put(fragment, fragment_result);
+			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
 		return result;
 	}
@@ -234,17 +259,18 @@ public class StatisticsController extends BaseController{
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(c.getTime(), DateTimeExtHelper.YEAR);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey);
 			if(fragment_result.isEmpty()) continue;
-			/*List<String> elements = new ArrayList<String>();
+			
+			Map<String,String> fragment_tmp_result = new HashMap<String,String>(); 
 			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
 			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				String po = next.getKey();
+				//String po = next.getKey();
 				String va = next.getValue();
-				elements.add(new PointDTO(po,va).toString());
+				fragment_tmp_result.put(String.format("第%02d月", j), va);
 				j++;
-			}*/
-			result.put(fragment, fragment_result);
+			}
+			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
 		return result;
 	}

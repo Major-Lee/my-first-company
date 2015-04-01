@@ -122,6 +122,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH),BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_QUARTER),BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR),BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey);
 	}
 	/**
@@ -198,7 +199,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 			{//初始化size个值 1~7
 				Map<String,String> map = new HashMap<String,String>();
 				for(int i=0;i<monthnum;i++){
-					map.put(String.format("%s-%s",year,String.format("%02d", monthnum+1)),"0");
+					map.put(String.format("%s-%s",year,String.format("%02d", i+1)),"0");
 				}
 				this.hmset(generateKey(fragment,buPrefixKey), map);
 			}

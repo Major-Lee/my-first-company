@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.junit.Test;
 
@@ -25,7 +27,7 @@ import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
 
 public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
-
+	private ExecutorService exec = Executors.newFixedThreadPool(10);
 	//@Test
 	public void doInitTest1(){
 		Date current = DateTimeHelper.getDateDaysAgo(30);
@@ -39,24 +41,52 @@ public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void doInitTest(){
-		Date current = DateTimeHelper.getDateDaysAgo(15);
+		Date current = DateTimeHelper.getDateDaysAgo(500);
 		//int count = RandomData.intNumber(300,500);
 		Calendar c = Calendar.getInstance();
 		c.setTime(current);
-		for(int j=0;j<15;j++){//模拟后100天的数据
+		for(int j=0;j<500;j++){//模拟后100天的数据
 			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)+1);
 			for(int i=0;i<24;i++){
 				c.set(Calendar.HOUR_OF_DAY, i);
-				StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(c.getTime(), RandomData.intNumber(200,40000));
+				final Date dd = c.getTime();
+				exec.submit((new Runnable() {
+					@Override
+					public void run() {
+						StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(dd, RandomData.intNumber(200,40000));
+						System.out.println(DateTimeHelper.formatDate(dd, DateTimeHelper.FormatPattern9));
+					}
+				}));
+				//StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(c.getTime(), RandomData.intNumber(200,40000));
 				//System.out.println(DateTimeHelper.formatDate(c.getTime(), DateTimeHelper.FormatPattern9));
 			}
-			System.out.println(DateTimeHelper.formatDate(c.getTime(), DateTimeHelper.FormatPattern9));
+			
+		}
+		
+		System.out.println("exec正在shutdown");
+		exec.shutdown();
+		System.out.println("exec正在shutdown成功");
+		while(true){
+			System.out.println("正在判断exec是否执行完毕");
+			if(exec.isTerminated()){
+				System.out.println("exec是否执行完毕,终止exec...");
+				exec.shutdownNow();
+				System.out.println("exec是否执行完毕,终止exec成功");
+				break;
+			}else{
+				System.out.println("exec未执行完毕...");
+				try {
+					Thread.sleep(2*1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
-	@Test
+	//@Test
 	public void doGet(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		Calendar c = Calendar.getInstance();
