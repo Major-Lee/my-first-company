@@ -8,11 +8,23 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
     http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd" default-lazy-init="true">
 	
-	<mongo:db-factory id="mongoDbFactory"  
-                  host="192.168.66.7"  
-                  port="27017"  
-                  dbname="FirstMDB"  
-                  />    
+	<mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}" >
+		<mongo:options 
+				connections-per-host="${mongo.connections}"
+                threads-allowed-to-block-for-connection-multiplier="40"
+                connect-timeout="1000"
+                max-wait-time="1500"
+                auto-connect-retry="true"
+                socket-keep-alive="true" 
+                socket-timeout="1500"
+                slave-ok="true"
+                write-number="1"
+                write-timeout="0"
+                write-fsync="true"
+			/>
+	</mongo:mongo>
+	
+	<mongo:db-factory id="mongoDbFactory"  mongo-ref="mongo" dbname="${mongo.dbname}"  />    
     
     <!-- 自动扫描以下包的类 -->
 	<mongo:mapping-converter base-package="com.bhu.vas.**.business" />
