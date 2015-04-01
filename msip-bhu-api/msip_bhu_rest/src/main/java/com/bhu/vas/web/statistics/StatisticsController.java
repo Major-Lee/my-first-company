@@ -108,31 +108,23 @@ public class StatisticsController extends BaseController{
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_MONTH_DD);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
-			/*{//补齐数据
-				int hour = 24;//所有缺失的数据补齐
-				if(i==0){//补齐到当前时间小时
+			if(fragment_result.isEmpty()) continue;
+			{//过滤掉当天的超过当前实际点的数据
+				if(i==0){
 					Calendar c = Calendar.getInstance();
 					c.setTime(current);
-					hour = c.get(Calendar.HOUR_OF_DAY);
-				}
-				if(fragment_result.size() < hour){
-					for(int j=0;j<hour;j++){
-						String key = String.format("%02d", j);
-						String data = fragment_result.get(key);
-						if(StringUtils.isEmpty(data)) {
-							//数据填充规则 取前一个值填充，如果当前key为零则value=0
-							if(j==0)
-								fragment_result.put(key, "0");
-							else{
-								String key_previous = String.format("%02d", j-1);
-								fragment_result.put(key, fragment_result.get(key_previous));
-							}
-								
+					int hour = c.get(Calendar.HOUR_OF_DAY);
+					String current_hour = String.format("%02d", hour);
+					Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
+					while(iter.hasNext()){
+						Entry<String, String> next = iter.next();
+						String po = next.getKey();
+						if(po.compareTo(current_hour)>0){
+							iter.remove();
 						}
 					}
 				}
-			}*/
-			if(fragment_result.isEmpty()) continue;
+			}
 			result.put(fragment, fragment_result);
 		}
 		return result;
@@ -141,6 +133,7 @@ public class StatisticsController extends BaseController{
 	private Map<String,Map<String,String>> build4WeeklyChart(int ml){
 		Map<String,Map<String,String>> result = new HashMap<String,Map<String,String>>();
 		Date current = new Date();
+		String current_day = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i*7);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_WHICH_WEEK);
@@ -151,34 +144,15 @@ public class StatisticsController extends BaseController{
 			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				//String po = next.getKey();
+				String po = next.getKey();
 				String va = next.getValue();
-				fragment_tmp_result.put(String.format("第%02d天", j), va);
-				//elements.add(new PointDTO(po,va).toString());
+				if(j == 1 && po.compareTo(current_day)>0){
+					;
+				}else{
+					fragment_tmp_result.put(String.format("第%02d天", j), va);
+				}
 				j++;
 			}
-			/*
-			 Map<String,String> fragment_tmp_result = new HashMap<String,String>(); 
-			 {//2015年的11周日期 开始~结束 补齐数据
-				int day = 7;
-				if(i == 0){//获取当天是此周的第几天
-					day = DateTimeExtHelper.getWeekDay(current);
-				}
-				if(fragment_result.size() < day){//开始进行补齐操作
-					//获取fragment 的 年 和 此年的第几周
-					String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
-					int year = Integer.parseInt(array[0]);
-					int weeknum = Integer.parseInt(array[1]);
-					//获取年和第几周的所有天
-					String[] day_array = DateTimeExtHelper.getYearWeekAllDay(year, weeknum);
-					int j = 1;
-					for(String dayy:day_array){
-						String value = fragment_result.get(dayy);
-						fragment_tmp_result.put(String.format("%02d", j), value==null?"0":value);
-						j++;
-					}
-				}
-			}*/
 			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
 		return result;
@@ -187,6 +161,7 @@ public class StatisticsController extends BaseController{
 	private Map<String,Map<String,String>> build4MonthlyChart(int ml){
 		Map<String,Map<String,String>> result = new HashMap<String,Map<String,String>>();
 		Date current = new Date();
+		String current_day = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateFirstDayOfMonthAgo(current,i);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_MONTH);
@@ -198,9 +173,13 @@ public class StatisticsController extends BaseController{
 			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				//String po = next.getKey();
+				String po = next.getKey();
 				String va = next.getValue();
-				fragment_tmp_result.put(String.format("第%02d天", j), va);
+				if(j == 1 && po.compareTo(current_day)>0){
+					;
+				}else{
+					fragment_tmp_result.put(String.format("第%02d天", j), va);
+				}
 				j++;
 			}
 			
@@ -212,6 +191,7 @@ public class StatisticsController extends BaseController{
 	private Map<String,Map<String,String>> build4QuarterlyChart(int ml){
 		Map<String,Map<String,String>> result = new HashMap<String,Map<String,String>>();
 		Date current = new Date();
+		String current_week = DateTimeExtHelper.getDateWeekFormat(current);
 		for(int i=0;i<ml;i++){
 			Date current_ago = DateTimeHelper.getDateFirstDayOfMonthAgo(current,i*3);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_QUARTER);
@@ -223,21 +203,15 @@ public class StatisticsController extends BaseController{
 			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				//String po = next.getKey();
-				String va = next.getValue();
-				fragment_tmp_result.put(String.format("第%02d周", j), va);
-				j++;
-			}
-			/*List<String> elements = new ArrayList<String>();
-			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			int j = 1;
-			while(iter.hasNext()){
-				Entry<String, String> next = iter.next();
 				String po = next.getKey();
 				String va = next.getValue();
-				elements.add(new PointDTO(po,va).toString());
+				if(j == 1 && po.compareTo(current_week)>0){
+					;
+				}else{
+					fragment_tmp_result.put(String.format("第%02d周", j), va);
+				}
 				j++;
-			}*/
+			}
 			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
 		return result;
@@ -246,6 +220,7 @@ public class StatisticsController extends BaseController{
 	private Map<String,Map<String,String>> build4YearlyChart(int ml){
 		Map<String,Map<String,String>> result = new HashMap<String,Map<String,String>>();
 		Date current = new Date();
+		String current_month = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern11);
 		Calendar c = Calendar.getInstance();
         c.setFirstDayOfWeek(Calendar.MONDAY); //设置每周的第一天为星期一  
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//每周从周一开始  
@@ -265,10 +240,16 @@ public class StatisticsController extends BaseController{
 			int j = 1;
 			while(iter.hasNext()){
 				Entry<String, String> next = iter.next();
-				//String po = next.getKey();
+				String po = next.getKey();
 				String va = next.getValue();
-				fragment_tmp_result.put(String.format("第%02d月", j), va);
+				if(j == 1 && po.compareTo(current_month)>0){
+					;
+				}else{
+					fragment_tmp_result.put(String.format("第%02d月", j), va);
+				}
 				j++;
+				//fragment_tmp_result.put(String.format("第%02d月", j), va);
+				//j++;
 			}
 			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
