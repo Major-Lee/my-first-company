@@ -122,6 +122,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
 		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH),BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR),BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey);
 	}
 	/**
 	 * 目前对 日，周，月进行初始化数据
@@ -175,6 +176,19 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 			}
 		}
 		//TODO:获取季度所有周初始化数据 
+		if(BusinessKeyDefine.Statistics.FragmentOnlineQuarterlySuffixKey.equals(buPrefixKey)){//周
+			String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
+			int year = Integer.parseInt(array[0]);
+			int seasonnum = Integer.parseInt(array[1]);
+			String[] week_array = DateTimeExtHelper.getYearSeasonAllWeek(year, seasonnum);
+			{//初始化size个值 1~7
+				Map<String,String> map = new HashMap<String,String>();
+				for(String week:week_array){
+					map.put(week,"0");
+				}
+				this.hmset(generateKey(fragment,buPrefixKey), map);
+			}
+		}
 		//TODO:以及获取年所有月的初始化数据
 		if(BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey.equals(buPrefixKey)){//周
 			String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
