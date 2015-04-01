@@ -1,6 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.statistics;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 
 /**
@@ -61,6 +63,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 		if(count < 0) return;
 		String count_str = String.valueOf(count);
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(current);
+		initFragmentFieldAndValueWith(fragments);
 		//每日数据更新
 		this.hset(generateKey(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey),
 				fragments.get(DateTimeExtHelper.HH), count_str);
@@ -109,6 +112,83 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	
 	public Long cleanFragment(String fragment,String buPrefixKey){
 		return this.expire(generateKey(fragment,buPrefixKey), 0);
+	}
+	
+	public Long fragmentSize(String fragment,String buPrefixKey){
+		return this.hlen(generateKey(fragment,buPrefixKey));
+	}
+	
+	public void initFragmentFieldAndValueWith(List<String> fragments){
+		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+		initFragmentFieldAndValue(fragments.get(DateTimeExtHelper.YEAR_MONTH),BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+	}
+	/**
+	 * 目前对 日，周，月进行初始化数据
+	 * 当前数值需要写入当前时间对应的 日，周，月，季度，年对应的field中
+	 * 日 key yyyy-MM-dd 	field  yyyy-MM-dd HH	 Value count
+	 * 周 key yyyy-w		 	field  yyyy-MM-dd		 Value count
+	 * 月 key yyyy-MM	 	field  yyyy-MM-dd		 Value count
+	 * 季度 key yyyy-QQ	 	field  yyyy-w		 Value count
+	 * 年 key yyyy	 		field  yyyy-MM		 	 Value count
+	 * @param count
+	 */
+	public void initFragmentFieldAndValue(String fragment,String buPrefixKey){
+		Long fragment_size = this.fragmentSize(fragment, buPrefixKey);
+		if( fragment_size != null && fragment_size.longValue()>0) return;
+		if(BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey.equals(buPrefixKey)){//天
+			{//初始化24个值 0~23
+				Map<String,String> map = new HashMap<String,String>();
+				for(int j=0;j<24;j++){
+					String key = String.format("%02d", j);
+					map.put(key, "0");
+				}
+				this.hmset(generateKey(fragment,buPrefixKey), map);
+			}
+		}
+		
+		if(BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey.equals(buPrefixKey)){//周
+			String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
+			int year = Integer.parseInt(array[0]);
+			int weeknum = Integer.parseInt(array[1]);
+			String[] day_array = DateTimeExtHelper.getYearWeekAllDay(year, weeknum);
+			{//初始化7个值 1~7
+				Map<String,String> map = new HashMap<String,String>();
+				for(String day:day_array){
+					map.put(day, "0");
+				}
+				this.hmset(generateKey(fragment,buPrefixKey), map);
+			}
+		}
+		
+		if(BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey.equals(buPrefixKey)){//周
+			String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
+			int year = Integer.parseInt(array[0]);
+			int monthnum = Integer.parseInt(array[1]);
+			String[] day_array = DateTimeExtHelper.getYearMonthAllDay(year, monthnum);
+			{//初始化size个值 1~7
+				Map<String,String> map = new HashMap<String,String>();
+				for(String day:day_array){
+					map.put(day, "0");
+				}
+				this.hmset(generateKey(fragment,buPrefixKey), map);
+			}
+		}
+		//TODO:获取季度所有周初始化数据 
+		//TODO:以及获取年所有月的初始化数据
+		if(BusinessKeyDefine.Statistics.FragmentOnlineYearlySuffixKey.equals(buPrefixKey)){//周
+			String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
+			int year = Integer.parseInt(array[0]);
+			int monthnum = 12;//Integer.parseInt(array[1]);
+			//String[] day_array = DateTimeExtHelper.getYearMonthAllDay(year, monthnum);
+			{//初始化size个值 1~7
+				Map<String,String> map = new HashMap<String,String>();
+				for(int i=0;i<monthnum;i++){
+					map.put(String.format("%s-%s",year,String.format("%02d", monthnum+1)),"0");
+				}
+				this.hmset(generateKey(fragment,buPrefixKey), map);
+			}
+		}
 	}
 	
 	@Override

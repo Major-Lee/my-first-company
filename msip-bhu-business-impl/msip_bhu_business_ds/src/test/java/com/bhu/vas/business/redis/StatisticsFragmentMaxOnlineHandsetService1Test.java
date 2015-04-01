@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import com.bhu.vas.api.dto.redis.PointDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.StatisticsFragmentMaxOnlineHandsetService;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
@@ -40,7 +39,7 @@ public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
 		}
 	}
 	
-	//@Test
+	@Test
 	public void doInitTest(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		//int count = RandomData.intNumber(300,500);
@@ -50,14 +49,14 @@ public class StatisticsFragmentMaxOnlineHandsetService1Test extends BaseTest{
 			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH)+1);
 			for(int i=0;i<24;i++){
 				c.set(Calendar.HOUR_OF_DAY, i);
-				StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(c.getTime(), RandomData.intNumber(200,2000));
+				StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(c.getTime(), RandomData.intNumber(200,40000));
 				//System.out.println(DateTimeHelper.formatDate(c.getTime(), DateTimeHelper.FormatPattern9));
 			}
 			System.out.println(DateTimeHelper.formatDate(c.getTime(), DateTimeHelper.FormatPattern9));
 		}
 	}
 	
-	//@Test
+	@Test
 	public void doGet(){
 		Date current = DateTimeHelper.getDateDaysAgo(100);
 		Calendar c = Calendar.getInstance();

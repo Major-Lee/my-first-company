@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
@@ -106,16 +108,31 @@ public class StatisticsController extends BaseController{
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_MONTH_DD);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
-			if(fragment_result.isEmpty()) continue;
-			/*Map<String,String> elements = new HashMap<String,String>();
-			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			while(iter.hasNext()){
-				Entry<String, String> next = iter.next();
-				String po = next.getKey();
-				String va = next.getValue();
-				elements.put(key, value)
-				//elements.add(new PointDTO(po,va).toString());
+			/*{//补齐数据
+				int hour = 24;//所有缺失的数据补齐
+				if(i==0){//补齐到当前时间小时
+					Calendar c = Calendar.getInstance();
+					c.setTime(current);
+					hour = c.get(Calendar.HOUR_OF_DAY);
+				}
+				if(fragment_result.size() < hour){
+					for(int j=0;j<hour;j++){
+						String key = String.format("%02d", j);
+						String data = fragment_result.get(key);
+						if(StringUtils.isEmpty(data)) {
+							//数据填充规则 取前一个值填充，如果当前key为零则value=0
+							if(j==0)
+								fragment_result.put(key, "0");
+							else{
+								String key_previous = String.format("%02d", j-1);
+								fragment_result.put(key, fragment_result.get(key_previous));
+							}
+								
+						}
+					}
+				}
 			}*/
+			if(fragment_result.isEmpty()) continue;
 			result.put(fragment, fragment_result);
 		}
 		return result;
@@ -128,18 +145,29 @@ public class StatisticsController extends BaseController{
 			Date current_ago = DateTimeHelper.getDateDaysAgo(current,i*7);
 			String fragment = DateTimeExtHelper.generateCertainDateFormat(current_ago, DateTimeExtHelper.YEAR_WHICH_WEEK);
 			Map<String,String> fragment_result = StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentGet(fragment,BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+			Map<String,String> fragment_tmp_result = new HashMap<String,String>();
 			if(fragment_result.isEmpty()) continue;
-			/*List<String> elements = new ArrayList<String>();
-			Iterator<Entry<String, String>> iter = fragment_result.entrySet().iterator();
-			int j = 1;
-			while(iter.hasNext()){
-				Entry<String, String> next = iter.next();
-				String po = next.getKey();
-				String va = next.getValue();
-				elements.add(new PointDTO(po,va).toString());//String.format("%02d", j)
-				j++;
+			/*{//2015年的11周日期 开始~结束 补齐数据
+				int day = 7;
+				if(i == 0){//获取当天是此周的第几天
+					day = DateTimeExtHelper.getWeekDay(current);
+				}
+				if(fragment_result.size() < day){//开始进行补齐操作
+					//获取fragment 的 年 和 此年的第几周
+					String[] array = fragment.split(StringHelper.MINUS_STRING_GAP);
+					int year = Integer.parseInt(array[0]);
+					int weeknum = Integer.parseInt(array[1]);
+					//获取年和第几周的所有天
+					String[] day_array = DateTimeExtHelper.getYearWeekAllDay(year, weeknum);
+					int j = 1;
+					for(String dayy:day_array){
+						String value = fragment_result.get(dayy);
+						fragment_tmp_result.put(String.format("%02d", j), value==null?"0":value);
+						j++;
+					}
+				}
 			}*/
-			result.put(fragment, fragment_result);
+			result.put(fragment, SortMapHelper.sortMapByKey(fragment_tmp_result));
 		}
 		return result;
 	}
