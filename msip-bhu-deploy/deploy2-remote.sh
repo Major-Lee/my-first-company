@@ -3,7 +3,7 @@ cd `dirname $0`
 Current_DIR=`pwd`
 echo $Current_DIR
 
-Deploy2Server=$1
+#Deploy2Server=$1
 #回到msip-bhu-deploy目录进入deploy目录，并且创建每日的预发布文件存储目录
 #cd msip-bhu-deploy
 cd deploy
@@ -55,40 +55,40 @@ unzip -qo msip_bhu_rest.war -d msip_bhu_rest
 echo '文件解压过程成功'
 
 Deploy2Server='182.92.231.58'
-
+DeployUser=$1
 echo '准备发布业务组件到'
 
 echo 'deploy msip_bhu_unit_input_processor to ...@'Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/msip_*.jar  	tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/classes/com/ 		tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/msip_*.jar  	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/classes/com/ 		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server
 
 echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/classes/com/ 		tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/classes/com/ 		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
 echo 'deploy msip_bhu_unit_daemon_processor successfully @'$Deploy2Server
 
 echo 'deploy msip_bhu_unit_devices to ...@'$Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/lib/msip_*.jar  			tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/classes/com/ 				tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/classes/com/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/lib/msip_*.jar  			$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/classes/com/ 				$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/classes/com/
 echo 'deploy msip_bhu_unit_devices successfully @'$Deploy2Server
 echo '发布业务组件成功'
 
 echo '准备发布其他服务到'$Deploy2Server
 
 echo 'deploy msip_bhu_backend_online to ...@'$Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/lib/msip_*.jar  	tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/classes/com/ 	tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_backend_online/bin/com/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/lib/msip_*.jar  	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_backend_online/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/classes/com/ 	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_backend_online/bin/com/
 echo 'deploy msip_bhu_backend_online successfully @'$Deploy2Server
 
 echo 'deploy msip_bhu_backend_task to ...@'$Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/lib/msip_*.jar		tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/classes/com/ 		tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/bin/com/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/lib/msip_*.jar		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/classes/com/ 		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2Server
 
 echo 'deploy msip_bhu_dataimport to ...@'$Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/lib/msip_*.jar  		tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/classes/com/ 		tangzichao@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/bin/com/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/lib/msip_*.jar  		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/classes/com/ 		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server
 echo '发布其他服务成功'
 
