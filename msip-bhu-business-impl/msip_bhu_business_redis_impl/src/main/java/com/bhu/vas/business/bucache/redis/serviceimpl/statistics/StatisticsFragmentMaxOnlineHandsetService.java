@@ -218,7 +218,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.STATISTICS);
 	}
 	
 	/*public static Map<String, String> sortMapByKey(Map<String, String> map) {  
