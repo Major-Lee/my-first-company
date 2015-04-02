@@ -97,6 +97,9 @@ public class WifiDeviceOnlineLoader {
 				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 				indexDto.setCount((int)count);
 				indexDtos.add(indexDto);
+				if(count > 0){
+					logger.info(String.format("WifiDeviceOnlineUser index dto id[%s] count[%s]", indexDto.getWifiId(), count));
+				}
 			}
 			
 			if(!indexDtos.isEmpty()){
