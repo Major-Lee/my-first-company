@@ -5,9 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -35,50 +33,89 @@ public class MqWorker implements Runnable{
 		this.orion = orion;
 	}
 	
-	public synchronized boolean ursidsJoin(String id){
-		try {
-			MessageConsumer c = consumerMap.get(id);
-			if (c == null) {
-				c = session.createConsumer(session.createQueue("down_" + id));
-				c.setMessageListener(new MqMessageListener(orion, id));
-				consumerMap.put(id, c);
+	public  boolean ursidsJoin(String id){
+//		long start = System.currentTimeMillis();
+		synchronized(this){
+			try {
+				String q_id = "down_" + id;
+				MessageConsumer c = consumerMap.get(id);
+				if (c == null) {
+					c = session.createConsumer(session.createQueue(q_id));
+					LOGGER.debug("set mq message listen on " + q_id);
+					c.setMessageListener(new MqMessageListener(orion, id));
+					consumerMap.put(id, c);
+				}
+				MessageProducer p = publisherMap.get(id);
+				if (p == null) {
+					publisherMap.put(id, session.createProducer(session
+									.createQueue("up_" + id)));
+				}
+			} catch (JMSException e) {
+				LOGGER.error(StringHelper.getStackTrace(e));
+				e.printStackTrace();
+				return false;
 			}
-			MessageProducer p = publisherMap.get(id);
-			if (p == null) {
-				publisherMap.put(id, session.createProducer(session
-								.createQueue("up_" + id)));
-			}
-		} catch (JMSException e) {
-			LOGGER.error(StringHelper.getStackTrace(e));
-			e.printStackTrace();
-			return false;
 		}
+//		LOGGER.debug("publish business mq cost:" + (System.currentTimeMillis() - start));
 		return true;
 	}
-	
-	public void publishManagementMessage(String msg){
-		try{
-			TextMessage m = session.createTextMessage(msg);
-			LOGGER.debug("Sening ursids join message to mq" + msg);
-			mangQueueProducer.send(m);
-		}catch(JMSException e){
-			LOGGER.error(StringHelper.getStackTrace(e));
-			e.printStackTrace();
+	public  void ursidsLeave(String id){
+		synchronized(this){
+			try {
+				String q_id = "down_" + id;
+				MessageConsumer c = consumerMap.get(id);
+				if (c != null) {
+					consumerMap.remove(id);
+					c.setMessageListener(null);
+					c.close();
+					LOGGER.debug("remove consumer from mq session, on " + q_id);
+				}
+				MessageProducer p = publisherMap.get(id);
+				if (p != null) {
+					publisherMap.remove(id);
+					p.close();
+					p = null;
+				}
+			} catch (JMSException e) {
+				LOGGER.error(StringHelper.getStackTrace(e));
+				e.printStackTrace();
+			}
 		}
 	}
+
 	
-	public void publishBusiness(String id, String msg){
-		try{
-			MessageProducer p = publisherMap.get(id);
-			if(p != null){
+	public  void publishManagementMessage(String msg){
+//		long start = System.currentTimeMillis();
+		synchronized(this){
+			try{
 				TextMessage m = session.createTextMessage(msg);
-				LOGGER.debug("Sening message to mq " + id + "\n" + msg);
-				p.send(m);
+				LOGGER.debug("Sending ursids mng message to mq" + msg);
+				mangQueueProducer.send(m);
+			}catch(JMSException e){
+				LOGGER.error(StringHelper.getStackTrace(e));
+				e.printStackTrace();
 			}
-		}catch(JMSException e){
-			LOGGER.error(StringHelper.getStackTrace(e));
-			e.printStackTrace();
 		}
+//		LOGGER.debug("publish mng mq cost:" + (System.currentTimeMillis() - start));
+	}
+	
+	public  void publishBusiness(String id, String msg){
+//		long start = System.currentTimeMillis();
+//		synchronized(this){
+			try{
+				MessageProducer p = publisherMap.get(id);
+				if(p != null){
+					TextMessage m = session.createTextMessage(msg);
+					LOGGER.debug("Sending message to mq " + id + "\n" + msg);
+					p.send(m);
+				}
+			}catch(JMSException e){
+				LOGGER.error(StringHelper.getStackTrace(e));
+				e.printStackTrace();
+			}
+//		}
+			
+//		LOGGER.debug("publish business mq cost:" + (System.currentTimeMillis() - start));
 	}
 	
 	public void run(){
@@ -86,6 +123,7 @@ public class MqWorker implements Runnable{
 	    	LOGGER.info("Mq Server:" + JOrionConfig.MQ_URL);
 
 	       ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JOrionConfig.MQ_URL);
+	       factory.setUseAsyncSend(true);
 	        Connection connection;
 				connection = factory.createConnection("admin", "admin");
 	        connection.start();

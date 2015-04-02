@@ -25,12 +25,14 @@ public class MqMessageListener implements MessageListener {
 	public void onMessage(Message arg0) {
 		TextMessage msg = (TextMessage)arg0;
 		try {
+			long start = System.currentTimeMillis();
 			LOGGER.debug("Got mq message: \n" + msg.getText());
+			orion.onMqMessage(id, arg0);
+			LOGGER.debug("handle mq msg, cost:" + (System.currentTimeMillis() - start));
 		} catch (JMSException e) {
 			LOGGER.error(StringHelper.getStackTrace(e));
 			e.printStackTrace();
 		}
-		orion.onMqMessage(id, arg0);
 	}
 
 }

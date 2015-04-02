@@ -17,25 +17,93 @@ import com.bhu.jorion.PendingTask;
 public class UrsidsSession {
     private final static Logger LOGGER = LoggerFactory.getLogger(UrsidsSession.class);
 	private String id;
-	private boolean joined_flag;
+	private String name;
+	private boolean joinedFlag;
 	IoSession session;
 	private Map<String, Queue<PendingTask>> pendingTask;
-
-	public UrsidsSession(IoSession session, String id) {
+	private long devCount;
+	private String balanceUrl;
+	private String redirectUrl;
+	private long maxClient;
+	private long reservedConection;
+	
+	public UrsidsSession(IoSession session, String name, String id) {
 		pendingTask = new ConcurrentHashMap<String, Queue<PendingTask>>();
 		this.session = session;
 		this.id = id;
-		this.joined_flag = false;
+		this.joinedFlag = false;
+		this.devCount = 0;
+		this.balanceUrl = "";
+		this.name = name;
+		this.redirectUrl = null;
+		this.maxClient = 0;
+		this.reservedConection = 0;
 	}
 	 
 	
-	public boolean getJoined_flag() {
-		return joined_flag;
+	public long getReservedConection() {
+		return reservedConection;
 	}
 
 
-	public void setJoined_flag(boolean join_flag) {
-		this.joined_flag = join_flag;
+	public void setReservedConection(long reservedConection) {
+		this.reservedConection = reservedConection;
+	}
+
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public long getMaxClient() {
+		return maxClient;
+	}
+
+
+	public void setMaxClient(long maxClient) {
+		this.maxClient = maxClient;
+	}
+
+
+	public String getBalanceUrl() {
+		return balanceUrl;
+	}
+
+	public void setBalanceUrl(String url) {
+		this.balanceUrl = url;
+	}
+	
+	public synchronized long getDevCount() {
+		return devCount;
+	}
+
+
+	public synchronized void setDevCount(long devCount) {
+		this.devCount = devCount;
+	}
+
+	public boolean getJoinedFlag() {
+		return joinedFlag;
+	}
+
+	public void setJoinedFlag(boolean join_flag) {
+		this.joinedFlag = join_flag;
 	}
 
 
@@ -54,14 +122,6 @@ public class UrsidsSession {
 
 	public void setSession(IoSession session) {
 		this.session = session;
-	}
-
-
-	public synchronized boolean isTaskPending(String mac){
-		Queue<PendingTask> q = pendingTask.get(mac);
-		if(q == null)
-			return false;
-		return q.isEmpty();
 	}
 	
 	public synchronized void addTask(String mac, long taskid, TextMessage msg){
@@ -88,7 +148,7 @@ public class UrsidsSession {
 					return;
 				}
 				q.remove();
-				LOGGER.error("mac:" + mac + "  taskid:" + taskid + " removed");
+				LOGGER.debug("mac:" + mac + "  taskid:" + taskid + " removed");
 			} else {
 				LOGGER.error("mac:" + mac + "  taskid:" + taskid + "doesn't match the head of queue");
 			}
@@ -109,7 +169,7 @@ public class UrsidsSession {
 		return null;
 	}
 	
-	public synchronized void removeDevice(String mac){
+	public synchronized void clearDeviceTasks(String mac){
 		LOGGER.debug("remove queue data for mac:" + mac);
 		Queue<PendingTask> q = pendingTask.get(mac);
 		if(q == null)
@@ -118,7 +178,7 @@ public class UrsidsSession {
 		pendingTask.remove(mac);
 	}
 	
-	public synchronized void clearAllTasks(){
+	public synchronized void clearAllDevs(){
 		LOGGER.debug("Clear all devs's queue on ursids:" + this.getId());
 		Iterator<String> it = pendingTask.keySet().iterator();
 		while(it.hasNext()){
@@ -126,5 +186,24 @@ public class UrsidsSession {
 			q.clear();
 		}
 		pendingTask.clear();
+		devCount = 0;
+	}
+	
+	public synchronized Long getTaskDetail(StringBuffer sb){
+		Long blockedDev = Long.valueOf(0);
+		Iterator<String> it = pendingTask.keySet().iterator();
+		while(it.hasNext()){
+			String mac = it.next();
+			Queue<PendingTask> q = pendingTask.get(mac);
+			sb.append(mac);
+			sb.append("  count:" + q.size());
+			if(!q.isEmpty()){
+				PendingTask t = q.peek();
+				sb.append(" first taskid:" + t.getTaskid());
+			}
+			sb.append("\n");
+			blockedDev ++;
+		}
+		return blockedDev;
 	}
 }
