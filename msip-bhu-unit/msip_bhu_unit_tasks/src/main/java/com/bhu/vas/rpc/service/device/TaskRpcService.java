@@ -22,6 +22,7 @@ public class TaskRpcService implements ITaskRpcService{
 	public boolean createNewTask(String mac, String opt, String payload,
 			String channel, String channel_taskid) {
 		System.out.println(String.format("createNewTask mac:%s", mac));
+		System.out.print(String.format("createNewTask payload:%s", payload));
 		return false;
 	}
 

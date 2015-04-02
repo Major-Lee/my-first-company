@@ -1,31 +1,31 @@
 package com.bhu.vas.rpc.consumer;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class TaskServiceConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDevicesRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
 		System.setProperty("provider.port", "");
-		//System.setProperty("provider.port", "20882");
-		//System.out.println("~~~~~~~~~~~~~:"+System.getProperty("provider.port"));
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"classpath*:spring/applicationContextCore-resource.xml",
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
 		ITaskRpcService taskRpcService = (ITaskRpcService)context.getBean("taskRpcService");
-
 		
 		boolean ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(), 
 				"payload content", "APP_VAS", "123");
+		
+//		taskRpcService.createNewTask("", OperationCMD.QueryDeviceStatus.getNo(), 
+//				"payload content", "APP_VAS", "123");
+		
+		taskRpcService.taskStatusFetch(123123123);
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
 		//ParserHeader parserHeader = new ParserHeader();
-		
+
 		//wifi设备上线
 		/*parserHeader.setType(5);
 		parserHeader.setMt(0);
