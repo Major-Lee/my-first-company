@@ -1,6 +1,6 @@
 package com.bhu.vas.rpc.bucache;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -34,16 +34,16 @@ public class BusinessDeviceCacheService {
 		return DeviceGeoMapCachePrefixKey;
 	}
 	
-	public void storeDeviceGeoMapCacheResult(List<GeoMapVTO> result){
+	public void storeDeviceGeoMapCacheResult(Collection<GeoMapVTO> result){
 		String key = generateDeviceGeoMapKeyBy();
 		this.entityCache.remove(key);
 		this.entityCache.put(key, result);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<GeoMapVTO> getDeviceGeoMapCacheByQ(){
+	public Collection<GeoMapVTO> getDeviceGeoMapCacheByQ(){
 		Object cacheObj = this.entityCache.get(generateDeviceGeoMapKeyBy());
 		if(cacheObj == null) return null;
-		return (List<GeoMapVTO>)cacheObj;
+		return (Collection<GeoMapVTO>)cacheObj;
 	}
 }

@@ -27,5 +27,4 @@ public class GeoMapVTO implements Serializable{
 	public void setRows(List<GeoMapDeviceVTO> rows) {
 		this.rows = rows;
 	}
-	
 }

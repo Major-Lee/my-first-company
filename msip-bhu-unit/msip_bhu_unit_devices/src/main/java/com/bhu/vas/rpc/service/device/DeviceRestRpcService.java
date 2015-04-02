@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -146,7 +147,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public List<GeoMapVTO> fetchGeoMap(){
+	public Collection<GeoMapVTO> fetchGeoMap(){
 		logger.info("DeviceRestRPC fetchGeoMap invoke");
 		try{
 			return deviceRestBusinessFacadeService.fetchGeoMap();

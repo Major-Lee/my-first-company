@@ -1,5 +1,6 @@
 package com.bhu.vas.web.device;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -166,7 +167,7 @@ public class DeviceController {
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		List<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
+		Collection<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }
