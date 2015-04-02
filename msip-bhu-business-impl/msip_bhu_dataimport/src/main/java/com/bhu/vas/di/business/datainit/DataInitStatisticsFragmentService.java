@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
