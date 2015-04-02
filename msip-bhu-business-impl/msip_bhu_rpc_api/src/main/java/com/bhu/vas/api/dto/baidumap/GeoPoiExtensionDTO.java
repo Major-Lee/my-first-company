@@ -8,6 +8,14 @@ public class GeoPoiExtensionDTO {
 	private String mac;//wifi设备mac
 	private int online;//wifi设备是否在线
 	
+	public GeoPoiExtensionDTO() {
+	}
+	
+	public GeoPoiExtensionDTO(String mac, int online) {
+		super();
+		this.mac = mac;
+		this.online = online;
+	}
 	public String getMac() {
 		return mac;
 	}

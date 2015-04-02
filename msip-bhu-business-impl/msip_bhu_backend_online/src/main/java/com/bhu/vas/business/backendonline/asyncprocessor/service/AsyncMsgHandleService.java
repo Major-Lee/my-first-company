@@ -2,7 +2,9 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -38,6 +41,8 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingPoiCreateRespDTO;
 
 @Service
 public class AsyncMsgHandleService {
@@ -438,10 +443,23 @@ public class AsyncMsgHandleService {
 			entity.setLat(dto.getLat());
 			entity.setLon(dto.getLon());
 			//2:根据坐标提取地理位置详细信息
-			deviceFacadeService.wifiDeiviceGeocoding(entity);
-
+			boolean ret = deviceFacadeService.wifiDeiviceGeocoding(entity);
+			if(ret){
+				try{
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("title", entity.getStreet());
+					params.put("address", entity.getFormatted_address());
+					params.put("latitude", dto.getLat());
+					params.put("longitude", dto.getLon());
+					params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(entity.getId(),entity.isOnline()?1:0)));
+					GeocodingPoiCreateRespDTO createPoi = GeocodingHelper.createPoi(params);
+					entity.setBdid(String.valueOf(createPoi.getId()));
+					logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] successful", createPoi.getId()));
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+				}
+			}
 			wifiDeviceService.update(entity);
-			
 			//3:增量索引
 			wifiDeviceIndexIncrementService.wifiDeviceLocationIndexIncrement(entity);
 		}
