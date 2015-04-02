@@ -69,7 +69,7 @@
 	<bean id="wifiDeviceOnlineCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="wifiDeviceOnlineJobDetail" />
 		<!-- 每30分钟执行一次   0 0/30 * * * ?  -->
-		<property name="cronExpression" value="0 0/30 * * * ?" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
 	</bean>
 
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
