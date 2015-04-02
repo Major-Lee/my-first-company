@@ -20,28 +20,39 @@ public class UrsidsDecoder implements ProtocolDecoder {
 	public void decode(IoSession session, IoBuffer in, ProtocolDecoderOutput out)
 			throws Exception {
 		int count = 0;
+		int pos = 0;
 		LOGGER.debug("Decoding message...");
         IoBuffer buf = (IoBuffer)session.getAttribute(BUFFER);
         if(buf == null){
         	buf = IoBuffer.allocate(JOrionConfig.PRE_ALLOC_BUFF_SIZE).setAutoExpand(true);
+        	session.setAttribute(BUFFER, buf);
         }
+		LOGGER.debug("original buf " + buf.toString());
         buf.put(in);
+        pos = buf.position();
         buf.flip();
-		LOGGER.debug("chache len " + buf.remaining());
+		LOGGER.debug("chache len " + buf.remaining() + ", " + buf);
         while(buf.remaining() > UrsidsHeader.URSIDS_HDR_LEN){
         	buf.mark();
         	UrsidsHeader hdr = new UrsidsHeader(buf);
         	LOGGER.debug("Prase result:" + hdr.toString());
+    		LOGGER.debug("now buffer " + buf.toString());
         	if(hdr.getLength() <= buf.remaining()){
         		byte[] body = new byte[(int) hdr.getLength()];
         		buf.get(body);
         		UrsidsMessage msg = new UrsidsMessage(hdr, body, "");
+        		LOGGER.debug("succed received a ursids pkt, write object");
         		out.write(msg);
+        		count ++;
         	} else {
+            	LOGGER.debug("Not enough content, count:" + count);
         		//not enough content
         		buf.reset();
-        		if(count == 0)
+        		if(count == 0){
+        			LOGGER.debug("wait for next, buf " + buf.toString());
+        			buf.position(pos);
         			return;
+        		}
         		break;
         	}
         }

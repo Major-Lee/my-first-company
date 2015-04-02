@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bhu.jorion.JOrion;
 import com.bhu.jorion.message.UrsidsMessage;
+import com.bhu.jorion.util.StringHelper;
 
 public class UrsidsIoHandler extends IoHandlerAdapter {
     private final static Logger LOGGER = LoggerFactory.getLogger(UrsidsIoHandler.class);
@@ -24,6 +25,12 @@ public class UrsidsIoHandler extends IoHandlerAdapter {
     @Override
     public void sessionClosed(IoSession session) throws Exception {
         LOGGER.info("CLOSED");
+        try{
+        	orion.onUrisdsLeave(session);
+        }catch(Exception e){
+			LOGGER.error(StringHelper.getStackTrace(e));
+			e.printStackTrace();
+        }
     }
 
     @Override
@@ -38,22 +45,37 @@ public class UrsidsIoHandler extends IoHandlerAdapter {
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) {
+		LOGGER.error(StringHelper.getStackTrace(cause));
         session.close(true);
     }
 
     @Override
     public void messageReceived(IoSession session, Object message)
             throws Exception {
-    	UrsidsMessage msg = (UrsidsMessage)message;
-    	LOGGER.debug("Got a message from ursids:" + session + "\n" + msg.toString());
-    	orion.onUrsidsMessage(session, msg);
+    	try{
+    		long start = System.currentTimeMillis();
+	    	UrsidsMessage msg = (UrsidsMessage)message;
+	    	LOGGER.debug("Got a message from ursids:" + session + "\n" + msg.toString());
+	    	orion.onUrsidsMessage(session, msg);
+    		LOGGER.debug("handle ursids msg, cost:" + (System.currentTimeMillis() - start));
+        }catch(Exception e){
+			LOGGER.error(StringHelper.getStackTrace(e));
+			e.printStackTrace();
+        }
     }
     
+    /* not reliable.
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         // Empty handler
-    	LOGGER.debug("Message sent on ursids:" + session);
-    	orion.onUrsidsMessageSent(session, (UrsidsMessage)message);
+    	try{
+    		UrsidsMessage us = (UrsidsMessage)message;
+	    	LOGGER.debug("Message sent on ursids:" + session + "\n msgid:" + us.getMsgid());
+	    	orion.onUrsidsMessageSent(session, us);
+	    }catch(Exception e){
+			LOGGER.error(StringHelper.getStackTrace(e));
+			e.printStackTrace();
+	    }
     }
-
+	*/
 }

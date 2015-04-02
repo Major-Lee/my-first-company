@@ -30,8 +30,10 @@ public class UrsidsWorker // implements Runnable
     
     public void sendMessage(IoSession session, UrsidsMessage msg) throws Exception
     {
+    	long start = System.currentTimeMillis();
     	LOGGER.debug(new String(msg.getBody(), "UTF-8"));
     	session.write(msg);
+    	LOGGER.debug("wirte ursids, cost:" + (System.currentTimeMillis() - start));
     }
     
     public void run(){
@@ -41,7 +43,8 @@ public class UrsidsWorker // implements Runnable
 			// Add two filters : a logger and a codec
 			acceptor.getFilterChain().addLast("logger", new LoggingFilter());
 			acceptor.getFilterChain().addLast("codec",new ProtocolCodecFilter(new UrsidsCodecFactory()));
-			acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
+//			acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
+			acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(Executors.newFixedThreadPool(JOrionConfig.URSIDS_THREADS_NUMBER)));
 
 			// Attach the business logic to the server
 			acceptor.setHandler(new UrsidsIoHandler(orion));

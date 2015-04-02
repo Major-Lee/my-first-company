@@ -2,12 +2,12 @@ package com.bhu.jorion.message;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
+import java.util.UUID;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.jorion.JOrion;
 import com.bhu.jorion.util.StringHelper;
 
 
@@ -23,9 +23,25 @@ public class UrsidsMessage {
 		header = hdr;
 		body = bd;
 		this.mac = mac;
-		this.isMqMessage = true;
+		this.isMqMessage = false;
 	}
 	
+	public UrsidsMessage(UrsidsHeader hdr, byte[] bd){
+		header = hdr;
+		body = bd;
+		this.mac = null;
+		this.isMqMessage = true;
+	}
+
+	public static UrsidsMessage composeUrsidsMessage(int mtype, int stype, byte[] content){
+		UrsidsHeader hdr = new UrsidsHeader();	
+		hdr.setVer(0);
+		hdr.setMtype(mtype);
+		hdr.setStype(stype);
+		hdr.setLength(content.length);
+		
+		return new UrsidsMessage(hdr, content);
+	}
 	public static UrsidsMessage composeUrsidsMessage(int mtype, int stype, String mac, long taskid, byte[] content){
 		UrsidsHeader hdr = new UrsidsHeader();
 		byte[] body = new byte[content.length + 2 + 6 + 4];//2reserved + 6 mac + 4 taskid
@@ -45,7 +61,8 @@ public class UrsidsMessage {
 		ib.put(content);
 		return new UrsidsMessage(hdr, body, mac);
 	}
-	
+
+
 	public boolean isMqMessage() {
 		return isMqMessage;
 	}
