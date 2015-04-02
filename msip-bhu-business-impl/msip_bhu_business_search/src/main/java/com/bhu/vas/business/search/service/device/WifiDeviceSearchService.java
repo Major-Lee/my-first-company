@@ -290,8 +290,8 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		ExistsFilterBuilder filter = FilterBuilders.existsFilter(WifiDeviceMapableComponent.M_address);
 		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
 				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
-		queryRequest.addSort(sortByOnline());
-		queryRequest.addSort(sortByCount());
+		//queryRequest.addSort(sortByOnline());
+		queryRequest.addSort(sortByRegisterAt());
 		return super.searchListByQuery(queryRequest);
 	}
 	
