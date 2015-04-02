@@ -146,7 +146,7 @@ public class StatisticsController extends BaseController{
 				Entry<String, String> next = iter.next();
 				String po = next.getKey();
 				String va = next.getValue();
-				if(j == 1 && po.compareTo(current_day)>0){
+				if(i == 0 && po.compareTo(current_day)>0){
 					;
 				}else{
 					fragment_tmp_result.put(String.format("第%02d天", j), va);
@@ -175,7 +175,7 @@ public class StatisticsController extends BaseController{
 				Entry<String, String> next = iter.next();
 				String po = next.getKey();
 				String va = next.getValue();
-				if(j == 1 && po.compareTo(current_day)>0){
+				if(i == 0 && po.compareTo(current_day)>0){
 					;
 				}else{
 					fragment_tmp_result.put(String.format("第%02d天", j), va);
@@ -205,7 +205,7 @@ public class StatisticsController extends BaseController{
 				Entry<String, String> next = iter.next();
 				String po = next.getKey();
 				String va = next.getValue();
-				if(j == 1 && po.compareTo(current_week)>0){
+				if(i == 0 && po.compareTo(current_week)>0){
 					;
 				}else{
 					fragment_tmp_result.put(String.format("第%02d周", j), va);
@@ -242,7 +242,7 @@ public class StatisticsController extends BaseController{
 				Entry<String, String> next = iter.next();
 				String po = next.getKey();
 				String va = next.getValue();
-				if(j == 1 && po.compareTo(current_month)>0){
+				if(i == 0 && po.compareTo(current_month)>0){
 					;
 				}else{
 					fragment_tmp_result.put(String.format("第%02d月", j), va);
