@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.util.StringUtils;
@@ -82,7 +83,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public List<GeoMapVTO> fetchGeoMap() {
+	public Collection<GeoMapVTO> fetchGeoMap() {
 		return deviceRestRpcService.fetchGeoMap();
 	}
 

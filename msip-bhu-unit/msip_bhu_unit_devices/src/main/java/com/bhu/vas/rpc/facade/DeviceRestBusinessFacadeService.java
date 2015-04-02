@@ -1,8 +1,11 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -36,6 +39,7 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMServic
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -310,8 +314,8 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	public static final int GeoMap_Fetch_Count = 500;
-	public List<GeoMapVTO> fetchGeoMap() throws ESQueryValidateException{
-		List<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();
+	public Collection<GeoMapVTO> fetchGeoMap() throws ESQueryValidateException{
+		Collection<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();
 		if(vtos == null){
 			QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchExistAddress(0, GeoMap_Fetch_Count);
 			int total = search_result.getTotal();
@@ -328,26 +332,44 @@ public class DeviceRestBusinessFacadeService {
 					}
 					List<WifiDevice> entitys = wifiDeviceService.findByIds(ids, true, true);
 	
-					vtos = new ArrayList<GeoMapVTO>();
+					//vtos = new ArrayList<GeoMapVTO>();
+					Map<String,GeoMapVTO> mergeMap = new HashMap<String,GeoMapVTO>();
 					int cursor = 0;
 					for(WifiDeviceSearchDTO dto : search_dtos){
-						GeoMapVTO vto = new GeoMapVTO();
-						vto.setLat(String.valueOf(dto.getLat()));
-						vto.setLng(String.valueOf(dto.getLon()));
+						//对坐标进行精度降维 合并坐标点 以便适应百度接口的50个坐标点的限制
+						String lat_coarsness = String.valueOf(ArithHelper.round(dto.getLat(), 2));
+						String lon_coarsness = String.valueOf(ArithHelper.round(dto.getLon(), 2));
+						
+						StringBuffer coordinate_sb = new StringBuffer();
+						coordinate_sb.append(lat_coarsness);
+						coordinate_sb.append(StringHelper.COMMA_STRING_GAP);
+						coordinate_sb.append(lon_coarsness);
+						
+						GeoMapVTO vto = mergeMap.get(coordinate_sb.toString());
+						if(vto == null)
+							vto = new GeoMapVTO();
+						
+						vto.setLat(lat_coarsness);
+						vto.setLng(lon_coarsness);
 						WifiDevice entity = entitys.get(cursor);
 						if(entity != null){
-							List<GeoMapDeviceVTO> rows = new ArrayList<GeoMapDeviceVTO>();
+							List<GeoMapDeviceVTO> rows = vto.getRows();
+							if(rows == null) 
+								rows = new ArrayList<GeoMapDeviceVTO>();
+							
 							GeoMapDeviceVTO sub_vto = new GeoMapDeviceVTO();
 							sub_vto.setName(entity.getOrig_model());
 							sub_vto.setIp(entity.getWan_ip());
 							sub_vto.setMac(entity.getId());
 							sub_vto.setStatus(entity.isOnline() ? 1 : 0);
-							rows.add(sub_vto);	
+							rows.add(sub_vto);
 							vto.setRows(rows);
 						}
-						vtos.add(vto);
+						mergeMap.put(coordinate_sb.toString(), vto);
+						//vtos.add(vto);
 						cursor++;
 					}
+					vtos = mergeMap.values();
 					businessDeviceCacheService.storeDeviceGeoMapCacheResult(vtos);
 				}
 			}
