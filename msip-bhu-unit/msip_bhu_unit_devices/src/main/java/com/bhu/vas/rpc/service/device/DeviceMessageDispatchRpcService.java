@@ -38,7 +38,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 */
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		//logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
+		logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
 		
 		try{
 			int type = parserHeader.getType();
@@ -57,9 +57,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					break;
 			}
 			
-			//logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
-			//		ctx, payload, parserHeader));
-			logger.info("1");
+			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
+					ctx, payload, parserHeader));
+			//logger.info("1");
 		}catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC messageDispatch failed ctx [%s] payload [%s] header[%s]", 
 					ctx, payload, parserHeader));
@@ -121,7 +121,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					deviceBusinessFacadeService.wifiDeviceAlarm(ctx, payload);
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
-					deviceBusinessFacadeService.handsetDeviceConnectState(ctx, payload);
+					deviceBusinessFacadeService.handsetDeviceConnectState(ctx, payload, parserHeader);
 					break;
 //				case 8://3.4.17	应用隧道消息
 //					break;

@@ -340,7 +340,9 @@ public class AsyncMsgHandleService {
 					}
 					HandsetDeviceDTO dto = dtos.get(cursor);
 					if(entity == null){
-						entityNewRegisters.add(BusinessModelBuilder.handsetDeviceDtoToEntity(dto));
+						HandsetDevice handset = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+						handset.setLast_wifi_id(wifiId);
+						entityNewRegisters.add(handset);
 					}else{
 						BeanUtils.copyProperties(dto, entity);
 						entityNewOnlines.add(entity);

@@ -1,5 +1,7 @@
 package com.bhu.jorion;
 
+import java.util.UUID;
+
 import javax.jms.TextMessage;
 
 public class PendingTask {
@@ -10,7 +12,14 @@ public class PendingTask {
 	private long taskid;
 	private TextMessage message;
 	private int status;
+	private UUID msgid;
 
+	public UUID getMsgid() {
+		return msgid;
+	}
+	public void setMsgid(UUID msgid) {
+		this.msgid = msgid;
+	}
 	public int getStatus() {
 		return status;
 	}
@@ -36,5 +45,6 @@ public class PendingTask {
 		this.taskid = taskid;
 		this.message = message;
 		this.status = PendingTask.STATUS_PENDING;
+		this.msgid = UUID.randomUUID();
 	}
 }
