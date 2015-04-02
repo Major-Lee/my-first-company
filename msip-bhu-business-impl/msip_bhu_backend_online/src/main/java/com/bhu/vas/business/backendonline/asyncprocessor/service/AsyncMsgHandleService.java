@@ -42,7 +42,7 @@ import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
-import com.smartwork.msip.cores.helper.geo.GeocodingPoiCreateRespDTO;
+import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 
 @Service
 public class AsyncMsgHandleService {
@@ -452,11 +452,20 @@ public class AsyncMsgHandleService {
 					params.put("latitude", dto.getLat());
 					params.put("longitude", dto.getLon());
 					params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(entity.getId(),entity.isOnline()?1:0)));
-					GeocodingPoiCreateRespDTO createPoi = GeocodingHelper.createPoi(params);
-					entity.setBdid(String.valueOf(createPoi.getId()));
-					logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] successful", createPoi.getId()));
+					String bdid = entity.getBdid();
+					GeocodingPoiRespDTO response = null;
+					if(StringUtils.isEmpty(bdid)){
+						response = GeocodingHelper.geoPoiCreate(params);
+						entity.setBdid(String.valueOf(response.getId()));
+					}else{
+						params.put("id", bdid);
+						response = GeocodingHelper.geoPoiUpdate(params);
+						entity.setBdid(String.valueOf(response.getId()));
+					}
+					logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] %s successful", response.getId(),StringUtils.isEmpty(bdid)?"Create":"Update"));
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
+					logger.error("百度geo 麻点云操作失败",ex);
 				}
 			}
 			wifiDeviceService.update(entity);
