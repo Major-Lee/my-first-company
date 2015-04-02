@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
@@ -23,7 +22,6 @@ import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -178,17 +176,21 @@ public class DeviceBusinessFacadeService {
 	/**
 	 * wifi设备告警信息
 	 * 1:告警信息存入告警信息表中
+	 * TODO: 
+	 * 	a:老版本会发送 告警信息 (包括终端上线等)
+	 *  b:新版本默认是不发送的，也可以通过配置开启
+	 * 告警消息暂不做处理
 	 * @param ctx
 	 * @param payload
 	 */
 	public void wifiDeviceAlarm(String ctx, String payload) {
-		WifiDeviceAlarmDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceAlarmDTO.class);
-		
-		if(StringUtils.isEmpty(dto.getMac_addr()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-
-		WifiDeviceAlarm wifi_device_alarm_entity = BusinessModelBuilder.wifiDeviceAlarmDtoToEntity(dto);
-		wifiDeviceAlarmService.insert(wifi_device_alarm_entity);
+//		WifiDeviceAlarmDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceAlarmDTO.class);
+//		
+//		if(StringUtils.isEmpty(dto.getMac_addr()) || StringUtils.isEmpty(ctx))
+//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+//
+//		WifiDeviceAlarm wifi_device_alarm_entity = BusinessModelBuilder.wifiDeviceAlarmDtoToEntity(dto);
+//		wifiDeviceAlarmService.insert(wifi_device_alarm_entity);
 	}
 	
 	/**
