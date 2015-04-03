@@ -21,3 +21,4 @@ db/*.sqlite3
 **/msip-bhu-deploy/deploy/*
 .idea
 *.iml
+**/.gitignore
