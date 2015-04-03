@@ -34,7 +34,7 @@ public class SystemStatisticsDTO implements Serializable{
 	//5:总移动设备接入次数
 	private long handset_accesscount;
 	//6:总移动设备访问时长
-	private long handset_duration;
+	private String handset_duration;
 	
 	public long getDevices() {
 		return devices;
@@ -66,10 +66,10 @@ public class SystemStatisticsDTO implements Serializable{
 	public void setHandset_accesscount(long handset_accesscount) {
 		this.handset_accesscount = handset_accesscount;
 	}
-	public long getHandset_duration() {
+	public String getHandset_duration() {
 		return handset_duration;
 	}
-	public void setHandset_duration(long handset_duration) {
+	public void setHandset_duration(String handset_duration) {
 		this.handset_duration = handset_duration;
 	}
 	
