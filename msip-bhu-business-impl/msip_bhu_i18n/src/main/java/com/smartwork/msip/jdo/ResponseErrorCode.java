@@ -34,6 +34,8 @@ public enum ResponseErrorCode {
 	COMMON_DATA_PARAM_ERROR("994", "common.data.param.error"),
 	COMMON_CONNECT_TIMEOUT_ERROR("993", "common.connect.timeout"),
 	COMMON_DATA_ALREADYEXIST("992", "common.data.alreadyexist"),
+	COMMON_DATA_ALREADYDONE("991", "common.data.alreadydone"),
+	
 	
 	SNS_TYPE_NOT_SUPPORT("801", "sns.type.not.support"), 
 	SNS_DUPLICATE_BIND("806", "sns.duplicate.bind"),

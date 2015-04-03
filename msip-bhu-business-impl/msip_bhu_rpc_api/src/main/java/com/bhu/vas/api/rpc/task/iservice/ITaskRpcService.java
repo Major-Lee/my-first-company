@@ -1,8 +1,11 @@
 package com.bhu.vas.api.rpc.task.iservice;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
+
 
 public interface ITaskRpcService {
-	public boolean createNewTask(
+	public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,
 			String opt,
 			String payload,
