@@ -19,7 +19,6 @@ import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
-import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -130,7 +129,7 @@ public class DeviceController {
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
-		TailPage<WifiDeviceRecentVTO> result = deviceRestRpcService.fetchRecentWDevice(pageNo, pageSize);
+		TailPage<WifiDeviceVTO> result = deviceRestRpcService.fetchRecentWDevice(pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 	
