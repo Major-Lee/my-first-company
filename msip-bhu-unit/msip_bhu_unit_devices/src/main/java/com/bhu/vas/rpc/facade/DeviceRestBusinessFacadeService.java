@@ -153,8 +153,10 @@ public class DeviceRestBusinessFacadeService {
 				vto.setOl(searchDto.getOnline());
 				vto.setCohc(searchDto.getCount());
 				vto.setAdr(searchDto.getAddress());
-				vto.setDt(searchDto.getDevicetype());
+				//vto.setDt(searchDto.getDevicetype());
 				if(entity != null){
+					vto.setN(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());
+					vto.setOsv(entity.getOrig_swver());
 					//vto.setDof(entity.getRx_bytes() > 0 ? (entity.getRx_bytes()/1024)+"KB" : "0KB");
 					vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
 					//vto.setUof(entity.getTx_bytes() > 0 ? (entity.getTx_bytes()/1024)+"KB" : "0KB");
