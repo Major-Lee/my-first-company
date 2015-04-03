@@ -24,6 +24,7 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -473,5 +474,13 @@ public class AsyncMsgHandleService {
 			wifiDeviceIndexIncrementService.wifiDeviceLocationIndexIncrement(entity);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
+	}
+	
+	
+	public void wifiCmdDownNotifyHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s]", message));
+		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
+		//TODO:需要调用组件 daemon 进行指令下发
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
 }
