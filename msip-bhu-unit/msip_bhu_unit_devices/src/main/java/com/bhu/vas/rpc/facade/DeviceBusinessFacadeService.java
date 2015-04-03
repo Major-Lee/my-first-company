@@ -292,7 +292,7 @@ public class DeviceBusinessFacadeService {
 
 		String lowercase_mac = wifiId.toLowerCase();
 		//1:更新移动设备的online状态为false
-		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_mac);
+		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(exist_handset_device_entity != null){
 			exist_handset_device_entity.setOnline(false);
 			handsetDeviceService.update(exist_handset_device_entity);
