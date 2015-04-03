@@ -2,8 +2,6 @@ package com.bhu.vas.rpc.facade;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseCodeConst;
@@ -20,15 +18,14 @@ import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
  */
 @Service
 public class TaskUnitFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(TaskUnitFacadeService.class);
+	//private final Logger logger = LoggerFactory.getLogger(TaskUnitFacadeService.class);
 
 	@Resource
 	private DeliverMessageService deliverMessageService;
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
-	
-	
+
 	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String payload,
 			String channel, String channel_taskid){
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
