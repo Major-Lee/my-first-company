@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.rpc.facade.TaskUnitFacadeService;
 
@@ -19,11 +21,10 @@ public class TaskRpcService implements ITaskRpcService{
 	 * 并返回taskid给客户端
 	 */
 	@Override
-	public boolean createNewTask(String mac, String opt, String payload,
+	public RpcResponseDTO<TaskResDTO> createNewTask(String mac, String opt, String payload,
 			String channel, String channel_taskid) {
 		System.out.println(String.format("createNewTask mac:%s", mac));
-		System.out.print(String.format("createNewTask payload:%s", payload));
-		return false;
+		return taskUnitFacadeService.taskGenerate(mac, opt, payload, channel, channel_taskid);
 	}
 
 	/**
