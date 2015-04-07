@@ -264,6 +264,7 @@ public class DeviceRestBusinessFacadeService {
 				searchDto = searchDtos.get(cursor);
 				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
 				vtos.add(vto);
+				cursor++;
 			}
 		}
 		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
