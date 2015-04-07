@@ -58,7 +58,7 @@ public class CMDBuilder {
 	public static String builderCMD4Opt(String opt,String wifi_mac,int taskid){//,String...params){
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
-			return String.format(operationCMDFromNo.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),opt,taskid);//,params);
+			return String.format(operationCMDFromNo.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));//,params);
 		}
 		return null;
 	}

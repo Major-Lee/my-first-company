@@ -19,9 +19,9 @@
                  -->
             </bean>  
         </property>  
-        <!-- 创建多少连接进行消费和生产-->
+        <!-- 创建多少连接进行消费和生产
         <property name="maxConnections" value="20"></property>
-         
+         -->
     </bean>  
     
 	<!-- 

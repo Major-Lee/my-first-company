@@ -23,6 +23,9 @@ cp ../../msip-bhu-unit/msip_bhu_unit_daemon_processor/target/msip_bhu_unit_daemo
 echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zip ./$CuDateDir
 
+echo '拷贝文件 msip_bhu_unit_tasks-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_tasks/target/msip_bhu_unit_tasks-bin.zip ./$CuDateDir
+
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_task-bin.zip到'$CuDateDir
@@ -41,6 +44,9 @@ unzip -q msip_bhu_unit_daemon_processor-bin.zip
 unzip -qo msip_bhu_unit_daemon_processor/bin/msip_bhu_unit_daemon_processor.jar -d msip_bhu_unit_daemon_processor/classes/
 unzip -q msip_bhu_unit_devices-bin.zip
 unzip -qo msip_bhu_unit_devices/bin/msip_bhu_unit_devices.jar -d msip_bhu_unit_devices/classes/
+unzip -q msip_bhu_unit_tasks-bin.zip
+unzip -qo msip_bhu_unit_tasks/bin/msip_bhu_unit_tasks.jar -d msip_bhu_unit_tasks/classes/
+
 
 unzip -q msip_bhu_backend_online-bin.zip
 unzip -qo msip_bhu_backend_online/bin/msip_bhu_backend_online.jar -d msip_bhu_backend_online/classes/
@@ -70,6 +76,11 @@ echo 'deploy msip_bhu_unit_devices to ...@'$Deploy2Server
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/lib/msip_*.jar  			root@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/classes/com/ 				root@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/classes/com/
 echo 'deploy msip_bhu_unit_devices successfully @'$Deploy2Server
+
+echo 'deploy msip_bhu_unit_tasks to ...@'$Deploy2Server
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tasks/lib/msip_*.jar  			root@$Deploy2Server:/BHUData/apps/msip_bhu_unit_tasks/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tasks/classes/com/ 				root@$Deploy2Server:/BHUData/apps/msip_bhu_unit_tasks/classes/com/
+echo 'deploy msip_bhu_unit_tasks successfully @'$Deploy2Server
 echo '发布业务组件成功'
 
 echo '准备发布其他服务到'$Deploy2Server
