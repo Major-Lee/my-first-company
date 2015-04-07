@@ -1,5 +1,7 @@
 package com.bhu.jorion.ursids;
 
+import java.util.UUID;
+
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -20,6 +22,7 @@ public class UrsidsIoHandler extends IoHandlerAdapter {
     
     @Override
     public void sessionCreated(IoSession session) {
+        session.setAttribute(JOrion.SESSION_ID, UUID.randomUUID());
     }
 
     @Override
