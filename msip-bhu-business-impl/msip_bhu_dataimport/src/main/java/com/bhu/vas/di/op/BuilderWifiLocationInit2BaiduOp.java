@@ -2,24 +2,22 @@ package com.bhu.vas.di.op;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
-import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
-import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingIpDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
@@ -34,8 +32,10 @@ public class BuilderWifiLocationInit2BaiduOp {
 	public static void main(String[] argv) throws ElasticsearchException, ESException, IOException, ParseException{
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
+		DeviceFacadeService deviceFacadeService = (DeviceFacadeService)ctx.getBean("deviceFacadeService");
+		
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		mc.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
     	mc.setPageNumber(1);
     	mc.setPageSize(400);
 		EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
@@ -47,33 +47,82 @@ public class BuilderWifiLocationInit2BaiduOp {
 			List<WifiDevice> entitys = it.next();
 			for(WifiDevice device:entitys){
 				try{
-					Map<String, String> params = new HashMap<String, String>();
-					params.put("title", device.getStreet());
-					params.put("address", device.getFormatted_address());
-					params.put("latitude", device.getLat());
-					params.put("longitude", device.getLon());
-					params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(device.getId(),device.isOnline()?1:0)));
+					String wan_ip = device.getWan_ip();
+					String lat = device.getLat();
+					String lon = device.getLon();
 					String bdid = device.getBdid();
-					GeocodingPoiRespDTO response = null;
-					if(StringUtils.isEmpty(bdid)){
-						response = GeocodingHelper.geoPoiCreate(params);
-						device.setBdid(String.valueOf(response.getId()));
-						create++;
-						total++;
+					if(StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lon) ){
+						if(StringUtils.isNotEmpty(bdid)){
+							total++;
+							continue;
+						}else{
+							Map<String, String> params = new HashMap<String, String>();
+							params.put("title",  StringUtils.isEmpty(device.getStreet())?device.getFormatted_address():device.getStreet());
+							params.put("address", device.getFormatted_address());
+							params.put("latitude", device.getLat());
+							params.put("longitude", device.getLon());
+							params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(device.getId(),device.isOnline()?1:0)));
+							GeocodingPoiRespDTO response = null;
+							if(StringUtils.isEmpty(bdid)){
+								response = GeocodingHelper.geoPoiCreate(params);
+								device.setBdid(String.valueOf(response.getId()));
+								create++;
+								total++;
+							}else{
+								params.put("id", bdid);
+								response = GeocodingHelper.geoPoiUpdate(params);
+								device.setBdid(String.valueOf(response.getId()));
+								update++;
+								total++;
+							}
+							wifiDeviceService.update(device);
+						}
 					}else{
-						params.put("id", bdid);
-						response = GeocodingHelper.geoPoiUpdate(params);
-						device.setBdid(String.valueOf(response.getId()));
-						update++;
-						total++;
+						//通过外网ip判定地理位置
+						if(StringUtils.isNotEmpty(wan_ip)){
+							GeocodingIpDTO ipDto = GeocodingHelper.geoIpLocation(wan_ip);
+							if(ipDto != null && ipDto.getContent() != null && ipDto.getContent().getPoint() != null ){
+								lat = ipDto.getContent().getPoint().getY();
+								lon = ipDto.getContent().getPoint().getX();
+								device.setLat(lat);
+								device.setLon(lon);
+								//2:根据坐标提取地理位置详细信息
+								boolean ret = deviceFacadeService.wifiDeiviceGeocoding(device);
+								if(ret){
+									try{
+										Map<String, String> params = new HashMap<String, String>();
+										params.put("title", StringUtils.isEmpty(device.getStreet())?device.getFormatted_address():device.getStreet());
+										params.put("address", device.getFormatted_address());
+										params.put("latitude", device.getLat());
+										params.put("longitude", device.getLon());
+										params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(device.getId(),device.isOnline()?1:0)));
+										GeocodingPoiRespDTO response = null;
+										if(StringUtils.isEmpty(bdid)){
+											response = GeocodingHelper.geoPoiCreate(params);
+											device.setBdid(String.valueOf(response.getId()));
+											create++;
+											total++;
+										}else{
+											params.put("id", bdid);
+											response = GeocodingHelper.geoPoiUpdate(params);
+											device.setBdid(String.valueOf(response.getId()));
+											update++;
+											total++;
+										}
+									}catch(Exception ex){
+										ex.printStackTrace(System.out);
+									}
+								}
+								wifiDeviceService.update(device);
+							}
+						}else{
+							total++;
+						}
 					}
-					wifiDeviceService.update(device);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
-				
 			}
-			
 		}
 		System.out.println(String.format("执行结果：total[%s] create[%s] update[%s]", total,create,update));
 	}
