@@ -69,6 +69,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case CMUPWithWifiDeviceOnlines:
 							asyncMsgHandleService.cmupWithWifiDeviceOnlinesHandle(message);
 							break;
+						case WifiCmdDownNotify:
+							asyncMsgHandleService.wifiCmdDownNotifyHandle(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

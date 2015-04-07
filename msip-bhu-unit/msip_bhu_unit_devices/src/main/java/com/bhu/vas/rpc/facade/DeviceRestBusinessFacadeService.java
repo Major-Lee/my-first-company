@@ -25,13 +25,13 @@ import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
-import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCountRegionStatisticsStringService;
+import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -98,14 +98,8 @@ public class DeviceRestBusinessFacadeService {
 		WifiHandsetDeviceLoginCountMDTO mdto = null;
 		List<WifiDeviceMaxBusyVTO> vtos = new ArrayList<WifiDeviceMaxBusyVTO>();
 		for(WifiDevice entity : entitys){
-			vto = new WifiDeviceMaxBusyVTO();
 			mdto = mdtos.get(cursor);
-			vto.setWid(mdto.getId());
-			vto.setHdc(mdto.getCount());
-			if(entity != null){
-				vto.setWm(entity.getWork_mode());
-				vto.setAdr(entity.getFormatted_address());
-			}
+			vto = BusinessModelBuilder.toWifiDeviceMaxBusyVTO(mdto, entity);
 			vtos.add(vto);
 			cursor++;
 		}
@@ -147,19 +141,8 @@ public class DeviceRestBusinessFacadeService {
 			WifiDeviceSearchDTO searchDto = null;
 			int cursor = 0;
 			for(WifiDevice entity : entitys){
-				vto = new WifiDeviceVTO();
 				searchDto = searchDtos.get(cursor);
-				vto.setWid(searchDto.getId());
-				vto.setOl(searchDto.getOnline());
-				vto.setCohc(searchDto.getCount());
-				vto.setAdr(searchDto.getAddress());
-				vto.setDt(searchDto.getDevicetype());
-				if(entity != null){
-					//vto.setDof(entity.getRx_bytes() > 0 ? (entity.getRx_bytes()/1024)+"KB" : "0KB");
-					vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
-					//vto.setUof(entity.getTx_bytes() > 0 ? (entity.getTx_bytes()/1024)+"KB" : "0KB");
-					vto.setUof(StringHelper.formateBytes(entity.getTx_bytes()));
-				}
+				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
 				vtos.add(vto);
 				cursor++;
 			}
@@ -250,9 +233,9 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public TailPage<WifiDeviceRecentVTO> fetchRecentWDevice(int pageNo, int pageSize) 
+	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize) 
 			throws ESQueryValidateException{
-		List<WifiDeviceRecentVTO> vtos = null;
+		List<WifiDeviceVTO> vtos = null;
 		
 		long minRegisterAt = System.currentTimeMillis() - (30 * 3600 * 24 * 1000l);
 		
@@ -267,18 +250,24 @@ public class DeviceRestBusinessFacadeService {
 		if(searchDtos.isEmpty()) {
 			vtos = Collections.emptyList();
 		}else{
-			vtos = new ArrayList<WifiDeviceRecentVTO>();
-			WifiDeviceRecentVTO vto = null;
+			List<String> wifiIds = new ArrayList<String>();
 			for(WifiDeviceSearchDTO searchDto : searchDtos){
-				vto = new WifiDeviceRecentVTO();
-				vto.setWid(searchDto.getId());
-				vto.setAdr(searchDto.getAddress());
-				vto.setTs(searchDto.getRegister_at());
-				vto.setWm(searchDto.getWorkmodel());
+				wifiIds.add(searchDto.getId());
+			}
+			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
+			
+			vtos = new ArrayList<WifiDeviceVTO>();
+			WifiDeviceVTO vto = null;
+			WifiDeviceSearchDTO searchDto = null;
+			int cursor = 0;
+			for(WifiDevice entity : entitys){
+				searchDto = searchDtos.get(cursor);
+				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
 				vtos.add(vto);
+				cursor++;
 			}
 		}
-		return new CommonPage<WifiDeviceRecentVTO>(pageNo, pageSize, total, vtos);
+		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
 	}
 	/**
 	 * 根据wifi设备的id获取在线的移动设备列表

@@ -2,7 +2,9 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -21,6 +24,7 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -38,6 +42,8 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
+import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 
 @Service
 public class AsyncMsgHandleService {
@@ -340,7 +346,9 @@ public class AsyncMsgHandleService {
 					}
 					HandsetDeviceDTO dto = dtos.get(cursor);
 					if(entity == null){
-						entityNewRegisters.add(BusinessModelBuilder.handsetDeviceDtoToEntity(dto));
+						HandsetDevice handset = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+						handset.setLast_wifi_id(wifiId);
+						entityNewRegisters.add(handset);
 					}else{
 						BeanUtils.copyProperties(dto, entity);
 						entityNewOnlines.add(entity);
@@ -436,13 +444,44 @@ public class AsyncMsgHandleService {
 			entity.setLat(dto.getLat());
 			entity.setLon(dto.getLon());
 			//2:根据坐标提取地理位置详细信息
-			deviceFacadeService.wifiDeiviceGeocoding(entity);
-
+			boolean ret = deviceFacadeService.wifiDeiviceGeocoding(entity);
+			if(ret){
+				try{
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("title",  StringUtils.isEmpty(entity.getStreet())?entity.getFormatted_address():entity.getStreet());
+					params.put("address", entity.getFormatted_address());
+					params.put("latitude", dto.getLat());
+					params.put("longitude", dto.getLon());
+					params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(entity.getId(),entity.isOnline()?1:0)));
+					String bdid = entity.getBdid();
+					GeocodingPoiRespDTO response = null;
+					if(StringUtils.isEmpty(bdid)){
+						response = GeocodingHelper.geoPoiCreate(params);
+						entity.setBdid(String.valueOf(response.getId()));
+					}else{
+						params.put("id", bdid);
+						response = GeocodingHelper.geoPoiUpdate(params);
+						entity.setBdid(String.valueOf(response.getId()));
+					}
+					logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] %s successful", response.getId(),StringUtils.isEmpty(bdid)?"Create":"Update"));
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+					logger.error("百度geo 麻点云操作失败",ex);
+				}
+			}
 			wifiDeviceService.update(entity);
-			
 			//3:增量索引
 			wifiDeviceIndexIncrementService.wifiDeviceLocationIndexIncrement(entity);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
+	}
+	
+	
+	public void wifiCmdDownNotifyHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s]", message));
+		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
+		
+		//TODO:需要调用组件 daemon 进行指令下发
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
 }

@@ -12,6 +12,8 @@ public enum ActionMessageType {
 	HandsetDeviceSync("Handset设备sync","hdsync","HS"),
 	WifiDeviceLocation("wifi设备位置回报","wdlocation","WL"),
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
+	
+	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

@@ -12,6 +12,7 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -24,7 +25,16 @@ public class DeliverMessageService {
 	public void sendPureText(String message){
 		deliverMessageQueueProducer.sendPureText(message);
 	}
-	
+
+	public void sendWifiCmdCommingNotifyMessage(String mac,int taskid,String opt,String payload){
+		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
+		dto.setMac(mac);
+		dto.setTaskid(taskid);
+		dto.setOpt(opt);
+		dto.setPayload(payload);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, long login_ts, 
 			long last_login_at, boolean newWifi){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();

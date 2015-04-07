@@ -28,7 +28,6 @@ import com.smartwork.msip.localunit.RandomData;
 @Service
 public class DataInitStatisticsFragmentService {
 	private ExecutorService exec = Executors.newFixedThreadPool(10);
-	
 	public void doInit(int previous_days){
 		Date current = DateTimeHelper.getDateDaysAgo(previous_days);
 		Calendar c = Calendar.getInstance();
@@ -41,13 +40,12 @@ public class DataInitStatisticsFragmentService {
 				exec.submit((new Runnable() {
 					@Override
 					public void run() {
-						StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(dd, RandomData.intNumber(200,40000));
+						StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(dd, RandomData.intNumber(100,3000));
 						System.out.println(DateTimeHelper.formatDate(dd, DateTimeHelper.FormatPattern9));
 					}
 				}));
 			}
 		}
-		
 		System.out.println("exec正在shutdown");
 		exec.shutdown();
 		System.out.println("exec正在shutdown成功");

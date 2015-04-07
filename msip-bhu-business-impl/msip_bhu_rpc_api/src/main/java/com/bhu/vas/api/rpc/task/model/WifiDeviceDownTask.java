@@ -33,7 +33,7 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	private String serial;
 	//给外部其他应用提供的channel值，每个外部应用有个编号
 	private String channel = Task_LOCAL_CHANNEL;
-	private int channel_taskid = 0;
+	private String channel_taskid;
 	private Date created_at;
 	
 	@Override
@@ -112,11 +112,11 @@ public class WifiDeviceDownTask extends BaseIntModel{
 		this.channel = channel;
 	}
 
-	public int getChannel_taskid() {
+	public String getChannel_taskid() {
 		return channel_taskid;
 	}
 
-	public void setChannel_taskid(int channel_taskid) {
+	public void setChannel_taskid(String channel_taskid) {
 		this.channel_taskid = channel_taskid;
 	}
 

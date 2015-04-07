@@ -1,14 +1,11 @@
 package com.bhu.vas.business.ds.task.facade;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-
 import javax.annotation.Resource;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.RpcResponseCodeConst;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
@@ -57,30 +54,27 @@ public class TaskFacadeService {
 		
 	}
 	
-	public static final int Task_Illegal = -1;
-	public static final int Task_Already_Exist = 0;
-	public static final int Task_Already_Completed = 1;
-	public static final int Task_Startup_OK = 2;
-	
 	public int taskComming(WifiDeviceDownTask downtask){
-		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) return Task_Illegal;
-		if(downtask.getChannel_taskid()>0 && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务
+		if(downtask == null || StringUtils.isEmpty(downtask.getMac())/* || StringUtils.isEmpty(downtask.getPayload())*/) return RpcResponseCodeConst.Task_Illegal;
+		if(StringUtils.isNotEmpty(downtask.getChannel_taskid()) && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务
 			//看看WifiDeviceDownTaskService是否存在此任务
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("channel_taskid", downtask.getChannel_taskid()).andColumnEqualTo("channel", downtask.getChannel());
-			/*mc.setOrderByClause("id");
-			mc.setPageNumber(1);
-			mc.setPageSize(10);*/
 			int count  = wifiDeviceDownTaskService.countByModelCriteria(mc);
-			if(count > 0) return Task_Already_Exist;
+			if(count > 0) return RpcResponseCodeConst.Task_Already_Exist;
 			count  = wifiDeviceDownTaskCompletedService.countByModelCriteria(mc);
-			if(count > 0) return Task_Already_Completed;
+			if(count > 0) return RpcResponseCodeConst.Task_Already_Completed;
 		}
 		downtask = wifiDeviceDownTaskService.insert(downtask);
-		return Task_Startup_OK;
+		return RpcResponseCodeConst.Task_Startup_OK;
 	}
 	
 	
+	public int taskUpdate(WifiDeviceDownTask downtask){
+		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) return RpcResponseCodeConst.Task_Illegal;
+		downtask = wifiDeviceDownTaskService.update(downtask);
+		return RpcResponseCodeConst.Task_Startup_OK;
+	}
 	/*public boolean cancelTask(int taskid){
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
 		if(downtask != null) 

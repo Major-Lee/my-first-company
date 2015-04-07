@@ -15,7 +15,6 @@ import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
-import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -123,7 +122,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public TailPage<WifiDeviceRecentVTO> fetchRecentWDevice(int pageNo, int pageSize) {
+	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchRecentWDevice invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
 		try{
 			return deviceRestBusinessFacadeService.fetchRecentWDevice(pageNo, pageSize);

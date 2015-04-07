@@ -8,7 +8,6 @@ import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
-import com.bhu.vas.api.vto.WifiDeviceRecentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -21,7 +20,7 @@ public interface IDeviceRestRpcService {
 			int pageNo, int pageSize);
 	public StatisticsGeneralVTO fetchStatisticsGeneral();
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions);
-	public TailPage<WifiDeviceRecentVTO> fetchRecentWDevice(int pageNo, int pageSize);
+	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize);
 	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize);
 	public Collection<GeoMapVTO> fetchGeoMap();
 }

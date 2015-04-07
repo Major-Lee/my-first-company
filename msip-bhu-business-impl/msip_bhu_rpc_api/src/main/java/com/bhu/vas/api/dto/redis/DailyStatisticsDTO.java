@@ -33,9 +33,9 @@ public class DailyStatisticsDTO implements Serializable{
 	private long accesscount;
 	private long duration;
 	
-	private String accesscount_avg = "0";
+	private long accesscount_avg;
 	private String active_pet = "0%";
-	private String duration_avg = "0";
+	private long duration_avg;
 	private String news_pet = "0%";
 	
 	public long getNews() {
@@ -62,10 +62,10 @@ public class DailyStatisticsDTO implements Serializable{
 	public void setDuration(long duration) {
 		this.duration = duration;
 	}
-	public String getAccesscount_avg() {
+	public long getAccesscount_avg() {
 		return accesscount_avg;
 	}
-	public void setAccesscount_avg(String accesscount_avg) {
+	public void setAccesscount_avg(long accesscount_avg) {
 		this.accesscount_avg = accesscount_avg;
 	}
 	public String getActive_pet() {
@@ -74,10 +74,10 @@ public class DailyStatisticsDTO implements Serializable{
 	public void setActive_pet(String active_pet) {
 		this.active_pet = active_pet;
 	}
-	public String getDuration_avg() {
+	public long getDuration_avg() {
 		return duration_avg;
 	}
-	public void setDuration_avg(String duration_avg) {
+	public void setDuration_avg(long duration_avg) {
 		this.duration_avg = duration_avg;
 	}
 	public String getNews_pet() {

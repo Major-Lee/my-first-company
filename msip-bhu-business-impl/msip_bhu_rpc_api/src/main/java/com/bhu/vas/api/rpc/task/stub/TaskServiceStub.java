@@ -2,6 +2,8 @@ package com.bhu.vas.api.rpc.task.stub;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -23,11 +25,11 @@ public class TaskServiceStub implements ITaskRpcService{
 	}*/
 
 	@Override
-	public boolean createNewTask(String mac, String opt, String payload,
+	public RpcResponseDTO<TaskResDTO> createNewTask(String mac, String opt, /*String payload,*/
 			String channel, String channel_taskid) {
 		if(StringUtils.isEmpty(mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return taskRpcService.createNewTask(mac, opt, payload,
+		return taskRpcService.createNewTask(mac, opt, /*payload,*/
 				channel, channel_taskid);
 	}
 

@@ -63,7 +63,8 @@ public class WifiDevice extends BaseStringModel{
 	private String street;
 	//结构化地址 如北京市海淀区后八家路
 	private String formatted_address;
-	
+	//百度geocoding create result id
+	private String bdid;
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -319,5 +320,13 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
+	}
+
+	public String getBdid() {
+		return bdid;
+	}
+
+	public void setBdid(String bdid) {
+		this.bdid = bdid;
 	}
 }

@@ -1,8 +1,11 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
+import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 
 public class TaskServiceConsumer {
 	public static void main(String[] args) throws Exception {
@@ -15,8 +18,8 @@ public class TaskServiceConsumer {
 		context.start();
 		ITaskRpcService taskRpcService = (ITaskRpcService)context.getBean("taskRpcService");
 		
-		boolean ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(), 
-				"payload content", "APP_VAS", "123");
+		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(), 
+				/*"payload content",*/ "APP_VAS", "1236");
 		
 //		taskRpcService.createNewTask("", OperationCMD.QueryDeviceStatus.getNo(), 
 //				"payload content", "APP_VAS", "123");

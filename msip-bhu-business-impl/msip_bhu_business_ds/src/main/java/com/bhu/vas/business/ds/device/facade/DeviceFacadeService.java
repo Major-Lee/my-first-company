@@ -107,8 +107,7 @@ public class DeviceFacadeService {
 		long news_add_actives = dailyStatisticsDto.getNews() + dailyStatisticsDto.getActives();
 		//1:设备接入次数平均（3/(1+2)）
 		if(news_add_actives > 0){
-			String accesscount_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getAccesscount(),
-					news_add_actives, 1));
+			long accesscount_avg = new Double(ArithHelper.div(dailyStatisticsDto.getAccesscount(),news_add_actives, 1)).longValue();
 			dailyStatisticsDto.setAccesscount_avg(accesscount_avg);
 		}
 
@@ -130,8 +129,7 @@ public class DeviceFacadeService {
 
 		//3:设备接入时长平均（4/(1+2)）
 		if(news_add_actives > 0){
-			String duration_avg = String.valueOf(ArithHelper.div(dailyStatisticsDto.getDuration(),
-					news_add_actives, 1));
+			long duration_avg = new Double(ArithHelper.div(dailyStatisticsDto.getDuration(),news_add_actives, 0)).longValue();
 			dailyStatisticsDto.setDuration_avg(duration_avg);
 		}
 		//4:新设备占比（1/(1+2)）
