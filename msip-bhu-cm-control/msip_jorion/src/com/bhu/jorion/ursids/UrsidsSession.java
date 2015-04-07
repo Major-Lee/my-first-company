@@ -3,6 +3,7 @@ package com.bhu.jorion.ursids;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -26,6 +27,7 @@ public class UrsidsSession {
 	private String redirectUrl;
 	private long maxClient;
 	private long reservedConection;
+	private UUID sessionId;
 	
 	public UrsidsSession(IoSession session, String name, String id) {
 		pendingTask = new ConcurrentHashMap<String, Queue<PendingTask>>();
@@ -124,6 +126,16 @@ public class UrsidsSession {
 		this.session = session;
 	}
 	
+	public UUID getSessionId() {
+		return sessionId;
+	}
+
+
+	public void setSessionId(UUID sessionId) {
+		this.sessionId = sessionId;
+	}
+
+
 	public synchronized void addTask(String mac, long taskid, TextMessage msg){
 		Queue<PendingTask> q = pendingTask.get(mac);
 		if(q == null){

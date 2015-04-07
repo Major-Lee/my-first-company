@@ -8,6 +8,7 @@ import java.nio.charset.CharsetDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jms.JMSException;
@@ -43,6 +44,7 @@ public class JOrion implements JOrionMBean{
     private final static Logger LOGGER = LoggerFactory.getLogger(JOrion.class);
     public static final CharsetDecoder charsetDecoder = (Charset.forName("UTF-8" /*"ISO-8859-1"*/)).newDecoder();
 	private static final String SESSION_KEY = "ursids_id";
+	public static final String SESSION_ID = "session_id";
 	private UrsidsWorker ursidsWorker;
 	private MqWorker mqWorker;
 	private ZkWorker zkWorker;
@@ -364,6 +366,11 @@ public class JOrion implements JOrionMBean{
 		if(s == null)
 			return;
 		LOGGER.info(" id " + id);
+		UUID uid = (UUID)is.getAttribute(SESSION_ID);
+		if(uid != null && !uid.equals(s.getSessionId())){
+			LOGGER.error("can't close this ursids session, maybe it's reconnectd!");
+			return;
+		}
 		s.setSession(null);
 		s.setJoinedFlag(false);
 		StringBuffer sb = new StringBuffer();
@@ -403,6 +410,7 @@ public class JOrion implements JOrionMBean{
 				LOGGER.info(" create new ursids for id " + id);
 			}
 		}
+		s.setSessionId((UUID)is.getAttribute(SESSION_ID));
 		String state = (String)m.get("state");
 		Long last_frag = (Long)m.get("last_frag");
 		if(s.getJoinedFlag() == false && last_frag == 1)
