@@ -59,8 +59,8 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
-				//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
-				logger.info("1");
+				logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+				//logger.info("1");
 				try{
 					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 					int type = Integer.parseInt(message.substring(0, 8));
