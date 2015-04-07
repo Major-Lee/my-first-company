@@ -79,7 +79,7 @@ public class BuilderWifiLocationInit2BaiduOp {
 						}
 					}else{
 						//通过外网ip判定地理位置
-						if(!StringUtils.isEmpty(wan_ip)){
+						if(StringUtils.isNotEmpty(wan_ip)){
 							GeocodingIpDTO ipDto = GeocodingHelper.geoIpLocation(wan_ip);
 							if(ipDto != null && ipDto.getContent() != null && ipDto.getContent().getPoint() != null ){
 								lat = ipDto.getContent().getPoint().getY();
