@@ -57,7 +57,7 @@ public class BuilderWifiLocationInit2BaiduOp {
 							continue;
 						}else{
 							Map<String, String> params = new HashMap<String, String>();
-							params.put("title", device.getStreet());
+							params.put("title",  StringUtils.isEmpty(device.getStreet())?device.getFormatted_address():device.getStreet());
 							params.put("address", device.getFormatted_address());
 							params.put("latitude", device.getLat());
 							params.put("longitude", device.getLon());
@@ -91,7 +91,7 @@ public class BuilderWifiLocationInit2BaiduOp {
 								if(ret){
 									try{
 										Map<String, String> params = new HashMap<String, String>();
-										params.put("title", device.getStreet());
+										params.put("title", StringUtils.isEmpty(device.getStreet())?device.getFormatted_address():device.getStreet());
 										params.put("address", device.getFormatted_address());
 										params.put("latitude", device.getLat());
 										params.put("longitude", device.getLon());

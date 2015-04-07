@@ -448,7 +448,7 @@ public class AsyncMsgHandleService {
 			if(ret){
 				try{
 					Map<String, String> params = new HashMap<String, String>();
-					params.put("title", entity.getStreet());
+					params.put("title",  StringUtils.isEmpty(entity.getStreet())?entity.getFormatted_address():entity.getStreet());
 					params.put("address", entity.getFormatted_address());
 					params.put("latitude", dto.getLat());
 					params.put("longitude", dto.getLon());
