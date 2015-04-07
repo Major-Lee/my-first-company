@@ -55,7 +55,7 @@ public class TaskFacadeService {
 	}
 	
 	public int taskComming(WifiDeviceDownTask downtask){
-		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) return RpcResponseCodeConst.Task_Illegal;
+		if(downtask == null || StringUtils.isEmpty(downtask.getMac())/* || StringUtils.isEmpty(downtask.getPayload())*/) return RpcResponseCodeConst.Task_Illegal;
 		if(StringUtils.isNotEmpty(downtask.getChannel_taskid()) && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务
 			//看看WifiDeviceDownTaskService是否存在此任务
 			ModelCriteria mc = new ModelCriteria();
@@ -70,6 +70,11 @@ public class TaskFacadeService {
 	}
 	
 	
+	public int taskUpdate(WifiDeviceDownTask downtask){
+		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) return RpcResponseCodeConst.Task_Illegal;
+		downtask = wifiDeviceDownTaskService.update(downtask);
+		return RpcResponseCodeConst.Task_Startup_OK;
+	}
 	/*public boolean cancelTask(int taskid){
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
 		if(downtask != null) 

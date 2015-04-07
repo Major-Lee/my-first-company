@@ -16,7 +16,7 @@ public class CMDBuilder {
 	
 	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制
 	private static final String query_device_teminals_cmd_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>";
-	
+	/*
 	//1. 查询cpu,内存利用率
 	private static final String query_device_status_cmd_template =   "00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>";
 	//1. 查询设备流量
@@ -25,6 +25,8 @@ public class CMDBuilder {
 	private static final String query_device_location_step1_cmd_template = "00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>";
 	//1. 查询wifi地理位置命令第二步
 	private static final String query_device_location_step2_cmd_template = "00001001%s%s%s"+"000100000001"+"<report><ITEM cmd=\"sysdebug\" serial=\"%s\" op=\"get\"/></report>";
+*/	
+	
 	
 	public static final String SuffixTemplete = "%08d";
 	
@@ -33,26 +35,33 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceStatusQuery(String wifi_mac,int taskid){
-		return String.format(query_device_status_cmd_template, 
+		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),String.format(SuffixTemplete,taskid));
 	}
 	
 	public static String builderDeviceFlowQuery(String wifi_mac,int taskid){
-		return String.format(query_device_flow_cmd_template, 
+		return String.format(OperationCMD.QueryDeviceFlow.getCmdtpl(),//query_device_flow_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceFlow.getNo(),String.format(SuffixTemplete,taskid));
 	}
 	
 	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
-		return String.format(query_device_location_step1_cmd_template, 
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS1.getNo(),String.format(SuffixTemplete,location_taskid_fragment.getNextSequence()));
+		return String.format(OperationCMD.QueryDeviceLocationS1.getCmdtpl(),//query_device_location_step1_cmd_template, 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS1.getNo(),String.format(SuffixTemplete,taskid));//location_taskid_fragment.getNextSequence()));
 	}
 	
 	public static String builderDeviceLocationStep2Query(String wifi_mac,int taskid,String serialno){
-		return String.format(query_device_location_step2_cmd_template,
+		return String.format(OperationCMD.QueryDeviceLocationS2.getCmdtpl(),//query_device_location_step2_cmd_template,
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),String.format(SuffixTemplete,taskid),serialno);
 	}
 	
 	
+	public static String builderCMD4Opt(String opt,String wifi_mac,int taskid){//,String...params){
+		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
+		if(operationCMDFromNo != null){
+			return String.format(operationCMDFromNo.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),opt,taskid);//,params);
+		}
+		return null;
+	}
 	
 	//任务号分段：
 	//对于查询wifi地理位置任务 区间段未1~2000

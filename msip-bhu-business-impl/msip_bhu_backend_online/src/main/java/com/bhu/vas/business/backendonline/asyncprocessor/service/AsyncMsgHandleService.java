@@ -480,6 +480,7 @@ public class AsyncMsgHandleService {
 	public void wifiCmdDownNotifyHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s]", message));
 		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
+		
 		//TODO:需要调用组件 daemon 进行指令下发
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s] successful", message));
 	}

@@ -5,10 +5,20 @@ import java.util.Map;
 
 public enum OperationCMD {
 	//QueryTeminals("01","查询设备当前在线终端"),
-	QueryDeviceStatus("01","查询设备cpu,内存利用率","sysperf"),
-	QueryDeviceFlow("02","查询设备流量","if_stat"),
-	QueryDeviceLocationS1("03","查询设备地理位置Step1",""),
-	QueryDeviceLocationS2("04","查询设备地理位置Step2","sysdebug"),
+	//1. 查询cpu,内存利用率
+	QueryDeviceStatus("01","查询设备cpu,内存利用率","sysperf",
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>"),
+	//1. 查询设备流量
+	QueryDeviceFlow("02","查询设备流量","if_stat",
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"if_stat\"/></cmd>"),
+	
+			
+	//1. 查询wifi地理位置命令第一步
+	QueryDeviceLocationS1("03","查询设备地理位置Step1","",
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>"),
+	//1. 查询wifi地理位置命令第二步
+	QueryDeviceLocationS2("04","查询设备地理位置Step2","sysdebug",
+			"00001001%s%s%s"+"000100000001"+"<report><ITEM cmd=\"sysdebug\" serial=\"%s\" op=\"get\"/></report>"),
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;
@@ -16,11 +26,13 @@ public enum OperationCMD {
 	String no;
 	String desc;
 	String cmd;
+	String cmdtpl;
 	
-	OperationCMD(String no,String desc,String cmd){
+	OperationCMD(String no,String desc,String cmd,String cmdtpl){
 		this.no = no;
 		this.desc = desc;
 		this.cmd = cmd;
+		this.cmdtpl = cmdtpl;
 	}
 	static {
 		allOperationCMDs = new HashMap<String,OperationCMD>();
@@ -51,6 +63,14 @@ public enum OperationCMD {
 
 	public void setCmd(String cmd) {
 		this.cmd = cmd;
+	}
+
+	public String getCmdtpl() {
+		return cmdtpl;
+	}
+
+	public void setCmdtpl(String cmdtpl) {
+		this.cmdtpl = cmdtpl;
 	}
 
 	public static OperationCMD getOperationCMDFromNo(String no) {

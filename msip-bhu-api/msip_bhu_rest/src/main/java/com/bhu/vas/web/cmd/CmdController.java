@@ -50,7 +50,7 @@ public class CmdController extends BaseController{
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) {
 		
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac, opt, payload, channel, channel_taskid);
+		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac, opt, /*payload,*/ channel, channel_taskid);
 		if(resp.getResCode() == RpcResponseCodeConst.Task_Startup_OK){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
