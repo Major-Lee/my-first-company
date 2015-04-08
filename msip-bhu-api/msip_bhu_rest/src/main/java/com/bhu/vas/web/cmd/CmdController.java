@@ -46,16 +46,17 @@ public class CmdController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String opt,
-			@RequestParam(required = true) String payload,
+			/*@RequestParam(required = true) String payload,*/
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) {
 		
 		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac, opt, /*payload,*/ channel, channel_taskid);
+		
+		System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
 		if(resp.getResCode() == RpcResponseCodeConst.Task_Startup_OK){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}else{
-			//BusinessException ex = null;
 			ResponseErrorCode errorcode = null;
 			switch(resp.getResCode()){
 				case RpcResponseCodeConst.Task_Illegal:
