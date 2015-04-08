@@ -252,8 +252,14 @@ public class DeviceBusinessFacadeService {
 			newHandset = true;
 		}else{
 			last_login_at = handset_device_entity.getLast_login_at().getTime();
-			
-			BeanUtils.copyProperties(dto, handset_device_entity);
+			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
+			//BeanUtils.copyProperties(dto, handset_device_entity);
+			handset_device_entity.setChannel(dto.getChannel());
+			handset_device_entity.setSsid(dto.getSsid());
+			handset_device_entity.setBssid(dto.getBssid());
+			handset_device_entity.setPhy_rate(dto.getPhy_rate());
+			handset_device_entity.setRssi(dto.getRssi());
+			handset_device_entity.setSnr(dto.getSnr());
 			handset_device_entity.setLast_login_at(new Date());
 			handset_device_entity.setLast_wifi_id(wifiId_lowerCase);
 			handset_device_entity.setOnline(true);
@@ -295,6 +301,7 @@ public class DeviceBusinessFacadeService {
 		//1:更新移动设备的online状态为false
 		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(exist_handset_device_entity != null){
+			BeanUtils.copyProperties(dto, exist_handset_device_entity);
 			exist_handset_device_entity.setOnline(false);
 			handsetDeviceService.update(exist_handset_device_entity);
 			
