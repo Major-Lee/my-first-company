@@ -9,7 +9,7 @@ import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 
 public class TaskServiceConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUDevicesRpcConsumerApp");
+		System.setProperty("appname", "BHUTasksRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
 		System.setProperty("provider.port", "");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
@@ -19,7 +19,7 @@ public class TaskServiceConsumer {
 		ITaskRpcService taskRpcService = (ITaskRpcService)context.getBean("taskRpcService");
 		
 		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(), 
-				/*"payload content",*/ "APP_VAS", "8");
+				/*"payload content",*/ "APP_VAS", "999");
 		
 //		taskRpcService.createNewTask("", OperationCMD.QueryDeviceStatus.getNo(), 
 //				"payload content", "APP_VAS", "123");
