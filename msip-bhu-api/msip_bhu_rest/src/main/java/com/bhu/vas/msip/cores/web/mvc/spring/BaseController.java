@@ -127,13 +127,13 @@ public abstract class BaseController implements ServletContextAware {
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL));
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL));
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
             return null;        	
         }
         ModelAndView mv = new ModelAndView();
