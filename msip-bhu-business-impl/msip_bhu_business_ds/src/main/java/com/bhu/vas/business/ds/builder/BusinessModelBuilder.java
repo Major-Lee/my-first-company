@@ -129,8 +129,8 @@ public class BusinessModelBuilder {
 			vto.setCts(entity.getCreated_at().getTime());
 			vto.setOvd(StringUtils.isEmpty(entity.getOem_vendor()) ? entity.getOrig_vendor() : entity.getOem_vendor());
 			vto.setOsv(StringUtils.isEmpty(entity.getOem_swver()) ? entity.getOrig_swver() : entity.getOem_swver());
-			vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
-			vto.setUof(StringHelper.formateBytes(entity.getTx_bytes()));
+			vto.setDof(Long.parseLong(entity.getRx_bytes()));
+			vto.setUof(Long.parseLong(entity.getTx_bytes()));
 		}
 		return vto;
 	}
@@ -152,8 +152,8 @@ public class BusinessModelBuilder {
 			vto.setCts(entity.getCreated_at().getTime());
 			vto.setOvd(StringUtils.isEmpty(entity.getOem_vendor()) ? entity.getOrig_vendor() : entity.getOem_vendor());
 			vto.setOsv(StringUtils.isEmpty(entity.getOem_swver()) ? entity.getOrig_swver() : entity.getOem_swver());
-			vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
-			vto.setUof(StringHelper.formateBytes(entity.getTx_bytes()));
+			vto.setDof(Long.parseLong(entity.getRx_bytes()));
+			vto.setUof(Long.parseLong(entity.getTx_bytes()));
 		}
 		return vto;
 	}
