@@ -351,7 +351,7 @@ public class AsyncMsgHandleService {
 						handset.setLast_wifi_id(wifiId);
 						entityNewRegisters.add(handset);
 					}else{
-						BeanUtils.copyProperties(dto, entity);
+						BeanUtils.copyProperties(dto, entity, HandsetDeviceDTO.copyIgnoreProperties);
 						entityNewOnlines.add(entity);
 					}
 					String handsetId = dto.getMac().toLowerCase();

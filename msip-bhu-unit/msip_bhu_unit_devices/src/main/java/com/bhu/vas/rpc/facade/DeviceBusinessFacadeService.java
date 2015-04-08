@@ -301,7 +301,7 @@ public class DeviceBusinessFacadeService {
 		//1:更新移动设备的online状态为false
 		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(exist_handset_device_entity != null){
-			BeanUtils.copyProperties(dto, exist_handset_device_entity);
+			BeanUtils.copyProperties(dto, exist_handset_device_entity, HandsetDeviceDTO.copyIgnoreProperties);
 			exist_handset_device_entity.setOnline(false);
 			handsetDeviceService.update(exist_handset_device_entity);
 			

@@ -12,6 +12,8 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("ITEM")
 @SuppressWarnings("serial")
 public class HandsetDeviceDTO implements Serializable{
+	public static final String[] copyIgnoreProperties = {"data_tx_rate","data_rx_rate"};
+	
 	public static final String Action_Online = "online";
 	public static final String Action_Offline = "offline";
 	public static final String Action_Sync = "sync";
