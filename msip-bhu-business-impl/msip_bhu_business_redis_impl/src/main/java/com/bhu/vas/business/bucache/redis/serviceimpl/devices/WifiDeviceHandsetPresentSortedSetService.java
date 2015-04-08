@@ -18,7 +18,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *  wifi设备对应的在线移动设备列表
  *  ZSET 
  *  	key：wifiId 
- *  	score 移动设备上线时间
+ *  	score 在线状态基础数值(在线是100亿，100,0000,0000 离线是0) + 终端下行速率(百兆每秒速率是亿级别)
  *  	value 移动设备的mac
  *  
  * 1：移动设备上线新增，下线删除，sync更新数据
@@ -39,6 +39,8 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	public static WifiDeviceHandsetPresentSortedSetService getInstance() { 
 		return ServiceHolder.instance; 
 	}
+	//在线初始score数值 100亿 
+	public static final double OnlineBaseScore = 10000000000d;
 	
 	private WifiDeviceHandsetPresentSortedSetService(){
 	}
@@ -74,6 +76,43 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	}
 	
 	/**
+	 * 获取该设备的在线终端数量
+	 * @param wifiId
+	 * @return
+	 */
+	public Long presentOnlineSize(String wifiId){
+		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
+	public Long presentOfflineSize(String wifiId){
+		return super.zcount(generateKey(wifiId), 0, (OnlineBaseScore-1));
+	}
+	
+	public long addOnlinePresent(String wifiId, String handsetId, long rx_rate){
+		return super.zadd(generateKey(wifiId), OnlineBaseScore+rx_rate, handsetId);
+	}
+	
+	public long addOfflinePresent(String wifiId, String handsetId, long rx_rate){
+		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
+	}
+	
+	public Set<Tuple> fetchOnlinePresents(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
+	}
+	
+	public Set<Tuple> fetchOfflinePresents(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 0, (OnlineBaseScore-1), start, size);
+	}
+	
+	public Set<String> fetchPresents(String wifiId){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		//return super.zrevrangeWithScores(generateKey(wifiId), 0, 10);
+		return super.zrevrangeByScore(generateKey(wifiId), 0, 10000, 0, 10);
+	}
+	
+	/**
 	 * 按移动设备接入时间，从大到小排序
 	 * @param wifiId wifi mac
 	 * @param start
@@ -99,5 +138,27 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	@Override
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
+	}
+	
+	public static void main(String[] args){
+		String wifiId = "tt:tt:tt:tt:tt:t";
+		for(int i = 0;i<20;i++){
+			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
+					"hh:hh:hh:hh:hh:h".concat(String.valueOf(i)), 1024+i);
+		}
+		for(int i = 0;i<20;i++){
+			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(wifiId, 
+					"oo:oo:oo:oo:oo:o".concat(String.valueOf(i)), 1024+i);
+		}
+		Set<Tuple> result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresents(wifiId, 0, 10);
+		for(Tuple tuple : result){
+			System.out.println("online="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore() - OnlineBaseScore));
+		}
+		result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresents(wifiId, 0, 10);
+		for(Tuple tuple : result){
+			System.out.println("offline="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore()));
+		}
+		System.out.println("online:"+WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
+		System.out.println("offline:"+WifiDeviceHandsetPresentSortedSetService.getInstance().presentOfflineSize(wifiId));
 	}
 }
