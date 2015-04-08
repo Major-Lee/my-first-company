@@ -33,7 +33,7 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 	}
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
-		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
+		if(/*StringUtils.isEmpty(ctx) || */StringUtils.isEmpty(mac) || StringUtils.isEmpty(cmd)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.wifiDeviceCmdDown(ctx,mac,cmd);
 	}
