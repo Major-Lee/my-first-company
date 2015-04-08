@@ -55,7 +55,7 @@
 		<appender-ref ref="unitrequestfile" />
 	</logger>	
 	
-	<root value="WARN">
+	<root level="WARN">
 		<appender-ref ref="stdout" />
 		<!-- 
 		<appender-ref ref="logfile" />
