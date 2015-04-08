@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
+import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -449,7 +450,8 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void doTaskCallback(int taskid, String status,String response){
 		if(StringUtils.isEmpty(status)) return;
-		
-		taskFacadeService.taskExecuteCallback(taskid, status,response);
+		if(CMDBuilder.wasNormalTaskid(taskid)){//查看taskid是否是触发性任务id
+			taskFacadeService.taskExecuteCallback(taskid, status,response);
+		}
 	}
 }

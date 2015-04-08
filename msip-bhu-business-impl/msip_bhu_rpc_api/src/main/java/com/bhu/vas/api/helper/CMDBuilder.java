@@ -85,4 +85,8 @@ public class CMDBuilder {
 	public static boolean wasLocationQueryTaskid(int taskid){
 		return location_taskid_fragment.wasInFragment(taskid);
 	}
+	
+	public static boolean wasNormalTaskid(int taskid){
+		return location_taskid_fragment.wasInFragment(taskid);
+	}
 }
