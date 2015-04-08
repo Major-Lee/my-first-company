@@ -44,6 +44,11 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceFlow.getNo(),String.format(SuffixTemplete,taskid));
 	}
 	
+	public static String builderDeviceSettingQuery(String wifi_mac,int taskid){
+		return String.format(OperationCMD.QueryDeviceSetting.getCmdtpl(),//query_device_flow_cmd_template, 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSetting.getNo(),String.format(SuffixTemplete,taskid));
+	}
+	
 	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceLocationS1.getCmdtpl(),//query_device_location_step1_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS1.getNo(),String.format(SuffixTemplete,taskid));//location_taskid_fragment.getNextSequence()));
@@ -70,6 +75,10 @@ public class CMDBuilder {
 	public static TaskSequenceFragment timer_device_status_taskid_fragment = new TaskSequenceFragment(2001,5000);
 	//对于查询设备流量 区间段未5001~8000
 	public static TaskSequenceFragment timer_device_flow_taskid_fragment = new TaskSequenceFragment(5001,8000);
+	
+	//对于查询设备设置 区间段未8001~20000
+	public static TaskSequenceFragment device_setting_taskid_fragment = new TaskSequenceFragment(8001,20000);
+
 	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,-1);
