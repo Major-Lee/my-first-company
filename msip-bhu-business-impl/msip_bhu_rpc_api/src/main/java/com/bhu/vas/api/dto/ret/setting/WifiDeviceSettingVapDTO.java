@@ -14,17 +14,25 @@ public class WifiDeviceSettingVapDTO {
 	//VAP不可用
 	public static final String Vap_Disable = "disable";
 	
+	//VAP名称
+	private String name;
 	//信号强度
 	private String ssid;
 	//加密方式
 	private String auth;
 	//是否可用
 	private String enable;
-	//名单类型 deny allow
+	//黑白名单类型 deny allow
 	private String acl_type;
-	//名单名称
+	//黑白名单名称
 	private String acl_name;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getSsid() {
 		return ssid;
 	}
