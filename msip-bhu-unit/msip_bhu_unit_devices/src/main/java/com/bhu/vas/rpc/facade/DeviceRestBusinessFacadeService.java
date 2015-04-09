@@ -279,12 +279,12 @@ public class DeviceRestBusinessFacadeService {
 	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize){
 		List<HandsetDeviceVTO> vtos = null;
 		
-		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifiId);
+		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId);
 		if(total == 0){
 			vtos = Collections.emptyList();
 		}else{
 			Set<Tuple> hdevicesList = WifiDeviceHandsetPresentSortedSetService.getInstance().
-					fetchPresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
+					fetchOnlinePresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
 			if(hdevicesList.isEmpty()){
 				vtos = Collections.emptyList();
 			}else{

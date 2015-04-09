@@ -13,6 +13,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
 /**
  *  wifi设备对应的在线移动设备列表
@@ -51,29 +52,29 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return sb.toString();
 	}
 	
-	public void addPresent(String wifiId, String handsetId, long login_at){
-		super.zadd(generateKey(wifiId), login_at, handsetId);
-	}
+//	public void addPresent(String wifiId, String handsetId, long login_at){
+//		super.zadd(generateKey(wifiId), login_at, handsetId);
+//	}
 	
-	public void removePresent(String wifiId, String handsetId){
-		super.zrem(generateKey(wifiId), handsetId);
-	}
+//	public void removePresent(String wifiId, String handsetId){
+//		super.zrem(generateKey(wifiId), handsetId);
+//	}
 	
-	public void clearPresents(String wifiId){
-		super.del(generateKey(wifiId));
-	}
-	
-	public void clearPresents(String wifiId, long max_login_at){
-		super.zremrangeByScore(generateKey(wifiId), 0, max_login_at);
-	}
+//	public void clearPresents(String wifiId){
+//		super.del(generateKey(wifiId));
+//	}
+//	
+//	public void clearPresents(String wifiId, long max_login_at){
+//		super.zremrangeByScore(generateKey(wifiId), 0, max_login_at);
+//	}
 	
 	private static final long Condition_Offline_TimeGap  = 1*24*60*60*1000l;
 	
-	public Long presentNotOfflineSize(String wifiId){
-		return this.zcard(generateKey(wifiId));
-		/*long ts = System.currentTimeMillis();
-		return this.zcount(generateKey(wifiId), ts-Condition_Offline_TimeGap, ts);*/
-	}
+//	public Long presentNotOfflineSize(String wifiId){
+//		return this.zcard(generateKey(wifiId));
+//		/*long ts = System.currentTimeMillis();
+//		return this.zcount(generateKey(wifiId), ts-Condition_Offline_TimeGap, ts);*/
+//	}
 	
 	/**
 	 * 获取该设备的在线终端数量
@@ -88,11 +89,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zcount(generateKey(wifiId), 0, (OnlineBaseScore-1));
 	}
 	
-	public long addOnlinePresent(String wifiId, String handsetId, long rx_rate){
+	public long addOnlinePresent(String wifiId, String handsetId, double rx_rate){
 		return super.zadd(generateKey(wifiId), OnlineBaseScore+rx_rate, handsetId);
 	}
 	
-	public long addOfflinePresent(String wifiId, String handsetId, long rx_rate){
+	public long addOfflinePresent(String wifiId, String handsetId, double rx_rate){
 		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
 	}
 	
@@ -106,11 +107,23 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 0, (OnlineBaseScore-1), start, size);
 	}
 	
-	public Set<String> fetchPresents(String wifiId){
-		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		//return super.zrevrangeWithScores(generateKey(wifiId), 0, 10);
-		return super.zrevrangeByScore(generateKey(wifiId), 0, 10000, 0, 10);
+	public void clearOnlinePresents(String wifiId){
+		int size = 50;
+		long count = presentOnlineSize(wifiId);
+		int page = PageHelper.getTotalPages((int)count, size);
+		for(int i=0;i<page;i++){
+			Set<Tuple> result = fetchOnlinePresents(wifiId, 0, size);
+			for(Tuple tuple : result){
+				addOfflinePresent(wifiId, tuple.getElement(), (tuple.getScore() - OnlineBaseScore));
+			}
+		}
 	}
+	
+//	public Set<String> fetchPresents(String wifiId){
+//		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+//		//return super.zrevrangeWithScores(generateKey(wifiId), 0, 10);
+//		return super.zrevrangeByScore(generateKey(wifiId), 0, 10000, 0, 10);
+//	}
 	
 	/**
 	 * 按移动设备接入时间，从大到小排序
@@ -119,10 +132,10 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	 * @param size
 	 * @return 包含移动设备的接入时间的set集合
 	 */
-	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
-		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeWithScores(generateKey(wifiId), start, start+size-1);
-	}
+//	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
+//		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+//		return super.zrevrangeWithScores(generateKey(wifiId), start, start+size-1);
+//	}
 
 	
 	@Override

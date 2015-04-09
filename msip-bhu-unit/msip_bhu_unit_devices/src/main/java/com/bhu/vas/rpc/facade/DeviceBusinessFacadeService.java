@@ -276,8 +276,8 @@ public class DeviceBusinessFacadeService {
 		long this_login_at = handset_device_entity.getLast_login_at().getTime();
 		
 		//2:wifi设备对应handset在线列表redis添加
-		WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId_lowerCase, handset_device_entity.getId(), 
-				handset_device_entity.getLast_login_at().getTime());
+		WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, handset_device_entity.getId(), 
+				handset_device_entity.getData_rx_rate_double());
 		
 		/*
 		 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
@@ -313,8 +313,10 @@ public class DeviceBusinessFacadeService {
 			handsetDeviceService.update(exist_handset_device_entity);
 			
 			//2:wifi设备对应handset在线列表redis移除
-			WifiDeviceHandsetPresentSortedSetService.getInstance().removePresent(exist_handset_device_entity.
-					getLast_wifi_id(), lowercase_mac);
+//			WifiDeviceHandsetPresentSortedSetService.getInstance().removePresent(exist_handset_device_entity.
+//					getLast_wifi_id(), lowercase_mac);
+			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(exist_handset_device_entity.
+					getLast_wifi_id(), lowercase_mac, exist_handset_device_entity.getData_rx_rate_double());
 			/*
 			 * 3:统计增量 移动设备的daily访问时长增量
 			 */

@@ -12,6 +12,8 @@ public enum ResponseErrorCode {
 	RPC_PARAMS_VALIDATE_EMPTY("10001", "rpc.params.validate.empty"),
 	RPC_MESSAGE_UNSUPPORT("10002", "rpc.message.unsupport"),
 	
+	
+	
 	STORE_ITEM_NOTEXIST("10001", "store.item.notexist"),
 	STORE_ITEM_NOTPUBLISHED("10002", "store.item.notpublished"),
 	STORE_ITEM_ALREADY_PUCHASED("10003", "store.item.already.purchased"),
@@ -53,9 +55,11 @@ public enum ResponseErrorCode {
 	
 	FUNC_UNLOCK("650","func.unlock"),
 	
-	FILTER_TAG_NOTEXIST("701", "filter.tag.notexist"),
-	FILTER_TAG_EXIST("702", "filter.tag.exist"),
-	FILTER_TAG_ARTIST("703", "filter.tag.artist"),
+//	FILTER_TAG_NOTEXIST("701", "filter.tag.notexist"),
+//	FILTER_TAG_EXIST("702", "filter.tag.exist"),
+//	FILTER_TAG_ARTIST("703", "filter.tag.artist"),
+	WIFIDEVICE_SETTING_NOTEXIST("701","wifidevice.setting.notexist"),
+	
 	
 	USER_FRD_EXIST("720","user.frd.exist"),
 	USER_FRD_APPLY_EXIST("721","user.frd.apply.exist"),
