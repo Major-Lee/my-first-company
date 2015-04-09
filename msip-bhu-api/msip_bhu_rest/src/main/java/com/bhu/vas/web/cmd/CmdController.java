@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.rpc.RpcResponseCodeConst;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
@@ -18,7 +17,6 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -52,12 +50,12 @@ public class CmdController extends BaseController{
 		
 		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac, opt, /*payload,*/ channel, channel_taskid);
 		
-		System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
-		if(resp.getResCode() == RpcResponseCodeConst.Task_Startup_OK){
+		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
+		if(resp.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}else{
-			ResponseErrorCode errorcode = null;
+			/*ResponseErrorCode errorcode = null;
 			switch(resp.getResCode()){
 				case RpcResponseCodeConst.Task_Illegal:
 					errorcode = ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL;
@@ -72,8 +70,8 @@ public class CmdController extends BaseController{
 				default:
 					errorcode = ResponseErrorCode.COMMON_BUSINESS_ERROR;
 					break;
-			}
-			throw new BusinessException(ResponseStatus.BadRequest,errorcode);
+			}*/
+			throw new BusinessException(ResponseStatus.BadRequest,resp.getErrorCode());
 			
 			/*if(resp.getResCode() == RpcResponseCodeConst.Task_Illegal){
 				throw new BusinessException(ResponseStatus.BadRequest,ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);

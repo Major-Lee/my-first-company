@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * task RPC组件的业务service
@@ -47,9 +48,25 @@ public class TaskUnitFacadeService {
 			dto.setMac(mac);
 			dto.setTaskid(downTask.getId());
 			taskFacadeService.taskUpdate(downTask);
-			return new RpcResponseDTO<TaskResDTO>(RpcResponseCodeConst.Task_Startup_OK,dto);
+			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}else{
-			return new RpcResponseDTO<TaskResDTO>(ret,null);
+			ResponseErrorCode errorcode = null;
+			switch(ret){
+				case RpcResponseCodeConst.Task_Illegal:
+					errorcode = ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL;
+					//ex = new BusinessException(ResponseStatus.BadRequest,ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+					break;
+				case RpcResponseCodeConst.Task_Already_Exist:
+					errorcode = ResponseErrorCode.COMMON_DATA_ALREADYEXIST;
+					break;
+				case RpcResponseCodeConst.Task_Already_Completed:
+					errorcode = ResponseErrorCode.COMMON_DATA_ALREADYDONE;
+					break;
+				default:
+					errorcode = ResponseErrorCode.COMMON_BUSINESS_ERROR;
+					break;
+			}
+			return new RpcResponseDTO<TaskResDTO>(errorcode,null);
 		}
 	}
 }
