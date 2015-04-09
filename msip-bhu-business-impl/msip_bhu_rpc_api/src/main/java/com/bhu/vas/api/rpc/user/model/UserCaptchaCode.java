@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.captcha.model;
+package com.bhu.vas.api.rpc.user.model;
 
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -6,7 +6,7 @@ import com.smartwork.msip.cores.helper.MobileCaptchaCodeHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class CaptchaCode extends BaseStringModel{
+public class UserCaptchaCode extends BaseStringModel{
 	private String captcha;
 	//基于多少秒后+updated_at过期
 	private int expired_sec;

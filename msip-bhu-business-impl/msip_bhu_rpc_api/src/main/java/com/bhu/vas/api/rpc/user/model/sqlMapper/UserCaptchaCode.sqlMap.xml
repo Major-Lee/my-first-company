@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.captcha.model.CaptchaCode">
+<mapper namespace="com.bhu.vas.api.rpc.user.model.UserCaptchaCode">
 
-  <resultMap id="modelResult" type="captchaCode">
+  <resultMap id="modelResult" type="userCaptchaCode">
     <id property="id" column="id"/>
     <result property="captcha" column="captcha"/>
     <result property="expired_sec" column="expired_sec"/>
@@ -106,7 +106,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="captchaCode">
+	<delete id="delete" parameterType="userCaptchaCode">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -115,11 +115,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="captchaCode">
+	<insert id="insert" parameterType="userCaptchaCode">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="captchaCode">
+	<update id="update" parameterType="userCaptchaCode">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
