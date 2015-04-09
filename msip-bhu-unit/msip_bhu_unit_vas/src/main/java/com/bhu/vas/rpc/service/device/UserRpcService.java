@@ -26,6 +26,22 @@ public class UserRpcService implements IUserRpcService{
 	
 	@Override
 	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc){
+		logger.info(String.format("checkAcc with countrycode[%s] acc[%s]",countrycode,acc));
 		return userUnitFacadeService.checkAcc(countrycode, acc);
+	}
+
+	@Override
+	public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,
+			String device, String remoteIp, String captcha) {
+		logger.info(String.format("userLogin with countrycode[%s] acc[%s] device[%s] captcha[%s]",
+				countrycode,acc,device,captcha));
+		return userUnitFacadeService.userLogin(countrycode, acc, device, remoteIp, captcha);
+	}
+
+	@Override
+	public RpcResponseDTO<UserDTO> userValidate(String aToken, String device,
+			String remoteIp) {
+		logger.info(String.format("userValidate with aToken[%s] device[%s] remoteIp[%s]",aToken,device,remoteIp));
+		return userUnitFacadeService.userValidate(aToken, device, remoteIp);
 	}
 }
