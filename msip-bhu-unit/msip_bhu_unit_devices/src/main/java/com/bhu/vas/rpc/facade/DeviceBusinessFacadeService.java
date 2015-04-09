@@ -22,9 +22,11 @@ import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.DeviceBuilder;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -34,6 +36,7 @@ import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
@@ -60,6 +63,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
+	
+	@Resource
+	private WifiDeviceSettingService wifiDeviceSettingService;
 	
 	@Resource
 	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
@@ -460,6 +466,17 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
+		if(entity == null){
+			entity = new WifiDeviceSetting();
+			entity.setId(wifiId);
+			entity.putInnerModel(dto);
+			wifiDeviceSettingService.insert(entity);
+		}else{
+			entity.putInnerModel(dto);
+			wifiDeviceSettingService.update(entity);
+		}
+		deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.builderSettingVapNames(dto.getVaps()));
 		//2:任务callback
 		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}

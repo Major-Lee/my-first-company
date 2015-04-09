@@ -487,4 +487,11 @@ public class AsyncMsgHandleService {
 		daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
+	
+	public void wifiDeviceSettingNotify(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s]", message));
+		//TODO:需要调用组件 daemon 进行指令下发
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
+
+	}
 }

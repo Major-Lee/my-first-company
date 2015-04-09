@@ -11,6 +11,7 @@ public enum ActionMessageType {
 	HandsetDeviceOffline("Handset设备上线","hdoffline","HF"),
 	HandsetDeviceSync("Handset设备sync","hdsync","HS"),
 	WifiDeviceLocation("wifi设备位置回报","wdlocation","WL"),
+	WifiDeviceSettingNotify("wifi设备配置获取通知","wdsetting","WS"),
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
 	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),
