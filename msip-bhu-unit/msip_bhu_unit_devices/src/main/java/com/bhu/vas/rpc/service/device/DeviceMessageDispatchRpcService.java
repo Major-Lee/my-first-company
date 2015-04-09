@@ -143,17 +143,22 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	public void taskResponse(String ctx, String payload, ParserHeader parserHeader){
 		String opt = parserHeader.getOpt();
 		if(!StringUtils.isEmpty(opt)){
+			String mac = parserHeader.getMac();
+			int taskid = parserHeader.getTaskid();
 			if(OperationCMD.QueryDeviceStatus.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.QueryDeviceFlow.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.QueryDeviceLocationS1.getNo().equals(opt)){
 				//do nothing 由input processor解析后直接转到daemon
 			}
 			else if(OperationCMD.QueryDeviceLocationS2.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, mac, taskid);
+			}
+			else if(OperationCMD.QueryDeviceSetting.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, mac, taskid);
 			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);

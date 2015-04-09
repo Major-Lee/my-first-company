@@ -12,6 +12,14 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -183,6 +191,106 @@ public class RPCMessageParseHelper {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		}
 		return dtos;
+	}
+	
+	/**
+	 * 解析设备配置查询xml
+	 * 因为只获取其中少部分属性,所以没有采用反射机制注入
+	 * @param message
+	 * @return
+	 */
+	public static WifiDeviceSettingDTO generateDTOFromQueryDeviceSetting(String message){
+		Document doc = parserMessage(message);
+		WifiDeviceSettingDTO dto = new WifiDeviceSettingDTO();
+		try{
+			//解析 radio
+			Element radio_item = Dom4jHelper.select(doc, "dev/wifi/radio/ITEM");
+			if(radio_item != null){
+				dto.setPower(radio_item.attributeValue("power"));
+			}
+			//解析 wan
+			Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
+			if(wan_item != null){
+				dto.setMode(wan_item.attributeValue("mode"));
+			}
+			//解析 vaps
+			List<Element> vap_items = Dom4jHelper.selectElements(doc, "dev/wifi/vap/ITEM");
+			if(vap_items != null && !vap_items.isEmpty()){
+				List<WifiDeviceSettingVapDTO> vap_dtos = new ArrayList<WifiDeviceSettingVapDTO>();
+				for(Element vap_item : vap_items){
+					WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
+					vap_dto.setSsid(vap_item.attributeValue("ssid"));
+					vap_dto.setAuth(vap_item.attributeValue("auth"));
+					vap_dto.setEnable(vap_item.attributeValue("enable"));
+					vap_dto.setAcl_name(vap_item.attributeValue("acl_name"));
+					vap_dto.setAcl_type(vap_item.attributeValue("acl_type"));
+					vap_dtos.add(vap_dto);
+				}
+				dto.setVaps(vap_dtos);
+			}
+			//解析黑白名单
+			List<Element> acl_items = Dom4jHelper.selectElements(doc, "dev/wifi/acllist/ITEM");
+			if(acl_items != null && !acl_items.isEmpty()){
+				List<WifiDeviceSettingAclDTO> acl_dtos = new ArrayList<WifiDeviceSettingAclDTO>();
+				for(Element acl_item : acl_items){
+					WifiDeviceSettingAclDTO acl_dto = new WifiDeviceSettingAclDTO();
+					acl_dto.setName(acl_item.attributeValue("name"));
+					String acl_macs = acl_item.attributeValue("macs");
+					if(!StringUtils.isEmpty(acl_macs)){
+						String[] acl_mac_array = acl_macs.split(StringHelper.COMMA_STRING_GAP);
+						acl_dto.setMacs(ArrayHelper.toList(acl_mac_array));
+					}
+					acl_dtos.add(acl_dto);
+				}
+				dto.setAcls(acl_dtos);
+			}
+			//解析接口速率控制
+			List<Element> interface_items = Dom4jHelper.selectElements(doc, "dev/net/interface/ITEM");
+			if(interface_items != null && !interface_items.isEmpty()){
+				List<WifiDeviceSettingInterfaceDTO> interface_dtos = new ArrayList<WifiDeviceSettingInterfaceDTO>();
+				for(Element interface_item : interface_items){
+					WifiDeviceSettingInterfaceDTO interface_dto = new WifiDeviceSettingInterfaceDTO();
+					interface_dto.setName(interface_item.attributeValue("name"));
+					interface_dto.setEnable(interface_item.attributeValue("enable"));
+					interface_dto.setIf_tx_rate(interface_item.attributeValue("if_tx_rate"));
+					interface_dto.setIf_rx_rate(interface_item.attributeValue("if_rx_rate"));
+					interface_dto.setUsers_tx_rate(interface_item.attributeValue("users_tx_rate"));
+					interface_dto.setUsers_rx_rate(interface_item.attributeValue("users_rx_rate"));
+					interface_dtos.add(interface_dto);
+				}
+				dto.setInterfaces(interface_dtos);
+			}
+			//解析终端速率控制
+			List<Element> ratecontrol_items = Dom4jHelper.selectElements(doc, "dev/net/rate_control/ITEM");
+			if(ratecontrol_items != null && !ratecontrol_items.isEmpty()){
+				List<WifiDeviceSettingRateControlDTO> ratecontrol_dtos = new ArrayList<WifiDeviceSettingRateControlDTO>();
+				for(Element ratecontrol_item : ratecontrol_items){
+					WifiDeviceSettingRateControlDTO ratecontrol_dto = new WifiDeviceSettingRateControlDTO();
+					ratecontrol_dto.setMac(ratecontrol_item.attributeValue("mac"));
+					ratecontrol_dto.setTx(ratecontrol_item.attributeValue("tx"));
+					ratecontrol_dto.setRx(ratecontrol_item.attributeValue("rx"));
+					ratecontrol_dtos.add(ratecontrol_dto);
+				}
+				dto.setRatecontrols(ratecontrol_dtos);
+			}
+			//解析管理员用户列表
+			List<Element> user_items = Dom4jHelper.selectElements(doc, "dev/sys/users/ITEM");
+			if(user_items != null && !user_items.isEmpty()){
+				List<WifiDeviceSettingUserDTO> user_dtos = new ArrayList<WifiDeviceSettingUserDTO>();
+				for(Element user_item : user_items){
+					WifiDeviceSettingUserDTO user_dto = new WifiDeviceSettingUserDTO();
+					user_dto.setName(user_item.attributeValue("name"));
+					user_dto.setAuth(user_item.attributeValue("auth"));
+					user_dto.setPassword_enc(user_item.attributeValue("password_enc"));
+					user_dtos.add(user_dto);
+				}
+				dto.setUsers(user_dtos);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+		return dto;
 	}
 	
 	public static void main(String[] args) {
