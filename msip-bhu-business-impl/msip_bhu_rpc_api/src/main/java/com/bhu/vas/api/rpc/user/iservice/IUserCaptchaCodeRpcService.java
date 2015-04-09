@@ -1,20 +1,12 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 
-public interface IUserRpcService {
-	public RpcResponseDTO<UserDTO> createNewUser(
-			int countrycode,
-			String acc,
-			String nick,
-			String sex,
-			String device,
-			String regIp,String deviceuuid,
-			String captcha
-			);
+
+public interface IUserCaptchaCodeRpcService {
+	public RpcResponseDTO<UserCaptchaCodeDTO> fetchCaptchaCode(int countrycode,String acc);
 	
-	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc);
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,
 			String opt,

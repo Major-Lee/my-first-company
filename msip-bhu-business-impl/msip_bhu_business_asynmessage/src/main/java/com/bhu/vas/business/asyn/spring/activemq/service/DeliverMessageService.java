@@ -12,6 +12,10 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
+import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
+import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
@@ -108,4 +112,54 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	
+	
+	public void sendUserSignedonActionMessage(int uid,String remoteip,String d){
+		UserSignedonDTO dto = new UserSignedonDTO();
+		dto.setUid(uid);
+		dto.setRemoteip(remoteip);
+		dto.setD(d);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserRegisteredActionMessage(Integer uid,String channel,String device,String remoteip){
+		UserRegisteredDTO dto = new UserRegisteredDTO();
+		dto.setUid(uid);
+		dto.setChannel(channel);
+		//dto.setInviteuid(inviteuid);
+		//dto.setInvitetoken(invitetoken);
+		dto.setRemoteip(remoteip);
+		dto.setD(device);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserResetPwdActionMessage(int uid,String token,String acc,String ip){
+		UserResetPwdDTO dto = new UserResetPwdDTO();
+		dto.setUid(uid);
+		dto.setToken(token);
+		dto.setAcc(acc);
+		dto.setIp(ip);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserCaptchaCodeFetchActionMessage(int countrycode,String acc,String captcha){
+		UserCaptchaCodeFetchDTO dto = new UserCaptchaCodeFetchDTO();
+		dto.setCountrycode(countrycode);
+		dto.setAcc(acc);
+		dto.setCaptcha(captcha);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, 0, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
 }
