@@ -30,6 +30,7 @@ public enum OperationCMD {
 	//cmd="wlanstatus" interface="wlan0"
 	QueryDeviceTerminals("11","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" interface=\"%s\"/></cmd>"),
 
+	QueryDeviceSpeed("12","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"30\" url=\"http://mirrors.hust.edu.cn/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz\"/></cmd>"),
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;
