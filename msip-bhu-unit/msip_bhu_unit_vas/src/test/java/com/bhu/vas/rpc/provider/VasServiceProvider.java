@@ -2,11 +2,11 @@ package com.bhu.vas.rpc.provider;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class TaskServiceProvider {
+public class VasServiceProvider {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUTasksSP");
+		System.setProperty("appname", "BHUVasSP");
 		System.setProperty("provider.port", "20889");
-		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_tasks/conf/");
+		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_vas/conf/");
 		//Class<?> classz = Class.forName("com.alibaba.dubbo.container.Main");
 		//ReflectionHelper.invokeStaticMethod("com.alibaba.dubbo.container.Main", "main", args);
 		System.out.println("TaskServiceProvider~~~~~~~~~~~~~:"+System.getProperty("provider.port"));

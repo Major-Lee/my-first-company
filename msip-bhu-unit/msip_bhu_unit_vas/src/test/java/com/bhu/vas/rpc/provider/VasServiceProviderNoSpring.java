@@ -7,7 +7,7 @@ import com.alibaba.dubbo.config.ServiceConfig;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.rpc.service.device.TaskRpcService;
 
-public class TaskServiceProviderNoSpring {
+public class VasServiceProviderNoSpring {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDevicesRpcProviderApp");
 		System.setProperty("provider.port", "20882");
