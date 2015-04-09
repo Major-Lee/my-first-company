@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
@@ -448,6 +449,19 @@ public class DeviceBusinessFacadeService {
 		}
 		//2:任务callback
 		doTaskCallback(taskid, serialDto.getStatus(),response);
+	}
+	
+	/**
+	 * 获取设备配置的响应处理
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
+		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
+		//2:任务callback
+		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}
 	
 	/**
