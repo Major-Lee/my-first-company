@@ -58,7 +58,8 @@ public class WifiDeviceIndexIncrementService {
 		logger.info(String.format("wifiDeviceLocationIndexIncrement wifiId[%s]", entity.getId()));
 
 		WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity);
-		Long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(entity.getId());
+		//Long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(entity.getId());
+		Long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId());
 		if(count != null){
 			indexDto.setCount(count.intValue());
 		}
