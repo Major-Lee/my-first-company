@@ -146,6 +146,6 @@ public class UniqueMobilenoHashService extends AbstractRelationHashCache{
 	}
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.UNIQUE);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
 }

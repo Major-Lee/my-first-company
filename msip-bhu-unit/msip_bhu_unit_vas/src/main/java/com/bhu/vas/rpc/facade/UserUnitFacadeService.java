@@ -34,9 +34,17 @@ public class UserUnitFacadeService {
 	private DeliverMessageService deliverMessageService;
 	
 	
+	/**
+	 * 检查手机号是否注册过
+	 * @param countrycode
+	 * @param acc
+	 * @return 
+	 * 		true 系统不存在此手机号  
+	 * 		false系统存在此手机号 ，并带有错误码
+	 */
 	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc){
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST,Boolean.FALSE);
 		}else{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}

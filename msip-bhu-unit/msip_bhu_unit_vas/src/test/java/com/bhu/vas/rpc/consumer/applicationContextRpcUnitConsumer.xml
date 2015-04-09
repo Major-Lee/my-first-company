@@ -33,5 +33,6 @@
 	<!-- 
 	<import resource="classpath*:com/smartwork/rpc/api/token/spring/dubbo-smartwork-token-reference.xml"/> -->
 	<import resource="classpath*:com/bhu/vas/api/rpc/task/spring/dubbo-bhu-task-reference.xml"/>
-	
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-usercaptchacode-reference.xml"/>
 </beans>

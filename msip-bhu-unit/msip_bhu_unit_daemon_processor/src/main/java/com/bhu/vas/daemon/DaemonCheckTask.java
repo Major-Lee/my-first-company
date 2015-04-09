@@ -41,6 +41,7 @@ public class DaemonCheckTask extends TimerTask{
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceStatusQuery(info.getMac(), CMDBuilder.timer_device_status_taskid_fragment.getNextSequence()));
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceFlowQuery(info.getMac(), CMDBuilder.timer_device_flow_taskid_fragment.getNextSequence()));
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSpeedQuery(info.getMac(), CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 						info.setRects(current);
 						sended++;
 					}else{
