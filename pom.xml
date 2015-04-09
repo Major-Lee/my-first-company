@@ -27,7 +27,7 @@
         <module>msip-bhu-unit/msip_bhu_unit_input_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
-        <module>msip-bhu-unit/msip_bhu_unit_tasks</module>
+        <module>msip-bhu-unit/msip_bhu_unit_vas</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-api/msip_bhu_rest</module>

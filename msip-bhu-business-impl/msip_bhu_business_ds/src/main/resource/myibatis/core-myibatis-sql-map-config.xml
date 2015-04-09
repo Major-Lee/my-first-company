@@ -24,6 +24,7 @@
   		<typeAlias alias="user" 						type="com.bhu.vas.api.rpc.user.model.User"/>
 		<typeAlias alias="userToken" 					type="com.bhu.vas.api.rpc.user.model.UserToken"/>
 		<typeAlias alias="userLoginState" 				type="com.bhu.vas.api.rpc.user.model.UserLoginState"/>
+		<typeAlias alias="userCaptchaCode" 				type="com.bhu.vas.api.rpc.user.model.UserCaptchaCode"/>
 		<typeAlias alias="wifiDeviceStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus"/>
 		<typeAlias alias="wifiDevice" 					type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
 		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
@@ -47,6 +48,8 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/User.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserToken.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserLoginState.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserCaptchaCode.sqlMap.xml"/>
+		
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
