@@ -58,7 +58,7 @@ public class UserServiceConsumer {
 		
 		
 		//申请手机验证码并登录
-		IUserCaptchaCodeRpcService userCaptchaCodeRpcService = (IUserCaptchaCodeRpcService)context.getBean("userCaptchaCodeRpcService");
+		/*IUserCaptchaCodeRpcService userCaptchaCodeRpcService = (IUserCaptchaCodeRpcService)context.getBean("userCaptchaCodeRpcService");
 		
 		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(86, "18612272825");
 		
@@ -81,7 +81,21 @@ public class UserServiceConsumer {
 			}
 		}else{
 			System.out.println(rpcResult.getErrorCode());
+		}*/
+		//validate登录
+		IUserRpcService userRpcService = (IUserRpcService)context.getBean("userRpcService");
+		
+		RpcResponseDTO<UserDTO> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=", "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
+		if(createNewUser.getErrorCode() == null){
+			UserDTO retdto = createNewUser.getPayload();
+			System.out.println(retdto.getId());
+			System.out.println(retdto.getAtoken());
+			System.out.println(retdto.getRtoken());
+			System.out.println(retdto.getMobileno());
+			System.out.println(retdto.getCountrycode());
+			System.out.println(retdto.getNick());
 		}
+		
 		Thread.currentThread().join();
 	}
 }

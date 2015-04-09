@@ -23,8 +23,8 @@ cp ../../msip-bhu-unit/msip_bhu_unit_daemon_processor/target/msip_bhu_unit_daemo
 echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zip ./$CuDateDir
 
-echo '拷贝文件 msip_bhu_unit_tasks-bin.zip到'$CuDateDir
-cp ../../msip-bhu-unit/msip_bhu_unit_tasks/target/msip_bhu_unit_tasks-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_unit_vas-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_vas/target/msip_bhu_unit_vas-bin.zip ./$CuDateDir
 
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
