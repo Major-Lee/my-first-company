@@ -1,4 +1,4 @@
-package com.bhu.vas.api.user.model;
+package com.bhu.vas.api.rpc.user.model;
 
 import com.smartwork.msip.cores.helper.StringHelper;
 

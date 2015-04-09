@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.user.model.UserToken;
+import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.ds.user.dao.UserTokenDao;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.token.service.TokenServiceHelper;

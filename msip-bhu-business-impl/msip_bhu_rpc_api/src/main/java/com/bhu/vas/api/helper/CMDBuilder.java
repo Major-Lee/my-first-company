@@ -1,5 +1,9 @@
 package com.bhu.vas.api.helper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -60,6 +64,19 @@ public class CMDBuilder {
 	}
 	
 	
+	public static List<String> builderDeviceTerminalsQueryWithAutoTaskid(String wifi_mac,List<String> interfaces){
+		if(interfaces == null || interfaces.isEmpty()){
+			return Collections.emptyList();
+		}
+		List<String> result = new ArrayList<String>();
+		for(String inter_face:interfaces){
+			result.add(String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
+					StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceTerminals.getNo(),String.format(SuffixTemplete,device_terminals_taskid_fragment.getNextSequence()),inter_face));
+		}
+		return result;
+	}
+	
+	
 	public static String builderCMD4Opt(String opt,String wifi_mac,int taskid){//,String...params){
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
@@ -78,6 +95,8 @@ public class CMDBuilder {
 	
 	//对于查询设备设置 区间段未8001~20000
 	public static TaskSequenceFragment device_setting_taskid_fragment = new TaskSequenceFragment(8001,20000);
+	//对于查询设备终端 区间段未20001~30000
+	public static TaskSequenceFragment device_terminals_taskid_fragment = new TaskSequenceFragment(20001,30000);
 
 	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid

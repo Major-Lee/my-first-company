@@ -1,4 +1,4 @@
-package com.bhu.vas.api.sequence.helper;
+package com.bhu.vas.api.rpc.sequence.helper;
 
 
 public class SequenceGenHelper {

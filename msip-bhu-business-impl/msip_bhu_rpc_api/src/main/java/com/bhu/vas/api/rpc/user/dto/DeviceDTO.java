@@ -1,4 +1,4 @@
-package com.bhu.vas.api.user.dto;
+package com.bhu.vas.api.rpc.user.dto;
 
 import java.io.Serializable;
 
