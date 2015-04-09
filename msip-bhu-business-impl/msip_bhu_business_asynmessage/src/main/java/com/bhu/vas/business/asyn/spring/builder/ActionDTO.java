@@ -1,6 +1,7 @@
 package com.bhu.vas.business.asyn.spring.builder;
 
 public abstract class ActionDTO {
+	private int uid;
 	private String mac;
 	/**
 	 * 动作时间
@@ -23,5 +24,12 @@ public abstract class ActionDTO {
 	public void setTs(long ts) {
 		this.ts = ts;
 	}
-	
+
+	public int getUid() {
+		return uid;
+	}
+
+	public void setUid(int uid) {
+		this.uid = uid;
+	}
 }

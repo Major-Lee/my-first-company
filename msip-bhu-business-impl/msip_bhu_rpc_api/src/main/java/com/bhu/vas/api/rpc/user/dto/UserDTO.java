@@ -7,15 +7,17 @@ public class UserDTO implements java.io.Serializable{
 	
 	private int id;
 	private String nick;
-	private String avatar;
+	private int countrycode;
+	//private String avatar;
 	private String mobileno;
-	
-	private int ut;//用户类型
+	private String atoken;
+	private String rtoken;
+	/*private int ut;//用户类型
 	private boolean ow;//是否是单向好友
 	private boolean frdshp;//是否是双向好友
 	private long lastlogin_ts; //用户的最后登陆时间
 	private boolean zombie;//是否是僵尸用户
-	public int getId() {
+*/	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
@@ -27,47 +29,35 @@ public class UserDTO implements java.io.Serializable{
 	public void setNick(String nick) {
 		this.nick = nick;
 	}
-	public String getAvatar() {
+	/*public String getAvatar() {
 		return avatar;
 	}
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
-	}
+	}*/
 	public String getMobileno() {
 		return mobileno;
 	}
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
 	}
-	public int getUt() {
-		return ut;
+	public String getAtoken() {
+		return atoken;
 	}
-	public void setUt(int ut) {
-		this.ut = ut;
+	public void setAtoken(String atoken) {
+		this.atoken = atoken;
 	}
-	public boolean isFrdshp() {
-		return frdshp;
+	public int getCountrycode() {
+		return countrycode;
 	}
-	public void setFrdshp(boolean frdshp) {
-		this.frdshp = frdshp;
+	public void setCountrycode(int countrycode) {
+		this.countrycode = countrycode;
 	}
-	public boolean isOw() {
-		return ow;
+	public String getRtoken() {
+		return rtoken;
 	}
-	public void setOw(boolean ow) {
-		this.ow = ow;
-	}
-	public long getLastlogin_ts() {
-		return lastlogin_ts;
-	}
-	public void setLastlogin_ts(long lastlogin_ts) {
-		this.lastlogin_ts = lastlogin_ts;
-	}
-	public boolean isZombie() {
-		return zombie;
-	}
-	public void setZombie(boolean zombie) {
-		this.zombie = zombie;
+	public void setRtoken(String rtoken) {
+		this.rtoken = rtoken;
 	}
 	
 }
