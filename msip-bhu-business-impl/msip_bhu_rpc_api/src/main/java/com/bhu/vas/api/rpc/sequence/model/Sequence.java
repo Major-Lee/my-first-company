@@ -1,4 +1,4 @@
-package com.bhu.vas.api.sequence.model;
+package com.bhu.vas.api.rpc.sequence.model;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 

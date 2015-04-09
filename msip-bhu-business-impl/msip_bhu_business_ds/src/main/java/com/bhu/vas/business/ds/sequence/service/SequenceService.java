@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.sequence.helper.ISequenceGenable;
-import com.bhu.vas.api.sequence.model.Sequence;
+import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
+import com.bhu.vas.api.rpc.sequence.model.Sequence;
 import com.bhu.vas.business.ds.sequence.dao.SequenceDao;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.orm.service.EntityService;

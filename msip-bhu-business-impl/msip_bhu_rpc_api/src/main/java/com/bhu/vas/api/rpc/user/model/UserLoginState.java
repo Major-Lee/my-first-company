@@ -1,4 +1,4 @@
-package com.bhu.vas.api.user.model;
+package com.bhu.vas.api.rpc.user.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtStringModel;
+import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtIntModel;
 
 /**
  * 记录用户登录的标识
@@ -15,7 +15,7 @@ import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtStringModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserLoginState extends KeyDtoMapJsonExtStringModel<String> {
+public class UserLoginState extends KeyDtoMapJsonExtIntModel<String> {
 	public static final String LoginMarkState = "1";
 	public static final String NotLoginMarkState = "0";
 	

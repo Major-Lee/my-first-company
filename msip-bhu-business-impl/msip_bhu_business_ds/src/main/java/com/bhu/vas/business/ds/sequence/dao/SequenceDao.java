@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.bhu.vas.api.sequence.model.Sequence;
+import com.bhu.vas.api.rpc.sequence.model.Sequence;
 import com.smartwork.msip.cores.orm.jpa.GenericEntityDao;
 
 @Repository

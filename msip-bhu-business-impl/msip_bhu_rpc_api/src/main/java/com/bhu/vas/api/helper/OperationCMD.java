@@ -27,6 +27,9 @@ public enum OperationCMD {
 			//dev.net.interface  dev.net.rate_control 限速
 			//dev.mod.basic.wan  上网方式设置（PPPoE、DHCP、Static）
 			//dev.sys.users		登陆密码
+	//cmd="wlanstatus" interface="wlan0"
+	QueryDeviceTerminals("11","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" interface=\"%s\"/></cmd>"),
+
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;

@@ -5,13 +5,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.user.model.UserLoginState;
+import com.bhu.vas.api.rpc.user.model.UserLoginState;
 import com.bhu.vas.business.ds.user.dao.UserLoginStateDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserLoginStateService extends AbstractCoreService<String,UserLoginState,UserLoginStateDao>{
+public class UserLoginStateService extends AbstractCoreService<Integer,UserLoginState,UserLoginStateDao>{
 	
 	@Resource
 	@Override

@@ -1,4 +1,4 @@
-package com.bhu.vas.api.user.dto;
+package com.bhu.vas.api.rpc.user.dto;
 
 @SuppressWarnings("serial")
 public class UserDTO implements java.io.Serializable{
