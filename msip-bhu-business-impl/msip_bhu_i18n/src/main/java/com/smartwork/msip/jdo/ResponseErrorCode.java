@@ -12,8 +12,6 @@ public enum ResponseErrorCode {
 	RPC_PARAMS_VALIDATE_EMPTY("10001", "rpc.params.validate.empty"),
 	RPC_MESSAGE_UNSUPPORT("10002", "rpc.message.unsupport"),
 	
-	
-	
 	STORE_ITEM_NOTEXIST("10001", "store.item.notexist"),
 	STORE_ITEM_NOTPUBLISHED("10002", "store.item.notpublished"),
 	STORE_ITEM_ALREADY_PUCHASED("10003", "store.item.already.purchased"),
@@ -121,14 +119,19 @@ public enum ResponseErrorCode {
 	USER_AVATAR_UPLOAD_IMAGE_FILEFORMAT_INVALID("312","user.avatar.upload.image.fileformat.invalid"),
 	USER_OPERATION_UPDPWD_NOTMATCH("313","user.operation.updpwd.notmatch"),
 	USER_NICK_ALREADY_BEUSED("314","user.nick.already.beused"),
-	USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
+	
+	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
+	DEVICE_ALREADY_BEBINDED("341","device.already.bebinded"),
+	DEVICE_OWNER_REACHLIMIT("342","device.owner.reachlimit"),
+	
+	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
 	USER_PERSONAL_INVALID("316","user.personal.invalid"),
 	USER_FRIEND_PERSONAL_INVALID("317","user.friend.personal.invalid"),
 	USER_FORGOTPWD_TIMES_REACHLIMIT("318","user.forgotpwd.times.reachlimit"),
 	USER_TICKER_COLLECT_EXIST("319","user.ticker.collect.exist"),
 	USER_KEYS_NOT_ENOUGH("320","user.keys.notenough"),
 	USER_SHARE_SAME_ARTICLE_TIMES_REACHLIMIT("321","user.share.same.article.times.reachlimit"),
-	USER_EXIST_SUBJECT_ESTIMATE("322","user.exist.subject.estimate"),
+	USER_EXIST_SUBJECT_ESTIMATE("322","user.exist.subject.estimate"),*/
 	
 	UPLOAD_FILE_FORMAT_INVALID("360","upload.file.format.invalid"),
 	UPLOAD_FILE_FID_GEN_ERROR("361","upload.file.fid.gen.error"),

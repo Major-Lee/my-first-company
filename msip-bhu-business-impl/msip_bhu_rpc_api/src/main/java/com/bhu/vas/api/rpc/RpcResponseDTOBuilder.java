@@ -18,7 +18,7 @@ public class RpcResponseDTOBuilder {
 		return res;
 	}
 	
-	public static <T extends java.io.Serializable> RpcResponseDTO<T> builderSuccessRpcResponse(T payload){
+	public static <T> RpcResponseDTO<T> builderSuccessRpcResponse(T payload){
 		RpcResponseDTO<T> res = new RpcResponseDTO<T>();
 		res.setErrorCode(null);
 		res.setPayload(payload);

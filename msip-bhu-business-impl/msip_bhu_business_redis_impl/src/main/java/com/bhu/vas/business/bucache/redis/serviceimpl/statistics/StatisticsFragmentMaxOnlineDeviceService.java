@@ -22,24 +22,24 @@ import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
  * @author edmond
  *
  */
-public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationHashCache{
+public class StatisticsFragmentMaxOnlineDeviceService extends AbstractRelationHashCache{
 	
 	private static class ServiceHolder{ 
-		private static StatisticsFragmentMaxOnlineHandsetService instance =new StatisticsFragmentMaxOnlineHandsetService(); 
+		private static StatisticsFragmentMaxOnlineDeviceService instance =new StatisticsFragmentMaxOnlineDeviceService(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static StatisticsFragmentMaxOnlineHandsetService getInstance() { 
+	public static StatisticsFragmentMaxOnlineDeviceService getInstance() { 
 		return ServiceHolder.instance; 
 	}
 	
-	private StatisticsFragmentMaxOnlineHandsetService(){
+	private StatisticsFragmentMaxOnlineDeviceService(){
 	}
 	
 	private static String generateKey(String fragment,String buPrefixKey){
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.FragmentUserOnline);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.FragmentDeviceOnline);
 		sb.append(buPrefixKey).append(fragment);
 		return sb.toString();
 	}
@@ -207,7 +207,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	
 	@Override
 	public String getName() {
-		return StatisticsFragmentMaxOnlineHandsetService.class.getName();
+		return StatisticsFragmentMaxOnlineDeviceService.class.getName();
 	}
 	
 	@Override

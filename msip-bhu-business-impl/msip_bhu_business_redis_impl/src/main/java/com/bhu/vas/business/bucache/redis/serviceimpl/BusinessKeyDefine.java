@@ -21,7 +21,8 @@ public class BusinessKeyDefine {
 	}
 	
 	public static class Statistics{
-		public static final String FragmentOnline  					= "FO.";
+		public static final String FragmentUserOnline  				= "FO.";
+		public static final String FragmentDeviceOnline  			= "FD.";
 		public static final String FragmentOnlineDailySuffixKey 	= "D.";
 		public static final String FragmentOnlineWeeklySuffixKey 	= "W.";
 		public static final String FragmentOnlineMonthlySuffixKey 	= "M.";
