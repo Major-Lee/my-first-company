@@ -79,7 +79,6 @@ public class LoginSessionController extends BaseController{
 	public void validate(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false,defaultValue="") String lang,
 			@RequestParam(required = false, value="d",defaultValue="R") String device) {
 		/*
 		 1、获取远端IP
