@@ -14,7 +14,7 @@ import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
 import com.bhu.vas.rpc.facade.StatisticsDeviceMaxOnlineService;
 import com.bhu.vas.rpc.facade.StatisticsUserMaxOnlineService;
 
-@Service("userRpcService")
+@Service("statisticsRpcService")
 public class StatisticsRpcService implements IStatisticsRpcService{
 	private final Logger logger = LoggerFactory.getLogger(StatisticsRpcService.class);
 	@Resource
