@@ -152,6 +152,56 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	/**
+	 * 根据多个条件来进行搜索wifi设备数据
+	 * 以当前在线和当前在线移动设备数量排序
+	 * @param mac 
+	 * @param orig_swver 软件版本号
+	 * @param adr 位置参数
+	 * @param work_mode 工作模式
+	 * @param config_mode 配置模式
+	 * @param region 地区
+	 * @param excepts 排除地区
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac,String orig_swver, String adr, String work_mode,
+			String config_mode, String devicetype, String region, String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
+		List<WifiDeviceVTO> vtos = null;
+		
+		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, 
+				orig_swver, adr, work_mode, config_mode, devicetype, region, excepts, (pageNo*pageSize)-pageSize, pageSize);
+		
+		int total = search_result.getTotal();
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}
+		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
+		if(searchDtos.isEmpty()) {
+			vtos = Collections.emptyList();
+		}else{
+			List<String> wifiIds = new ArrayList<String>();
+			for(WifiDeviceSearchDTO searchDto : searchDtos){
+				wifiIds.add(searchDto.getId());
+			}
+			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
+			vtos = new ArrayList<WifiDeviceVTO>();
+			WifiDeviceVTO vto = null;
+			WifiDeviceSearchDTO searchDto = null;
+			int cursor = 0;
+			for(WifiDevice entity : entitys){
+				searchDto = searchDtos.get(cursor);
+				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
+				vtos.add(vto);
+				cursor++;
+			}
+		}
+		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
+		
+	}
+
+	/**
 	 * 获取统计数据的通用数据
 		页面中统计数据体现：
 		a、总设备数、总用户数、在线设备数、在线用户数、总接入次数、总用户访问时长
