@@ -12,6 +12,8 @@ public class UserDTO implements java.io.Serializable{
 	private String mobileno;
 	private String atoken;
 	private String rtoken;
+	//是否是注册  true 注册  false 登录
+	private boolean reg = false;
 	/*private int ut;//用户类型
 	private boolean ow;//是否是单向好友
 	private boolean frdshp;//是否是双向好友
@@ -58,6 +60,12 @@ public class UserDTO implements java.io.Serializable{
 	}
 	public void setRtoken(String rtoken) {
 		this.rtoken = rtoken;
+	}
+	public boolean isReg() {
+		return reg;
+	}
+	public void setReg(boolean reg) {
+		this.reg = reg;
 	}
 	
 }
