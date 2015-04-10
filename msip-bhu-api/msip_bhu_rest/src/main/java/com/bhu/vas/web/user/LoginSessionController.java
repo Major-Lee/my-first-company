@@ -1,8 +1,5 @@
 package com.bhu.vas.web.user;
 
-import java.util.Date;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,18 +15,12 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserToken;
-import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.helper.BusinessWebHelper;
-import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -41,7 +32,7 @@ public class LoginSessionController extends BaseController{
 	private IUserRpcService userRpcService;
 
 	/**
-	 * 帐号密码登录
+	 * 帐号密码登录或快速注册
 	 * 帐号包括：email&mobileno
 	 * @param request
 	 * @param response
@@ -71,8 +62,8 @@ public class LoginSessionController extends BaseController{
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
-		RpcResponseDTO<UserDTO> userLogin = userRpcService.userLogin(countrycode, acc, from_device, remoteIp, captcha);
-		
+		//RpcResponseDTO<UserDTO> userLogin = userRpcService.userLogin(countrycode, acc, from_device, remoteIp, captcha);
+		RpcResponseDTO<UserDTO> userLogin = userRpcService.userCreateOrLogin(countrycode, acc, from_device, remoteIp, captcha);
 		if(userLogin.getErrorCode() == null){
 			BusinessWebHelper.setCustomizeHeader(response, userLogin.getPayload().getAtoken(),userLogin.getPayload().getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userLogin.getPayload()));

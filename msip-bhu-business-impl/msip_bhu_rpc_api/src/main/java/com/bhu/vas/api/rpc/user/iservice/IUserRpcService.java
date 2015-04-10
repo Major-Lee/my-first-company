@@ -18,6 +18,8 @@ public interface IUserRpcService {
 	
 	public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
 	public RpcResponseDTO<UserDTO> userValidate(String aToken,String device,String remoteIp);
+	
+	public RpcResponseDTO<UserDTO> userCreateOrLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,
 			String opt,

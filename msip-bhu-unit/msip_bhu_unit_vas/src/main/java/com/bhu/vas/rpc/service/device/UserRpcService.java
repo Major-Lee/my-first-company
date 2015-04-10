@@ -44,4 +44,12 @@ public class UserRpcService implements IUserRpcService{
 		logger.info(String.format("userValidate with aToken[%s] device[%s] remoteIp[%s]",aToken,device,remoteIp));
 		return userUnitFacadeService.userValidate(aToken, device, remoteIp);
 	}
+
+	@Override
+	public RpcResponseDTO<UserDTO> userCreateOrLogin(int countrycode,
+			String acc, String device, String remoteIp, String captcha) {
+		logger.info(String.format("userCreateOrLogin with countrycode[%s] acc[%s] device[%s] captcha[%s]",
+				countrycode,acc,device,captcha));
+		return userUnitFacadeService.userCreateOrLogin(countrycode, acc, device, remoteIp, captcha);
+	}
 }
