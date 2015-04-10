@@ -31,6 +31,10 @@ public class WifiDeviceIndexDTO {
 	private String format_address;
 	//工作模式
 	private String workmodel;
+	//配置模式
+	private String configmodel;
+	//软件版本号
+	private String origswver;
 	//设备类型
 	private String devicetype;
 	//wifi设备是否在线
@@ -121,6 +125,18 @@ public class WifiDeviceIndexDTO {
 	}
 	public void setFormat_address(String format_address) {
 		this.format_address = format_address;
+	}
+	public String getConfigmodel() {
+		return configmodel;
+	}
+	public void setConfigmodel(String configmodel) {
+		this.configmodel = configmodel;
+	}
+	public String getOrigswver() {
+		return origswver;
+	}
+	public void setOrigswver(String origswver) {
+		this.origswver = origswver;
 	}
 	public String getWorkmodel() {
 		return workmodel;
