@@ -190,31 +190,41 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
 			String work_mode, String config_mode, String devicetype, String region, String excepts, int start, int size) throws ESQueryValidateException {
 		
-		BoolFilterBuilder filter = FilterBuilders.boolFilter();
-		if(!StringUtils.isEmpty(mac)){
-			filter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
-		}
-		if(!StringUtils.isEmpty(orig_swver)){
-			filter.must(FilterBuilders.queryFilter(QueryBuilders.fuzzyQuery(
-					WifiDeviceMapableComponent.M_origswver, orig_swver)));
-		}
-		if(!StringUtils.isEmpty(adr)){
-			filter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, adr));
-		}
-		if(!StringUtils.isEmpty(work_mode)){
-			filter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_workmodel, work_mode));
-		}
-		if(!StringUtils.isEmpty(config_mode)){
-			filter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_configmodel, config_mode));
-		}
-		if(!StringUtils.isEmpty(devicetype)){
-			filter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_devicetype, devicetype));
-		}
-		if(!StringUtils.isEmpty(excepts)){
-			String[] except_array = excepts.split(StringHelper.COMMA_STRING_GAP);
-			for(String except : except_array){
-				filter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, except));
+		FilterBuilder filter = null;
+		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
+				devicetype, region, excepts)){
+			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
+			if(!StringUtils.isEmpty(mac)){
+				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
 			}
+			if(!StringUtils.isEmpty(orig_swver)){
+				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.fuzzyQuery(
+						WifiDeviceMapableComponent.M_origswver, orig_swver)));
+			}
+			if(!StringUtils.isEmpty(adr)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, adr));
+			}
+			if(!StringUtils.isEmpty(work_mode)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_workmodel, work_mode));
+			}
+			if(!StringUtils.isEmpty(config_mode)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_configmodel, config_mode));
+			}
+			if(!StringUtils.isEmpty(devicetype)){
+				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_devicetype, devicetype));
+			}
+			if(!StringUtils.isEmpty(region)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, region));
+			}
+			if(!StringUtils.isEmpty(excepts)){
+				String[] except_array = excepts.split(StringHelper.COMMA_STRING_GAP);
+				for(String except : except_array){
+					boolfilter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, except));
+				}
+			}
+			filter = boolfilter;
+		}else{
+			filter = FilterBuilders.matchAllFilter();
 		}
 		
 		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
