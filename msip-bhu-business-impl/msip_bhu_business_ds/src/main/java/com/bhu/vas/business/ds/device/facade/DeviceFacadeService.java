@@ -32,6 +32,9 @@ import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
 @Service
 public class DeviceFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
+	private final static int WIFI_DEVICE_STATUS_NOT_EXIST = 0;
+	private final static int WIFI_DEVICE_STATUS_NOT_ONLINE = 1;
+	private final static int WIFI_DEVICE_STATUS_ONLINE = 2;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -229,4 +232,28 @@ public class DeviceFacadeService {
 		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf(handsetDeviceService.countByOnline()));
 		return system_statistics_map;
 	}
+
+
+	/**
+	 * 获取设备在线状态.
+	 * @param mac 设备mac地址
+	 * @return
+	 * WIFI_DEVICE_STATUS_NOT_EXIST : 0 : 设备为空
+	 * WIFI_DEVICE_STATUS_NOT_ONLINE : 1 : 设备不在线
+	 * WIFI_DEVICE_STATUS_ONLINE : 2 : 设备在线
+	 */
+	public int getWifiDeviceOnlineStatus(String mac) {
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+
+		if (wifiDevice == null) {
+			return WIFI_DEVICE_STATUS_NOT_EXIST;
+		} else if (wifiDevice.isOnline()){
+			return WIFI_DEVICE_STATUS_ONLINE;
+		} else {
+			return WIFI_DEVICE_STATUS_NOT_ONLINE;
+		}
+
+	}
+
+
 }

@@ -121,8 +121,9 @@ public enum ResponseErrorCode {
 	USER_NICK_ALREADY_BEUSED("314","user.nick.already.beused"),
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
-	DEVICE_ALREADY_BEBINDED("341","device.already.bebinded"),
-	DEVICE_OWNER_REACHLIMIT("342","device.owner.reachlimit"),
+	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
+	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),
+	DEVICE_OWNER_REACHLIMIT("343","device.owner.reachlimit"),
 	
 	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
 	USER_PERSONAL_INVALID("316","user.personal.invalid"),
