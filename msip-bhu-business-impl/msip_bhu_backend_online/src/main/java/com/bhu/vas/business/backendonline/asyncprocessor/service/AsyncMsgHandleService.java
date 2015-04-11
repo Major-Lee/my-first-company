@@ -18,10 +18,13 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
@@ -32,6 +35,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -42,6 +46,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -51,7 +56,6 @@ import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.GuoduSMSHelper;
-import com.smartwork.msip.cores.helper.sms.NexmoSMSHelper;
 
 @Service
 public class AsyncMsgHandleService {
@@ -74,6 +78,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	
+	@Resource
+	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 	
 	/**
 	 * wifi设备上线
@@ -493,6 +500,58 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
 	}
 	
+	/**
+	 * 获取设备VAP下的终端列表
+	 * 1:更新被管理的终端的上下行速率和ssid bssid
+	 * @param message
+	 */
+	public void WifiDeviceTerminalNotify(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s]", message));
+		WifiDeviceTerminalNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceTerminalNotifyDTO.class);
+		List<WifiDeviceTerminalDTO> terminals = dto.getTerminals();
+		if(terminals != null && !terminals.isEmpty()){
+			List<WifiHandsetDeviceMarkPK> mark_ids = new ArrayList<WifiHandsetDeviceMarkPK>();
+			for(WifiDeviceTerminalDTO terminal : terminals){
+				mark_ids.add(new WifiHandsetDeviceMarkPK(dto.getMac(), terminal.getMac()));
+			}
+			//1:更新被管理的终端的上下行速率和ssid bssid
+			int cursor = 0;
+			List<WifiHandsetDeviceMark> entitys = wifiHandsetDeviceMarkService.findByIds(mark_ids, true, true);
+			List<WifiHandsetDeviceMark> need_inserts = null;
+			List<WifiHandsetDeviceMark> need_updates = null;
+			for(WifiHandsetDeviceMark entity : entitys){
+				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
+				if(entity == null){
+					WifiHandsetDeviceMark insert_entity = new WifiHandsetDeviceMark();
+					insert_entity.setId(new WifiHandsetDeviceMarkPK(dto.getMac(), terminal.getMac()));
+					insert_entity.setSsid(dto.getSsid());
+					insert_entity.setBssid(dto.getBssid());
+					insert_entity.setData_tx_rate(terminal.getData_tx_rate());
+					insert_entity.setData_rx_rate(terminal.getData_rx_rate());
+					if(need_inserts == null)
+						need_inserts = new ArrayList<WifiHandsetDeviceMark>();
+					need_inserts.add(insert_entity);
+				}else{
+					entity.setSsid(dto.getSsid());
+					entity.setBssid(dto.getBssid());
+					entity.setData_tx_rate(terminal.getData_tx_rate());
+					entity.setData_rx_rate(terminal.getData_rx_rate());
+					if(need_updates == null)
+						need_updates = new ArrayList<WifiHandsetDeviceMark>();
+					need_updates.add(entity);
+				}
+				cursor++;
+			}
+			
+			if(need_inserts != null)
+				wifiHandsetDeviceMarkService.insertAll(need_inserts);
+			if(need_updates != null)
+				wifiHandsetDeviceMarkService.updateAll(need_updates);
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s] successful", message));
+
+	}
+	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 	
@@ -516,7 +575,6 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
 
 	}
-	
 	
 	public void sendCaptchaCodeNotifyHandle(String message){
 		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s]", message));

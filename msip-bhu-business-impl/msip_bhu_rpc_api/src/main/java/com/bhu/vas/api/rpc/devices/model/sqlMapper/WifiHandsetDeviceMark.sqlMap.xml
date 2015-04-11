@@ -13,6 +13,8 @@
     <result property="data_tx_limit" column="data_tx_limit"/>
     <result property="data_rx_limlt" column="data_rx_limlt"/>
     <result property="block" column="block"/>
+    <result property="ssid" column="ssid"/>
+    <result property="bssid" column="bssid"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -32,6 +34,8 @@
 	    	data_tx_limit,
 	    	data_rx_limlt,
 	    	block,
+	    	ssid,
+	    	bssid,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -44,6 +48,8 @@
 	    	data_tx_limit,
 	    	data_rx_limlt,
 	    	block,
+	    	ssid,
+	    	bssid,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -58,6 +64,8 @@
 	    	#{data_tx_limit},
 	    	#{data_rx_limlt},
 	    	#{block},
+	    	#{ssid},
+	    	#{bssid},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -69,6 +77,8 @@
 			data_tx_limit = #{data_tx_limit},
 			data_rx_limlt = #{data_rx_limlt},
 			block = #{block},
+			ssid = #{ssid},
+			bssid = #{bssid},
 	    	updated_at = #{updated_at}
 	</sql>
 	

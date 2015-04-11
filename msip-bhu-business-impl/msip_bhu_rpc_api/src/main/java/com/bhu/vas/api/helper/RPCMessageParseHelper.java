@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
@@ -295,31 +297,39 @@ public class RPCMessageParseHelper {
 		}
 		return dto;
 	}
-	
+	/**
+	 * 解析VAP下的终端列表
+	 * <stations>
+          <SUB mac="88:32:9b:32:41:10" aid="1" phy_tx_rate="72M" phy_rx_rate="25.5M" current_phy_tx_rate="72M" 
+          current_phy_rx_rate="6M" data_tx_rate="16" data_rx_rate="288" phy_tx_errors="0" phy_rx_errors="0" 
+          phy_tx_drops="0" phy_rx_drops="749" phy_rate="72M" tx_power="3dBm" rx_chain_num="2" rssi="-31dBm" 
+          antenna_rssi0="-36dBm" antenna_rssi1="-34dBm" antenna_rssi2="-95dBm" snr="64dB" antenna_snr0="59dB" 
+          antenna_snr1="61dB" antenna_snr2="0dB" idle="0" state="27" uptime="1361" wds_list="" rx_pkts="1394" 
+          rx_bytes="118503" tx_pkts="277" tx_bytes="45745" rx_unicast="0" tx_assoc="1" />
+       </stations>
+	 * @param doc
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	public static LocationDTO generateDTOFromQueryDeviceTerminals(String message){
-		LocationDTO dto = null;
-//		try{
-//			List<Element> elements = doc.selectNodes("//SUB");
-//			if(elements == null || elements.isEmpty()){
-//				return null;
-//			}
-//	
-//			dto = new LocationDTO();
-//			Attribute attr = null;
-//			for(Element element : elements){
-//				attr = element.attribute("text");
-//				if(attr.getValue().startsWith(Match_Lat_Word)){
-//					dto.setLat(attr.getValue().substring(Match_Lat_Word.length()));
-//				}else if(attr.getValue().startsWith(Match_Lon_Word)){
-//					dto.setLon(attr.getValue().substring(Match_Lon_Word.length()));
-//				}
-//			}
-//		}catch(Exception ex){
-//			ex.printStackTrace(System.out);
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-//		}
-		return dto;
+	public static List<WifiDeviceTerminalDTO> generateDTOFromQueryDeviceTerminals(Document doc){
+		try{
+			List<Element> elements = doc.selectNodes("//SUB");
+			if(elements != null && !elements.isEmpty()){
+				List<WifiDeviceTerminalDTO> dtos = new ArrayList<WifiDeviceTerminalDTO>();
+				for(Element element : elements){
+					WifiDeviceTerminalDTO dto = new WifiDeviceTerminalDTO();
+					dto.setMac(element.attributeValue("mac"));
+					dto.setData_tx_rate(element.attributeValue("data_tx_rate"));
+					dto.setData_rx_rate(element.attributeValue("data_rx_rate"));
+					dtos.add(dto);
+				}
+				return dtos;
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+		return Collections.emptyList();
 	}
 	
 	public static void main(String[] args) throws Exception{
