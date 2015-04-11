@@ -53,8 +53,8 @@ public class DaemonCheckTask extends TimerTask{
 					continue;
 				}
 			}
-			System.out.println(String.format("DaemonCheckTask ended! Total[%s] Sended[%s] UnSended[%s] removed[%s]",total,sended,unsended,removed));
 		}
+		System.out.println(String.format("DaemonCheckTask ended! Total[%s] Sended[%s] UnSended[%s] removed[%s]",total,sended,unsended,removed));
 		/*for (Map<String, T> cache : caches) {
 			values.addAll(cache.values());
 		}
