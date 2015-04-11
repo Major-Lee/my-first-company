@@ -2,6 +2,7 @@ package com.bhu.vas.business.ds.device.facade;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
@@ -36,6 +38,19 @@ public class DeviceFacadeService {
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
 	
+	/**
+	 * 指定wifiId进行终端全部下线处理
+	 * @param wifiId
+	 */
+	public void allHandsetDoOfflines(String wifiId){
+		List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
+		if(!handset_devices_online_entitys.isEmpty()){
+			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
+				handset_devices_online_entity.setOnline(false);
+			}
+			handsetDeviceService.updateAll(handset_devices_online_entitys);
+		}
+	}
 	
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充

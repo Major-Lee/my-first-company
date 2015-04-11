@@ -221,13 +221,14 @@ public class AsyncMsgHandleService {
 		
 		WifiDeviceOfflineDTO dto = JsonHelper.getDTO(message, WifiDeviceOfflineDTO.class);
 		//3:wifi上的移动设备基础信息表的在线状态更新
-		List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(dto.getMac());
-		if(!handset_devices_online_entitys.isEmpty()){
-			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
-				handset_devices_online_entity.setOnline(false);
-			}
-			handsetDeviceService.updateAll(handset_devices_online_entitys);
-		}
+		deviceFacadeService.allHandsetDoOfflines(dto.getMac());
+//		List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(dto.getMac());
+//		if(!handset_devices_online_entitys.isEmpty()){
+//			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
+//				handset_devices_online_entity.setOnline(false);
+//			}
+//			handsetDeviceService.updateAll(handset_devices_online_entitys);
+//		}
 		//4:wifi设备对应handset在线列表redis清除
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac());
 		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
@@ -329,6 +330,7 @@ public class AsyncMsgHandleService {
 		String wifiId = sync_dto.getMac();
 		if(!StringUtils.isEmpty(wifiId)){
 			//1:清除wifi设备对应handset在线列表redis
+			deviceFacadeService.allHandsetDoOfflines(sync_dto.getMac());
 			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(sync_dto.getMac());
 			WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(sync_dto.getMac());
 			
