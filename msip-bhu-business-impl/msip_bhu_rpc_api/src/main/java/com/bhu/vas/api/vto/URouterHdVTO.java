@@ -7,6 +7,8 @@ package com.bhu.vas.api.vto;
 public class URouterHdVTO {
 	//终端mac
 	private String hd_mac;
+	//上行速率
+	private String tx_rate;
 	//下行速率
 	private String rx_rate;
 	//昵称
@@ -27,6 +29,12 @@ public class URouterHdVTO {
 	}
 	public void setRx_rate(String rx_rate) {
 		this.rx_rate = rx_rate;
+	}
+	public String getTx_rate() {
+		return tx_rate;
+	}
+	public void setTx_rate(String tx_rate) {
+		this.tx_rate = tx_rate;
 	}
 	public String getN() {
 		return n;

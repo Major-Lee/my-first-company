@@ -37,7 +37,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
-	
+	/**
+	 * urouter 入口界面数据
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
 	public URouterEnterVTO urouterEnter(Integer uid, String wifiId){
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 		if(entity == null) {
@@ -54,6 +59,14 @@ public class DeviceURouterRestBusinessFacadeService {
 		return vto;
 	}
 	
+	/**
+	 * 获取urouter设备在线终端列表
+	 * @param uid
+	 * @param wifiId
+	 * @param start
+	 * @param size
+	 * @return
+	 */
 	public List<URouterHdVTO> urouterHdOnlineList(Integer uid, String wifiId, int start, int size){
 		Set<Tuple> online_presents = WifiDeviceHandsetPresentSortedSetService.getInstance().
 				fetchOnlinePresents(wifiId, start, size);
@@ -61,6 +74,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			return Collections.emptyList();
 		}
 		List<URouterHdVTO> vtos = new ArrayList<URouterHdVTO>();
+		
 		return vtos;
 	}
 }
