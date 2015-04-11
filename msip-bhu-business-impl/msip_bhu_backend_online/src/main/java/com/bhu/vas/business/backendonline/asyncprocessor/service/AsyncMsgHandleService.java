@@ -526,9 +526,9 @@ public class AsyncMsgHandleService {
 				if(dto.getCountrycode() == PhoneHelper.Default_CountryCode_Int){
 					String response = ChanzorSMSHelper.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
 					//logger.info("CaptchaCodeNotifyActHandler Guodu msg:"+message);
-					logger.info("CaptchaCodeNotifyActHandler Chanzor res:"+response);
+					logger.info("sendCaptchaCodeNotifyHandle Chanzor res:"+response);
 				}else{
-					logger.info("CaptchaCodeNotifyActHandler not supported foreign sms res");
+					logger.info("sendCaptchaCodeNotifyHandle not supported foreign sms res");
 					/*if(dto.getCountrycode() == NexmoSMSHelper.UsAndCanada_CountryCode_Int){
 						String response = NexmoSMSHelper.send(NexmoSMSHelper.Default_UsANDCanada_SMS_FROM,mobileWithCountryCode, String.format(RuntimeConfiguration.ForeignCaptchaCodeSMS_Template,dto.getCaptcha()));//.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
 						logger.info("to US and Canada CaptchaCodeNotifyActHandler Nexmo res:"+response);
