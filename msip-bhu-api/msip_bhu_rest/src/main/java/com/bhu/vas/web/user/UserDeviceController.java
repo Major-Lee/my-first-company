@@ -64,16 +64,18 @@ public class UserDeviceController extends BaseController {
         }
         int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
         ResponseErrorCode responseErrorCode = null;
-        if (deviceStatus < 4) {
+        if (deviceStatus < 2) {
             if (deviceStatus == 0) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_EXIST;
             } else if (deviceStatus == 1) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_ONLINE;
-            } else if (deviceStatus == 3) {
-                responseErrorCode = ResponseErrorCode.DEVICE_ALREADY_BEBINDED;
             }
             SpringMVCHelper.renderJson(response, ResponseError.embed(responseErrorCode));
             return;
+//            } else if (deviceStatus == 3) {
+//                //responseErrorCode = ResponseErrorCode.DEVICE_ALREADY_BEBINDED;
+//            }
+
         } else {
             RpcResponseDTO<Boolean> userDeviceResult = userDeviceRpcService.unBindDevice(mac, uid);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));

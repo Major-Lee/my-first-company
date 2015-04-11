@@ -18,8 +18,10 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.dto.ret.QueryTerminalSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceBuilder;
@@ -478,6 +480,7 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
+		//TODO:判断设备有人管理才发送异步消息
 		if(dto.getVaps() != null)
 			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.
 					builderSettingVapNames(dto.getVaps()));
@@ -493,22 +496,20 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, int taskid){
-//		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
-//		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
-//		if(entity == null){
-//			entity = new WifiDeviceSetting();
-//			entity.setId(wifiId);
-//			entity.putInnerModel(dto);
-//			wifiDeviceSettingService.insert(entity);
-//		}else{
-//			entity.putInnerModel(dto);
-//			wifiDeviceSettingService.update(entity);
-//		}
-//		if(dto.getVaps() != null)
-//			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.
-//					builderSettingVapNames(dto.getVaps()));
-//		//2:任务callback
-//		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QueryTerminalSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
+				QueryTerminalSerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			String ssid = serialDto.getSsid();
+			String bssid = serialDto.getAp();
+			List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+			if(dtos != null && !dtos.isEmpty()){
+				deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, ssid, bssid, dtos);
+			}
+		}
+
+		//2:任务callback
+		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
 	/**

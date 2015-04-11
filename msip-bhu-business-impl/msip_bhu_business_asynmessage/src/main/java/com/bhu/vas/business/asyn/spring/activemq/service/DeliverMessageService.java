@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
@@ -21,6 +22,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 
 
 public class DeliverMessageService {
@@ -109,6 +111,17 @@ public class DeliverMessageService {
 		WifiDeviceSettingNotifyDTO dto = new WifiDeviceSettingNotifyDTO();
 		dto.setMac(wifiId);
 		dto.setVapnames(vapnames);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendQueryDeviceTerminalsActionMessage(String wifiId, String ssid, String bssid, 
+			List<WifiDeviceTerminalDTO> terminals){
+		WifiDeviceTerminalNotifyDTO dto = new WifiDeviceTerminalNotifyDTO();
+		dto.setMac(wifiId);
+		dto.setSsid(ssid);
+		dto.setBssid(bssid);
+		dto.setTerminals(terminals);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

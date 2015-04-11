@@ -42,9 +42,19 @@ public class URouterDeviceController {
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 	}
 	
+	/**
+	 * 获取设备的终端列表 
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 * @param status 1:在线 2:离线 0:所有
+	 * @param start
+	 * @param size
+	 */
 	@ResponseBody()
-	@RequestMapping(value="/hd_online_list",method={RequestMethod.GET,RequestMethod.POST})
-	public void hd_online_list(
+	@RequestMapping(value="/hd_list",method={RequestMethod.GET,RequestMethod.POST})
+	public void hd_list(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
