@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
@@ -50,6 +51,7 @@ public class DeviceFacadeService {
 			}
 			handsetDeviceService.updateAll(handset_devices_online_entitys);
 		}
+		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
 	}
 	
 	/**

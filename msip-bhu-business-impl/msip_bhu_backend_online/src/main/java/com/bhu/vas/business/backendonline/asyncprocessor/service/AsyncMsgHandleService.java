@@ -82,8 +82,9 @@ public class AsyncMsgHandleService {
 		
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		//3:wifi设备对应handset在线列表初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备
+		deviceFacadeService.allHandsetDoOfflines(dto.getMac());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac(), dto.getLogin_ts());
-		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
+		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
 		//判断移动设备是否是新设备
 		if(dto.isNewWifi()){
 			//4:统计增量 wifi设备的daily新增设备
@@ -231,7 +232,7 @@ public class AsyncMsgHandleService {
 //		}
 		//4:wifi设备对应handset在线列表redis清除
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac());
-		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
+		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
 		
 		//5:统计增量 wifi设备的daily访问时长增量
 		if(dto.getLast_login_at() > 0){
@@ -332,7 +333,7 @@ public class AsyncMsgHandleService {
 			//1:清除wifi设备对应handset在线列表redis
 			deviceFacadeService.allHandsetDoOfflines(sync_dto.getMac());
 			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(sync_dto.getMac());
-			WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(sync_dto.getMac());
+			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(sync_dto.getMac());
 			
 			List<HandsetDeviceDTO> dtos = sync_dto.getDtos();
 			if(dtos != null && !dtos.isEmpty()){
