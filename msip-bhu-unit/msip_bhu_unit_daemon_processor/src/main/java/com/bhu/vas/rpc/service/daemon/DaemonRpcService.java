@@ -89,13 +89,12 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
 				logger.info(String.format("wifiDeviceCmdDown1 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
-				activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 			}else{
 				logger.info(String.format("wifiDeviceCmdDown2 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 				return false;
 			}
 		}
-		
+		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 		return true;
 	}
 
@@ -107,13 +106,14 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
 				logger.info(String.format("wifiDeviceCmdDown1 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
-				for(String cmd:cmds){
-					activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
-				}
+				
 			}else{
 				logger.info(String.format("wifiDeviceCmdDown2 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 				return false;
 			}
+		}
+		for(String cmd:cmds){
+			activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 		}
 		return true;
 	}
