@@ -296,6 +296,32 @@ public class RPCMessageParseHelper {
 		return dto;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static LocationDTO generateDTOFromQueryDeviceTerminals(String message){
+		LocationDTO dto = null;
+//		try{
+//			List<Element> elements = doc.selectNodes("//SUB");
+//			if(elements == null || elements.isEmpty()){
+//				return null;
+//			}
+//	
+//			dto = new LocationDTO();
+//			Attribute attr = null;
+//			for(Element element : elements){
+//				attr = element.attribute("text");
+//				if(attr.getValue().startsWith(Match_Lat_Word)){
+//					dto.setLat(attr.getValue().substring(Match_Lat_Word.length()));
+//				}else if(attr.getValue().startsWith(Match_Lon_Word)){
+//					dto.setLon(attr.getValue().substring(Match_Lon_Word.length()));
+//				}
+//			}
+//		}catch(Exception ex){
+//			ex.printStackTrace(System.out);
+//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+//		}
+		return dto;
+	}
+	
 	public static void main(String[] args) throws Exception{
 //		String message = "<return><ITEM cmd=\"sysdebug\" status=\"done\" ><text><SUB text=\"OK\" /><SUB text=\"latitude:40.017286\" /><SUB text=\"longitude:116.345614\" /><SUB text=\"address-line:学清路\" /><SUB text=\"city:Beijing\" /><SUB text=\"state:Beijing\" /><SUB text=\"country:China\" /></text></ITEM></return>";
 //		Document doc = parserMessage(message);

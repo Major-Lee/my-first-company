@@ -486,6 +486,32 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
+	 * 获取VAP下的终端列表
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, int taskid){
+//		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
+//		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
+//		if(entity == null){
+//			entity = new WifiDeviceSetting();
+//			entity.setId(wifiId);
+//			entity.putInnerModel(dto);
+//			wifiDeviceSettingService.insert(entity);
+//		}else{
+//			entity.putInnerModel(dto);
+//			wifiDeviceSettingService.update(entity);
+//		}
+//		if(dto.getVaps() != null)
+//			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.
+//					builderSettingVapNames(dto.getVaps()));
+//		//2:任务callback
+//		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
+	}
+	
+	/**
 	 * 处理任务数据相应的callback函数 
 	 * 针对任务数据的状态修改和转移
 	 * @param serialDto

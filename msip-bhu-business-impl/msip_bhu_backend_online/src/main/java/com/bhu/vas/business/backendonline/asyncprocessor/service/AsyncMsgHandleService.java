@@ -505,7 +505,8 @@ public class AsyncMsgHandleService {
 		//TODO:需要调用组件 daemon 进行指令下发
 		List<String> vapnames = dto.getVapnames();
 		if(vapnames != null && !vapnames.isEmpty()){
-			CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
+			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
+			daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmds);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
 
