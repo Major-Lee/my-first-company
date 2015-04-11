@@ -51,6 +51,12 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		Object workmodel = sourceMap.get(WifiDeviceMapableComponent.M_workmodel);
 		if(workmodel != null) dto.setWorkmodel(workmodel.toString());
 		
+		Object configmodel = sourceMap.get(WifiDeviceMapableComponent.M_configmodel);
+		if(configmodel != null) dto.setConfigmodel(configmodel.toString());
+		
+		Object origswver = sourceMap.get(WifiDeviceMapableComponent.M_origswver);
+		if(origswver != null) dto.setOrigswver(origswver.toString());
+		
 		Object devicetype = sourceMap.get(WifiDeviceMapableComponent.M_devicetype);
 		if(devicetype != null) dto.setDevicetype(devicetype.toString());
 		
@@ -189,7 +195,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 */
 	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
 			String work_mode, String config_mode, String devicetype, String region, String excepts, int start, int size) throws ESQueryValidateException {
-		
+
 		FilterBuilder filter = null;
 		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
 				devicetype, region, excepts)){
@@ -198,8 +204,10 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
 			}
 			if(!StringUtils.isEmpty(orig_swver)){
-				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.fuzzyQuery(
-						WifiDeviceMapableComponent.M_origswver, orig_swver)));
+//				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.fuzzyQuery(
+//						WifiDeviceMapableComponent.M_origswver, orig_swver)));
+				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(
+						WifiDeviceMapableComponent.M_origswver, "*"+orig_swver+"*")));
 			}
 			if(!StringUtils.isEmpty(adr)){
 				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, adr));
