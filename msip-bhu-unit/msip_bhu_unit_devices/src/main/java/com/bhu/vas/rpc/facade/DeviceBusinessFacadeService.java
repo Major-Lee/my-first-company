@@ -480,6 +480,7 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
+		//TODO:判断设备有人管理才发送异步消息
 		if(dto.getVaps() != null)
 			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.
 					builderSettingVapNames(dto.getVaps()));
