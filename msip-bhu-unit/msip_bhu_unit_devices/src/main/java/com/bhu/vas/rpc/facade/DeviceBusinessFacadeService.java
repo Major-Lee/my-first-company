@@ -478,7 +478,9 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
-		deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.builderSettingVapNames(dto.getVaps()));
+		if(dto.getVaps() != null)
+			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceBuilder.
+					builderSettingVapNames(dto.getVaps()));
 		//2:任务callback
 		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}
