@@ -17,6 +17,8 @@ public class URouterHdVTO {
 	private String rx_limit;
 	//上行限速
 	private String tx_limit;
+	//是否在线
+	private boolean online;
 	
 	public String getHd_mac() {
 		return hd_mac;
@@ -54,5 +56,10 @@ public class URouterHdVTO {
 	public void setTx_limit(String tx_limit) {
 		this.tx_limit = tx_limit;
 	}
-	
+	public boolean isOnline() {
+		return online;
+	}
+	public void setOnline(boolean online) {
+		this.online = online;
+	}
 }

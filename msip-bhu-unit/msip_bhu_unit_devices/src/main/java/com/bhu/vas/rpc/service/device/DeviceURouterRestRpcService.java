@@ -51,13 +51,13 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
-	public List<URouterHdVTO> urouterHdOnlineList(Integer uid, String wifiId,
+	public List<URouterHdVTO> urouterHdList(Integer uid, String wifiId, int status,
 			int start, int size) {
 		logger.info(String.format("DeviceURouterRestRPC urouterHdOnlineList invoke uid [%s] mac [%s] st [%s] ps [%s]", 
 				uid, wifiId, start, size));
 		
 		try{
-			return deviceURouterRestBusinessFacadeService.urouterHdOnlineList(uid, wifiId, start, size);
+			return deviceURouterRestBusinessFacadeService.urouterHdList(uid, wifiId, status, start, size);
 		}
 		catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterHdOnlineList failed uid [%s] mac [%s] st [%s] ps [%s]",

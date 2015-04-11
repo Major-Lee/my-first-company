@@ -97,14 +97,36 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
 	}
 	
-	public Set<Tuple> fetchOnlinePresents(String wifiId,int start,int size){
+	public Set<Tuple> fetchOnlinePresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
 	}
 	
-	public Set<Tuple> fetchOfflinePresents(String wifiId,int start,int size){
+//	public Set<String> fetchOnlinePresents(String wifiId,int start,int size){
+//		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+//		return super.zrevrangeByScore(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
+//	}
+	
+	public Set<Tuple> fetchOfflinePresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 0, (OnlineBaseScore-1), start, size);
+	}
+	
+//	public Set<String> fetchOfflinePresents(String wifiId,int start,int size){
+//		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+//		return super.zrevrangeByScore(generateKey(wifiId), 0, (OnlineBaseScore-1), start, size);
+//	}
+	
+	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeWithScores(generateKey(wifiId), start, (start+size-1));
+	}
+	
+	public boolean isOnline(double score){
+		if(score >= OnlineBaseScore){
+			return true;
+		}
+		return false;
 	}
 	
 	public void clearOnlinePresents(String wifiId){
@@ -112,7 +134,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		long count = presentOnlineSize(wifiId);
 		int page = PageHelper.getTotalPages((int)count, size);
 		for(int i=0;i<page;i++){
-			Set<Tuple> result = fetchOnlinePresents(wifiId, 0, size);
+			Set<Tuple> result = fetchOnlinePresentWithScores(wifiId, 0, size);
 			for(Tuple tuple : result){
 				addOfflinePresent(wifiId, tuple.getElement(), (tuple.getScore() - OnlineBaseScore));
 			}
@@ -163,11 +185,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(wifiId, 
 					"oo:oo:oo:oo:oo:o".concat(String.valueOf(i)), 1024+i);
 		}
-		Set<Tuple> result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresents(wifiId, 0, 10);
+		Set<Tuple> result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, 0, 10);
 		for(Tuple tuple : result){
 			System.out.println("online="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore() - OnlineBaseScore));
 		}
-		result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresents(wifiId, 0, 10);
+		result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, 0, 10);
 		for(Tuple tuple : result){
 			System.out.println("offline="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore()));
 		}
