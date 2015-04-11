@@ -37,7 +37,14 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.wifiDeviceCmdDown(ctx,mac,cmd);
 	}
-
+	
+	@Override
+	public boolean wifiDeviceCmdsDown(String ctx, String mac, List<String> cmds) {
+		if(StringUtils.isEmpty(mac) || cmds == null || cmds.isEmpty()) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return daemonRpcService.wifiDeviceCmdsDown(ctx,mac,cmds);
+	}
+	
 	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		if(info == null) 
@@ -66,7 +73,6 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		return daemonRpcService.wifiDevicesOnline(ctx,macs);
 	}
 
-	
 	/*@Override
 	public boolean deviceRegister(DeviceDTO dto) {
 		// TODO Auto-generated method stub

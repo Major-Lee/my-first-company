@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
@@ -88,15 +89,35 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
 				logger.info(String.format("wifiDeviceCmdDown1 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+				activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 			}else{
 				logger.info(String.format("wifiDeviceCmdDown2 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 				return false;
 			}
 		}
-		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+		
 		return true;
 	}
 
+	@Override
+	public boolean wifiDeviceCmdsDown(String ctx, String mac, List<String> cmds) {
+		logger.info(String.format("wifiDeviceCmdDown0 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+		if(StringUtils.isEmpty(ctx)){
+			SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
+			if(sessionCtx != null){
+				ctx = sessionCtx.getCtx();
+				logger.info(String.format("wifiDeviceCmdDown1 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+				for(String cmd:cmds){
+					activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+				}
+			}else{
+				logger.info(String.format("wifiDeviceCmdDown2 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		//System.out.println("cmJoinService:"+info);
@@ -128,4 +149,5 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		}
 		return true;
 	}
+
 }
