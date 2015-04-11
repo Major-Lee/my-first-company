@@ -38,7 +38,7 @@ public class SessionInfo {
 	 * @return
 	 */
 	public boolean canBeExecute(long now){
-		return ((now-rects)>10*60*1000l );
+		return ((now-rects)>1*60*1000l );//10*60*1000l
 	}
 	
 	public String toString(){

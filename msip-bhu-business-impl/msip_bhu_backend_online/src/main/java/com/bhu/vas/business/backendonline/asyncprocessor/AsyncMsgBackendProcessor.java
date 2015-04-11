@@ -75,6 +75,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiCmdDownNotify:
 							asyncMsgHandleService.wifiCmdDownNotifyHandle(message);
 							break;
+						case USERFETCHCAPTCHACODE:
+							asyncMsgHandleService.sendCaptchaCodeNotifyHandle(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

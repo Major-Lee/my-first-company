@@ -26,6 +26,7 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
@@ -492,11 +493,11 @@ public class AsyncMsgHandleService {
 	private IDaemonRpcService daemonRpcService;
 	
 	public void wifiCmdDownNotifyHandle(String message){
-		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s]", message));
+		logger.info(String.format("wifiCmdDownNotifyHandle message[%s]", message));
 		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
 		//TODO:需要调用组件 daemon 进行指令下发
 		daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
-		logger.info(String.format("AnsyncMsgBackendProcessor wifiCmdDownNotifyHandle message[%s] successful", message));
+		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
 	
 	public void wifiDeviceSettingNotify(String message){
@@ -508,6 +509,15 @@ public class AsyncMsgHandleService {
 			CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
+
+	}
+	
+	
+	public void sendCaptchaCodeNotifyHandle(String message){
+		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s]", message));
+		UserCaptchaCodeFetchDTO dto = JsonHelper.getDTO(message, UserCaptchaCodeFetchDTO.class);
+		
+		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s] successful", message));
 
 	}
 }

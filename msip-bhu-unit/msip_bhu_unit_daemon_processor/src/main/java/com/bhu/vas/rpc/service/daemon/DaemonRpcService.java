@@ -106,7 +106,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
 				logger.info(String.format("wifiDeviceCmdDown1 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
-				
 			}else{
 				logger.info(String.format("wifiDeviceCmdDown2 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 				return false;
