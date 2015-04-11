@@ -28,12 +28,12 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 
 	@Override
-	public List<URouterHdVTO> urouterHdOnlineList(Integer uid, String wifiId,
+	public List<URouterHdVTO> urouterHdList(Integer uid, String wifiId, int status,
 			int start, int size) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceURouterRestRpcService.urouterHdOnlineList(uid, wifiId, start, size);
+		return deviceURouterRestRpcService.urouterHdList(uid, wifiId, status, start, size);
 	}
 
 }

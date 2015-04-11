@@ -49,10 +49,11 @@ public class URouterDeviceController {
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="1") int status,
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		List<URouterHdVTO> vtos = deviceURouterRestRpcService.urouterHdOnlineList(uid, mac, start, size);
+		List<URouterHdVTO> vtos = deviceURouterRestRpcService.urouterHdList(uid, mac, status, start, size);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
 	}
 	

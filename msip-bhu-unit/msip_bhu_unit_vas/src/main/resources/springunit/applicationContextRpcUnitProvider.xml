@@ -39,6 +39,8 @@
 		interface="com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService" ref="userCaptchaCodeRpcService"/>
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
 		interface="com.bhu.vas.api.rpc.user.iservice.IUserRpcService" ref="userRpcService"/>
-	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
 		interface="com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService" ref="statisticsRpcService"/>
+    <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
+                   interface="com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService" ref="userDeviceRpcService"/>
 </beans>

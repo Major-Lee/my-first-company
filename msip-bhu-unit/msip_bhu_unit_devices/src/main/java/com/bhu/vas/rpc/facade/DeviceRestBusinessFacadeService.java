@@ -334,7 +334,7 @@ public class DeviceRestBusinessFacadeService {
 			vtos = Collections.emptyList();
 		}else{
 			Set<Tuple> hdevicesList = WifiDeviceHandsetPresentSortedSetService.getInstance().
-					fetchOnlinePresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
+					fetchOnlinePresentWithScores(wifiId, (pageNo*pageSize)-pageSize, pageSize);
 			if(hdevicesList.isEmpty()){
 				vtos = Collections.emptyList();
 			}else{
@@ -343,7 +343,7 @@ public class DeviceRestBusinessFacadeService {
 				for(Tuple tuple : hdevicesList){
 					vto = new HandsetDeviceVTO();
 					vto.setWid(wifiId);
-					vto.setTs(new Double(tuple.getScore()).longValue());
+					//vto.setTs(new Double(tuple.getScore()).longValue());
 					vto.setHid(tuple.getElement());
 					vtos.add(vto);
 				}
