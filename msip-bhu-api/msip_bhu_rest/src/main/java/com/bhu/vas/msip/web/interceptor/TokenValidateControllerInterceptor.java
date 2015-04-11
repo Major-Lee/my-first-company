@@ -67,6 +67,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//ignoreTokensValidateUrlSet.add("/tag/fetch_tags");
 		//ignoreTokensValidateUrlSet.add("/wallpaper/fetch_categories");
 		ignoreTokensValidateUrlSet.add("/handset/feedback/post");
+
+		ignoreTokensValidateUrlSet.add("/user/device/validate");
 	}
 	
 	
