@@ -7,9 +7,10 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.StatisticsFragmentMaxOnlineDeviceService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.StatisticsFragmentMaxOnlineHandsetService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
@@ -21,21 +22,28 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  * 4、获取当前日期的自然季度 key（yyyy-MM） 		field(yyyy-MM-dd) value (count1) 如果count>count1 则覆盖更新，存储最高值
  * 5、获取当前自然年 		key（yyyy） 			field(yyyy-MM) value (count1) 如果count>count1 则覆盖更新，存储最高值
  * @author Edmond
- *
+ * handset & device Online
  */
-public class StatisticsOnlineUserLoader {
-	private static Logger logger = LoggerFactory.getLogger(StatisticsOnlineUserLoader.class);
+public class StatisticsOnlineLoader {
+	private static Logger logger = LoggerFactory.getLogger(StatisticsOnlineLoader.class);
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
 	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+
+	
 	public void execute() {
 		logger.info("StatisticsOnlineUserLoader starting...");
+		Date current = new Date();
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("online", 1);
-		int count = handsetDeviceService.countByModelCriteria(mc);
-		StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(new Date(), count);
-		logger.info(String.format("StatisticsOnlineUserLoader ended, total online [%s]!",  count));
+		int countHandset = handsetDeviceService.countByModelCriteria(mc);
+		StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(current, countHandset);
+		int countDevice = wifiDeviceService.countByModelCriteria(mc);
+		StatisticsFragmentMaxOnlineDeviceService.getInstance().fragmentAllSet(current, countDevice);
+		logger.info(String.format("StatisticsOnlineUserLoader ended, total handsetOnline[%s] deviceOnline[%s]!", countHandset,countDevice));
 		
 	}
 	//TODO：TBD是否需要补齐？
@@ -68,7 +76,7 @@ public class StatisticsOnlineUserLoader {
 		System.out.println(String.format("%s %s %s", current_year,current_month,current_day));*/
 	}
 	
-	public static void main(String[] argv){
+	/*public static void main(String[] argv){
 		new StatisticsOnlineUserLoader().polishingData(DateTimeHelper.getDateDaysAgo(24));
-	}
+	}*/
 }

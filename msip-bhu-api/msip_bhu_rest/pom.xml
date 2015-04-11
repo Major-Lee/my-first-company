@@ -18,11 +18,13 @@
 
     <dependencies>
         <dependency>
-                <groupId>com.smartwork</groupId>
-                <artifactId>msip_core</artifactId>
-                <version>3.0-SNAPSHOT</version>
+            <groupId>com.smartwork</groupId>
+            <artifactId>msip_core</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>com.smartwork</groupId>
+            <artifactId>msip_fsstorerule</artifactId>
+        </dependency>        
 		<dependency>
 			<groupId>com.smartwork</groupId>
 			<artifactId>msip_core_cachedext</artifactId>
@@ -39,28 +41,21 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_rpc_api</artifactId>
         </dependency>
-        
+        <!-- 
 		<dependency>
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds</artifactId>
         </dependency>
-        
+         
+		<dependency>
+			<groupId>com.bhu</groupId>
+			<artifactId>msip_bhu_business_redis_impl</artifactId>
+		</dependency>     -->    
         <dependency>
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_i18n</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.smartwork</groupId>
-            <artifactId>msip_fsstorerule</artifactId>
-            <version>3.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.bhu</groupId>
-            <artifactId>msip_bhu_i18n</artifactId>
-        </dependency>
-        
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
