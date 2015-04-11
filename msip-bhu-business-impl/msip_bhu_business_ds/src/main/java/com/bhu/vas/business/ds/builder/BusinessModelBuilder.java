@@ -16,7 +16,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.smartwork.msip.cores.helper.StringHelper;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
