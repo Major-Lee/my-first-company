@@ -44,10 +44,14 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
+import com.smartwork.msip.cores.helper.phone.PhoneHelper;
+import com.smartwork.msip.cores.helper.sms.GuoduSMSHelper;
+import com.smartwork.msip.cores.helper.sms.NexmoSMSHelper;
 
 @Service
 public class AsyncMsgHandleService {
@@ -517,7 +521,25 @@ public class AsyncMsgHandleService {
 	public void sendCaptchaCodeNotifyHandle(String message){
 		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s]", message));
 		UserCaptchaCodeFetchDTO dto = JsonHelper.getDTO(message, UserCaptchaCodeFetchDTO.class);
-		
+		if(!RuntimeConfiguration.SecretInnerTest){
+			String mobileWithCountryCode = PhoneHelper.format(dto.getCountrycode(), dto.getAcc());
+			if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
+				if(dto.getCountrycode() == PhoneHelper.Default_CountryCode_Int){
+					String response = GuoduSMSHelper.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
+					//logger.info("CaptchaCodeNotifyActHandler Guodu msg:"+message);
+					logger.info("CaptchaCodeNotifyActHandler Guodu res:"+response);
+				}else{
+					/*if(dto.getCountrycode() == NexmoSMSHelper.UsAndCanada_CountryCode_Int){
+						String response = NexmoSMSHelper.send(NexmoSMSHelper.Default_UsANDCanada_SMS_FROM,mobileWithCountryCode, String.format(RuntimeConfiguration.ForeignCaptchaCodeSMS_Template,dto.getCaptcha()));//.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
+						logger.info("to US and Canada CaptchaCodeNotifyActHandler Nexmo res:"+response);
+					}else{
+						String response = NexmoSMSHelper.send(mobileWithCountryCode, String.format(RuntimeConfiguration.ForeignCaptchaCodeSMS_Template,dto.getCaptcha()));//.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
+						logger.info("to Other CaptchaCodeNotifyActHandler Nexmo res:"+response);
+					}
+					//logger.info("CaptchaCodeNotifyActHandler Nexmo msg:"+message);
+*/				}
+			}
+		}
 		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s] successful", message));
 
 	}
