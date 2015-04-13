@@ -67,4 +67,23 @@ public class URouterDeviceController {
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
 	}
 	
+	/**
+	 * 设备的下行速率查询
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device_rx_rate",method={RequestMethod.GET,RequestMethod.POST})
+	public void device_rx_rate(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		//List<URouterHdVTO> vtos = deviceURouterRestRpcService.urouterHdList(uid, mac, status, start, size);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
+	}
+	
 }
