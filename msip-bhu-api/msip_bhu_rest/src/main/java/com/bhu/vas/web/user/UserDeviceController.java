@@ -63,22 +63,16 @@ public class UserDeviceController extends BaseController {
             return ;
         }
         int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
-        ResponseErrorCode responseErrorCode = null;
-        if (deviceStatus < 2) {
-            if (deviceStatus == 0) {
-                responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_EXIST;
-            } else if (deviceStatus == 1) {
-                responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_ONLINE;
-            }
-            SpringMVCHelper.renderJson(response, ResponseError.embed(responseErrorCode));
-            return;
-//            } else if (deviceStatus == 3) {
-//                //responseErrorCode = ResponseErrorCode.DEVICE_ALREADY_BEBINDED;
-//            }
-
-        } else {
+        logger.debug("devicestatus==" + deviceStatus);
+        if (deviceStatus == 0) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_EXIST));
+        } else if (deviceStatus == 1) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE));
+        } else if (deviceStatus == 3) {
             RpcResponseDTO<Boolean> userDeviceResult = userDeviceRpcService.unBindDevice(mac, uid);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+        } else if (deviceStatus == 4) {
+            //TODO(bluesand):未绑定过装备的时候，取消绑定
         }
 
     }
