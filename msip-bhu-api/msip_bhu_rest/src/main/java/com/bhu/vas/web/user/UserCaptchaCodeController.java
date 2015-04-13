@@ -45,7 +45,7 @@ public class UserCaptchaCodeController extends BaseController{
 			return;
 		}
 		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc);
-		if(rpcResult == null){
+		if(rpcResult.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, Response.SUCCESS);
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
