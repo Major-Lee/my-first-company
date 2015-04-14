@@ -113,6 +113,7 @@ public class BuilderWifiLocationInit2BaiduOp {
 										ex.printStackTrace(System.out);
 									}
 								}
+								device.setIpgen(true);
 								wifiDeviceService.update(device);
 							}
 						}else{

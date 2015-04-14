@@ -65,6 +65,8 @@ public class WifiDevice extends BaseStringModel{
 	private String formatted_address;
 	//百度geocoding create result id
 	private String bdid;
+	//通过ip得到的坐标和地址
+	private boolean ipgen = false;
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -329,4 +331,13 @@ public class WifiDevice extends BaseStringModel{
 	public void setBdid(String bdid) {
 		this.bdid = bdid;
 	}
+
+	public boolean isIpgen() {
+		return ipgen;
+	}
+
+	public void setIpgen(boolean ipgen) {
+		this.ipgen = ipgen;
+	}
+	
 }

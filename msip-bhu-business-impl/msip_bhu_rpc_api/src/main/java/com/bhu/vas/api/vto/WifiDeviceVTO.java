@@ -20,7 +20,7 @@ public class WifiDeviceVTO implements Serializable{
 	private int cohc;//current online handset count 在线移动设备数量
 	private long cts;//创建时间
 	private long rts;//最后注册时间
-	
+	private boolean ipgen;
 	public String getWid() {
 		return wid;
 	}
@@ -105,4 +105,11 @@ public class WifiDeviceVTO implements Serializable{
 	public void setDt(String dt) {
 		this.dt = dt;
 	}
+	public boolean isIpgen() {
+		return ipgen;
+	}
+	public void setIpgen(boolean ipgen) {
+		this.ipgen = ipgen;
+	}
+	
 }
