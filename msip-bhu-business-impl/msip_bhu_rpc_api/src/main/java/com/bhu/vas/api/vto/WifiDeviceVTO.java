@@ -14,7 +14,7 @@ public class WifiDeviceVTO implements Serializable{
 	private String wm;//work model
 	//private String wdt;//wifi device type wifi设备类型
 	//private String ast;//added services template 增值服务模板
-	//private String dt;//device type 设备类型
+	private String dt;//device type 设备类型
 	private long uof;//up outflow 上行流量
 	private long dof;//down outflow 下行流量
 	private int cohc;//current online handset count 在线移动设备数量
@@ -98,5 +98,11 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setRts(long rts) {
 		this.rts = rts;
+	}
+	public String getDt() {
+		return dt;
+	}
+	public void setDt(String dt) {
+		this.dt = dt;
 	}
 }

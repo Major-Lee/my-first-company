@@ -119,6 +119,7 @@ public class BusinessModelBuilder {
 			vto.setOl(searchDto.getOnline());
 			vto.setCohc(searchDto.getCount());
 			vto.setAdr(searchDto.getAddress());
+			vto.setDt(searchDto.getDevicetype());
 		}
 		if(entity != null){
 			vto.setOm(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());
@@ -149,6 +150,7 @@ public class BusinessModelBuilder {
 			vto.setCfm(entity.getConfig_mode());
 			vto.setRts(entity.getLast_reged_at().getTime());
 			vto.setCts(entity.getCreated_at().getTime());
+			vto.setDt(entity.getHdtype());
 			vto.setOvd(StringUtils.isEmpty(entity.getOem_vendor()) ? entity.getOrig_vendor() : entity.getOem_vendor());
 			vto.setOsv(StringUtils.isEmpty(entity.getOem_swver()) ? entity.getOrig_swver() : entity.getOem_swver());
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
