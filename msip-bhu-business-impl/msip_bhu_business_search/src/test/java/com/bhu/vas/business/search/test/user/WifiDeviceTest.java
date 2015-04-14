@@ -136,7 +136,7 @@ public class WifiDeviceTest extends BaseTest{
 	public void testSearchByKeywords() throws ESQueryValidateException{
 		String mac = "";//"84:82:f4:6f:00";
 		String orig_swver="";//"V1.2.5";
-		String adr=""; 
+		String adr="海淀区"; 
 		String work_mode=""; 
 		String config_mode="";//"basic"; 
 		String devicetype="";
