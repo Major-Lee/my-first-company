@@ -143,7 +143,7 @@ public class WifiDeviceTest extends BaseTest{
 		String region="";
 		String excepts = "";//"北京市,广东省,浙江省,上海市";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeywords(mac, orig_swver,
-				adr, work_mode, config_mode, devicetype, region, excepts,0, 10);
+				adr, work_mode, config_mode, devicetype, true, region, excepts,0, 10);
 		System.out.println(result.getTotal());
 		for(WifiDeviceSearchDTO dto : result.getResult()){
 			System.out.println("id:"+dto.getId() + "="+dto.getAddress()+"="+dto.getLat()+"="+dto.getOrigswver()

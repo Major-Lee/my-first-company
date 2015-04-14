@@ -8,6 +8,7 @@ import org.elasticsearch.common.geo.GeoHashUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolFilterBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.ExistsFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -186,6 +187,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 * @param adr 位置参数
 	 * @param work_mode 工作模式
 	 * @param config_mode 配置模式
+	 * @param online null表示全部 true为在线 
 	 * @param region 地区
 	 * @param excepts 排除地区
 	 * @param start
@@ -194,7 +196,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 * @throws ESQueryValidateException
 	 */
 	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
-			String work_mode, String config_mode, String devicetype, String region, String excepts, int start, int size) throws ESQueryValidateException {
+			String work_mode, String config_mode, String devicetype, Boolean online, String region, String excepts, int start, int size) throws ESQueryValidateException {
 
 		FilterBuilder filter = null;
 		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
@@ -221,6 +223,9 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 			if(!StringUtils.isEmpty(devicetype)){
 				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_devicetype, devicetype));
 			}
+			if(online != null){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_online, online ? 1 : 0));
+			}
 			if(!StringUtils.isEmpty(region)){
 				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, region));
 			}
@@ -241,7 +246,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		queryRequest.addSort(sortByCount());
 		return super.searchListByQuery(queryRequest);
 	}
-	
+
 	/**
 	 * 搜索注册时间大于此时间的数据
 	 * @param register_at
