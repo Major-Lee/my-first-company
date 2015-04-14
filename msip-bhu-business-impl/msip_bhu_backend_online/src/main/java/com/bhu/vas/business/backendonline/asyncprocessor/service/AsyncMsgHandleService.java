@@ -504,6 +504,7 @@ public class AsyncMsgHandleService {
 						response = GeocodingHelper.geoPoiUpdate(params);
 						entity.setBdid(String.valueOf(response.getId()));
 					}
+					entity.setIpgen(false);
 					logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] %s successful", response.getId(),StringUtils.isEmpty(bdid)?"Create":"Update"));
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
