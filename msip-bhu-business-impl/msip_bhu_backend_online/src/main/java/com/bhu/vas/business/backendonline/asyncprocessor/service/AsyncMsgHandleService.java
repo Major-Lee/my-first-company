@@ -596,18 +596,18 @@ public class AsyncMsgHandleService {
 		try{
 			UserCaptchaCodeFetchDTO dto = JsonHelper.getDTO(message, UserCaptchaCodeFetchDTO.class);
 			if(!RuntimeConfiguration.SecretInnerTest){
-				logger.info("step 1");
+				//logger.info("step 1");
 				String mobileWithCountryCode = PhoneHelper.format(dto.getCountrycode(), dto.getAcc());
-				logger.info("step 2");
+				//logger.info("step 2");
 				if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
-					logger.info("step 3");
+					//logger.info("step 3");
 					if(dto.getCountrycode() == PhoneHelper.Default_CountryCode_Int){
-						logger.info("step 4 -1");
+						//logger.info("step 4 -1");
 						String response = WangjianSMSHelper.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
 						//logger.info("CaptchaCodeNotifyActHandler Guodu msg:"+message);
 						logger.info("sendCaptchaCodeNotifyHandle Chanzor res:"+response);
 					}else{
-						logger.info("step 4 -2");
+						//logger.info("step 4 -2");
 						logger.info("sendCaptchaCodeNotifyHandle not supported foreign sms res");
 						/*if(dto.getCountrycode() == NexmoSMSHelper.UsAndCanada_CountryCode_Int){
 							String response = NexmoSMSHelper.send(NexmoSMSHelper.Default_UsANDCanada_SMS_FROM,mobileWithCountryCode, String.format(RuntimeConfiguration.ForeignCaptchaCodeSMS_Template,dto.getCaptcha()));//.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
