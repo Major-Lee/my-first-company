@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
@@ -16,7 +15,6 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
-import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
@@ -51,7 +49,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			SessionManager.getInstance().addSession(mac, ctx);
 			//设备上行首先发送查询地理位置指令
 			//activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, RandomData.intNumber(1, 100000)));
-			activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
+			//activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		}
 		return false;
 	}
@@ -62,7 +60,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		logger.info(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().addSession(mac, ctx);
 		//设备上行首先发送查询地理位置指令
-		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
+		//activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(ctx, mac, CMDBuilder.builderDeviceLocationStep1Query(mac, RandomData.intNumber(1, 100000)));
 		return false;
 	}

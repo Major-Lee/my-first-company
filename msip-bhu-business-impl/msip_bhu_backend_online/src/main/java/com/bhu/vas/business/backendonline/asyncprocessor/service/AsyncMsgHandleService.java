@@ -82,6 +82,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 	
+	@Resource
+	private IDaemonRpcService daemonRpcService;
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -117,10 +119,25 @@ public class AsyncMsgHandleService {
 				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
 		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
-		
+		afterDeviceOnlineThenCmdDown(dto.getMac());
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	
+	//下发获取配置，获取设备测速，地理位置
+	public void afterDeviceOnlineThenCmdDown(String mac){
+		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
+		List<String> payloads = new ArrayList<String>();
+		//获取配置指令
+		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
+		//获取设备测速
+		payloads.add(CMDBuilder.builderDeviceSpeedQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
+		//获取地理位置
+		//设备上行首先发送查询地理位置指令
+		payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
+		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
+		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
+		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
+	}
 	/**
 	 *  a:如果设备是新上线的
 	 * 	1：wifi设备基础信息更新(backend)
@@ -552,13 +569,10 @@ public class AsyncMsgHandleService {
 
 	}
 	
-	@Resource
-	private IDaemonRpcService daemonRpcService;
 	
 	public void wifiCmdDownNotifyHandle(String message){
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s]", message));
 		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
-		//TODO:需要调用组件 daemon 进行指令下发
 		daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
