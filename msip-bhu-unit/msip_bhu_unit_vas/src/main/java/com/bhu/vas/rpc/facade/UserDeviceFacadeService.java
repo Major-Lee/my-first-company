@@ -3,11 +3,14 @@ package com.bhu.vas.rpc.facade;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -94,4 +97,6 @@ public class UserDeviceFacadeService {
         mc.createCriteria().andColumnEqualTo("uid", uid);
         return userDeviceService.countByModelCriteria(mc);
     }
+
+
 }

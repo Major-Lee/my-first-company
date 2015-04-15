@@ -188,4 +188,8 @@ public enum ResponseErrorCode {
     	}	
     	return errorcode;
     }
+
+	public static void main(String[] args) {
+		System.out.println(DEVICE_DATA_NOT_EXIST.code  + ":::" + DEVICE_DATA_NOT_EXIST.i18n());
+	}
 }

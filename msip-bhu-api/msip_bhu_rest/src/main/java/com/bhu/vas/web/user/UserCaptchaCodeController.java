@@ -3,6 +3,7 @@ package com.bhu.vas.web.user;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,7 +47,7 @@ public class UserCaptchaCodeController extends BaseController{
 		}
 		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc);
 		if(rpcResult.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, Response.SUCCESS);
+			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
 		}
