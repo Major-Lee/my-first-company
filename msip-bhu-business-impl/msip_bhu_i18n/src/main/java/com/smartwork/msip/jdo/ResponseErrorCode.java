@@ -57,7 +57,7 @@ public enum ResponseErrorCode {
 //	FILTER_TAG_EXIST("702", "filter.tag.exist"),
 //	FILTER_TAG_ARTIST("703", "filter.tag.artist"),
 	WIFIDEVICE_SETTING_NOTEXIST("701","wifidevice.setting.notexist"),
-	
+	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
 	
 	USER_FRD_EXIST("720","user.frd.exist"),
 	USER_FRD_APPLY_EXIST("721","user.frd.apply.exist"),

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
+import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
@@ -63,6 +64,27 @@ public abstract class BaseController implements ServletContextAware {
 		//CookieUtils.deleteCookie(request, response, CookieUtils.getCookie(request, "local.uid"));
 		CookieUtils.deleteCookie(request, response, CookieUtils.getCookie(request, LoginTokenHelper.RemoteCookieName));
 	}*/
+	
+	@ExceptionHandler(RpcBusinessI18nCodeException.class)
+    protected ModelAndView rpcBusinessI18nCodeException(RpcBusinessI18nCodeException ex, HttpServletRequest request, HttpServletResponse response) {
+        logging(ex, request);
+        response.setStatus(ResponseStatus.OK.getStatus());
+        if (isJsonRequest(request)) {
+        	String jsonpcallback = request.getParameter("jsonpcallback");
+        	if(StringUtils.isNotEmpty(jsonpcallback))
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+        	else	
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+            return null;
+        }
+        if(isXmlRequest(request)){
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+            return null;        	
+        }
+        ModelAndView mv = new ModelAndView();
+        StaticResultController.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
+        return mv;
+    }
 	
 	@ExceptionHandler(BusinessException.class)
     protected ModelAndView businessException(BusinessException ex, HttpServletRequest request, HttpServletResponse response) {

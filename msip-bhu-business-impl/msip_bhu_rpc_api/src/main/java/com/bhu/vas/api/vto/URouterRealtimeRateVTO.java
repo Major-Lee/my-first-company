@@ -1,10 +1,14 @@
 package com.bhu.vas.api.vto;
+
+import java.io.Serializable;
+
 /**
  * urouter实时速率vto
  * @author tangzichao
  *
  */
-public class URouterRealtimeRateVTO {
+@SuppressWarnings("serial")
+public class URouterRealtimeRateVTO implements Serializable{
 	//设备上行速率
 	private String tx_rate;
 	//设备下行速率
