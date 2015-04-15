@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.device.facade;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -72,5 +75,16 @@ public class URouterDeviceFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED);
 		}
 		return userdevice_entity;
+	}
+	
+	/**
+	 * 获取用户绑定的设备PKS
+	 * @param uid
+	 * @return
+	 */
+	public List<UserDevicePK> getUserDevices(Integer uid){
+		CommonCriteria mc = new CommonCriteria();
+		mc.createCriteria().andColumnEqualTo("uid", uid);
+		return userDeviceService.findIdsByCommonCriteria(mc);
 	}
 }

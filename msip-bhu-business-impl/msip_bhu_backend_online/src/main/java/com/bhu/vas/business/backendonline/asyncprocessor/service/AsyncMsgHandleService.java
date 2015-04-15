@@ -30,6 +30,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
@@ -49,6 +50,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentS
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
@@ -91,6 +93,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
+	
+	@Resource
+	private URouterDeviceFacadeService uRouterDeviceFacadeService;
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -614,37 +619,45 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
 	
-	public void wifiDeviceSettingNotify(String message){
-		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s]", message));
-		WifiDeviceSettingNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingNotifyDTO.class);
-
-		List<String> vapnames = dto.getVapnames();
-		DaemonHelper.deviceTerminalsQuery(dto.getMac(), vapnames, daemonRpcService);
-		/*if(vapnames != null && !vapnames.isEmpty()){
-			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
-			daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmds);
-		}*/
-		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
-
-	}
+//	public void wifiDeviceSettingNotify(String message){
+//		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s]", message));
+//		WifiDeviceSettingNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingNotifyDTO.class);
+//
+//		List<String> vapnames = dto.getVapnames();
+//		DaemonHelper.deviceTerminalsQuery(dto.getMac(), vapnames, daemonRpcService);
+//		/*if(vapnames != null && !vapnames.isEmpty()){
+//			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
+//			daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmds);
+//		}*/
+//		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
+//
+//	}
 	
+	/**
+	 * 用户登录after
+	 * 1：下发指令获取设备的终端列表
+	 * TODO:2：下发指令获取设备的实时速率
+	 * TODO:3: 下发指令获取设备的网速
+	 * @param message
+	 */
 	public void userSignedon(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s]", message));
 		UserSignedonDTO dto = JsonHelper.getDTO(message, UserSignedonDTO.class);
-		
-		String mac = "84:82:f4:19:01:0c";
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
-		if(entity != null){
-			WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
-			if(entity_dto != null){
-				List<String> vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
-				logger.info(String.format("AnsyncMsgBackendProcessor userSignedon vapnames[%s]", vapnames));
-				DaemonHelper.deviceTerminalsQuery(mac, vapnames, daemonRpcService);
-				/*if(vapnames != null && !vapnames.isEmpty()){
-					List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
-					daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
-					logger.info(String.format("AnsyncMsgBackendProcessor userSignedon cmds[%s]", cmds));
-				}*/
+		//获取用户已经绑定的设备
+		List<UserDevicePK> userDevicePks = uRouterDeviceFacadeService.getUserDevices(dto.getUid());
+		if(!userDevicePks.isEmpty()){
+			List<String> macs = new ArrayList<String>();
+			for(UserDevicePK UserDevicePk : userDevicePks){
+				macs.add(UserDevicePk.getMac());
+			}
+			List<WifiDeviceSetting> entitys = wifiDeviceSettingService.findByIds(macs);
+			for(WifiDeviceSetting entity : entitys){
+				WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
+				if(entity_dto != null){
+					//1：下发指令获取设备的终端列表
+					List<String> vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
+					DaemonHelper.deviceTerminalsQuery(entity.getId(), vapnames, daemonRpcService);
+				}
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
