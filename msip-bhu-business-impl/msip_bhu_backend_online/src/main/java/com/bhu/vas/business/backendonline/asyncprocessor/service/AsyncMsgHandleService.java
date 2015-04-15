@@ -20,8 +20,9 @@ import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.DeviceBuilder;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
@@ -531,17 +532,25 @@ public class AsyncMsgHandleService {
 	/**
 	 * 获取设备VAP下的终端列表
 	 * 1:更新被管理的终端的上下行速率和ssid bssid
+	 * 2:更新被管理的终端的限速设置
 	 * @param message
 	 */
 	public void WifiDeviceTerminalNotify(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s]", message));
 		WifiDeviceTerminalNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceTerminalNotifyDTO.class);
+		
+		//获取设备的配置的dto
+		WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dto.getMac());
+		if(setting_entity == null) return;
+		WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
+		
 		List<WifiDeviceTerminalDTO> terminals = dto.getTerminals();
 		if(terminals != null && !terminals.isEmpty()){
 			List<WifiHandsetDeviceMarkPK> mark_ids = new ArrayList<WifiHandsetDeviceMarkPK>();
 			for(WifiDeviceTerminalDTO terminal : terminals){
 				mark_ids.add(new WifiHandsetDeviceMarkPK(dto.getMac(), terminal.getMac()));
 			}
+
 			//1:更新被管理的终端的上下行速率和ssid bssid
 			int cursor = 0;
 			List<WifiHandsetDeviceMark> entitys = wifiHandsetDeviceMarkService.findByIds(mark_ids, true, true);
@@ -549,6 +558,10 @@ public class AsyncMsgHandleService {
 			List<WifiHandsetDeviceMark> need_updates = null;
 			for(WifiHandsetDeviceMark entity : entitys){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
+				//匹配终端是否在限速列表中
+				WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+						setting_entity_dto, terminal.getMac());
+				
 				if(entity == null){
 					WifiHandsetDeviceMark insert_entity = new WifiHandsetDeviceMark();
 					insert_entity.setId(new WifiHandsetDeviceMarkPK(dto.getMac(), terminal.getMac()));
@@ -556,6 +569,11 @@ public class AsyncMsgHandleService {
 					insert_entity.setBssid(dto.getBssid());
 					insert_entity.setData_tx_rate(terminal.getData_tx_rate());
 					insert_entity.setData_rx_rate(terminal.getData_rx_rate());
+
+					if(rc != null){
+						insert_entity.setData_tx_limit(rc.getTx());
+						insert_entity.setData_rx_limit(rc.getRx());
+					}
 					if(need_inserts == null)
 						need_inserts = new ArrayList<WifiHandsetDeviceMark>();
 					need_inserts.add(insert_entity);
@@ -564,6 +582,13 @@ public class AsyncMsgHandleService {
 					entity.setBssid(dto.getBssid());
 					entity.setData_tx_rate(terminal.getData_tx_rate());
 					entity.setData_rx_rate(terminal.getData_rx_rate());
+					
+					//匹配终端是否在限速列表中
+					if(rc != null){
+						entity.setData_tx_limit(rc.getTx());
+						entity.setData_rx_limit(rc.getRx());
+					}
+					
 					if(need_updates == null)
 						need_updates = new ArrayList<WifiHandsetDeviceMark>();
 					need_updates.add(entity);
@@ -610,7 +635,7 @@ public class AsyncMsgHandleService {
 		if(entity != null){
 			WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
 			if(entity_dto != null){
-				List<String> vapnames = DeviceBuilder.builderSettingVapNames(entity_dto.getVaps());
+				List<String> vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
 				logger.info(String.format("AnsyncMsgBackendProcessor userSignedon vapnames[%s]", vapnames));
 				if(vapnames != null && !vapnames.isEmpty()){
 					List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
