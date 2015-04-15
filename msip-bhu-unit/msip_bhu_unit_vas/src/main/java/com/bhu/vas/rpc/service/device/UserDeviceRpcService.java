@@ -3,10 +3,14 @@ package com.bhu.vas.rpc.service.device;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
+import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -72,6 +76,30 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
         return userDeviceFacadeService.fetchBindDevices(uid);
+    }
+
+    @Override
+    public RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac) {
+        UserDeviceStatusDTO userDeviceStatusDTO = new UserDeviceStatusDTO();
+        int deviceStatus = validateDeviceStatusIsOnlineAndBinded(mac);
+        if (deviceStatus == 0) {
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_DATA_NOT_EXIST.code());
+            userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
+                    ResponseErrorCode.DEVICE_DATA_NOT_EXIST.i18n()));
+        } else if (deviceStatus == 1) {
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.code());
+            userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
+                    ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.i18n()));
+        } else if (deviceStatus == 3) {
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_ALREADY_BEBINDED.code());
+            userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
+                    ResponseErrorCode.DEVICE_ALREADY_BEBINDED.i18n()));
+        } else if (deviceStatus == 4) {
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_BINDED.code());
+            userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
+                    ResponseErrorCode.DEVICE_NOT_BINDED.i18n()));
+        }
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceStatusDTO);
     }
 
 }
