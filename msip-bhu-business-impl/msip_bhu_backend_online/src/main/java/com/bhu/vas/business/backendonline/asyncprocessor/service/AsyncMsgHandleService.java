@@ -609,7 +609,8 @@ public class AsyncMsgHandleService {
 	public void wifiCmdDownNotifyHandle(String message){
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s]", message));
 		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
-		daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
+		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
 	
@@ -618,10 +619,11 @@ public class AsyncMsgHandleService {
 		WifiDeviceSettingNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingNotifyDTO.class);
 
 		List<String> vapnames = dto.getVapnames();
-		if(vapnames != null && !vapnames.isEmpty()){
+		DaemonHelper.deviceTerminalsQuery(dto.getMac(), vapnames, daemonRpcService);
+		/*if(vapnames != null && !vapnames.isEmpty()){
 			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
 			daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmds);
-		}
+		}*/
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
 
 	}
@@ -637,11 +639,12 @@ public class AsyncMsgHandleService {
 			if(entity_dto != null){
 				List<String> vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
 				logger.info(String.format("AnsyncMsgBackendProcessor userSignedon vapnames[%s]", vapnames));
-				if(vapnames != null && !vapnames.isEmpty()){
+				DaemonHelper.deviceTerminalsQuery(mac, vapnames, daemonRpcService);
+				/*if(vapnames != null && !vapnames.isEmpty()){
 					List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
 					daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
 					logger.info(String.format("AnsyncMsgBackendProcessor userSignedon cmds[%s]", cmds));
-				}
+				}*/
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));

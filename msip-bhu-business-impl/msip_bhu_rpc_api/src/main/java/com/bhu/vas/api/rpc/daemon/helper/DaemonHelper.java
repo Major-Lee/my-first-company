@@ -19,4 +19,15 @@ public class DaemonHelper {
 		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
 		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}
+	
+	public static void daemonCmdDown(String mac,String cmd,IDaemonRpcService daemonRpcService){
+		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
+	}
+	
+	public static void deviceTerminalsQuery(String mac,List<String> vapnames,IDaemonRpcService daemonRpcService){
+		if(vapnames != null && !vapnames.isEmpty()){
+			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
+			daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
+		}
+	}
 }
