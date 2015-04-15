@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -7,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserToken;
@@ -49,7 +50,7 @@ public class UserUnitFacadeService {
 		}
 	}
 			
-	public RpcResponseDTO<UserDTO> createNewUser(int countrycode, String acc,
+/*	public RpcResponseDTO<UserDTO> createNewUser(int countrycode, String acc,
 			String nick, String sex, String device,String regIp,String deviceuuid, String captcha) {
 		
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
@@ -146,9 +147,9 @@ public class UserUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		//Map<String,Object> map = userLoginDataService.buildLoginData(user);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(map));
-	}
+	}*/
 	
-	public RpcResponseDTO<UserDTO> userValidate(String aToken,String device,String remoteIp) {
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp) {
 		UserToken uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
@@ -173,14 +174,18 @@ public class UserUnitFacadeService {
 		}
 		this.userService.update(user);
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		UserDTO payload = new UserDTO();
+		
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
+				uToken.getAccess_token(), uToken.getRefresh_token(), false);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
 		payload.setCountrycode(user.getCountrycode());
 		payload.setMobileno(user.getMobileno());
 		payload.setNick(user.getNick());
 		payload.setAtoken(uToken.getAccess_token());
 		payload.setRtoken(uToken.getRefresh_token());
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
 	}
 	
 	/**
@@ -192,7 +197,7 @@ public class UserUnitFacadeService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<UserDTO> userCreateOrLogin(int countrycode,
+	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode,
 			String acc, String device, String remoteIp, String captcha) {
 		//step 2.生产环境下的手机号验证码验证
 		if(!RuntimeConfiguration.SecretInnerTest){
@@ -256,7 +261,11 @@ public class UserUnitFacadeService {
 			}
 			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		}
-		UserDTO payload = new UserDTO();
+		
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), countrycode, acc, user.getNick(), 
+				uToken.getAccess_token(), uToken.getRefresh_token(), reg);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
 		payload.setCountrycode(countrycode);
 		payload.setMobileno(acc);
@@ -264,6 +273,6 @@ public class UserUnitFacadeService {
 		payload.setAtoken(uToken.getAccess_token());
 		payload.setRtoken(uToken.getRefresh_token());
 		payload.setReg(reg);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
 	}
 }

@@ -116,12 +116,13 @@
 							<Class-Path>../conf/</Class-Path>
 						</manifestEntries>
 					</archive>
-
+					<!-- 
 					<excludes>
 						<exclude>**/*.xml</exclude>
 						<exclude>**/*.properties</exclude>
 						<exclude>**/*.conf</exclude>
 					</excludes>
+					 -->
 				</configuration>
 			</plugin>
 		</plugins>

@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -126,7 +127,8 @@ public class AsyncMsgHandleService {
 	//下发获取配置，获取设备测速，地理位置
 	public void afterDeviceOnlineThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
-		List<String> payloads = new ArrayList<String>();
+		DaemonHelper.afterDeviceOnline(mac, daemonRpcService);
+		/*List<String> payloads = new ArrayList<String>();
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
 		//获取设备测速
@@ -135,7 +137,7 @@ public class AsyncMsgHandleService {
 		//设备上行首先发送查询地理位置指令
 		payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
-		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
+		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);*/
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
 	}
 	/**

@@ -1,5 +1,7 @@
 package com.bhu.vas.web.user;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -63,17 +66,24 @@ public class LoginSessionController extends BaseController{
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
 		//RpcResponseDTO<UserDTO> userLogin = userRpcService.userLogin(countrycode, acc, from_device, remoteIp, captcha);
-		RpcResponseDTO<UserDTO> userLogin = userRpcService.userCreateOrLogin(countrycode, acc, from_device, remoteIp, captcha);
-		if(userLogin.getErrorCode() == null){
-			BusinessWebHelper.setCustomizeHeader(response, userLogin.getPayload().getAtoken(),userLogin.getPayload().getRtoken());
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userLogin.getPayload()));
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userCreateOrLogin(countrycode, acc, from_device, remoteIp, captcha);
+		if(rpcResult.getErrorCode() == null){
+			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(userLogin.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
 		}
 		
 	}
-	
 
+	/**
+	 * token登录验证
+	 * @param request
+	 * @param response
+	 * @param device
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/validates",method={RequestMethod.GET,RequestMethod.POST})
 	public void validate(
@@ -95,10 +105,12 @@ public class LoginSessionController extends BaseController{
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
-		RpcResponseDTO<UserDTO> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
-		
+		//RpcResponseDTO<UserDTO> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
 		if(rpcResult.getErrorCode() == null){
-			BusinessWebHelper.setCustomizeHeader(response, rpcResult.getPayload().getAtoken(),rpcResult.getPayload().getRtoken());
+			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));

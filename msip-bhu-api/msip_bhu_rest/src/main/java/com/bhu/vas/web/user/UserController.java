@@ -1,10 +1,8 @@
 package com.bhu.vas.web.user;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,17 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
-import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.business.helper.BusinessWebHelper;
-import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/account")
@@ -49,7 +42,7 @@ public class UserController extends BaseController{
 	 * @param token  渠道邀请码
 	 * 
 	 */
-	@ResponseBody()
+	/*@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.GET,RequestMethod.POST})
 	public void create(HttpServletRequest request,
 			HttpServletResponse response, 
@@ -92,7 +85,7 @@ public class UserController extends BaseController{
 		}finally{
 			
 		}
-	}
+	}*/
 	
 	
 	@ResponseBody()

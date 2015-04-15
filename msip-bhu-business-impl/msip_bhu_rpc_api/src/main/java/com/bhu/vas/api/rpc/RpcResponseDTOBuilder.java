@@ -1,5 +1,10 @@
 package com.bhu.vas.api.rpc;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class RpcResponseDTOBuilder {
@@ -24,4 +29,20 @@ public class RpcResponseDTOBuilder {
 		res.setPayload(payload);
 		return res;
 	}
+	
+	public static Map<String,Object> builderUserRpcPayload(int uid,int countrycode,String acc,String nick,String atoken,String rtoken,boolean isReg){
+		Map<String,Object> ret = new HashMap<String,Object>();
+		/*UserDTO payload = new UserDTO();
+		payload.setId(uid);
+		payload.setCountrycode(countrycode);
+		payload.setMobileno(acc);
+		payload.setNick(nick);
+		payload.setReg(true);*/
+		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,isReg));
+		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
+		return ret;
+	}
+	
+	public static String Key_User = "usr";
+	public static String Key_UserToken = "utk";
 }
