@@ -590,7 +590,7 @@ public class AsyncMsgHandleService {
 	public void wifiDeviceSettingNotify(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s]", message));
 		WifiDeviceSettingNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingNotifyDTO.class);
-		//TODO:需要调用组件 daemon 进行指令下发
+
 		List<String> vapnames = dto.getVapnames();
 		if(vapnames != null && !vapnames.isEmpty()){
 			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
@@ -610,9 +610,11 @@ public class AsyncMsgHandleService {
 			WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
 			if(entity_dto != null){
 				List<String> vapnames = DeviceBuilder.builderSettingVapNames(entity_dto.getVaps());
+				logger.info(String.format("AnsyncMsgBackendProcessor userSignedon vapnames[%s]", vapnames));
 				if(vapnames != null && !vapnames.isEmpty()){
 					List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
 					daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
+					logger.info(String.format("AnsyncMsgBackendProcessor userSignedon cmds[%s]", cmds));
 				}
 			}
 		}

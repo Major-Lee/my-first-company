@@ -11,7 +11,7 @@
     <result property="data_rx_rate" column="data_rx_rate"/>
     <result property="hd_name" column="hd_name"/>
     <result property="data_tx_limit" column="data_tx_limit"/>
-    <result property="data_rx_limlt" column="data_rx_limlt"/>
+    <result property="data_rx_limit" column="data_rx_limit"/>
     <result property="block" column="block"/>
     <result property="ssid" column="ssid"/>
     <result property="bssid" column="bssid"/>
@@ -32,7 +32,7 @@
 	    	data_rx_rate,
 	    	hd_name,
 	    	data_tx_limit,
-	    	data_rx_limlt,
+	    	data_rx_limit,
 	    	block,
 	    	ssid,
 	    	bssid,
@@ -46,7 +46,7 @@
 	    	data_rx_rate,
 	    	hd_name,
 	    	data_tx_limit,
-	    	data_rx_limlt,
+	    	data_rx_limit,
 	    	block,
 	    	ssid,
 	    	bssid,
@@ -62,7 +62,7 @@
 	    	#{data_rx_rate},
 	    	#{hd_name},
 	    	#{data_tx_limit},
-	    	#{data_rx_limlt},
+	    	#{data_rx_limit},
 	    	#{block},
 	    	#{ssid},
 	    	#{bssid},
@@ -75,7 +75,7 @@
 			data_rx_rate = #{data_rx_rate},
 			hd_name = #{hd_name},
 			data_tx_limit = #{data_tx_limit},
-			data_rx_limlt = #{data_rx_limlt},
+			data_rx_limit = #{data_rx_limit},
 			block = #{block},
 			ssid = #{ssid},
 			bssid = #{bssid},

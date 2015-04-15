@@ -97,7 +97,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	public void throwUnsupportedOperationException(ActionMessageType type, String messagejsonHasPrefix){
 		throw new UnsupportedOperationException(
-				String.format("ActionMessageType[%s] not yet implement handler process!full message[%s]",
+				String.format("ActionMessageType[%s] not yet implement handler processfull message[%s]",
 						type,messagejsonHasPrefix));
 	}
 }
