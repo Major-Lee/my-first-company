@@ -11,9 +11,9 @@ public class WifiDeviceSettingRateControlDTO {
 	public static final String Rate_Unlimited = "0";
 	//终端mac
 	private String mac;
-	//发送速率(kbps)
+	//设备发送终端速率(kbps)
 	private String tx;
-	//接收速率(kbps)
+	//设备接收终端速率(kbps)
 	private String rx;
 	
 	public String getMac() {
