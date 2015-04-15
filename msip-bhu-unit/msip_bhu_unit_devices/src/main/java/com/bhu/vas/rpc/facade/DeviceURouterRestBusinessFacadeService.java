@@ -29,6 +29,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -116,10 +117,13 @@ public class DeviceURouterRestBusinessFacadeService {
 					mark_entity = mark_entitys.get(cursor);
 					if(mark_entity != null){
 						vto.setN(mark_entity.getHd_name());
-						vto.setTx_limit(mark_entity.getData_tx_limit());
-						vto.setRx_limit(mark_entity.getData_rx_limit());
-						vto.setTx_rate(mark_entity.getData_tx_rate());
-						vto.setRx_rate(mark_entity.getData_rx_rate());
+						//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
+						vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+						vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_tx_limit()));
+						//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
+						vto.setTx_rate(mark_entity.getData_rx_rate());
+						//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
+						vto.setRx_rate(mark_entity.getData_tx_rate());
 					}
 					vtos.add(vto);
 					cursor++;

@@ -11,15 +11,15 @@ import com.smartwork.msip.cores.orm.model.BasePKModel;
  */
 @SuppressWarnings("serial")
 public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
-	//上行速率
+	//设备发送终端的速率 终端的下行速率 bps
 	private String data_tx_rate;
-	//下行速率
+	//设备接收终端的速率 终端的上行速率 bps
 	private String data_rx_rate;
 	//终端名称
 	private String hd_name;
-	//上行限速
+	//设备发送终端的限速 kbps
 	private String data_tx_limit;
-	//下行限速
+	//设备接收终端的限速 kbps
 	private String data_rx_limit;
 	//是否在黑名单
 	private boolean block;

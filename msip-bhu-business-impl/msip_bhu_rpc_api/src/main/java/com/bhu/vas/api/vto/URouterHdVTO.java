@@ -11,15 +11,15 @@ import java.io.Serializable;
 public class URouterHdVTO implements Serializable{
 	//终端mac
 	private String hd_mac;
-	//上行速率
+	//终端上行速率 bps
 	private String tx_rate;
-	//下行速率
+	//终端下行速率 bps
 	private String rx_rate;
 	//昵称
 	private String n;
-	//下行限速
+	//终端的下行限速 bps
 	private String rx_limit;
-	//上行限速
+	//终端的上行限速 bps
 	private String tx_limit;
 	//是否在线
 	private boolean online;
