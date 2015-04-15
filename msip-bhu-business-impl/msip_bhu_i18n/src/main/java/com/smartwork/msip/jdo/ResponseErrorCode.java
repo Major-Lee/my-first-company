@@ -124,6 +124,8 @@ public enum ResponseErrorCode {
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
 	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),
 	DEVICE_OWNER_REACHLIMIT("343","device.owner.reachlimit"),
+	DEVICE_ALREADY_BEBINDED_OTHER("344","device.already.bebinded.other"),
+
 	
 	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
 	USER_PERSONAL_INVALID("316","user.personal.invalid"),

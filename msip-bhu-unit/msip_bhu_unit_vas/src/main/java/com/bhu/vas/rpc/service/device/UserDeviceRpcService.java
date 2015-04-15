@@ -73,4 +73,5 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
         return userDeviceFacadeService.fetchBindDevices(uid);
     }
+
 }
