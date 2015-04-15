@@ -16,12 +16,13 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/urouter/device")
-public class URouterDeviceController {
+public class URouterDeviceController extends BaseController{
 	
 	@Resource
 	private IDeviceURouterRestRpcService deviceURouterRestRpcService;
