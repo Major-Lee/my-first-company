@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public class UserDeviceFacadeService {
 
         UserDevice userDevice = new UserDevice();
         userDevice.setId(new UserDevicePK(mac, uid));
+        userDevice.setCreated_at(new Date());
         userDevice.setDevice_name(deviceName);
         userDeviceService.insert(userDevice);
         UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
