@@ -170,19 +170,12 @@ public class DeviceURouterRestBusinessFacadeService {
 		Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
 		if(rate_map == null){
 			//调用异步消息下发实时速率指令
-			
+			deliverMessageService.sendDeviceRealtimeRateFetchActionMessage(wifiId);
 		}else{
-			if(rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.WaitingMark)){
-				//等待设备上报实时速率数据
+			//c:如果存在数据非ab 返回数据
+			if(!rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.WaitingMark)){
+				BeanUtils.copyProperties(rate_map, vto);
 			}
-			else{
-				
-			}
-		}
-		
-		rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.getInstance().WaitingMark);
-		if(rate_map != null){
-			BeanUtils.copyProperties(rate_map, vto);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}

@@ -22,6 +22,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 
 
 public class DeliverMessageService {
@@ -125,6 +126,14 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
+	public void sendDeviceRealtimeRateFetchActionMessage(String wifiId){
+		WifiRealtimeRateFetchDTO dto = new WifiRealtimeRateFetchDTO();
+		dto.setMac(wifiId);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
 	
 	public void sendUserSignedonActionMessage(int uid,String remoteip,String d){
 		UserSignedonDTO dto = new UserSignedonDTO();

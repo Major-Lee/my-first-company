@@ -13,6 +13,7 @@ public enum ActionMessageType {
 	WifiDeviceLocation("wifi设备位置回报","wdlocation","WL"),
 	WifiDeviceSettingNotify("wifi设备配置获取通知","wdsetting","WS"),
 	WifiDeviceTerminalNotify("vap获取终端列表通知","vapterminal","VT"),
+	WifiDeviceRealtimeRateFetch("获取设备实时速率","wdrealtime","WR"),
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
 	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),
