@@ -1,13 +1,10 @@
 package com.bhu.vas.rpc.consumer;
 
-import java.util.UUID;
+import java.util.Map;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 
 public class UserServiceConsumer {
@@ -85,15 +82,15 @@ public class UserServiceConsumer {
 		//validate登录
 		IUserRpcService userRpcService = (IUserRpcService)context.getBean("userRpcService");
 		
-		RpcResponseDTO<UserDTO> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=", "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
+		RpcResponseDTO<Map<String, Object>> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=", "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
 		if(createNewUser.getErrorCode() == null){
-			UserDTO retdto = createNewUser.getPayload();
+			/*UserDTO retdto = createNewUser.getPayload();
 			System.out.println(retdto.getId());
 			System.out.println(retdto.getAtoken());
 			System.out.println(retdto.getRtoken());
 			System.out.println(retdto.getMobileno());
 			System.out.println(retdto.getCountrycode());
-			System.out.println(retdto.getNick());
+			System.out.println(retdto.getNick());*/
 		}
 		
 		Thread.currentThread().join();

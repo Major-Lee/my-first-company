@@ -1,7 +1,8 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
+import java.util.Map;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
 
 public interface IUserRpcService {
 	/**
@@ -16,7 +17,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<UserDTO> createNewUser(
+	/*public RpcResponseDTO<UserDTO> createNewUser(
 			int countrycode,
 			String acc,
 			String nick,
@@ -24,7 +25,7 @@ public interface IUserRpcService {
 			String device,
 			String regIp,String deviceuuid,
 			String captcha
-			);
+			);*/
 	
 	/**
 	 * 检测acc是否已经存在
@@ -44,7 +45,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
+	//public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
 	
 	/**
 	 * 用户通过token进行登录
@@ -53,7 +54,7 @@ public interface IUserRpcService {
 	 * @param remoteIp
 	 * @return
 	 */
-	public RpcResponseDTO<UserDTO> userValidate(String aToken,String device,String remoteIp);
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp);
 	
 	/**
 	 * 用户登录或者注册
@@ -66,7 +67,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<UserDTO> userCreateOrLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
+	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,
 			String opt,

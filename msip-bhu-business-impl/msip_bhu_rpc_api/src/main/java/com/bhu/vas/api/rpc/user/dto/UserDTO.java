@@ -6,12 +6,9 @@ public class UserDTO implements java.io.Serializable{
 //	public static final int UT_System = 1;//系统用户
 	
 	private int id;
-	private String nick;
 	private int countrycode;
-	//private String avatar;
 	private String mobileno;
-	private String atoken;
-	private String rtoken;
+	private String nick;
 	//是否是注册  true 注册  false 登录
 	private boolean reg = false;
 	/*private int ut;//用户类型
@@ -43,28 +40,28 @@ public class UserDTO implements java.io.Serializable{
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
 	}
-	public String getAtoken() {
-		return atoken;
-	}
-	public void setAtoken(String atoken) {
-		this.atoken = atoken;
-	}
 	public int getCountrycode() {
 		return countrycode;
 	}
 	public void setCountrycode(int countrycode) {
 		this.countrycode = countrycode;
 	}
-	public String getRtoken() {
-		return rtoken;
-	}
-	public void setRtoken(String rtoken) {
-		this.rtoken = rtoken;
-	}
 	public boolean isReg() {
 		return reg;
 	}
 	public void setReg(boolean reg) {
+		this.reg = reg;
+	}
+	
+	public UserDTO() {
+	}
+	public UserDTO(int id, int countrycode, String mobileno, String nick,
+			boolean reg) {
+		super();
+		this.id = id;
+		this.countrycode = countrycode;
+		this.mobileno = mobileno;
+		this.nick = nick;
 		this.reg = reg;
 	}
 	
