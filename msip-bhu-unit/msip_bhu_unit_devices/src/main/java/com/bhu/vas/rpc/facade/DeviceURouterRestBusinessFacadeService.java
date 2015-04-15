@@ -26,11 +26,12 @@ import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsHashService;
+import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.smartwork.msip.cores.helper.ArithHelper;
-import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 /**
  * device urouter Rest RPC组件的业务service
@@ -50,6 +51,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	@Resource
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 	
+	@Resource
+	private URouterDeviceFacadeService uRouterDeviceFacadeService;
+	
 	/**
 	 * urouter 入口界面数据
 	 * @param uid
@@ -57,15 +61,16 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId){
+		WifiDevice device_entity = null;
+		WifiDeviceSetting entity = null;
+		try{
+			device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
+			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+			entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
 		
-		WifiDevice device_entity = wifiDeviceService.getById(wifiId);
-		if(device_entity == null){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_NOTEXIST);
-		}
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
-		if(entity == null) {
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
-		}
 		WifiDeviceSettingDTO dto = entity.getInnerModel();
 		URouterEnterVTO vto = new URouterEnterVTO();
 		if(!StringUtils.isEmpty(dto.getPower())){
@@ -87,6 +92,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<List<URouterHdVTO>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
+		try{
+			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+		
 		List<URouterHdVTO> vtos = null;
 		Set<Tuple> presents = null;
 		switch(status){
@@ -142,6 +153,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId){
+		try{
+			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+		
 		URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
 		Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
 		if(rate_map != null){
@@ -149,4 +166,5 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
+	
 }

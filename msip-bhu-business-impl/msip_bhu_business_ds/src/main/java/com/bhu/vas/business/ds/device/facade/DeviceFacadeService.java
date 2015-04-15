@@ -252,8 +252,8 @@ public class DeviceFacadeService {
 		} else {
 			return WIFI_DEVICE_STATUS_NOT_ONLINE;
 		}
-
 	}
 
+	
 
 }

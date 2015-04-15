@@ -57,7 +57,8 @@ public enum ResponseErrorCode {
 //	FILTER_TAG_EXIST("702", "filter.tag.exist"),
 //	FILTER_TAG_ARTIST("703", "filter.tag.artist"),
 	WIFIDEVICE_SETTING_NOTEXIST("701","wifidevice.setting.notexist"),
-	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
+//	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
+//	WIFIDEVICE_OFFLINE("703","wifidevice.offline"),
 	
 	USER_FRD_EXIST("720","user.frd.exist"),
 	USER_FRD_APPLY_EXIST("721","user.frd.apply.exist"),
@@ -125,7 +126,7 @@ public enum ResponseErrorCode {
 	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),
 	DEVICE_OWNER_REACHLIMIT("343","device.owner.reachlimit"),
 	DEVICE_ALREADY_BEBINDED_OTHER("344","device.already.bebinded.other"),
-
+	DEVICE_NOT_BINDED("345","device.not.binded"),
 	
 	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
 	USER_PERSONAL_INVALID("316","user.personal.invalid"),
