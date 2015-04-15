@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
@@ -27,7 +29,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -54,11 +55,15 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param wifiId
 	 * @return
 	 */
-	public URouterEnterVTO urouterEnter(Integer uid, String wifiId){
-		WifiDevice device_entity = this.validateWifiDevice(wifiId);
+	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId){
+		
+		WifiDevice device_entity = wifiDeviceService.getById(wifiId);
+		if(device_entity == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_NOTEXIST);
+		}
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 		if(entity == null) {
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST.code());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
 		}
 		WifiDeviceSettingDTO dto = entity.getInnerModel();
 		URouterEnterVTO vto = new URouterEnterVTO();
@@ -67,7 +72,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 		vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
 		vto.setWd_date_rx_rate(device_entity.getData_rx_rate());
-		return vto;
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	
 	public static final int HDList_Online_Status = 1;//获取在线终端列表
@@ -80,9 +85,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param size
 	 * @return
 	 */
-	public List<URouterHdVTO> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
-		validateWifiDevice(wifiId);
-		
+	public RpcResponseDTO<List<URouterHdVTO>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
+		List<URouterHdVTO> vtos = null;
 		Set<Tuple> presents = null;
 		switch(status){
 			case HDList_Online_Status:
@@ -102,7 +106,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 			if(!mark_entitys.isEmpty()){
-				List<URouterHdVTO> vtos = new ArrayList<URouterHdVTO>();
+				vtos = new ArrayList<URouterHdVTO>();
 				int cursor = 0;
 				WifiHandsetDeviceMark mark_entity = null;
 				for(Tuple tuple : presents){
@@ -120,10 +124,11 @@ public class DeviceURouterRestBusinessFacadeService {
 					vtos.add(vto);
 					cursor++;
 				}
-				return vtos;
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 			}
 		}
-		return Collections.emptyList();
+		vtos = Collections.emptyList();
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
 	/**
@@ -132,26 +137,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param wifiId
 	 * @return
 	 */
-	public URouterRealtimeRateVTO urouterRealtimeRate(Integer uid, String wifiId){
-		validateWifiDevice(wifiId);
-		
+	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId){
 		URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
 		Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
 		if(rate_map != null){
 			BeanUtils.copyProperties(rate_map, vto);
 		}
-		return vto;
-	}
-	/**
-	 * 验证设备是否存在
-	 * @param wifiId
-	 * @return
-	 */
-	public WifiDevice validateWifiDevice(String wifiId){
-		WifiDevice device_entity = wifiDeviceService.getById(wifiId);
-		if(device_entity == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST.code());
-		}
-		return device_entity;
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 }

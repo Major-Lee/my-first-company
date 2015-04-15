@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
@@ -33,7 +34,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	 * 获取入口界面数据
 	 */
 	@Override
-	public URouterEnterVTO urouterEnter(Integer uid, String wifiId) {
+	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterEnter invoke uid [%s] mac [%s]", uid, wifiId));
 		
 		try{
@@ -52,7 +53,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
-	public List<URouterHdVTO> urouterHdList(Integer uid, String wifiId, int status,
+	public RpcResponseDTO<List<URouterHdVTO>> urouterHdList(Integer uid, String wifiId, int status,
 			int start, int size) {
 		logger.info(String.format("DeviceURouterRestRPC urouterHdOnlineList invoke uid [%s] mac [%s] st [%s] ps [%s]", 
 				uid, wifiId, start, size));
@@ -74,7 +75,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
-	public URouterRealtimeRateVTO urouterRealtimeRate(Integer uid, String wifiId) {
+	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterRealtimeRate invoke uid [%s] mac [%s] ", 
 				uid, wifiId));
 		

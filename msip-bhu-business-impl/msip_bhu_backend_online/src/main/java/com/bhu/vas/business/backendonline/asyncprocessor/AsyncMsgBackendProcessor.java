@@ -81,6 +81,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case USERFETCHCAPTCHACODE:
 							asyncMsgHandleService.sendCaptchaCodeNotifyHandle(message);
 							break;
+						case USERSIGNEDON:
+							asyncMsgHandleService.userSignedon(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
