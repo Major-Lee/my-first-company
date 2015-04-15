@@ -47,6 +47,30 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 		super.preUpdate();
 	}
 
+	public String getMac(){
+		if(this.id == null) return null;
+		return this.id.getMac();
+	}
+	
+	public String getHd_mac(){
+		if(this.id == null) return null;
+		return this.id.getHd_mac();
+	}
+	
+	public void setMac(String mac){
+		if(this.id == null) {
+			this.id = new WifiHandsetDeviceMarkPK();
+		}
+		this.id.setMac(mac);
+	}
+	
+	public void setHd_mac(String hd_mac){
+		if(this.id == null) {
+			this.id = new WifiHandsetDeviceMarkPK();
+		}
+		this.id.setHd_mac(hd_mac);
+	}
+	
 	public String getData_tx_rate() {
 		return data_tx_rate;
 	}
