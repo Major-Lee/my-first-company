@@ -1,10 +1,14 @@
 package com.bhu.vas.api.vto;
+
+import java.io.Serializable;
+
 /**
  * urouter的终端vto
  * @author tangzichao
  *
  */
-public class URouterHdVTO {
+@SuppressWarnings("serial")
+public class URouterHdVTO implements Serializable{
 	//终端mac
 	private String hd_mac;
 	//上行速率

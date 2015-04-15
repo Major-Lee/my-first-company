@@ -47,6 +47,30 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 		super.preUpdate();
 	}
 
+	public String getMac(){
+		if(this.id == null) return null;
+		return this.id.getMac();
+	}
+	
+	public String getHd_mac(){
+		if(this.id == null) return null;
+		return this.id.getHd_mac();
+	}
+	
+	public void setMac(String mac){
+		if(this.id == null) {
+			this.id = new WifiHandsetDeviceMarkPK();
+		}
+		this.id.setMac(mac);
+	}
+	
+	public void setHd_mac(String hd_mac){
+		if(this.id == null) {
+			this.id = new WifiHandsetDeviceMarkPK();
+		}
+		this.id.setHd_mac(hd_mac);
+	}
+
 	public String getData_tx_rate() {
 		return data_tx_rate;
 	}
@@ -102,7 +126,7 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 	public void setSsid(String ssid) {
 		this.ssid = ssid;
 	}
-	
+
 	public String getBssid() {
 		return bssid;
 	}
@@ -117,5 +141,20 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiHandsetDeviceMark){
+			WifiHandsetDeviceMark oo = (WifiHandsetDeviceMark)o;
+			return this.getId().equals(oo.getId());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getId().toString().hashCode();
 	}
 }

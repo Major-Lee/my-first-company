@@ -19,11 +19,14 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.DeviceBuilder;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
@@ -31,6 +34,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
@@ -46,6 +50,7 @@ import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
@@ -64,6 +69,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceSettingService wifiDeviceSettingService;
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
@@ -583,7 +591,7 @@ public class AsyncMsgHandleService {
 	public void wifiDeviceSettingNotify(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s]", message));
 		WifiDeviceSettingNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingNotifyDTO.class);
-		//TODO:需要调用组件 daemon 进行指令下发
+
 		List<String> vapnames = dto.getVapnames();
 		if(vapnames != null && !vapnames.isEmpty()){
 			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(dto.getMac(), dto.getVapnames());
@@ -591,6 +599,27 @@ public class AsyncMsgHandleService {
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s] successful", message));
 
+	}
+	
+	public void userSignedon(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s]", message));
+		UserSignedonDTO dto = JsonHelper.getDTO(message, UserSignedonDTO.class);
+		
+		String mac = "84:82:f4:19:01:0c";
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity != null){
+			WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
+			if(entity_dto != null){
+				List<String> vapnames = DeviceBuilder.builderSettingVapNames(entity_dto.getVaps());
+				logger.info(String.format("AnsyncMsgBackendProcessor userSignedon vapnames[%s]", vapnames));
+				if(vapnames != null && !vapnames.isEmpty()){
+					List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
+					daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
+					logger.info(String.format("AnsyncMsgBackendProcessor userSignedon cmds[%s]", cmds));
+				}
+			}
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
 	}
 	
 	public void sendCaptchaCodeNotifyHandle(String message){

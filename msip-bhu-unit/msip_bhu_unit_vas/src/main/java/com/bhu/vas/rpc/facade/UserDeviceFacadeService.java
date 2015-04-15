@@ -38,9 +38,22 @@ public class UserDeviceFacadeService {
 
     }
 
+
+
     public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
         UserDevice userDevice = new UserDevice();
         userDevice.setId(new UserDevicePK(mac, uid));
+
+        //TODO(bluesand):现在一台设备只能被一个客户端绑定。
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        List<UserDevice> bindDevices = userDeviceService.findModelByCommonCriteria(mc);
+        for (UserDevice bindDevice : bindDevices) {
+            if (bindDevice.getUid() != uid) {
+                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
+            }
+        }
+
         if (userDeviceService.delete(userDevice) > 0)  {
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {

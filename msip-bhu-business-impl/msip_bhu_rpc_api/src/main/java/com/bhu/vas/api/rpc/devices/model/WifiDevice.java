@@ -47,6 +47,10 @@ public class WifiDevice extends BaseStringModel{
 	private String rx_bytes;
 	//上行流量
 	private String tx_bytes;
+	//设备下行网速
+	private String data_rx_rate;
+	//设备上行网速
+	private String data_tx_rate;
 	//地理位置坐标 纬度
 	private String lat;
 	//地理位置坐标 经度
@@ -238,6 +242,22 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setTx_bytes(String tx_bytes) {
 		this.tx_bytes = tx_bytes;
+	}
+
+	public String getData_rx_rate() {
+		return data_rx_rate;
+	}
+
+	public void setData_rx_rate(String data_rx_rate) {
+		this.data_rx_rate = data_rx_rate;
+	}
+
+	public String getData_tx_rate() {
+		return data_tx_rate;
+	}
+
+	public void setData_tx_rate(String data_tx_rate) {
+		this.data_tx_rate = data_tx_rate;
 	}
 
 	public String getLat() {
