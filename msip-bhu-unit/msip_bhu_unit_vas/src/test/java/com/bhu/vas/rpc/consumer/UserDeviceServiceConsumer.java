@@ -83,7 +83,7 @@ public class UserDeviceServiceConsumer {
 		IUserDeviceRpcService userDeviceRpcService = (IUserDeviceRpcService)context.getBean("userDeviceRpcService");
 
 		RpcResponseDTO rpcResponseDTO = userDeviceRpcService.bindDevice("62:68:75:02:00:06", 10086, "Google");
-		System.out.println(userDeviceRpcService.bindDevice("62:68:75:02:00:06", 10086, "Google"));
+		System.out.println(userDeviceRpcService.unBindDevice("62:68:75:02:00:06",1234));
 
 		//RpcResponseDTO<List<UserDeviceDTO>> ret =  userDeviceRpcService.fetchBindDevices(123);
 
