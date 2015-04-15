@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -36,7 +37,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		logger.info(String.format("DeviceURouterRestRPC urouterEnter invoke uid [%s] mac [%s]", uid, wifiId));
 		
 		try{
-			return deviceURouterRestBusinessFacadeService.urouterEnter(uid, wifiId);
+			return deviceURouterRestBusinessFacadeService.urouterEnter(uid, wifiId.toLowerCase());
 		}
 		catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterEnter failed uid [%s] mac [%s] ", uid, wifiId));
@@ -57,7 +58,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 				uid, wifiId, start, size));
 		
 		try{
-			return deviceURouterRestBusinessFacadeService.urouterHdList(uid, wifiId, status, start, size);
+			return deviceURouterRestBusinessFacadeService.urouterHdList(uid, wifiId.toLowerCase(), status, start, size);
 		}
 		catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterHdOnlineList failed uid [%s] mac [%s] st [%s] ps [%s]",
@@ -71,5 +72,27 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
+	
+	@Override
+	public URouterRealtimeRateVTO urouterRealtimeRate(Integer uid, String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterRealtimeRate invoke uid [%s] mac [%s] ", 
+				uid, wifiId));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterRealtimeRate(uid, wifiId.toLowerCase());
+		}
+		catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC urouterRealtimeRate failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterRealtimeRate exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
 
 }

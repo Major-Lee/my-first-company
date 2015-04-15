@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -34,6 +35,14 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
 		return deviceURouterRestRpcService.urouterHdList(uid, wifiId, status, start, size);
+	}
+	
+	@Override
+	public URouterRealtimeRateVTO urouterRealtimeRate(Integer uid, String wifiId) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterRealtimeRate(uid, wifiId);
 	}
 
 }

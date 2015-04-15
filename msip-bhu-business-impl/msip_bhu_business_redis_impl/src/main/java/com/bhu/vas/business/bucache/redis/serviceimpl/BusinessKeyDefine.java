@@ -43,6 +43,7 @@ public class BusinessKeyDefine {
 		//UserPrefixKey
 		
 		public static final String WifiDeviceStatistics 		= "WDS";
+		public static final String WifiDeviceStatistics_RealtimeRate 		= "RR";
 	}
 	public static class Unique{
 		public static final String EmailCheck = "WUEC";

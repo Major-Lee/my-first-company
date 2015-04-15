@@ -3,10 +3,12 @@ package com.bhu.vas.rpc.facade;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +20,9 @@ import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
@@ -117,5 +121,20 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 		}
 		return Collections.emptyList();
+	}
+	
+	/**
+	 * 获取设备的实时速率
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public URouterRealtimeRateVTO urouterRealtimeRate(Integer uid, String wifiId){
+		URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
+		Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
+		if(rate_map != null){
+			BeanUtils.copyProperties(rate_map, vto);
+		}
+		return vto;
 	}
 }

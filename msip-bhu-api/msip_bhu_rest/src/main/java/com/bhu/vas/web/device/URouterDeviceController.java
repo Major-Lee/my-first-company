@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -44,6 +45,7 @@ public class URouterDeviceController {
 	
 	/**
 	 * 获取设备的终端列表 
+	 * 默认按照终端的速率倒序排序 在线排序
 	 * @param request
 	 * @param response
 	 * @param uid
@@ -82,8 +84,8 @@ public class URouterDeviceController {
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		//List<URouterHdVTO> vtos = deviceURouterRestRpcService.urouterHdList(uid, mac, status, start, size);
-		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
+		URouterRealtimeRateVTO vto = deviceURouterRestRpcService.urouterRealtimeRate(uid, mac);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 	}
 	
 }
