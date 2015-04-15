@@ -15,4 +15,5 @@ public class WifiDeviceSetting extends SimpleJsonExtStringModel<WifiDeviceSettin
 	public Class<WifiDeviceSettingDTO> getJsonParserModel() {
 		return WifiDeviceSettingDTO.class;
 	}
+	
 }
