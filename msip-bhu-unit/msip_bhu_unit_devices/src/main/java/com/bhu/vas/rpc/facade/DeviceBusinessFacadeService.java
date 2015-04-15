@@ -24,7 +24,6 @@ import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -480,10 +479,10 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
-		//TODO:判断设备有人管理才发送异步消息
-		if(dto.getVaps() != null)
-			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceHelper.
-					builderSettingVapNames(dto.getVaps()));
+//		//TODO:判断设备有人管理才发送异步消息
+//		if(dto.getVaps() != null)
+//			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceHelper.
+//					builderSettingVapNames(dto.getVaps()));
 		//2:任务callback
 		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}
