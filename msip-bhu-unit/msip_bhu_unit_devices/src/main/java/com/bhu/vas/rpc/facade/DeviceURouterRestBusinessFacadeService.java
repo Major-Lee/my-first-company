@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsHashService;
 import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
@@ -53,6 +54,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	@Resource
 	private URouterDeviceFacadeService uRouterDeviceFacadeService;
+	
+	@Resource
+	private DeliverMessageService deliverMessageService;
 	
 	/**
 	 * urouter 入口界面数据
@@ -148,6 +152,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	/**
 	 * 获取设备的实时速率
+	 * a:如果存在数据null 下发实时速率指令 
+	 * b:如果存在数据waiting 什么都不做
+	 * c:如果存在数据非ab 返回数据
 	 * @param uid
 	 * @param wifiId
 	 * @return
@@ -161,6 +168,19 @@ public class DeviceURouterRestBusinessFacadeService {
 		
 		URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
 		Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
+		if(rate_map == null){
+			//调用异步消息下发实时速率指令
+			
+		}else{
+			if(rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.WaitingMark)){
+				//等待设备上报实时速率数据
+			}
+			else{
+				
+			}
+		}
+		
+		rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.getInstance().WaitingMark);
 		if(rate_map != null){
 			BeanUtils.copyProperties(rate_map, vto);
 		}

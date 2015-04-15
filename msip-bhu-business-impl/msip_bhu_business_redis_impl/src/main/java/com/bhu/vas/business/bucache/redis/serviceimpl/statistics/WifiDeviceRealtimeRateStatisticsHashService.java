@@ -32,13 +32,25 @@ public class WifiDeviceRealtimeRateStatisticsHashService extends AbstractRelatio
 	private WifiDeviceRealtimeRateStatisticsHashService(){
 	}
 	
-	private static final int exprie_seconds = 60 * 60;//1小时
+	private static final int exprie_seconds = 10;//10秒
+	private static final int exprie_waiting_seconds = 30;//30秒
 	
 	private static String generateKey(String mac){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.WifiDeviceStatistics);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(BusinessKeyDefine.Statistics.WifiDeviceStatistics_RealtimeRate);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(mac);
 		return sb.toString();
+	}
+	
+	public static final String WaitingMark = "waiting";
+	
+	public void addWaiting(String mac){
+		String key = generateKey(mac);
+		Map<String,String> rate_map = new HashMap<String,String>();
+		rate_map.put("tx_rate", WaitingMark);
+		rate_map.put("rx_rate", WaitingMark);
+		super.hmset(key, rate_map);
+		super.expire(key, exprie_waiting_seconds);
 	}
 	
 	/**

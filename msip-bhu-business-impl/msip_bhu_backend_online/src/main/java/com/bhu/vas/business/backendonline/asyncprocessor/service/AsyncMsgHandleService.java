@@ -636,8 +636,7 @@ public class AsyncMsgHandleService {
 	/**
 	 * 用户登录after
 	 * 1：下发指令获取设备的终端列表
-	 * TODO:2：下发指令获取设备的实时速率
-	 * TODO:3: 下发指令获取设备的网速
+	 * TODO:2: 下发指令获取设备的网速
 	 * @param message
 	 */
 	public void userSignedon(String message){
