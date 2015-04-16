@@ -34,7 +34,7 @@ import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
-import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 /**
@@ -96,11 +96,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param size
 	 * @return
 	 */
-	public RpcResponseDTO<List<URouterHdVTO>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
+	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
 		try{
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
-		
+
 			List<URouterHdVTO> vtos = null;
+			int total = 0;
 			Set<Tuple> presents = null;
 			switch(status){
 				case HDList_Online_Status:
@@ -130,11 +131,13 @@ public class DeviceURouterRestBusinessFacadeService {
 						vtos.add(vto);
 						cursor++;
 					}
-					return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 				}
 			}
-			vtos = Collections.emptyList();
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+			if(vtos == null)
+				vtos = Collections.emptyList();
+			
+			Map<String, Object> payload = PageHelper.partialAllList(vtos, total, start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
@@ -177,32 +180,40 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param wifiId
 	 * @return
 	 */
-	public RpcResponseDTO<List<URouterHdVTO>> urouterBlockList(Integer uid, String wifiId){
+	public RpcResponseDTO<Map<String,Object>> urouterBlockList(Integer uid, String wifiId, int start, int size){
 		try{
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
 			
 			List<URouterHdVTO> vtos = null;
+			int total = 0;
 			
 			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
 			WifiDeviceSettingDTO dto = entity.getInnerModel();
 			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(dto);
 			if(acl_dto != null){
-				List<String> block_hd_macs = acl_dto.getMacs();
-				List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
-				if(!mark_pks.isEmpty()){
-					vtos = new ArrayList<URouterHdVTO>();
-					List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, false, true);
-					int cursor = 0;
-					for(String block_hd_mac : block_hd_macs){
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor));
-						vtos.add(vto);
-						cursor++;
+				List<String> block_hd_macs_all = acl_dto.getMacs();
+				if(block_hd_macs_all != null && !block_hd_macs_all.isEmpty()){
+					total = block_hd_macs_all.size();
+					List<String> block_hd_macs = PageHelper.partialList(acl_dto.getMacs(), start, size);
+					
+					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
+					if(!mark_pks.isEmpty()){
+						vtos = new ArrayList<URouterHdVTO>();
+						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, false, true);
+						int cursor = 0;
+						for(String block_hd_mac : block_hd_macs){
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor));
+							vtos.add(vto);
+							cursor++;
+						}
 					}
 				}
 			}
-
-			vtos = Collections.emptyList();
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+			if(vtos == null)
+				vtos = Collections.emptyList();
+			
+			Map<String, Object> payload = PageHelper.partialAllList(vtos, total, start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
