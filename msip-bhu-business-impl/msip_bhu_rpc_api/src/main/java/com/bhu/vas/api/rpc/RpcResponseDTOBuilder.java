@@ -1,10 +1,12 @@
 package com.bhu.vas.api.rpc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -41,7 +43,17 @@ public class RpcResponseDTOBuilder {
 		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
 		ret.put(Key_Setting, new UserSettingDTO(10));
 		ret.put(Key_Cm, "60");
-		ret.put(Key_Devices, userDevices);
+
+		List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
+		for (UserDevice userDevice : userDevices) {
+			UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+			userDeviceDTO.setMac(userDevice.getMac());
+			userDeviceDTO.setUid(userDevice.getUid());
+			userDeviceDTO.setDevice_name(userDevice.getDevice_name());
+			bindDevicesDTO.add(userDeviceDTO);
+		}
+
+		ret.put(Key_Devices, bindDevicesDTO);
 		return ret;
 	}
 	
