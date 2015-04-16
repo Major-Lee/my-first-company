@@ -9,9 +9,9 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class URouterRealtimeRateVTO implements Serializable{
-	//设备上行速率
+	//设备实时上行速率
 	private String tx_rate;
-	//设备下行速率
+	//设备实时下行速率
 	private String rx_rate;
 	//当前时间戳
 	private long ts;
