@@ -223,7 +223,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
 					if(!mark_pks.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
-						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, false, true);
+						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
 							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor));
