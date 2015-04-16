@@ -13,6 +13,8 @@ public class URouterRealtimeRateVTO implements Serializable{
 	private String tx_rate;
 	//设备下行速率
 	private String rx_rate;
+	//当前时间戳
+	private long ts;
 	
 	public String getTx_rate() {
 		return tx_rate;
@@ -25,5 +27,11 @@ public class URouterRealtimeRateVTO implements Serializable{
 	}
 	public void setRx_rate(String rx_rate) {
 		this.rx_rate = rx_rate;
+	}
+	public long getTs() {
+		return ts;
+	}
+	public void setTs(long ts) {
+		this.ts = ts;
 	}
 }

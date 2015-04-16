@@ -177,6 +177,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				BeanUtils.copyProperties(rate_map, vto);
 			}
 		}
+		vto.setTs(System.currentTimeMillis());
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	
