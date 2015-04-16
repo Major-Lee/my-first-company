@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public class UserDeviceFacadeService {
 
         UserDevice userDevice = new UserDevice();
         userDevice.setId(new UserDevicePK(mac, uid));
+        userDevice.setCreated_at(new Date());
         userDevice.setDevice_name(deviceName);
         userDeviceService.insert(userDevice);
         UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
@@ -72,11 +74,8 @@ public class UserDeviceFacadeService {
     }
 
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("uid", uid);
-        mc.setPageNumber(1);
-        mc.setPageSize(3);
-        List<UserDevice> bindDevices = userDeviceService.findModelByModelCriteria(mc);
+
+        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
 
         List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
 
