@@ -74,11 +74,8 @@ public class UserDeviceFacadeService {
     }
 
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("uid", uid);
-        mc.setPageNumber(1);
-        mc.setPageSize(3);
-        List<UserDevice> bindDevices = userDeviceService.findModelByModelCriteria(mc);
+
+        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
 
         List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
 

@@ -1,11 +1,13 @@
 package com.bhu.vas.api.rpc;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class RpcResponseDTOBuilder {
@@ -31,12 +33,15 @@ public class RpcResponseDTOBuilder {
 		return res;
 	}
 	
-	public static Map<String,Object> builderUserRpcPayload(int uid,int countrycode,String acc,String nick,String atoken,String rtoken,boolean isReg){
+	public static Map<String,Object> builderUserRpcPayload(int uid, int countrycode, String acc, String nick,
+														   String atoken, String rtoken, boolean isReg,
+														   List<UserDevice> userDevices){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,isReg));
 		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
 		ret.put(Key_Setting, new UserSettingDTO(10));
 		ret.put(Key_Cm, "60");
+		ret.put(Key_Devices, userDevices);
 		return ret;
 	}
 	
@@ -44,4 +49,5 @@ public class RpcResponseDTOBuilder {
 	public static String Key_UserToken = "utk";
 	public static String Key_Setting = "setting";
 	public static String Key_Cm = "cm";
+	public static String Key_Devices = "devices";
 }

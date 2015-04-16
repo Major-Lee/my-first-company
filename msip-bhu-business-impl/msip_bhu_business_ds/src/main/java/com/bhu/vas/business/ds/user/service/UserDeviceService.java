@@ -4,10 +4,12 @@ import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.ds.user.dao.UserDeviceDao;
 import com.smartwork.msip.cores.orm.service.EntityService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by bluesand on 15/4/10.
@@ -19,5 +21,13 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
     @Override
     public void setEntityDao(UserDeviceDao entityDao) {
         super.setEntityDao(entityDao);
+    }
+
+    public List<UserDevice> fetchBindDevicesWithLimit(int uid, int limit) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("uid", uid);
+        mc.setPageNumber(1);
+        mc.setPageSize(limit);
+        return findModelByModelCriteria(mc);
     }
 }
