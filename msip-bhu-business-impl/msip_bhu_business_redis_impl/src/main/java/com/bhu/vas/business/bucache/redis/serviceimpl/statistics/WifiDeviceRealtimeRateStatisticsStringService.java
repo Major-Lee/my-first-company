@@ -74,7 +74,7 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	}
 	
 	private static String[] generateAllKeys(String mac){
-		String[] keys = new String[4];
+		String[] keys = new String[6];
 		String r_tx_key = generateRealtimeKey(mac, Type_Tx_Rate);
 		keys[0] = r_tx_key;
 		String r_rx_key = generateRealtimeKey(mac, Type_Rx_Rate);
