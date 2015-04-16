@@ -46,4 +46,12 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 		return deviceURouterRestRpcService.urouterRealtimeRate(uid, wifiId);
 	}
 
+	@Override
+	public RpcResponseDTO<List<URouterHdVTO>> urouterBlockList(Integer uid, String wifiId) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterBlockList(uid, wifiId);
+	}
+
 }

@@ -94,6 +94,27 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
+
+	@Override
+	public RpcResponseDTO<List<URouterHdVTO>> urouterBlockList(Integer uid, String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterBlockList invoke uid [%s] mac [%s] ", 
+				uid, wifiId));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterBlockList(uid, wifiId.toLowerCase());
+		}
+		catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC urouterBlockList failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterBlockList exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 	
 
 }

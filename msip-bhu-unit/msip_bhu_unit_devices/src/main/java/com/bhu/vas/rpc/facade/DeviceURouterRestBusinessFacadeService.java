@@ -14,7 +14,9 @@ import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -27,6 +29,7 @@ import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsHashService;
+import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
@@ -65,24 +68,22 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId){
-		WifiDevice device_entity = null;
-		WifiDeviceSetting entity = null;
 		try{
-			device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
+			WifiDevice device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
-			entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+
+			WifiDeviceSettingDTO dto = entity.getInnerModel();
+			URouterEnterVTO vto = new URouterEnterVTO();
+			if(!StringUtils.isEmpty(dto.getPower())){
+				vto.setPower(Integer.parseInt(dto.getPower()));
+			}
+			vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
+			vto.setWd_date_rx_rate(device_entity.getData_rx_rate());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
-		
-		WifiDeviceSettingDTO dto = entity.getInnerModel();
-		URouterEnterVTO vto = new URouterEnterVTO();
-		if(!StringUtils.isEmpty(dto.getPower())){
-			vto.setPower(Integer.parseInt(dto.getPower()));
-		}
-		vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
-		vto.setWd_date_rx_rate(device_entity.getData_rx_rate());
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	
 	public static final int HDList_Online_Status = 1;//获取在线终端列表
@@ -98,56 +99,45 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<List<URouterHdVTO>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
 		try{
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+		
+			List<URouterHdVTO> vtos = null;
+			Set<Tuple> presents = null;
+			switch(status){
+				case HDList_Online_Status:
+					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
+					break;
+				case HDList_Offline_Status:
+					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, start, size);
+					break;
+				default:
+					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
+			}
+	
+			if(!presents.isEmpty()){
+				List<WifiHandsetDeviceMarkPK> mark_pks = new ArrayList<WifiHandsetDeviceMarkPK>();
+				for(Tuple tuple : presents){
+					mark_pks.add(new WifiHandsetDeviceMarkPK(wifiId, tuple.getElement()));
+				}
+				List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
+				if(!mark_entitys.isEmpty()){
+					vtos = new ArrayList<URouterHdVTO>();
+					int cursor = 0;
+					WifiHandsetDeviceMark mark_entity = null;
+					for(Tuple tuple : presents){
+						mark_entity = mark_entitys.get(cursor);
+						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, mark_entity);
+						vtos.add(vto);
+						cursor++;
+					}
+					return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+				}
+			}
+			vtos = Collections.emptyList();
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
-		
-		List<URouterHdVTO> vtos = null;
-		Set<Tuple> presents = null;
-		switch(status){
-			case HDList_Online_Status:
-				presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
-				break;
-			case HDList_Offline_Status:
-				presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, start, size);
-				break;
-			default:
-				presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
-		}
-
-		if(!presents.isEmpty()){
-			List<WifiHandsetDeviceMarkPK> mark_pks = new ArrayList<WifiHandsetDeviceMarkPK>();
-			for(Tuple tuple : presents){
-				mark_pks.add(new WifiHandsetDeviceMarkPK(wifiId, tuple.getElement()));
-			}
-			List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
-			if(!mark_entitys.isEmpty()){
-				vtos = new ArrayList<URouterHdVTO>();
-				int cursor = 0;
-				WifiHandsetDeviceMark mark_entity = null;
-				for(Tuple tuple : presents){
-					URouterHdVTO vto = new URouterHdVTO();
-					vto.setHd_mac(tuple.getElement());
-					vto.setOnline(WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore()));
-					mark_entity = mark_entitys.get(cursor);
-					if(mark_entity != null){
-						vto.setN(mark_entity.getHd_name());
-						//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
-						vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
-						vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_tx_limit()));
-						//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
-						vto.setTx_rate(mark_entity.getData_rx_rate());
-						//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
-						vto.setRx_rate(mark_entity.getData_tx_rate());
-					}
-					vtos.add(vto);
-					cursor++;
-				}
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
-			}
-		}
-		vtos = Collections.emptyList();
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
 	/**
@@ -162,23 +152,60 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId){
 		try{
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+		
+			URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
+			Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
+			if(rate_map == null){
+				//调用异步消息下发实时速率指令
+				deliverMessageService.sendDeviceRealtimeRateFetchActionMessage(wifiId);
+			}else{
+				//c:如果存在数据非ab 返回数据
+				if(!rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.WaitingMark)){
+					BeanUtils.copyProperties(rate_map, vto);
+				}
+			}
+			vto.setTs(System.currentTimeMillis());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
-		
-		URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
-		Map<String, String> rate_map = WifiDeviceRealtimeRateStatisticsHashService.getInstance().getRate(wifiId);
-		if(rate_map == null){
-			//调用异步消息下发实时速率指令
-			deliverMessageService.sendDeviceRealtimeRateFetchActionMessage(wifiId);
-		}else{
-			//c:如果存在数据非ab 返回数据
-			if(!rate_map.containsValue(WifiDeviceRealtimeRateStatisticsHashService.WaitingMark)){
-				BeanUtils.copyProperties(rate_map, vto);
+	}
+	
+	/**
+	 * 获取黑名单列表数据
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public RpcResponseDTO<List<URouterHdVTO>> urouterBlockList(Integer uid, String wifiId){
+		try{
+			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+			
+			List<URouterHdVTO> vtos = null;
+			
+			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+			WifiDeviceSettingDTO dto = entity.getInnerModel();
+			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(dto);
+			if(acl_dto != null){
+				List<String> block_hd_macs = acl_dto.getMacs();
+				List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
+				if(!mark_pks.isEmpty()){
+					vtos = new ArrayList<URouterHdVTO>();
+					List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, false, true);
+					int cursor = 0;
+					for(String block_hd_mac : block_hd_macs){
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor));
+						vtos.add(vto);
+						cursor++;
+					}
+				}
 			}
+
+			vtos = Collections.emptyList();
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
-		vto.setTs(System.currentTimeMillis());
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	
 }

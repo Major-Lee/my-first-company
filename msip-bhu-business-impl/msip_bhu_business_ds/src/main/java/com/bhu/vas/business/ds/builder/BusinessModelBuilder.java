@@ -1,6 +1,9 @@
 package com.bhu.vas.business.ds.builder;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -13,9 +16,13 @@ import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
+import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
@@ -159,6 +166,33 @@ public class BusinessModelBuilder {
 			vto.setIpgen(entity.isIpgen());
 		}
 		return vto;
+	}
+	
+	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, WifiHandsetDeviceMark mark_entity){
+		URouterHdVTO vto = new URouterHdVTO();
+		vto.setHd_mac(hd_mac);
+		vto.setOnline(online);
+		if(mark_entity != null){
+			vto.setN(mark_entity.getHd_name());
+			//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
+			vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+			vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_tx_limit()));
+			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
+			vto.setTx_rate(mark_entity.getData_rx_rate());
+			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
+			vto.setRx_rate(mark_entity.getData_tx_rate());
+		}
+		return vto;
+	}
+	
+	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
+		if(hd_macs == null || hd_macs.isEmpty()) return Collections.emptyList();
+		
+		List<WifiHandsetDeviceMarkPK> pks = new ArrayList<WifiHandsetDeviceMarkPK>();
+		for(String hd_mac : hd_macs){
+			pks.add(new WifiHandsetDeviceMarkPK(mac, hd_mac));
+		}
+		return pks;
 	}
 	
 }

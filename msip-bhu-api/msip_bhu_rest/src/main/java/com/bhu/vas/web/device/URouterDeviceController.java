@@ -102,5 +102,27 @@ public class URouterDeviceController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
 		}
 	}
+	/**
+	 * 获取设备黑名单列表
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/block_list",method={RequestMethod.GET,RequestMethod.POST})
+	public void block_list(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterRealtimeRateVTO> rpcResponse = deviceURouterRestRpcService.urouterRealtimeRate(uid, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
 	
 }
