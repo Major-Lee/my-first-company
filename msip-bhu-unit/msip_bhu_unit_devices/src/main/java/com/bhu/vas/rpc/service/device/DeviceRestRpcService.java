@@ -155,10 +155,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize){
+	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize){
 		logger.info(String.format("DeviceRestRPC fetchHDevicesOnline invoke wifiId [%s] pageNo [%s] pageSize [%s]", wifiId, pageNo, pageSize));
 		try{
-			return deviceRestBusinessFacadeService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+			return deviceRestBusinessFacadeService.fetchHDevices(wifiId, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchHDevicesOnline exception exmsg[%s]",ex.getMessage()), ex);

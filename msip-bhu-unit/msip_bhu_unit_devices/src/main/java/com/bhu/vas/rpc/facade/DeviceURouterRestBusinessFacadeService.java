@@ -104,17 +104,20 @@ public class DeviceURouterRestBusinessFacadeService {
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
 
 			List<URouterHdVTO> vtos = null;
-			int total = 0;
+			long total = 0;
 			Set<Tuple> presents = null;
 			switch(status){
 				case HDList_Online_Status:
 					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
+					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId);
 					break;
 				case HDList_Offline_Status:
 					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, start, size);
+					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOfflineSize(wifiId);
 					break;
 				default:
 					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
+					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
 			}
 	
 			if(!presents.isEmpty()){

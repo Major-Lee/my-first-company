@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+
+import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
@@ -18,9 +21,11 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
 /**
@@ -185,6 +190,20 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
+	public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
+			HandsetDevice hd_entity){
+		HandsetDeviceVTO vto = new HandsetDeviceVTO();
+		vto.setWid(mac);
+		vto.setHid(hd_mac);
+		vto.setOl(online ? 1 : 0);
+		if(hd_entity != null){
+			if(mac.equals(hd_entity.getLast_wifi_id())){
+				vto.setTs(hd_entity.getLast_login_at().getTime());
+			}
+		}
+		return vto;
+	}
+	
 	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
 		if(hd_macs == null || hd_macs.isEmpty()) return Collections.emptyList();
 		
@@ -193,6 +212,26 @@ public class BusinessModelBuilder {
 			pks.add(new WifiHandsetDeviceMarkPK(mac, hd_mac));
 		}
 		return pks;
+	}
+	
+	public static List<String> toWifiDeviceIds(List<WifiDeviceSearchDTO> search_dtos){
+		if(search_dtos == null || search_dtos.isEmpty()) return Collections.emptyList();
+		
+		List<String> ids = new ArrayList<String>();
+		for(WifiDeviceSearchDTO search_dto : search_dtos){
+			ids.add(search_dto.getId());
+		}
+		return ids;
+	}
+	
+	public static List<String> toHandsetDeviceIds(Set<Tuple> tupes){
+		if(tupes == null || tupes.isEmpty()) return Collections.emptyList();
+		
+		List<String> ids = new ArrayList<String>();
+		for(Tuple tuple : tupes){
+			ids.add(tuple.getElement());
+		}
+		return ids;
 	}
 	
 }

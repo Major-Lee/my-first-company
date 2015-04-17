@@ -141,7 +141,7 @@ public class DeviceController extends BaseController{
 	}
 	
 	/**
-	 * 根据wifi设备的id获取在线移动设备列表
+	 * 根据wifi设备的id获取移动设备列表
 	 * @param request
 	 * @param response
 	 * @param wifiId
@@ -149,15 +149,15 @@ public class DeviceController extends BaseController{
 	 * @param pageSize
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_handsetdevices_online",method={RequestMethod.GET,RequestMethod.POST})
-	public void fetch_handsetdevices_online(
+	@RequestMapping(value="/fetch_handsetdevices",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_handsetdevices(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true, value = "wid") String wifiId,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
-		TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+		TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 	
