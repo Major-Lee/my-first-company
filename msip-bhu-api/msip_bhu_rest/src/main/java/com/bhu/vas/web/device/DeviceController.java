@@ -1,6 +1,5 @@
 package com.bhu.vas.web.device;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -167,13 +165,13 @@ public class DeviceController extends BaseController{
 	 * @param request
 	 * @param response
 	 */
-	@ResponseBody()
-	@RequestMapping(value="/fetch_geo_map",method={RequestMethod.GET,RequestMethod.POST})
-	public void fetch_geo_map(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		
-		Collection<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
-		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
-	}
+//	@ResponseBody()
+//	@RequestMapping(value="/fetch_geo_map",method={RequestMethod.GET,RequestMethod.POST})
+//	public void fetch_geo_map(
+//			HttpServletRequest request,
+//			HttpServletResponse response) {
+//		
+//		Collection<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
+//		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+//	}
 }
