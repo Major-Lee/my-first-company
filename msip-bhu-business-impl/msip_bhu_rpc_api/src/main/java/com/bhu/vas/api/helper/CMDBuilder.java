@@ -57,7 +57,7 @@ public class CMDBuilder {
 		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
@@ -75,7 +75,7 @@ public class CMDBuilder {
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		
 		return String.format(OperationCMD.QueryDeviceLocationNotify.getCmdtpl(),//query_device_location_step2_cmd_template,
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static List<String> builderDeviceTerminalsQueryWithAutoTaskid(String wifi_mac,List<String> interfaces){
@@ -99,9 +99,9 @@ public class CMDBuilder {
 		return null;
 	}
 	
-	public static String builderCMDSerial(String opt, int taskid){
+	public static String builderCMDSerial(String opt, String taskid_format){
 		StringBuffer serial = new StringBuffer();
-		serial.append(opt).append(taskid);
+		serial.append(opt).append(taskid_format);
 		return serial.toString();
 	}
 	

@@ -21,7 +21,7 @@ public enum OperationCMD {
 			
 	//1. 查询wifi地理位置 等待设备通知结果
 	QueryDeviceLocationNotify("03","查询设备地理位置notify","",
-			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  __request_serial=\"%s\"/></cmd>"),
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
 			
 	QueryDeviceSetting("10","查询设备配置","",
 			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.mod.basic.wan,dev.sys.users\"/></query>"),
@@ -34,7 +34,7 @@ public enum OperationCMD {
 	//cmd="wlanstatus" interface="wlan0"
 	QueryDeviceTerminals("11","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" interface=\"%s\"/></cmd>"),
 
-	QueryDeviceSpeedNotify("12","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"30\" __notify=\"true\"  __request_serial=\"%s\" url=\"http://mirrors.hust.edu.cn/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz\"/></cmd>"),
+	QueryDeviceSpeedNotify("12","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"30\" __notify=\"true\"  serial=\"%s\" url=\"http://mirrors.hust.edu.cn/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz\"/></cmd>"),
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;

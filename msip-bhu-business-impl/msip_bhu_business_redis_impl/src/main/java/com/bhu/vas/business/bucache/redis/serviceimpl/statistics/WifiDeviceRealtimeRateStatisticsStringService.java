@@ -136,6 +136,10 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	public void addPeak(String mac, String rx_peak_rate){
 		super.set(generatePeakKey(mac), rx_peak_rate);
 	}
+	
+	public String getPeak(String mac){
+		return super.get(generatePeakKey(mac));
+	}
 
 	/**
 	 * 获取所有数据
@@ -146,6 +150,7 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 * 		2: last_tx_rate
 	 * 		3: last_rx_rate
 	 * 		4: waiting
+	 * 		5：peak
 	 */
 	public List<String> getRate(String mac){
 		String[] keys = generateAllKeys(mac);

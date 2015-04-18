@@ -196,10 +196,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					String mac = parserHeader.getMac();
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, mac, taskid);
+						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
 					}
 					else if(OperationCMD.QueryDeviceSpeedNotify.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, mac, taskid);
+						deviceBusinessFacadeService.taskQueryDeviceSpeedNotify(ctx, doc, serialDto, mac, taskid);
 					}
 					//2:任务callback
 					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
