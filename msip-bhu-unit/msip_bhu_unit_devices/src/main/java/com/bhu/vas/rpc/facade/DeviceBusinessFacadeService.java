@@ -391,6 +391,31 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
+	 * 以设备notify的方式获取地理位置
+	 * @param ctx
+	 * @param doc
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceLocationNotify(String ctx, Document doc, String wifiId, int taskid){
+		LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
+		if(locationDto != null && locationDto.validate()){
+			deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
+		}
+	}
+	
+	/**
+	 * 以设备notify的方式获取网速
+	 * @param ctx
+	 * @param doc
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceSpeedNotify(String ctx, Document doc, String wifiId, int taskid){
+
+	}
+	
+	/**
 	 * 获取wifi设备的当前状态任务响应处理 (比如cpu,内存利用率)
 	 * 1:记录wifi设备的当前状态数据
 	 * 2:任务callback

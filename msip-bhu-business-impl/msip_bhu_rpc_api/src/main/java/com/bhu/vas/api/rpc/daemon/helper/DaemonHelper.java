@@ -12,10 +12,11 @@ public class DaemonHelper {
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
 		//获取设备测速
-		payloads.add(CMDBuilder.builderDeviceSpeedQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
+		payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		//获取地理位置
 		//设备上行首先发送查询地理位置指令
-		payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
+		//payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
+		payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
 		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}

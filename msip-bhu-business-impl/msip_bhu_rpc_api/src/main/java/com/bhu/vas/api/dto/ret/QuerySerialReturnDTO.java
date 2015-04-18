@@ -8,6 +8,8 @@ public class QuerySerialReturnDTO implements Serializable{
 	private String serial;
 	private String status;
 	private String index;
+	//设备网速
+	private String rate;
 	
 	public String getCmd() {
 		return cmd;
@@ -32,6 +34,12 @@ public class QuerySerialReturnDTO implements Serializable{
 	}
 	public void setIndex(String index) {
 		this.index = index;
+	}
+	public String getRate() {
+		return rate;
+	}
+	public void setRate(String rate) {
+		this.rate = rate;
 	}
 	
 //	public boolean isDone(){
