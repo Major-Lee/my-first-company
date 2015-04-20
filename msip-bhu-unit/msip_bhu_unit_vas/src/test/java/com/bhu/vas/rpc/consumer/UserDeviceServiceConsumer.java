@@ -82,11 +82,10 @@ public class UserDeviceServiceConsumer {
 		//validate登录
 		IUserDeviceRpcService userDeviceRpcService = (IUserDeviceRpcService)context.getBean("userDeviceRpcService");
 
-		RpcResponseDTO rpcResponseDTO = userDeviceRpcService.bindDevice("62:68:75:02:00:06", 10086, "Google");
-		System.out.println(userDeviceRpcService.unBindDevice("62:68:75:02:00:06",1234));
-
+		//RpcResponseDTO rpcResponseDTO = userDeviceRpcService.bindDevice("62:68:75:02:00:06", 10086, "Google");
+		System.out.println(userDeviceRpcService.unBindDevice("62:68:75:02:ff:05",1234).getErrorCode());
+		System.out.println(userDeviceRpcService.validateDeviceStatus("62:68:75:02:ff:05").getPayload().getStatus());
 		//RpcResponseDTO<List<UserDeviceDTO>> ret =  userDeviceRpcService.fetchBindDevices(123);
-
 		//System.out.println(ret);
 		Thread.currentThread().join();
 	}

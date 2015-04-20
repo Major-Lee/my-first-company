@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class UserUnitFacadeService {
 	private UserCaptchaCodeService userCaptchaCodeService;
 	@Resource
 	private DeliverMessageService deliverMessageService;
+	@Resource
+	private UserDeviceService userDeviceService;
+
 	
 	/**
 	 * 检查手机号是否注册过
@@ -176,7 +180,8 @@ public class UserUnitFacadeService {
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
-				uToken.getAccess_token(), uToken.getRefresh_token(), false);
+				uToken.getAccess_token(), uToken.getRefresh_token(), false,
+				userDeviceService.fetchBindDevicesWithLimit(user.getId(), 3));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
@@ -263,7 +268,8 @@ public class UserUnitFacadeService {
 		}
 		
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), countrycode, acc, user.getNick(), 
-				uToken.getAccess_token(), uToken.getRefresh_token(), reg);
+				uToken.getAccess_token(), uToken.getRefresh_token(), reg,
+				userDeviceService.fetchBindDevicesWithLimit(uid,3));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());

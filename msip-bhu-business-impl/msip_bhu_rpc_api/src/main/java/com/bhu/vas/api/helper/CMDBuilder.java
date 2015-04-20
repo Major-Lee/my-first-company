@@ -53,9 +53,11 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSetting.getNo(),String.format(SuffixTemplete,taskid));
 	}
 	
-	public static String builderDeviceSpeedQuery(String wifi_mac,int taskid){
-		return String.format(OperationCMD.QueryDeviceSpeed.getCmdtpl(),//query_device_flow_cmd_template, 
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSpeed.getNo(),String.format(SuffixTemplete,taskid));
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,int taskid){
+		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
@@ -68,6 +70,13 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),String.format(SuffixTemplete,taskid),serialno);
 	}
 	
+	public static String builderDeviceLocationNotifyQuery(String wifi_mac,int taskid){
+		String opt = OperationCMD.QueryDeviceLocationNotify.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		
+		return String.format(OperationCMD.QueryDeviceLocationNotify.getCmdtpl(),//query_device_location_step2_cmd_template,
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
+	}
 	
 	public static List<String> builderDeviceTerminalsQueryWithAutoTaskid(String wifi_mac,List<String> interfaces){
 		if(interfaces == null || interfaces.isEmpty()){
@@ -88,6 +97,12 @@ public class CMDBuilder {
 			return String.format(operationCMDFromNo.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));//,params);
 		}
 		return null;
+	}
+	
+	public static String builderCMDSerial(String opt, String taskid_format){
+		StringBuffer serial = new StringBuffer();
+		serial.append(opt).append(taskid_format);
+		return serial.toString();
 	}
 	
 	//任务号分段：

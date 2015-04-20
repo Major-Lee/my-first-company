@@ -89,6 +89,10 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zcount(generateKey(wifiId), 0, (OnlineBaseScore-1));
 	}
 	
+	public Long presentSize(String wifiId){
+		return super.zcard(generateKey(wifiId));
+	}
+	
 	public long addOnlinePresent(String wifiId, String handsetId, double rx_rate){
 		return super.zadd(generateKey(wifiId), OnlineBaseScore+rx_rate, handsetId);
 	}

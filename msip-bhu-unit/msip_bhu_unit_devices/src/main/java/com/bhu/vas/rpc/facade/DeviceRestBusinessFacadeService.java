@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
+import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.GeoMapDeviceVTO;
 import com.bhu.vas.api.vto.GeoMapVTO;
@@ -34,6 +35,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCount
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
+import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
@@ -65,6 +67,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private HandsetDeviceService handsetDeviceService;
 	
 	@Resource
 	private WifiDeviceSearchService wifiDeviceSearchService;
@@ -320,35 +325,40 @@ public class DeviceRestBusinessFacadeService {
 		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
 	}
 	/**
-	 * 根据wifi设备的id获取在线的移动设备列表
+	 * 根据wifi设备的id获取移动设备列表
+	 * 如果终端的最后接入设备不是此设备 则不处理接入时间等数据
 	 * @param wifiId
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize){
+	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize){
 		List<HandsetDeviceVTO> vtos = null;
 		
-		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId);
-		if(total == 0){
-			vtos = Collections.emptyList();
-		}else{
-			Set<Tuple> hdevicesList = WifiDeviceHandsetPresentSortedSetService.getInstance().
-					fetchOnlinePresentWithScores(wifiId, (pageNo*pageSize)-pageSize, pageSize);
-			if(hdevicesList.isEmpty()){
-				vtos = Collections.emptyList();
-			}else{
+		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
+		if(total > 0){
+			Set<Tuple> tuples = WifiDeviceHandsetPresentSortedSetService.getInstance().
+					fetchPresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
+			
+			List<String> hd_macs = BusinessModelBuilder.toHandsetDeviceIds(tuples);
+			if(!hd_macs.isEmpty()){
 				vtos = new ArrayList<HandsetDeviceVTO>();
+				
+				List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				HandsetDeviceVTO vto = null;
-				for(Tuple tuple : hdevicesList){
-					vto = new HandsetDeviceVTO();
-					vto.setWid(wifiId);
-					//vto.setTs(new Double(tuple.getScore()).longValue());
-					vto.setHid(tuple.getElement());
+				int cursor = 0;
+				for(Tuple tuple : tuples){
+					boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+					vto = BusinessModelBuilder.toHandsetDeviceVTO(wifiId, tuple.getElement(), online, hd_entitys.get(cursor));
 					vtos.add(vto);
+					cursor++;
 				}
 			}
 		}
+		
+		if(vtos == null)
+			vtos = Collections.emptyList();
+		
 		return new CommonPage<HandsetDeviceVTO>(pageNo, pageSize, (int)total, vtos);
 	}
 	

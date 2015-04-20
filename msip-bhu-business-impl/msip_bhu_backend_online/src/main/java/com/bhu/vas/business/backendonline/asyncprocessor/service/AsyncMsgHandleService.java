@@ -21,7 +21,6 @@ import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
-import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -41,13 +40,14 @@ import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
@@ -633,11 +633,19 @@ public class AsyncMsgHandleService {
 //
 //	}
 	
+	public void wifiDeviceRealtimeRateFetch(String message){
+		logger.info(String.format("wifiDeviceRealtimeRateFetch message[%s]", message));
+		WifiRealtimeRateFetchDTO dto = JsonHelper.getDTO(message, WifiRealtimeRateFetchDTO.class);
+		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
+		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addWaiting(dto.getMac());
+		logger.info(String.format("wifiDeviceRealtimeRateFetch message[%s] successful", message));
+	}
+	
 	/**
 	 * 用户登录after
 	 * 1：下发指令获取设备的终端列表
-	 * TODO:2：下发指令获取设备的实时速率
-	 * TODO:3: 下发指令获取设备的网速
+	 * TODO:2: 下发指令获取设备的网速
 	 * @param message
 	 */
 	public void userSignedon(String message){

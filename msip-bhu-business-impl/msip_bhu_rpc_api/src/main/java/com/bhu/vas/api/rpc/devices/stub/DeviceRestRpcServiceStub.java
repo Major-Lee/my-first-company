@@ -79,13 +79,13 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 	
 	@Override
-	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize) {
+	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize) {
 		if(StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		if(pageNo < 0 || pageSize < 0) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceRestRpcService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+		return deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
 	}
 	
 	@Override

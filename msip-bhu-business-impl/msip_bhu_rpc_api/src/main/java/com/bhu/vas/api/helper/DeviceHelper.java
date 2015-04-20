@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -34,6 +35,23 @@ public class DeviceHelper {
 		for(WifiDeviceSettingRateControlDTO rcDto : rateControls){
 			if(mac.endsWith(rcDto.getMac())){
 				return rcDto;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 匹配设备的黑名单的block配置列表
+	 * @param dto
+	 * @return
+	 */
+	public static WifiDeviceSettingAclDTO matchDefaultAcl(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		List<WifiDeviceSettingAclDTO> acls = dto.getAcls();
+		if(acls != null && !acls.isEmpty()){
+			int index = acls.indexOf(new WifiDeviceSettingAclDTO(WifiDeviceSettingDTO.Default_AclName));
+			if(index != -1){
+				return acls.get(index);
 			}
 		}
 		return null;

@@ -1,6 +1,6 @@
 package com.bhu.vas.web.device;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -72,7 +71,7 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		RpcResponseDTO<List<URouterHdVTO>> rpcResponse = deviceURouterRestRpcService.urouterHdList(uid, mac, status, start, size);
+		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterHdList(uid, mac, status, start, size);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
@@ -96,6 +95,30 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac) {
 		
 		RpcResponseDTO<URouterRealtimeRateVTO> rpcResponse = deviceURouterRestRpcService.urouterRealtimeRate(uid, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	/**
+	 * 获取设备黑名单列表
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/block_list",method={RequestMethod.GET,RequestMethod.POST})
+	public void block_list(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="0", value = "st") int start,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
+		
+		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterBlockList(uid, mac, start, size);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

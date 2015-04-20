@@ -1,6 +1,5 @@
 package com.bhu.vas.web.device;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -141,7 +139,7 @@ public class DeviceController extends BaseController{
 	}
 	
 	/**
-	 * 根据wifi设备的id获取在线移动设备列表
+	 * 根据wifi设备的id获取移动设备列表
 	 * @param request
 	 * @param response
 	 * @param wifiId
@@ -149,15 +147,15 @@ public class DeviceController extends BaseController{
 	 * @param pageSize
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_handsetdevices_online",method={RequestMethod.GET,RequestMethod.POST})
-	public void fetch_handsetdevices_online(
+	@RequestMapping(value="/fetch_handsetdevices",method={RequestMethod.GET,RequestMethod.POST})
+	public void fetch_handsetdevices(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true, value = "wid") String wifiId,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
-		TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+		TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 	
@@ -167,13 +165,13 @@ public class DeviceController extends BaseController{
 	 * @param request
 	 * @param response
 	 */
-	@ResponseBody()
-	@RequestMapping(value="/fetch_geo_map",method={RequestMethod.GET,RequestMethod.POST})
-	public void fetch_geo_map(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		
-		Collection<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
-		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
-	}
+//	@ResponseBody()
+//	@RequestMapping(value="/fetch_geo_map",method={RequestMethod.GET,RequestMethod.POST})
+//	public void fetch_geo_map(
+//			HttpServletRequest request,
+//			HttpServletResponse response) {
+//		
+//		Collection<GeoMapVTO> result = deviceRestRpcService.fetchGeoMap();
+//		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+//	}
 }

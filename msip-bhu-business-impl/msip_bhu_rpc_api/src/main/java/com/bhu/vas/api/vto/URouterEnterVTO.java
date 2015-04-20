@@ -10,17 +10,25 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class URouterEnterVTO implements Serializable{
 	//设备下行网速
-	private String wd_date_rx_rate;
+	private String data_rx_rate_peak;
+	//设备实时下行速率
+	private String data_rx_rate;
 	//设备信号强度
 	private int power;
 	//在线终端数量
 	private long ohd_count;
 	
-	public String getWd_date_rx_rate() {
-		return wd_date_rx_rate;
+	public String getData_rx_rate_peak() {
+		return data_rx_rate_peak;
 	}
-	public void setWd_date_rx_rate(String wd_date_rx_rate) {
-		this.wd_date_rx_rate = wd_date_rx_rate;
+	public void setData_rx_rate_peak(String data_rx_rate_peak) {
+		this.data_rx_rate_peak = data_rx_rate_peak;
+	}
+	public String getData_rx_rate() {
+		return data_rx_rate;
+	}
+	public void setData_rx_rate(String data_rx_rate) {
+		this.data_rx_rate = data_rx_rate;
 	}
 	public long getOhd_count() {
 		return ohd_count;

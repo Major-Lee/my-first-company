@@ -3,15 +3,19 @@ package com.bhu.vas.rpc.facade;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +31,7 @@ public class UserDeviceFacadeService {
 
         UserDevice userDevice = new UserDevice();
         userDevice.setId(new UserDevicePK(mac, uid));
+        userDevice.setCreated_at(new Date());
         userDevice.setDevice_name(deviceName);
         userDeviceService.insert(userDevice);
         UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
@@ -69,11 +74,8 @@ public class UserDeviceFacadeService {
     }
 
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("uid", uid);
-        mc.setPageNumber(1);
-        mc.setPageSize(3);
-        List<UserDevice> bindDevices = userDeviceService.findModelByModelCriteria(mc);
+
+        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
 
         List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
 
@@ -94,4 +96,6 @@ public class UserDeviceFacadeService {
         mc.createCriteria().andColumnEqualTo("uid", uid);
         return userDeviceService.countByModelCriteria(mc);
     }
+
+
 }

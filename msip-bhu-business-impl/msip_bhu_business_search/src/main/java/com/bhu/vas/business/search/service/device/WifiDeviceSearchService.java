@@ -200,7 +200,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 
 		FilterBuilder filter = null;
 		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
-				devicetype, region, excepts)){
+				devicetype, region, excepts) || online != null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(!StringUtils.isEmpty(mac)){
 				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));

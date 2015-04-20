@@ -33,6 +33,7 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
@@ -388,6 +389,39 @@ public class DeviceBusinessFacadeService {
 		}
 		//2:任务callback
 		doTaskCallback(taskid, serialDto.getStatus(),response);
+	}
+	
+	/**
+	 * 以设备notify的方式获取地理位置
+	 * @param ctx
+	 * @param doc
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceLocationNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
+			String wifiId, int taskid){
+		LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
+		if(locationDto != null && locationDto.validate()){
+			deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
+		}
+	}
+	
+	/**
+	 * 以设备notify的方式获取网速
+	 * @param ctx
+	 * @param doc
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceSpeedNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
+			String wifiId, int taskid){
+		String rate = serialDto.getRate();
+		if(StringUtils.isEmpty(rate)) return;
+		
+		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
+		if(StringUtils.isEmpty(peak_rate) || rate.compareTo(peak_rate) > 0){
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
+		}
 	}
 	
 	/**

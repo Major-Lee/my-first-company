@@ -7,6 +7,8 @@ import java.util.List;
  *
  */
 public class WifiDeviceSettingDTO {
+	//获取统一的block黑名单列表的名称
+	public static final String Default_AclName = "block";
 	//信号强度
 	private String power;
 	//上网方式
