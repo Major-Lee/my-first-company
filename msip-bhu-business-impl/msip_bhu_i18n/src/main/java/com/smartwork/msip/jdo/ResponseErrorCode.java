@@ -127,6 +127,7 @@ public enum ResponseErrorCode {
 	DEVICE_OWNER_REACHLIMIT("343","device.owner.reachlimit"),
 	DEVICE_ALREADY_BEBINDED_OTHER("344","device.already.bebinded.other"),
 	DEVICE_NOT_BINDED("345","device.not.binded"),
+	DEVICE_NOT_UROOTER("346", "device.not.urooter"),
 	
 	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
 	USER_PERSONAL_INVALID("316","user.personal.invalid"),

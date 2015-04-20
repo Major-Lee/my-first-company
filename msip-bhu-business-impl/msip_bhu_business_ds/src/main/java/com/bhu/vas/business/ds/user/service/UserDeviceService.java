@@ -30,4 +30,5 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         mc.setPageSize(limit);
         return findModelByModelCriteria(mc);
     }
+
 }

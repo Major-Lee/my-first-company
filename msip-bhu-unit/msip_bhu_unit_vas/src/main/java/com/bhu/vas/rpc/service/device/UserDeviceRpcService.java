@@ -8,9 +8,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
-import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,10 +20,7 @@ import java.util.List;
 @Service("userDeviceRpcService")
 public class UserDeviceRpcService implements IUserDeviceRpcService {
 
-    private final static int WIFI_DEVICE_STATUS_BINDED = 3;
-    private final static int WIFI_DEVICE_STATUS_UNBINDED = 4;
     private final static int WIFI_DEVICE_BIND_LIMIT_NUM = 3;
-
 
     @Resource
     private UserDeviceFacadeService userDeviceFacadeService;
@@ -37,12 +32,14 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
         int retStatus = validateDeviceStatusIsOnlineAndBinded(mac);
         ResponseErrorCode responseErrorCode = null;
-        if (retStatus < 4) {
-            if (retStatus == 0) {
+        if (retStatus < WIFI_DEVICE_STATUS_UNBINDED) {
+            if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_EXIST) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_EXIST;
-            } else if (retStatus == 1) {
+            }else if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
+                responseErrorCode = ResponseErrorCode.DEVICE_NOT_UROOTER;
+            }else if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_ONLINE;
-            } else if (retStatus == 3) {
+            } else if (retStatus == WIFI_DEVICE_STATUS_BINDED) {
                 responseErrorCode = ResponseErrorCode.DEVICE_ALREADY_BEBINDED;
             }
             return RpcResponseDTOBuilder.builderErrorRpcResponse(responseErrorCode);
@@ -63,7 +60,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public int validateDeviceStatusIsOnlineAndBinded(String mac) {
         int retStatus = deviceFacadeService.getWifiDeviceOnlineStatus(mac);
-        if (retStatus == 2) {
+        if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             if (userDeviceFacadeService.isBinded(mac)) {
                 retStatus = WIFI_DEVICE_STATUS_BINDED;
             } else {
@@ -82,19 +79,23 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     public RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac) {
         UserDeviceStatusDTO userDeviceStatusDTO = new UserDeviceStatusDTO();
         int deviceStatus = validateDeviceStatusIsOnlineAndBinded(mac);
-        if (deviceStatus == 0) {
+        if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_EXIST) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_DATA_NOT_EXIST.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
                     ResponseErrorCode.DEVICE_DATA_NOT_EXIST.i18n()));
-        } else if (deviceStatus == 1) {
+        } else if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
                     ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.i18n()));
-        } else if (deviceStatus == 3) {
+        } else if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_UROOTER.code());
+            userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
+                    ResponseErrorCode.DEVICE_NOT_UROOTER.i18n()));
+        } else if (deviceStatus == WIFI_DEVICE_STATUS_BINDED) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_ALREADY_BEBINDED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
                     ResponseErrorCode.DEVICE_ALREADY_BEBINDED.i18n()));
-        } else if (deviceStatus == 4) {
+        } else if (deviceStatus == WIFI_DEVICE_STATUS_UNBINDED) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_BINDED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
                     ResponseErrorCode.DEVICE_NOT_BINDED.i18n()));
