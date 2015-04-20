@@ -257,8 +257,7 @@ public class DeviceFacadeService {
 
 		if (wifiDevice == null) {
 			return WIFI_DEVICE_STATUS_NOT_EXIST;
-		} else if (wifiDevice.getOrig_model() == null ||
-				!WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model()) ) {
+		} else if (!isURooterDevice(mac)) {
 			return WIFI_DEVICE_STATUS_NOT_UROOTER;
 		} else if (wifiDevice.isOnline()){
 			return WIFI_DEVICE_STATUS_ONLINE;
@@ -272,7 +271,7 @@ public class DeviceFacadeService {
 	 * @param mac
 	 * @return
 	 */
-	public boolean isRooterDevice(String mac) {
+	public boolean isURooterDevice(String mac) {
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 		return wifiDevice.getOrig_model() !=null &&
 				WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model());
