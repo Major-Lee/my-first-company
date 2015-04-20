@@ -9,8 +9,10 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class URouterEnterVTO implements Serializable{
-	//设备下行网速
-	private String data_rx_rate_peak;
+	//设备网速峰值
+	private String rate_peak;
+	//设备实时上行速率
+	private String data_tx_rate;
 	//设备实时下行速率
 	private String data_rx_rate;
 	//设备信号强度
@@ -18,11 +20,18 @@ public class URouterEnterVTO implements Serializable{
 	//在线终端数量
 	private long ohd_count;
 	
-	public String getData_rx_rate_peak() {
-		return data_rx_rate_peak;
+
+	public String getRate_peak() {
+		return rate_peak;
 	}
-	public void setData_rx_rate_peak(String data_rx_rate_peak) {
-		this.data_rx_rate_peak = data_rx_rate_peak;
+	public void setRate_peak(String rate_peak) {
+		this.rate_peak = rate_peak;
+	}
+	public String getData_tx_rate() {
+		return data_tx_rate;
+	}
+	public void setData_tx_rate(String data_tx_rate) {
+		this.data_tx_rate = data_tx_rate;
 	}
 	public String getData_rx_rate() {
 		return data_rx_rate;
