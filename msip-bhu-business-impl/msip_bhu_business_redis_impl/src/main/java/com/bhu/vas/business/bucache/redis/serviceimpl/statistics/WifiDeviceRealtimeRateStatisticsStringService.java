@@ -117,8 +117,8 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	/**
 	 * 设置实时上下行速率和最后一次的实时上下行速率
 	 * @param mac
-	 * @param tx_rate 上行速率
-	 * @param rx_rate 下行速率
+	 * @param tx_rate 设备的上行速率
+	 * @param rx_rate 设备的下行速率
 	 */
 	public void addRate(String mac, String tx_rate, String rx_rate){
 		String[] keys = generateAllKeysWithoutWaiting(mac);

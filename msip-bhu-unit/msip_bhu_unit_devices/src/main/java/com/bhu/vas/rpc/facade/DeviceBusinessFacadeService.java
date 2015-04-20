@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.QueryTerminalSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -421,6 +422,22 @@ public class DeviceBusinessFacadeService {
 		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
 		if(StringUtils.isEmpty(peak_rate) || rate.compareTo(peak_rate) > 0){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
+		}
+	}
+	
+	/**
+	 * 以设备notify的方式获取设备的实时速率
+	 * @param ctx
+	 * @param doc
+	 * @param serialDto
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceRateNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
+			String wifiId, int taskid){
+		WifiDeviceRateDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceRate(doc);
+		if(dto != null){
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addRate(wifiId, dto.getTx_rate(), dto.getRx_rate());
 		}
 	}
 	

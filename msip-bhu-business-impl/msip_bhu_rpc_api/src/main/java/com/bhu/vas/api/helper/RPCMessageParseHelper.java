@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -195,6 +196,25 @@ public class RPCMessageParseHelper {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		}
 		return dtos;
+	}
+	
+	/***
+	 * 获取实时速率的解析xml
+	 * @param doc
+	 * @return
+	 */
+	public static WifiDeviceRateDTO generateDTOFromQueryDeviceRate(Document doc){
+		WifiDeviceRateDTO dto = null;
+		try{
+			Element element = Dom4jHelper.select(doc, "//SUB");
+			if(element != null){
+				return Dom4jHelper.fromElement(element, WifiDeviceRateDTO.class);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+		return dto;
 	}
 	
 	/**

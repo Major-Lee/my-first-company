@@ -642,6 +642,7 @@ public class AsyncMsgHandleService {
 		WifiRealtimeRateFetchDTO dto = JsonHelper.getDTO(message, WifiRealtimeRateFetchDTO.class);
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
 		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addWaiting(dto.getMac());
 		logger.info(String.format("wifiDeviceRealtimeRateFetch message[%s] successful", message));
 	}

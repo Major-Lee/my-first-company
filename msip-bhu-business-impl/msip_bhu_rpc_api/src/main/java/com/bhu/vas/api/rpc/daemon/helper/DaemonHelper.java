@@ -32,6 +32,7 @@ public class DaemonHelper {
 		//获取设备的终端列表
 		deviceTerminalsQuery(mac, vapnames, daemonRpcService);
 		//获取设备的实时速率
+		deviceRateQuery(mac, daemonRpcService);
 		
 		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}
@@ -45,5 +46,22 @@ public class DaemonHelper {
 			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
 			daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
 		}
+	}
+	//上报周期5秒一次
+	public static final int DeviceRateQuery_Period = 5;
+	//上报时长30分钟
+	public static final int DeviceRateQuery_Duration = 1800;
+	//wan口的实时速率
+	public static final String Wan_Interface_Name = "wan";
+	
+	public static void deviceRateQuery(String mac,IDaemonRpcService daemonRpcService){
+		deviceRateQuery(mac, Wan_Interface_Name, DeviceRateQuery_Period, DeviceRateQuery_Duration, daemonRpcService);
+	}
+	
+	public static void deviceRateQuery(String mac,String interface_name,int period, int duration, 
+			IDaemonRpcService daemonRpcService){
+		String cmd = CMDBuilder.builderDeviceRateNotifyQuery(mac, CMDBuilder.device_rate_taskid_fragment.getNextSequence(), 
+				interface_name, period, duration);
+		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 }
