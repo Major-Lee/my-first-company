@@ -64,11 +64,13 @@ public class UserDeviceController extends BaseController {
         }
         int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
         logger.debug("devicestatus==" + deviceStatus);
-        if (deviceStatus == 0) {
+        if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_EXIST));
-        } else if (deviceStatus == 1) {
+        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_UROOTER));
+        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE));
-        } else if (deviceStatus == 3) {
+        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED) {
             RpcResponseDTO<Boolean> userDeviceResult = userDeviceRpcService.unBindDevice(mac, uid);
             if (userDeviceResult.getPayload()) {
                 SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
@@ -76,7 +78,7 @@ public class UserDeviceController extends BaseController {
                 SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult.getErrorCode()));
             }
 
-        } else if (deviceStatus == 4) {
+        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
             //TODO(bluesand):未绑定过装备的时候，取消绑定
             SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
         }
@@ -91,21 +93,6 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
         }
-//        int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
-//        ResponseErrorCode responseErrorCode = null;
-//        if (deviceStatus < 4) {
-//            if (deviceStatus == 0) {
-//                responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_EXIST;
-//            } else if (deviceStatus == 1) {
-//                responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_ONLINE;
-//            } else if (deviceStatus == 3) {
-//                responseErrorCode = ResponseErrorCode.DEVICE_ALREADY_BEBINDED;
-//            }
-//            SpringMVCHelper.renderJson(response, ResponseError.embed(responseErrorCode));
-//            return;
-//        } else {
-//            SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
-//        }
         SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
     }
 

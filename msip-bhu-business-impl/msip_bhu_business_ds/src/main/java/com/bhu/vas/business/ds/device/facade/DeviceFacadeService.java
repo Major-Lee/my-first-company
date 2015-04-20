@@ -32,9 +32,18 @@ import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
 @Service
 public class DeviceFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
-	private final static int WIFI_DEVICE_STATUS_NOT_EXIST = 0;
-	private final static int WIFI_DEVICE_STATUS_NOT_ONLINE = 1;
-	private final static int WIFI_DEVICE_STATUS_ONLINE = 2;
+	/**
+	 * 存在多种混合状态
+	 * 100以上在线状态可以绑定
+	 * 100以下未绑定
+	 * @see com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService
+	 */
+	public final static int WIFI_DEVICE_STATUS_NOT_EXIST = 0;
+	public final static int WIFI_DEVICE_STATUS_NOT_UROOTER = 98;
+	public final static int WIFI_DEVICE_STATUS_NOT_ONLINE = 99;
+	public final static int WIFI_DEVICE_STATUS_ONLINE = 100;
+
+	private final static String WIFI_DEVICE_ORIGIN_MODEL = "Urouter";
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -238,20 +247,35 @@ public class DeviceFacadeService {
 	 * 获取设备在线状态.
 	 * @param mac 设备mac地址
 	 * @return
-	 * WIFI_DEVICE_STATUS_NOT_EXIST : 0 : 设备为空
-	 * WIFI_DEVICE_STATUS_NOT_ONLINE : 1 : 设备不在线
-	 * WIFI_DEVICE_STATUS_ONLINE : 2 : 设备在线
+	 * WIFI_DEVICE_STATUS_NOT_EXIST : 0 : 设备未接入
+	 * WIFI_DEVICE_STATUS_ONLINE : 100 : 设备在线
+	 * WIFI_DEVICE_STATUS_NOT_ONLINE : 99 : 设备不在线
+	 * WIFI_DEVICE_STATUS_NOT_UROOTER : 98 : 设备不是Urooter设备
 	 */
 	public int getWifiDeviceOnlineStatus(String mac) {
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 
 		if (wifiDevice == null) {
 			return WIFI_DEVICE_STATUS_NOT_EXIST;
+		} else if (wifiDevice.getOrig_model() == null ||
+				!WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model()) ) {
+			return WIFI_DEVICE_STATUS_NOT_UROOTER;
 		} else if (wifiDevice.isOnline()){
 			return WIFI_DEVICE_STATUS_ONLINE;
 		} else {
 			return WIFI_DEVICE_STATUS_NOT_ONLINE;
 		}
+	}
+
+	/**
+	 * 判断设备是否是URooter设备
+	 * @param mac
+	 * @return
+	 */
+	public boolean isRooterDevice(String mac) {
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		return wifiDevice.getOrig_model() !=null &&
+				WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model());
 	}
 
 	
