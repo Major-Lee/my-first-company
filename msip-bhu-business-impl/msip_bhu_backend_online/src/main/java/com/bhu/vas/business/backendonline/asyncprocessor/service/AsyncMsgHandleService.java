@@ -648,8 +648,8 @@ public class AsyncMsgHandleService {
 	
 	/**
 	 * 用户登录after
-	 * 1：下发指令获取设备的终端列表
-	 * TODO:2: 下发指令获取设备的网速
+	 * 根据用户管理的设备
+	 * 下发获取配置，获取设备测速，设备实时速率, 设备终端列表
 	 * @param message
 	 */
 	public void userSignedon(String message){
@@ -665,14 +665,21 @@ public class AsyncMsgHandleService {
 			List<WifiDeviceSetting> entitys = wifiDeviceSettingService.findByIds(macs);
 			for(WifiDeviceSetting entity : entitys){
 				WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
+				List<String> vapnames = null;
 				if(entity_dto != null){
-					//1：下发指令获取设备的终端列表
-					List<String> vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
-					DaemonHelper.deviceTerminalsQuery(entity.getId(), vapnames, daemonRpcService);
+					vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
 				}
+				afterUserSignedonThenCmdDown(entity.getId(), vapnames);
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
+	}
+	
+	//下发获取配置，获取设备测速，设备实时速率, 设备终端列表
+	public void afterUserSignedonThenCmdDown(String mac, List<String> vapnames){
+		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
+		DaemonHelper.afterUserSignedon(mac, vapnames, daemonRpcService);
+		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown message[%s] successful", mac));
 	}
 	
 	public void sendCaptchaCodeNotifyHandle(String message){
