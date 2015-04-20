@@ -71,6 +71,8 @@ public class WifiDevice extends BaseStringModel{
 	private String bdid;
 	//通过ip得到的坐标和地址
 	private boolean ipgen = false;
+	//设备运行时长
+	private String uptime;
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -358,6 +360,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setIpgen(boolean ipgen) {
 		this.ipgen = ipgen;
+	}
+
+	public String getUptime() {
+		return uptime;
+	}
+
+	public void setUptime(String uptime) {
+		this.uptime = uptime;
 	}
 	
 }

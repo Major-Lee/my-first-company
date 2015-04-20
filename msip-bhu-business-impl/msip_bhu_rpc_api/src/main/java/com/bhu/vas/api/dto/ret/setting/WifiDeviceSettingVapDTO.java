@@ -26,6 +26,8 @@ public class WifiDeviceSettingVapDTO {
 	private String acl_type;
 	//黑白名单名称
 	private String acl_name;
+	//是否开启访客网络
+	private String guest_en;
 	
 	public String getName() {
 		return name;
@@ -62,5 +64,11 @@ public class WifiDeviceSettingVapDTO {
 	}
 	public void setAcl_name(String acl_name) {
 		this.acl_name = acl_name;
+	}
+	public String getGuest_en() {
+		return guest_en;
+	}
+	public void setGuest_en(String guest_en) {
+		this.guest_en = guest_en;
 	}
 }

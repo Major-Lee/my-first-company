@@ -38,6 +38,7 @@
     <result property="formatted_address" column="formatted_address"/>
     <result property="bdid" column="bdid"/>
     <result property="ipgen" column="ipgen"/>
+    <result property="uptime" column="uptime"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -83,6 +84,7 @@
 	    	formatted_address,
 	    	bdid,
 	    	ipgen,
+	    	uptime,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -122,6 +124,7 @@
 	    	formatted_address,
 	    	bdid,
 	    	ipgen,
+	    	uptime,
 	    	last_reged_at,
 	    	created_at,
 	    	updated_at
@@ -162,6 +165,7 @@
 	    	#{formatted_address},
 	    	#{bdid},
 	    	#{ipgen},
+	    	#{uptime},
 	    	#{last_reged_at},
 	    	#{created_at},
 	    	#{updated_at}
@@ -200,6 +204,7 @@
 	    	formatted_address = #{formatted_address},
 	    	bdid = #{bdid},
 	    	ipgen = #{ipgen},
+	    	uptime = #{uptime},
 	    	last_reged_at = #{last_reged_at},
 	    	updated_at = #{updated_at}
 	</sql>

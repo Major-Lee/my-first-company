@@ -1,5 +1,6 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -268,30 +269,33 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s]", message));
 		
 		WifiDeviceOfflineDTO dto = JsonHelper.getDTO(message, WifiDeviceOfflineDTO.class);
-		//3:wifi上的移动设备基础信息表的在线状态更新
-		deviceFacadeService.allHandsetDoOfflines(dto.getMac());
-//		List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(dto.getMac());
-//		if(!handset_devices_online_entitys.isEmpty()){
-//			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
-//				handset_devices_online_entity.setOnline(false);
-//			}
-//			handsetDeviceService.updateAll(handset_devices_online_entitys);
-//		}
-		//4:wifi设备对应handset在线列表redis清除
-		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac());
-		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
-		
-		//5:统计增量 wifi设备的daily访问时长增量
-		if(dto.getLast_login_at() > 0){
-			long uptime = dto.getTs() - dto.getLast_login_at();
-			if(uptime > 0){
-				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
-						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
+		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
+		if(entity != null){
+			//3:wifi上的移动设备基础信息表的在线状态更新
+			deviceFacadeService.allHandsetDoOfflines(dto.getMac());
+			
+			//5:统计增量 wifi设备的daily访问时长增量
+			if(dto.getLast_login_at() > 0){
+				long uptime = dto.getTs() - dto.getLast_login_at();
+				if(uptime > 0){
+					DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+							DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
+					
+					String entity_uptime = entity.getUptime();
+					BigInteger bi = new BigInteger(String.valueOf(uptime));
+					BigInteger entity_bi = null;
+					if(!StringUtils.isEmpty(entity_uptime)){
+						entity_bi = new BigInteger(entity_uptime);
+						bi = bi.add(entity_bi);
+					}
+					entity.setUptime(bi.toString());
+					wifiDeviceService.update(entity);
+				}
 			}
+			
+			//6:增量索引
+			wifiDeviceIndexIncrementService.wifiDeviceOfflineIndexIncrement(dto.getMac());
 		}
-		
-		//6:增量索引
-		wifiDeviceIndexIncrementService.wifiDeviceOfflineIndexIncrement(dto.getMac());
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s] successful", message));
 	}

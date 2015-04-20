@@ -9,14 +9,14 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 public class DaemonHelper {
 	public static void afterDeviceOnline(String mac,IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
-		/*
+		
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
 		//获取设备测速
 		payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		//获取地理位置
 		payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
-		*/
+		
 
 		//获取地理位置
 		//设备上行首先发送查询地理位置指令

@@ -15,15 +15,18 @@ import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -246,4 +249,37 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
+	/**
+	 * 获取设备设置信息
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public RpcResponseDTO<URouterSettingVTO> urouterSetting(Integer uid, String wifiId){
+		try{
+			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+			
+			WifiDevice device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
+			WifiDeviceSetting setting_entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+			WifiDeviceSettingDTO setting_dto = setting_entity.getInnerModel();
+			
+			URouterSettingVTO vto = new URouterSettingVTO();
+			vto.setMac(device_entity.getId());
+			vto.setOem_swver(device_entity.getOem_swver());
+			vto.setOl(device_entity.isOnline());
+			vto.setUptime(DeviceHelper.getDeviceUptime(device_entity));
+			
+			vto.setMode(DeviceHelper.getDeviceMode(setting_dto));
+			//获取正常的vap
+			WifiDeviceSettingVapDTO normal_vap = DeviceHelper.getUrouterDeviceVap(setting_dto);
+			if(normal_vap != null){
+				vto.setVap_auth(normal_vap.getAuth());
+				vto.setVap_name(normal_vap.getName());
+				vto.setVap_ssid(normal_vap.getSsid());
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
 }
