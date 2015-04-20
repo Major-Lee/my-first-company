@@ -47,7 +47,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
             }
             return RpcResponseDTOBuilder.builderErrorRpcResponse(responseErrorCode);
         } else if (retStatus == WIFI_DEVICE_STATUS_BINDED){
-            RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
+           return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
         }
         RpcResponseDTO<UserDeviceDTO> result = userDeviceFacadeService.bindDevice(mac,uid,deviceName);
         return result;
