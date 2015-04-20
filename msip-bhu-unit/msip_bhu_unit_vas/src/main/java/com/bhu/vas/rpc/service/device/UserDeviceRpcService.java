@@ -60,7 +60,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public int validateDeviceStatusIsOnlineAndBinded(String mac) {
         int retStatus = deviceFacadeService.getWifiDeviceOnlineStatus(mac);
-        if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
+        if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_ONLINE) {
             if (userDeviceFacadeService.isBinded(mac)) {
                 retStatus = WIFI_DEVICE_STATUS_BINDED;
             } else {
