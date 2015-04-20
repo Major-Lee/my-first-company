@@ -12,9 +12,9 @@ public class URouterEnterVTO implements Serializable{
 	//设备网速峰值
 	private String rate_peak;
 	//设备实时上行速率
-	private String data_tx_rate;
+	private String tx_rate;
 	//设备实时下行速率
-	private String data_rx_rate;
+	private String rx_rate;
 	//设备信号强度
 	private int power;
 	//在线终端数量
@@ -27,17 +27,17 @@ public class URouterEnterVTO implements Serializable{
 	public void setRate_peak(String rate_peak) {
 		this.rate_peak = rate_peak;
 	}
-	public String getData_tx_rate() {
-		return data_tx_rate;
+	public String getTx_rate() {
+		return tx_rate;
 	}
-	public void setData_tx_rate(String data_tx_rate) {
-		this.data_tx_rate = data_tx_rate;
+	public void setTx_rate(String tx_rate) {
+		this.tx_rate = tx_rate;
 	}
-	public String getData_rx_rate() {
-		return data_rx_rate;
+	public String getRx_rate() {
+		return rx_rate;
 	}
-	public void setData_rx_rate(String data_rx_rate) {
-		this.data_rx_rate = data_rx_rate;
+	public void setRx_rate(String rx_rate) {
+		this.rx_rate = rx_rate;
 	}
 	public long getOhd_count() {
 		return ohd_count;

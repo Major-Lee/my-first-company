@@ -84,8 +84,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			//vto.setData_rx_rate_peak(device_entity.getData_rx_rate());
 			
 			String[] ret = fetchRealtimeRate(wifiId);
-			vto.setData_tx_rate(ret[0]);
-			vto.setData_rx_rate(ret[1]);
+			vto.setTx_rate(ret[0]);
+			vto.setRx_rate(ret[1]);
 			vto.setRate_peak(ret[2]);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
