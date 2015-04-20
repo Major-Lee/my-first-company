@@ -134,14 +134,14 @@ public class AsyncMsgHandleService {
 				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
 		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
-		afterDeviceOnlineThenCmdDown(dto.getMac());
+		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNewWifi());
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	
 	//下发获取配置，获取设备测速，地理位置
-	public void afterDeviceOnlineThenCmdDown(String mac){
+	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
-		DaemonHelper.afterDeviceOnline(mac, daemonRpcService);
+		DaemonHelper.afterDeviceOnline(mac,needLocationQuery, daemonRpcService);
 		/*List<String> payloads = new ArrayList<String>();
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
