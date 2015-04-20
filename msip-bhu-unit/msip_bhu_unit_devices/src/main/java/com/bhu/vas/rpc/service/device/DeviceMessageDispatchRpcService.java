@@ -190,7 +190,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			String serial = serialDto.getSerial();
 			if(!StringUtils.isEmpty(serial)){
-				if(serial.length() == 12){
+				if(serial.length() == 10){
 					String opt = serial.substring(0, 2);
 					int taskid = Integer.parseInt(serial.substring(2, 10));
 					String mac = parserHeader.getMac();
