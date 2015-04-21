@@ -34,7 +34,7 @@ public enum OperationCMD {
 	//cmd="wlanstatus" interface="wlan0"
 	QueryDeviceTerminals("15","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" interface=\"%s\"/></cmd>"),
 
-	QueryDeviceSpeedNotify("16","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"30\" __notify=\"true\"  serial=\"%s\" url=\"http://mirrors.hust.edu.cn/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz\"/></cmd>"),
+	QueryDeviceSpeedNotify("16","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"%s\" combine=\"1\" __notify=\"true\"  serial=\"%s\" url=\"http://mirrors.hust.edu.cn/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz\"/></cmd>"),
 	
 	QueryDeviceRateNotify("17","查询设备实时速率","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"ifrate\" interface=\"%s\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	;

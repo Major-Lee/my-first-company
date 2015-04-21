@@ -53,11 +53,11 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSetting.getNo(),String.format(SuffixTemplete,taskid));
 	}
 	
-	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,int taskid){
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,int taskid,int max_test_time){
 		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, max_test_time, builderCMDSerial(opt, taskid_format));
 	}
 	
 	/**
