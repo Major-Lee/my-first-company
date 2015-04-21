@@ -117,10 +117,8 @@ public class UserDeviceFacadeService {
                 userDTO.setMobileno(String.format("%s********",
                         user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
             }
-            return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
-        } else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(null);
         }
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
 
 
     }
