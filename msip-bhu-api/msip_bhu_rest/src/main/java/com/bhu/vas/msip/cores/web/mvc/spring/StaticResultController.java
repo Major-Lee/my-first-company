@@ -115,6 +115,7 @@ public class StaticResultController{
         /*mv.addObject(URL, getReturnUrl(returnUrl));
         mv.addObject(MESSAGE, new String(Base64Helper.encode(getErrorMessage(message).getBytes())));
         mv.addObject(LEGACY, getLegacy(legacy));*/
+    	//org.springframework.web.servlet.view.
         mv.setView(new RedirectView(url));//
     }
 }

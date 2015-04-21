@@ -91,14 +91,25 @@ public class PingController {
 		}
 	}
 	
-	
 	@ResponseBody()
-	@RequestMapping(value="/404",method={RequestMethod.GET,RequestMethod.POST})
-	public ModelAndView Go404(
+	@RequestMapping(value="/f404",method={RequestMethod.GET,RequestMethod.POST})
+	public ModelAndView f404(
 			HttpServletRequest request,
 			HttpServletResponse response) {
+		return new ModelAndView("forward:http://baidu.com",null);
+		//ModelAndView mv = new ModelAndView();
+		//mv.setView(new );
+		//return "forward:http://baidu.com";
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/r404",method={RequestMethod.GET,RequestMethod.POST})
+	public ModelAndView r404(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		//return "gogogog";
 		ModelAndView mv = new ModelAndView();
-        StaticResultController.redirectURL(mv, "baidu.com", 100, "redirect");//.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
+        StaticResultController.redirectURL(mv, "http://baidu.com", 100, "redirect");//.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
         return mv;
 	}
 }
