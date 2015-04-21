@@ -116,9 +116,13 @@ public class UserDeviceFacadeService {
                 userDTO.setCountrycode(user.getCountrycode());
                 userDTO.setMobileno(String.format("%s********",
                         user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
+                return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
+            } else {
+                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
             }
+        } else {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
         }
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
     }
 
 }
