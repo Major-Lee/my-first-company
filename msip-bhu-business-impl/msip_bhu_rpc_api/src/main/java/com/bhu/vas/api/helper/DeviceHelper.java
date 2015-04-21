@@ -77,16 +77,18 @@ public class DeviceHelper {
 	
 	/**
 	 * 匹配设备的黑名单的block配置列表
+	 * 由于设备中可能不存在黑名单列表配置 则返回空列表
 	 * @param dto
 	 * @return
 	 */
 	public static WifiDeviceSettingAclDTO matchDefaultAcl(WifiDeviceSettingDTO dto){
-		if(dto == null) return null;
-		List<WifiDeviceSettingAclDTO> acls = dto.getAcls();
-		if(acls != null && !acls.isEmpty()){
-			int index = acls.indexOf(new WifiDeviceSettingAclDTO(WifiDeviceSettingDTO.Default_AclName));
-			if(index != -1){
-				return acls.get(index);
+		if(dto != null) {
+			List<WifiDeviceSettingAclDTO> acls = dto.getAcls();
+			if(acls != null && !acls.isEmpty()){
+				int index = acls.indexOf(new WifiDeviceSettingAclDTO(WifiDeviceSettingDTO.Default_AclName));
+				if(index != -1){
+					return acls.get(index);
+				}
 			}
 		}
 		return null;
