@@ -77,6 +77,13 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- swagger -->
+        <dependency>
+            <groupId>com.mangofactory</groupId>
+            <artifactId>swagger-springmvc</artifactId>
+            <version>0.9.5</version>
+        </dependency>
         
     </dependencies>
 
