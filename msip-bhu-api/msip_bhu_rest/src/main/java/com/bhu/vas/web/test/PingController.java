@@ -7,9 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.bhu.vas.msip.cores.web.mvc.spring.StaticResultController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -89,16 +87,5 @@ public class PingController {
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-	}
-	
-	
-	@ResponseBody()
-	@RequestMapping(value="/404",method={RequestMethod.GET,RequestMethod.POST})
-	public ModelAndView Go404(
-			HttpServletRequest request,
-			HttpServletResponse response) {
-		ModelAndView mv = new ModelAndView();
-        StaticResultController.redirectURL(mv, "baidu.com", 100, "redirect");//.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
-        return mv;
 	}
 }
