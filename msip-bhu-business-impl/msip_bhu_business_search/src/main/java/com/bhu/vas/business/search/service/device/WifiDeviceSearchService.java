@@ -202,7 +202,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 
 		FilterBuilder filter = null;
 		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
-				devicetype, region, excepts) || online != null){
+				devicetype, region, excepts) || online != null || newVersionDevice != null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(!StringUtils.isEmpty(mac)){
 				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
@@ -229,7 +229,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_online, online ? 1 : 0));
 			}
 			if(newVersionDevice != null){
-				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_online, newVersionDevice ? 1 : 0));
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_nvd, newVersionDevice ? 1 : 0));
 			}
 			if(!StringUtils.isEmpty(region)){
 				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, region));
