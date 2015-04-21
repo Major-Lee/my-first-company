@@ -1,8 +1,10 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 
 import java.util.List;
 
@@ -30,6 +32,9 @@ public interface IUserDeviceRpcService {
     int validateDeviceStatusIsOnlineAndBinded(String mac);
 
     RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac);
+
+    RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac);
+
 
 
 

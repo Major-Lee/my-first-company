@@ -1,8 +1,15 @@
 package com.bhu.vas.web.query;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,18 +26,34 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @Controller
 @RequestMapping("/noauth/query")
 public class QueryController extends BaseController {
+
+    @Resource
+    private IUserDeviceRpcService userDeviceRpcService;
+
 	@ResponseBody()
-    @RequestMapping(value="/fetch_device_hasbinded",method={RequestMethod.GET})
-    public void fetch_devicebinded(HttpServletResponse response,
+    @RequestMapping(value="/fetch_device_bind_user",method={RequestMethod.GET})
+    public void fetch_device_bind_user(HttpServletResponse response,
     		@RequestParam(required = false) String jsonpcallback,
             @RequestParam(required = true) String mac) {
-		
-		if(StringUtils.isEmpty(jsonpcallback))
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
-	    else
-	       	SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(null));
-        /*RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));*/
+
+
+        if (!StringHelper.isValidMac(mac)) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            return ;
+        }
+        RpcResponseDTO<UserDTO> user = userDeviceRpcService.fetchBindDeviceUser(mac);
+        if(user.getPayload() != null) {
+            if(StringUtils.isEmpty(jsonpcallback))
+                SpringMVCHelper.renderJson(response, ResponseSuccess.embed(user.getPayload()));
+            else
+                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(user.getPayload()));
+        } else {
+            if(StringUtils.isEmpty(jsonpcallback))
+                SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+            else
+                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.ERROR);
+        }
+
     }
 	
 	/**

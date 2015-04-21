@@ -2,10 +2,13 @@ package com.bhu.vas.rpc.service.device;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -104,4 +107,8 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceStatusDTO);
     }
 
+    @Override
+    public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
+        return userDeviceFacadeService.fetchBindDeviceUser(mac);
+    }
 }

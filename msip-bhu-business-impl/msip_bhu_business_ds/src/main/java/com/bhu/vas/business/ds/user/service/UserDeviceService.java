@@ -31,4 +31,10 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         return findModelByModelCriteria(mc);
     }
 
+    public List<UserDevice> fetchBindDevicesUsers(String mac) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        return findModelByModelCriteria(mc);
+    }
+
 }
