@@ -14,6 +14,7 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public static final String State_Done = "done";//完成
 	public static final String State_Doing = "doing";//正在做
 	public static final String State_None = "none";//没有这个任务
+	public static final String State_Next = "next";//周期性上报的任务
 	
 	public static final String State_Failed = "failed";//任务失败
 	public static final String State_Completed = "Completed";//任务已经完成

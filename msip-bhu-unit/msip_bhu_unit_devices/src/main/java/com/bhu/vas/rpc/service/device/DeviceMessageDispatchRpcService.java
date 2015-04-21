@@ -187,7 +187,8 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	public void taskNotifyResponse(String ctx, String payload, ParserHeader parserHeader){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
+				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
 			String serial = serialDto.getSerial();
 			if(!StringUtils.isEmpty(serial)){
 				if(serial.length() == 10){
@@ -202,7 +203,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						deviceBusinessFacadeService.taskQueryDeviceSpeedNotify(ctx, doc, serialDto, mac, taskid);
 					}
 					else if(OperationCMD.QueryDeviceRateNotify.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskQueryDeviceSpeedNotify(ctx, doc, serialDto, mac, taskid);
+						deviceBusinessFacadeService.taskQueryDeviceRateNotify(ctx, doc, serialDto, mac, taskid);
 					}
 					//2:任务callback
 					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
