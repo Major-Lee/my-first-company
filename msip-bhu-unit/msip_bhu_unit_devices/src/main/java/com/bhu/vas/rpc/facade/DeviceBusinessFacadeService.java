@@ -43,6 +43,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -322,9 +323,14 @@ public class DeviceBusinessFacadeService {
 					getLast_wifi_id(), lowercase_mac, exist_handset_device_entity.getData_rx_rate_double());
 			/*
 			 * 3:统计增量 移动设备的daily访问时长增量
+			 * 如果最后接入时间是今天才会记入daily访问时长
 			 */
-			deliverMessageService.sendHandsetDeviceOfflineActionMessage(exist_handset_device_entity.getLast_wifi_id(), 
-					exist_handset_device_entity.getId(), dto.getUptime());
+			if(DateTimeHelper.isSameDay(exist_handset_device_entity.getLast_login_at().getTime(), 
+					System.currentTimeMillis())){
+				deliverMessageService.sendHandsetDeviceOfflineActionMessage(exist_handset_device_entity.getLast_wifi_id(), 
+						exist_handset_device_entity.getId(), dto.getUptime());
+			}
+
 		}
 
 	}
