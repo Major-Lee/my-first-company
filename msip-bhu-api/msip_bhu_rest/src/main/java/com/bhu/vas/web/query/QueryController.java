@@ -49,9 +49,9 @@ public class QueryController extends BaseController {
                 SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(user.getPayload()));
         } else {
             if(StringUtils.isEmpty(jsonpcallback))
-                SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+                SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_BINDED));
             else
-                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.ERROR);
+                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_BINDED));
         }
 
     }
