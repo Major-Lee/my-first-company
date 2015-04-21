@@ -17,7 +17,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @RequestMapping("/noauth/query")
 public class QueryController extends BaseController {
 	@ResponseBody()
-    @RequestMapping(value="/fetch_device_hasbinded",method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value="/fetch_device_hasbinded",method={RequestMethod.GET})
     public void fetch_devicebinded(HttpServletResponse response,
     		@RequestParam(required = false) String jsonpcallback,
             @RequestParam(required = true) String mac) {
