@@ -39,6 +39,8 @@ public class WifiDeviceIndexDTO {
 	private String devicetype;
 	//wifi设备是否在线
 	private int online;
+	//设备是否为新版本设备
+	private int nvd;
 	//接入的移动设备数量
 	private int count;
 	//wifi设备的注册时间
@@ -155,6 +157,12 @@ public class WifiDeviceIndexDTO {
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public int getNvd() {
+		return nvd;
+	}
+	public void setNvd(int nvd) {
+		this.nvd = nvd;
 	}
 	public int getCount() {
 		return count;

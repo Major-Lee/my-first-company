@@ -172,11 +172,13 @@ public class DeviceRestBusinessFacadeService {
 	 * @throws ESQueryValidateException
 	 */
 	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac,String orig_swver, String adr, String work_mode,
-			String config_mode, String devicetype, Boolean online, String region, String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
+			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
+			String region, String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
 		List<WifiDeviceVTO> vtos = null;
 		
 		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, 
-				orig_swver, adr, work_mode, config_mode, devicetype, online, region, excepts, (pageNo*pageSize)-pageSize, pageSize);
+				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
+				region, excepts, (pageNo*pageSize)-pageSize, pageSize);
 		
 		int total = search_result.getTotal();
 		if(total == 0){

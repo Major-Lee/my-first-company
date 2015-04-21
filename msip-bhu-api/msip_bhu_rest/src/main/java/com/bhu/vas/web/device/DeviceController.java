@@ -56,6 +56,7 @@ public class DeviceController extends BaseController{
 	 * @param keyword 可以是 mac 或 地理名称
 	 * @param region 北京市
 	 * @param excepts 广东省,上海市
+	 * @param newVersionDevice 新老版本设备
 	 * @param request
 	 * @param response
 	 * @param pageNo
@@ -74,13 +75,14 @@ public class DeviceController extends BaseController{
 			@RequestParam(required = false) String config_mode,
 			@RequestParam(required = false) String devicetype,
 			@RequestParam(required = false) Boolean online,
+			@RequestParam(required = false, value = "nvd") Boolean newVersionDevice,
 			@RequestParam(required = false, value = "region") String region,
 			@RequestParam(required = false, value = "excepts") String excepts,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
 		TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, orig_swver,
-				adr, work_mode, config_mode, devicetype, online, region, excepts, pageNo, pageSize);
+				adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, excepts, pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
 	}
 	/**

@@ -169,4 +169,22 @@ public class DeviceHelper {
 		
 		return uptime;
 	}
+	//新版本设备定义
+	public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10"};
+	
+	/**
+	 * 根据设备的原始软件版本号 判断是否新版本设备
+	 * @param orig_swver
+	 * @return
+	 */
+	public static boolean isNewOrigSwverDevice(String orig_swver){
+		if(StringUtils.isEmpty(orig_swver)) return false;
+		
+		for(String newOrigSwver : newOrigSwvers){
+			if(orig_swver.contains(newOrigSwver)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

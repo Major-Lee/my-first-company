@@ -188,6 +188,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 * @param work_mode 工作模式
 	 * @param config_mode 配置模式
 	 * @param online null表示全部 true为在线 
+	 * @param newVersionDevice null 标识全部 true为新版本设备 大于1.2.7的设备 false为老版本 小于等于1.2.7
 	 * @param region 地区
 	 * @param excepts 排除地区
 	 * @param start
@@ -196,7 +197,8 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 * @throws ESQueryValidateException
 	 */
 	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
-			String work_mode, String config_mode, String devicetype, Boolean online, String region, String excepts, int start, int size) throws ESQueryValidateException {
+			String work_mode, String config_mode, String devicetype, Boolean online, Boolean newVersionDevice,
+			String region, String excepts, int start, int size) throws ESQueryValidateException {
 
 		FilterBuilder filter = null;
 		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
@@ -225,6 +227,9 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 			}
 			if(online != null){
 				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_online, online ? 1 : 0));
+			}
+			if(newVersionDevice != null){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_online, newVersionDevice ? 1 : 0));
 			}
 			if(!StringUtils.isEmpty(region)){
 				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, region));

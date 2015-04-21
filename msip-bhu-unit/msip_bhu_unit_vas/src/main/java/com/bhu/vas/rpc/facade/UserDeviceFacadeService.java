@@ -119,8 +119,6 @@ public class UserDeviceFacadeService {
             }
         }
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
-
-
     }
 
 }

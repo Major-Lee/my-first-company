@@ -18,6 +18,7 @@ public class IndexDTOBuilder {
 		indexDto.setDevicetype(entity.getHdtype());
 		indexDto.setConfigmodel(entity.getConfig_mode());
 		indexDto.setOrigswver(entity.getOrig_swver());
+		indexDto.setNvd(DeviceHelper.isNewOrigSwverDevice(entity.getOrig_swver()) ? 1 : 0);
 //		indexDto.setCount(1);
 //		indexDto.setOnline(1);
 		indexDto.setLat(entity.getLat());
