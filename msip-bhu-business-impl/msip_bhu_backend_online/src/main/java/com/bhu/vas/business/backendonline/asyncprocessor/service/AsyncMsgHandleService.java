@@ -36,6 +36,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
@@ -645,6 +646,24 @@ public class AsyncMsgHandleService {
 		DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
 		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addWaiting(dto.getMac());
 		logger.info(String.format("wifiDeviceRealtimeRateFetch message[%s] successful", message));
+	}
+	
+	/**
+	 * 用户绑定设备之后 会进行下发配置操作
+	 * 下发获取配置，获取设备测速，设备实时速率, 设备终端列表
+	 * @param message
+	 */
+	public void userDeviceRegister(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s]", message));
+		UserDeviceRegisterDTO dto = JsonHelper.getDTO(message, UserDeviceRegisterDTO.class);
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(dto.getMac());
+		if(entity != null){
+			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+			if(setting_dto != null){
+				afterUserSignedonThenCmdDown(dto.getMac(), DeviceHelper.builderSettingVapNames(setting_dto.getVaps()));
+			}
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
 	
 	/**

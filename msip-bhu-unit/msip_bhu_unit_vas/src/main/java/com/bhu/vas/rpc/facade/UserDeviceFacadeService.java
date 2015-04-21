@@ -6,14 +6,17 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +29,10 @@ public class UserDeviceFacadeService {
 
     @Resource
     private UserDeviceService userDeviceService;
+    
+	@Resource
+	private DeliverMessageService deliverMessageService;
+	
 
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
 
@@ -34,6 +41,9 @@ public class UserDeviceFacadeService {
         userDevice.setCreated_at(new Date());
         userDevice.setDevice_name(deviceName);
         userDeviceService.insert(userDevice);
+        
+        deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
+        
         UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
         userDeviceDTO.setMac(mac);
         userDeviceDTO.setUid(uid);
