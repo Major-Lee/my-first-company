@@ -115,7 +115,7 @@ public class UserDeviceFacadeService {
             if (user != null) {
                 userDTO.setCountrycode(user.getCountrycode());
                 userDTO.setMobileno(String.format("%s********",
-                        user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(3)));
+                        user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
             }
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
         } else {
