@@ -41,6 +41,9 @@ public class UserDeviceFacadeService {
     private UserService userService;
 	
 
+    //TODO：重复插入异常
+    //1、首先得判定UserDevicePK(mac, uid) 是否存在
+    //2、存在返回错误，不存在进行insert
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
 
         UserDevice userDevice = new UserDevice();
@@ -59,6 +62,9 @@ public class UserDeviceFacadeService {
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceDTO);
     }
 
+    //TODO：不需要userDeviceService.fetchBindDevicesUsers(mac) 操作
+    //1、首先得判定UserDevicePK(mac, uid) 是否存在
+    //2、存在进行解绑操作，不存在返回错误
     public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
         UserDevice userDevice = new UserDevice();
         userDevice.setId(new UserDevicePK(mac, uid));
