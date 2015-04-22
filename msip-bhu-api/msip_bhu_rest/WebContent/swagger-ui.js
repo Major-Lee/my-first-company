@@ -2169,7 +2169,8 @@ SwaggerSpecConverter.prototype.declaration = function(obj, swagger) {
     var api = obj.apis[i];
     var path = api.path;
     var operations = api.operations;
-    this.operations(path, obj.resourcePath, operations, resourceLevelAuth, swagger);
+    //windows.alert(api.path+”-”+api.operations+”-”+obj.basePath+”-”+obj.resourcePath);
+    this.operations(obj.basePath+path, obj.resourcePath, operations, resourceLevelAuth, swagger);
   }
 
   var models = obj.models;
