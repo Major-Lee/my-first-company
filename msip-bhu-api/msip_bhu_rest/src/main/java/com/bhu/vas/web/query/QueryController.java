@@ -53,7 +53,6 @@ public class QueryController extends BaseController {
             else
                 SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_BINDED));
         }
-
     }
 	
 	/**

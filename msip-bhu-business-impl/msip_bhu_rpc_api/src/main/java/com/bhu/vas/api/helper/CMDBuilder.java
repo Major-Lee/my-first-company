@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
+
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -108,13 +110,40 @@ public class CMDBuilder {
 		return result;
 	}
 	
+	public static String builderDevHTMLInjectionNotify(String wifi_mac,int taskid,String enable,String adUrl,String adid){
+		String opt = OperationCMD.DevHTMLInjectionNotify.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		
+		return String.format(OperationCMD.DevHTMLInjectionNotify.getCmdtpl(),//query_device_location_step2_cmd_template,
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, enable,adUrl,adid);
+	}
 	
-	public static String builderCMD4Opt(String opt,String wifi_mac,int taskid){//,String...params){
+	
+	public static String builderCMD4Opt(String opt,String wifi_mac,int taskid,String extparams){
+		String resultCmd = null;
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
-			return String.format(operationCMDFromNo.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));//,params);
+			switch(operationCMDFromNo){
+				case DevHTMLInjectionNotify:
+					//extparams 三个值 enable，adurl，adid
+					String[] split = parserExtParams(extparams);
+					if(split == null || split.length ==0)
+						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,"true","null","null");
+					else
+						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,split[0],split[1],split[2]);
+					break;
+				default:
+					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));
+					break;
+			}
 		}
-		return null;
+		return resultCmd;
+	}
+	
+	public static String[] parserExtParams(String extparams){
+		if(StringUtils.isEmpty(extparams)) return null;
+		return extparams.split(StringHelper.SPLIT_PLUS_STRING_GAP);
 	}
 	
 	public static String builderCMDSerial(String opt, String taskid_format){

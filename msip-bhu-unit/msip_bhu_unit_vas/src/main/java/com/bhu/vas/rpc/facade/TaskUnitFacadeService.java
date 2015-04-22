@@ -28,7 +28,7 @@ public class TaskUnitFacadeService {
 	@Resource
 	private TaskFacadeService taskFacadeService;
 
-	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, /*String payload,*/
+	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String extparams,/*String payload,*/
 			String channel, String channel_taskid){
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setChannel(channel);
@@ -38,7 +38,7 @@ public class TaskUnitFacadeService {
 		downTask.setMac(mac);
 		int ret = taskFacadeService.taskComming(downTask);
 		if(ret == RpcResponseCodeConst.Task_Startup_OK){
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId()));
+			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 			//发送异步消息到Queue
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 			TaskResDTO dto = new TaskResDTO();
