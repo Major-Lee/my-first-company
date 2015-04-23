@@ -3,7 +3,6 @@ package com.bhu.vas.web.user;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,8 +15,8 @@ import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
-import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/user/captcha")
@@ -26,6 +25,13 @@ public class UserCaptchaCodeController extends BaseController{
 	@Resource
 	private IUserCaptchaCodeRpcService userCaptchaCodeRpcService;
 	
+	
+	/**
+	 * 请求获取验证码接口
+	 * @param response
+	 * @param countrycode
+	 * @param acc
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/fetch_captcha",method={RequestMethod.GET,RequestMethod.POST})
 	public void fetch_captcha(

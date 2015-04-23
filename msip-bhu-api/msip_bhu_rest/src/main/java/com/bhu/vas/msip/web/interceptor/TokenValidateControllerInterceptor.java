@@ -38,14 +38,15 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	private static final String NoAuthPrefixUrl = "/noauth";
 	private static final String pingurl = "/ping";
 	private static final String commonurl = "/common";
-	private static final String dashboardurl = "/dashboard";
+	//private static final String dashboardurl = "/dashboard";
+	private static final String statisticsurl = "/statistics";
+	private static final String deviceurl = "/device";
 	//private static final String historyurl = "/history";
 	//private static final String guesturl = "/guest";
 	//private static final String visiturl = "/visit";
 	//private static Set<String> ignoreTokensValidateUrlPrefixSet = new HashSet<String>();
 	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
 	static{
-		
 		/*ignoreTokensValidateUrlPrefixSet.add("/noauth");
 		ignoreTokensValidateUrlPrefixSet.add("/ping");
 		ignoreTokensValidateUrlPrefixSet.add("/common");
@@ -57,9 +58,11 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
 		//检测名称唯一性
-		ignoreTokensValidateUrlSet.add("/account/check_unique");
+		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
+		ignoreTokensValidateUrlSet.add("/account/check_device_binded");
+		
 		//请求验证码
-		ignoreTokensValidateUrlSet.add("/captcha/fetch_captcha");
+		ignoreTokensValidateUrlSet.add("/user/captcha/fetch_captcha");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");
@@ -104,7 +107,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
-		if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(pingurl) || uri.startsWith(commonurl) || uri.startsWith(dashboardurl))
+		if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(statisticsurl) || uri.startsWith(deviceurl)|| uri.startsWith(commonurl) || uri.startsWith(pingurl))
 	        return true;  
 		
 		String method = request.getMethod();
