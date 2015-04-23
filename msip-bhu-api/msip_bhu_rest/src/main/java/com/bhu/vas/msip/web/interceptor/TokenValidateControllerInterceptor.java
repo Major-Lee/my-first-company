@@ -2,6 +2,8 @@ package com.bhu.vas.msip.web.interceptor;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -35,12 +37,12 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	private IUserRpcService userRpcService;
 
 	
-	private static final String NoAuthPrefixUrl = "/noauth";
+	/*private static final String NoAuthPrefixUrl = "/noauth";
 	private static final String pingurl = "/ping";
 	private static final String commonurl = "/common";
 	//private static final String dashboardurl = "/dashboard";
 	private static final String statisticsurl = "/statistics";
-	private static final String deviceurl = "/device";
+	private static final String deviceurl = "/device";*/
 	//private static final String historyurl = "/history";
 	//private static final String guesturl = "/guest";
 	//private static final String visiturl = "/visit";
@@ -107,9 +109,11 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
-		if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(statisticsurl) || uri.startsWith(deviceurl)|| uri.startsWith(commonurl) || uri.startsWith(pingurl))
-	        return true;  
-		
+		/*if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(statisticsurl) || uri.startsWith(deviceurl)|| uri.startsWith(commonurl) || uri.startsWith(pingurl))
+	        return true; */ 
+		if(uriStartWithThenSkip(uri)){
+			return true;
+		}
 		String method = request.getMethod();
 		if(StringUtils.isEmpty(method)){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
@@ -185,5 +189,16 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			if(requestUrl.endsWith(igurl)) return true;
 		}
 		return false;
+	}
+	private static final String patternRegx = "^/(noauth)|(statistics)|(device)|(ping)|(common)";
+	/**
+	 * 以定义好的字符串前缀
+	 * @param url
+	 * @return
+	 */
+	private static boolean uriStartWithThenSkip(String url){
+		Pattern pattern = Pattern.compile(patternRegx);
+        Matcher matcher = pattern.matcher("/statistic/ddss/ssf");
+        return matcher.find();
 	}
 }
