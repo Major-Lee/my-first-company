@@ -46,12 +46,13 @@ public class UserDeviceFacadeService {
     //2、存在返回错误，不存在进行insert
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
 
-        UserDevice userDevice = new UserDevice();
+        UserDevice userDevice;
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
         userDevice = userDeviceService.getById(userDevicePK);
         if (userDevice != null) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
         } else {
+            userDevice = new UserDevice();
             userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setCreated_at(new Date());
             userDevice.setDevice_name(deviceName);
