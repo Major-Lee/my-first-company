@@ -16,9 +16,13 @@ public class WifiDeviceSettingDTO {
 	public static final String Mode_Pppol2tp = "pppol2tp";
 	
 	//信号强度
-	private String power;
+//	private String power;
+	//信号强度 多频设备会有多个dto
+	private List<WifiDeviceSettingRadioDTO> radios;
 	//上网方式
 	private String mode;
+	//配置流水号
+	private String sequence;
 	//VAP列表
 	private List<WifiDeviceSettingVapDTO> vaps;
 	//黑白名单列表
@@ -30,13 +34,13 @@ public class WifiDeviceSettingDTO {
 	//管理员用户列表
 	private List<WifiDeviceSettingUserDTO> users;
 	
-	public String getPower() {
-		return power;
-	}
-
-	public void setPower(String power) {
-		this.power = power;
-	}
+//	public String getPower() {
+//		return power;
+//	}
+//
+//	public void setPower(String power) {
+//		this.power = power;
+//	}
 
 	public String getMode() {
 		return mode;
@@ -44,6 +48,14 @@ public class WifiDeviceSettingDTO {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public String getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(String sequence) {
+		this.sequence = sequence;
 	}
 
 	public List<WifiDeviceSettingVapDTO> getVaps() {
@@ -84,5 +96,13 @@ public class WifiDeviceSettingDTO {
 
 	public void setUsers(List<WifiDeviceSettingUserDTO> users) {
 		this.users = users;
+	}
+
+	public List<WifiDeviceSettingRadioDTO> getRadios() {
+		return radios;
+	}
+
+	public void setRadios(List<WifiDeviceSettingRadioDTO> radios) {
+		this.radios = radios;
 	}
 }

@@ -24,7 +24,7 @@ public enum OperationCMD {
 			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
 			
 	QueryDeviceSetting("14","查询设备配置","",
-			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.mod.basic.wan,dev.sys.users\"/></query>"),
+			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.mod.basic.wan,dev.sys.users,dev.sys.config\"/></query>"),
 			//dev.wifi.radio 信号强度
 			//dev.wifi.vap WiFi设置（SSID、密码、是否加密）
 			//dev.wifi.vap  dev.wifi.acllist 黑名单
@@ -40,6 +40,8 @@ public enum OperationCMD {
 	//<dev><net><ad><ITEM  bhu_enable=\"enable/disable\"  bhu_ad_url=\"广告url\" id=\"xxxx\" /></ad></net></dev>
 	//在广告注入以后，会在广告url后附加参数gw_id=xxxx&stamac=xxxx, 第一个参数来源于配置时候的id，可用于标识AP。比如安装于某个商户，每个商户id不同。第二个参数是关联的终端mac.
 	DevHTMLInjectionNotify("50","Html注入","","00001001%s%s%s"+"000100000001"+"<dev><net><ad><ITEM  bhu_enable=\"%s\"  bhu_ad_url=\"%s\" id=\"%s\" /></ad></net></dev>"),
+//	
+//	ModifyDeviceSetting("51","Html注入","","00001001%s%s%s"+"000100000001"+"<dev><net><ad><ITEM  bhu_enable=\"%s\"  bhu_ad_url=\"%s\" id=\"%s\" /></ad></net></dev>"),
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;

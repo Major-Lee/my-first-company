@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -227,11 +228,23 @@ public class RPCMessageParseHelper {
 		Document doc = parserMessage(message);
 		WifiDeviceSettingDTO dto = new WifiDeviceSettingDTO();
 		try{
-			//解析 radio
-			Element radio_item = Dom4jHelper.select(doc, "dev/wifi/radio/ITEM");
-			if(radio_item != null){
-				dto.setPower(radio_item.attributeValue("power"));
+			//解析 radio 多频设备会有多个
+			List<Element> radio_items = Dom4jHelper.selectElements(doc, "dev/wifi/radio/ITEM");
+			if(radio_items != null && !radio_items.isEmpty()){
+				List<WifiDeviceSettingRadioDTO> radio_dtos = new ArrayList<WifiDeviceSettingRadioDTO>();
+				for(Element radio_item : radio_items){
+					WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
+					radio_dto.setName(radio_item.attributeValue("name"));
+					radio_dto.setPower(radio_item.attributeValue("power"));
+					radio_dtos.add(radio_dto);
+				}
+				dto.setRadios(radio_dtos);
 			}
+//			Element radio_item = Dom4jHelper.select(doc, "dev/wifi/radio/ITEM");
+//			if(radio_item != null){
+//				dto.setPower(radio_item.attributeValue("power"));
+//			}
+			
 			//解析 wan
 			Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
 			if(wan_item != null){
@@ -311,6 +324,11 @@ public class RPCMessageParseHelper {
 				}
 				dto.setUsers(user_dtos);
 			}
+			//解析设备配置流水号
+			Element config_element = Dom4jHelper.select(doc, "dev/sys/config/ITEM");
+			if(config_element != null){
+				dto.setSequence(config_element.attributeValue("sequence"));
+			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
@@ -378,6 +396,6 @@ public class RPCMessageParseHelper {
         
         System.out.println(content.toString());
 		WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(content.toString());
-		System.out.println(dto.getPower());
+		//System.out.println(dto.getPower());
 	}
 }
