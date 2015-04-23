@@ -47,40 +47,40 @@ public class UserDeviceFacadeService {
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
 
         UserDevice userDevice = new UserDevice();
-        userDevice.setId(new UserDevicePK(mac, uid));
-        userDevice.setCreated_at(new Date());
-        userDevice.setDevice_name(deviceName);
-        userDeviceService.insert(userDevice);
-        
-        deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
-        
-        UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
-        userDeviceDTO.setMac(mac);
-        userDeviceDTO.setUid(uid);
-        userDeviceDTO.setDevice_name(deviceName);
-
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceDTO);
+        UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+        userDevice = userDeviceService.getById(userDevicePK);
+        if (userDevice != null) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
+        } else {
+            userDevice.setId(new UserDevicePK(mac, uid));
+            userDevice.setCreated_at(new Date());
+            userDevice.setDevice_name(deviceName);
+            userDeviceService.insert(userDevice);
+            deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
+            UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+            userDeviceDTO.setMac(mac);
+            userDeviceDTO.setUid(uid);
+            userDeviceDTO.setDevice_name(deviceName);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceDTO);
+        }
     }
 
-    //TODO：不需要userDeviceService.fetchBindDevicesUsers(mac) 操作
-    //1、首先得判定UserDevicePK(mac, uid) 是否存在
-    //2、存在进行解绑操作，不存在返回错误
     public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
-        UserDevice userDevice = new UserDevice();
-        userDevice.setId(new UserDevicePK(mac, uid));
-
-        //TODO(bluesand):现在一台设备只能被一个客户端绑定。
+        //TODO(bluesand):有没有被其他用户绑定，现在一台设备只能被一个客户端绑定。
         List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
         for (UserDevice bindDevice : bindDevices) {
             if (bindDevice.getUid() != uid) {
-                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
+                return RpcResponseDTOBuilder.builderErrorRpcResponse(
+                        ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
             }
         }
 
-        if (userDeviceService.delete(userDevice) > 0)  {
+        UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+        if (userDeviceService.deleteById(userDevicePK) > 0)  {
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT,Boolean.FALSE);
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(
+                    ResponseErrorCode.RPC_MESSAGE_UNSUPPORT,Boolean.FALSE);
         }
 
     }
