@@ -13,7 +13,7 @@ public class DaemonHelper {
 		//下发管理参数触发设备自动上报用户通知并同步终端
 		payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
 		//获取配置指令
-		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
+		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_query_taskid_fragment.getNextSequence()));
 		//获取设备测速
 		deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));

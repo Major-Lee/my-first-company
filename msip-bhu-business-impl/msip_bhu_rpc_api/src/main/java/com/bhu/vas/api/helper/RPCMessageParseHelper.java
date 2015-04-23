@@ -262,6 +262,7 @@ public class RPCMessageParseHelper {
 					vap_dto.setEnable(vap_item.attributeValue("enable"));
 					vap_dto.setAcl_name(vap_item.attributeValue("acl_name"));
 					vap_dto.setAcl_type(vap_item.attributeValue("acl_type"));
+					vap_dto.setRadio(vap_item.attributeValue("radio"));
 					vap_dtos.add(vap_dto);
 				}
 				dto.setVaps(vap_dtos);

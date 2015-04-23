@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
@@ -210,5 +211,103 @@ public class DeviceHelper {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 验证urouter设备的vap黑名单列表配置是否正确
+	 * 1:验证黑名单列表是有包含约定名称的列表
+	 * 2:验证vap是否都关联到此黑名单
+	 * @param dto
+	 * @return
+	 */
+	public static boolean validateURouterBlackList(WifiDeviceSettingDTO dto){
+		if(dto != null){
+			//1:验证黑名单列表是有包含约定名称的列表
+			List<WifiDeviceSettingAclDTO> acl_dtos = dto.getAcls();
+			if(acl_dtos != null && !acl_dtos.isEmpty()){
+				if(!acl_dtos.contains(new WifiDeviceSettingAclDTO(WifiDeviceSettingDTO.Default_AclName))){
+					return false;
+				}
+			}
+			//2:验证vap是否都关联到此黑名单
+			List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
+			if(vap_dtos != null && !vap_dtos.isEmpty()){
+				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+					if(WifiDeviceSettingDTO.Default_AclName.equals(vap_dto.getAcl_name())
+							&& WifiDeviceSettingVapDTO.AclType_Deny.equals(vap_dto.getAcl_type())){
+						
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/*******************************    设备配置修改模板  ****************************************/
+	public static final String DeviceSetting_URouterDefaultVapAclTree = "<dev><wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>";
+	
+	public static final String DeviceSetting_ConfigSequenceTree = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
+	public static final String DeviceSetting_VapTree = "<dev><wifi><vap>%s</vap></wifi></dev>";
+	public static final String DeviceSetting_AclTree = "<dev><wifi><acllist>%s</acllist></wifi></dev>";
+	
+	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
+	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
+	
+	/**
+	 * 通过配置模板和配置dto来组装配置xml
+	 * @param template
+	 * @param builderDto
+	 * @return
+	 */
+	public static String builderDeviceSetting(String template, DeviceSettingBuilderDTO builderDto){
+		if(StringUtils.isEmpty(template)) return null;
+		if(builderDto == null) return null;
+		return String.format(template, builderDto.builderProperties());
+	}
+	
+	/**
+	 * 通过配置模板和配置dtos来组装配置xml
+	 * @param template
+	 * @param builderDtos
+	 * @return
+	 */
+	public static String builderDeviceSetting(String template, List<DeviceSettingBuilderDTO> builderDtos){
+		if(StringUtils.isEmpty(template)) return null;
+		if(builderDtos == null || builderDtos.isEmpty()) return null;
+		StringBuffer sb = new StringBuffer();
+		for(DeviceSettingBuilderDTO builderDto : builderDtos){
+			String result = builderDeviceSetting(template, builderDto);
+			if(!StringUtils.isEmpty(result)){
+				sb.append(result);
+			}
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * 构造并拼装设备配置 拼装config_sequence
+	 * @param ds
+	 * @param config_sequence
+	 * @return
+	 */
+	public static String builderConfigSequence(String ds, String config_sequence){
+		if(StringUtils.isEmpty(ds) || StringUtils.isEmpty(config_sequence)) return null;
+		
+		String sequence = String.format(DeviceSetting_ConfigSequenceTree, config_sequence);
+		return ds.concat(sequence);
+	}
+	
+	/**
+	 * 构造urouter设备的默认vap黑名单列表配置
+	 * @param config_sequence
+	 * @param vap_dtos
+	 * @param acl_dto
+	 * @return
+	 */
+	public static String builderDSURouterDefaultVapAndAcl(String config_sequence, List<DeviceSettingBuilderDTO> vap_dtos, DeviceSettingBuilderDTO acl_dto){
+		String vap_string = builderDeviceSetting(DeviceSetting_VapItem, vap_dtos);
+		String acl_string = builderDeviceSetting(DeviceSetting_AclItem, acl_dto);
+		String result = String.format(DeviceSetting_URouterDefaultVapAclTree, vap_string, acl_string);
+		return builderConfigSequence(result, config_sequence);
 	}
 }

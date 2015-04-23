@@ -4,7 +4,7 @@ package com.bhu.vas.api.dto.ret.setting;
  * @author tangzichao
  *
  */
-public class WifiDeviceSettingVapDTO {
+public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	//黑名单类型
 	public static final String AclType_Deny = "deny";
 	//白名单类型
@@ -16,6 +16,9 @@ public class WifiDeviceSettingVapDTO {
 	
 	//VAP名称
 	private String name;
+	//所属的频
+	private String radio;
+	
 	private String ssid;
 	//加密方式
 	private String auth;
@@ -69,5 +72,24 @@ public class WifiDeviceSettingVapDTO {
 	}
 	public void setGuest_en(String guest_en) {
 		this.guest_en = guest_en;
+	}
+	public String getRadio() {
+		return radio;
+	}
+	public void setRadio(String radio) {
+		this.radio = radio;
+	}
+	@Override
+	public Object[] builderProperties() {
+		Object[] properties = new Object[8];
+		properties[0] = name;
+		properties[1] = radio;
+		properties[2] = ssid;
+		properties[3] = auth;
+		properties[4] = enable;
+		properties[5] = acl_type;
+		properties[6] = acl_name;
+		properties[7] = guest_en;
+		return properties;
 	}
 }

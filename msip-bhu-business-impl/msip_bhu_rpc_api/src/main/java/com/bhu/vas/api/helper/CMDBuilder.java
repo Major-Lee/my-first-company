@@ -55,6 +55,11 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSetting.getNo(),String.format(SuffixTemplete,taskid));
 	}
 	
+	public static String builderDeviceSettingModify(String wifi_mac,int taskid, String payload){
+		return String.format(OperationCMD.ModifyDeviceSetting.getCmdtpl(),//query_device_flow_cmd_template, 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.ModifyDeviceSetting.getNo(),String.format(SuffixTemplete,taskid), payload);
+	}
+	
 	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,int taskid,int max_test_time){
 		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
@@ -161,14 +166,15 @@ public class CMDBuilder {
 	public static TaskSequenceFragment timer_device_flow_taskid_fragment = new TaskSequenceFragment(5001,8000);
 	
 	//对于查询设备设置 区间段未8001~20000
-	public static TaskSequenceFragment device_setting_taskid_fragment = new TaskSequenceFragment(8001,20000);
+	public static TaskSequenceFragment device_setting_query_taskid_fragment = new TaskSequenceFragment(8001,20000);
 	//对于查询设备终端 区间段未20001~30000
 	public static TaskSequenceFragment device_terminals_taskid_fragment = new TaskSequenceFragment(20001,30000);
 	//对于查询设备终端 区间段未30001,35000
 	public static TaskSequenceFragment device_speed_taskid_fragment = new TaskSequenceFragment(30001,35000);
 	//对于查询设备终端 区间段未35001,40000
 	public static TaskSequenceFragment device_rate_taskid_fragment = new TaskSequenceFragment(35001,40000);
-	
+	//对于修改设备配置 区间段未40001,45000
+	public static TaskSequenceFragment device_setting_modify_taskid_fragment = new TaskSequenceFragment(40001,45000);
 	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,-1);
