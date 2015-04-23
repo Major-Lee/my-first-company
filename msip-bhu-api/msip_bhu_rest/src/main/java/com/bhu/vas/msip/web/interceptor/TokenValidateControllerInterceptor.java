@@ -182,8 +182,6 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		return true;
 	}
 	
-	
-	
 	private static boolean isIgnoreURL(String requestUrl){
 		for(String igurl:ignoreTokensValidateUrlSet){
 			if(requestUrl.endsWith(igurl)) return true;
