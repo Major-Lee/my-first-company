@@ -66,7 +66,7 @@
       }
 
       function addAHeader(){
-        var a_key = encodeURIComponent($('#a_header')[0].value);
+        var a_key = $('#a_header')[0].value;
         if(a_key && a_key.trim() != "") {
           var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("A-Token-Header", a_key, "header");
           window.swaggerUi.api.clientAuthorizations.add("a_header", apiKeyAuth);
@@ -74,7 +74,7 @@
         }
       }
       function addSHeader(){
-        var s_key = encodeURIComponent($('#s_header')[0].value);
+        var s_key = $('#s_header')[0].value;
         if(s_key && s_key.trim() != "") {
           var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("S-Token-Header", s_key, "header");
           window.swaggerUi.api.clientAuthorizations.add("s_header", apiKeyAuth);
