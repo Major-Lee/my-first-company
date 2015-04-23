@@ -25,6 +25,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -36,6 +37,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -73,6 +75,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+	
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -536,6 +541,17 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
+		//只有URouter的设备才需进行此操作
+		if(deviceFacadeService.isURooterDevice(wifiId)){
+			//验证URouter设备配置是否符合约定
+			//if(!DeviceHelper.validateURouterBlackList(dto)){
+				String modify_payload = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
+				if(!StringUtils.isEmpty(modify_payload)){
+					deliverMessageService.sendDeviceSettingModifyActionMessage(null, wifiId, modify_payload);
+				}
+			//}
+		}
+		
 //		//TODO:判断设备有人管理才发送异步消息
 //		if(dto.getVaps() != null)
 //			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceHelper.

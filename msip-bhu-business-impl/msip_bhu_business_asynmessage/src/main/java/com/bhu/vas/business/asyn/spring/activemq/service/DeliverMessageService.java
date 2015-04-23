@@ -22,6 +22,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 
@@ -157,6 +158,17 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
+	public void sendDeviceSettingModifyActionMessage(Integer uid, String mac, String payload){
+		WifiDeviceSettingModifyDTO dto = new WifiDeviceSettingModifyDTO();
+		dto.setMac(mac);
+		dto.setPayload(payload);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+
 	public void sendUserRegisteredActionMessage(Integer uid,String channel,String device,String remoteip){
 		UserRegisteredDTO dto = new UserRegisteredDTO();
 		dto.setUid(uid);

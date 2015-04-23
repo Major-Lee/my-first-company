@@ -233,9 +233,9 @@ public class DeviceHelper {
 			List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
 			if(vap_dtos != null && !vap_dtos.isEmpty()){
 				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
-					if(WifiDeviceSettingDTO.Default_AclName.equals(vap_dto.getAcl_name())
-							&& WifiDeviceSettingVapDTO.AclType_Deny.equals(vap_dto.getAcl_type())){
-						
+					if(!WifiDeviceSettingDTO.Default_AclName.equals(vap_dto.getAcl_name())
+							|| !WifiDeviceSettingVapDTO.AclType_Deny.equals(vap_dto.getAcl_type())){
+						return false;
 					}
 				}
 			}
@@ -271,7 +271,7 @@ public class DeviceHelper {
 	 * @param builderDtos
 	 * @return
 	 */
-	public static String builderDeviceSetting(String template, List<DeviceSettingBuilderDTO> builderDtos){
+	public static String builderDeviceSetting(String template, List<? extends DeviceSettingBuilderDTO> builderDtos){
 		if(StringUtils.isEmpty(template)) return null;
 		if(builderDtos == null || builderDtos.isEmpty()) return null;
 		StringBuffer sb = new StringBuffer();
@@ -304,10 +304,44 @@ public class DeviceHelper {
 	 * @param acl_dto
 	 * @return
 	 */
-	public static String builderDSURouterDefaultVapAndAcl(String config_sequence, List<DeviceSettingBuilderDTO> vap_dtos, DeviceSettingBuilderDTO acl_dto){
+	public static String builderDSURouterDefaultVapAndAcl(WifiDeviceSettingDTO dto){
+		if(dto == null || StringUtils.isEmpty(dto.getSequence())) return null;
+		
+		List<WifiDeviceSettingVapDTO> vap_dtos = builderDSURouterDefaultVapDtos(dto);
+		WifiDeviceSettingAclDTO acl_dto = builderDSURouterDefaultAclDto(dto);
+		
 		String vap_string = builderDeviceSetting(DeviceSetting_VapItem, vap_dtos);
 		String acl_string = builderDeviceSetting(DeviceSetting_AclItem, acl_dto);
+		
+		if(StringUtils.isEmpty(vap_string) || StringUtils.isEmpty(acl_string)) return null;
+
 		String result = String.format(DeviceSetting_URouterDefaultVapAclTree, vap_string, acl_string);
-		return builderConfigSequence(result, config_sequence);
+		return builderConfigSequence(result, dto.getSequence());
+	}
+	
+	
+	public static List<WifiDeviceSettingVapDTO> builderDSURouterDefaultVapDtos(WifiDeviceSettingDTO dto){
+		if(dto != null) {
+			List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
+			if(vap_dtos != null && !vap_dtos.isEmpty()){
+				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+					vap_dto.setAcl_type(WifiDeviceSettingVapDTO.AclType_Deny);
+					vap_dto.setAcl_name(WifiDeviceSettingDTO.Default_AclName);
+				}
+				return vap_dtos;
+			}
+		}
+		return null;
+	}
+	
+	public static WifiDeviceSettingAclDTO builderDSURouterDefaultAclDto(WifiDeviceSettingDTO dto){
+		WifiDeviceSettingAclDTO current_acl_dto = matchDefaultAcl(dto);
+		if(current_acl_dto != null){
+			return current_acl_dto;
+		}
+		
+		WifiDeviceSettingAclDTO result = new WifiDeviceSettingAclDTO();
+		result.setName(WifiDeviceSettingDTO.Default_AclName);
+		return result;
 	}
 }

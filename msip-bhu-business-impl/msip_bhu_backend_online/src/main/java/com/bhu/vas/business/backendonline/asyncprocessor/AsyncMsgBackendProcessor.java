@@ -69,8 +69,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case CMUPWithWifiDeviceOnlines:
 							asyncMsgHandleService.cmupWithWifiDeviceOnlinesHandle(message);
 							break;
-						case WifiDeviceSettingNotify:
-							//asyncMsgHandleService.wifiDeviceSettingNotify(message);
+						case WifiDeviceSettingModify:
+							asyncMsgHandleService.wifiDeviceSettingModify(message);
 							break;
 						case WifiDeviceTerminalNotify:
 							asyncMsgHandleService.WifiDeviceTerminalNotify(message);

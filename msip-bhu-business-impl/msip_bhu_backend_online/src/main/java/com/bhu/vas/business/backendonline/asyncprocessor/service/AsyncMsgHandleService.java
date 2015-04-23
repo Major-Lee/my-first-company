@@ -42,6 +42,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
@@ -481,6 +482,20 @@ public class AsyncMsgHandleService {
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s] successful", message));
+	}
+	
+	/**
+	 * 修改设备配置信息
+	 * @param message
+	 * @throws Exception
+	 */
+	public void wifiDeviceSettingModify(String message) throws Exception{
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s]", message));
+		
+		WifiDeviceSettingModifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingModifyDTO.class);
+		DaemonHelper.deviceSettingModify(dto.getMac(), dto.getPayload(), daemonRpcService);
+		
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s] successful", message));
 	}
 	
 	/**

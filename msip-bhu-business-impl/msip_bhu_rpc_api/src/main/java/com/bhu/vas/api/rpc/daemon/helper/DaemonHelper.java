@@ -83,4 +83,11 @@ public class DaemonHelper {
 				max_test_time);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
+	
+	public static void deviceSettingModify(String mac, String paylod, IDaemonRpcService daemonRpcService){
+		String cmd = CMDBuilder.builderDeviceSettingModify(mac, CMDBuilder.device_setting_modify_taskid_fragment.getNextSequence(),
+				paylod);
+		daemonCmdDown(mac, cmd, daemonRpcService);
+	}
+	
 }
