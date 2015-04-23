@@ -36,7 +36,7 @@ public class DeviceController extends BaseController{
 	 * @param response
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_max_busy_wifidevices",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_max_busy_wifidevices",method={RequestMethod.POST})
 	public void fetch_max_busy_devices(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -63,7 +63,7 @@ public class DeviceController extends BaseController{
 	 * @param pageSize
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_wifidevices_by_keyword",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_wifidevices_by_keyword",method={RequestMethod.POST})
 	public void fetch_wifidevices_by_keyword(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -95,7 +95,7 @@ public class DeviceController extends BaseController{
 	 * @param response
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_statistics_general",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_statistics_general",method={RequestMethod.POST})
 	public void fetch_statistics_general(
 			HttpServletRequest request,
 			HttpServletResponse response) {
@@ -111,7 +111,7 @@ public class DeviceController extends BaseController{
 	 * @param regions 地域名称 逗号分割
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_region_count",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_region_count",method={RequestMethod.POST})
 	public void fetch_region_count(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -129,7 +129,7 @@ public class DeviceController extends BaseController{
 	 * @param pageSize
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_wifidevices_by_registerat",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_wifidevices_by_registerat",method={RequestMethod.POST})
 	public void fetch_wifidevices_by_registerat(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -149,7 +149,7 @@ public class DeviceController extends BaseController{
 	 * @param pageSize
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_handsetdevices",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_handsetdevices",method={RequestMethod.POST})
 	public void fetch_handsetdevices(
 			HttpServletRequest request,
 			HttpServletResponse response,

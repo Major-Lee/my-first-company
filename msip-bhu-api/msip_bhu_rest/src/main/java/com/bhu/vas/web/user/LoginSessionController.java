@@ -45,7 +45,7 @@ public class LoginSessionController extends BaseController{
 	 * @param device 设备 
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/create",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/create",method={RequestMethod.POST})
 	public void login(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -85,7 +85,7 @@ public class LoginSessionController extends BaseController{
 	 * @param device
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/validates",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/validates",method={RequestMethod.POST})
 	public void validate(
 			HttpServletRequest request,
 			HttpServletResponse response,
