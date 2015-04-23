@@ -196,9 +196,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	 * @param url
 	 * @return
 	 */
-	private static boolean uriStartWithThenSkip(String url){
+	private static boolean uriStartWithThenSkip(String uri){
 		Pattern pattern = Pattern.compile(patternRegx);
-        Matcher matcher = pattern.matcher("/statistic/ddss/ssf");
+        Matcher matcher = pattern.matcher(uri);
         return matcher.find();
 	}
 }
