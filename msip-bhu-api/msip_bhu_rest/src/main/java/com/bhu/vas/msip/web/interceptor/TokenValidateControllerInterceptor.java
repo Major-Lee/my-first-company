@@ -3,6 +3,7 @@ package com.bhu.vas.msip.web.interceptor;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.jdo.ResponseError;
@@ -28,17 +31,29 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapter {
 	private final Logger logger = LoggerFactory.getLogger(TokenValidateControllerInterceptor.class);
 	
-	private static final String pingurl = "/ping/v1";
+	@Resource
+	private IUserRpcService userRpcService;
+
+	
+	private static final String NoAuthPrefixUrl = "/noauth";
+	private static final String pingurl = "/ping";
 	private static final String commonurl = "/common";
 	private static final String dashboardurl = "/dashboard";
 	//private static final String historyurl = "/history";
 	//private static final String guesturl = "/guest";
 	//private static final String visiturl = "/visit";
+	//private static Set<String> ignoreTokensValidateUrlPrefixSet = new HashSet<String>();
 	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
 	static{
+		
+		/*ignoreTokensValidateUrlPrefixSet.add("/noauth");
+		ignoreTokensValidateUrlPrefixSet.add("/ping");
+		ignoreTokensValidateUrlPrefixSet.add("/common");
+		ignoreTokensValidateUrlPrefixSet.add("/dashboard");*/
+		
 		ignoreTokensValidateUrlSet.add("/sessions/create");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
-		ignoreTokensValidateUrlSet.add("/account/create");
+		//ignoreTokensValidateUrlSet.add("/account/create");
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
 		//检测名称唯一性
@@ -56,7 +71,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		
 		//ignoreTokensValidateUrlSet.add("/personal/fetch");
 		
-		ignoreTokensValidateUrlSet.add("/config/ios");
+		/*ignoreTokensValidateUrlSet.add("/config/ios");
 		ignoreTokensValidateUrlSet.add("/config/android");
 		
 		//ignoreTokensValidateUrlSet.add("/user/tmp/upload");
@@ -68,7 +83,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//ignoreTokensValidateUrlSet.add("/wallpaper/fetch_categories");
 		ignoreTokensValidateUrlSet.add("/handset/feedback/post");
 
-		ignoreTokensValidateUrlSet.add("/user/device/validate");
+		ignoreTokensValidateUrlSet.add("/user/device/validate");*/
 	}
 	
 	
@@ -89,9 +104,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
-		if(uri.endsWith(pingurl))
-	        return true;  
-		if(uri.startsWith(commonurl))
+		if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(pingurl) || uri.startsWith(commonurl) || uri.startsWith(dashboardurl))
 	        return true;  
 		
 		String method = request.getMethod();
@@ -103,9 +116,6 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		if(!RuntimeConfiguration.isRequestMethodSupported(method)){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 			return false;
-		}
-		if(uri.startsWith(dashboardurl)){// || uri.startsWith(historyurl)){
-			return true;
 		}
 		//System.out.println("uri " + uri);
 		/*if((uri.startsWith(guesturl) || uri.startsWith(visiturl)) && !uri.endsWith("create")){
@@ -137,17 +147,26 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		}
 		//if(output) System.out.println("~~~~~~~~~~~~~verify_invitation2");
 		
-		/*String naolaToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
-		if(StringUtils.isEmpty(naolaToken)){
-			naolaToken = request.getParameter(RuntimeConfiguration.Param_ATokenRequest);
-			if(StringUtils.isEmpty(naolaToken)){
+		String accessToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
+		if(StringUtils.isEmpty(accessToken)){
+			accessToken = request.getParameter(RuntimeConfiguration.Param_ATokenRequest);
+			if(StringUtils.isEmpty(accessToken)){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 				return false;
 			}
 		}
 		
+		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(request.getParameter(RuntimeConfiguration.Param_UidRequest), accessToken);
+		if(tokenValidate.getErrorCode() == null){
+			if(!tokenValidate.getPayload().booleanValue()){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
+				return false;
+			}
+		}
+		//else
+		//	SpringMVCHelper.renderJson(response, ResponseError.embed(tokenValidate.getErrorCode()));
 		//System.out.println("before IegalTokenHashService validate!");
-		boolean isReg = IegalTokenHashService.getInstance().validateUserToken(naolaToken,request.getParameter(RuntimeConfiguration.Param_UidRequest));
+		/*boolean isReg = IegalTokenHashService.getInstance().validateUserToken(naolaToken,request.getParameter(RuntimeConfiguration.Param_UidRequest));
 		if(!isReg){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
 			return false;
@@ -155,6 +174,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		
 		return true;
 	}
+	
+	
+	
 	private static boolean isIgnoreURL(String requestUrl){
 		for(String igurl:ignoreTokensValidateUrlSet){
 			if(requestUrl.endsWith(igurl)) return true;

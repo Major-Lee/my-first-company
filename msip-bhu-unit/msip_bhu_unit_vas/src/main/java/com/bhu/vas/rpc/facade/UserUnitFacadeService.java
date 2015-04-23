@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,10 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserDeviceService userDeviceService;
 
-	
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
+		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
+	}
 	/**
 	 * 检查手机号是否注册过
 	 * @param countrycode

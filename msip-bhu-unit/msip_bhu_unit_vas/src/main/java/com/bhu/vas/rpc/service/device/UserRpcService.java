@@ -53,4 +53,10 @@ public class UserRpcService implements IUserRpcService{
 				countrycode,acc,device,captcha));
 		return userUnitFacadeService.userCreateOrLogin(countrycode, acc, device, remoteIp, captcha);
 	}
+
+	@Override
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
+		// TODO Auto-generated method stub
+		return userUnitFacadeService.tokenValidate(uidParam, token);
+	}
 }

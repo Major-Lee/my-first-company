@@ -28,6 +28,14 @@ public interface IUserRpcService {
 			);*/
 	
 	/**
+	 * 检测token是否合法
+	 * @param countrycode
+	 * @param acc
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token);
+	
+	/**
 	 * 检测acc是否已经存在
 	 * @param countrycode
 	 * @param acc
