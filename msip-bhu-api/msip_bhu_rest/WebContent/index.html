@@ -63,6 +63,18 @@
             window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
             log("added key " + key);
         }
+        var a_key = encodeURIComponent($('#a_header')[0].value);
+        if(a_key && a_key.trim() != "") {
+          var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("A-Token-Header", a_key, "header");
+          window.swaggerUi.api.clientAuthorizations.add("a_header", apiKeyAuth);
+          log("added a_key " + a_key);
+        }
+        var s_key = encodeURIComponent($('#s_header')[0].value);
+        if(s_key && s_key.trim() != "") {
+          var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("S-Token-Header", s_key, "header");
+          window.swaggerUi.api.clientAuthorizations.add("s_header", apiKeyAuth);
+          log("added s_key " + s_key);
+        }
       }
 
       $('#input_apiKey').change(addApiKeyAuthorization);
@@ -93,6 +105,11 @@
       <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
       <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
       <div class='input'><a id="explore" href="#">Explore</a></div>
+      <br/>
+      <br/>
+      <br/>
+      <div class='input'><input placeholder="A_Token_Header" id="a_header" name="a_header" type="text"/></div>
+      <div class='input'><input placeholder="S_Token_Header" id="s_header" name="s_header" type="text"/></div>
     </form>
   </div>
 </div>
