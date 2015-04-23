@@ -170,7 +170,7 @@ public class DeviceHelper {
 		return uptime;
 	}
 	//新版本设备定义
-	public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10"};
+	public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
 	
 	/**
 	 * 根据设备的原始软件版本号 判断是否新版本设备
