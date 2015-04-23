@@ -190,7 +190,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		}
 		return false;
 	}
-	private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	/**
 	 * 以定义好的字符串前缀
 	 * @param url
