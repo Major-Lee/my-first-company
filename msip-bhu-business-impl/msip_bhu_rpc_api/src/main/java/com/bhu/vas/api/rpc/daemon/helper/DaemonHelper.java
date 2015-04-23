@@ -9,7 +9,9 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 public class DaemonHelper {
 	public static void afterDeviceOnline(String mac,boolean needLocationQuery,IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
-		
+		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
+		//下发管理参数触发设备自动上报用户通知并同步终端
+		payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
 		//获取设备测速

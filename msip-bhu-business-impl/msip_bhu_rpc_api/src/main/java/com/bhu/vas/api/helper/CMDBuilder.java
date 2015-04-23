@@ -20,7 +20,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
  */
 public class CMDBuilder {
 	
-	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制
+	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制  下发管理参数触发设备自动上报用户通知并同步终端
 	private static final String query_device_teminals_cmd_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>";
 	/*
 	//1. 查询cpu,内存利用率
