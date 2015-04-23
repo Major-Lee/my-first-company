@@ -192,8 +192,8 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			String serial = serialDto.getSerial();
 			if(!StringUtils.isEmpty(serial)){
 				if(serial.length() == 10){
-					String opt = serial.substring(0, 2);
-					int taskid = Integer.parseInt(serial.substring(2, 10));
+					String opt = serial.substring(0, 3);
+					int taskid = Integer.parseInt(serial.substring(3, 10));
 					String mac = parserHeader.getMac();
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){

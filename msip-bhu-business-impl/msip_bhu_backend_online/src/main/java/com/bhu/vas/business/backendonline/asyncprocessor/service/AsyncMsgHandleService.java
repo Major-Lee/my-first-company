@@ -493,7 +493,11 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s]", message));
 		
 		WifiDeviceSettingModifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingModifyDTO.class);
-		DaemonHelper.deviceSettingModify(dto.getMac(), dto.getPayload(), daemonRpcService);
+		//test
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(dto.getMac());
+		
+		String payload = "<dev><sys><config><ITEM sequence=\""+entity.getInnerModel().getSequence()+"\"/></config></sys><wifi><vap><ITEM name=\"wlan0\" radio=\"wifi0\" ssid=\"urouter-lwh\" auth=\"open\" enable=\"enable\" acl_type=\"deny\" acl_name=\"blackList\" guest_en=\"disable\"/><ITEM name=\"wlan2\" radio=\"wifi0\" ssid=\"BHU2\" auth=\"open\" enable=\"disable\" acl_type=\"deny\" acl_name=\"blackList\" guest_en=\"disable\"/><ITEM name=\"wlan3\" radio=\"wifi0\" ssid=\"BHU3\" auth=\"open\" enable=\"disable\" acl_type=\"deny\" acl_name=\"blackList\" guest_en=\"disable\"/></vap><acllist><ITEM name=\"blackList\" macs=\"\" /></acllist></wifi></dev>";
+		DaemonHelper.deviceSettingModify(dto.getMac(), payload, daemonRpcService);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s] successful", message));
 	}
