@@ -40,7 +40,7 @@ public class StatisticsController extends BaseController{
 		public static final int YEAR_MONTH_DD = 4;
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_online_handset",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_online_handset",method={RequestMethod.POST})
 	public void fetch_online_handset(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -66,7 +66,7 @@ public class StatisticsController extends BaseController{
 	
 	
 	@ResponseBody()
-	@RequestMapping(value="/fetch_online_device",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_online_device",method={RequestMethod.POST})
 	public void fetch_online_device(
 			HttpServletRequest request,
 			HttpServletResponse response,

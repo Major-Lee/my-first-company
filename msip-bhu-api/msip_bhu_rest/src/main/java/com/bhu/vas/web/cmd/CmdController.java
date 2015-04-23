@@ -33,12 +33,11 @@ public class CmdController extends BaseController{
 	 * @param response
 	 * @param mac
 	 * @param opt
-	 * @param payload
 	 * @param channel
 	 * @param channel_taskid
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/generate",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/generate",method={RequestMethod.POST})
 	public void cmdGenerate(
 			HttpServletRequest request,
 			HttpServletResponse response,

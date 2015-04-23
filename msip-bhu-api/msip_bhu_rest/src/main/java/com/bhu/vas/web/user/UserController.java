@@ -89,7 +89,7 @@ public class UserController extends BaseController{
 	
 	
 	@ResponseBody()
-	@RequestMapping(value="/check_mobileno",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/check_mobileno",method={RequestMethod.POST})
 	public void check_unique(
 			HttpServletResponse response,
 			//@RequestParam(required = true,value="t") int type,
@@ -120,7 +120,7 @@ public class UserController extends BaseController{
 	
 	
 	@ResponseBody()
-	@RequestMapping(value="/check_device_binded",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/check_device_binded",method={RequestMethod.POST})
 	public void check_device_binded(
 			HttpServletResponse response,
 			@RequestParam(required = true,value="dmac") String device_mac) {

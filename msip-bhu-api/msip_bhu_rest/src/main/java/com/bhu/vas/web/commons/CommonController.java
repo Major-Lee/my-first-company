@@ -20,7 +20,7 @@ public class CommonController extends BaseController{
 
 	
 	@ResponseBody()
-	@RequestMapping(value = {"/commons/{commonCode}"},method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = {"/commons/{commonCode}"},method={RequestMethod.POST})
 	public void commons(HttpServletRequest request,
 			HttpServletResponse response, 
 			@PathVariable String commonCode) {

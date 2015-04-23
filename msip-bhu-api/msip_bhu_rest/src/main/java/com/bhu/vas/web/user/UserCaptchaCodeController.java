@@ -33,7 +33,7 @@ public class UserCaptchaCodeController extends BaseController{
 	 * @param acc
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch_captcha",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_captcha",method={RequestMethod.POST})
 	public void fetch_captcha(
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,

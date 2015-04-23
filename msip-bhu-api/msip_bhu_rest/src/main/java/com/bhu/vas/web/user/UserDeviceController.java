@@ -30,7 +30,7 @@ public class UserDeviceController extends BaseController {
     private IUserDeviceRpcService userDeviceRpcService;
 
     @ResponseBody()
-    @RequestMapping(value="/bind",method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value="/bind",method={RequestMethod.POST})
     public void bindDevice(HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
                            @RequestParam(required = true, value = "uid") int uid,
@@ -53,7 +53,7 @@ public class UserDeviceController extends BaseController {
     }
 
     @ResponseBody()
-    @RequestMapping(value="/unbind",method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value="/unbind",method={RequestMethod.POST})
     public void unBindDevice(HttpServletResponse response,
                              @RequestParam(required = true, value = "mac") String mac,
                              @RequestParam(required = true, value = "uid") int uid
@@ -86,7 +86,7 @@ public class UserDeviceController extends BaseController {
     }
 
     @ResponseBody()
-    @RequestMapping(value="/validate",method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value="/validate",method={RequestMethod.POST})
     public void validateDevice(HttpServletResponse response,
                                @RequestParam(required = true, value = "mac") String mac) {
         if (!StringHelper.isValidMac(mac)) {
@@ -97,7 +97,7 @@ public class UserDeviceController extends BaseController {
     }
 
     @ResponseBody()
-    @RequestMapping(value="/fetchbinded",method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
     public void listBindDevice(HttpServletResponse response,
                                @RequestParam(required = true, value = "uid") int uid) {
         RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);

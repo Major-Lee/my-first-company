@@ -62,7 +62,7 @@ public class QueryController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/f404",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/f404",method={RequestMethod.POST})
 	public ModelAndView f404(
 			HttpServletRequest request,
 			HttpServletResponse response) {
@@ -79,7 +79,7 @@ public class QueryController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/r404",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/r404",method={RequestMethod.POST})
 	public ModelAndView r404(
 			HttpServletRequest request,
 			HttpServletResponse response) {

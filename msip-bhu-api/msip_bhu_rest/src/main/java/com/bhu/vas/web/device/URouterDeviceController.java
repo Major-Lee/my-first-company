@@ -35,7 +35,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param response
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/enter",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/enter",method={RequestMethod.POST})
 	public void enter(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -62,7 +62,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param size
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/hd_list",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/hd_list",method={RequestMethod.POST})
 	public void hd_list(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -88,7 +88,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param mac
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/device_rx_rate",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/device_rx_rate",method={RequestMethod.POST})
 	public void device_rx_rate(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -110,7 +110,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param mac
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/block_list",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/block_list",method={RequestMethod.POST})
 	public void block_list(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -135,7 +135,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param mac
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/setting",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/setting",method={RequestMethod.POST})
 	public void setting(
 			HttpServletRequest request,
 			HttpServletResponse response,

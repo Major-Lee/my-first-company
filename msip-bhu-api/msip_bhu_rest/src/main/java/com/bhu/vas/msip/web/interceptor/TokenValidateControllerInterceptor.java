@@ -105,7 +105,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		/*if(uri.indexOf("config") != -1){
 			output = true;
 		}*/
-		logger.info(String.format("Rest Request URL [%s] Params [%s]", request.getRequestURI(), request.getParameterMap()));
+		logger.info(String.format("Rest Request uri[%s] URL [%s] Params [%s]",uri, request.getRequestURI(), request.getParameterMap()));
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
@@ -190,7 +190,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		}
 		return false;
 	}
-	private static final String patternRegx = "^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	/**
 	 * 以定义好的字符串前缀
 	 * @param url
