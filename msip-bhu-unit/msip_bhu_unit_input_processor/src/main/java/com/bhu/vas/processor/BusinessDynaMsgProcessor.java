@@ -98,15 +98,10 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
 								OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
 								if(cmd_opt != null){
-									if(cmd_opt == OperationCMD.QueryDeviceLocationS1){
+									/*if(cmd_opt == OperationCMD.QueryDeviceLocationS1){
 										daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
-									}
+									}*/
 								}
-								//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
-								/*if(CMDBuilder.wasLocationQueryTaskid(headers.getTaskid())){//任务查询反馈消息
-									//QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(payload, QuerySerialReturnDTO.class);
-									daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);//, retDTO);
-								}*/
 							}
 						}
 						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);

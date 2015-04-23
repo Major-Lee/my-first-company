@@ -33,8 +33,8 @@ public class CMDBuilder {
 	private static final String query_device_location_step2_cmd_template = "00001001%s%s%s"+"000100000001"+"<report><ITEM cmd=\"sysdebug\" serial=\"%s\" op=\"get\"/></report>";
 */	
 	
-	
-	public static final String SuffixTemplete = "%08d";
+	//任务id format为七位，前面补零
+	public static final String SuffixTemplete = "%07d";
 	
 	public static String builderDeviceOnlineTeminalQuery(String wifi_mac){
 		return String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac));
@@ -85,7 +85,7 @@ public class CMDBuilder {
 				period, duration, builderCMDSerial(opt, taskid_format));
 	}
 	
-	public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
+	/*public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceLocationS1.getCmdtpl(),//query_device_location_step1_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS1.getNo(),String.format(SuffixTemplete,taskid));//location_taskid_fragment.getNextSequence()));
 	}
@@ -93,7 +93,7 @@ public class CMDBuilder {
 	public static String builderDeviceLocationStep2Query(String wifi_mac,int taskid,String serialno){
 		return String.format(OperationCMD.QueryDeviceLocationS2.getCmdtpl(),//query_device_location_step2_cmd_template,
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),String.format(SuffixTemplete,taskid),serialno);
-	}
+	}*/
 	
 	public static String builderDeviceLocationNotifyQuery(String wifi_mac,int taskid){
 		String opt = OperationCMD.QueryDeviceLocationNotify.getNo();

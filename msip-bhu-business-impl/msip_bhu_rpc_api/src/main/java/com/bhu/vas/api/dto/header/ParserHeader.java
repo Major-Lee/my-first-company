@@ -78,8 +78,8 @@ public class ParserHeader implements java.io.Serializable{
 		pheader.setType(type);
 		if(StringUtils.isEmpty(header) || header.length() <34) return pheader;
 		pheader.setMac(StringHelper.formatMacAddress(header.substring(0, 12)));
-		pheader.setOpt(header.substring(12, 14));
-		pheader.setTaskid(Integer.parseInt(header.substring(14, 22)));
+		pheader.setOpt(header.substring(12, 15));
+		pheader.setTaskid(Integer.parseInt(header.substring(15, 22)));
 		pheader.setMt(Integer.parseInt(header.substring(22, 26)));
 		pheader.setSt(Integer.parseInt(header.substring(26, 34)));
 		return pheader;
