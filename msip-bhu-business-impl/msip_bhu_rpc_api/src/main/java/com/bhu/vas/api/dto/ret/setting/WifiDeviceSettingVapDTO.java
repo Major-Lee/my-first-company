@@ -16,7 +16,6 @@ public class WifiDeviceSettingVapDTO {
 	
 	//VAP名称
 	private String name;
-	//信号强度
 	private String ssid;
 	//加密方式
 	private String auth;

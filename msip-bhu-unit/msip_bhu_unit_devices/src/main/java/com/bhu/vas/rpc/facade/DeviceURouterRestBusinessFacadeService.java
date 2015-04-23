@@ -76,8 +76,9 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			WifiDeviceSettingDTO dto = entity.getInnerModel();
 			URouterEnterVTO vto = new URouterEnterVTO();
-			if(!StringUtils.isEmpty(dto.getPower())){
-				vto.setPower(Integer.parseInt(dto.getPower()));
+			String power = DeviceHelper.getURouterDevicePower(dto);
+			if(!StringUtils.isEmpty(power)){
+				vto.setPower(Integer.parseInt(power));
 			}
 			vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
 			//vto.setWd_date_rx_rate(device_entity.getData_rx_rate());

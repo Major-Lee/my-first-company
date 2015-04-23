@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -119,6 +120,29 @@ public class DeviceHelper {
 			return Mode_Pppol2tp_Show;
 		}
 		return mode;
+	}
+	
+	/**
+	 * URouter设备获取radio信息 由于urouter设备是单频 只返回第一个radio
+	 * @param dto
+	 * @return
+	 */
+	public static WifiDeviceSettingRadioDTO getURouterDeviceRadio(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		List<WifiDeviceSettingRadioDTO> radio_dtos = dto.getRadios();
+		if(radio_dtos == null || radio_dtos.isEmpty()) return null;
+		return radio_dtos.get(0);
+	}
+	
+	/**
+	 * URouter设备获取信号强度信息 由于urouter设备是单频 只返回第一个radio的信号强度
+	 * @param dto
+	 * @return
+	 */
+	public static String getURouterDevicePower(WifiDeviceSettingDTO dto){
+		WifiDeviceSettingRadioDTO radio_dto = getURouterDeviceRadio(dto);
+		if(radio_dto == null) return null;
+		return radio_dto.getPower();
 	}
 	
 	/**
