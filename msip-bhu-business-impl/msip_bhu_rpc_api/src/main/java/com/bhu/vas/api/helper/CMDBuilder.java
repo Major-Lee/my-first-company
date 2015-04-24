@@ -144,6 +144,7 @@ public class CMDBuilder {
 					if(xmlPayload != null){
 						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, xmlPayload);
 					}
+					break;
 				default:
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));

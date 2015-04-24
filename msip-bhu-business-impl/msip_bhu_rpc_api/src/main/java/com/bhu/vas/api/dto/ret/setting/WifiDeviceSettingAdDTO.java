@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 
 /**
  * 设备配置信息的ad
@@ -76,5 +78,14 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		properties[1] = bhu_ad_url;
 		properties[2] = bhu_enable;
 		return properties;
+	}
+	public static void main(String[] argv){
+		WifiDeviceSettingAdDTO dto = new WifiDeviceSettingAdDTO();
+		//dto.setAd_interface(ad_interface);
+		//dto.setAd_url(ad_url);
+		dto.setBhu_ad_url("http://auth.wi2o.cn/ad/ad.js");
+		dto.setBhu_enable("enable");
+		dto.setId("400889");
+		System.out.println(JsonHelper.getJSONString(dto));
 	}
 }
