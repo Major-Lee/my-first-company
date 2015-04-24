@@ -297,13 +297,18 @@ public class DeviceFacadeService {
 	 */
 	public String generateDeviceSetting(String mac, String ds_opt, String extparams){
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		System.out.println("generateDeviceSetting 1"+mac+" "+ ds_opt+" "+extparams);
 		if(entity != null){
+			System.out.println("generateDeviceSetting 2");
 			String config_sequence = DeviceHelper.getConfigSequence(entity.getInnerModel());
 			if(!StringUtils.isEmpty(config_sequence)){
+				System.out.println("generateDeviceSetting 3");
 				OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
 				if(ods != null)
+					System.out.println("generateDeviceSetting 4");
 					switch(ods){
 						case DS_Ad:
+							System.out.println("generateDeviceSetting 5");
 							return DeviceHelper.builderDSAdOuter(config_sequence, extparams);
 						default:
 							break;

@@ -44,7 +44,7 @@ public class TaskUnitFacadeService {
 		int ret = taskFacadeService.taskComming(downTask);
 		if(ret == RpcResponseCodeConst.Task_Startup_OK){
 			String xmlPayload = null;
-			if(OperationCMD.ModifyDeviceSetting.getNo().equals(subopt)){
+			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 				xmlPayload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
 			}
 			//deviceFacadeService.generateDeviceSettingAd(mac,)
