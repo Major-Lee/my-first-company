@@ -573,32 +573,35 @@ public class DeviceBusinessFacadeService {
 	public void taskModifyDeviceSetting(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 		if(entity != null){
-			ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, ModifyDeviceSettingDTO.class);
-			String status = WifiDeviceDownTask.State_Failed;
-			if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
-				status = WifiDeviceDownTask.State_Done;
-			}
-	
-			//任务callback
-			WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
-			//通过任务记录的上下文来进行设备配置数据变更
-			if(task_completed != null){
-				String payload = task_completed.getPayload();
-				if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
-					String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
-					if(!StringUtils.isEmpty(cmdWithoutHeader)){
-						WifiDeviceSettingDTO setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
-								cmdWithoutHeader, entity.getInnerModel());
-						//DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
-						entity.putInnerModel(setting_dto);
+			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+			if(setting_dto != null){
+				ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, ModifyDeviceSettingDTO.class);
+				String status = WifiDeviceDownTask.State_Failed;
+				if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
+					status = WifiDeviceDownTask.State_Done;
+				}
+		
+				//任务callback
+				WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
+				//通过任务记录的上下文来进行设备配置数据变更
+				if(task_completed != null){
+					String payload = task_completed.getPayload();
+					if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
+						String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+						if(!StringUtils.isEmpty(cmdWithoutHeader)){
+							setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+									cmdWithoutHeader, entity.getInnerModel());
+							//DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
+							entity.putInnerModel(setting_dto);
+						}
 					}
 				}
-			}
-			//修改配置序列号
-			if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
-				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
-				setting_dto.setSequence(dto.getConfig_sequence());
-				wifiDeviceSettingService.update(entity);
+				//修改配置序列号
+				if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
+					setting_dto.setSequence(dto.getConfig_sequence());
+					entity.putInnerModel(setting_dto);
+					wifiDeviceSettingService.update(entity);
+				}
 			}
 		}
 	}
