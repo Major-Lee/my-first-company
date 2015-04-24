@@ -42,7 +42,9 @@ public class TaskFacadeService {
 				}
 				completed.setState(WifiDeviceDownTask.State_Done);
 				completed.setCompleted_at(new Date());*/
-				return wifiDeviceDownTaskCompletedService.insert(completed);
+				WifiDeviceDownTaskCompleted result = wifiDeviceDownTaskCompletedService.insert(completed);
+				wifiDeviceDownTaskService.deleteById(taskid);
+				return result;
 			}else{
 				downtask.setState(state);
 				wifiDeviceDownTaskService.update(downtask);
