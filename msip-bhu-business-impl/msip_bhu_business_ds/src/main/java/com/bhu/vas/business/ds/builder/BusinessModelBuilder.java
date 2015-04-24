@@ -178,7 +178,7 @@ public class BusinessModelBuilder {
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
 		if(mark_entity != null){
-			vto.setN(mark_entity.getHd_name());
+			//vto.setN(mark_entity.getHd_name());
 			//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
 			vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
 			vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_tx_limit()));
