@@ -544,14 +544,13 @@ public class DeviceBusinessFacadeService {
 		//只有URouter的设备才需进行此操作
 		if(deviceFacadeService.isURooterDevice(wifiId)){
 			//验证URouter设备配置是否符合约定
-			//if(!DeviceHelper.validateURouterBlackList(dto)){
+			if(!DeviceHelper.validateURouterBlackList(dto)){
 				String modify_payload = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 				if(!StringUtils.isEmpty(modify_payload)){
 					deliverMessageService.sendDeviceSettingModifyActionMessage(null, wifiId, modify_payload);
 				}
-			//}
+			}
 		}
-		
 //		//TODO:判断设备有人管理才发送异步消息
 //		if(dto.getVaps() != null)
 //			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceHelper.

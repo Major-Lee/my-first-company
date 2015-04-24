@@ -294,7 +294,7 @@ public class DeviceHelper {
 		if(StringUtils.isEmpty(ds) || StringUtils.isEmpty(config_sequence)) return null;
 		
 		String sequence = String.format(DeviceSetting_ConfigSequenceTree, config_sequence);
-		return ds.concat(sequence);
+		return sequence.concat(ds);
 	}
 	
 	/**
@@ -319,7 +319,11 @@ public class DeviceHelper {
 		return builderConfigSequence(result, dto.getSequence());
 	}
 	
-	
+	/**
+	 * 构建urouter设备的默认vap的黑名单关联
+	 * @param dto
+	 * @return
+	 */
 	public static List<WifiDeviceSettingVapDTO> builderDSURouterDefaultVapDtos(WifiDeviceSettingDTO dto){
 		if(dto != null) {
 			List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
@@ -333,7 +337,11 @@ public class DeviceHelper {
 		}
 		return null;
 	}
-	
+	/**
+	 * 构建urouter设备的默认的黑名单列表
+	 * @param dto
+	 * @return
+	 */
 	public static WifiDeviceSettingAclDTO builderDSURouterDefaultAclDto(WifiDeviceSettingDTO dto){
 		WifiDeviceSettingAclDTO current_acl_dto = matchDefaultAcl(dto);
 		if(current_acl_dto != null){
