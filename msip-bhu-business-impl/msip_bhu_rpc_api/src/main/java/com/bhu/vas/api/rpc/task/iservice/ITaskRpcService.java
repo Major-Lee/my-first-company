@@ -8,6 +8,7 @@ public interface ITaskRpcService {
 	public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,
 			String opt,
+			String subopt,
 			String extparams,
 			//String payload,
 			String channel,

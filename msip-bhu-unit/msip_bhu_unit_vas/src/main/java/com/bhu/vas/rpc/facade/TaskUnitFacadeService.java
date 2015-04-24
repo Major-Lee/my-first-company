@@ -5,11 +5,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.RpcResponseCodeConst;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -26,9 +28,12 @@ public class TaskUnitFacadeService {
 	private DeliverMessageService deliverMessageService;
 	
 	@Resource
+	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
 	private TaskFacadeService taskFacadeService;
 
-	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String extparams,/*String payload,*/
+	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,/*String payload,*/
 			String channel, String channel_taskid){
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setChannel(channel);
@@ -38,7 +43,16 @@ public class TaskUnitFacadeService {
 		downTask.setMac(mac);
 		int ret = taskFacadeService.taskComming(downTask);
 		if(ret == RpcResponseCodeConst.Task_Startup_OK){
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
+			String xmlPayload = null;
+			if(OperationCMD.ModifyDeviceSetting.getNo().equals(subopt)){
+				xmlPayload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+			}
+			//deviceFacadeService.generateDeviceSettingAd(mac,)
+			//DeviceSettingBuilderDTO dto1 = null;
+			
+			//WifiDeviceSettingAdDTO dto1 = new WifiDeviceSettingAdDTO();
+			/*deviceFacadeService.generateDeviceSettingAd(mac,);*/
+			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),xmlPayload));
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);

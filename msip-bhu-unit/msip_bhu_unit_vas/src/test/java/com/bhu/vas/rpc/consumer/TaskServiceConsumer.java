@@ -18,7 +18,7 @@ public class TaskServiceConsumer {
 		context.start();
 		ITaskRpcService taskRpcService = (ITaskRpcService)context.getBean("taskRpcService");
 		
-		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(), 
+		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(),"", 
 				null,/*"payload content",*/ "APP_VAS", "9990");
 		
 //		taskRpcService.createNewTask("", OperationCMD.QueryDeviceStatus.getNo(), 

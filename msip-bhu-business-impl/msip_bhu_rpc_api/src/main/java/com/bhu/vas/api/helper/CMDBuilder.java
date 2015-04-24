@@ -127,7 +127,7 @@ public class CMDBuilder {
 //	}
 	
 	
-	public static String builderCMD4Opt(String opt,String wifi_mac,int taskid,String extparams){
+	public static String builderCMD4Opt(String opt/*, String subopt*/,String wifi_mac,int taskid,String xmlPayload){
 		String resultCmd = null;
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
@@ -141,8 +141,8 @@ public class CMDBuilder {
 //						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,split[0],split[1],split[2]);
 //					break;
 				case ModifyDeviceSetting:
-					if(extparams != null){
-						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, extparams);
+					if(xmlPayload != null){
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, xmlPayload);
 					}
 				default:
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
@@ -153,10 +153,10 @@ public class CMDBuilder {
 		return resultCmd;
 	}
 	
-	public static String[] parserExtParams(String extparams){
+	/*public static String[] parserExtParams(String extparams){
 		if(StringUtils.isEmpty(extparams)) return null;
 		return extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);
-	}
+	}*/
 	
 	public static String builderCMDSerial(String opt, String taskid_format){
 		StringBuffer serial = new StringBuffer();
