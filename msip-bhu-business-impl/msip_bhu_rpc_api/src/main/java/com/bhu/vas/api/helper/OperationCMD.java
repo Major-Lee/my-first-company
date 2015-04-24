@@ -48,7 +48,7 @@ public enum OperationCMD {
 	QueryDeviceRateNotify("106","查询设备实时速率","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"ifrate\" interface=\"%s\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	//<dev><net><ad><ITEM  bhu_enable=\"enable/disable\"  bhu_ad_url=\"广告url\" id=\"xxxx\" /></ad></net></dev>
 	//在广告注入以后，会在广告url后附加参数gw_id=xxxx&stamac=xxxx, 第一个参数来源于配置时候的id，可用于标识AP。比如安装于某个商户，每个商户id不同。第二个参数是关联的终端mac.
-	DevHTMLInjectionNotify("150","Html注入","","00001001%s%s%s"+"000100000001"+"<dev><net><ad><ITEM  bhu_enable=\"%s\"  bhu_ad_url=\"%s\" id=\"%s\" /></ad></net></dev>"),
+	//DevHTMLInjectionNotify("150","Html注入","","00001001%s%s%s"+"000100000001"+"<dev><net><ad><ITEM  bhu_enable=\"%s\"  bhu_ad_url=\"%s\" id=\"%s\" /></ad></net></dev>"),
 	//修改设备配置通用指令
 	ModifyDeviceSetting("151","设备配置修改通用指令","","00001001%s%s%s"+"000100000001"+"%s"),
 	;

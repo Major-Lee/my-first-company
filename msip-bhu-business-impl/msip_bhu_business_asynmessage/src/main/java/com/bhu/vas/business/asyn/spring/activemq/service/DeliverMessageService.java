@@ -158,7 +158,12 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendDeviceSettingModifyActionMessage(Integer uid, String mac, String payload){
+	/**
+	 * 主动触发的设备配置修改 任务id是区间id
+	 * @param mac
+	 * @param payload
+	 */
+	public void sendActiveDeviceSettingModifyActionMessage(String mac, String payload){
 		WifiDeviceSettingModifyDTO dto = new WifiDeviceSettingModifyDTO();
 		dto.setMac(mac);
 		dto.setPayload(payload);

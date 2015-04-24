@@ -525,7 +525,10 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
-	 * 获取设备配置的响应处理
+	 * 获取设备配置或者变更配置的响应处理
+	 * 1：更新配置数据
+	 * 2：如果设备是urouter，检查配置是否满足约定 不满足则下发修改配置
+	 * 	  此下发配置为区间任务 不等回应直接修改配置数据
 	 * @param ctx
 	 * @param response
 	 * @param wifiId
@@ -533,6 +536,18 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
+		
+		//只有URouter的设备才需进行此操作
+		if(deviceFacadeService.isURooterDevice(wifiId)){
+			//验证URouter设备配置是否符合约定
+			if(!DeviceHelper.validateURouterBlackList(dto)){
+				String modify_payload = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
+				if(!StringUtils.isEmpty(modify_payload)){
+					deliverMessageService.sendActiveDeviceSettingModifyActionMessage(wifiId, modify_payload);
+				}
+			}
+		}
+		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 		if(entity == null){
 			entity = new WifiDeviceSetting();
@@ -543,20 +558,7 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
-		//只有URouter的设备才需进行此操作
-		if(deviceFacadeService.isURooterDevice(wifiId)){
-			//验证URouter设备配置是否符合约定
-			if(!DeviceHelper.validateURouterBlackList(dto)){
-				String modify_payload = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
-				if(!StringUtils.isEmpty(modify_payload)){
-					deliverMessageService.sendDeviceSettingModifyActionMessage(null, wifiId, modify_payload);
-				}
-			}
-		}
-//		//TODO:判断设备有人管理才发送异步消息
-//		if(dto.getVaps() != null)
-//			deliverMessageService.sendQueryDeviceSettingActionMessage(wifiId, DeviceHelper.
-//					builderSettingVapNames(dto.getVaps()));
+		
 		//2:任务callback
 		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}
@@ -575,8 +577,9 @@ public class DeviceBusinessFacadeService {
 			status = WifiDeviceDownTask.State_Done;
 		}
 
-		//2:任务callback
+		//任务callback
 		WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
+		//通过任务记录的上下文来进行设备配置数据变更
 		if(task_completed != null){
 			String payload = task_completed.getPayload();
 			if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
