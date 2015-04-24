@@ -15,14 +15,18 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
@@ -47,6 +51,9 @@ public class DeviceFacadeService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceSettingService wifiDeviceSettingService;
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
@@ -278,5 +285,23 @@ public class DeviceFacadeService {
 	}
 
 	
+	/**************************  具体业务修改配置数据 封装 **********************************/
+	
+	/**
+	 * 生成设备配置的广告配置数据
+	 * @param mac
+	 * @param ad_dto
+	 * @return
+	 */
+	public String generateDeviceSettingAd(String mac, WifiDeviceSettingAdDTO ad_dto){
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity != null){
+			String config_sequence = DeviceHelper.getConfigSequence(entity.getInnerModel());
+			if(!StringUtils.isEmpty(config_sequence)){
+				return DeviceHelper.builderDSAdOuter(config_sequence, ad_dto);
+			}
+		}
+		return null;
+	}
 
 }

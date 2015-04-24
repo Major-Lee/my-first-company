@@ -244,18 +244,30 @@ public class DeviceHelper {
 		return true;
 	}
 	
+//	/**
+//	 * 修改设备的配置序列号
+//	 * @param dto
+//	 * @param config_sequence
+//	 * @return
+//	 */
+//	public static boolean modifyDSConfigSequence(WifiDeviceSettingDTO dto, String config_sequence){
+//		if(dto != null){
+//			dto.setSequence(config_sequence);
+//			return true;
+//		}
+//		return false;
+//	}
+	
 	/**
-	 * 修改设备的配置序列号
+	 * 获取设备的配置序列号
 	 * @param dto
-	 * @param config_sequence
 	 * @return
 	 */
-	public static boolean modifyDSConfigSequence(WifiDeviceSettingDTO dto, String config_sequence){
+	public static String getConfigSequence(WifiDeviceSettingDTO dto){
 		if(dto != null){
-			dto.setSequence(config_sequence);
-			return true;
+			return dto.getSequence();
 		}
-		return false;
+		return null;
 	}
 	
 	/*******************************    设备配置修改模板  ****************************************/
