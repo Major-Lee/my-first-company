@@ -6,7 +6,7 @@ package com.bhu.vas.api.dto.ret.setting;
  * @author tangzichao
  *
  */
-public class WifiDeviceSettingUserDTO {
+public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	//用户名称
 	private String name;
 	//加密密码
@@ -31,5 +31,10 @@ public class WifiDeviceSettingUserDTO {
 	}
 	public void setAuth(String auth) {
 		this.auth = auth;
+	}
+	@Override
+	public Object[] builderProperties() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

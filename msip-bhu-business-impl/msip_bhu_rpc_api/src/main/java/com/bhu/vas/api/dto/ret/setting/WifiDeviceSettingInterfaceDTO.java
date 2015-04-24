@@ -6,11 +6,7 @@ package com.bhu.vas.api.dto.ret.setting;
  * @author tangzichao
  *
  */
-public class WifiDeviceSettingInterfaceDTO {
-	//接口可用
-	public static final String Vap_Enable = "enable";
-	//接口不可用
-	public static final String Vap_Disable = "disable";
+public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 	//不限制速率
 	public static final String Rate_Unlimited = "0";
 	
@@ -62,5 +58,10 @@ public class WifiDeviceSettingInterfaceDTO {
 	}
 	public void setUsers_rx_rate(String users_rx_rate) {
 		this.users_rx_rate = users_rx_rate;
+	}
+	@Override
+	public Object[] builderProperties() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

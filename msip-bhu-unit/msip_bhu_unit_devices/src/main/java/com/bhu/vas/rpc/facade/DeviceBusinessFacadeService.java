@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.QueryTerminalSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
@@ -32,6 +33,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
@@ -560,7 +562,41 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
-	 * 获取VAP下的终端列表
+	 * 修改设备配置的响应处理
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskModifyDeviceSetting(String ctx, String response, String wifiId, int taskid){
+		ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, ModifyDeviceSettingDTO.class);
+		String status = WifiDeviceDownTask.State_Failed;
+		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
+			status = WifiDeviceDownTask.State_Done;
+		}
+
+		//2:任务callback
+		WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
+		if(task_completed != null){
+			String payload = task_completed.getPayload();
+			if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
+				String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+				if(!StringUtils.isEmpty(cmdWithoutHeader)){
+					WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
+					if(entity != null){
+						WifiDeviceSettingDTO setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+								cmdWithoutHeader, entity.getInnerModel());
+						DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
+						entity.putInnerModel(setting_dto);
+						wifiDeviceSettingService.update(entity);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 获取VAP下的终端列表的响应处理
 	 * @param ctx
 	 * @param response
 	 * @param wifiId
@@ -588,10 +624,11 @@ public class DeviceBusinessFacadeService {
 	 * 针对任务数据的状态修改和转移
 	 * @param serialDto
 	 */
-	public void doTaskCallback(int taskid, String status,String response){
-		if(StringUtils.isEmpty(status)) return;
+	public WifiDeviceDownTaskCompleted doTaskCallback(int taskid, String status,String response){
+		if(StringUtils.isEmpty(status)) return null;
 		if(CMDBuilder.wasNormalTaskid(taskid)){//查看taskid是否是触发性任务id
-			taskFacadeService.taskExecuteCallback(taskid, status,response);
+			return taskFacadeService.taskExecuteCallback(taskid, status,response);
 		}
+		return null;
 	}
 }

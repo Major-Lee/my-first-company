@@ -5,7 +5,7 @@ package com.bhu.vas.api.dto.ret.setting;
  * @author tangzichao
  *
  */
-public class WifiDeviceSettingRadioDTO {
+public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	//名称
 	private String name;
 	//信号强度
@@ -22,5 +22,10 @@ public class WifiDeviceSettingRadioDTO {
 	}
 	public void setPower(String power) {
 		this.power = power;
+	}
+	@Override
+	public Object[] builderProperties() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

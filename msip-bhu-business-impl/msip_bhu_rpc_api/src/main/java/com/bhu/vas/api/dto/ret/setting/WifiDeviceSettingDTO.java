@@ -33,6 +33,8 @@ public class WifiDeviceSettingDTO {
 	private List<WifiDeviceSettingRateControlDTO> ratecontrols;
 	//管理员用户列表
 	private List<WifiDeviceSettingUserDTO> users;
+	//广告
+	private WifiDeviceSettingAdDTO ad;
 	
 //	public String getPower() {
 //		return power;
@@ -104,5 +106,13 @@ public class WifiDeviceSettingDTO {
 
 	public void setRadios(List<WifiDeviceSettingRadioDTO> radios) {
 		this.radios = radios;
+	}
+
+	public WifiDeviceSettingAdDTO getAd() {
+		return ad;
+	}
+
+	public void setAd(WifiDeviceSettingAdDTO ad) {
+		this.ad = ad;
 	}
 }

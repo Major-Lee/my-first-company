@@ -9,10 +9,6 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public static final String AclType_Deny = "deny";
 	//白名单类型
 	public static final String AclType_Allow = "allow";
-	//VAP可用
-	public static final String Vap_Enable = "enable";
-	//VAP不可用
-	public static final String Vap_Disable = "disable";
 	
 	//VAP名称
 	private String name;

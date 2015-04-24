@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
@@ -225,8 +226,17 @@ public class RPCMessageParseHelper {
 	 * @return
 	 */
 	public static WifiDeviceSettingDTO generateDTOFromQueryDeviceSetting(String message){
+		return generateDTOFromQueryDeviceSetting(message, new WifiDeviceSettingDTO());
+	}
+	/**
+	 * 解析设备配置查询xml
+	 * 因为只获取其中少部分属性,所以没有采用反射机制注入
+	 * @param message
+	 * @param dto 配置dto
+	 * @return
+	 */
+	public static WifiDeviceSettingDTO generateDTOFromQueryDeviceSetting(String message, WifiDeviceSettingDTO dto){
 		Document doc = parserMessage(message);
-		WifiDeviceSettingDTO dto = new WifiDeviceSettingDTO();
 		try{
 			//解析 radio 多频设备会有多个
 			List<Element> radio_items = Dom4jHelper.selectElements(doc, "dev/wifi/radio/ITEM");
@@ -313,6 +323,13 @@ public class RPCMessageParseHelper {
 				}
 				dto.setRatecontrols(ratecontrol_dtos);
 			}
+			//解析广告
+			Element ad_item = Dom4jHelper.select(doc, "dev/net/ad/ITEM");
+			if(ad_item != null){
+				WifiDeviceSettingAdDTO ad_dto = generateDTOFromMessage(doc, WifiDeviceSettingAdDTO.class);
+				dto.setAd(ad_dto);
+			}
+			
 			//解析管理员用户列表
 			List<Element> user_items = Dom4jHelper.selectElements(doc, "dev/sys/users/ITEM");
 			if(user_items != null && !user_items.isEmpty()){
@@ -397,7 +414,7 @@ public class RPCMessageParseHelper {
         in.close();
         
         System.out.println(content.toString());
-		WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(content.toString());
+		//WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(content.toString());
 		//System.out.println(dto.getPower());
 	}
 }

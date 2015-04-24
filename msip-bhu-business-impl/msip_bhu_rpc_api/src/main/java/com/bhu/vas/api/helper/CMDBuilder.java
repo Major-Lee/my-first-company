@@ -36,6 +36,9 @@ public class CMDBuilder {
 	//任务id format为七位，前面补零
 	public static final String SuffixTemplete = "%07d";
 	
+	//指令头长度
+	public static final int Cmd_Header_Length = 42;
+	
 	public static String builderDeviceOnlineTeminalQuery(String wifi_mac){
 		return String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac));
 	}
@@ -137,6 +140,10 @@ public class CMDBuilder {
 					else
 						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,split[0],split[1],split[2]);
 					break;
+				case ModifyDeviceSetting:
+					if(extparams != null){
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, extparams);
+					}
 				default:
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));
@@ -155,6 +162,12 @@ public class CMDBuilder {
 		StringBuffer serial = new StringBuffer();
 		serial.append(opt).append(taskid_format);
 		return serial.toString();
+	}
+
+	
+	public static String builderCMDWithoutHeader(String cmd){
+		if(StringUtils.isEmpty(cmd) || cmd.length() < Cmd_Header_Length) return null;
+		return cmd.substring(Cmd_Header_Length);
 	}
 	
 	//任务号分段：

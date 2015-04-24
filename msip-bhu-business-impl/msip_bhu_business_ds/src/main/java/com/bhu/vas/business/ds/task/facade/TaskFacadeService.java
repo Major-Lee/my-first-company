@@ -25,7 +25,7 @@ public class TaskFacadeService {
 	 * @param taskid
 	 * @param status
 	 */
-	public boolean taskExecuteCallback(int taskid,String state,String response){
+	public WifiDeviceDownTaskCompleted taskExecuteCallback(int taskid,String state,String response){
 		/*if(taskid >=0 && taskid <100000){//保留任务号，用户触发定时任务的id号
 			
 		}*/
@@ -42,16 +42,13 @@ public class TaskFacadeService {
 				}
 				completed.setState(WifiDeviceDownTask.State_Done);
 				completed.setCompleted_at(new Date());*/
-				wifiDeviceDownTaskCompletedService.insert(completed);
+				return wifiDeviceDownTaskCompletedService.insert(completed);
 			}else{
 				downtask.setState(state);
 				wifiDeviceDownTaskService.update(downtask);
 			}
-			return true;
-		}else{
-			return false;
 		}
-		
+		return null;	
 	}
 	
 	public int taskComming(WifiDeviceDownTask downtask){

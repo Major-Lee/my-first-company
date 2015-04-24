@@ -6,7 +6,7 @@ package com.bhu.vas.api.dto.ret.setting;
  * @author tangzichao
  *
  */
-public class WifiDeviceSettingRateControlDTO {
+public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	//不限制速率
 	public static final String Rate_Unlimited = "0";
 	//终端mac
@@ -33,5 +33,10 @@ public class WifiDeviceSettingRateControlDTO {
 	}
 	public void setRx(String rx) {
 		this.rx = rx;
+	}
+	@Override
+	public Object[] builderProperties() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -40,7 +40,7 @@ public class DeviceHelper {
 	 */
 	public static boolean isVapEnable(WifiDeviceSettingVapDTO vap){
 		if(vap == null) return false;
-		if(WifiDeviceSettingVapDTO.Vap_Enable.equalsIgnoreCase(vap.getEnable())){
+		if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getEnable())){
 			return true;
 		}
 		return false;
@@ -53,7 +53,7 @@ public class DeviceHelper {
 	 */
 	public static boolean isVapGuestEnable(WifiDeviceSettingVapDTO vap){
 		if(vap == null) return false;
-		if(WifiDeviceSettingVapDTO.Vap_Enable.equalsIgnoreCase(vap.getGuest_en())){
+		if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getGuest_en())){
 			return true;
 		}
 		return false;
@@ -241,6 +241,20 @@ public class DeviceHelper {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * 修改设备的配置序列号
+	 * @param dto
+	 * @param config_sequence
+	 * @return
+	 */
+	public static boolean modifyDSConfigSequence(WifiDeviceSettingDTO dto, String config_sequence){
+		if(dto != null){
+			dto.setSequence(config_sequence);
+			return true;
+		}
+		return false;
 	}
 	
 	/*******************************    设备配置修改模板  ****************************************/

@@ -173,6 +173,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
 			}
+			else if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
+			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
 			}
