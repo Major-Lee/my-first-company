@@ -540,12 +540,12 @@ public class DeviceBusinessFacadeService {
 		//只有URouter的设备才需进行此操作
 		if(deviceFacadeService.isURooterDevice(wifiId)){
 			//验证URouter设备配置是否符合约定
-			if(!DeviceHelper.validateURouterBlackList(dto)){
+			//if(!DeviceHelper.validateURouterBlackList(dto)){
 				String modify_payload = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 				if(!StringUtils.isEmpty(modify_payload)){
 					deliverMessageService.sendActiveDeviceSettingModifyActionMessage(wifiId, modify_payload);
 				}
-			}
+			//}
 		}
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
@@ -571,30 +571,34 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskModifyDeviceSetting(String ctx, String response, String wifiId, int taskid){
-		ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, ModifyDeviceSettingDTO.class);
-		String status = WifiDeviceDownTask.State_Failed;
-		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
-			status = WifiDeviceDownTask.State_Done;
-		}
-
-		//任务callback
-		WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
-		//通过任务记录的上下文来进行设备配置数据变更
-		if(task_completed != null){
-			String payload = task_completed.getPayload();
-			if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
-				String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
-				if(!StringUtils.isEmpty(cmdWithoutHeader)){
-					WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
-					if(entity != null){
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
+		if(entity != null){
+			ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, ModifyDeviceSettingDTO.class);
+			String status = WifiDeviceDownTask.State_Failed;
+			if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
+				status = WifiDeviceDownTask.State_Done;
+			}
+	
+			//任务callback
+			WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
+			//通过任务记录的上下文来进行设备配置数据变更
+			if(task_completed != null){
+				String payload = task_completed.getPayload();
+				if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
+					String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+					if(!StringUtils.isEmpty(cmdWithoutHeader)){
 						WifiDeviceSettingDTO setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
 								cmdWithoutHeader, entity.getInnerModel());
-						setting_dto.setSequence(dto.getConfig_sequence());
 						//DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
 						entity.putInnerModel(setting_dto);
-						wifiDeviceSettingService.update(entity);
 					}
 				}
+			}
+			//修改配置序列号
+			if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
+				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+				setting_dto.setSequence(dto.getConfig_sequence());
+				wifiDeviceSettingService.update(entity);
 			}
 		}
 	}

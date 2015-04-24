@@ -15,6 +15,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class DeviceHelper {
 	
@@ -398,8 +399,9 @@ public class DeviceHelper {
 	 * @param ad_dto
 	 * @return
 	 */
-	public static String builderDSAdOuter(String config_sequence, WifiDeviceSettingAdDTO ad_dto){
-		if(!StringUtils.isEmpty(config_sequence)){
+	public static String builderDSAdOuter(String config_sequence, String extparams){
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
 			if(ad_dto != null){
 				String item = builderDeviceSettingItem(DeviceSetting_AdItem, ad_dto);
 				String item_with_outer = builderDeviceSettingOuter(DeviceSetting_AdOuter, item);

@@ -15,8 +15,9 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
+import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
@@ -290,15 +291,22 @@ public class DeviceFacadeService {
 	/**
 	 * 生成设备配置的广告配置数据
 	 * @param mac
-	 * @param ad_dto
+	 * @param ds_opt 修改设备配置的ds_opt
+	 * @param extparams 修改配置具体的参数
 	 * @return
 	 */
-	public String generateDeviceSettingAd(String mac, WifiDeviceSettingAdDTO ad_dto){
+	public String generateDeviceSetting(String mac, String ds_opt, String extparams){
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity != null){
 			String config_sequence = DeviceHelper.getConfigSequence(entity.getInnerModel());
 			if(!StringUtils.isEmpty(config_sequence)){
-				return DeviceHelper.builderDSAdOuter(config_sequence, ad_dto);
+				OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
+				switch(ods){
+					case DS_Ad:
+						return DeviceHelper.builderDSAdOuter(config_sequence, extparams);
+					default:
+						break;
+				}
 			}
 		}
 		return null;
