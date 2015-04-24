@@ -174,7 +174,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
+				deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
 			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
