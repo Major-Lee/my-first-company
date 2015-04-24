@@ -9,7 +9,6 @@
     <result property="hd_mac" column="hd_mac"/>
     <result property="data_tx_rate" column="data_tx_rate"/>
     <result property="data_rx_rate" column="data_rx_rate"/>
-    <result property="hd_name" column="hd_name"/>
     <result property="data_tx_limit" column="data_tx_limit"/>
     <result property="data_rx_limit" column="data_rx_limit"/>
     <result property="block" column="block"/>
@@ -30,7 +29,6 @@
 	    	hd_mac,
 	    	data_tx_rate,
 	    	data_rx_rate,
-	    	hd_name,
 	    	data_tx_limit,
 	    	data_rx_limit,
 	    	block,
@@ -44,7 +42,6 @@
 	    <![CDATA[
 	    	data_tx_rate,
 	    	data_rx_rate,
-	    	hd_name,
 	    	data_tx_limit,
 	    	data_rx_limit,
 	    	block,
@@ -60,7 +57,6 @@
 	    	#{hd_mac},
 	    	#{data_tx_rate},
 	    	#{data_rx_rate},
-	    	#{hd_name},
 	    	#{data_tx_limit},
 	    	#{data_rx_limit},
 	    	#{block},
@@ -73,7 +69,6 @@
 	<sql id="modelUpdateValues">
 			data_tx_rate = #{data_tx_rate},
 			data_rx_rate = #{data_rx_rate},
-			hd_name = #{hd_name},
 			data_tx_limit = #{data_tx_limit},
 			data_rx_limit = #{data_rx_limit},
 			block = #{block},

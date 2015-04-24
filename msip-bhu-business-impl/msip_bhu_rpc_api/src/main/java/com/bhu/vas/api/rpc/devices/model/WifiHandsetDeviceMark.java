@@ -16,7 +16,7 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 	//设备接收终端的速率 终端的上行速率 bps
 	private String data_rx_rate;
 	//终端名称
-	private String hd_name;
+//	private String hd_name;
 	//设备发送终端的限速 kbps
 	private String data_tx_limit;
 	//设备接收终端的限速 kbps
@@ -87,13 +87,13 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 		this.data_rx_rate = data_rx_rate;
 	}
 
-	public String getHd_name() {
-		return hd_name;
-	}
-
-	public void setHd_name(String hd_name) {
-		this.hd_name = hd_name;
-	}
+//	public String getHd_name() {
+//		return hd_name;
+//	}
+//
+//	public void setHd_name(String hd_name) {
+//		this.hd_name = hd_name;
+//	}
 
 	public String getData_tx_limit() {
 		return data_tx_limit;
