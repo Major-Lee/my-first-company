@@ -276,9 +276,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev><wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>";
 	
 	public static final String DeviceSetting_ConfigSequenceOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
-	public static final String DeviceSetting_VapOuter = "<dev><wifi><vap>%s</vap></wifi></dev>";
-	public static final String DeviceSetting_AclOuter = "<dev><wifi><acllist>%s</acllist></wifi></dev>";
-	public static final String DeviceSetting_AdOuter = "<dev><net><ad>%s</ad></net></dev>";
+	public static final String DeviceSetting_VapOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><vap>%s</vap></wifi></dev>";
+	public static final String DeviceSetting_AclOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><acllist>%s</acllist></wifi></dev>";
+	public static final String DeviceSetting_AdOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><net><ad>%s</ad></net></dev>";
 	
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
@@ -355,7 +355,8 @@ public class DeviceHelper {
 		
 		if(StringUtils.isEmpty(vap_string) || StringUtils.isEmpty(acl_string)) return null;
 
-		String payload = builderDeviceSettingOuter(DeviceSetting_URouterDefaultVapAclOuter, vap_string, acl_string);
+		String payload = builderDeviceSettingOuter(DeviceSetting_URouterDefaultVapAclOuter, dto.getSequence(), 
+				vap_string, acl_string);
 		return builderConfigSequence(payload, dto.getSequence());
 	}
 	
@@ -404,8 +405,8 @@ public class DeviceHelper {
 			WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
 			if(ad_dto != null){
 				String item = builderDeviceSettingItem(DeviceSetting_AdItem, ad_dto);
-				String item_with_outer = builderDeviceSettingOuter(DeviceSetting_AdOuter, item);
-				return builderConfigSequence(item_with_outer, config_sequence);
+				return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+//				return builderConfigSequence(item_with_outer, config_sequence);
 			}
 		}
 		return null;

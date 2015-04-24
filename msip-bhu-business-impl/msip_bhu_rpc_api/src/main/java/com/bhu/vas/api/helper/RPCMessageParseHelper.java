@@ -14,6 +14,7 @@ import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
@@ -25,6 +26,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
@@ -420,7 +422,16 @@ public class RPCMessageParseHelper {
         in.close();
         
         System.out.println(content.toString());
+        
+//        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
+//		String status = WifiDeviceDownTask.State_Failed;
+//		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
+//			status = WifiDeviceDownTask.State_Done;
+//		}
+		
+		String text = "<root><dev><sys><config><ITEM sequence=\"63\"/></config></sys></dev><dev><net><ad><ITEM id=\"400889\" bhu_ad_url=\"http://auth.wi2o.cn/ad/ad.js\" bhu_enable=\"enable\" /></ad></net></dev></root>";
+		WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(text);
 		//WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(content.toString());
-		//System.out.println(dto.getPower());
+		System.out.println(dto.getSequence());
 	}
 }
