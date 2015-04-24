@@ -589,7 +589,8 @@ public class DeviceBusinessFacadeService {
 					if(entity != null){
 						WifiDeviceSettingDTO setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
 								cmdWithoutHeader, entity.getInnerModel());
-						DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
+						setting_dto.setSequence(dto.getConfig_sequence());
+						//DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
 						entity.putInnerModel(setting_dto);
 						wifiDeviceSettingService.update(entity);
 					}
