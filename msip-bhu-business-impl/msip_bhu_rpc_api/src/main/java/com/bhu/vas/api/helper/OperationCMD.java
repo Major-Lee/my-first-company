@@ -5,12 +5,13 @@ import java.util.Map;
 
 /**
  * 由于设备端限制任务号 FFFFFFFF 对应为 4294967295
- * 业务取前3位为 429，为了不溢出，最大值为428 后7位为任务id，组合下行给设备
+ * 业务取前3位为 429，为了不溢出，最大值为428 后7位为任务id，组合下行给设备 数据库中任务id超过9999999后需要重置，0-100000区间保留给自动触发任务
  * OperationCMD no 区间 100~428
  * @author Edmond
  *
  */
 public enum OperationCMD {
+	
 	//QueryTeminals("01","查询设备当前在线终端"),
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",
@@ -53,7 +54,8 @@ public enum OperationCMD {
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;
-	
+	/*public static int Opt_Length = 3;
+	public static int Taskid_Length = 7;*/
 	String no;
 	String desc;
 	String cmd;

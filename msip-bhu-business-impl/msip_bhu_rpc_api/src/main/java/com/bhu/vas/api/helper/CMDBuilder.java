@@ -148,7 +148,7 @@ public class CMDBuilder {
 	
 	public static String[] parserExtParams(String extparams){
 		if(StringUtils.isEmpty(extparams)) return null;
-		return extparams.split(StringHelper.SPLIT_PLUS_STRING_GAP);
+		return extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);
 	}
 	
 	public static String builderCMDSerial(String opt, String taskid_format){
