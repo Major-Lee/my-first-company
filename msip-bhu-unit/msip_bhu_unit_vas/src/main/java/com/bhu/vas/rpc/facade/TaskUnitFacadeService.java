@@ -39,8 +39,6 @@ public class TaskUnitFacadeService {
 		int ret = taskFacadeService.taskComming(downTask);
 		if(ret == RpcResponseCodeConst.Task_Startup_OK){
 			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
-			//发送异步消息到Queue
-			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);
@@ -48,6 +46,8 @@ public class TaskUnitFacadeService {
 			dto.setMac(mac);
 			dto.setTaskid(downTask.getId());
 			taskFacadeService.taskUpdate(downTask);
+			//发送异步消息到Queue
+			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}else{
 			ResponseErrorCode errorcode = null;
