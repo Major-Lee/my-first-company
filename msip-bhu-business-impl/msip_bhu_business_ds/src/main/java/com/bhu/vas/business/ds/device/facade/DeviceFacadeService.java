@@ -301,12 +301,13 @@ public class DeviceFacadeService {
 			String config_sequence = DeviceHelper.getConfigSequence(entity.getInnerModel());
 			if(!StringUtils.isEmpty(config_sequence)){
 				OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
-				switch(ods){
-					case DS_Ad:
-						return DeviceHelper.builderDSAdOuter(config_sequence, extparams);
-					default:
-						break;
-				}
+				if(ods != null)
+					switch(ods){
+						case DS_Ad:
+							return DeviceHelper.builderDSAdOuter(config_sequence, extparams);
+						default:
+							break;
+					}
 			}
 		}
 		return null;
