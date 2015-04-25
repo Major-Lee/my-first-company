@@ -282,7 +282,7 @@ public class DeviceHelper {
 	
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
-	public static final String DeviceSetting_AdItem = "<ITEM id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_AdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
