@@ -8,6 +8,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 15/4/10.
  */
+@SuppressWarnings("serial")
 public class UserDevice extends BasePKModel<UserDevicePK> {
 
     private String device_name;
