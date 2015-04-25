@@ -127,7 +127,7 @@ public class CMDBuilder {
 //	}
 	
 	
-	public static String builderCMD4Opt(String opt/*, String subopt*/,String wifi_mac,int taskid,String xmlPayload){
+	public static String builderCMD4Opt(String opt/*, String subopt*/,String wifi_mac,int taskid,String payload){
 		String resultCmd = null;
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
@@ -141,9 +141,14 @@ public class CMDBuilder {
 //						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,split[0],split[1],split[2]);
 //					break;
 				case ModifyDeviceSetting:
-					if(xmlPayload != null){
-						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, xmlPayload);
+					if(payload != null){
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
 					}
+					break;
+				case TurnOnDeviceDPINotify:
+					String dpiServerIp = payload;
+					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),dpiServerIp);
 					break;
 				default:
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
