@@ -137,7 +137,7 @@ public class AsyncMsgHandleService {
 				DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, 1);
 		
 		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
-		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNewWifi());
+		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery());
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	

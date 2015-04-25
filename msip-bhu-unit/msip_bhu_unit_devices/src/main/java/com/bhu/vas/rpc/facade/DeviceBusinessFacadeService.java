@@ -125,14 +125,17 @@ public class DeviceBusinessFacadeService {
 		}
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
-
+		boolean needLocationQuery = false;
+		if(StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
+			needLocationQuery = true;
+		}
 		/*
 		 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
 		 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), 
-				this_login_at, last_login_at, newWifi);
+				this_login_at, last_login_at, newWifi,needLocationQuery);
 	}
 	
 	/**
