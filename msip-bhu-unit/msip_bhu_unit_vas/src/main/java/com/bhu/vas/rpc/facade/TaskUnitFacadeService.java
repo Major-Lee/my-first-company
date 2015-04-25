@@ -54,18 +54,18 @@ public class TaskUnitFacadeService {
 		downTask.setMac(mac);
 		int ret = taskFacadeService.taskComming(downTask);
 		if(ret == RpcResponseCodeConst.Task_Startup_OK){
-			String payload = null;
 			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
-				payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+				String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
 			}else{
-				payload = extparams;
+				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 			}
 			//deviceFacadeService.generateDeviceSettingAd(mac,)
 			//DeviceSettingBuilderDTO dto1 = null;
 			
 			//WifiDeviceSettingAdDTO dto1 = new WifiDeviceSettingAdDTO();
 			/*deviceFacadeService.generateDeviceSettingAd(mac,);*/
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
+			
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);
