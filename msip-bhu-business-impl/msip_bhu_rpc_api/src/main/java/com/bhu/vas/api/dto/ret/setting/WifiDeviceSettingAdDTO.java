@@ -10,14 +10,6 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
-	//acl名称
-	private String enable;
-	//acl对应的mac列表
-	private String ad_url;
-	//acl对应的mac列表
-	private String ad_interface;
-	//acl对应的mac列表
-	private String id;
 	
 	private String bhu_id;
 	
@@ -25,58 +17,21 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 	
 	private String bhu_enable;
 
-	public String getEnable() {
-		return enable;
-	}
-
-	public void setEnable(String enable) {
-		this.enable = enable;
-	}
-
-	public String getAd_url() {
-		return ad_url;
-	}
-
-	public void setAd_url(String ad_url) {
-		this.ad_url = ad_url;
-	}
-
-	public String getAd_interface() {
-		return ad_interface;
-	}
-
-	public void setAd_interface(String ad_interface) {
-		this.ad_interface = ad_interface;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public String getBhu_id() {
 		return bhu_id;
 	}
-
 	public void setBhu_id(String bhu_id) {
 		this.bhu_id = bhu_id;
 	}
-
 	public String getBhu_ad_url() {
 		return bhu_ad_url;
 	}
-
 	public void setBhu_ad_url(String bhu_ad_url) {
 		this.bhu_ad_url = bhu_ad_url;
 	}
-
 	public String getBhu_enable() {
 		return bhu_enable;
 	}
-
 	public void setBhu_enable(String bhu_enable) {
 		this.bhu_enable = bhu_enable;
 	}
@@ -95,7 +50,6 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		//dto.setAd_url(ad_url);
 		dto.setBhu_ad_url("http://auth.wi2o.cn/ad/ad.js");
 		dto.setBhu_enable("enable");
-		dto.setId("400889");
 		System.out.println(JsonHelper.getJSONString(dto));
 	}
 }
