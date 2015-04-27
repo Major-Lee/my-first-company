@@ -33,7 +33,18 @@ public class TaskUnitFacadeService {
 	@Resource
 	private TaskFacadeService taskFacadeService;
 
-	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,/*String payload,*/
+	
+	/**
+	 * 
+	 * @param mac
+	 * @param opt
+	 * @param subopt
+	 * @param extparams //目前是修改配置的opt传递的是json串；//0个或1个值，如果是超过一个值则传递的是json串
+	 * @param channel
+	 * @param channel_taskid
+	 * @return
+	 */
+	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid){
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setChannel(channel);
@@ -43,16 +54,18 @@ public class TaskUnitFacadeService {
 		downTask.setMac(mac);
 		int ret = taskFacadeService.taskComming(downTask);
 		if(ret == RpcResponseCodeConst.Task_Startup_OK){
-			String xmlPayload = null;
 			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
-				xmlPayload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+				String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
+			}else{
+				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 			}
 			//deviceFacadeService.generateDeviceSettingAd(mac,)
 			//DeviceSettingBuilderDTO dto1 = null;
 			
 			//WifiDeviceSettingAdDTO dto1 = new WifiDeviceSettingAdDTO();
 			/*deviceFacadeService.generateDeviceSettingAd(mac,);*/
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),xmlPayload));
+			
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);

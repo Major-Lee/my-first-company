@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 15/4/10.
  */
+@SuppressWarnings("serial")
 public class UserDevicePK implements Serializable {
 
     private String mac;

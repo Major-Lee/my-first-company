@@ -45,7 +45,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, long login_ts, 
-			long last_login_at, boolean newWifi){
+			long last_login_at, boolean newWifi,boolean needLocationQuery){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
 		dto.setMac(wifiId);
 		dto.setNewWifi(newWifi);

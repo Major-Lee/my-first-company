@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 15/4/10.
  */
+@SuppressWarnings("serial")
 public class UserDeviceStatusDTO implements Serializable {
     private String status;
     private String message;

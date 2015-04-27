@@ -1,12 +1,11 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
+import java.util.List;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-
-import java.util.List;
 
 /**
  * Created by bluesand on 15/4/10.
