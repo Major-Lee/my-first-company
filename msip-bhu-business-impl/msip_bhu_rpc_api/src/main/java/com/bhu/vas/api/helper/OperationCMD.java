@@ -47,7 +47,7 @@ public enum OperationCMD {
 	
 	QueryDeviceRateNotify("106","查询设备实时速率","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"ifrate\" interface=\"%s\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	//params:mac opt taskid serverip
-	TurnOnDeviceDPINotify( "107","开启设备dpi数据上报功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"dpi\" enable=\"enable\" server_ip=\"%s\" server_port=\"514\"/></cmd>"),
+	TurnOnDeviceDPINotify( "107","开启设备dpi数据上报功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"dpi\" enable=\"enable\" server_ip=\"%s\" server_port=\"514\" filter=\"text/html,text/plain,text/xml,application/json\"/></cmd>"),
 	//params:mac opt taskid
 	TurnOffDeviceDPINotify("108","关闭设备dpi数据上报功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"dpi\" enable=\"disable\" /></cmd>"),
 	//<dev><net><ad><ITEM  bhu_enable=\"enable/disable\"  bhu_ad_url=\"广告url\" id=\"xxxx\" /></ad></net></dev>

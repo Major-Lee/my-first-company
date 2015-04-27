@@ -95,7 +95,7 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		//dto.setAd_url(ad_url);
 		dto.setBhu_ad_url("http://auth.wi2o.cn/ad/ad.js");
 		dto.setBhu_enable("enable");
-		dto.setId("400889");
+		dto.setBhu_id("400889");
 		System.out.println(JsonHelper.getJSONString(dto));
 	}
 }
