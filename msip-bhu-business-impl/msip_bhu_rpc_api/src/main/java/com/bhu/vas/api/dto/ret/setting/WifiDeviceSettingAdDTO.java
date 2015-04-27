@@ -57,6 +57,14 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		this.id = id;
 	}
 
+	public String getBhu_id() {
+		return bhu_id;
+	}
+
+	public void setBhu_id(String bhu_id) {
+		this.bhu_id = bhu_id;
+	}
+
 	public String getBhu_ad_url() {
 		return bhu_ad_url;
 	}
