@@ -19,6 +19,8 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 	//acl对应的mac列表
 	private String id;
 	
+	private String bhu_id;
+	
 	private String bhu_ad_url;
 	
 	private String bhu_enable;
@@ -55,6 +57,14 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		this.id = id;
 	}
 
+	public String getBhu_id() {
+		return bhu_id;
+	}
+
+	public void setBhu_id(String bhu_id) {
+		this.bhu_id = bhu_id;
+	}
+
 	public String getBhu_ad_url() {
 		return bhu_ad_url;
 	}
@@ -74,7 +84,7 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 	@Override
 	public Object[] builderProperties() {
 		Object[] properties = new Object[3];
-		properties[0] = id;
+		properties[0] = bhu_id;
 		properties[1] = bhu_ad_url;
 		properties[2] = bhu_enable;
 		return properties;

@@ -335,6 +335,7 @@ public class RPCMessageParseHelper {
 				ad_dto.setAd_url(ad_item.attributeValue("ad_url"));
 				ad_dto.setBhu_ad_url(ad_item.attributeValue("bhu_ad_url"));
 				ad_dto.setBhu_enable(ad_item.attributeValue("bhu_enable"));
+				ad_dto.setBhu_id(ad_item.attributeValue("bhu_id"));
 				dto.setAd(ad_dto);
 			}
 			
