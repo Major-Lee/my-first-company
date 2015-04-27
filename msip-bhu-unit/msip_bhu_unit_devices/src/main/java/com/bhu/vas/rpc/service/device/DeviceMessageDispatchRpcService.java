@@ -157,9 +157,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			int taskid = parserHeader.getTaskid();
 			if(OperationCMD.QueryDeviceStatus.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, mac, taskid);
-			}
-			else if(OperationCMD.QueryDeviceFlow.getNo().equals(opt)){
+			}else if(OperationCMD.QueryDeviceFlow.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, mac, taskid);
+			}else if(OperationCMD.TurnOnDeviceDPINotify.getNo().equals(opt) || OperationCMD.TurnOffDeviceDPINotify.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskCommonProcessor(ctx,payload,mac,taskid);
 			}
 			/*else if(OperationCMD.QueryDeviceLocationS1.getNo().equals(opt)){
 				//do nothing 由input processor解析后直接转到daemon

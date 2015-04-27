@@ -633,6 +633,21 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
+	public void taskCommonProcessor(String ctx, String response, String mac, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
+				QuerySerialReturnDTO.class);
+		/*if(WifiDeviceDownTask.State_Done.equals(resultDto.getStatus())){
+			String ssid = serialDto.getSsid();
+			String bssid = serialDto.getAp();
+			List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+			if(dtos != null && !dtos.isEmpty()){
+				deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, ssid, bssid, dtos);
+			}
+		}*/
+		//2:任务callback
+		doTaskCallback(taskid, resultDto.getStatus(), response);
+	}
 	/**
 	 * 处理任务数据相应的callback函数 
 	 * 针对任务数据的状态修改和转移
