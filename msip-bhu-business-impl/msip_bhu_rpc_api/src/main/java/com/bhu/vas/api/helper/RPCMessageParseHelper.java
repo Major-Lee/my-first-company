@@ -14,7 +14,6 @@ import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ret.LocationDTO;
-import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
@@ -26,7 +25,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
-import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
@@ -329,10 +327,10 @@ public class RPCMessageParseHelper {
 			Element ad_item = Dom4jHelper.select(doc, "dev/net/ad/ITEM");
 			if(ad_item != null){
 				WifiDeviceSettingAdDTO ad_dto = new WifiDeviceSettingAdDTO();
-				ad_dto.setId(ad_item.attributeValue("id"));
-				ad_dto.setEnable(ad_item.attributeValue("enable"));
-				ad_dto.setAd_interface(ad_item.attributeValue("interface"));
-				ad_dto.setAd_url(ad_item.attributeValue("ad_url"));
+//				ad_dto.setId(ad_item.attributeValue("id"));
+//				ad_dto.setEnable(ad_item.attributeValue("enable"));
+//				ad_dto.setAd_interface(ad_item.attributeValue("interface"));
+//				ad_dto.setAd_url(ad_item.attributeValue("ad_url"));
 				ad_dto.setBhu_ad_url(ad_item.attributeValue("bhu_ad_url"));
 				ad_dto.setBhu_enable(ad_item.attributeValue("bhu_enable"));
 				ad_dto.setBhu_id(ad_item.attributeValue("bhu_id"));
