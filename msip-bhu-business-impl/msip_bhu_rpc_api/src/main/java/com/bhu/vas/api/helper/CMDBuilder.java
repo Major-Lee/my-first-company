@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -127,7 +128,7 @@ public class CMDBuilder {
 //	}
 	
 	
-	public static String builderCMD4Opt(String opt/*, String subopt*/,String wifi_mac,int taskid,String payload){
+	public static String builderCMD4Opt(String opt/*, String subopt*/,String wifi_mac,int taskid,String extparams){
 		String resultCmd = null;
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
@@ -141,16 +142,18 @@ public class CMDBuilder {
 //						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,split[0],split[1],split[2]);
 //					break;
 				case ModifyDeviceSetting:
-					if(payload != null){
-						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
+					if(extparams != null){
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, extparams);
 					}
 					break;
 				case TurnOnDeviceDPINotify:
-					String dpiServerIp = payload;
+					String dpiServerIp = extparams;
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),dpiServerIp);
 					break;
 				default:
+					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
+					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));
 					break;
@@ -159,10 +162,36 @@ public class CMDBuilder {
 		return resultCmd;
 	}
 	
-	/*public static String[] parserExtParams(String extparams){
-		if(StringUtils.isEmpty(extparams)) return null;
-		return extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);
-	}*/
+	private static String[] genParserParams(String wifi_mac,String opt,int taskid,String extparams){
+		String[] params = new String[3];
+		params[0] = StringHelper.unformatMacAddress(wifi_mac);
+		params[1] = opt;
+		params[2] = String.format(SuffixTemplete,taskid);
+		String[] split = extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);
+		if(split != null && split.length>0)
+			return ArrayHelper.join(params, split);
+		else{
+			return params;
+		}
+		/*for(int i=3;i<10;i++){
+			
+		}*/
+		/*if(StringUtils.isEmpty(extparams)) {
+			params = new String[3];
+			params[0] = StringHelper.unformatMacAddress(wifi_mac);
+			params[1] = opt;
+			params[2] = String.format(SuffixTemplete,taskid);
+			return params;
+		}else{
+			
+			params = new String[3+split.length];
+			params[0] = StringHelper.unformatMacAddress(wifi_mac);
+			params[1] = opt;
+			params[2] = String.format(SuffixTemplete,taskid);
+			
+		}
+		return extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);*/
+	}
 	
 	public static String builderCMDSerial(String opt, String taskid_format){
 		StringBuffer serial = new StringBuffer();
@@ -204,4 +233,9 @@ public class CMDBuilder {
 	public static boolean wasNormalTaskid(int taskid){
 		return normal_taskid_fragment.wasInFragment(taskid);
 	}
+	
+	/*public static void main(String[] argv){
+		String[] params = new String[]{};
+		String resultCmd = String.format("",params);
+	}*/
 }
