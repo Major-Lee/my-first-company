@@ -151,6 +151,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 					}
 				}
 			}
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(tokenValidate.getErrorCode()));
+			return false;
 		}
 		return true;
 	}
