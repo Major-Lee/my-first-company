@@ -107,7 +107,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
 		try{
 			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
-
+			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+			
 			List<URouterHdVTO> vtos = null;
 			long total = 0;
 			Set<Tuple> presents = null;
@@ -135,10 +136,11 @@ public class DeviceURouterRestBusinessFacadeService {
 					vtos = new ArrayList<URouterHdVTO>();
 					int cursor = 0;
 					WifiHandsetDeviceMark mark_entity = null;
+					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 					for(Tuple tuple : presents){
 						mark_entity = mark_entitys.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, mark_entity);
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, mark_entity, setting_dto);
 						vtos.add(vto);
 						cursor++;
 					}
@@ -232,9 +234,10 @@ public class DeviceURouterRestBusinessFacadeService {
 					if(!mark_pks.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
 						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
+						WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
-							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor));
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor), setting_dto);
 							vtos.add(vto);
 							cursor++;
 						}

@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
@@ -322,6 +323,18 @@ public class RPCMessageParseHelper {
 					ratecontrol_dtos.add(ratecontrol_dto);
 				}
 				dto.setRatecontrols(ratecontrol_dtos);
+			}
+			//解析终端别名
+			List<Element> mac_management_elements = Dom4jHelper.selectElements(doc, "dev/net/mac_management/ITEM");
+			if(mac_management_elements != null && !mac_management_elements.isEmpty()){
+				List<WifiDeviceSettingMMDTO> mac_management_dtos = new ArrayList<WifiDeviceSettingMMDTO>();
+				for(Element mac_management_element : mac_management_elements){
+					WifiDeviceSettingMMDTO mm_dto = new WifiDeviceSettingMMDTO();
+					mm_dto.setName(mac_management_element.attributeValue("name"));
+					mm_dto.setMac(mac_management_element.attributeValue("mac"));
+					mac_management_dtos.add(mm_dto);
+				}
+				dto.setMms(mac_management_dtos);
 			}
 			//解析广告
 			Element ad_item = Dom4jHelper.select(doc, "dev/net/ad/ITEM");
