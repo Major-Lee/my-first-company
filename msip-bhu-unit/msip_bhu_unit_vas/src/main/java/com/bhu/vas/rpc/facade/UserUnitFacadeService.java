@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +16,12 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -108,28 +108,24 @@ public class UserUnitFacadeService {
 		payload.setReg(true);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 	}
-	
-	public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,String device,String remoteIp,String captcha) {
+	*/
+	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
+		
 		//step 2.生产环境下的手机号验证码验证
-		if(!RuntimeConfiguration.SecretInnerTest){
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
-				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
-				if(errorCode != null){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
-				}
-			}
-		}
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-		System.out.println("1. userid:"+uid);
 		if(uid == null || uid.intValue() == 0){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		User user = this.userService.getById(uid);
-		System.out.println("2. user:"+user);
 		if(user == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
+		
+		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
+		}
+		
+		
 		if(StringUtils.isEmpty(user.getRegip())){
 			user.setRegip(remoteIp);
 		}
@@ -143,19 +139,22 @@ public class UserUnitFacadeService {
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 		}
-		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
+		//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		
-		UserDTO payload = new UserDTO();
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
+				uToken.getAccess_token(), uToken.getRefresh_token(), false);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
 		payload.setCountrycode(countrycode);
 		payload.setMobileno(acc);
 		payload.setNick(user.getNick());
 		payload.setAtoken(uToken.getAccess_token());
 		payload.setRtoken(uToken.getRefresh_token());
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
 		//Map<String,Object> map = userLoginDataService.buildLoginData(user);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(map));
-	}*/
+	}
 	
 	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp) {
 		UserToken uToken = null;

@@ -53,7 +53,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	//public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
+	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
 	
 	/**
 	 * 用户通过token进行登录

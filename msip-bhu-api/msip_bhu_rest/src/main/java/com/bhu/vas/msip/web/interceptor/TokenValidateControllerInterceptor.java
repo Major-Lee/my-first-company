@@ -62,10 +62,11 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//检测名称唯一性
 		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
 		ignoreTokensValidateUrlSet.add("/account/check_device_binded");
-		
 		//请求验证码
 		ignoreTokensValidateUrlSet.add("/user/captcha/fetch_captcha");
 		
+		ignoreTokensValidateUrlSet.add("/console/sessions/create");
+		ignoreTokensValidateUrlSet.add("/console/sessions/validates");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");

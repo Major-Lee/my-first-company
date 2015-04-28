@@ -17,7 +17,7 @@ public class UserRpcService implements IUserRpcService{
 	private final Logger logger = LoggerFactory.getLogger(UserRpcService.class);
 	@Resource
 	private UserUnitFacadeService userUnitFacadeService;
-/*	@Override
+	/*@Override
 	public RpcResponseDTO<UserDTO> createNewUser(int countrycode, String acc,
 			String nick, String sex, String device,String regIp,String deviceuuid, String captcha) {
 		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] nick[%s] sex[%s] device[%s] captcha[%s]",
@@ -31,13 +31,12 @@ public class UserRpcService implements IUserRpcService{
 		return userUnitFacadeService.checkAcc(countrycode, acc);
 	}
 
-/*	@Override
-	public RpcResponseDTO<UserDTO> userLogin(int countrycode, String acc,
-			String device, String remoteIp, String captcha) {
-		logger.info(String.format("userLogin with countrycode[%s] acc[%s] device[%s] captcha[%s]",
-				countrycode,acc,device,captcha));
-		return userUnitFacadeService.userLogin(countrycode, acc, device, remoteIp, captcha);
-	}*/
+	@Override
+	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
+		logger.info(String.format("userLogin with countrycode[%s] acc[%s] device[%s] pwd[%s]",
+				countrycode,acc,device,pwd));
+		return userUnitFacadeService.userConsoleLogin(countrycode, acc,pwd, device, remoteIp);
+	}
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken, String device,
