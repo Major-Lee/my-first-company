@@ -14,7 +14,9 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
@@ -25,7 +27,6 @@ import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
 /**
@@ -173,12 +174,13 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, WifiHandsetDeviceMark mark_entity){
+	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, WifiHandsetDeviceMark mark_entity,
+			WifiDeviceSettingDTO setting_dto){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
 		if(mark_entity != null){
-			//vto.setN(mark_entity.getHd_name());
+			vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
 			//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
 			vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
 			vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_tx_limit()));

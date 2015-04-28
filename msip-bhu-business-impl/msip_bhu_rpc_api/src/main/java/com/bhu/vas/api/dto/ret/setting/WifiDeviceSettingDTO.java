@@ -33,6 +33,8 @@ public class WifiDeviceSettingDTO {
 	private List<WifiDeviceSettingRateControlDTO> ratecontrols;
 	//管理员用户列表
 	private List<WifiDeviceSettingUserDTO> users;
+	//终端别名列表
+	private List<WifiDeviceSettingMMDTO> mms;
 	//广告
 	private WifiDeviceSettingAdDTO ad;
 	
@@ -106,6 +108,14 @@ public class WifiDeviceSettingDTO {
 
 	public void setRadios(List<WifiDeviceSettingRadioDTO> radios) {
 		this.radios = radios;
+	}
+
+	public List<WifiDeviceSettingMMDTO> getMms() {
+		return mms;
+	}
+
+	public void setMms(List<WifiDeviceSettingMMDTO> mms) {
+		this.mms = mms;
 	}
 
 	public WifiDeviceSettingAdDTO getAd() {

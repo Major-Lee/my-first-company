@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -47,6 +48,7 @@ public class DeviceHelper {
 		}
 		return false;
 	}
+	 
 	
 	/**
 	 * 判断vap是否是访客网络
@@ -123,6 +125,23 @@ public class DeviceHelper {
 			return Mode_Pppol2tp_Show;
 		}
 		return mode;
+	}
+	/**
+	 * 获取终端在此设备上的别名
+	 * @param mac
+	 * @param dto
+	 * @return
+	 */
+	public static String getHandsetDeviceAlias(String mac, WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		List<WifiDeviceSettingMMDTO> mm_dtos = dto.getMms();
+		if(mm_dtos == null || mm_dtos.isEmpty()) return null;
+		int index = mm_dtos.indexOf(new WifiDeviceSettingMMDTO(mac));
+		if(index != -1){
+			return mm_dtos.get(index).getName();
+		}
+		//TODO:如果没有别名 返回hostname
+		return null;
 	}
 	
 	/**
