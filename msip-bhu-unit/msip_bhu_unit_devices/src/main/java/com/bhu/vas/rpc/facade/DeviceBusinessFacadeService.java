@@ -544,9 +544,9 @@ public class DeviceBusinessFacadeService {
 		//只有URouter的设备才需进行此操作
 		if(deviceFacadeService.isURooterDevice(wifiId)){
 			//验证URouter设备配置是否符合约定
-			//if(!DeviceHelper.validateURouterBlackList(dto)){
+			if(!DeviceHelper.validateURouterBlackList(dto)){
 				modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
-			//}
+			}
 		}
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
