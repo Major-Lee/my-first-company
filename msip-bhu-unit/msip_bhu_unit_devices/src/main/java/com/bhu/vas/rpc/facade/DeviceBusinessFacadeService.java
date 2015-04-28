@@ -539,15 +539,13 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
-		
+		//System.out.println("#####################taskQueryDeviceSetting:"+dto.getRadios().get(0).getPower());
+		String modify_urouter_acl = null;
 		//只有URouter的设备才需进行此操作
 		if(deviceFacadeService.isURooterDevice(wifiId)){
 			//验证URouter设备配置是否符合约定
 			//if(!DeviceHelper.validateURouterBlackList(dto)){
-				String modify_payload = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
-				if(!StringUtils.isEmpty(modify_payload)){
-					deliverMessageService.sendActiveDeviceSettingModifyActionMessage(wifiId, modify_payload);
-				}
+				modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 			//}
 		}
 		
@@ -562,6 +560,10 @@ public class DeviceBusinessFacadeService {
 			wifiDeviceSettingService.update(entity);
 		}
 		
+		//如果不符合urouter的配置约定 则下发指定修改配置
+		if(!StringUtils.isEmpty(modify_urouter_acl)){
+			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(wifiId, modify_urouter_acl);
+		}
 		//2:任务callback
 		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}
