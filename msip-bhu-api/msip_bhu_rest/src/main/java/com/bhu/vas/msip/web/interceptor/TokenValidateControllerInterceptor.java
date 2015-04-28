@@ -141,7 +141,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}else{//验证通过的情况下，如果uri是以/console开头的,则需要进行uid<=100000区间才能访问
 				if(uri.startsWith(ConsolePrefixUrl)){
-					if(Integer.parseInt(UID) >=305){
+					if(StringUtils.isNotEmpty(UID) && Integer.parseInt(UID) <=100000){
 						System.out.println(UID+"~~~~~~~~~~~~~~能访问管理页面啦！！！！！！！！");
 						return true; 
 					}else{
