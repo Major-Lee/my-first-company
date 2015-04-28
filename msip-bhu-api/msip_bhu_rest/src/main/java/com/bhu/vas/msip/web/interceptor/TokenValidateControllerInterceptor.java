@@ -36,7 +36,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	@Resource
 	private IUserRpcService userRpcService;
 
-	
+	private static final String ConsolePrefixUrl = "/console";
 	/*private static final String NoAuthPrefixUrl = "/noauth";
 	private static final String pingurl = "/ping";
 	private static final String commonurl = "/common";
@@ -49,11 +49,6 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	//private static Set<String> ignoreTokensValidateUrlPrefixSet = new HashSet<String>();
 	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
 	static{
-		/*ignoreTokensValidateUrlPrefixSet.add("/noauth");
-		ignoreTokensValidateUrlPrefixSet.add("/ping");
-		ignoreTokensValidateUrlPrefixSet.add("/common");
-		ignoreTokensValidateUrlPrefixSet.add("/dashboard");*/
-		
 		ignoreTokensValidateUrlSet.add("/sessions/create");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
 		//ignoreTokensValidateUrlSet.add("/account/create");
@@ -126,35 +121,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 			return false;
 		}
-		//System.out.println("uri " + uri);
-		/*if((uri.startsWith(guesturl) || uri.startsWith(visiturl)) && !uri.endsWith("create")){
-			//System.out.println("in guest");
-			//validate authorize code
-			String guesttoken = request.getParameter("token");
-			//System.out.println("token:" + guesttoken);
-			String validate = TokenServiceHelper.parserToken4Guest(guesttoken);
-			//System.out.println("guest validate " + validate);
-			if(TokenServiceHelper.GuestToken.equals(validate)) return true;
-			
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID,new String[]{guesttoken}));
-			return false;
-		}*/
-		
-		/*if(uri.endsWith("/sessions/create") || uri.endsWith("/sessions/validates") 
-				|| uri.endsWith("/account/create")
-				|| uri.endsWith("/account/post_invitation") || uri.endsWith("/account/verify_invitation")
-				|| uri.endsWith("/account/check_nick") || uri.endsWith("/account/check_email")
-				|| uri.endsWith("/user/topic/fetch_topics_wall") || uri.endsWith("/tag/fetch_tags")
-				|| uri.endsWith("/handset/release/ios") || uri.endsWith("/handset/release/android")
-				){
-			return true;
-		}*/
-		//if(output) System.out.println("~~~~~~~~~~~~~verify_invitation1");
 		if(isIgnoreURL(uri)){
-			//if(output) System.out.println("~~~~~~~~~~~~~verify_invitation3");
 			return true;
 		}
-		//if(output) System.out.println("~~~~~~~~~~~~~verify_invitation2");
 		
 		String accessToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
 		if(StringUtils.isEmpty(accessToken)){
@@ -164,23 +133,25 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}
 		}
-		
-		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(request.getParameter(RuntimeConfiguration.Param_UidRequest), accessToken);
+		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
+		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken);
 		if(tokenValidate.getErrorCode() == null){
-			if(!tokenValidate.getPayload().booleanValue()){
+			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
 				return false;
+			}else{//验证通过的情况下，如果uri是以/console开头的,则需要进行uid<=100000区间才能访问
+				if(uri.startsWith(ConsolePrefixUrl)){
+					if(Integer.parseInt(UID) >=305){
+						System.out.println(UID+"~~~~~~~~~~~~~~能访问管理页面啦！！！！！！！！");
+						return true; 
+					}else{
+						System.out.println(UID+"~~~~~~~~~~~~~~不能访问管理页面啦！！！！！！！！");
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+						return false;
+					}
+				}
 			}
 		}
-		//else
-		//	SpringMVCHelper.renderJson(response, ResponseError.embed(tokenValidate.getErrorCode()));
-		//System.out.println("before IegalTokenHashService validate!");
-		/*boolean isReg = IegalTokenHashService.getInstance().validateUserToken(naolaToken,request.getParameter(RuntimeConfiguration.Param_UidRequest));
-		if(!isReg){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
-			return false;
-		}*/
-		
 		return true;
 	}
 	
@@ -190,7 +161,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		}
 		return false;
 	}
-	private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	//private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	private static final String patternRegx = "^/((noauth)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	/**
 	 * 以定义好的字符串前缀
 	 * @param url
