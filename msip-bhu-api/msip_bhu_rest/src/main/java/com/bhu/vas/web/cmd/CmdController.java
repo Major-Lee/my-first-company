@@ -48,7 +48,7 @@ public class CmdController extends BaseController{
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) {
 		
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac, opt , subopt, extparams,/*payload,*/ channel, channel_taskid);
+		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac.toLowerCase(), opt , subopt, extparams,/*payload,*/ channel, channel_taskid);
 		
 		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
 		if(resp.getErrorCode() == null){
