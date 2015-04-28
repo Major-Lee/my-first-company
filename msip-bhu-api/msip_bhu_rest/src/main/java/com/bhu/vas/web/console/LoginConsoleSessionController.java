@@ -52,7 +52,7 @@ public class LoginConsoleSessionController extends BaseController{
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = true) String pwd,
-			@RequestParam(required = false, value="d",defaultValue="R") String device) {
+			@RequestParam(required = false, value="d",defaultValue="P") String device) {
 		//step 1.手机号正则验证
 		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
 		if(validateError != null){
@@ -87,7 +87,7 @@ public class LoginConsoleSessionController extends BaseController{
 	public void validate(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false, value="d",defaultValue="R") String device) {
+			@RequestParam(required = false, value="d",defaultValue="P") String device) {
 		/*
 		 1、获取远端IP
 		 2、获取cookie中ip token

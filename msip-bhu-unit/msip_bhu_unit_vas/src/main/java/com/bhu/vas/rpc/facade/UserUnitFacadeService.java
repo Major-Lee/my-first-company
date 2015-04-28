@@ -179,9 +179,11 @@ public class UserUnitFacadeService {
 		if(!user.getLastlogindevice().equals(device)){
 			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
 		}
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~1:"+user.getNick());
 		this.userService.update(user);
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~2:"+user.getNick());
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~3:"+user.getNick());
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
 				uToken.getAccess_token(), uToken.getRefresh_token(), false,
 				userDeviceService.fetchBindDevicesWithLimit(user.getId(), 3));
