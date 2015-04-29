@@ -51,6 +51,7 @@ public class DeliverMessageService {
 		dto.setNewWifi(newWifi);
 		dto.setLogin_ts(login_ts);
 		dto.setLast_login_at(last_login_at);
+		dto.setNeedLocationQuery(needLocationQuery);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
