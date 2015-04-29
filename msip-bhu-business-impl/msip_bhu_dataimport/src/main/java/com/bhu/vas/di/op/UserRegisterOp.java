@@ -60,7 +60,7 @@ public class UserRegisterOp {
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
 			user.setLastlogindevice(DeviceEnum.PC.getSname());
 			user = userService.insert(user);
-			user.setId(id);
+			//user.setId(id);
 			System.out.println("uid:"+user.getId());
 			UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code

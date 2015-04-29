@@ -117,7 +117,9 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		User user = this.userService.getById(uid);
-		if(user == null){
+		if(user == null){//存在不干净的数据，需要清除redis数据
+			UniqueFacadeService.removeByMobileno(countrycode, acc);
+			System.out.println(String.format("acc[%s] 记录被移除！", acc));
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
@@ -171,6 +173,10 @@ public class UserUnitFacadeService {
 		}
 		
 		User user  = userService.getById(uToken.getId());
+		if(user == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		
 		if(StringUtils.isEmpty(user.getRegip())){
 			user.setRegip(remoteIp);
 		}
@@ -248,7 +254,9 @@ public class UserUnitFacadeService {
 			reg = false;
 			user = this.userService.getById(uid);
 			System.out.println("2. user:"+user);
-			if(user == null){
+			if(user == null){//存在不干净的数据，需要清除redis数据
+				UniqueFacadeService.removeByMobileno(countrycode, acc);
+				System.out.println(String.format("acc[%s] 记录被移除！", acc));
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
 			if(StringUtils.isEmpty(user.getRegip())){

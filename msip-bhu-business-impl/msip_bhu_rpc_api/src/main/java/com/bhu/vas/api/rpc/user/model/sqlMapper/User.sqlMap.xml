@@ -166,12 +166,13 @@
 			</if>
 		</where>
 	</delete>
-	
-	<insert id="insert" parameterType="user">
+	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyProperty="id">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
+		<!-- 
 		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
 			select last_insert_id(); 
 		</selectKey>
+		 -->
 	</insert>
  
 	<update id="update" parameterType="user">
