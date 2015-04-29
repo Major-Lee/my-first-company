@@ -117,9 +117,8 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		User user = this.userService.getById(uid);
-		if(user == null){//存在不干净的数据，需要清除redis数据
-			UniqueFacadeService.removeByMobileno(countrycode, acc);
-			System.out.println(String.format("acc[%s] 记录被移除！", acc));
+		if(user == null){//存在不干净的数据，需要清理数据
+			cleanDirtyUserData(uid,countrycode,acc);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
@@ -254,9 +253,8 @@ public class UserUnitFacadeService {
 			reg = false;
 			user = this.userService.getById(uid);
 			System.out.println("2. user:"+user);
-			if(user == null){//存在不干净的数据，需要清除redis数据
-				UniqueFacadeService.removeByMobileno(countrycode, acc);
-				System.out.println(String.format("acc[%s] 记录被移除！", acc));
+			if(user == null){//存在不干净的数据，需要清理数据
+				cleanDirtyUserData(uid,countrycode,acc);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
 			if(StringUtils.isEmpty(user.getRegip())){
@@ -288,5 +286,20 @@ public class UserUnitFacadeService {
 		payload.setRtoken(uToken.getRefresh_token());
 		payload.setReg(reg);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
+	}
+	
+	
+	/**
+	 * 如果数据库中不存在用户id数据
+	 * 1、清理redis中unique数据
+	 * 2、清理用户绑定设备数据
+	 * @param uid
+	 * @param countrycode
+	 * @param mobileno
+	 */
+	private void cleanDirtyUserData(int uid,int countrycode,String mobileno){
+		UniqueFacadeService.removeByMobileno(countrycode, mobileno);
+		this.userDeviceService.clearBindedDevices(uid);
+		System.out.println(String.format("acc[%s] 记录从redis被移除！", mobileno));
 	}
 }

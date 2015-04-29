@@ -1,21 +1,21 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * Created by bluesand on 15/4/10.

@@ -37,4 +37,15 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         return findModelByModelCriteria(mc);
     }
 
+    
+    /**
+     * 清除用户所有的绑定设备
+     * @param uid
+     * @author Edmond
+     */
+    public void clearBindedDevices(int uid){
+    	ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("uid", uid);
+        this.deleteByCommonCriteria(mc);
+    }
 }
