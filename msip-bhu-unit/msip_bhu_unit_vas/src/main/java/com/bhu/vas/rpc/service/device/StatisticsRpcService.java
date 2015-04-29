@@ -53,7 +53,7 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	}
 
 	@Override
-	public void createUserAccessStatistics(String filepath) {
-		userAccessStatisticsFacadeService.createUserAccessStatistics(filepath);
+	public boolean createUserAccessStatistics(String filepath) {
+		return userAccessStatisticsFacadeService.createUserAccessStatistics(filepath);
 	}
 }

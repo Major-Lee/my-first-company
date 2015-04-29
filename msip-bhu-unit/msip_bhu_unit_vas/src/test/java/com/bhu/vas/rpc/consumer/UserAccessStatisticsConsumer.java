@@ -26,7 +26,8 @@ public class UserAccessStatisticsConsumer {
 		context.start();
 
 		IStatisticsRpcService statisticsRpcService = (IStatisticsRpcService)context.getBean("statisticsRpcService");
-		statisticsRpcService.createUserAccessStatistics("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
+		statisticsRpcService.createUserAccessStatistics("/var/log/bhu/2015-04-29/logfile.log");
+        //statisticsRpcService.createUserAccessStatistics("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
 
 		Thread.currentThread().join();
 	}

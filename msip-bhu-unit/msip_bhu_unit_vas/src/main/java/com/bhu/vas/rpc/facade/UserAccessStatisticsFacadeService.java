@@ -52,8 +52,9 @@ public class UserAccessStatisticsFacadeService {
     }
 
 
-    public void createUserAccessStatistics(String filepath) {
+    public boolean createUserAccessStatistics(String filepath) {
         readTxtFile(filepath);
+        return true;
     }
 
     public void readTxtFile(String filePath) {
