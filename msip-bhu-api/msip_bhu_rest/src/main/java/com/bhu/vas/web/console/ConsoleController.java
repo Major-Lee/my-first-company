@@ -50,6 +50,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_max_busy_devices(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
@@ -77,6 +78,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_wifidevices_by_keyword(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			//@RequestParam(required = false, value = "q") String keyword,
 			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String orig_swver,
@@ -108,7 +110,8 @@ public class ConsoleController extends BaseController{
 	@RequestMapping(value="/fetch_statistics_general",method={RequestMethod.POST})
 	public void fetch_statistics_general(
 			HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response,
+			@RequestParam(required = false) int uid) {
 		
 		StatisticsGeneralVTO vto = deviceRestRpcService.fetchStatisticsGeneral();
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
@@ -125,6 +128,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_region_count(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			@RequestParam(required = true) String regions) {
 		
 		List<RegionCountDTO> dtos = deviceRestRpcService.fetchWDeviceRegionCount(regions);
@@ -143,6 +147,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_wifidevices_by_registerat(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		
@@ -163,6 +168,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_handsetdevices(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			@RequestParam(required = true, value = "wid") String wifiId,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
@@ -204,6 +210,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_online_handset(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			@RequestParam(required = true,defaultValue="4",value = "t") int type,
 			@RequestParam(required = false,defaultValue="1",value = "ml") int ml
 			//@RequestParam(required = false) String fragment
@@ -230,6 +237,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_online_device(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false) int uid,
 			@RequestParam(required = true,defaultValue="4",value = "t") int type,
 			@RequestParam(required = false,defaultValue="1",value = "ml") int ml
 			//@RequestParam(required = false) String fragment
