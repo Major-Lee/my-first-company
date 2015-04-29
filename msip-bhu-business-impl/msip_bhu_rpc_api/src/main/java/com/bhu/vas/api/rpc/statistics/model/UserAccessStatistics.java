@@ -21,6 +21,10 @@ public class UserAccessStatistics extends KeyDtoMapJsonExtPKModel<UserDatePK,Int
 	public Class<Integer> getJsonParserModel() {
 		return Integer.class;
 	}
+	@Override
+	protected Class<UserDatePK> getPKClass() {
+		return UserDatePK.class;
+	}
 	
 	public Map<String,Integer> fetchAll(){
 		return this.getExtension();
@@ -39,11 +43,6 @@ public class UserAccessStatistics extends KeyDtoMapJsonExtPKModel<UserDatePK,Int
 		this.replaceInnerModels(map);
 	}
 
-	@Override
-	protected Class<UserDatePK> getPKClass() {
-		return UserDatePK.class;
-	}
-	
 	public String getMac() {
         if (this.getId() == null) {
             return null;

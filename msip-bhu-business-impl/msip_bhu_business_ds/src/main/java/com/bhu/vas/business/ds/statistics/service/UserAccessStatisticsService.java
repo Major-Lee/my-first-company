@@ -1,21 +1,21 @@
 package com.bhu.vas.business.ds.statistics.service;
 
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
-import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
-import com.bhu.vas.business.ds.statistics.dao.UserAccessStatisticsDao;
-import com.smartwork.msip.cores.orm.service.EntityService;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
+import com.bhu.vas.business.ds.statistics.dao.UserAccessStatisticsDao;
+import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 /**
  * Created by bluesand on 4/28/15.
  */
 @Service
 @Transactional("coreTransactionManager")
-public class UserAccessStatisticsService extends
-        EntityService<UserDatePK, UserAccessStatistics, UserAccessStatisticsDao> {
+public class UserAccessStatisticsService extends AbstractCoreService<UserDatePK, UserAccessStatistics, UserAccessStatisticsDao> {
 
     @Resource
     @Override

@@ -31,7 +31,7 @@ public class UserDatePK implements Serializable {
         this.mac = mac;
     }
 
-    public String getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -53,7 +53,7 @@ public class UserDatePK implements Serializable {
 
         UserDatePK that = (UserDatePK) o;
 
-        if (date != that.date) return false;
+        if (!date.equals(that.date)) return false;
         return !(mac != null ? !mac.equals(that.mac) : that.mac != null);
     }
 
