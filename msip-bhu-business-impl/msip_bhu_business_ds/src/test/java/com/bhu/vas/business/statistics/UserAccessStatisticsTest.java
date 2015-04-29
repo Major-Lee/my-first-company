@@ -31,7 +31,7 @@ public class UserAccessStatisticsTest extends BaseTest {
     private UserAccessStatisticsService userAccessStatisticsService;
 
     
-    @Test
+    //@Test
     public void testGetByid() {
     	UserDatePK pk1 = new UserDatePK("38:48:4c:c5:05:6d","2015-04-28");
     	
@@ -54,7 +54,7 @@ public class UserAccessStatisticsTest extends BaseTest {
         System.out.println(userAccessStatisticses.getTotalItemsCount());*/
     }
 
-    //@Test
+    @Test
     public void testPage() {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andColumnEqualTo("date", "2015-04-28");

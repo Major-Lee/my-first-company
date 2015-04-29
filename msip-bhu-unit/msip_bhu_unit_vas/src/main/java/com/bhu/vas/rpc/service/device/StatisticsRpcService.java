@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.rpc.facade.UserAccessStatisticsFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -47,7 +48,7 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	}
 
 	@Override
-	public TailPage<UserAccessStatistics> fetchUserAccessStatistics(String date, int pageNo, int pageSize) {
+	public TailPage<UserAccessStatisticsDTO> fetchUserAccessStatistics(String date, int pageNo, int pageSize) {
 		return userAccessStatisticsFacadeService.fetchUserAccessStatistics(date, pageNo, pageSize);
 	}
 }

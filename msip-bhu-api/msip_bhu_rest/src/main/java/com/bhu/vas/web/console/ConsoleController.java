@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.smartwork.msip.cores.helper.DateHelper;
 import org.springframework.stereotype.Controller;
@@ -274,7 +275,7 @@ public class ConsoleController extends BaseController{
 		if (date.isEmpty()) {
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
-		TailPage<UserAccessStatistics> result =
+		TailPage<UserAccessStatisticsDTO> result =
 				statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
 
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
