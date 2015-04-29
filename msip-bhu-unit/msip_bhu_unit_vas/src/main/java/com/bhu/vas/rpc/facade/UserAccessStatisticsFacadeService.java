@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import ch.qos.logback.classic.Logger;
 import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
@@ -10,6 +11,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.Page;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,6 +26,8 @@ import java.util.*;
  */
 @Service
 public class UserAccessStatisticsFacadeService {
+
+    private final Logger logger = (Logger)LoggerFactory.getLogger(UserAccessStatisticsFacadeService.class);
     @Resource
     private UserAccessStatisticsService userAccessStatisticsService;
 
@@ -58,7 +62,7 @@ public class UserAccessStatisticsFacadeService {
     }
 
     public void readTxtFile(String filePath) {
-
+        logger.info("start....'");
         Map<UserDatePK, UserAccessStatistics> resultMapper = new HashMap<UserDatePK, UserAccessStatistics>();
 
         String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
@@ -158,13 +162,15 @@ public class UserAccessStatisticsFacadeService {
                     userAccessStatisticsService.insert(resultMapper.get(userDatePK));
                 }
 
+                logger.info("end....'");
             } else {
-                System.out.println("找不到指定的文件");
+                logger.info("找不到指定的文件");
             }
         } catch (Exception e) {
-            System.out.println("读取文件内容出错");
+            logger.info("读取文件内容出错");
             e.printStackTrace();
         }
+
     }
 
 

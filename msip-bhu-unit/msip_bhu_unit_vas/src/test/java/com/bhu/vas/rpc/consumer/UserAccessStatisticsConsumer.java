@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.consumer;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
@@ -26,7 +27,7 @@ public class UserAccessStatisticsConsumer {
 		context.start();
 
 		IStatisticsRpcService statisticsRpcService = (IStatisticsRpcService)context.getBean("statisticsRpcService");
-		statisticsRpcService.createUserAccessStatistics("/var/log/bhu/2015-04-29/logfile.log");
+        System.out.println(statisticsRpcService.createUserAccessStatistics("/var/log/bhu/2015-04-29/logfile.log"));
         //statisticsRpcService.createUserAccessStatistics("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
 
 		Thread.currentThread().join();
