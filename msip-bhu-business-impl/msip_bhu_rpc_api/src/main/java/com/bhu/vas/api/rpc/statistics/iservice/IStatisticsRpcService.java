@@ -10,6 +10,5 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 public interface IStatisticsRpcService {
 	public RpcResponseDTO<Map<String,Object>> buildHandsetOnline4Chart(int type,int ml);
 	public RpcResponseDTO<Map<String,Object>> buildDeviceOnline4Chart(int type,int ml);
-
 	TailPage<UserAccessStatistics> fetchUserAccessStatistics(String date, int pageNo, int pageSize);
 }

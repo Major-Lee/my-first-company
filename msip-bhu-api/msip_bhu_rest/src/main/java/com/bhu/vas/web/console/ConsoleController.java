@@ -267,6 +267,7 @@ public class ConsoleController extends BaseController{
 	public void fetch_user_access_statistics(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = true) int uid,
 			@RequestParam(required = false) String date,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
