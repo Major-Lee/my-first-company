@@ -13,6 +13,8 @@ public class URouterSettingVTO implements Serializable{
 	private String mac;
 	//oem后软件版本号
 	private String oem_swver;
+	//oem后硬件版本号
+	private String oem_hdver;
 	//是否在线
 	private boolean ol;
 	//运行时长 单位毫秒
@@ -39,6 +41,12 @@ public class URouterSettingVTO implements Serializable{
 	}
 	public void setOem_swver(String oem_swver) {
 		this.oem_swver = oem_swver;
+	}
+	public String getOem_hdver() {
+		return oem_hdver;
+	}
+	public void setOem_hdver(String oem_hdver) {
+		this.oem_hdver = oem_hdver;
 	}
 	public boolean isOl() {
 		return ol;

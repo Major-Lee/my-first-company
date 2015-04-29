@@ -271,6 +271,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			URouterSettingVTO vto = new URouterSettingVTO();
 			vto.setMac(device_entity.getId());
 			vto.setOem_swver(device_entity.getOem_swver());
+			vto.setOem_hdver(device_entity.getOem_hdver());
 			vto.setOl(device_entity.isOnline());
 			vto.setUptime(DeviceHelper.getDeviceUptime(device_entity));
 			
