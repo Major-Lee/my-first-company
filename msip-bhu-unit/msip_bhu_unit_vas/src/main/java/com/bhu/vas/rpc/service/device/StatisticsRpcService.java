@@ -4,6 +4,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.bhu.vas.rpc.facade.UserAccessStatisticsFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -23,6 +26,9 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	@Resource
 	private StatisticsDeviceMaxOnlineService statisticsDeviceMaxOnlineService;
 
+	@Resource
+	private UserAccessStatisticsFacadeService userAccessStatisticsFacadeService;
+
 	
 	@Override
 	public RpcResponseDTO<Map<String, Object>> buildHandsetOnline4Chart(
@@ -38,5 +44,10 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 		logger.info(String.format("buildDeviceOnline4Chart with type[%s] ml[%s]",type,ml));
 		Map<String, Object> build4Chart = statisticsDeviceMaxOnlineService.build4Chart(type, ml);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(build4Chart);
+	}
+
+	@Override
+	public TailPage<UserAccessStatistics> fetchUserAccessStatistics(String date, int pageNo, int pageSize) {
+		return userAccessStatisticsFacadeService.fetchUserAccessStatistics(date, pageNo, pageSize);
 	}
 }

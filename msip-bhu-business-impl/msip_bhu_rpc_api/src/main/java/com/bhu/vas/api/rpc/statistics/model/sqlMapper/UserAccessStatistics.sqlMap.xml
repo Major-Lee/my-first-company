@@ -14,7 +14,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_access_statistics_state
+	    	t_vas_users_access_statistics
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
@@ -96,42 +96,29 @@
 		delete from <include refid="modelTableName" />  where mac = #{mac} and date = #{date}
 	</delete>
 	
-	<delete id="delete" parameterType="recordRes">
+	<delete id="delete" parameterType="userAccessStatistics">
 		delete from <include refid="modelTableName" /> 
 			<if test="_parameter != null">
 					where mac = #{mac} and date = #{date}
 			</if>
 	</delete>		
 	 
-	<insert id="insert" parameterType="recordRes">
+	<insert id="insert" parameterType="userAccessStatistics">
 	    insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues"/>)
 	</insert>
  
   
-	<update id="update" parameterType="recordRes">
+	<update id="update" parameterType="userAccessStatistics">
 	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where mac = #{mac} and date = #{date}
 	</update>
 	
 	
 	
 	<select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">
-	  	select <include refid="modelColumns" /> from <include refid="modelTableName" /> 
-	  	<!-- 
-	  	<where>
-	  		uid IN
-	  		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-			    #{item.uid}
-			</foreach>
-			
-			and frdid IN
-	  		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-			    #{item.frdid}
-			</foreach>
-	  	</where> 
-	  	-->
+	  	select <include refid="modelColumns" /> from <include refid="modelTableName" />
 	  	<where>
 	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (	uid = #{item.uid} and cateid= #{item.cateid}	)
+			   (	mac = #{item.mac} and date= #{item.date}	)
 			</foreach>
 	  	</where>
 	  	
@@ -141,7 +128,7 @@
 	  	delete from <include refid="modelTableName" />  
 	  	<where>
 	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (	uid = #{item.uid} and cateid= #{item.cateid}	)
+			   (	mac = #{item.mac} and date= #{item.date}	)
 			</foreach>
 	  	</where>
 	</delete>

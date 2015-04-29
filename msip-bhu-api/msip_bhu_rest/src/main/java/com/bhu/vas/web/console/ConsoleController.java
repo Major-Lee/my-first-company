@@ -1,5 +1,6 @@
 package com.bhu.vas.web.console;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.smartwork.msip.cores.helper.DateHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +42,8 @@ public class ConsoleController extends BaseController{
 	
 	@Resource
 	private IStatisticsRpcService statisticsRpcService;
-	
+
+
 	/**
 	 * 获取最繁忙的TOP5wifi设备
 	 * @param request
@@ -256,5 +260,23 @@ public class ConsoleController extends BaseController{
 		}
 		//Map<String,List<String>> result = build4Chart(type,ml);
 		//SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
+	}
+
+	@ResponseBody()
+	@RequestMapping(value="/statistics/fetch_user_access_statistics",method={RequestMethod.POST})
+	public void fetch_user_access_statistics(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = false) String date,
+			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
+		if (date.isEmpty()) {
+			date = DateHelper.COMMON_HELPER.getDateText(new Date());
+		}
+		TailPage<UserAccessStatistics> result =
+				statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
+
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }

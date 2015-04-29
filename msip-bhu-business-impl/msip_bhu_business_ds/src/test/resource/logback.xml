@@ -37,8 +37,7 @@
 		</layout>
 	</appender>	
 			
-	<logger name="java.sql" additivity="false">
-		<level value="DEBUG" />
+	<logger name="java.sql" additivity="false" level="DEBUG">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="sqllogfile" />
 	</logger>
