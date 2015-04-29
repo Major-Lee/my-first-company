@@ -84,7 +84,7 @@ public class UserAccessStatisticsTest extends BaseTest {
 //
 //    }
 
-   // @Test
+    @Test
     public void insertData() {
         readTxtFile("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
     }
@@ -163,7 +163,7 @@ public class UserAccessStatisticsTest extends BaseTest {
                         UserDatePK userDatePK = new UserDatePK();
                         userDatePK.setDate(currentDate);
                         String mac = part0002.substring(8);
-                        userDatePK.setMac(mac);
+                        userDatePK.setMac(mac.replace(" ", ""));
                         String host = part0005.substring(8);
                         UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
                         if (resultMapper.get(userDatePK) == null) {
@@ -189,9 +189,6 @@ public class UserAccessStatisticsTest extends BaseTest {
                 for(UserDatePK userDatePK : resultMapper.keySet()) {
                     userAccessStatisticsService.insert(resultMapper.get(userDatePK));
                 }
-
-
-
 
             } else {
                 System.out.println("找不到指定的文件");

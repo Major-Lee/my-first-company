@@ -90,4 +90,7 @@ public class UserDeviceServiceConsumer {
 		//System.out.println(ret);
 		Thread.currentThread().join();
 	}
+
+
+
 }

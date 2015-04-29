@@ -51,4 +51,9 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	public TailPage<UserAccessStatisticsDTO> fetchUserAccessStatistics(String date, int pageNo, int pageSize) {
 		return userAccessStatisticsFacadeService.fetchUserAccessStatistics(date, pageNo, pageSize);
 	}
+
+	@Override
+	public void createUserAccessStatistics(String filepath) {
+		userAccessStatisticsFacadeService.createUserAccessStatistics(filepath);
+	}
 }
