@@ -44,8 +44,8 @@
             <ref bean="dataSourceCoreMaster"/>
         </property>    
     </bean>
-	
-    <bean id="sqlSessionTemplateCoreMaster"     class="org.mybatis.spring.SqlSessionTemplate">
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateCoreMaster"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
         <constructor-arg index="0" ref="sqlSessionCoreMaster" />
     </bean> 
 
@@ -59,8 +59,8 @@
             <ref bean="dataSourceCoreSlaver"/>
         </property>    
     </bean>
-	
-    <bean id="sqlSessionTemplateCoreSlaver"     class="org.mybatis.spring.SqlSessionTemplate">
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateCoreSlaver"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
         <constructor-arg index="0" ref="sqlSessionCoreSlaver" />
     </bean> 
  
