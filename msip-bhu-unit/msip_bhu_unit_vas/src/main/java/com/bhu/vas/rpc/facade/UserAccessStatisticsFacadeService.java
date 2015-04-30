@@ -68,67 +68,66 @@ public class UserAccessStatisticsFacadeService {
         try {
             File file = new File(filePath);
             if (file.isFile() && file.exists()) { //判断文件是否存在
-                logger.info("file exists");
                 InputStreamReader read = new InputStreamReader(new FileInputStream(file));//考虑到编码格式
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
-                    logger.info("linetext...." + lineTxt);
+                    logger.debug("linetext...." + lineTxt);
                     if (lineTxt.startsWith("0001") && lineTxt.endsWith("0000")) {
                         int currentIndex = 0;
                         String part0001 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- 任务id : " + part0001);
+                        logger.debug(" --- 任务id : " + part0001);
                         currentIndex = part0001.length();
 
                         String part0002 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)) + 1);
-                        logger.info(" --- 客户端MAC : " + part0002);
+                        logger.debug(" --- 客户端MAC : " + part0002);
                         currentIndex = part0001.length() + part0002.length();
 
                         String part0003 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- 设备MAC : " + part0003);
+                        logger.debug(" --- 设备MAC : " + part0003);
                         currentIndex = part0001.length() + part0002.length() + part0003.length();
 
                         String part0004 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- 访问IP : " + part0004);
+                        logger.debug(" --- 访问IP : " + part0004);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length();
 
                         String part0005 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- HOST : " + part0005);
+                        logger.debug(" --- HOST : " + part0005);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length();
 
                         String part0006 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- URI : " + part0006);
+                        logger.debug(" --- URI : " + part0006);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length() + part0006.length();
 
                         String part0007 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- ACCEPT : " + part0007);
+                        logger.debug(" --- ACCEPT : " + part0007);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length() + part0006.length() + part0007.length();
 
                         String part0008 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        logger.info(" --- USER_AGENT : " + part0008);
+                        logger.debug(" --- USER_AGENT : " + part0008);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length() + part0006.length() + part0007.length() + part0008.length();
 
-                        logger.info("------------------------------");
+                        logger.debug("------------------------------");
 
 
                         UserDatePK userDatePK = new UserDatePK();
