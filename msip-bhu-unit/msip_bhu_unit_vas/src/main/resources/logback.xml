@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-tasks/${provider.port}/tasks" />
+	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-vas/${provider.port}/vas" />
 	<jmxConfigurator />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -39,11 +39,17 @@
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
-
-	<appender name="unitservicefile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${log.base}.unitservice.log</File>
+	<appender name="unitfacadefile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.unitrequest.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.unitservice.zip</FileNamePattern>
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.unitfacade.zip</FileNamePattern>
+			<!-- keep 10 days history log
+			<MaxHistory>10</MaxHistory>
+
+			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+		    	<MaxFileSize>100MB</MaxFileSize>
+		   	</TimeBasedFileNamingAndTriggeringPolicy>
+		   	 -->
 		</rollingPolicy>
 		<encoder>
 			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
@@ -51,16 +57,14 @@
 		</encoder>
 	</appender>
 
-
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="unitrequestfile" />
 	</logger>
 
-
 	<logger name="com.bhu.vas.rpc.facade" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="unitservicefile" />
+		<appender-ref ref="unitfacadefile" />
 	</logger>
 	
 	<root level="WARN">

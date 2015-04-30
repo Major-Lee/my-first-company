@@ -98,38 +98,38 @@ public class UserAccessStatisticsFacadeService {
                         String part0004 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- 访问IP : " + part0004);
+                        logger.info(" --- 访问IP : " + part0004);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length();
 
                         String part0005 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- HOST : " + part0005);
+                        logger.info(" --- HOST : " + part0005);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length();
 
                         String part0006 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- URI : " + part0006);
+                        logger.info(" --- URI : " + part0006);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length() + part0006.length();
 
                         String part0007 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- ACCEPT : " + part0007);
+                        logger.info(" --- ACCEPT : " + part0007);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length() + part0006.length() + part0007.length();
 
                         String part0008 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- USER_AGENT : " + part0008);
+                        logger.info(" --- USER_AGENT : " + part0008);
                         currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
                                 part0005.length() + part0006.length() + part0007.length() + part0008.length();
 
-                        System.out.println("------------------------------");
+                        logger.info("------------------------------");
 
 
                         UserDatePK userDatePK = new UserDatePK();
