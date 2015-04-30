@@ -57,6 +57,16 @@
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core_cachedext</artifactId>
                 <version>3.0-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>xmemcached</artifactId>
+                        <groupId>com.googlecode.xmemcached</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>spymemcached</artifactId>
+                        <groupId>net.spy</groupId>
+                    </exclusion>                    
+                </exclusions>                 
             </dependency>
             <dependency>
                 <groupId>com.smartwork</groupId>

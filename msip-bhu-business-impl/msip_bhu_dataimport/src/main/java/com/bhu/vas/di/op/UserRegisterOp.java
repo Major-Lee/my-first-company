@@ -17,9 +17,10 @@ import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.smartwork.msip.es.exception.ESException;
 /**
  * @author Edmond Lee
- * ./startupbuilder_bhu_userregister.sh ADD 1 13901076750 bhunetworks xudd
+ * ./startupbuilder_bhu_userregister.sh ADD 1 13901076750 bhunetworks 徐冬冬
  * ./startupbuilder_bhu_userregister.sh ADD 2 13911716572 bhunetworks 杨涛
  * ./startupbuilder_bhu_userregister.sh ADD 3 18612272825 bhunetworks 李文华
+ * ./startupbuilder_bhu_userregister.sh ADD 4 18001161616 bhunetworks 姚永新
  */
 public class UserRegisterOp {
 	
