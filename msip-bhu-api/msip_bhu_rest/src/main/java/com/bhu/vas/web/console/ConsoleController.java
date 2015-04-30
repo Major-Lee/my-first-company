@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.smartwork.msip.cores.helper.DateHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -273,6 +274,10 @@ public class ConsoleController extends BaseController{
 			@RequestParam(required = false) String device_mac,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
+		if (!StringHelper.isValidMac(device_mac)) {
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+			return ;
+		}
 		if (date.isEmpty()) {
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
