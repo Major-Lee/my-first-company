@@ -17,7 +17,7 @@ public class URouterSettingVTO implements Serializable{
 	private String oem_hdver;
 	//是否在线
 	private boolean ol;
-	//运行时长 单位毫秒
+	//本次运行时长 单位毫秒
 	private String uptime;
 	//是否被绑定
 	//private boolean binded;
