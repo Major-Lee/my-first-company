@@ -1,100 +1,44 @@
-package com.bhu.vas.business.statistics;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.junit.Test;
+package com.bhu.vas.di.op;
 
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
 import com.bhu.vas.business.ds.statistics.service.UserAccessStatisticsService;
 import com.smartwork.msip.cores.helper.DateHelper;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.localunit.BaseTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by bluesand on 4/28/15.
+ * Created by bluesand on 4/30/15.
  */
-public class UserAccessStatisticsTest extends BaseTest {
+public class UserAccessStatisticOp {
 
-    @Resource
-    private UserAccessStatisticsService userAccessStatisticsService;
+    private static UserAccessStatisticsService userAccessStatisticsService;
 
-    
-    //@Test
-    public void testGetByid() {
-    	UserDatePK pk1 = new UserDatePK("38:48:4c:c5:05:6d","2015-04-28");
-    	
-    	/*UserAccessStatistics ss = userAccessStatisticsService.getById(pk1);
-    	System.out.println(ss.getInnerModelJsons());*/
-    	
-    	UserDatePK pk2 = new UserDatePK("a4:5e:60:bb:86:7d","2015-04-28");
-    	List<UserDatePK> pks = new ArrayList<UserDatePK>();
-    	pks.add(pk1);
-    	pks.add(pk2);
-    	List<UserAccessStatistics> findByIds = userAccessStatisticsService.findByIds(pks);
-    	//UserAccessStatistics ss = userAccessStatisticsService.getById(pk);
-    	System.out.println(findByIds.size());
-        /*ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("date", "2015-04-28");
-        mc.setPageNumber(1);
-        mc.setPageSize(20);
-        TailPage<UserAccessStatistics> userAccessStatisticses = userAccessStatisticsService.findModelTailPageByModelCriteria(mc);
-        System.out.println(userAccessStatisticses.getItems());
-        System.out.println(userAccessStatisticses.getTotalItemsCount());*/
+    public static void main(String[] args) {
+        if(args.length <1)  {
+            return;
+        }
+        String filepath = args[0];// ADD REMOVE
+        ApplicationContext ctx = new FileSystemXmlApplicationContext(
+                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+        userAccessStatisticsService = (UserAccessStatisticsService)
+                ctx.getBean("userAccessStatisticsService");
+
+        readTxtFile(filepath);
+
     }
 
-    @Test
-    public void testPage() {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("date", "2015-04-28");
-        mc.setPageNumber(1);
-        mc.setPageSize(20);
-        TailPage<UserAccessStatistics> userAccessStatisticses = userAccessStatisticsService.findModelTailPageByModelCriteria(mc);
-        System.out.println(userAccessStatisticses.getItems());
-        System.out.println(userAccessStatisticses.getTotalItemsCount());
-    }
-//    @Test
-//    public void insert() {
-//        UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
-//        UserDatePK userDatePK = new UserDatePK();
-//        userDatePK.setMac("84:82:f4:19:00:b4");
-//        userDatePK.setDate(DateHelper.COMMON_HELPER.getDateText(new Date()));
-//        userAccessStatistics.setMac("84:82:f4:19:00:b4");
-//        userAccessStatistics.setId(userDatePK);
-//        userAccessStatistics.setDate(DateHelper.COMMON_HELPER.getDateText(new Date()));
-//        userAccessStatistics.setCreated_at(new Date());
-//        Map<String, Integer> mapper = new HashMap<String, Integer>();
-//        mapper.put("baidu.com", 123);
-//        mapper.put("sina.com", 32323);
-//        mapper.put("google.com", 123123123);
-//        userAccessStatistics.replaceAll(mapper);
-//        userAccessStatisticsService.insert(userAccessStatistics);
-//        System.out.println(userDatePK);
-//
-//    }
-
-    @Test
-    public void insertData() {
-        readTxtFile("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
-    }
-
-    public void readTxtFile(String filePath) {
-
+    public static void readTxtFile(String filePath) {
         Map<UserDatePK, UserAccessStatistics> resultMapper = new HashMap<UserDatePK, UserAccessStatistics>();
-
         String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
-
         try {
             File file = new File(filePath);
             if (file.isFile() && file.exists()) { //判断文件是否存在
@@ -166,13 +110,15 @@ public class UserAccessStatisticsTest extends BaseTest {
                         userDatePK.setMac(mac.replace(" ", ""));
                         String deviceMac = part0003.substring(8);
                         String host = part0005.substring(8);
+
+
                         UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
                         if (resultMapper.get(userDatePK) == null) {
                             userAccessStatistics.setMac(mac);
                             userAccessStatistics.setId(userDatePK);
                             userAccessStatistics.setDate(currentDate);
-                            userAccessStatistics.setCreated_at(new Date());
                             userAccessStatistics.setDevice_mac(deviceMac);
+                            userAccessStatistics.setCreated_at(new Date());
                         } else {
                             userAccessStatistics = resultMapper.get(userDatePK);
                         }
@@ -200,6 +146,4 @@ public class UserAccessStatisticsTest extends BaseTest {
             e.printStackTrace();
         }
     }
-
-
 }

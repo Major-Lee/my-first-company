@@ -125,7 +125,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
 					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
 			}
-	
+			System.out.println("###################presents.size():"+presents.size());
 			if(!presents.isEmpty()){
 				List<WifiHandsetDeviceMarkPK> mark_pks = new ArrayList<WifiHandsetDeviceMarkPK>();
 				for(Tuple tuple : presents){
@@ -273,7 +273,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			vto.setOem_swver(device_entity.getOem_swver());
 			vto.setOem_hdver(device_entity.getOem_hdver());
 			vto.setOl(device_entity.isOnline());
-			vto.setUptime(DeviceHelper.getDeviceUptime(device_entity));
+			vto.setUptime(DeviceHelper.getCurrentDeviceUptime(device_entity));
 			
 			vto.setMode(DeviceHelper.getDeviceMode(setting_dto));
 			//获取正常的vap

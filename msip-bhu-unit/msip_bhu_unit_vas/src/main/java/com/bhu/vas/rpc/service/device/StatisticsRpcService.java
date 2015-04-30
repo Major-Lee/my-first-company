@@ -49,11 +49,18 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 
 	@Override
 	public TailPage<UserAccessStatisticsDTO> fetchUserAccessStatistics(String date, int pageNo, int pageSize) {
+		logger.info(String.format("fetchUserAccessStatistics with date[%s] pageNo[%s] pageSize[%s]",
+				date, pageNo, pageSize));
 		return userAccessStatisticsFacadeService.fetchUserAccessStatistics(date, pageNo, pageSize);
 	}
 
 	@Override
-	public boolean createUserAccessStatistics(String filepath) {
-		return userAccessStatisticsFacadeService.createUserAccessStatistics(filepath);
+	public TailPage<UserAccessStatisticsDTO> fetchUserAccessStatisticsWithDeviceMac(String date, String device_mac,
+																					int pageNo, int pageSize) {
+		logger.info(String.format("fetchUserAccessStatisticsWithDeviceMac with " +
+						"date[%s] device_amc[%s] pageNo[%s] pageSize[%s]",
+				date, device_mac, pageNo, pageSize));
+		return userAccessStatisticsFacadeService.fetchUserAccessStatisticsWithDeviceMac(date,
+				device_mac, pageNo, pageSize);
 	}
 }

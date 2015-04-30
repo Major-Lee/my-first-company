@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -620,6 +621,9 @@ public class AsyncMsgHandleService {
 						need_updates = new ArrayList<WifiHandsetDeviceMark>();
 					need_updates.add(entity);
 				}
+				
+				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(dto.getMac(), 
+						terminal.getMac(), StringUtils.isEmpty(entity.getData_tx_rate()) ? 0d : Double.parseDouble(entity.getData_tx_rate()));
 				cursor++;
 			}
 			

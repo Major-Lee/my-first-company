@@ -189,11 +189,11 @@ public class DeviceHelper {
 	
 	
 	/**
-	 * 获取设备的运行时长
+	 * 获取设备的总运行时长
 	 * @param device_entity
 	 * @return
 	 */
-	public static String getDeviceUptime(WifiDevice device_entity){
+	public static String getTotalDeviceUptime(WifiDevice device_entity){
 		String uptime = null;
 		if(device_entity != null) {
 			//如果设备在线 运行时长还要加上计算本次的
@@ -215,6 +215,30 @@ public class DeviceHelper {
 		
 		return uptime;
 	}
+	
+	/**
+	 * 获取设备的本次运行时长
+	 * @param device_entity
+	 * @return
+	 */
+	public static String getCurrentDeviceUptime(WifiDevice device_entity){
+		String uptime = null;
+		if(device_entity != null) {
+			//如果设备在线 
+			if(device_entity.isOnline()){
+				long last_reged_ts = device_entity.getLast_reged_at().getTime();
+				long current_ts = System.currentTimeMillis();
+				BigInteger bi = new BigInteger(String.valueOf(current_ts - last_reged_ts));
+				return bi.toString();
+			}
+		}
+		
+		if(StringUtils.isEmpty(uptime))
+			uptime = "0";
+		
+		return uptime;
+	}
+	
 	//新版本设备定义
 	public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
 	

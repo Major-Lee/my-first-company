@@ -319,8 +319,9 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 
 		String lowercase_mac = wifiId.toLowerCase();
+		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新移动设备的online状态为false
-		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
+		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_d_mac);
 		if(exist_handset_device_entity != null){
 			BeanUtils.copyProperties(dto, exist_handset_device_entity, HandsetDeviceDTO.copyIgnoreProperties);
 			exist_handset_device_entity.setOnline(false);
@@ -329,8 +330,8 @@ public class DeviceBusinessFacadeService {
 			//2:wifi设备对应handset在线列表redis移除
 //			WifiDeviceHandsetPresentSortedSetService.getInstance().removePresent(exist_handset_device_entity.
 //					getLast_wifi_id(), lowercase_mac);
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(exist_handset_device_entity.
-					getLast_wifi_id(), lowercase_mac, exist_handset_device_entity.getData_rx_rate_double());
+			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
+					lowercase_d_mac, exist_handset_device_entity.getData_rx_rate_double());
 			/*
 			 * 3:统计增量 移动设备的daily访问时长增量
 			 * 如果最后接入时间是今天才会记入daily访问时长

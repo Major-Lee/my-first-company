@@ -12,6 +12,6 @@ public interface IStatisticsRpcService {
 	public RpcResponseDTO<Map<String,Object>> buildHandsetOnline4Chart(int type,int ml);
 	public RpcResponseDTO<Map<String,Object>> buildDeviceOnline4Chart(int type,int ml);
 	TailPage<UserAccessStatisticsDTO> fetchUserAccessStatistics(String date, int pageNo, int pageSize);
-
-    boolean createUserAccessStatistics(String filepath);
+	TailPage<UserAccessStatisticsDTO> fetchUserAccessStatisticsWithDeviceMac(String date, String device_mac,
+																			 int pageNo, int pageSize);
 }

@@ -1,20 +1,6 @@
 package com.bhu.vas.rpc.consumer;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
-import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
-import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
-import com.smartwork.msip.cores.helper.DateHelper;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserAccessStatisticsConsumer {
 	public static void main(String[] args) throws Exception {
@@ -26,8 +12,9 @@ public class UserAccessStatisticsConsumer {
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml" });
 		context.start();
 
-		IStatisticsRpcService statisticsRpcService = (IStatisticsRpcService)context.getBean("statisticsRpcService");
-        System.out.println(statisticsRpcService.createUserAccessStatistics("/var/log/bhu/2015-04-29/logfile.log"));
+		//方法已经从service中移除挪到dataimport中
+		//IStatisticsRpcService statisticsRpcService = (IStatisticsRpcService)context.getBean("statisticsRpcService");
+        //System.out.println(statisticsRpcService.createUserAccessStatistics("/var/log/bhu/2015-04-29/logfile.log"));
         //statisticsRpcService.createUserAccessStatistics("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
 
 		Thread.currentThread().join();

@@ -17,6 +17,8 @@ public class UserAccessStatistics extends KeyDtoMapJsonExtPKModel<UserDatePK,Int
 
 	private Date created_at;
 
+	private String device_mac;
+
 	@Override
 	public Class<Integer> getJsonParserModel() {
 		return Integer.class;
@@ -77,5 +79,13 @@ public class UserAccessStatistics extends KeyDtoMapJsonExtPKModel<UserDatePK,Int
 
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
+	}
+
+	public String getDevice_mac() {
+		return device_mac;
+	}
+
+	public void setDevice_mac(String device_mac) {
+		this.device_mac = device_mac;
 	}
 }
