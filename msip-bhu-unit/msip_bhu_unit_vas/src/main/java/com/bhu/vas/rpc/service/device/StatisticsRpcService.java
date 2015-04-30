@@ -54,9 +54,4 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 		return userAccessStatisticsFacadeService.fetchUserAccessStatistics(date, pageNo, pageSize);
 	}
 
-	@Override
-	public boolean createUserAccessStatistics(String filepath) {
-		logger.info(String.format("fetchUserAccessStatistics with filepath[%s]",filepath));
-		return userAccessStatisticsFacadeService.createUserAccessStatistics(filepath);
-	}
 }
