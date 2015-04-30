@@ -62,7 +62,7 @@ public class UserAccessStatisticsFacadeService {
     }
 
     public void readTxtFile(String filePath) {
-        logger.info("start....'");
+        logger.info("start....'" + filePath);
         Map<UserDatePK, UserAccessStatistics> resultMapper = new HashMap<UserDatePK, UserAccessStatistics>();
 
         String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
