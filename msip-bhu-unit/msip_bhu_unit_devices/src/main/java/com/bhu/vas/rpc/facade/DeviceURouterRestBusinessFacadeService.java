@@ -125,7 +125,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
 					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
 			}
-	
+			System.out.println("###################presents.size():"+presents.size());
 			if(!presents.isEmpty()){
 				List<WifiHandsetDeviceMarkPK> mark_pks = new ArrayList<WifiHandsetDeviceMarkPK>();
 				for(Tuple tuple : presents){
