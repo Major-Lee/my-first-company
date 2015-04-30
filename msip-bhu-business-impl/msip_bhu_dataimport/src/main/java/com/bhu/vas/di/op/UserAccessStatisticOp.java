@@ -108,12 +108,16 @@ public class UserAccessStatisticOp {
                         userDatePK.setDate(currentDate);
                         String mac = part0002.substring(8);
                         userDatePK.setMac(mac.replace(" ", ""));
+                        String deviceMac = part0003.substring(8);
                         String host = part0005.substring(8);
+
+
                         UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
                         if (resultMapper.get(userDatePK) == null) {
                             userAccessStatistics.setMac(mac);
                             userAccessStatistics.setId(userDatePK);
                             userAccessStatistics.setDate(currentDate);
+                            userAccessStatistics.setDevice_mac(deviceMac);
                             userAccessStatistics.setCreated_at(new Date());
                         } else {
                             userAccessStatistics = resultMapper.get(userDatePK);

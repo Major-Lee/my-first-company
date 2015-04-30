@@ -270,13 +270,18 @@ public class ConsoleController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = false) String date,
+			@RequestParam(required = false) String device_mac,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 		if (date.isEmpty()) {
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
-		TailPage<UserAccessStatisticsDTO> result =
-				statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
+		TailPage<UserAccessStatisticsDTO> result;
+		if (device_mac.isEmpty()) {
+			result = statisticsRpcService.fetchUserAccessStatisticsWithDeviceMac(date, device_mac, pageNo, pageSize);
+		}else {
+			result = statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
+		}
 
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}

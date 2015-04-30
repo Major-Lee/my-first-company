@@ -164,6 +164,7 @@ public class UserAccessStatisticsTest extends BaseTest {
                         userDatePK.setDate(currentDate);
                         String mac = part0002.substring(8);
                         userDatePK.setMac(mac.replace(" ", ""));
+                        String deviceMac = part0003.substring(8);
                         String host = part0005.substring(8);
                         UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
                         if (resultMapper.get(userDatePK) == null) {
@@ -171,6 +172,7 @@ public class UserAccessStatisticsTest extends BaseTest {
                             userAccessStatistics.setId(userDatePK);
                             userAccessStatistics.setDate(currentDate);
                             userAccessStatistics.setCreated_at(new Date());
+                            userAccessStatistics.setDevice_mac(deviceMac);
                         } else {
                             userAccessStatistics = resultMapper.get(userDatePK);
                         }

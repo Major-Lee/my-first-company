@@ -7,6 +7,7 @@
   <resultMap id="modelResult" type="userAccessStatistics">
     <id property="mac" column="mac"/>
     <id property="date" column="date"/>
+	<result property="device_mac" column="device_mac"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
@@ -21,6 +22,7 @@
 	    <![CDATA[
 	    	mac,
 	    	date,
+	    	device_mac,
 	    	created_at,
 	    	updated_at,
 	    	extension_content
@@ -28,6 +30,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+			device_mac,
 	    	created_at,
 	    	updated_at,
 	    	extension_content
@@ -37,12 +40,14 @@
 	<sql id="modelInsertValues">
 			#{mac},
 	    	#{date},
+	    	#{device_mac},
 	    	#{created_at},
 	    	#{updated_at},
 	    	#{extension_content}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			device_mac = #{device_mac},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at},
 	    	extension_content = #{extension_content}

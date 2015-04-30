@@ -54,4 +54,13 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 		return userAccessStatisticsFacadeService.fetchUserAccessStatistics(date, pageNo, pageSize);
 	}
 
+	@Override
+	public TailPage<UserAccessStatisticsDTO> fetchUserAccessStatisticsWithDeviceMac(String date, String device_mac,
+																					int pageNo, int pageSize) {
+		logger.info(String.format("fetchUserAccessStatisticsWithDeviceMac with " +
+						"date[%s] device_amc[%s] pageNo[%s] pageSize[%s]",
+				date, device_mac, pageNo, pageSize));
+		return userAccessStatisticsFacadeService.fetchUserAccessStatisticsWithDeviceMac(date,
+				device_mac, pageNo, pageSize);
+	}
 }
