@@ -62,37 +62,36 @@ public class UserAccessStatisticsFacadeService {
     }
 
     public void readTxtFile(String filePath) {
-        logger.info("start....'" + filePath);
+        logger.info("start...." + filePath);
         Map<UserDatePK, UserAccessStatistics> resultMapper = new HashMap<UserDatePK, UserAccessStatistics>();
-
         String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
-
         try {
             File file = new File(filePath);
             if (file.isFile() && file.exists()) { //判断文件是否存在
+                logger.info("file exists");
                 InputStreamReader read = new InputStreamReader(new FileInputStream(file));//考虑到编码格式
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
-                    //System.out.println(lineTxt);
+                    logger.info("linetext...." + lineTxt);
                     if (lineTxt.startsWith("0001") && lineTxt.endsWith("0000")) {
                         int currentIndex = 0;
                         String part0001 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- 任务id : " + part0001);
+                        logger.info(" --- 任务id : " + part0001);
                         currentIndex = part0001.length();
 
                         String part0002 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)) + 1);
-                        System.out.println(" --- 客户端MAC : " + part0002);
+                        logger.info(" --- 客户端MAC : " + part0002);
                         currentIndex = part0001.length() + part0002.length();
 
                         String part0003 = lineTxt.substring(currentIndex, currentIndex + 4) +
                                 lineTxt.substring(currentIndex + 4, currentIndex + 8) +
                                 lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- 设备MAC : " + part0003);
+                        logger.info(" --- 设备MAC : " + part0003);
                         currentIndex = part0001.length() + part0002.length() + part0003.length();
 
                         String part0004 = lineTxt.substring(currentIndex, currentIndex + 4) +
