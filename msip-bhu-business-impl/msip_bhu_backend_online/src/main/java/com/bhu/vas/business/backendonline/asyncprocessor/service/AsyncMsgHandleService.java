@@ -623,7 +623,7 @@ public class AsyncMsgHandleService {
 				}
 				
 				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(dto.getMac(), 
-						terminal.getMac(), StringUtils.isEmpty(entity.getData_tx_rate()) ? 0d : Double.parseDouble(entity.getData_tx_rate()));
+						terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 				cursor++;
 			}
 			
