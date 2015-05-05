@@ -30,7 +30,6 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	//是否开启访客网络
 	private String guest_en;
 	
-	@JsonIgnore
 	private String auth_key;
 	
 	public String getName() {
