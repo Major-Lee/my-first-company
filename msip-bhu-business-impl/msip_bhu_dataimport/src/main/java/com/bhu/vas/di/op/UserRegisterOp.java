@@ -1,9 +1,5 @@
 package com.bhu.vas.di.op;
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import org.elasticsearch.ElasticsearchException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -14,7 +10,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashServic
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
-import com.smartwork.msip.es.exception.ESException;
 /**
  * @author Edmond Lee
  * ./startupbuilder_bhu_userregister.sh ADD 1 13901076750 bhunetworks 徐冬冬
@@ -24,7 +19,7 @@ import com.smartwork.msip.es.exception.ESException;
  */
 public class UserRegisterOp {
 	
-	public static void main(String[] argv) throws ElasticsearchException, ESException, IOException, ParseException{
+	public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
 		if(argv.length <1) return;
 		String oper = argv[0];// ADD REMOVE
 		
