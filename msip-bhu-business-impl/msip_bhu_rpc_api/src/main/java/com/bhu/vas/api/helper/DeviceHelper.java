@@ -6,14 +6,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -325,6 +328,77 @@ public class DeviceHelper {
 			return dto.getSequence();
 		}
 		return null;
+	}
+	
+	/**
+	 * 当前配置与修改配置上下文进行合并
+	 * @param source
+	 * @param target
+	 */
+	public static void mergeDS(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target){
+		if(source != null && target != null){
+			//合并 radio 多频设备会有多个
+			List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
+			if(m_radios != null){
+				target.setRadios(m_radios);
+			}
+			//合并 wan
+			if(!StringUtils.isEmpty(source.getMode())){
+				target.setMode(source.getMode());
+			}
+			//合并 vaps
+			List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
+			if(m_vaps != null){
+				target.setVaps(m_vaps);
+			}
+			//合并黑白名单
+			List<WifiDeviceSettingAclDTO> m_acls = mergeList(source.getAcls(), target.getAcls());
+			if(m_acls != null){
+				target.setAcls(m_acls);
+			}
+			//合并接口速率控制
+			List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces());
+			if(m_interfaces != null){
+				target.setInterfaces(m_interfaces);
+			}
+			//合并终端速率控制
+			List<WifiDeviceSettingRateControlDTO> m_ratecontrols = mergeList(source.getRatecontrols(), target.getRatecontrols());
+			if(m_ratecontrols != null){
+				target.setRatecontrols(m_ratecontrols);
+			}
+			//合并终端别名
+			List<WifiDeviceSettingMMDTO> m_mms = mergeList(source.getMms(), target.getMms());
+			if(m_mms != null){
+				target.setMms(m_mms);
+			}
+			//合并广告
+			if(source.getAd() != null){
+				BeanUtils.copyProperties(source.getAd(), target.getAd());
+			}
+			//合并管理员用户列表
+			List<WifiDeviceSettingUserDTO> m_users = mergeList(source.getUsers(), target.getUsers());
+			if(m_users != null){
+				target.setUsers(m_users);
+			}
+		}
+	}
+	
+	public static <T> List<T> mergeList(List<T> source, List<T> target){
+		if(source == null) return null;
+		//如果当前为空 则直接覆盖
+		if(target == null || target.isEmpty()){
+			return source;
+		}else{
+			for(T source_item : source){
+				int index = target.indexOf(source_item);
+				if(index != -1){
+					BeanUtils.copyProperties(source_item, target.get(index));
+				}else{
+					target.add(source_item);
+				}
+			}
+			return target;
+		}
 	}
 	
 	/*******************************    设备配置修改模板  ****************************************/

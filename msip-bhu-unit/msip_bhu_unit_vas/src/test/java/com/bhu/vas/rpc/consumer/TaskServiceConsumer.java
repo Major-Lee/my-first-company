@@ -37,11 +37,11 @@ public class TaskServiceConsumer {
 		
 		
 		WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
-		vap_dto.setSsid("lawliet");
-		vap_dto.setAuth("WPA-PSK");
+		vap_dto.setSsid("lawliet_tang");
+		vap_dto.setAuth("WPA2-PSK");
 		vap_dto.setAuth_key("123456789");
 		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
-				OperationDS.DS_VapPassword.getNo(), JsonHelper.getJSONString(vap_dto),/*"payload content",*/ "APP_VAS", "42424");
+				OperationDS.DS_VapPassword.getNo(), JsonHelper.getJSONString(vap_dto),/*"payload content",*/ "APP_VAS", "42434");
 		
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();

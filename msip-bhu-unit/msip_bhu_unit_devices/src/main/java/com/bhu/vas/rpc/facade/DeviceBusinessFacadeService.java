@@ -595,10 +595,11 @@ public class DeviceBusinessFacadeService {
 					if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
 						String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
 						if(!StringUtils.isEmpty(cmdWithoutHeader)){
-							setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
-									cmdWithoutHeader, entity.getInnerModel());
-							//DeviceHelper.modifyDSConfigSequence(setting_dto, dto.getConfig_sequence());
-							entity.putInnerModel(setting_dto);
+							WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+									cmdWithoutHeader);
+							if(modify_setting_dto != null){
+								DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
+							}
 						}
 					}
 				}
