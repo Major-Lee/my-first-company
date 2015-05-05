@@ -316,7 +316,7 @@ public class DeviceHelper {
 	
 	/*******************************    设备配置修改模板  ****************************************/
 	
-	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev><wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>";
+	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>";
 	
 	public static final String DeviceSetting_ConfigSequenceOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
 	public static final String DeviceSetting_VapOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><vap>%s</vap></wifi></dev>";
@@ -398,9 +398,9 @@ public class DeviceHelper {
 		
 		if(StringUtils.isEmpty(vap_string) || StringUtils.isEmpty(acl_string)) return null;
 
-		String payload = builderDeviceSettingOuter(DeviceSetting_URouterDefaultVapAclOuter, dto.getSequence(), 
+		return builderDeviceSettingOuter(DeviceSetting_URouterDefaultVapAclOuter, dto.getSequence(), 
 				vap_string, acl_string);
-		return builderConfigSequence(payload, dto.getSequence());
+		//return builderConfigSequence(payload, dto.getSequence());
 	}
 	
 	/**

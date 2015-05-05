@@ -29,6 +29,12 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 		return super.findModelTailPageByModelCriteria(mc);
 	}
 	
+//	public List<WifiDevice> findByIdsAndOnline(List<String> ids, boolean online){
+//		ModelCriteria mc = new ModelCriteria();
+//		mc.createCriteria().andColumnIn("id", ids).an.andColumnEqualTo("online", online);
+//		return super.findModelByModelCriteria(mc);
+//	}
+	
 	public long countByOnline(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("online", true);
