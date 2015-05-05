@@ -274,10 +274,6 @@ public class ConsoleController extends BaseController{
 			@RequestParam(required = false) String device_mac,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
-		if (!StringHelper.isValidMac(device_mac)) {
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-			return ;
-		}
 		if (date.isEmpty()) {
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
@@ -285,6 +281,10 @@ public class ConsoleController extends BaseController{
 		if (device_mac.isEmpty()) {
 			result = statisticsRpcService.fetchUserAccessStatisticsWithDeviceMac(date, device_mac, pageNo, pageSize);
 		}else {
+			if (!StringHelper.isValidMac(device_mac)) {
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+				return ;
+			}
 			result = statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
 		}
 
