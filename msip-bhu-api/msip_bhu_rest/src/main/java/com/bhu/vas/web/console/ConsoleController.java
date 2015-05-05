@@ -274,7 +274,7 @@ public class ConsoleController extends BaseController{
 			@RequestParam(required = false) String device_mac,
 			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
-		if (date.isEmpty()) {
+		if (date == null || date.isEmpty()) {
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
 		TailPage<UserAccessStatisticsDTO> result;
