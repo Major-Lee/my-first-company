@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
@@ -20,6 +19,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.ReflectionHelper;
 
 public class DeviceHelper {
 	
@@ -335,7 +335,7 @@ public class DeviceHelper {
 	 * @param source
 	 * @param target
 	 */
-	public static void mergeDS(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target){
+	public static void mergeDS(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target) throws Exception{
 		if(source != null && target != null){
 			//合并 radio 多频设备会有多个
 			List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
@@ -373,7 +373,7 @@ public class DeviceHelper {
 			}
 			//合并广告
 			if(source.getAd() != null){
-				BeanUtils.copyProperties(source.getAd(), target.getAd());
+				ReflectionHelper.copyProperties(source.getAd(), target.getAd());
 			}
 			//合并管理员用户列表
 			List<WifiDeviceSettingUserDTO> m_users = mergeList(source.getUsers(), target.getUsers());
@@ -383,7 +383,7 @@ public class DeviceHelper {
 		}
 	}
 	
-	public static <T> List<T> mergeList(List<T> source, List<T> target){
+	public static <T> List<T> mergeList(List<T> source, List<T> target) throws Exception{
 		if(source == null) return null;
 		//如果当前为空 则直接覆盖
 		if(target == null || target.isEmpty()){
@@ -392,7 +392,7 @@ public class DeviceHelper {
 			for(T source_item : source){
 				int index = target.indexOf(source_item);
 				if(index != -1){
-					BeanUtils.copyProperties(source_item, target.get(index));
+					ReflectionHelper.copyProperties(source_item, target.get(index));
 				}else{
 					target.add(source_item);
 				}
@@ -619,5 +619,50 @@ public class DeviceHelper {
 			}
 		}
 		return null;
+	}
+	
+	
+	public static void main(String[] args){
+		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
+		v1.setName("v1");
+		v1.setSsid("a11");
+		WifiDeviceSettingVapDTO v2 = new WifiDeviceSettingVapDTO();
+		v2.setName("v2");
+		v2.setSsid("a12");
+		WifiDeviceSettingVapDTO v3 = new WifiDeviceSettingVapDTO();
+		v3.setName("v3");
+		v3.setSsid("a13");
+		
+		List<WifiDeviceSettingVapDTO> vaps_target = new ArrayList<WifiDeviceSettingVapDTO>();
+		vaps_target.add(v1);
+		vaps_target.add(v2);
+		vaps_target.add(v3);
+		WifiDeviceSettingDTO target = new WifiDeviceSettingDTO();
+		target.setVaps(vaps_target);
+		
+		WifiDeviceSettingVapDTO v4 = new WifiDeviceSettingVapDTO();
+		v4.setName("v1");
+		v4.setSsid("a14");
+		v4.setAcl_type("tt");
+		
+		try {
+			ReflectionHelper.copyProperties(v3, v4);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(v4.getName() + "=" + v4.getSsid() + "=" + v4.getAcl_type());
+		
+//		List<WifiDeviceSettingVapDTO> vaps_source = new ArrayList<WifiDeviceSettingVapDTO>();
+//		vaps_source.add(v4);
+//		
+//		WifiDeviceSettingDTO source = new WifiDeviceSettingDTO();
+//		source.setVaps(vaps_source);
+//		
+//		mergeDS(source, target);
+//		
+//		for(WifiDeviceSettingVapDTO vap : target.getVaps()){
+//			System.out.println(vap.getName() + "=" + vap.getSsid());
+//		}
 	}
 }
