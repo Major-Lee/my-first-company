@@ -12,7 +12,8 @@ public enum OperationDS {
 	
 	DS_Ad("01","修改广告配置"),
 	DS_Power("02","修改信号强度"),
-	DS_VapPassword("03","修改vap密码")
+	DS_VapPassword("03","修改vap密码"),
+	DS_AclMacs("04","修改黑名单列表名单"),
 	;
 
 	

@@ -3,7 +3,10 @@ package com.bhu.vas.api.helper;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -95,6 +98,27 @@ public class DeviceHelper {
 			List<WifiDeviceSettingAclDTO> acls = dto.getAcls();
 			if(acls != null && !acls.isEmpty()){
 				int index = acls.indexOf(new WifiDeviceSettingAclDTO(WifiDeviceSettingDTO.Default_AclName));
+				if(index != -1){
+					return acls.get(index);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据acl的名称查找
+	 * @param name
+	 * @param dto
+	 * @return
+	 */
+	public static WifiDeviceSettingAclDTO getAclByName(String name, WifiDeviceSettingDTO dto){
+		if(StringUtils.isEmpty(name)) return null;
+		
+		if(dto != null) {
+			List<WifiDeviceSettingAclDTO> acls = dto.getAcls();
+			if(acls != null && !acls.isEmpty()){
+				int index = acls.indexOf(new WifiDeviceSettingAclDTO(name));
 				if(index != -1){
 					return acls.get(index);
 				}
@@ -620,6 +644,43 @@ public class DeviceHelper {
 				String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 						vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 				return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 构建黑名单列表名单修改配置
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return
+	 */
+	public static String builderDSAclMacsOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
+			if(acl_dto_map != null && !acl_dto_map.isEmpty()){
+				WifiDeviceSettingAclDTO default_acl_dto = matchDefaultAcl(ds_dto);
+				if(default_acl_dto != null){
+					Set<String> macs = new HashSet<String>();
+					if(default_acl_dto.getMacs() != null){
+						macs.addAll(default_acl_dto.getMacs());
+					}
+					
+					WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get("incr");
+					if(acl_incr_dto != null && acl_incr_dto.getMacs() != null){
+						macs.addAll(acl_incr_dto.getMacs());
+					}
+					
+					WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get("del");
+					if(acl_del_dto != null && acl_del_dto.getMacs() != null){
+						macs.removeAll(acl_del_dto.getMacs());
+					}
+					default_acl_dto.setMacs(new ArrayList<String>(macs));
+					
+					String item = builderDeviceSettingItem(DeviceSetting_AclItem, default_acl_dto.builderProperties());
+					return builderDeviceSettingOuter(DeviceSetting_AclOuter, config_sequence, item);
+				}
 			}
 		}
 		return null;
