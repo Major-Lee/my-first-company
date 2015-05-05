@@ -278,7 +278,7 @@ public class ConsoleController extends BaseController{
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
 		TailPage<UserAccessStatisticsDTO> result;
-		if (!device_mac.isEmpty()) {
+		if (device_mac !=null && !device_mac.isEmpty()) {
 			result = statisticsRpcService.fetchUserAccessStatisticsWithDeviceMac(date, device_mac, pageNo, pageSize);
 		}else {
 			if (!StringHelper.isValidMac(device_mac)) {
