@@ -279,12 +279,12 @@ public class ConsoleController extends BaseController{
 		}
 		TailPage<UserAccessStatisticsDTO> result;
 		if (device_mac !=null && !device_mac.isEmpty()) {
-			result = statisticsRpcService.fetchUserAccessStatisticsWithDeviceMac(date, device_mac, pageNo, pageSize);
-		}else {
 			if (!StringHelper.isValidMac(device_mac)) {
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 				return ;
 			}
+			result = statisticsRpcService.fetchUserAccessStatisticsWithDeviceMac(date, device_mac, pageNo, pageSize);
+		}else {
 			result = statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
 		}
 
