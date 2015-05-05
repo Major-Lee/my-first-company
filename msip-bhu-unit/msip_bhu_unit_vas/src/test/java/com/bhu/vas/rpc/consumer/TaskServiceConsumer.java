@@ -3,10 +3,9 @@ package com.bhu.vas.rpc.consumer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -30,11 +29,20 @@ public class TaskServiceConsumer {
 //		taskRpcService.taskStatusFetch(123123123);
 		String mac = "62:68:75:02:ff:05";
 		
-		WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
-		radio_dto.setName("");
-		radio_dto.setPower("12");
-		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
-				OperationDS.DS_Power.getNo(), JsonHelper.getJSONString(radio_dto),/*"payload content",*/ "APP_VAS", "9990");
+//		WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
+//		radio_dto.setName("");
+//		radio_dto.setPower("12");
+//		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
+//				OperationDS.DS_Power.getNo(), JsonHelper.getJSONString(radio_dto),/*"payload content",*/ "APP_VAS", "11111");
+		
+		
+		WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
+		vap_dto.setSsid("lawliet_tang");
+		vap_dto.setAuth("WPA2-PSK");
+		vap_dto.setAuth_key("12345678");
+		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
+				OperationDS.DS_VapPassword.getNo(), JsonHelper.getJSONString(vap_dto),/*"payload content",*/ "APP_VAS", "22222");
+		
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
 		//ParserHeader parserHeader = new ParserHeader();

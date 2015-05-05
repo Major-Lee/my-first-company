@@ -54,4 +54,9 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 		properties[1] = power;
 		return properties;
 	}
+	
+	@Override
+	public Object[] builderProperties(int type) {
+		return builderProperties();
+	}
 }

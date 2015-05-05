@@ -44,6 +44,11 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		properties[2] = bhu_enable;
 		return properties;
 	}
+	@Override
+	public Object[] builderProperties(int type) {
+		return builderProperties();
+	}
+	
 	public static void main(String[] argv){
 		WifiDeviceSettingAdDTO dto = new WifiDeviceSettingAdDTO();
 		//dto.setAd_interface(ad_interface);

@@ -11,7 +11,9 @@ import java.util.Map;
 public enum OperationDS {
 	
 	DS_Ad("01","修改广告配置"),
-	DS_Power("02","修改信号强度");
+	DS_Power("02","修改信号强度"),
+	DS_VapPassword("03","修改vap密码")
+	;
 
 	
 	static Map<String, OperationDS> allOperationDSs;

@@ -1,4 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * 设备配置信息的vap item
  * @author tangzichao
@@ -26,6 +29,9 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	private String acl_name;
 	//是否开启访客网络
 	private String guest_en;
+	
+	@JsonIgnore
+	private String auth_key;
 	
 	public String getName() {
 		return name;
@@ -75,6 +81,12 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public void setRadio(String radio) {
 		this.radio = radio;
 	}
+	public String getAuth_key() {
+		return auth_key;
+	}
+	public void setAuth_key(String auth_key) {
+		this.auth_key = auth_key;
+	}
 	@Override
 	public Object[] builderProperties() {
 		Object[] properties = new Object[8];
@@ -86,6 +98,26 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		properties[5] = acl_type;
 		properties[6] = acl_name;
 		properties[7] = guest_en;
+		return properties;
+	}
+	//修改vap的密码
+	public static final int BuilderType_VapPassword = 1;
+	
+	@Override
+	public Object[] builderProperties(int type) {
+		Object[] properties = null;
+		switch(type){
+			case BuilderType_VapPassword:
+				properties = new Object[4];
+				properties[0] = name;
+				properties[1] = ssid;
+				properties[2] = auth;
+				properties[3] = auth_key;
+				break;
+			default:
+				properties = builderProperties();
+				break;
+		}
 		return properties;
 	}
 }

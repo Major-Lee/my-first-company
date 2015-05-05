@@ -67,4 +67,9 @@ public class WifiDeviceSettingAclDTO implements DeviceSettingBuilderDTO{
 		properties[1] = macs_split_comma.toString();
 		return properties;
 	}
+
+	@Override
+	public Object[] builderProperties(int type) {
+		return builderProperties();
+	}
 }

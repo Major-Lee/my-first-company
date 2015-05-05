@@ -57,4 +57,9 @@ public class WifiDeviceSettingMMDTO implements DeviceSettingBuilderDTO{
 		properties[1] = name;
 		return properties;
 	}
+	
+	@Override
+	public Object[] builderProperties(int type) {
+		return builderProperties();
+	}
 }

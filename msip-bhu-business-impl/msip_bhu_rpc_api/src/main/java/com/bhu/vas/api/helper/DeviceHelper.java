@@ -343,6 +343,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	public static final String DeviceSetting_AdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
+	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
@@ -350,10 +351,16 @@ public class DeviceHelper {
 	 * @param builderDto
 	 * @return
 	 */
-	public static String builderDeviceSettingItem(String template_item, DeviceSettingBuilderDTO builderDto){
+	public static String builderDeviceSettingItemWithDto(String template_item, DeviceSettingBuilderDTO builderDto){
 		if(StringUtils.isEmpty(template_item)) return null;
 		if(builderDto == null) return null;
-		return String.format(template_item, builderDto.builderProperties());
+		return builderDeviceSettingItem(template_item, builderDto.builderProperties());
+	}
+	
+	public static String builderDeviceSettingItem(String template_item, Object[] properties){
+		if(StringUtils.isEmpty(template_item)) return null;
+		if(properties == null) return null;
+		return String.format(template_item, properties);
 	}
 	
 	/**
@@ -362,12 +369,25 @@ public class DeviceHelper {
 	 * @param builderDtos
 	 * @return
 	 */
-	public static String builderDeviceSettingItems(String template_item, List<? extends DeviceSettingBuilderDTO> builderDtos){
+	public static String builderDeviceSettingItemsWithDto(String template_item, List<? extends DeviceSettingBuilderDTO> builderDtos){
 		if(StringUtils.isEmpty(template_item)) return null;
 		if(builderDtos == null || builderDtos.isEmpty()) return null;
 		StringBuffer sb = new StringBuffer();
 		for(DeviceSettingBuilderDTO builderDto : builderDtos){
-			String result = builderDeviceSettingItem(template_item, builderDto);
+			String result = builderDeviceSettingItemWithDto(template_item, builderDto);
+			if(!StringUtils.isEmpty(result)){
+				sb.append(result);
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static String builderDeviceSettingItems(String template_item, List<Object[]> properties_list){
+		if(StringUtils.isEmpty(template_item)) return null;
+		if(properties_list == null || properties_list.isEmpty()) return null;
+		StringBuffer sb = new StringBuffer();
+		for(Object[] properties : properties_list){
+			String result = builderDeviceSettingItem(template_item, properties);
 			if(!StringUtils.isEmpty(result)){
 				sb.append(result);
 			}
@@ -433,7 +453,7 @@ public class DeviceHelper {
 					vap_dto.setAcl_type(WifiDeviceSettingVapDTO.AclType_Deny);
 					vap_dto.setAcl_name(WifiDeviceSettingDTO.Default_AclName);
 				}
-				return builderDeviceSettingItems(DeviceSetting_VapItem, vap_dtos);
+				return builderDeviceSettingItemsWithDto(DeviceSetting_VapItem, vap_dtos);
 			}
 		}
 		return null;
@@ -446,12 +466,12 @@ public class DeviceHelper {
 	public static String builderDSURouterDefaultAclItem(WifiDeviceSettingDTO dto){
 		WifiDeviceSettingAclDTO current_acl_dto = matchDefaultAcl(dto);
 		if(current_acl_dto != null){
-			return builderDeviceSettingItem(DeviceSetting_AclItem, current_acl_dto);
+			return builderDeviceSettingItemWithDto(DeviceSetting_AclItem, current_acl_dto);
 		}
 		
 		WifiDeviceSettingAclDTO result = new WifiDeviceSettingAclDTO();
 		result.setName(WifiDeviceSettingDTO.Default_AclName);
-		return builderDeviceSettingItem(DeviceSetting_AclItem, result);
+		return builderDeviceSettingItemWithDto(DeviceSetting_AclItem, result);
 	}
 	
 	/**
@@ -465,7 +485,7 @@ public class DeviceHelper {
 		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
 			WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
 			if(ad_dto != null){
-				String item = builderDeviceSettingItem(DeviceSetting_AdItem, ad_dto);
+				String item = builderDeviceSettingItemWithDto(DeviceSetting_AdItem, ad_dto);
 				return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 //				return builderConfigSequence(item_with_outer, config_sequence);
 			}
@@ -495,8 +515,33 @@ public class DeviceHelper {
 					if(frist_radio_dto == null) return null;
 					radio_dto.setName(frist_radio_dto.getName());
 				}
-				String item = builderDeviceSettingItem(DeviceSetting_RadioItem, radio_dto);
+				String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem, radio_dto);
 				return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 构建vap密码修改配置
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return
+	 */
+	public static String builderDSVapPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+			if(vap_dto != null){
+				//如果没有指定vap的具体名称 则获取默认第一个非访客的vap进行修改
+				if(StringUtils.isEmpty(vap_dto.getName())){
+					WifiDeviceSettingVapDTO frist_vap_dto = getUrouterDeviceVap(ds_dto);
+					if(frist_vap_dto == null) return null;
+					vap_dto.setName(frist_vap_dto.getName());
+				}
+				String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
+						vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+				return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
 			}
 		}
 		return null;

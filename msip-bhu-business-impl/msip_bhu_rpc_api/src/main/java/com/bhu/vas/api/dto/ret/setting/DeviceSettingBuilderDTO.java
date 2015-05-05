@@ -7,4 +7,6 @@ public interface DeviceSettingBuilderDTO {
 	public static final String Disable = "disable";
 	
 	public Object[] builderProperties();
+	
+	public Object[] builderProperties(int type);
 }
