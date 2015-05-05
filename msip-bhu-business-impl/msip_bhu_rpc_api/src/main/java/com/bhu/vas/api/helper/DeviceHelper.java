@@ -335,51 +335,55 @@ public class DeviceHelper {
 	 * @param source
 	 * @param target
 	 */
-	public static void mergeDS(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target) throws Exception{
-		if(source != null && target != null){
-			//合并 radio 多频设备会有多个
-			List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
-			if(m_radios != null){
-				target.setRadios(m_radios);
+	public static void mergeDS(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target){
+		try{
+			if(source != null && target != null){
+				//合并 radio 多频设备会有多个
+				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
+				if(m_radios != null){
+					target.setRadios(m_radios);
+				}
+				//合并 wan
+				if(!StringUtils.isEmpty(source.getMode())){
+					target.setMode(source.getMode());
+				}
+				//合并 vaps
+				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
+				if(m_vaps != null){
+					target.setVaps(m_vaps);
+				}
+				//合并黑白名单
+				List<WifiDeviceSettingAclDTO> m_acls = mergeList(source.getAcls(), target.getAcls());
+				if(m_acls != null){
+					target.setAcls(m_acls);
+				}
+				//合并接口速率控制
+				List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces());
+				if(m_interfaces != null){
+					target.setInterfaces(m_interfaces);
+				}
+				//合并终端速率控制
+				List<WifiDeviceSettingRateControlDTO> m_ratecontrols = mergeList(source.getRatecontrols(), target.getRatecontrols());
+				if(m_ratecontrols != null){
+					target.setRatecontrols(m_ratecontrols);
+				}
+				//合并终端别名
+				List<WifiDeviceSettingMMDTO> m_mms = mergeList(source.getMms(), target.getMms());
+				if(m_mms != null){
+					target.setMms(m_mms);
+				}
+				//合并广告
+				if(source.getAd() != null){
+					ReflectionHelper.copyProperties(source.getAd(), target.getAd());
+				}
+				//合并管理员用户列表
+				List<WifiDeviceSettingUserDTO> m_users = mergeList(source.getUsers(), target.getUsers());
+				if(m_users != null){
+					target.setUsers(m_users);
+				}
 			}
-			//合并 wan
-			if(!StringUtils.isEmpty(source.getMode())){
-				target.setMode(source.getMode());
-			}
-			//合并 vaps
-			List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
-			if(m_vaps != null){
-				target.setVaps(m_vaps);
-			}
-			//合并黑白名单
-			List<WifiDeviceSettingAclDTO> m_acls = mergeList(source.getAcls(), target.getAcls());
-			if(m_acls != null){
-				target.setAcls(m_acls);
-			}
-			//合并接口速率控制
-			List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces());
-			if(m_interfaces != null){
-				target.setInterfaces(m_interfaces);
-			}
-			//合并终端速率控制
-			List<WifiDeviceSettingRateControlDTO> m_ratecontrols = mergeList(source.getRatecontrols(), target.getRatecontrols());
-			if(m_ratecontrols != null){
-				target.setRatecontrols(m_ratecontrols);
-			}
-			//合并终端别名
-			List<WifiDeviceSettingMMDTO> m_mms = mergeList(source.getMms(), target.getMms());
-			if(m_mms != null){
-				target.setMms(m_mms);
-			}
-			//合并广告
-			if(source.getAd() != null){
-				ReflectionHelper.copyProperties(source.getAd(), target.getAd());
-			}
-			//合并管理员用户列表
-			List<WifiDeviceSettingUserDTO> m_users = mergeList(source.getUsers(), target.getUsers());
-			if(m_users != null){
-				target.setUsers(m_users);
-			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 	}
 	
