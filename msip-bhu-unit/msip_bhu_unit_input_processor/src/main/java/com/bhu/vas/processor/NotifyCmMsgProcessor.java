@@ -1,11 +1,7 @@
 package com.bhu.vas.processor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,7 +41,7 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 	private IDaemonRpcService daemonRpcService;
 	
 	
-	private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
+	//private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
 	
 	@PostConstruct
 	public void initialize() {
@@ -68,7 +64,16 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						String ctx = cmInfo.toString();
 						ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
-						if(cmInfo.getLast_frag() == 1){//最后一条拆包指令,数据发送成功后需要清除缓存中的ctx数据
+						if(cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){
+							List<String> macs = new ArrayList<String>();
+							for(WifiDeviceDTO dto:cmInfo.getClient()){
+								macs.add(dto.getMac());
+							}
+							daemonRpcService.wifiDevicesOnline(ctx, macs);
+							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
+						}
+						daemonRpcService.cmJoinService(cmInfo);
+						/*if(cmInfo.getLast_frag() == 1){//最后一条拆包指令,数据发送成功后需要清除缓存中的ctx数据
 							if(cmInfo != null && cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){//有同步过来的在线用户
 								put2CtxLocalCache(ctx,cmInfo.getClient());
 								Set<WifiDeviceDTO> localSet = localCaches.get(ctx);
@@ -85,7 +90,7 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 							daemonRpcService.cmJoinService(cmInfo);
 						}else{//不是最后一条拆包指令，则缓存相关client数据
 							put2CtxLocalCache(ctx,cmInfo.getClient());
-						}
+						}*/
 					}else if(ParserHeader.Offline_Prefix == type){//移除所有属于此cm的用户，并且down queue不能写入数据
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 					}else{
@@ -99,7 +104,7 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 		}));
 	}
 	
-	private synchronized void put2CtxLocalCache(String ctx,List<WifiDeviceDTO> dtos){
+	/*private synchronized void put2CtxLocalCache(String ctx,List<WifiDeviceDTO> dtos){
 		if(dtos == null || dtos.isEmpty()) return;
 		Set<WifiDeviceDTO> localSet = localCaches.get(ctx);
 		if(localSet == null){
@@ -109,7 +114,7 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 		}else{
 			localSet.addAll(dtos);
 		}
-	}
+	}*/
 	
 	@PreDestroy
 	public void destory(){
