@@ -1,6 +1,8 @@
 package com.bhu.vas.business.ds.device.facade;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
-import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
+import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
@@ -29,6 +31,7 @@ import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
@@ -249,8 +252,97 @@ public class DeviceFacadeService {
 		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf(handsetDeviceService.countByOnline()));
 		return system_statistics_map;
 	}
-
-
+	
+	/**
+	 * 根据新上线的设备/终端 统计设备/终端的新增、活跃
+	 * @param device_statist 上线的设备/终端
+	 */
+	public void deviceStatisticsOnline(DeviceStatistics device_statists, int type){
+		List<DeviceStatistics> ds = new ArrayList<DeviceStatistics>(1);
+		ds.add(device_statists);
+		deviceStatisticsOnlines(ds, type);
+	}
+	
+	/**
+	 * 根据新上线的设备/终端 统计设备/终端的新增、活跃
+	 * @param device_statists 上线的设备
+	 */
+	public void deviceStatisticsOnlines(List<DeviceStatistics> device_statists, int type){
+		if(device_statists == null || device_statists.isEmpty()) return;
+		
+		//4:统计增量 wifi设备的daily启动次数增量
+		int incr_statistics_accesscount = device_statists.size();
+		//3:统计增量 wifi设备的daily新增设备增量
+		int incr_statistics_news = 0;
+		//3:统计增量 wifi设备的daily活跃设备增量
+		int incr_statistics_active = 0;
+		
+		Date current_date = new Date();
+		for(DeviceStatistics ds : device_statists){
+			if(ds.isNewed()){
+				incr_statistics_news++;
+			}else{
+				//如果最后的登录时间和今天不一样，说明今天是第一次登录
+				if(!DateTimeHelper.isSameDay(ds.getLast_reged_at(), current_date)){
+					incr_statistics_active++;
+				}
+			}
+		}
+		
+		//3:统计增量 wifi设备的daily新增设备增量
+		if(incr_statistics_news > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_News, incr_statistics_news);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_News, incr_statistics_news);
+			}
+		}
+		//3:统计增量 wifi设备的daily活跃设备增量
+		if(incr_statistics_active > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Actives, incr_statistics_active);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Actives, incr_statistics_active);
+			}
+		}
+		//4:统计增量 wifi设备的daily启动次数增量
+		if(incr_statistics_accesscount > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, incr_statistics_accesscount);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, incr_statistics_accesscount);
+			}
+		}
+	}
+	
+	/**
+	 * 统计设备/终端离线
+	 * @param uptime
+	 * @param type
+	 */
+	public void deviceStatisticsOffline(long uptime, int type){
+		if(uptime > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
+			}
+		}
+	}
+	
+	
 	/**
 	 * 获取设备在线状态.
 	 * @param mac 设备mac地址
