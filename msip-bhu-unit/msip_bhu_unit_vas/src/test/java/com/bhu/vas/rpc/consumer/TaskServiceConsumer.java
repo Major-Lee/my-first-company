@@ -1,9 +1,13 @@
 package com.bhu.vas.rpc.consumer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
@@ -36,12 +40,34 @@ public class TaskServiceConsumer {
 //				OperationDS.DS_Power.getNo(), JsonHelper.getJSONString(radio_dto),/*"payload content",*/ "APP_VAS", "11111");
 		
 		
-		WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
-		vap_dto.setSsid("lawliet_tang");
-		vap_dto.setAuth("WPA2-PSK");
-		vap_dto.setAuth_key("12345678901");
+//		WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
+//		vap_dto.setSsid("lawliet_tang");
+//		vap_dto.setAuth("WPA2-PSK");
+//		vap_dto.setAuth_key("12345678901");
+//		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
+//				OperationDS.DS_VapPassword.getNo(), JsonHelper.getJSONString(vap_dto),/*"payload content",*/ "APP_VAS", "848484");
+//		
+		
+		Map<String,WifiDeviceSettingAclDTO> map = new HashMap<String,WifiDeviceSettingAclDTO>();
+		List<String> incr = new ArrayList<String>();
+		incr.add("aa:aa:aa:aa:aa:a1");
+		incr.add("aa:aa:aa:aa:aa:a2");
+		incr.add("aa:aa:aa:aa:aa:a3");
+		WifiDeviceSettingAclDTO acl_incr_dto = new WifiDeviceSettingAclDTO();
+		acl_incr_dto.setMacs(incr);
+		map.put("incr", acl_incr_dto);
+		
+		List<String> del = new ArrayList<String>();
+		del.add("64:51:06:57:a1:95");
+		del.add("64:51:06:57:a1:96");
+		del.add("aa:aa:aa:aa:aa:b3");
+		WifiDeviceSettingAclDTO acl_del_dto = new WifiDeviceSettingAclDTO();
+		acl_del_dto.setMacs(del);
+		map.put("del", acl_del_dto);
+		
 		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
-				OperationDS.DS_VapPassword.getNo(), JsonHelper.getJSONString(vap_dto),/*"payload content",*/ "APP_VAS", "848484");
+				OperationDS.DS_AclMacs.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "84843291");
+		
 		
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
