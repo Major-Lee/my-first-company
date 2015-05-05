@@ -33,6 +33,21 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 		this.auth = auth;
 	}
 	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiDeviceSettingUserDTO){
+			WifiDeviceSettingUserDTO oo = (WifiDeviceSettingUserDTO)o;
+			return this.getName().equals(oo.getName());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().toString().hashCode();
+	}
+	
+	@Override
 	public Object[] builderProperties() {
 		// TODO Auto-generated method stub
 		return null;

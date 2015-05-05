@@ -59,6 +59,22 @@ public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 	public void setUsers_rx_rate(String users_rx_rate) {
 		this.users_rx_rate = users_rx_rate;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiDeviceSettingInterfaceDTO){
+			WifiDeviceSettingInterfaceDTO oo = (WifiDeviceSettingInterfaceDTO)o;
+			return this.getName().equals(oo.getName());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().toString().hashCode();
+	}
+	
 	@Override
 	public Object[] builderProperties() {
 		// TODO Auto-generated method stub

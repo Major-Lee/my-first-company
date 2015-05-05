@@ -1,6 +1,5 @@
 package com.bhu.vas.api.dto.ret.setting;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 设备配置信息的vap item
@@ -85,6 +84,21 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	}
 	public void setAuth_key(String auth_key) {
 		this.auth_key = auth_key;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiDeviceSettingVapDTO){
+			WifiDeviceSettingVapDTO oo = (WifiDeviceSettingVapDTO)o;
+			return this.getName().equals(oo.getName());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().toString().hashCode();
 	}
 	@Override
 	public Object[] builderProperties() {

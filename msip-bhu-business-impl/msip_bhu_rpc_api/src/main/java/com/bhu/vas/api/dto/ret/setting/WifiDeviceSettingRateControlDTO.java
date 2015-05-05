@@ -34,6 +34,22 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	public void setRx(String rx) {
 		this.rx = rx;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiDeviceSettingRateControlDTO){
+			WifiDeviceSettingRateControlDTO oo = (WifiDeviceSettingRateControlDTO)o;
+			return this.getMac().equals(oo.getMac());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getMac().toString().hashCode();
+	}
+	
 	@Override
 	public Object[] builderProperties() {
 		// TODO Auto-generated method stub
