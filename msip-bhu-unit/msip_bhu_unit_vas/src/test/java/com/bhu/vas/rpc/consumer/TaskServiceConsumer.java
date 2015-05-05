@@ -2,10 +2,13 @@ package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class TaskServiceConsumer {
 	public static void main(String[] args) throws Exception {
@@ -18,13 +21,20 @@ public class TaskServiceConsumer {
 		context.start();
 		ITaskRpcService taskRpcService = (ITaskRpcService)context.getBean("taskRpcService");
 		
-		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(),"", 
-				null,/*"payload content",*/ "APP_VAS", "9990");
+//		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(),"", 
+//				null,/*"payload content",*/ "APP_VAS", "9990");
 		
 //		taskRpcService.createNewTask("", OperationCMD.QueryDeviceStatus.getNo(), 
 //				"payload content", "APP_VAS", "123");
 		
-		taskRpcService.taskStatusFetch(123123123);
+//		taskRpcService.taskStatusFetch(123123123);
+		String mac = "62:68:75:02:ff:05";
+		
+		WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
+		radio_dto.setName("");
+		radio_dto.setPower("12");
+		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
+				OperationDS.DS_Power.getNo(), JsonHelper.getJSONString(radio_dto),/*"payload content",*/ "APP_VAS", "9990");
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
 		//ParserHeader parserHeader = new ParserHeader();

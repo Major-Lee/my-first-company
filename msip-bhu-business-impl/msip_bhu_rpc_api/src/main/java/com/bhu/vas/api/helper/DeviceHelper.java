@@ -145,11 +145,24 @@ public class DeviceHelper {
 	}
 	
 	/**
-	 * URouter设备获取radio信息 由于urouter设备是单频 只返回第一个radio
+	 * 判断radio name是否存在
+	 * @param name
 	 * @param dto
 	 * @return
 	 */
-	public static WifiDeviceSettingRadioDTO getURouterDeviceRadio(WifiDeviceSettingDTO dto){
+	public static boolean isExistRadioName(String name, WifiDeviceSettingDTO dto){
+		if(dto == null) return false;
+		List<WifiDeviceSettingRadioDTO> radio_dtos = dto.getRadios();
+		if(radio_dtos == null || radio_dtos.isEmpty()) return false;
+		return radio_dtos.contains(new WifiDeviceSettingRadioDTO(name));
+	}
+	
+	/**
+	 * 只返回第一个radio
+	 * @param dto
+	 * @return
+	 */
+	public static WifiDeviceSettingRadioDTO getFristDeviceRadio(WifiDeviceSettingDTO dto){
 		if(dto == null) return null;
 		List<WifiDeviceSettingRadioDTO> radio_dtos = dto.getRadios();
 		if(radio_dtos == null || radio_dtos.isEmpty()) return null;
@@ -162,7 +175,7 @@ public class DeviceHelper {
 	 * @return
 	 */
 	public static String getURouterDevicePower(WifiDeviceSettingDTO dto){
-		WifiDeviceSettingRadioDTO radio_dto = getURouterDeviceRadio(dto);
+		WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(dto);
 		if(radio_dto == null) return null;
 		return radio_dto.getPower();
 	}
@@ -316,16 +329,20 @@ public class DeviceHelper {
 	
 	/*******************************    设备配置修改模板  ****************************************/
 	
-	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>";
-	
 	public static final String DeviceSetting_ConfigSequenceOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
-	public static final String DeviceSetting_VapOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><vap>%s</vap></wifi></dev>";
-	public static final String DeviceSetting_AclOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><wifi><acllist>%s</acllist></wifi></dev>";
-	public static final String DeviceSetting_AdOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys><net><ad>%s</ad></net></dev>";
+	public static final String DeviceSetting_ConfigSequenceInner = "<sys><config><ITEM sequence=\"%s\"/></config></sys>";
+	
+	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>");
+	
+	public static final String DeviceSetting_VapOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><vap>%s</vap></wifi></dev>");
+	public static final String DeviceSetting_AclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><acllist>%s</acllist></wifi></dev>");
+	public static final String DeviceSetting_AdOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><ad>%s</ad></net></dev>");
+	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
 	
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	public static final String DeviceSetting_AdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
@@ -440,16 +457,46 @@ public class DeviceHelper {
 	/**
 	 * 构建广告配置数据
 	 * @param config_sequence
-	 * @param ad_dto
+	 * @param extparams
+	 * @param ds_dto
 	 * @return
 	 */
-	public static String builderDSAdOuter(String config_sequence, String extparams){
+	public static String builderDSAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
 			WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
 			if(ad_dto != null){
 				String item = builderDeviceSettingItem(DeviceSetting_AdItem, ad_dto);
 				return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 //				return builderConfigSequence(item_with_outer, config_sequence);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 构建信号强度配置数据
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return
+	 */
+	public static String builderDSPowerOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
+			if(radio_dto != null && !StringUtils.isEmpty(radio_dto.getPower())){
+				if(!StringUtils.isEmpty(radio_dto.getName())){
+					//如果radio名称不存在 则返回null
+					if(!isExistRadioName(radio_dto.getName(), ds_dto)){
+						return null;
+					}
+				}else{
+					//如果没有指定radio的具体名称 则获取默认第一个radio进行修改
+					WifiDeviceSettingRadioDTO frist_radio_dto = getFristDeviceRadio(ds_dto);
+					if(frist_radio_dto == null) return null;
+					radio_dto.setName(frist_radio_dto.getName());
+				}
+				String item = builderDeviceSettingItem(DeviceSetting_RadioItem, radio_dto);
+				return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 			}
 		}
 		return null;

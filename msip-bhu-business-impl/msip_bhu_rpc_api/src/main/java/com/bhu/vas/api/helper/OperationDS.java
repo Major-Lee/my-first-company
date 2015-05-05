@@ -11,7 +11,7 @@ import java.util.Map;
 public enum OperationDS {
 	
 	DS_Ad("01","修改广告配置"),
-	DS_URouterDefaultAcl("02","URouter设备的约定黑名单配置");
+	DS_Power("02","修改信号强度");
 
 	
 	static Map<String, OperationDS> allOperationDSs;

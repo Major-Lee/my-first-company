@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationDS;
@@ -388,26 +389,34 @@ public class DeviceFacadeService {
 	 * @return
 	 */
 	public String generateDeviceSetting(String mac, String ds_opt, String extparams){
+		String modify_setting = null;
+		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
-		System.out.println("generateDeviceSetting 1"+mac+" "+ ds_opt+" "+extparams);
+		//System.out.println("generateDeviceSetting 1"+mac+" "+ ds_opt+" "+extparams);
 		if(entity != null){
-			System.out.println("generateDeviceSetting 2");
-			String config_sequence = DeviceHelper.getConfigSequence(entity.getInnerModel());
-			if(!StringUtils.isEmpty(config_sequence)){
-				System.out.println("generateDeviceSetting 3");
-				OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
-				if(ods != null)
-					System.out.println("generateDeviceSetting 4");
-					switch(ods){
-						case DS_Ad:
-							System.out.println("generateDeviceSetting 5");
-							return DeviceHelper.builderDSAdOuter(config_sequence, extparams);
-						default:
-							break;
+			WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+			if(ds_dto != null){
+				//System.out.println("generateDeviceSetting 2");
+				String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+				if(!StringUtils.isEmpty(config_sequence)){
+					//System.out.println("generateDeviceSetting 3");
+					OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
+					if(ods != null){
+						switch(ods){
+							case DS_Ad:
+								modify_setting = DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
+								break;
+							case DS_Power:
+								modify_setting = DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
+								break;
+							default:
+								break;
+						}
 					}
+				}
 			}
 		}
-		return null;
+		return modify_setting;
 	}
 
 }

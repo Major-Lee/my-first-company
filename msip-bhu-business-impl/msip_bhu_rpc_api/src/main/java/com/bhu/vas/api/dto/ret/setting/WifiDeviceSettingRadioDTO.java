@@ -11,6 +11,14 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	//信号强度
 	private String power;
 	
+	public WifiDeviceSettingRadioDTO(){
+		
+	}
+	
+	public WifiDeviceSettingRadioDTO(String name){
+		this.name = name;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -23,9 +31,27 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	public void setPower(String power) {
 		this.power = power;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiDeviceSettingRadioDTO){
+			WifiDeviceSettingRadioDTO oo = (WifiDeviceSettingRadioDTO)o;
+			return this.getName().equals(oo.getName());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().toString().hashCode();
+	}
+	
 	@Override
 	public Object[] builderProperties() {
-		// TODO Auto-generated method stub
-		return null;
+		Object[] properties = new Object[2];
+		properties[0] = name;
+		properties[1] = power;
+		return properties;
 	}
 }
