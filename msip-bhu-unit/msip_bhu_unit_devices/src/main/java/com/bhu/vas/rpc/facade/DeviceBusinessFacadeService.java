@@ -594,7 +594,7 @@ public class DeviceBusinessFacadeService {
 					String payload = task_completed.getPayload();
 					if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
 						String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
-						if(!StringUtils.isEmpty(cmdWithoutHeader) && cmdWithoutHeader.startsWith("<dev>")){
+						if(!StringUtils.isEmpty(cmdWithoutHeader)){
 							WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
 									cmdWithoutHeader);
 							if(modify_setting_dto != null){
