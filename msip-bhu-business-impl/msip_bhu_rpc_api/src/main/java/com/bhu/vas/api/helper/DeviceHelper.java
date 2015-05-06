@@ -460,6 +460,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AdOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><ad>%s</ad></net></dev>");
 	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
+	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
 	
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
@@ -467,6 +468,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
+	public static final String DeviceSetting_AdminPasswordItem = "<ITEM oldpassword_rsa=\"%s\" password_rsa=\"%s\" name=\"admin\" />";
 	
 	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
 	
@@ -765,6 +767,28 @@ public class DeviceHelper {
 		}
 		return null;
 	}
+	
+	/**
+	 * 构建admin管理密码修改配置
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return
+	 */
+	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
+			if(user_dto != null){
+				if(!StringUtils.isEmpty(user_dto.getOldpassword()) && !StringUtils.isEmpty(user_dto.getPassword())){
+					//TODO:rsa加密
+					String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
+					return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
+				}
+			}
+		}
+		return null;
+	}
+	
 //	public static void main(String[] args){
 //		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
 //		v1.setName("v1");

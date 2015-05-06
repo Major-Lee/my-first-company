@@ -418,6 +418,9 @@ public class DeviceFacadeService {
 							case DS_RateControl:
 								modify_setting = DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
 								break;
+							case DS_AdminPassword:
+								modify_setting = DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
+								break;
 							default:
 								break;
 						}
