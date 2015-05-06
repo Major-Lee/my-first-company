@@ -177,6 +177,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			else if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
 			}
+			else if(OperationCMD.DeviceDelayReboot.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
 			}
