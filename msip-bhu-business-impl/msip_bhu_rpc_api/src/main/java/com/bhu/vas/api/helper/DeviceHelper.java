@@ -434,7 +434,7 @@ public class DeviceHelper {
 		}else{
 			for(T source_item : source){
 				int index = target.indexOf(source_item);
-				if(source_item.isRemoved()){
+				if(source_item.beRemoved()){
 					target.remove(source_item);
 				}else{
 					if(index != -1){

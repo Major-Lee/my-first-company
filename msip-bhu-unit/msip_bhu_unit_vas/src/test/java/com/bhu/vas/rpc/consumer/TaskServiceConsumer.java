@@ -93,7 +93,7 @@ public class TaskServiceConsumer {
 		WifiDeviceSettingRateControlDTO del1 = new WifiDeviceSettingRateControlDTO();
 		del1.setMac("64:51:06:57:a1:95");
 		WifiDeviceSettingRateControlDTO del2 = new WifiDeviceSettingRateControlDTO();
-		del2.setMac("64:51:06:57:a1:96");;
+		del2.setMac("64:51:06:57:a1:96");
 		
 		dels.add(del1);
 		dels.add(del2);
@@ -101,7 +101,7 @@ public class TaskServiceConsumer {
 		map.put("del", dels);
 
 		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
-				OperationDS.DS_RateControl.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "848432420");
+				OperationDS.DS_RateControl.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "848432421");
 		
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
