@@ -56,7 +56,7 @@ public enum OperationCMD {
 	//修改设备配置通用指令
 	ModifyDeviceSetting("151","设备配置修改通用指令","","00001001%s%s%s"+"000100000001"+"%s"),
 	
-	DeviceDelayReboot("152","设备延迟重启","","00001001%s%s%s"+"000100000001"+"<ITEM cmd=\"delayreboot\" delay=\"5\"/>"),
+	DeviceDelayReboot("152","设备延迟重启","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"delayreboot\" delay=\"5\"/></cmd>"),
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;
