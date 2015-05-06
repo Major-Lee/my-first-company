@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
+	//管理用户的密码rsa加密的公钥私钥
+	public static final String Password_PrivateKey = "3b56375e784564dd4a9b7aff6de7a8864660f33d7e8dab20fea969b2ff8c38c482ba7137808a2c5204d6f2737e590db4885ae322f6fb76bb106267285142840d";
+	public static final String Password_PublicKey = "c47db6901e79379dff0d831c180c30c3c5c81d78d9c40747349635387a688bd1d61d8a7475181f8293da18f10dc903f94980ee96492707667bc7d621f358df11";
 	//用户名称
 	private String name;
 	//加密密码

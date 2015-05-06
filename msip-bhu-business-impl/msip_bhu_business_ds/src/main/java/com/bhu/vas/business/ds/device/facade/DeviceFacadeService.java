@@ -391,42 +391,46 @@ public class DeviceFacadeService {
 	public String generateDeviceSetting(String mac, String ds_opt, String extparams){
 		String modify_setting = null;
 		
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
-		//System.out.println("generateDeviceSetting 1"+mac+" "+ ds_opt+" "+extparams);
-		if(entity != null){
-			WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
-			if(ds_dto != null){
-				//System.out.println("generateDeviceSetting 2");
-				String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
-				if(!StringUtils.isEmpty(config_sequence)){
-					//System.out.println("generateDeviceSetting 3");
-					OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
-					if(ods != null){
-						switch(ods){
-							case DS_Ad:
-								modify_setting = DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_Power:
-								modify_setting = DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_VapPassword:
-								modify_setting = DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_AclMacs:
-								modify_setting = DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_RateControl:
-								modify_setting = DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_AdminPassword:
-								modify_setting = DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
-								break;
-							default:
-								break;
+		try{
+			WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+			//System.out.println("generateDeviceSetting 1"+mac+" "+ ds_opt+" "+extparams);
+			if(entity != null){
+				WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+				if(ds_dto != null){
+					//System.out.println("generateDeviceSetting 2");
+					String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+					if(!StringUtils.isEmpty(config_sequence)){
+						//System.out.println("generateDeviceSetting 3");
+						OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
+						if(ods != null){
+							switch(ods){
+								case DS_Ad:
+									modify_setting = DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
+									break;
+								case DS_Power:
+									modify_setting = DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
+									break;
+								case DS_VapPassword:
+									modify_setting = DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, ds_dto);
+									break;
+								case DS_AclMacs:
+									modify_setting = DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, ds_dto);
+									break;
+								case DS_RateControl:
+									modify_setting = DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
+									break;
+								case DS_AdminPassword:
+									modify_setting = DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
+									break;
+								default:
+									break;
+							}
 						}
 					}
 				}
 			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		return modify_setting;
 	}

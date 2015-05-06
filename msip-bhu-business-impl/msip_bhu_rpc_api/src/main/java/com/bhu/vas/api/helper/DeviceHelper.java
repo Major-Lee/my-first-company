@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
+import com.smartwork.msip.cores.helper.encrypt.RSAHelper;
 
 public class DeviceHelper {
 	
@@ -774,13 +775,15 @@ public class DeviceHelper {
 	 * @param extparams
 	 * @param ds_dto
 	 * @return
+	 * @throws Exception 
 	 */
-	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto) throws Exception{
 		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
 			WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
 			if(user_dto != null){
 				if(!StringUtils.isEmpty(user_dto.getOldpassword()) && !StringUtils.isEmpty(user_dto.getPassword())){
-					//TODO:rsa加密
+					user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), WifiDeviceSettingUserDTO.Password_PublicKey));
+					user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), WifiDeviceSettingUserDTO.Password_PublicKey));
 					String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 					return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 				}
