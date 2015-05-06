@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
@@ -782,8 +783,8 @@ public class DeviceHelper {
 			WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
 			if(user_dto != null){
 				if(!StringUtils.isEmpty(user_dto.getOldpassword()) && !StringUtils.isEmpty(user_dto.getPassword())){
-					user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), WifiDeviceSettingUserDTO.Password_PublicKey));
-					user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), WifiDeviceSettingUserDTO.Password_PublicKey));
+					user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+					user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
 					String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 					return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 				}
