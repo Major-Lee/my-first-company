@@ -594,7 +594,7 @@ public class DeviceBusinessFacadeService {
 					String payload = task_completed.getPayload();
 					if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
 						String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
-						if(!StringUtils.isEmpty(cmdWithoutHeader)){
+						if(!StringUtils.isEmpty(cmdWithoutHeader) && cmdWithoutHeader.startsWith("<dev>")){
 							WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
 									cmdWithoutHeader);
 							if(modify_setting_dto != null){
@@ -605,9 +605,11 @@ public class DeviceBusinessFacadeService {
 				}
 				//修改配置序列号
 				if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
-					setting_dto.setSequence(dto.getConfig_sequence());
-					entity.putInnerModel(setting_dto);
-					wifiDeviceSettingService.update(entity);
+					if(!dto.getConfig_sequence().equals(setting_dto.getSequence())){
+						setting_dto.setSequence(dto.getConfig_sequence());
+						entity.putInnerModel(setting_dto);
+						wifiDeviceSettingService.update(entity);
+					}
 				}
 			}
 		}
