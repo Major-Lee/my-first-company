@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 
@@ -205,6 +206,20 @@ public class DeviceHelper {
 		WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(dto);
 		if(radio_dto == null) return null;
 		return radio_dto.getPower();
+	}
+	
+	/**
+	 * 获取ratecontorl的indexs
+	 * @param rc_list
+	 * @return
+	 */
+	public static List<Integer> getDeviceRateControlIndex(List<WifiDeviceSettingRateControlDTO> rc_list){
+		if(rc_list == null || rc_list.isEmpty()) return Collections.emptyList();
+		List<Integer> indexs = new ArrayList<Integer>();
+		for(WifiDeviceSettingRateControlDTO rc_dto : rc_list){
+			indexs.add(Integer.parseInt(rc_dto.getIndex()));
+		}
+		return indexs;
 	}
 	
 	/**
@@ -440,12 +455,16 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><acllist>%s</acllist></wifi></dev>");
 	public static final String DeviceSetting_AdOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><ad>%s</ad></net></dev>");
 	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
+	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	public static final String DeviceSetting_AdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
+	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
+	
+	public static final String DeviceSetting_RemoveIndexItem = "<ITEM index=\"%s\" ssdel=\"1\" />";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
@@ -523,6 +542,9 @@ public class DeviceHelper {
 	}
 	
 	/*******************************    设备具体业务配置修改  ****************************************/
+	
+	public static final String DeviceSettingAction_Incr = "incr";
+	public static final String DeviceSettingAction_Del = "del";
 	
 	/**
 	 * 构造urouter设备的默认vap黑名单列表配置
@@ -661,73 +683,125 @@ public class DeviceHelper {
 			Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
 			if(acl_dto_map != null && !acl_dto_map.isEmpty()){
 				WifiDeviceSettingAclDTO default_acl_dto = matchDefaultAcl(ds_dto);
-				if(default_acl_dto != null){
-					Set<String> macs = new HashSet<String>();
-					if(default_acl_dto.getMacs() != null){
-						macs.addAll(default_acl_dto.getMacs());
-					}
+				if(default_acl_dto == null)
+					default_acl_dto = new WifiDeviceSettingAclDTO();
+				
+				Set<String> macs = new HashSet<String>();
+				if(default_acl_dto.getMacs() != null){
+					macs.addAll(default_acl_dto.getMacs());
+				}
 					
-					WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get("incr");
-					if(acl_incr_dto != null && acl_incr_dto.getMacs() != null){
-						macs.addAll(acl_incr_dto.getMacs());
-					}
+				WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get(DeviceSettingAction_Incr);
+				if(acl_incr_dto != null && acl_incr_dto.getMacs() != null){
+					macs.addAll(acl_incr_dto.getMacs());
+				}
 					
-					WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get("del");
-					if(acl_del_dto != null && acl_del_dto.getMacs() != null){
-						macs.removeAll(acl_del_dto.getMacs());
-					}
-					default_acl_dto.setMacs(new ArrayList<String>(macs));
+				WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get(DeviceSettingAction_Del);
+				if(acl_del_dto != null && acl_del_dto.getMacs() != null){
+					macs.removeAll(acl_del_dto.getMacs());
+				}
+				default_acl_dto.setMacs(new ArrayList<String>(macs));
 					
-					String item = builderDeviceSettingItem(DeviceSetting_AclItem, default_acl_dto.builderProperties());
-					return builderDeviceSettingOuter(DeviceSetting_AclOuter, config_sequence, item);
+				String item = builderDeviceSettingItem(DeviceSetting_AclItem, default_acl_dto.builderProperties());
+				return builderDeviceSettingOuter(DeviceSetting_AclOuter, config_sequence, item);
+			}
+		}
+		return null;
+	}
+	//<dev><sys><config><ITEM sequence=\""+config_sequence+"\"/></config></sys><net><rate_control><ITEM mac=\"aa:aa:aa:aa:bb:49\" tx=\"80\" rx=\"40\" index=\"aa\"/></rate_control></net></dev>
+	/**
+	 * 构建流量控制的修改配置
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return
+	 */
+	public static String builderDSRateControlOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			Map<String, List<WifiDeviceSettingRateControlDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, WifiDeviceSettingRateControlDTO.class);
+			if(rc_dto_map != null && !rc_dto_map.isEmpty()){
+				StringBuffer ds = new StringBuffer();
+				
+				List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
+				
+				List<WifiDeviceSettingRateControlDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
+				if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
+					for(WifiDeviceSettingRateControlDTO rc_incr_dto : rc_incr_dtos){
+						WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_incr_dto.getMac());
+						//如果匹配到 说明是修改
+						if(match_rc_dto != null){
+							rc_incr_dto.setIndex(match_rc_dto.getIndex());
+						}
+						//没匹配到 说明是新增 获取新的index
+						else{
+							int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
+							rc_incr_dto.setIndex(String.valueOf(index));
+							rc_indexs.add(index);
+						}
+						ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, rc_incr_dto.builderProperties()));
+					}
+				}
+				
+				List<WifiDeviceSettingRateControlDTO> rc_del_dtos = rc_dto_map.get(DeviceSettingAction_Del);
+				if(rc_del_dtos != null && !rc_del_dtos.isEmpty()){
+					for(WifiDeviceSettingRateControlDTO rc_del_dto : rc_del_dtos){
+						WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_del_dto.getMac());
+						if(match_rc_dto != null){
+							rc_del_dto.setIndex(match_rc_dto.getIndex());
+							ds.append(builderDeviceSettingItem(DeviceSetting_RemoveIndexItem, rc_del_dto.
+									builderProperties(WifiDeviceSettingRateControlDTO.BuilderType_RemoveRC)));
+						}
+					}
+				}
+				
+				if(ds.length() > 0){
+					return builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, config_sequence, ds.toString());
 				}
 			}
 		}
 		return null;
 	}
-	
-	
-	public static void main(String[] args){
-		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
-		v1.setName("v1");
-		v1.setSsid("a11");
-		WifiDeviceSettingVapDTO v2 = new WifiDeviceSettingVapDTO();
-		v2.setName("v2");
-		v2.setSsid("a12");
-		WifiDeviceSettingVapDTO v3 = new WifiDeviceSettingVapDTO();
-		v3.setName("v3");
-		v3.setSsid("a13");
-		
-		List<WifiDeviceSettingVapDTO> vaps_target = new ArrayList<WifiDeviceSettingVapDTO>();
-		vaps_target.add(v1);
-		vaps_target.add(v2);
-		vaps_target.add(v3);
-		WifiDeviceSettingDTO target = new WifiDeviceSettingDTO();
-		target.setVaps(vaps_target);
-		
-		WifiDeviceSettingVapDTO v4 = new WifiDeviceSettingVapDTO();
-		v4.setName("v1");
-		v4.setSsid("a14");
-		v4.setAcl_type("tt");
-		
-		try {
-			ReflectionHelper.copyProperties(v3, v4);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(v4.getName() + "=" + v4.getSsid() + "=" + v4.getAcl_type());
-		
-//		List<WifiDeviceSettingVapDTO> vaps_source = new ArrayList<WifiDeviceSettingVapDTO>();
-//		vaps_source.add(v4);
+//	public static void main(String[] args){
+//		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
+//		v1.setName("v1");
+//		v1.setSsid("a11");
+//		WifiDeviceSettingVapDTO v2 = new WifiDeviceSettingVapDTO();
+//		v2.setName("v2");
+//		v2.setSsid("a12");
+//		WifiDeviceSettingVapDTO v3 = new WifiDeviceSettingVapDTO();
+//		v3.setName("v3");
+//		v3.setSsid("a13");
 //		
-//		WifiDeviceSettingDTO source = new WifiDeviceSettingDTO();
-//		source.setVaps(vaps_source);
+//		List<WifiDeviceSettingVapDTO> vaps_target = new ArrayList<WifiDeviceSettingVapDTO>();
+//		vaps_target.add(v1);
+//		vaps_target.add(v2);
+//		vaps_target.add(v3);
+//		WifiDeviceSettingDTO target = new WifiDeviceSettingDTO();
+//		target.setVaps(vaps_target);
 //		
-//		mergeDS(source, target);
+//		WifiDeviceSettingVapDTO v4 = new WifiDeviceSettingVapDTO();
+//		v4.setName("v1");
+//		v4.setSsid("a14");
+//		v4.setAcl_type("tt");
 //		
-//		for(WifiDeviceSettingVapDTO vap : target.getVaps()){
-//			System.out.println(vap.getName() + "=" + vap.getSsid());
+//		try {
+//			ReflectionHelper.copyProperties(v3, v4);
+//		} catch (Exception e) {
+//			e.printStackTrace();
 //		}
-	}
+//		
+//		System.out.println(v4.getName() + "=" + v4.getSsid() + "=" + v4.getAcl_type());
+//		
+////		List<WifiDeviceSettingVapDTO> vaps_source = new ArrayList<WifiDeviceSettingVapDTO>();
+////		vaps_source.add(v4);
+////		
+////		WifiDeviceSettingDTO source = new WifiDeviceSettingDTO();
+////		source.setVaps(vaps_source);
+////		
+////		mergeDS(source, target);
+////		
+////		for(WifiDeviceSettingVapDTO vap : target.getVaps()){
+////			System.out.println(vap.getName() + "=" + vap.getSsid());
+////		}
+//	}
 }
