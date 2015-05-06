@@ -47,6 +47,12 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	public void setIndex(String index) {
 		this.index = index;
 	}
+	public String getSsdel() {
+		return ssdel;
+	}
+	public void setSsdel(String ssdel) {
+		this.ssdel = ssdel;
+	}
 	@Override
 	public boolean equals(Object o) {
 		if(o==null)return false;
@@ -90,9 +96,9 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 		}
 		return properties;
 	}
-	
+
 	@Override
-	public boolean isRemoved() {
+	public boolean beRemoved() {
 		return Removed.equals(ssdel);
 	}
 }

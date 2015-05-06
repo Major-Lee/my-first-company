@@ -12,5 +12,5 @@ public interface DeviceSettingBuilderDTO {
 	
 	public Object[] builderProperties(int type);
 	
-	public boolean isRemoved();
+	public boolean beRemoved();
 }

@@ -321,6 +321,7 @@ public class RPCMessageParseHelper {
 					ratecontrol_dto.setTx(ratecontrol_item.attributeValue("tx"));
 					ratecontrol_dto.setRx(ratecontrol_item.attributeValue("rx"));
 					ratecontrol_dto.setIndex(ratecontrol_item.attributeValue("index"));
+					ratecontrol_dto.setSsdel(ratecontrol_item.attributeValue("ssdel"));
 					ratecontrol_dtos.add(ratecontrol_dto);
 				}
 				dto.setRatecontrols(ratecontrol_dtos);

@@ -58,7 +58,7 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	}
 	
 	@Override
-	public boolean isRemoved() {
+	public boolean beRemoved() {
 		return false;
 	}
 }
