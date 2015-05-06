@@ -80,8 +80,14 @@ public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public Object[] builderProperties(int type) {
 		return builderProperties();
+	}
+	
+	@Override
+	public boolean isRemoved() {
+		return false;
 	}
 }

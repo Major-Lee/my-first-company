@@ -426,7 +426,7 @@ public class DeviceHelper {
 		}
 	}
 	
-	public static <T> List<T> mergeList(List<T> source, List<T> target) throws Exception{
+	public static <T extends DeviceSettingBuilderDTO> List<T> mergeList(List<T> source, List<T> target) throws Exception{
 		if(source == null) return null;
 		//如果当前为空 则直接覆盖
 		if(target == null || target.isEmpty()){
@@ -434,10 +434,14 @@ public class DeviceHelper {
 		}else{
 			for(T source_item : source){
 				int index = target.indexOf(source_item);
-				if(index != -1){
-					ReflectionHelper.copyProperties(source_item, target.get(index));
+				if(source_item.isRemoved()){
+					target.remove(source_item);
 				}else{
-					target.add(source_item);
+					if(index != -1){
+						ReflectionHelper.copyProperties(source_item, target.get(index));
+					}else{
+						target.add(source_item);
+					}
 				}
 			}
 			return target;
@@ -464,7 +468,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	
-	public static final String DeviceSetting_RemoveIndexItem = "<ITEM index=\"%s\" ssdel=\"1\" />";
+	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
@@ -748,7 +752,7 @@ public class DeviceHelper {
 						WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_del_dto.getMac());
 						if(match_rc_dto != null){
 							rc_del_dto.setIndex(match_rc_dto.getIndex());
-							ds.append(builderDeviceSettingItem(DeviceSetting_RemoveIndexItem, rc_del_dto.
+							ds.append(builderDeviceSettingItem(DeviceSetting_RemoveRatecontrolItem, rc_del_dto.
 									builderProperties(WifiDeviceSettingRateControlDTO.BuilderType_RemoveRC)));
 						}
 					}

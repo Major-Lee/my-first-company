@@ -44,9 +44,15 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 		properties[2] = bhu_enable;
 		return properties;
 	}
+	
 	@Override
 	public Object[] builderProperties(int type) {
 		return builderProperties();
+	}
+	
+	@Override
+	public boolean isRemoved() {
+		return false;
 	}
 	
 	public static void main(String[] argv){

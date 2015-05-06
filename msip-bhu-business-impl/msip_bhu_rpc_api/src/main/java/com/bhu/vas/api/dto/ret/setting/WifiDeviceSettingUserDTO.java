@@ -56,4 +56,9 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	public Object[] builderProperties(int type) {
 		return builderProperties();
 	}
+	
+	@Override
+	public boolean isRemoved() {
+		return false;
+	}
 }

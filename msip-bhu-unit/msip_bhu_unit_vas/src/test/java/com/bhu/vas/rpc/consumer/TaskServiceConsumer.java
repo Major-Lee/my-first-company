@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
@@ -68,8 +69,39 @@ public class TaskServiceConsumer {
 //		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
 //				OperationDS.DS_AclMacs.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "84843291");
 //		
+		
+		int index = 100;
+		Map<String,List<WifiDeviceSettingRateControlDTO>> map = new HashMap<String,List<WifiDeviceSettingRateControlDTO>>();
+//		List<WifiDeviceSettingRateControlDTO> incrs = new ArrayList<WifiDeviceSettingRateControlDTO>();
+//		WifiDeviceSettingRateControlDTO incr1 = new WifiDeviceSettingRateControlDTO();
+//		incr1.setIndex(String.valueOf(index++));
+//		incr1.setMac("aa:aa:aa:aa:aa:a1");
+//		incr1.setTx("80");
+//		incr1.setRx("80");
+//		incrs.add(incr1);
+//		
+//		WifiDeviceSettingRateControlDTO incr2 = new WifiDeviceSettingRateControlDTO();
+//		incr2.setIndex(String.valueOf(index++));
+//		incr2.setMac("aa:aa:aa:aa:aa:a2");
+//		incr2.setTx("70");
+//		incr2.setRx("80");
+//		incrs.add(incr2);
+//		
+//		map.put("incr", incrs);
+		
+		List<WifiDeviceSettingRateControlDTO> dels = new ArrayList<WifiDeviceSettingRateControlDTO>();
+		WifiDeviceSettingRateControlDTO del1 = new WifiDeviceSettingRateControlDTO();
+		del1.setMac("aa:aa:aa:aa:aa:a1");
+//		WifiDeviceSettingRateControlDTO del2 = new WifiDeviceSettingRateControlDTO();
+//		del2.setMac("64:51:06:57:a1:96");;
+		
+		dels.add(del1);
+//		dels.add(del2);
+		
+		map.put("del", dels);
+
 		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
-				OperationDS.DS_RateControl.getNo(), "123",/*"payload content",*/ "APP_VAS", "848432119");
+				OperationDS.DS_RateControl.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "848432441");
 		
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();

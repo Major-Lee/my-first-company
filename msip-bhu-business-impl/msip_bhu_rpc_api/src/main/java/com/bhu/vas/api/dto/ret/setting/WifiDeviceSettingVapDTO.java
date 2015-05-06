@@ -133,4 +133,9 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		}
 		return properties;
 	}
+	
+	@Override
+	public boolean isRemoved() {
+		return false;
+	}
 }

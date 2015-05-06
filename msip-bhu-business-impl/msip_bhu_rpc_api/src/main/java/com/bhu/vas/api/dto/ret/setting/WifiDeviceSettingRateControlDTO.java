@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * 设备配置信息的rate_control
@@ -17,6 +19,9 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	private String tx;
 	//设备接收终端速率(kbps)
 	private String rx;
+	//标识是否删除
+	@JsonIgnore
+	private String ssdel;
 	
 	public String getMac() {
 		return mac;
@@ -75,13 +80,19 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = null;
 		switch(type){
 			case BuilderType_RemoveRC:
-				properties = new Object[1];
+				properties = new Object[2];
 				properties[0] = index;
+				properties[1] = mac;
 				break;
 			default:
 				properties = builderProperties();
 				break;
 		}
 		return properties;
+	}
+	
+	@Override
+	public boolean isRemoved() {
+		return Removed.equals(ssdel);
 	}
 }
