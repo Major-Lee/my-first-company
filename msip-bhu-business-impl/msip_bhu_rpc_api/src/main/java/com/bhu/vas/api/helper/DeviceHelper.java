@@ -613,17 +613,15 @@ public class DeviceHelper {
 	 * @param config_sequence
 	 * @param extparams
 	 * @param ds_dto
-	 * @return
+	 * @return throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	 */
 	public static String builderDSAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
-			WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
-			if(ad_dto != null){
-				String item = builderDeviceSettingItemWithDto(DeviceSetting_AdItem, ad_dto);
-				return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
-			}
-		}
-		return null;
+		WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_AdItem, ad_dto);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
 	/**
@@ -631,28 +629,29 @@ public class DeviceHelper {
 	 * @param config_sequence
 	 * @param extparams
 	 * @param ds_dto
-	 * @return
+	 * @return 
 	 */
 	public static String builderDSPowerOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
-			WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
-			if(radio_dto != null && !StringUtils.isEmpty(radio_dto.getPower())){
-				if(!StringUtils.isEmpty(radio_dto.getName())){
-					//如果radio名称不存在 则返回null
-					if(!isExistRadioName(radio_dto.getName(), ds_dto)){
-						return null;
-					}
-				}else{
-					//如果没有指定radio的具体名称 则获取默认第一个radio进行修改
-					WifiDeviceSettingRadioDTO frist_radio_dto = getFristDeviceRadio(ds_dto);
-					if(frist_radio_dto == null) return null;
-					radio_dto.setName(frist_radio_dto.getName());
-				}
-				String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem, radio_dto);
-				return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
+		WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower()))
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		if(!StringUtils.isEmpty(radio_dto.getName())){
+			//如果radio名称不存在 则返回null
+			if(!isExistRadioName(radio_dto.getName(), ds_dto)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
+		}else{
+			//如果没有指定radio的具体名称 则获取默认第一个radio进行修改
+			WifiDeviceSettingRadioDTO frist_radio_dto = getFristDeviceRadio(ds_dto);
+			//如果没有一个可用的radio
+			if(frist_radio_dto == null) 
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+			
+			radio_dto.setName(frist_radio_dto.getName());
 		}
-		return null;
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem, radio_dto);
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 	}
 	
 	/**
@@ -660,24 +659,25 @@ public class DeviceHelper {
 	 * @param config_sequence
 	 * @param extparams
 	 * @param ds_dto
-	 * @return
+	 * @return 
 	 */
 	public static String builderDSVapPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
-			WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
-			if(vap_dto != null){
-				//如果没有指定vap的具体名称 则获取默认第一个非访客的vap进行修改
-				if(StringUtils.isEmpty(vap_dto.getName())){
-					WifiDeviceSettingVapDTO frist_vap_dto = getUrouterDeviceVap(ds_dto);
-					if(frist_vap_dto == null) return null;
-					vap_dto.setName(frist_vap_dto.getName());
-				}
-				String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
-						vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
-				return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
-			}
+		WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		//如果没有指定vap的具体名称 则获取默认第一个非访客的vap进行修改
+		if(StringUtils.isEmpty(vap_dto.getName())){
+			WifiDeviceSettingVapDTO frist_vap_dto = getUrouterDeviceVap(ds_dto);
+			//如果没有一个可用的vap
+			if(frist_vap_dto == null) 
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+			
+			vap_dto.setName(frist_vap_dto.getName());
 		}
-		return null;
+		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
+				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
 	}
 	
 	/**
@@ -685,37 +685,35 @@ public class DeviceHelper {
 	 * @param config_sequence
 	 * @param extparams
 	 * @param ds_dto
-	 * @return
+	 * @return 
 	 */
 	public static String builderDSAclMacsOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
-			Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
-			if(acl_dto_map != null && !acl_dto_map.isEmpty()){
-				WifiDeviceSettingAclDTO default_acl_dto = matchDefaultAcl(ds_dto);
-				if(default_acl_dto == null)
-					default_acl_dto = new WifiDeviceSettingAclDTO();
-				
-				Set<String> macs = new HashSet<String>();
-				if(default_acl_dto.getMacs() != null){
-					macs.addAll(default_acl_dto.getMacs());
-				}
-					
-				WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get(DeviceSettingAction_Incr);
-				if(acl_incr_dto != null && acl_incr_dto.getMacs() != null){
-					macs.addAll(acl_incr_dto.getMacs());
-				}
-					
-				WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get(DeviceSettingAction_Del);
-				if(acl_del_dto != null && acl_del_dto.getMacs() != null){
-					macs.removeAll(acl_del_dto.getMacs());
-				}
-				default_acl_dto.setMacs(new ArrayList<String>(macs));
-					
-				String item = builderDeviceSettingItem(DeviceSetting_AclItem, default_acl_dto.builderProperties());
-				return builderDeviceSettingOuter(DeviceSetting_AclOuter, config_sequence, item);
-			}
+		Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
+		if(acl_dto_map == null || acl_dto_map.isEmpty())
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		WifiDeviceSettingAclDTO default_acl_dto = matchDefaultAcl(ds_dto);
+		if(default_acl_dto == null)
+			default_acl_dto = new WifiDeviceSettingAclDTO();
+		
+		Set<String> macs = new HashSet<String>();
+		if(default_acl_dto.getMacs() != null){
+			macs.addAll(default_acl_dto.getMacs());
 		}
-		return null;
+			
+		WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get(DeviceSettingAction_Incr);
+		if(acl_incr_dto != null && acl_incr_dto.getMacs() != null){
+			macs.addAll(acl_incr_dto.getMacs());
+		}
+			
+		WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get(DeviceSettingAction_Del);
+		if(acl_del_dto != null && acl_del_dto.getMacs() != null){
+			macs.removeAll(acl_del_dto.getMacs());
+		}
+		default_acl_dto.setMacs(new ArrayList<String>(macs));
+			
+		String item = builderDeviceSettingItem(DeviceSetting_AclItem, default_acl_dto.builderProperties());
+		return builderDeviceSettingOuter(DeviceSetting_AclOuter, config_sequence, item);
 	}
 	//<dev><sys><config><ITEM sequence=\""+config_sequence+"\"/></config></sys><net><rate_control><ITEM mac=\"aa:aa:aa:aa:bb:49\" tx=\"80\" rx=\"40\" index=\"aa\"/></rate_control></net></dev>
 	/**
@@ -723,52 +721,50 @@ public class DeviceHelper {
 	 * @param config_sequence
 	 * @param extparams
 	 * @param ds_dto
-	 * @return
+	 * @return 
 	 */
 	public static String builderDSRateControlOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
-			Map<String, List<WifiDeviceSettingRateControlDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, WifiDeviceSettingRateControlDTO.class);
-			if(rc_dto_map != null && !rc_dto_map.isEmpty()){
-				StringBuffer ds = new StringBuffer();
-				
-				List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
-				
-				List<WifiDeviceSettingRateControlDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
-				if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
-					for(WifiDeviceSettingRateControlDTO rc_incr_dto : rc_incr_dtos){
-						WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_incr_dto.getMac());
-						//如果匹配到 说明是修改
-						if(match_rc_dto != null){
-							rc_incr_dto.setIndex(match_rc_dto.getIndex());
-						}
-						//没匹配到 说明是新增 获取新的index
-						else{
-							int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
-							rc_incr_dto.setIndex(String.valueOf(index));
-							rc_indexs.add(index);
-						}
-						ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, rc_incr_dto.builderProperties()));
-					}
+		Map<String, List<WifiDeviceSettingRateControlDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, WifiDeviceSettingRateControlDTO.class);
+		if(rc_dto_map == null || rc_dto_map.isEmpty())
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		StringBuffer ds = new StringBuffer();
+		
+		List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
+		List<WifiDeviceSettingRateControlDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
+		if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
+			for(WifiDeviceSettingRateControlDTO rc_incr_dto : rc_incr_dtos){
+				WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_incr_dto.getMac());
+				//如果匹配到 说明是修改
+				if(match_rc_dto != null){
+					rc_incr_dto.setIndex(match_rc_dto.getIndex());
 				}
-				
-				List<WifiDeviceSettingRateControlDTO> rc_del_dtos = rc_dto_map.get(DeviceSettingAction_Del);
-				if(rc_del_dtos != null && !rc_del_dtos.isEmpty()){
-					for(WifiDeviceSettingRateControlDTO rc_del_dto : rc_del_dtos){
-						WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_del_dto.getMac());
-						if(match_rc_dto != null){
-							rc_del_dto.setIndex(match_rc_dto.getIndex());
-							ds.append(builderDeviceSettingItem(DeviceSetting_RemoveRatecontrolItem, rc_del_dto.
-									builderProperties(WifiDeviceSettingRateControlDTO.BuilderType_RemoveRC)));
-						}
-					}
+				//没匹配到 说明是新增 获取新的index
+				else{
+					int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
+					rc_incr_dto.setIndex(String.valueOf(index));
+					rc_indexs.add(index);
 				}
+				ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, rc_incr_dto.builderProperties()));
+			}
+		}
 				
-				if(ds.length() > 0){
-					return builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, config_sequence, ds.toString());
+		List<WifiDeviceSettingRateControlDTO> rc_del_dtos = rc_dto_map.get(DeviceSettingAction_Del);
+		if(rc_del_dtos != null && !rc_del_dtos.isEmpty()){
+			for(WifiDeviceSettingRateControlDTO rc_del_dto : rc_del_dtos){
+				WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_del_dto.getMac());
+				if(match_rc_dto != null){
+					rc_del_dto.setIndex(match_rc_dto.getIndex());
+					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveRatecontrolItem, rc_del_dto.
+							builderProperties(WifiDeviceSettingRateControlDTO.BuilderType_RemoveRC)));
 				}
 			}
 		}
-		return null;
+				
+		if(ds.length() == 0){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, config_sequence, ds.toString());
 	}
 	
 	/**
@@ -783,10 +779,10 @@ public class DeviceHelper {
 			throws Exception {
 		WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
 		if(user_dto == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 		if(StringUtils.isEmpty(user_dto.getOldpassword()) || StringUtils.isEmpty(user_dto.getPassword())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 
 		user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
