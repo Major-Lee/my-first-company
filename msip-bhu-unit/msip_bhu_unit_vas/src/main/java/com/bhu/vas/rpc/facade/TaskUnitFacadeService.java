@@ -2,6 +2,8 @@ package com.bhu.vas.rpc.facade;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
@@ -22,7 +24,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class TaskUnitFacadeService {
-	//private final Logger logger = LoggerFactory.getLogger(TaskUnitFacadeService.class);
+	private final Logger logger = LoggerFactory.getLogger(TaskUnitFacadeService.class);
 
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -75,7 +77,8 @@ public class TaskUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+			ex.printStackTrace();
+			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
 			return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 	}
