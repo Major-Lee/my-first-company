@@ -16,6 +16,7 @@ public enum OperationDS {
 	DS_AclMacs("04","修改黑名单列表名单"),
 	DS_RateControl("05","修改流量控制"),
 	DS_AdminPassword("06","修改管理密码"),
+	DS_MM("07","修改终端别名"),
 	DS_LinkMode("10","修改上网方式"),
 	;
 
