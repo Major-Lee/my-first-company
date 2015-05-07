@@ -101,4 +101,11 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	public boolean beRemoved() {
 		return Removed.equals(ssdel);
 	}
+	
+//	public static void main(String[] args){
+//		String json = "{\"ssdel\":\"1\"}";
+//		WifiDeviceSettingRateControlDTO dto = JsonHelper.getDTO(json, WifiDeviceSettingRateControlDTO.class);
+//		System.out.println(dto.getSsdel());
+//		System.out.println(JsonHelper.getJSONString(dto));
+//	}
 }

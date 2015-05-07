@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.bhu.vas.api.dto.ret.setting.*;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -79,6 +80,23 @@ public class DeviceHelper {
 			if(mac.endsWith(rcDto.getMac())){
 				return rcDto;
 			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 判断终端mac是否有别名
+	 * @param dto
+	 * @param mac
+	 * @return
+	 */
+	public static WifiDeviceSettingMMDTO matchMacManagement(WifiDeviceSettingDTO dto, String mac){
+		if(dto == null || StringUtils.isEmpty(mac)) return null;
+		List<WifiDeviceSettingMMDTO> mms = dto.getMms();
+		if(mms == null || mms.isEmpty()) return null;
+		int index = mms.indexOf(new WifiDeviceSettingMMDTO(mac));
+		if(index != -1){
+			return mms.get(index);
 		}
 		return null;
 	}
@@ -457,6 +475,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
 	public static final String DeviceSetting_LinkModelOuter="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mode><basic><wan>%s</wan></basic></mode></dev>");
+	public static final String DeviceSetting_MMOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><mac_management>%s</mac_management></net></dev>");
 
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
@@ -466,8 +485,10 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM oldpassword_rsa=\"%s\" password_rsa=\"%s\" name=\"admin\" />";
+	public static final String DeviceSetting_MMItem = "<ITEM mac=\"%s\" name=\"%s\" />";
 	
 	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
+	public static final String DeviceSetting_RemoveMMItem = "<ITEM mac=\"%s\" ssdel=\"1\" />";
 
 	public static final String DeviceSetting_LinkModelPPPOEItem = "<ITEM model=\"pppoe\" username=\"%s\" password_rsa=\"%s\" link_mode=\"auto\" idle=\"60\"/>";
 	public static final String DeviceSetting_LinkModelStaticItem = "<ITEM model=\"static\" ip=\"%s\" netmask=\"%s\" gateway=\"%s\" dns=\"%s\"/>";
@@ -817,8 +838,49 @@ public class DeviceHelper {
 			}
 		}
         return null;
-
 	}
+	
+	/**
+	 * 修改终端别名配置
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return
+	 * @throws Exception
+	 */
+	public static String builderDSHDAliasOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto)
+			throws Exception {
+		List<WifiDeviceSettingMMDTO> mm_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingMMDTO.class);
+		if(mm_dtos == null || mm_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		StringBuffer ds = new StringBuffer();
+		
+		for(WifiDeviceSettingMMDTO mm_dto : mm_dtos){
+			if(StringUtils.isEmpty(mm_dto.getMac())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			//如果name不为空 说明为新增或修改别名
+			if(!StringUtils.isEmpty(mm_dto.getName())){
+				ds.append(builderDeviceSettingItem(DeviceSetting_MMItem, mm_dto.builderProperties()));
+			}
+			//如果name为空 说明是删除
+			else{
+				//如果存在才可以删除
+				if(matchMacManagement(ds_dto, mm_dto.getMac()) != null){
+					mm_dto.setSsdel(DeviceSettingBuilderDTO.Removed);
+					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveMMItem, mm_dto.
+							builderProperties(WifiDeviceSettingMMDTO.BuilderType_RemoveMM)));
+				}
+			}
+		}
+		if(ds.length() == 0){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_MMOuter, config_sequence, ds.toString());
+	}
+	
 	
 //	public static void main(String[] args){
 //		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
