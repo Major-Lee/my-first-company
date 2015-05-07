@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.rpc.RpcResponseCodeConst;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
