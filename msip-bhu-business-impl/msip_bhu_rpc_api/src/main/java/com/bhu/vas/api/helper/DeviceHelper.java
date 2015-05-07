@@ -490,9 +490,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
 	public static final String DeviceSetting_RemoveMMItem = "<ITEM mac=\"%s\" ssdel=\"1\" />";
 
-	public static final String DeviceSetting_LinkModelPPPOEItem = "<ITEM model=\"pppoe\" username=\"%s\" password_rsa=\"%s\" link_mode=\"auto\" idle=\"60\"/>";
-	public static final String DeviceSetting_LinkModelStaticItem = "<ITEM model=\"static\" ip=\"%s\" netmask=\"%s\" gateway=\"%s\" dns=\"%s\"/>";
-	public static final String DeviceSetting_LinkModelDHCPCItem =  "<ITEM model=\"dhcpc\"/>";
+	public static final String DeviceSetting_LinkModelPPPOEItem = "<ITEM model=\"%s\" username=\"%s\" password_rsa=\"%s\" link_mode=\"%s\" idle=\"%s\"/>";
+	public static final String DeviceSetting_LinkModelStaticItem = "<ITEM model=\"%s\" ip=\"%s\" netmask=\"%s\" gateway=\"%s\" dns=\"%s\"/>";
+	public static final String DeviceSetting_LinkModelDHCPCItem =  "<ITEM model=\"%s\"/>";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
