@@ -53,6 +53,7 @@ public enum ResponseErrorCode {
 	TASK_VALIDATE_ILEGAL("695", "task.validate.ilegal"),
 	TASK_ALREADY_COMPLETED("694","task.already.completed"),
 	TASK_ALREADY_EXIST("693","task.already.exist"),
+	TASK_NOT_EXIST("693","task.not.exist"),
 	
 	FUNC_UNLOCK("650","func.unlock"),
 	
