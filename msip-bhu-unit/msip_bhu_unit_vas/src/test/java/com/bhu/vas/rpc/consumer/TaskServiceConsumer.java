@@ -27,8 +27,8 @@ public class TaskServiceConsumer {
 //				"payload content", "APP_VAS", "123");
 		
 //		taskRpcService.taskStatusFetch(123123123);
-		String mac = "84:82:f4:19:01:0c";
-		
+		//String mac = "84:82:f4:19:01:0c";
+		String mac = "62:68:75:02:ff:05";
 		//修改信号强度
 		WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
 		//radio_dto.setName("");
