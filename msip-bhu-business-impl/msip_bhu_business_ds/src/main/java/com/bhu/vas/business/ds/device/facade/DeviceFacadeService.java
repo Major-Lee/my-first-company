@@ -37,6 +37,8 @@ import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class DeviceFacadeService {
@@ -390,44 +392,41 @@ public class DeviceFacadeService {
 	 * @throws Exception 
 	 */
 	public String generateDeviceSetting(String mac, String ds_opt, String extparams) throws Exception {
-		String modify_setting = null;
+		if(StringUtils.isEmpty(ds_opt) || StringUtils.isEmpty(extparams))
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
+		if(ods == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
-		if(entity != null){
-			WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
-			if(ds_dto != null){
-				String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
-				if(!StringUtils.isEmpty(config_sequence)){
-					OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
-					if(ods != null){
-						switch(ods){
-							case DS_Ad:
-								modify_setting = DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_Power:
-								modify_setting = DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_VapPassword:
-								modify_setting = DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_AclMacs:
-								modify_setting = DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_RateControl:
-								modify_setting = DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
-								break;
-							case DS_AdminPassword:
-								modify_setting = DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
-								break;
-							default:
-								break;
-						}
-					}
-				}
-			}
+		if(entity == null) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
+		
+		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+		if(ds_dto == null) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
+		
+		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+		if(StringUtils.isEmpty(config_sequence))
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+		
+		switch(ods){
+			case DS_Ad:
+				return DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
+			case DS_Power:
+				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
+			case DS_VapPassword:
+				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, ds_dto);
+			case DS_AclMacs:
+				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, ds_dto);
+			case DS_RateControl:
+				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
+			case DS_AdminPassword:
+				return DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
+			default:
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
-
-		return modify_setting;
 	}
 
 }
