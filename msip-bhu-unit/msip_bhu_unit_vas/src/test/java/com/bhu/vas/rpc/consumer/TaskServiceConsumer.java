@@ -1,16 +1,8 @@
 package com.bhu.vas.rpc.consumer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -34,9 +26,12 @@ public class TaskServiceConsumer {
 //		taskRpcService.taskStatusFetch(123123123);
 		String mac = "62:68:75:02:ff:05";
 		
-//		WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
-//		radio_dto.setName("");
-//		radio_dto.setPower("12");
+		//修改信号强度
+		WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
+		//radio_dto.setName("");
+		radio_dto.setPower("12");
+		System.out.println(JsonHelper.getJSONString(radio_dto));
+		
 //		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
 //				OperationDS.DS_Power.getNo(), JsonHelper.getJSONString(radio_dto),/*"payload content",*/ "APP_VAS", "11111");
 		
@@ -70,7 +65,7 @@ public class TaskServiceConsumer {
 //				OperationDS.DS_AclMacs.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "84843291");
 //		
 		
-		int index = 100;
+/*		int index = 100;
 		Map<String,List<WifiDeviceSettingRateControlDTO>> map = new HashMap<String,List<WifiDeviceSettingRateControlDTO>>();
 		List<WifiDeviceSettingRateControlDTO> incrs = new ArrayList<WifiDeviceSettingRateControlDTO>();
 		WifiDeviceSettingRateControlDTO incr1 = new WifiDeviceSettingRateControlDTO();
@@ -101,7 +96,19 @@ public class TaskServiceConsumer {
 		map.put("del", dels);
 
 		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
-				OperationDS.DS_RateControl.getNo(), JsonHelper.getJSONString(map),/*"payload content",*/ "APP_VAS", "848432421");
+				OperationDS.DS_RateControl.getNo(), JsonHelper.getJSONString(map),"payload content", "APP_VAS", "848432422");
+		*/
+		
+/*		WifiDeviceSettingUserDTO admin_dto = new WifiDeviceSettingUserDTO();
+		admin_dto.setOldpassword("admin2");
+		admin_dto.setPassword("admin");
+		//String extparams = "{\"oldpassword\":\"admin\",\"password\":\"admin2\"}";
+		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
+				OperationDS.DS_AdminPassword.getNo(), JsonHelper.getJSONString(admin_dto),"payload content", "APP_VAS", "848432210");
+*/		
+		
+/*		taskRpcService.createNewTask(mac, OperationCMD.DeviceDelayReboot.getNo(), 
+				null, null,"payload content", "APP_VAS", "848232212");*/
 		
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
