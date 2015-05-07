@@ -48,6 +48,7 @@ public class TaskUnitFacadeService {
 	 */
 	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid){
+		logger.info("mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
 		try{
 			WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 			downTask.setChannel(channel);
@@ -56,7 +57,6 @@ public class TaskUnitFacadeService {
 			downTask.setOpt(opt);
 			downTask.setMac(mac);
 			taskFacadeService.taskComming(downTask);
-			logger.info("mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
 			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 				String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
 				logger.info("payload===" + payload);
