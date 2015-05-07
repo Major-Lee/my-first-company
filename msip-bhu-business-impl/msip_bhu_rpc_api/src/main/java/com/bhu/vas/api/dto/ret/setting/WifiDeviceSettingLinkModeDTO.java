@@ -158,7 +158,7 @@ public class WifiDeviceSettingLinkModeDTO implements DeviceSettingBuilderDTO {
             properties[3] = gateway;
             properties[4] = dns;
         } else if (MODEL_DHCPC_TYPE == type) {
-            properties = new Object[0];
+            properties = new Object[1];
             properties[0] = model;
         }
         return properties;

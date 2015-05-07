@@ -152,7 +152,7 @@ public class TaskServiceConsumer {
 
 		try {
 			taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(),
-					OperationDS.DS_LinkMode.getNo(), JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO),/*"payload content",*/ "APP_VAS", "12356");
+					OperationDS.DS_LinkMode.getNo(), JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO),/*"payload content",*/ "APP_VAS", "12359");
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
