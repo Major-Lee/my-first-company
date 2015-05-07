@@ -26,6 +26,8 @@ import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 import com.smartwork.msip.cores.helper.encrypt.RSAHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class DeviceHelper {
 	
@@ -619,7 +621,6 @@ public class DeviceHelper {
 			if(ad_dto != null){
 				String item = builderDeviceSettingItemWithDto(DeviceSetting_AdItem, ad_dto);
 				return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
-//				return builderConfigSequence(item_with_outer, config_sequence);
 			}
 		}
 		return null;
@@ -778,19 +779,20 @@ public class DeviceHelper {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto) throws Exception{
-		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
-			WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
-			if(user_dto != null){
-				if(!StringUtils.isEmpty(user_dto.getOldpassword()) && !StringUtils.isEmpty(user_dto.getPassword())){
-					user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
-					user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
-					String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
-					return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
-				}
-			}
+	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto)
+			throws Exception {
+		WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
+		if(user_dto == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
-		return null;
+		if(StringUtils.isEmpty(user_dto.getOldpassword()) || StringUtils.isEmpty(user_dto.getPassword())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
+
+		user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+		user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+		String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
+		return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 	}
 	
 //	public static void main(String[] args){

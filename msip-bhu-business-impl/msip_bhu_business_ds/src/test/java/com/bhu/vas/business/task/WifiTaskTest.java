@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.bhu.vas.api.rpc.RpcResponseCodeConst;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.localunit.BaseTest;
@@ -55,21 +54,21 @@ public class WifiTaskTest extends BaseTest{
     		}
     		downtask.setMac(RandomPicker.pick(device_macs));
     		downtask.setPayload("how are u!");
-    		int ret = taskFacadeService.taskComming(downtask);
-    		switch(ret){
-    			case RpcResponseCodeConst.Task_Illegal:
-    				System.out.println(String.format("无效或非法的任务"));
-    				break;
-    			case RpcResponseCodeConst.Task_Already_Exist:
-    				System.out.println(String.format("任务已经存在"));
-    				break;
-    			case RpcResponseCodeConst.Task_Already_Completed:
-    				System.out.println(String.format("任务已经完成"));
-    				break;
-    			case RpcResponseCodeConst.Task_Startup_OK:
-    				System.out.println(String.format("任务入库成功 taskid[%s]",downtask.getId()));
-    				break;
-    		}
+    		taskFacadeService.taskComming(downtask);
+//    		switch(ret){
+//    			case RpcResponseCodeConst.Task_Illegal:
+//    				System.out.println(String.format("无效或非法的任务"));
+//    				break;
+//    			case RpcResponseCodeConst.Task_Already_Exist:
+//    				System.out.println(String.format("任务已经存在"));
+//    				break;
+//    			case RpcResponseCodeConst.Task_Already_Completed:
+//    				System.out.println(String.format("任务已经完成"));
+//    				break;
+//    			case RpcResponseCodeConst.Task_Startup_OK:
+//    				System.out.println(String.format("任务入库成功 taskid[%s]",downtask.getId()));
+//    				break;
+//    		}
     	}
     	
 	}	
