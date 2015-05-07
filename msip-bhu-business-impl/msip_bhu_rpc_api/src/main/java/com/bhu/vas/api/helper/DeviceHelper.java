@@ -474,8 +474,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
-	public static final String DeviceSetting_LinkModelOuter="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mode><basic><wan>%s</wan></basic></mode></dev>");
+
 	public static final String DeviceSetting_MMOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><mac_management>%s</mac_management></net></dev>");
+	public static final String DeviceSetting_LinkModeOuter ="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mod><basic><wan>%s</wan></basic></mod></dev>");
 
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
@@ -825,15 +826,15 @@ public class DeviceHelper {
 					linkModelDTO.setIdle("60");
 					String item = builderDeviceSettingItem(DeviceSetting_LinkModelPPPOEItem,
 							linkModelDTO.builderProperties(WifiDeviceSettingLinkModeDTO.MODEL_PPPOE_TYPE));
-					return builderDeviceSettingOuter(DeviceSetting_LinkModelOuter, config_sequence, item);
+					return builderDeviceSettingOuter(DeviceSetting_LinkModeOuter, config_sequence, item);
 				} else if (WifiDeviceSettingDTO.Mode_Static.equals(linkModelDTO.getModel())){
 					String item = builderDeviceSettingItem(DeviceSetting_LinkModelStaticItem,
 							linkModelDTO.builderProperties(WifiDeviceSettingLinkModeDTO.MODEL_STATIC_TYPE));
-					return builderDeviceSettingOuter(DeviceSetting_LinkModelOuter, config_sequence, item);
+					return builderDeviceSettingOuter(DeviceSetting_LinkModeOuter, config_sequence, item);
 				} else if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(linkModelDTO.getModel())) {
 					String item = builderDeviceSettingItem(DeviceSetting_LinkModelDHCPCItem,
 							linkModelDTO.builderProperties(WifiDeviceSettingLinkModeDTO.MODEL_DHCPC_TYPE));
-					return builderDeviceSettingOuter(DeviceSetting_LinkModelOuter, config_sequence, item);
+					return builderDeviceSettingOuter(DeviceSetting_LinkModeOuter, config_sequence, item);
 				}
 			}
 		}

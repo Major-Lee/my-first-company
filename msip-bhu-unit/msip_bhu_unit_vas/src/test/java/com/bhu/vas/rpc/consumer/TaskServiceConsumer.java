@@ -146,19 +146,23 @@ public class TaskServiceConsumer {
 
 
 		WifiDeviceSettingLinkModeDTO wifiDeviceSettingLinkModeDTO = new WifiDeviceSettingLinkModeDTO();
-//		wifiDeviceSettingLinkModeDTO.setModel("dhcpc");
+		wifiDeviceSettingLinkModeDTO.setModel("dhcpc");
 
-		wifiDeviceSettingLinkModeDTO.setModel("static");
-		wifiDeviceSettingLinkModeDTO.setIp("192.168.1.4");
-		wifiDeviceSettingLinkModeDTO.setNetmask("255.255.255.0");
-		wifiDeviceSettingLinkModeDTO.setGateway("255.255.255.0");
-		wifiDeviceSettingLinkModeDTO.setDns("192.168.1.1");
+//		wifiDeviceSettingLinkModeDTO.setModel("static");
+//		wifiDeviceSettingLinkModeDTO.setIp("192.168.1.4");
+//		wifiDeviceSettingLinkModeDTO.setNetmask("255.255.255.0");
+//		wifiDeviceSettingLinkModeDTO.setGateway("192.168.1.1");
+//		wifiDeviceSettingLinkModeDTO.setDns("192.168.1.1");
+
+//		wifiDeviceSettingLinkModeDTO.setModel("pppoe");
+//		wifiDeviceSettingLinkModeDTO.setUsername("google");
+//		wifiDeviceSettingLinkModeDTO.setPassword_rsa("123456");
 
 		System.out.println(JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO));
 
 		try {
 			taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(),
-					OperationDS.DS_LinkMode.getNo(), JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO),/*"payload content",*/ "APP_VAS", "12361");
+					OperationDS.DS_LinkMode.getNo(), JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO),/*"payload content",*/ "APP_VAS", "123669");
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
