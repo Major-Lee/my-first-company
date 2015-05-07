@@ -48,6 +48,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -662,7 +663,11 @@ public class DeviceBusinessFacadeService {
 	public WifiDeviceDownTaskCompleted doTaskCallback(int taskid, String status,String response){
 		if(StringUtils.isEmpty(status)) return null;
 		if(CMDBuilder.wasNormalTaskid(taskid)){//查看taskid是否是触发性任务id
-			return taskFacadeService.taskExecuteCallback(taskid, status,response);
+			try{
+				return taskFacadeService.taskExecuteCallback(taskid, status,response);
+			}catch(BusinessI18nCodeException bex){
+				bex.printStackTrace(System.out);
+			}
 		}
 		return null;
 	}

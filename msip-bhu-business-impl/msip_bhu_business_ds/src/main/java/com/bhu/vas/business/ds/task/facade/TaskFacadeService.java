@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.RpcResponseCodeConst;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
@@ -28,31 +27,20 @@ public class TaskFacadeService {
 	 * @param status
 	 */
 	public WifiDeviceDownTaskCompleted taskExecuteCallback(int taskid,String state,String response){
-		/*if(taskid >=0 && taskid <100000){//保留任务号，用户触发定时任务的id号
-			
-		}*/
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
-		if(downtask != null) {
-			if(WifiDeviceDownTask.State_Done.equals(state)){
-//			if(state == WifiDeviceDownTask.State_Completed){
-				WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, state, response);
-				/*WifiDeviceDownTaskCompleted completed = new WifiDeviceDownTaskCompleted();
-				try {
-					BeanUtils.copyProperties(completed, downtask);
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					e.printStackTrace();
-				}
-				completed.setState(WifiDeviceDownTask.State_Done);
-				completed.setCompleted_at(new Date());*/
-				WifiDeviceDownTaskCompleted result = wifiDeviceDownTaskCompletedService.insert(completed);
-				wifiDeviceDownTaskService.deleteById(taskid);
-				return result;
-			}else{
-				downtask.setState(state);
-				wifiDeviceDownTaskService.update(downtask);
-			}
+		if(downtask == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_UNDEFINED);
 		}
-		return null;	
+		if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Failed.equals(state)){
+			WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, state, response);
+			WifiDeviceDownTaskCompleted result = wifiDeviceDownTaskCompletedService.insert(completed);
+			wifiDeviceDownTaskService.deleteById(taskid);
+			return result;
+		}else{
+			downtask.setState(state);
+			wifiDeviceDownTaskService.update(downtask);
+			return null;
+		}
 	}
 	
 	public void taskComming(WifiDeviceDownTask downtask){
