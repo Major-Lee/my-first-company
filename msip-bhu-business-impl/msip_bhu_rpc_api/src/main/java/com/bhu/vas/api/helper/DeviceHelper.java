@@ -8,18 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.bhu.vas.api.dto.ret.setting.*;
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -465,7 +456,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
-	
+	public static final String DeviceSetting_LinkModelOuter="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mode><basic><wan>%s</wan></basic></mode></dev>");
+
+
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	public static final String DeviceSetting_AdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
@@ -475,6 +468,10 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM oldpassword_rsa=\"%s\" password_rsa=\"%s\" name=\"admin\" />";
 	
 	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
+
+	public static final String DeviceSetting_LinkModelPPPOEItem = "<ITEM model=\"pppoe\" username=\"%s\" password_rsa=\"%s\" link_mode=\"auto\" idle=\"60\"/>";
+	public static final String DeviceSetting_LinkModelStaticItem = "<ITEM model=\"static\" ip=\"%s\" netmask=\"%s\" gateway=\"%s\" dns=\"%s\"/>";
+	public static final String DeviceSetting_LinkModelDHCPCItem =  "<ITEM model=\"dhcpc\"/>";
 	
 	/**
 	 * 通过配置模板和配置dto来组装配置xml
@@ -790,6 +787,38 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 		return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 	}
+
+	/**
+	 * 修改上网方式配置()
+	 * @param config_sequence
+	 * @param extparams
+	 * @return
+	 */
+	public static String builderDSLinkModeOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto) throws Exception {
+		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
+			WifiDeviceSettingLinkModeDTO linkModelDTO = JsonHelper.getDTO(extparams, WifiDeviceSettingLinkModeDTO.class);
+			if (linkModelDTO != null) {
+				if (WifiDeviceSettingDTO.Mode_Pppoe.equals(linkModelDTO.getModel())){
+					linkModelDTO.setPassword_rsa(RSAHelper.encryptToAp(linkModelDTO.getPassword_rsa(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+					linkModelDTO.setLink_mode("auto");
+					linkModelDTO.setIdle("60");
+					String item = builderDeviceSettingItem(DeviceSetting_LinkModelPPPOEItem,
+							linkModelDTO.builderProperties(WifiDeviceSettingLinkModeDTO.MODEL_PPPOE_TYPE));
+					return builderDeviceSettingOuter(DeviceSetting_LinkModelOuter, config_sequence, item);
+				} else if (WifiDeviceSettingDTO.Mode_Static.equals(linkModelDTO.getModel())){
+					String item = builderDeviceSettingItem(DeviceSetting_LinkModelStaticItem,
+							linkModelDTO.builderProperties(WifiDeviceSettingLinkModeDTO.MODEL_STATIC_TYPE));
+					return builderDeviceSettingOuter(DeviceSetting_LinkModelOuter, config_sequence, item);
+				} else if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(linkModelDTO.getModel())) {
+					String item = builderDeviceSettingItem(DeviceSetting_LinkModelDHCPCItem,
+							linkModelDTO.builderProperties(WifiDeviceSettingLinkModeDTO.MODEL_DHCPC_TYPE));
+					return builderDeviceSettingOuter(DeviceSetting_LinkModelOuter, config_sequence, item);
+				}
+			}
+		}
+        return null;
+
+	}
 	
 //	public static void main(String[] args){
 //		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
@@ -834,4 +863,5 @@ public class DeviceHelper {
 ////			System.out.println(vap.getName() + "=" + vap.getSsid());
 ////		}
 //	}
+
 }
