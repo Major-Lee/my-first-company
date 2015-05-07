@@ -56,6 +56,7 @@ public class TaskUnitFacadeService {
 			//downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, taskid));
 			downTask.setOpt(opt);
 			downTask.setMac(mac);
+			logger.info("taskComming ==start==");
 			taskFacadeService.taskComming(downTask);
 			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 				String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
@@ -64,6 +65,8 @@ public class TaskUnitFacadeService {
 			}else{
 				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 			}
+
+			logger.info("taskComming ==end==");
 
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
@@ -76,6 +79,7 @@ public class TaskUnitFacadeService {
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
+			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
 			return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
 		}catch(Exception ex){
 			ex.printStackTrace();
