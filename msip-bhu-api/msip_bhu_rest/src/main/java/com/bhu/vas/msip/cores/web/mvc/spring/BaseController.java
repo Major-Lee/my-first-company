@@ -88,7 +88,7 @@ public abstract class BaseController implements ServletContextAware {
 	
 	@ExceptionHandler(BusinessException.class)
     protected ModelAndView businessException(BusinessException ex, HttpServletRequest request, HttpServletResponse response) {
-        logging(ex, request);
+        //logging(ex, request);
         response.setStatus(ex.getResponse_status().getStatus());
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
