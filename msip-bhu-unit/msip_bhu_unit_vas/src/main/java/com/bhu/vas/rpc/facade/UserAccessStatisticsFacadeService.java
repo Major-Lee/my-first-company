@@ -50,6 +50,7 @@ public class UserAccessStatisticsFacadeService {
             UserAccessStatisticsDTO userAccessStatisticsDTO = new UserAccessStatisticsDTO();
             userAccessStatisticsDTO.setDate(userAccessStatistics.getDate());
             userAccessStatisticsDTO.setMac(userAccessStatistics.getMac());
+            userAccessStatisticsDTO.setDevice_mac(userAccessStatistics.getDevice_mac());
             userAccessStatisticsDTO.setCreate_at(userAccessStatistics.getCreated_at());
             userAccessStatisticsDTO.setUpdate_at(userAccessStatistics.getUpdated_at());
             userAccessStatisticsDTO.setExtension_content(userAccessStatistics.getExtension_content());
