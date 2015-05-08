@@ -9,6 +9,7 @@ import java.util.Date;
 public class UserAccessStatisticsDTO implements Serializable {
     private String mac;
     private String date;
+    private String device_mac;
     private Date create_at;
     private Date update_at;
     private String extension_content;
@@ -19,6 +20,14 @@ public class UserAccessStatisticsDTO implements Serializable {
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public String getDevice_mac() {
+        return device_mac;
+    }
+
+    public void setDevice_mac(String device_mac) {
+        this.device_mac = device_mac;
     }
 
     public String getDate() {
