@@ -127,8 +127,6 @@ public class UserAccessStatisticOp {
                             host = host.substring(host.indexOf(".") + 1);
                         }
                         userAccessStatistics.incrKey(host);
-                        Map<String, Integer> mapper = userAccessStatistics.fetchAll();
-                        userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(mapper), false));
                         resultMapper.put(userDatePK, userAccessStatistics);
                     }
                 }
@@ -136,7 +134,9 @@ public class UserAccessStatisticOp {
 
 
                 for (UserDatePK userDatePK : resultMapper.keySet()) {
-                    userAccessStatisticsService.insert(resultMapper.get(userDatePK));
+                    UserAccessStatistics userAccessStatistics = resultMapper.get(userDatePK);
+                    userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(sortByValue(userAccessStatistics.fetchAll())), false));
+                    userAccessStatisticsService.insert(userAccessStatistics);
                 }
 
             } else {
