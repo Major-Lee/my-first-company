@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -86,6 +85,36 @@ public class TaskUnitFacadeService {
 			taskFacadeService.taskUpdate(downTask);
 			//发送异步消息到Queue
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
+			return new RpcResponseDTO<TaskResDTO>(null,dto);
+		}catch(BusinessI18nCodeException bex){
+			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
+			return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
+			return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+	}
+	
+	/**
+	 * 查询任务的状态
+	 * @param uid
+	 * @param channel
+	 * @param channel_taskid
+	 * @return
+	 */
+	public RpcResponseDTO<TaskResDTO> taskStatus(Integer uid, String channel, String channel_taskid){
+		logger.info("uid==" + uid + ",channel==" + channel + ",channel_taskid==" + channel_taskid);
+		try{
+			WifiDeviceDownTask task = taskFacadeService.queryTask(channel, channel_taskid);
+			
+			TaskResDTO dto = new TaskResDTO();
+			dto.setChannel(channel);
+			dto.setChannel_taskid(channel_taskid);
+			dto.setState(task.getState());
+			dto.setMac(task.getMac());
+			dto.setTaskid(task.getId());
+			
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
 			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);

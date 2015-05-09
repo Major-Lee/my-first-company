@@ -41,7 +41,7 @@ public class CmdController extends BaseController{
 	public void cmdGenerate(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) Integer uid,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String opt,
 			@RequestParam(required = true) String subopt,
@@ -60,6 +60,33 @@ public class CmdController extends BaseController{
 		}
 	}
 	
+	/**
+	 * 查询任务状态接口
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param channel
+	 * @param channel_taskid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/status",method={RequestMethod.POST})
+	public void cmdStatus(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false) Integer uid,
+			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
+			@RequestParam(required = true) String channel_taskid) {
+		
+		RpcResponseDTO<TaskResDTO> resp = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid);
+		
+		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
+		if(resp.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}else{
+			throw new BusinessException(ResponseStatus.BadRequest,resp.getErrorCode());
+		}
+	}
 	
 	/*@ResponseBody()
 	@RequestMapping(value="/htmlingenerate",method={RequestMethod.GET,RequestMethod.POST})

@@ -27,7 +27,7 @@ public class TaskServiceStub implements ITaskRpcService{
 	@Override
 	public RpcResponseDTO<TaskResDTO> createNewTask(Integer uid, String mac, String opt, String subopt, String extparams,/*String payload,*/
 			String channel, String channel_taskid) {
-		if(StringUtils.isEmpty(mac)) 
+		if(uid == null || StringUtils.isEmpty(mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return taskRpcService.createNewTask(uid, mac, opt, subopt, extparams,/*payload,*/
 				channel, channel_taskid);
@@ -39,9 +39,11 @@ public class TaskServiceStub implements ITaskRpcService{
 	}
 
 	@Override
-	public void taskStatusFetch4ThirdParties(String channel,
+	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
 			String channel_taskid) {
-		taskRpcService.taskStatusFetch4ThirdParties(channel, channel_taskid);
+		if(uid == null)
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid);
 	}
 
 }

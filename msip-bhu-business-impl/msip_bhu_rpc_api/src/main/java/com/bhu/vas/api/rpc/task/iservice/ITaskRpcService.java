@@ -19,7 +19,8 @@ public interface ITaskRpcService {
 			int taskid
 			);
 	
-	public void taskStatusFetch4ThirdParties(
+	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(
+			Integer uid,
 			String channel,
 			String channel_taskid
 			);
