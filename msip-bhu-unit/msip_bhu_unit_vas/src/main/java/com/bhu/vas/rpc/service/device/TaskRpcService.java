@@ -24,11 +24,11 @@ public class TaskRpcService implements ITaskRpcService{
 	 * 并返回taskid给客户端
 	 */
 	@Override
-	public RpcResponseDTO<TaskResDTO> createNewTask(String mac, String opt, String subopt, String extparams,
+	public RpcResponseDTO<TaskResDTO> createNewTask(Integer uid, String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid) {
-		logger.info(String.format("createNewTask mac:%s opt:%s extparams:%s channel:%s channel_taskid:%s", 
-				mac,opt,extparams,channel,channel_taskid));
-		return taskUnitFacadeService.taskGenerate(mac, opt,subopt,extparams/*, payload*/, channel, channel_taskid);
+		logger.info(String.format("createNewTask uid:%s mac:%s opt:%s extparams:%s channel:%s channel_taskid:%s", 
+				uid,mac,opt,extparams,channel,channel_taskid));
+		return taskUnitFacadeService.taskGenerate(uid, mac, opt,subopt,extparams/*, payload*/, channel, channel_taskid);
 	}
 
 	/**

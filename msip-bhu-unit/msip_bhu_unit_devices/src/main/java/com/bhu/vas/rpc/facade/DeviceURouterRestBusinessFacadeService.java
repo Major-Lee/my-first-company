@@ -31,7 +31,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
-import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
@@ -57,7 +57,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 	
 	@Resource
-	private URouterDeviceFacadeService uRouterDeviceFacadeService;
+	private DeviceFacadeService deviceFacadeService;
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -71,8 +71,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId){
 		try{
 			//WifiDevice device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
-			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
-			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
 
 			WifiDeviceSettingDTO dto = entity.getInnerModel();
 			URouterEnterVTO vto = new URouterEnterVTO();
@@ -106,8 +106,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
 		try{
-			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
-			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
 			
 			List<URouterHdVTO> vtos = null;
 			long total = 0;
@@ -167,7 +167,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId){
 		try{
-			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+			deviceFacadeService.validateUserDevice(uid, wifiId);
 		
 			URouterRealtimeRateVTO vto = new URouterRealtimeRateVTO();
 			String[] ret = fetchRealtimeRate(wifiId);
@@ -216,12 +216,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterBlockList(Integer uid, String wifiId, int start, int size){
 		try{
-			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
 			
 			List<URouterHdVTO> vtos = null;
 			int total = 0;
 			
-			WifiDeviceSetting entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
 			WifiDeviceSettingDTO dto = entity.getInnerModel();
 			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(dto);
 			if(acl_dto != null){
@@ -262,10 +262,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterSettingVTO> urouterSetting(Integer uid, String wifiId){
 		try{
-			uRouterDeviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting setting_entity = deviceFacadeService.validateDeviceSetting(wifiId);
 			
-			WifiDevice device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
-			WifiDeviceSetting setting_entity = uRouterDeviceFacadeService.validateDeviceSetting(wifiId);
 			WifiDeviceSettingDTO setting_dto = setting_entity.getInnerModel();
 			
 			URouterSettingVTO vto = new URouterSettingVTO();

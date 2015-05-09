@@ -24,6 +24,8 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
@@ -31,12 +33,14 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatistic
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
+import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -64,6 +68,9 @@ public class DeviceFacadeService {
 	
 	@Resource
 	private HandsetDeviceService handsetDeviceService;
+	
+	@Resource
+	private UserDeviceService userDeviceService;
 	
 	/**
 	 * 指定wifiId进行终端全部下线处理
@@ -380,6 +387,71 @@ public class DeviceFacadeService {
 				WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model());
 	}
 
+	/**
+	 * 验证用户所管理的设备
+	 * 1：设备是否存在
+	 * 2：设备是否在线
+	 * 3：设备是否被此用户管理
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public WifiDevice validateUserDevice(Integer uid, String mac){
+		//验证设备
+		WifiDevice device_entity = validateDevice(mac);
+		//验证用户是否管理设备
+		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+		if(userdevice_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED);
+		}
+		return device_entity;
+	}
+	
+	/**
+	 * 验证设备
+	 * 1：设备是否存在
+	 * 2：设备是否在线
+	 * @param mac
+	 * @return
+	 */
+	public WifiDevice validateDevice(String mac){
+		//验证设备是否存在
+		WifiDevice device_entity = wifiDeviceService.getById(mac);
+		if(device_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+		}
+		//验证设备是否在线
+		if(!device_entity.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}
+		return device_entity;
+	}
+	/**
+	 * 验证设备是否加载配置
+	 * @param mac
+	 * @return
+	 */
+	public WifiDeviceSetting validateDeviceSetting(String mac){
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
+		}
+		if(entity.getInnerModel() == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+		}
+		return entity;
+	}
+	
+	/**
+	 * 获取用户绑定的设备PKS
+	 * @param uid
+	 * @return
+	 */
+	public List<UserDevicePK> getUserDevices(Integer uid){
+		CommonCriteria mc = new CommonCriteria();
+		mc.createCriteria().andColumnEqualTo("uid", uid);
+		return userDeviceService.findIdsByCommonCriteria(mc);
+	}
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
 	
@@ -399,13 +471,8 @@ public class DeviceFacadeService {
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
-		if(entity == null) 
-			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
-		
+		WifiDeviceSetting entity = validateDeviceSetting(mac);
 		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
-		if(ds_dto == null) 
-			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
 		
 		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
 		if(StringUtils.isEmpty(config_sequence))

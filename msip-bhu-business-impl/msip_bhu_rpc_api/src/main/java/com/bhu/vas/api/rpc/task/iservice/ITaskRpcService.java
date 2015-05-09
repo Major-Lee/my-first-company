@@ -6,6 +6,7 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 
 public interface ITaskRpcService {
 	public RpcResponseDTO<TaskResDTO> createNewTask(
+			Integer uid,
 			String mac,
 			String opt,
 			String subopt,

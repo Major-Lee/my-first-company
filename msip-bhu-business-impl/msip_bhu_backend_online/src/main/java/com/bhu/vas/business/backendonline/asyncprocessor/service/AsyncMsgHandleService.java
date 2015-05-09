@@ -51,7 +51,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentS
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.facade.URouterDeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
@@ -94,9 +93,6 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
-	
-	@Resource
-	private URouterDeviceFacadeService uRouterDeviceFacadeService;
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -736,7 +732,7 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s]", message));
 		UserSignedonDTO dto = JsonHelper.getDTO(message, UserSignedonDTO.class);
 		//获取用户已经绑定的设备
-		List<UserDevicePK> userDevicePks = uRouterDeviceFacadeService.getUserDevices(dto.getUid());
+		List<UserDevicePK> userDevicePks = deviceFacadeService.getUserDevices(dto.getUid());
 		if(!userDevicePks.isEmpty()){
 			List<String> macs = new ArrayList<String>();
 			for(UserDevicePK UserDevicePk : userDevicePks){

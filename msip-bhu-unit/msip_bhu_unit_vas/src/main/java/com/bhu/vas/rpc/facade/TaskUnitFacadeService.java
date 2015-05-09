@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -37,7 +39,7 @@ public class TaskUnitFacadeService {
 
 	
 	/**
-	 * 
+	 * @param uid
 	 * @param mac
 	 * @param opt
 	 * @param subopt
@@ -46,10 +48,17 @@ public class TaskUnitFacadeService {
 	 * @param channel_taskid
 	 * @return
 	 */
-	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,
+	public RpcResponseDTO<TaskResDTO> taskGenerate(Integer uid, String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid){
-		logger.info("mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
+		logger.info("uid==" + uid + ",mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
 		try{
+			//如果是管理员用户 不进行用户所属设备的验证
+			if(RuntimeConfiguration.isConsoleUser(uid)){
+				deviceFacadeService.validateDevice(mac);
+			}else{
+				deviceFacadeService.validateUserDevice(uid, mac);
+			}
+			
 			WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 			downTask.setChannel(channel);
 			downTask.setChannel_taskid(channel_taskid);

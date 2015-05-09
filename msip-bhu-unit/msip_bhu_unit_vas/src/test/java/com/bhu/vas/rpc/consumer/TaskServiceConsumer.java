@@ -4,8 +4,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -39,10 +38,11 @@ public class TaskServiceConsumer {
 //				OperationDS.DS_Power.getNo(), JsonHelper.getJSONString(radio_dto),/*"payload content",*/ "APP_VAS", "11111");
 		
 		
-//		WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
-//		vap_dto.setSsid("lawliet_tang");
-//		vap_dto.setAuth("WPA2-PSK");
-//		vap_dto.setAuth_key("12345678901");
+		WifiDeviceSettingVapDTO vap_dto = new WifiDeviceSettingVapDTO();
+		vap_dto.setSsid("urouter_lawliet");
+		vap_dto.setAuth("WPA2-PSK");
+		vap_dto.setAuth_key("12345678901");
+		System.out.println(JsonHelper.getJSONString(vap_dto));
 //		taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(), 
 //				OperationDS.DS_VapPassword.getNo(), JsonHelper.getJSONString(vap_dto),/*"payload content",*/ "APP_VAS", "848484");
 //		
@@ -160,12 +160,12 @@ public class TaskServiceConsumer {
 
 		System.out.println(JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO));
 
-		try {
-			taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(),
-					OperationDS.DS_LinkMode.getNo(), JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO),/*"payload content",*/ "APP_VAS", "123669");
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			taskRpcService.createNewTask(mac, OperationCMD.ModifyDeviceSetting.getNo(),
+//					OperationDS.DS_LinkMode.getNo(), JsonHelper.getJSONString(wifiDeviceSettingLinkModeDTO),/*"payload content",*/ "APP_VAS", "123669");
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		//String message = null;
 		//ParserHeader parserHeader = new ParserHeader();
