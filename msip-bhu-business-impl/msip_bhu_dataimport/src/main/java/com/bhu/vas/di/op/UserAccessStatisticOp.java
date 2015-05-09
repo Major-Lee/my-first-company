@@ -21,7 +21,7 @@ public class UserAccessStatisticOp {
     private static UserAccessStatisticsService userAccessStatisticsService;
 
     public static void main(String[] args) {
-        if(args.length <1)  {
+        if (args.length < 1) {
             return;
         }
         String filepath = args[0];// ADD REMOVE
@@ -126,21 +126,15 @@ public class UserAccessStatisticOp {
                             host = host.substring(host.indexOf(".") + 1);
                         }
                         userAccessStatistics.incrKey(host);
-                        Map<String,Integer> mapper = userAccessStatistics.fetchAll();
-                        ValueComparator bvc =  new ValueComparator(mapper);
-                        TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
-                        userAccessStatistics.replaceAll(sorted_map);
+                        Map<String, Integer> mapper = userAccessStatistics.fetchAll();
+                        userAccessStatistics.replaceAll(sortByValue(mapper));
                         resultMapper.put(userDatePK, userAccessStatistics);
                     }
                 }
                 read.close();
 
 
-
-
-
-
-                for(UserDatePK userDatePK : resultMapper.keySet()) {
+                for (UserDatePK userDatePK : resultMapper.keySet()) {
                     userAccessStatisticsService.insert(resultMapper.get(userDatePK));
                 }
 
@@ -153,20 +147,18 @@ public class UserAccessStatisticOp {
         }
     }
 
-   static class ValueComparator implements Comparator<String> {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
 
-        Map<String, Integer> base;
-        public ValueComparator(Map<String, Integer> base) {
-            this.base = base;
+        Map<K, V> result = new LinkedHashMap<K, V>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
         }
-
-        // Note: this comparator imposes orderings that are inconsistent with equals.
-        public int compare(String a, String b) {
-            if (base.get(a) >= base.get(b)) {
-                return 1;
-            } else {
-                return -1;
-            } // returning 0 would merge keys
-        }
+        return result;
     }
 }
