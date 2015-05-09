@@ -4,6 +4,7 @@ import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
 import com.bhu.vas.business.ds.statistics.service.UserAccessStatisticsService;
 import com.smartwork.msip.cores.helper.DateHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -127,7 +128,7 @@ public class UserAccessStatisticOp {
                         }
                         userAccessStatistics.incrKey(host);
                         Map<String, Integer> mapper = userAccessStatistics.fetchAll();
-                        userAccessStatistics.replaceAll(sortByValue(mapper));
+                        userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(mapper), false));
                         resultMapper.put(userDatePK, userAccessStatistics);
                     }
                 }
