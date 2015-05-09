@@ -11,9 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bluesand on 4/30/15.
@@ -128,11 +126,19 @@ public class UserAccessStatisticOp {
                             host = host.substring(host.indexOf(".") + 1);
                         }
                         userAccessStatistics.incrKey(host);
+                        Map<String,Integer> mapper = userAccessStatistics.fetchAll();
+                        ValueComparator bvc =  new ValueComparator(mapper);
+                        TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
+                        userAccessStatistics.replaceAll(sorted_map);
                         resultMapper.put(userDatePK, userAccessStatistics);
-
                     }
                 }
                 read.close();
+
+
+
+
+
 
                 for(UserDatePK userDatePK : resultMapper.keySet()) {
                     userAccessStatisticsService.insert(resultMapper.get(userDatePK));
@@ -144,6 +150,23 @@ public class UserAccessStatisticOp {
         } catch (Exception e) {
             System.out.println("读取文件内容出错");
             e.printStackTrace();
+        }
+    }
+
+   static class ValueComparator implements Comparator<String> {
+
+        Map<String, Integer> base;
+        public ValueComparator(Map<String, Integer> base) {
+            this.base = base;
+        }
+
+        // Note: this comparator imposes orderings that are inconsistent with equals.
+        public int compare(String a, String b) {
+            if (base.get(a) >= base.get(b)) {
+                return 1;
+            } else {
+                return -1;
+            } // returning 0 would merge keys
         }
     }
 }
