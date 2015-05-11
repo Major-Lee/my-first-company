@@ -50,10 +50,11 @@ public enum ResponseErrorCode {
 	TASK_UNDEFINED("698","task.undefined"),
 	TASK_VALIDATE_PRETASKUNCOMPLETED("697","task.validate.pretaskuncompleted"),
 	TASK_PARAMS_VALIDATE_ILLEGAL("696", "task.params.validate.illegal"),
-	TASK_VALIDATE_ILEGAL("695", "task.validate.ilegal"),
-	TASK_ALREADY_COMPLETED("694","task.already.completed"),
-	TASK_ALREADY_EXIST("693","task.already.exist"),
-	TASK_NOT_EXIST("693","task.not.exist"),
+	TASK_PARAMS_CHANNELTASKID_ILLEGAL("695", "task.params.channeltaskid.illegal"),
+	TASK_VALIDATE_ILEGAL("694", "task.validate.ilegal"),
+	TASK_ALREADY_COMPLETED("693","task.already.completed"),
+	TASK_ALREADY_EXIST("692","task.already.exist"),
+	TASK_NOT_EXIST("691","task.not.exist"),
 	
 	FUNC_UNLOCK("650","func.unlock"),
 	
