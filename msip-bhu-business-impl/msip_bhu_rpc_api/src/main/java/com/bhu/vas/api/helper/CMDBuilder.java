@@ -107,16 +107,26 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
 	}
 	
-	public static List<String> builderDeviceTerminalsQueryWithAutoTaskid(String wifi_mac,List<String> interfaces){
-		if(interfaces == null || interfaces.isEmpty()){
-			return Collections.emptyList();
-		}
-		List<String> result = new ArrayList<String>();
-		for(String inter_face:interfaces){
-			result.add(String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
-					StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceTerminals.getNo(),String.format(SuffixTemplete,device_terminals_taskid_fragment.getNextSequence()),inter_face));
-		}
-		return result;
+//	public static List<String> builderDeviceTerminalsQueryWithAutoTaskid(String wifi_mac,List<String> interfaces){
+//		if(interfaces == null || interfaces.isEmpty()){
+//			return Collections.emptyList();
+//		}
+//		List<String> result = new ArrayList<String>();
+//		for(String inter_face:interfaces){
+//			result.add(String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
+//					StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceTerminals.getNo(),
+//					String.format(SuffixTemplete,device_terminals_taskid_fragment.getNextSequence()),inter_face));
+//		}
+//		return result;
+//	}
+	public static String builderDeviceTerminalsQuery(String wifi_mac, int taskid, 
+			int period,int duration){
+		String opt = OperationCMD.QueryDeviceTerminals.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		
+		return String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, period, duration, 
+				builderCMDSerial(opt, taskid_format));
 	}
 	
 //	public static String builderDevHTMLInjectionNotify(String wifi_mac,int taskid,String enable,String adUrl,String adid){

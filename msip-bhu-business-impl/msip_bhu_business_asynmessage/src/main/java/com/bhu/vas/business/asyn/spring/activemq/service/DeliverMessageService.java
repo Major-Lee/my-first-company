@@ -119,12 +119,9 @@ public class DeliverMessageService {
 //		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 //	}
 	
-	public void sendQueryDeviceTerminalsActionMessage(String wifiId, String ssid, String bssid, 
-			List<WifiDeviceTerminalDTO> terminals){
+	public void sendQueryDeviceTerminalsActionMessage(String wifiId, List<WifiDeviceTerminalDTO> terminals){
 		WifiDeviceTerminalNotifyDTO dto = new WifiDeviceTerminalNotifyDTO();
 		dto.setMac(wifiId);
-		dto.setSsid(ssid);
-		dto.setBssid(bssid);
 		dto.setTerminals(terminals);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

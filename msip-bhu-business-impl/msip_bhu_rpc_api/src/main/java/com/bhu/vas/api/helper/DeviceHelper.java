@@ -199,6 +199,24 @@ public class DeviceHelper {
 	}
 	
 	/**
+	 * 判断vapname是否是访客网络
+	 * @param vapname
+	 * @param dto
+	 * @return
+	 */
+	public static boolean isGuest(String vapname, WifiDeviceSettingDTO dto){
+		if(dto == null) return false;
+		List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
+		if(vap_dtos == null || vap_dtos.isEmpty()) return false;
+		int index = vap_dtos.indexOf(new WifiDeviceSettingVapDTO(vapname));
+		if(index == -1) return false;
+		if(WifiDeviceSettingVapDTO.Enable.equals(vap_dtos.get(index).getGuest_en())){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * 只返回第一个radio
 	 * @param dto
 	 * @return

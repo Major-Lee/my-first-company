@@ -461,6 +461,22 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
+	 * 以设备notify的方式获取设备的终端实时速率
+	 * @param ctx
+	 * @param doc
+	 * @param serialDto
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
+			String wifiId, int taskid){
+		List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+		if(dtos != null && !dtos.isEmpty()){
+			deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, dtos);
+		}
+	}
+	
+	/**
 	 * 获取wifi设备的当前状态任务响应处理 (比如cpu,内存利用率)
 	 * 1:记录wifi设备的当前状态数据
 	 * 2:任务callback
@@ -624,22 +640,22 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, int taskid){
-		Document doc = RPCMessageParseHelper.parserMessage(response);
-		QueryTerminalSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
-				QueryTerminalSerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
-			String ssid = serialDto.getSsid();
-			String bssid = serialDto.getAp();
-			List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
-			if(dtos != null && !dtos.isEmpty()){
-				deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, ssid, bssid, dtos);
-			}
-		}
-
-		//2:任务callback
-		doTaskCallback(taskid, serialDto.getStatus(), response);
-	}
+//	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, int taskid){
+//		Document doc = RPCMessageParseHelper.parserMessage(response);
+//		QueryTerminalSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
+//				QueryTerminalSerialReturnDTO.class);
+//		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+//			String ssid = serialDto.getSsid();
+//			String bssid = serialDto.getAp();
+//			List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+//			if(dtos != null && !dtos.isEmpty()){
+//				deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, ssid, bssid, dtos);
+//			}
+//		}
+//
+//		//2:任务callback
+//		doTaskCallback(taskid, serialDto.getStatus(), response);
+//	}
 	
 	public void taskCommonProcessor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);

@@ -172,9 +172,11 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			else if(OperationCMD.QueryDeviceSetting.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, mac, taskid);
 			}
+			/*
 			else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
 			}
+			*/
 			else if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
 			}
@@ -212,6 +214,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					}
 					else if(OperationCMD.QueryDeviceRateNotify.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceRateNotify(ctx, doc, serialDto, mac, taskid);
+					}
+					else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
+						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
 					}
 					//2:任务callback
 					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);

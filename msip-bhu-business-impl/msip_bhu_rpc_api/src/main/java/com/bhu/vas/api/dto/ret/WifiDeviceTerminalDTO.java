@@ -2,6 +2,8 @@ package com.bhu.vas.api.dto.ret;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 设备VAP上的终端信息
  * <SUB mac="88:32:9b:32:41:10" aid="1" phy_tx_rate="72M" phy_rx_rate="25M" current_phy_tx_rate="72M" 
@@ -15,12 +17,20 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceTerminalDTO implements Serializable{
+	public static final String Mode_STA = "sta";//代表终端
+	
 	//终端mac
 	private String mac;
 	//上行速率
 	private String data_tx_rate;
 	//下行速率
 	private String data_rx_rate;
+	
+	private String mode;
+	
+	//vap名称
+	@JsonProperty("interface") 
+	private String vapname;
 	
 	public String getMac() {
 		return mac;
@@ -39,5 +49,17 @@ public class WifiDeviceTerminalDTO implements Serializable{
 	}
 	public void setData_rx_rate(String data_rx_rate) {
 		this.data_rx_rate = data_rx_rate;
+	}
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public String getVapname() {
+		return vapname;
+	}
+	public void setVapname(String vapname) {
+		this.vapname = vapname;
 	}
 }

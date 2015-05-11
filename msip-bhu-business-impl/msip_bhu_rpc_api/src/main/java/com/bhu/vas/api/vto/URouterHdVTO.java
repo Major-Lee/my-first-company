@@ -23,6 +23,8 @@ public class URouterHdVTO implements Serializable{
 	private String tx_limit;
 	//是否在线
 	private boolean online;
+	//是否是访客网络的
+	private boolean guest;
 	
 	public String getHd_mac() {
 		return hd_mac;
@@ -65,5 +67,11 @@ public class URouterHdVTO implements Serializable{
 	}
 	public void setOnline(boolean online) {
 		this.online = online;
+	}
+	public boolean isGuest() {
+		return guest;
+	}
+	public void setGuest(boolean guest) {
+		this.guest = guest;
 	}
 }

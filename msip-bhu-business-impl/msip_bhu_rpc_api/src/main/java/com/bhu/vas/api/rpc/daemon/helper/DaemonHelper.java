@@ -30,13 +30,13 @@ public class DaemonHelper {
 		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}
 	
-	public static void afterUserSignedon(String mac, List<String> vapnames, IDaemonRpcService daemonRpcService){
+	public static void afterUserSignedon(String mac, IDaemonRpcService daemonRpcService){
 		//List<String> payloads = new ArrayList<String>();
 		//获取设备测速
 		//deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		//获取设备的终端列表
-		deviceTerminalsQuery(mac, vapnames, daemonRpcService);
+		deviceTerminalsRateQuery(mac, daemonRpcService);
 		//获取设备的实时速率
 		deviceRateQuery(mac, daemonRpcService);
 		
@@ -47,14 +47,15 @@ public class DaemonHelper {
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 	}
 	
-	public static void deviceTerminalsQuery(String mac,List<String> vapnames,IDaemonRpcService daemonRpcService){
-		if(vapnames != null && !vapnames.isEmpty()){
-			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
-			daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
-		}
-	}
-	//上报周期5秒一次
-	public static final int DeviceRateQuery_Period = 5;
+//	public static void deviceTerminalsQuery(String mac,List<String> vapnames,IDaemonRpcService daemonRpcService){
+//		if(vapnames != null && !vapnames.isEmpty()){
+//			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
+//			daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
+//		}
+//	}
+	
+	//上报周期10秒一次
+	public static final int DeviceRateQuery_Period = 10;
 	//上报时长30分钟
 	public static final int DeviceRateQuery_Duration = 1800;
 	//wan口的实时速率
@@ -68,6 +69,16 @@ public class DaemonHelper {
 			IDaemonRpcService daemonRpcService){
 		String cmd = CMDBuilder.builderDeviceRateNotifyQuery(mac, CMDBuilder.device_rate_taskid_fragment.getNextSequence(), 
 				interface_name, period, duration);
+		daemonCmdDown(mac, cmd, daemonRpcService);
+	}
+	
+	public static void deviceTerminalsRateQuery(String mac,IDaemonRpcService daemonRpcService){
+		deviceTerminalsRateQuery(mac, DeviceRateQuery_Period, DeviceRateQuery_Duration, daemonRpcService);
+	}
+	
+	public static void deviceTerminalsRateQuery(String mac,int period, int duration, IDaemonRpcService daemonRpcService){
+		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.device_terminals_taskid_fragment.getNextSequence(), 
+				period, duration);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
