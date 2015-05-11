@@ -44,7 +44,7 @@ public class CmdController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String opt,
-			@RequestParam(required = true) String subopt,
+			@RequestParam(required = false, defaultValue="00") String subopt,
 			@RequestParam(required = false) String extparams,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) {
