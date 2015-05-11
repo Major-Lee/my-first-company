@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -81,7 +82,7 @@ public class URouterDeviceController extends BaseController{
 	}
 	
 	/**
-	 * 设备的下行速率查询
+	 * 设备的实时速率查询
 	 * @param request
 	 * @param response
 	 * @param uid
@@ -96,6 +97,29 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac) {
 		
 		RpcResponseDTO<URouterRealtimeRateVTO> rpcResponse = deviceURouterRestRpcService.urouterRealtimeRate(uid, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 设备的网速测试数据查询
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device_peak_rate",method={RequestMethod.POST})
+	public void device_peak_rate(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterPeakRateVTO> rpcResponse = deviceURouterRestRpcService.urouterPeakRate(uid, mac);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

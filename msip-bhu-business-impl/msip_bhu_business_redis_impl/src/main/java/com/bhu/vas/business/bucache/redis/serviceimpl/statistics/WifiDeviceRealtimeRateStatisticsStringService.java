@@ -73,8 +73,8 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		return keys;
 	}
 	
-	private static String[] generateAllKeys(String mac){
-		String[] keys = new String[6];
+	private static String[] generateRateKeys(String mac){
+		String[] keys = new String[5];
 		String r_tx_key = generateRealtimeKey(mac, Type_Tx_Rate);
 		keys[0] = r_tx_key;
 		String r_rx_key = generateRealtimeKey(mac, Type_Rx_Rate);
@@ -83,14 +83,23 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		keys[2] = l_tx_key;
 		String l_rx_key = generateLastKey(mac, Type_Rx_Rate);
 		keys[3] = l_rx_key;
-		String waiting_key = generateWaitingKey(mac);
+		String waiting_key = generateRateWaitingKey(mac);
 		keys[4] = waiting_key;
-		String peak_key = generatePeakKey(mac);
-		keys[5] = peak_key;
+//		String peak_key = generatePeakKey(mac);
+//		keys[5] = peak_key;
 		return keys;
 	}
 	
-	private static String[] generateAllValues(String tx_rate, String rx_rate){
+	private static String[] generatePeakRateKeys(String mac){
+		String[] keys = new String[2];
+		String peak_key = generatePeakKey(mac);
+		keys[0] = peak_key;
+		String waiting_key = generatePeakRateWaitingKey(mac);
+		keys[1] = waiting_key;
+		return keys;
+	}
+	
+	private static String[] generateRateValues(String tx_rate, String rx_rate){
 		String[] values = new String[4];
 		values[0] = tx_rate;
 		values[1] = rx_rate;
@@ -99,17 +108,30 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		return values;
 	}
 	
-	private static String generateWaitingKey(String mac){
+	private static String generateRateWaitingKey(String mac){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.WifiDeviceStatistics);
-		sb.append(StringHelper.POINT_CHAR_GAP).append(BusinessKeyDefine.Statistics.WifiDeviceStatistics_Waiting);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(BusinessKeyDefine.Statistics.WifiDeviceStatistics_RateWaiting);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(mac);
+		return sb.toString();
+	}
+	
+	private static String generatePeakRateWaitingKey(String mac){
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.WifiDeviceStatistics);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(BusinessKeyDefine.Statistics.WifiDeviceStatistics_PeakRateWaiting);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(mac);
 		return sb.toString();
 	}
 	
 	public static final String WaitingMark = "waiting";
 	
-	public void addWaiting(String mac){
-		String key = generateWaitingKey(mac);
+	public void addRateWaiting(String mac){
+		String key = generateRateWaitingKey(mac);
+		super.set(key, WaitingMark);
+		super.expire(key, exprie_waiting_seconds);
+	}
+	
+	public void addPeakRateWaiting(String mac){
+		String key = generatePeakRateWaitingKey(mac);
 		super.set(key, WaitingMark);
 		super.expire(key, exprie_waiting_seconds);
 	}
@@ -122,7 +144,7 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 */
 	public void addRate(String mac, String tx_rate, String rx_rate){
 		String[] keys = generateAllKeysWithoutWaiting(mac);
-		String[] values = generateAllValues(tx_rate, rx_rate);
+		String[] values = generateRateValues(tx_rate, rx_rate);
 		super.mset(keys, values);
 		super.expire(keys[0], exprie_realtime_seconds);
 		super.expire(keys[1], exprie_realtime_seconds);
@@ -137,23 +159,30 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		super.set(generatePeakKey(mac), rx_peak_rate);
 	}
 	
-	public String getPeak(String mac){
-		return super.get(generatePeakKey(mac));
+	/**
+	 * 获取网速测试所有数据
+	 * @param mac
+	 * @return
+	 * 		0: peak_rate
+	 * 		1: peakrate_waiting
+	 */
+	public List<String> getPeak(String mac){
+		String[] keys = generatePeakRateKeys(mac);
+		return super.mget(keys);
 	}
 
 	/**
-	 * 获取所有数据
+	 * 获取实时速率所有数据
 	 * @param mac
 	 * @return 
 	 * 		0: tx_rate
 	 * 		1: rx_rate
 	 * 		2: last_tx_rate
 	 * 		3: last_rx_rate
-	 * 		4: waiting
-	 * 		5：peak
+	 * 		4: ratewaiting
 	 */
 	public List<String> getRate(String mac){
-		String[] keys = generateAllKeys(mac);
+		String[] keys = generateRateKeys(mac);
 		return super.mget(keys);
 	}
 	

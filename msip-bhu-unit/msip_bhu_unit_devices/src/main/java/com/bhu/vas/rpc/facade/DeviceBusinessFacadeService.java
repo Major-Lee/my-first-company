@@ -435,12 +435,13 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceSpeedNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, int taskid){
 		String rate = serialDto.getRate();
-		if(StringUtils.isEmpty(rate)) return;
+		if(StringUtils.isEmpty(rate) || "0".equals(rate)) return;
 		
-		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
+/*		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
 		if(StringUtils.isEmpty(peak_rate) || rate.compareTo(peak_rate) > 0){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
-		}
+		}*/
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
 	}
 	
 	/**
