@@ -50,7 +50,23 @@ public class TaskFacadeService {
 		//if(downtask == null || StringUtils.isEmpty(downtask.getMac())/* || StringUtils.isEmpty(downtask.getPayload())*/) return RpcResponseCodeConst.Task_Illegal;
 		if(downtask == null || StringUtils.isEmpty(downtask.getMac()))
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_VALIDATE_ILEGAL);
-		if(StringUtils.isNotEmpty(downtask.getChannel_taskid()) && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务
+		
+		if(!WifiDeviceDownTask.Task_LOCAL_CHANNEL.equals(downtask.getChannel())){//如果不是本地taskid
+			if(StringUtils.isNotEmpty(downtask.getChannel_taskid())){  //Channel_taskid不能为空
+				ModelCriteria mc = new ModelCriteria();
+				mc.createCriteria().andColumnEqualTo("channel_taskid", downtask.getChannel_taskid()).andColumnEqualTo("channel", downtask.getChannel());
+				int count  = wifiDeviceDownTaskService.countByModelCriteria(mc);
+				if(count > 0)
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_ALREADY_EXIST);
+				count  = wifiDeviceDownTaskCompletedService.countByModelCriteria(mc);
+				if(count > 0) 
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_ALREADY_COMPLETED);
+			}else{//抛出channelid空异常
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_CHANNELTASKID_ILLEGAL);
+			}
+		}
+		
+		/*if(StringUtils.isNotEmpty(downtask.getChannel_taskid()) && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务
 			//看看WifiDeviceDownTaskService是否存在此任务
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("channel_taskid", downtask.getChannel_taskid()).andColumnEqualTo("channel", downtask.getChannel());
@@ -62,7 +78,7 @@ public class TaskFacadeService {
 			//if(count > 0) return RpcResponseCodeConst.Task_Already_Completed;
 			if(count > 0) 
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_ALREADY_COMPLETED);
-		}
+		}*/
 		downtask = wifiDeviceDownTaskService.insert(downtask);
 	}
 	
