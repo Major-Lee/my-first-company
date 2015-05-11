@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +55,14 @@ public class UserAccessStatisticsFacadeService {
             userAccessStatisticsDTO.setDevice_mac(userAccessStatistics.getDevice_mac());
             userAccessStatisticsDTO.setCreate_at(userAccessStatistics.getCreated_at());
             userAccessStatisticsDTO.setUpdate_at(userAccessStatistics.getUpdated_at());
-            userAccessStatisticsDTO.setExtension_content(userAccessStatistics.getExtension_content());
             userAccessStatisticsList.add(userAccessStatisticsDTO);
+
+            if (userAccessStatistics.getExtension_content() != null) {
+                Map<String, Integer> extension = JsonHelper.getDTOMapKeyDto(userAccessStatistics.getExtension_content(),
+                        Integer.class);
+                userAccessStatisticsDTO.setExtension_content(JsonHelper.getJSONString(
+                        SortMapHelper.sortMapByValue(extension), false));
+            }
         }
 
         return new CommonPage<UserAccessStatisticsDTO>(pageNo, pageSize,
@@ -78,8 +86,16 @@ public class UserAccessStatisticsFacadeService {
             userAccessStatisticsDTO.setDevice_mac(userAccessStatistics.getDevice_mac());
             userAccessStatisticsDTO.setCreate_at(userAccessStatistics.getCreated_at());
             userAccessStatisticsDTO.setUpdate_at(userAccessStatistics.getUpdated_at());
-            userAccessStatisticsDTO.setExtension_content(userAccessStatistics.getExtension_content());
             userAccessStatisticsList.add(userAccessStatisticsDTO);
+
+            if (userAccessStatistics.getExtension_content() != null) {
+                Map<String, Integer> extension = JsonHelper.getDTOMapKeyDto(userAccessStatistics.getExtension_content(),
+                        Integer.class);
+                userAccessStatisticsDTO.setExtension_content(JsonHelper.getJSONString(
+                        SortMapHelper.sortMapByValue(extension), false));
+            }
+
+
         }
 
         return new CommonPage<UserAccessStatisticsDTO>(pageNo, pageSize,
