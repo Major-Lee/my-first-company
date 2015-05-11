@@ -33,7 +33,7 @@ public class DaemonHelper {
 	public static void afterUserSignedon(String mac, List<String> vapnames, IDaemonRpcService daemonRpcService){
 		//List<String> payloads = new ArrayList<String>();
 		//获取设备测速
-		deviceSpeedQuery(mac, daemonRpcService);
+		//deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		//获取设备的终端列表
 		deviceTerminalsQuery(mac, vapnames, daemonRpcService);
