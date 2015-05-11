@@ -92,12 +92,12 @@ public class CMDBuilder {
 	/*public static String builderDeviceLocationStep1Query(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceLocationS1.getCmdtpl(),//query_device_location_step1_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS1.getNo(),String.format(SuffixTemplete,taskid));//location_taskid_fragment.getNextSequence()));
-	}
+	}*/
 	
 	public static String builderDeviceLocationStep2Query(String wifi_mac,int taskid,String serialno){
 		return String.format(OperationCMD.QueryDeviceLocationS2.getCmdtpl(),//query_device_location_step2_cmd_template,
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),String.format(SuffixTemplete,taskid),serialno);
-	}*/
+	}
 	
 	public static String builderDeviceLocationNotifyQuery(String wifi_mac,int taskid){
 		String opt = OperationCMD.QueryDeviceLocationNotify.getNo();

@@ -22,11 +22,11 @@ public enum OperationCMD {
 			
 /*	//1. 查询wifi地理位置命令第一步
 	QueryDeviceLocationS1("030","查询设备地理位置Step1","",
-			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>"),
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>"),*/
 	//1. 查询wifi地理位置命令第二步
 	QueryDeviceLocationS2("040","查询设备地理位置Step2","sysdebug",
 			"00001001%s%s%s"+"000100000001"+"<report><ITEM cmd=\"sysdebug\" serial=\"%s\" op=\"get\"/></report>"),
-*/		
+		
 			
 	//1. 查询wifi地理位置 等待设备通知结果
 	QueryDeviceLocationNotify("102","查询设备地理位置notify","",

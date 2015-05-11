@@ -7,8 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -98,9 +96,9 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
 								OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
 								if(cmd_opt != null){
-									/*if(cmd_opt == OperationCMD.QueryDeviceLocationS1){
+									if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
 										daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
-									}*/
+									}
 								}
 							}
 						}
