@@ -40,10 +40,15 @@ public class TaskServiceStub implements ITaskRpcService{
 
 	@Override
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
-			String channel_taskid) {
+			String channel_taskid, Integer taskid) {
 		if(uid == null)
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
-		return taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid);
+		
+		if(StringUtils.isEmpty(channel_taskid) && taskid == null){
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+		
+		return taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
 	}
 
 }

@@ -101,12 +101,18 @@ public class TaskUnitFacadeService {
 	 * @param uid
 	 * @param channel
 	 * @param channel_taskid
+	 * @param taskid
 	 * @return
 	 */
-	public RpcResponseDTO<TaskResDTO> taskStatus(Integer uid, String channel, String channel_taskid){
-		logger.info("uid==" + uid + ",channel==" + channel + ",channel_taskid==" + channel_taskid);
+	public RpcResponseDTO<TaskResDTO> taskStatus(Integer uid, String channel, String channel_taskid, Integer taskid){
+		logger.info("uid==" + uid + ",channel==" + channel + ",channel_taskid==" + channel_taskid + ",taskid=="+taskid);
 		try{
-			WifiDeviceDownTask task = taskFacadeService.queryTask(channel, channel_taskid);
+			WifiDeviceDownTask task = null;
+			if(taskid != null){
+				task = taskFacadeService.queryTask(taskid);
+			}else{
+				task = taskFacadeService.queryTask(channel, channel_taskid);
+			}
 			
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);

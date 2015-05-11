@@ -41,7 +41,7 @@ public class CmdController extends BaseController{
 	public void cmdGenerate(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false) Integer uid,
+			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String opt,
 			@RequestParam(required = true) String subopt,
@@ -73,11 +73,12 @@ public class CmdController extends BaseController{
 	public void cmdStatus(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false) Integer uid,
+			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
-			@RequestParam(required = true) String channel_taskid) {
+			@RequestParam(required = false) String channel_taskid,
+			@RequestParam(required = false) Integer taskid) {
 		
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid);
+		RpcResponseDTO<TaskResDTO> resp = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
 		
 		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
 		if(resp.getErrorCode() == null){

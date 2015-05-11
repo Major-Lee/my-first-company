@@ -44,9 +44,9 @@ public class TaskRpcService implements ITaskRpcService{
 	 */
 	@Override
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
-			String channel_taskid) {
+			String channel_taskid, Integer taskid) {
 		logger.info(String.format("taskStatusFetch4ThirdParties uid:%s channel:%s channel_taskid:%s", uid, channel,channel_taskid));
-		return taskUnitFacadeService.taskStatus(uid, channel, channel_taskid);	
+		return taskUnitFacadeService.taskStatus(uid, channel, channel_taskid, taskid);	
 	}
 
 }

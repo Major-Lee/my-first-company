@@ -22,7 +22,8 @@ public interface ITaskRpcService {
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(
 			Integer uid,
 			String channel,
-			String channel_taskid
+			String channel_taskid,
+			Integer taskid
 			);
 	//public boolean taskCompleted(String taskid);
 }
