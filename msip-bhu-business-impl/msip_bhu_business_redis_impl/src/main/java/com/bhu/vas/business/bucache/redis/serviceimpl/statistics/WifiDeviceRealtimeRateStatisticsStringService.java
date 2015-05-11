@@ -157,6 +157,7 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 */
 	public void addPeak(String mac, String rx_peak_rate){
 		super.set(generatePeakKey(mac), rx_peak_rate);
+		super.del(generatePeakRateWaitingKey(mac));
 	}
 	
 	/**
