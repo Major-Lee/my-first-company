@@ -57,6 +57,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
+import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -87,6 +88,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private TaskFacadeService taskFacadeService;
 	
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
@@ -342,6 +346,7 @@ public class AsyncMsgHandleService {
 	 * 4:wifi设备对应handset在线列表redis清除 (backend)
 	 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
 	 * 6:增量索引
+	 * 7:清除已经下发给设备的未完成的任务状态
 	 * @param message
 	 * @throws Exception 
 	 */
@@ -372,8 +377,12 @@ public class AsyncMsgHandleService {
 				}
 			}
 			
+			//7:清除已经下发给设备的未完成的任务状态
+			taskFacadeService.taskStateFailByDevice(dto.getMac());
+			
 			//6:增量索引
 			wifiDeviceIndexIncrementService.wifiDeviceOfflineIndexIncrement(dto.getMac());
+
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s] successful", message));

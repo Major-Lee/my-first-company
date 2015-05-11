@@ -91,6 +91,20 @@ public class TaskFacadeService {
 	}
 	
 	/**
+	 * 把设备的所有下发的未完成的任务全部设置成失败
+	 * @param mac
+	 */
+	public void taskStateFailByDevice(String mac){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("mac", mac);
+		List<Integer> taskids = wifiDeviceDownTaskService.findIdsByModelCriteria(mc);
+		if(!taskids.isEmpty()){
+			for(Integer taskid : taskids){
+				taskExecuteCallback(taskid, WifiDeviceDownTask.State_Failed, null);
+			}
+		}
+	}
+	/**
 	 * 查询任务的状态 会对timeout的任务进行标记
 	 * 1：已完成任务中查询
 	 * 2：pending任务中查询
@@ -149,6 +163,9 @@ public class TaskFacadeService {
 	
 	/**
 	 * 验证任务是否超时 如果超时则修改任务状态
+	 * 下发任务的时候有可能出现2种情况会造成timeout
+	 * 1：下发指令发送到设备 设备没有上报回应
+	 * 2：下发指令未发送到设备 
 	 * @param pending_task
 	 */
 	public void validateTaskTimeout(WifiDeviceDownTask pending_task){
@@ -157,6 +174,7 @@ public class TaskFacadeService {
 				> RuntimeConfiguration.TaskTimeoutMilliSecs){
 			//设置任务状态为timeout 此处不算任务完成
 			pending_task.setState(WifiDeviceDownTask.State_Timeout);
+			//this.taskUpdate(pending_task);
 			pending_task = wifiDeviceDownTaskService.update(pending_task);
 		}
 	}
