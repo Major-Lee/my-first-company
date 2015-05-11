@@ -71,8 +71,8 @@ public class DaemonHelper {
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
-	//设备测速时间10秒
-	public static final int DeviceSpeedQuery_MaxTestTime = 10;
+	//设备测速时间15秒
+	public static final int DeviceSpeedQuery_MaxTestTime = 15;
 	
 	public static void deviceSpeedQuery(String mac, IDaemonRpcService daemonRpcService){
 		deviceSpeedQuery(mac, DeviceSpeedQuery_MaxTestTime, daemonRpcService);
