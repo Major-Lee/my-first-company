@@ -901,7 +901,7 @@ public class DeviceHelper {
 	}
 	
 	
-//	public static void main(String[] args){
+	public static void main(String[] args){
 //		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
 //		v1.setName("v1");
 //		v1.setSsid("a11");
@@ -931,18 +931,23 @@ public class DeviceHelper {
 //		}
 //		
 //		System.out.println(v4.getName() + "=" + v4.getSsid() + "=" + v4.getAcl_type());
+		
+		List<WifiDeviceSettingVapDTO> vap_dtos = new ArrayList<WifiDeviceSettingVapDTO>();
+		vap_dtos.add(new WifiDeviceSettingVapDTO("1"));
+		vap_dtos.add(new WifiDeviceSettingVapDTO("2"));
+		int index = vap_dtos.indexOf(new WifiDeviceSettingVapDTO("2"));
+		System.out.println(index);
+//		List<WifiDeviceSettingVapDTO> vaps_source = new ArrayList<WifiDeviceSettingVapDTO>();
+//		vaps_source.add(v4);
 //		
-////		List<WifiDeviceSettingVapDTO> vaps_source = new ArrayList<WifiDeviceSettingVapDTO>();
-////		vaps_source.add(v4);
-////		
-////		WifiDeviceSettingDTO source = new WifiDeviceSettingDTO();
-////		source.setVaps(vaps_source);
-////		
-////		mergeDS(source, target);
-////		
-////		for(WifiDeviceSettingVapDTO vap : target.getVaps()){
-////			System.out.println(vap.getName() + "=" + vap.getSsid());
-////		}
-//	}
+//		WifiDeviceSettingDTO source = new WifiDeviceSettingDTO();
+//		source.setVaps(vaps_source);
+//		
+//		mergeDS(source, target);
+//		
+//		for(WifiDeviceSettingVapDTO vap : target.getVaps()){
+//			System.out.println(vap.getName() + "=" + vap.getSsid());
+//		}
+	}
 
 }
