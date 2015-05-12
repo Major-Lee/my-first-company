@@ -503,7 +503,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
-	public static final String DeviceSetting_AdminPasswordItem = "<ITEM oldpassword_rsa=\"%s\" password_rsa=\"%s\" name=\"admin\" />";
+	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
 	public static final String DeviceSetting_MMItem = "<ITEM mac=\"%s\" name=\"%s\" />";
 	
 	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
@@ -806,6 +806,9 @@ public class DeviceHelper {
 	
 	/**
 	 * 构建admin管理密码修改配置
+     *
+     * 目前设备端不要求传原始密码
+     *
 	 * @param config_sequence
 	 * @param extparams
 	 * @param ds_dto
@@ -818,11 +821,11 @@ public class DeviceHelper {
 		if(user_dto == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
-		if(StringUtils.isEmpty(user_dto.getOldpassword()) || StringUtils.isEmpty(user_dto.getPassword())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		}
+//		if(StringUtils.isEmpty(user_dto.getOldpassword()) || StringUtils.isEmpty(user_dto.getPassword())){
+//			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+//		}
 
-		user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+//		user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
 		user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
 		String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 		return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);

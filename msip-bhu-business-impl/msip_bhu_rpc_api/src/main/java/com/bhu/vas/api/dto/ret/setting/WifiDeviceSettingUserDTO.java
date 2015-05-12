@@ -15,7 +15,7 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	//未知
 	private String auth;
 	
-	private String oldpassword;
+	//private String oldpassword;
 
 	private String password;
 	
@@ -37,12 +37,12 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	public void setAuth(String auth) {
 		this.auth = auth;
 	}
-	public String getOldpassword() {
-		return oldpassword;
-	}
-	public void setOldpassword(String oldpassword) {
-		this.oldpassword = oldpassword;
-	}
+//	public String getOldpassword() {
+//		return oldpassword;
+//	}
+//	public void setOldpassword(String oldpassword) {
+//		this.oldpassword = oldpassword;
+//	}
 	public String getPassword() {
 		return password;
 	}
@@ -66,9 +66,9 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[2];
-		properties[0] = oldpassword;
-		properties[1] = password;
+		Object[] properties = new Object[1];
+		//properties[0] = oldpassword;
+		properties[0] = password;
 		return properties;
 	}
 	@Override
