@@ -48,6 +48,7 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceStatistics_RateWaiting 		= "RWG";
 		public static final String WifiDeviceStatistics_PeakRate 		= "PR";
 		public static final String WifiDeviceStatistics_PeakRateWaiting 		= "PRWG";
+		public static final String WifiDeviceStatistics_HDRateWaiting 		= "HDRWG";
 	}
 	public static class Unique{
 		public static final String EmailCheck = "WUEC";

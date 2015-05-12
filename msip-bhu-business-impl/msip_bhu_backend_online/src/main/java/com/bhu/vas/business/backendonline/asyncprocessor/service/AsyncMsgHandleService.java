@@ -772,10 +772,18 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
 	}
 	
-	//下发获取配置，获取设备测速，设备实时速率, 设备终端列表
+	//设备实时速率, 设备终端列表
 	public void afterUserSignedonThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
-		DaemonHelper.afterUserSignedon(mac, daemonRpcService);
+		//DaemonHelper.afterUserSignedon(mac, daemonRpcService);
+		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
+			//获取设备的终端列表
+			DaemonHelper.deviceTerminalsRateQuery(mac, daemonRpcService);
+		}
+		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isRateWaiting(mac)){
+			//获取设备的实时速率
+			DaemonHelper.deviceRateQuery(mac, daemonRpcService);
+		}
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown message[%s] successful", mac));
 	}
 	

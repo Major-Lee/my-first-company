@@ -32,7 +32,9 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	}
 	
 	private static final int exprie_realtime_seconds = 30;//30秒
-	private static final int exprie_waiting_seconds = 60;//60秒
+	private static final int exprie_rate_waiting_seconds = 1800;//1800秒(跟上报时长一致 防止重复下发此类指令)
+	private static final int exprie_hdrate_waiting_seconds = 1800;//1800秒(跟上报时长一致 防止重复下发此类指令)
+	private static final int exprie_peak_waiting_seconds = 20;//20秒
 	
 	public static final int Type_Tx_Rate = 1;//上行速率
 	public static final int Type_Rx_Rate = 2;//下行速率
@@ -122,18 +124,50 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		return sb.toString();
 	}
 	
+	private static String generateHDRateWaitingKey(String mac){
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.WifiDeviceStatistics);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(BusinessKeyDefine.Statistics.WifiDeviceStatistics_HDRateWaiting);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(mac);
+		return sb.toString();
+	}
+	
+	
 	public static final String WaitingMark = "waiting";
 	
 	public void addRateWaiting(String mac){
 		String key = generateRateWaitingKey(mac);
 		super.set(key, WaitingMark);
-		super.expire(key, exprie_waiting_seconds);
+		super.expire(key, exprie_rate_waiting_seconds);
 	}
 	
 	public void addPeakRateWaiting(String mac){
 		String key = generatePeakRateWaitingKey(mac);
 		super.set(key, WaitingMark);
-		super.expire(key, exprie_waiting_seconds);
+		super.expire(key, exprie_peak_waiting_seconds);
+	}
+	
+	public void addHDRateWaiting(String mac){
+		String key = generateHDRateWaitingKey(mac);
+		super.set(key, WaitingMark);
+		super.expire(key, exprie_hdrate_waiting_seconds);
+	}
+	
+	/**
+	 * 判断设备速率上报指令是否在有效期内
+	 * @param mac
+	 * @return
+	 */
+	public boolean isRateWaiting(String mac){
+		return super.exists(generateRateWaitingKey(mac));
+	}
+	
+	/**
+	 * 判断终端速率上报指令是否在有效期内
+	 * @param mac
+	 * @return
+	 */
+	public boolean isHDRateWaiting(String mac){
+		return super.exists(generateHDRateWaitingKey(mac));
 	}
 	
 	/**
