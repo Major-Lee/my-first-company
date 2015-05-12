@@ -14,6 +14,7 @@ public enum ActionMessageType {
 	WifiDeviceSettingModify("wifi设备配置下发指令修改","wdsmodify","WM"),
 	WifiDeviceTerminalNotify("vap获取终端列表通知","vapterminal","VT"),
 	WifiDeviceRealtimeRateFetch("获取设备实时速率","wdrealtime","WR"),
+	WifiDeviceSpeed("获取设备的网速","wdspeed","WS"),
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
 	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),

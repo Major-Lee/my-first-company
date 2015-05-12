@@ -21,12 +21,13 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 	private String data_tx_limit;
 	//设备接收终端的限速 kbps
 	private String data_rx_limit;
-	//是否在黑名单
-	private boolean block;
-	//终端连接的设备的ssid
-	private String ssid;
-	//终端连接的设备bssid
-	private String bssid;
+//	//是否在黑名单
+//	private boolean block;
+//	//终端连接的设备的ssid
+//	private String ssid;
+//	//终端连接的设备bssid
+//	private String bssid;
+	private String vapname;
 	
 	private Date created_at;
 	
@@ -111,28 +112,12 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 		this.data_rx_limit = data_rx_limit;
 	}
 
-	public boolean isBlock() {
-		return block;
+	public String getVapname() {
+		return vapname;
 	}
 
-	public void setBlock(boolean block) {
-		this.block = block;
-	}
-
-	public String getSsid() {
-		return ssid;
-	}
-
-	public void setSsid(String ssid) {
-		this.ssid = ssid;
-	}
-
-	public String getBssid() {
-		return bssid;
-	}
-
-	public void setBssid(String bssid) {
-		this.bssid = bssid;
+	public void setVapname(String vapname) {
+		this.vapname = vapname;
 	}
 
 	public Date getCreated_at() {

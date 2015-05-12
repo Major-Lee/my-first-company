@@ -435,12 +435,13 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceSpeedNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, int taskid){
 		String rate = serialDto.getRate();
-		if(StringUtils.isEmpty(rate)) return;
+		if(StringUtils.isEmpty(rate) || "0".equals(rate)) return;
 		
-		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
+/*		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
 		if(StringUtils.isEmpty(peak_rate) || rate.compareTo(peak_rate) > 0){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
-		}
+		}*/
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
 	}
 	
 	/**
@@ -456,6 +457,22 @@ public class DeviceBusinessFacadeService {
 		WifiDeviceRateDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceRate(doc);
 		if(dto != null){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addRate(wifiId, dto.getTx_rate(), dto.getRx_rate());
+		}
+	}
+	
+	/**
+	 * 以设备notify的方式获取设备的终端实时速率
+	 * @param ctx
+	 * @param doc
+	 * @param serialDto
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
+			String wifiId, int taskid){
+		List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+		if(dtos != null && !dtos.isEmpty()){
+			deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, dtos);
 		}
 	}
 	
@@ -623,22 +640,22 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, int taskid){
-		Document doc = RPCMessageParseHelper.parserMessage(response);
-		QueryTerminalSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
-				QueryTerminalSerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
-			String ssid = serialDto.getSsid();
-			String bssid = serialDto.getAp();
-			List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
-			if(dtos != null && !dtos.isEmpty()){
-				deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, ssid, bssid, dtos);
-			}
-		}
-
-		//2:任务callback
-		doTaskCallback(taskid, serialDto.getStatus(), response);
-	}
+//	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, int taskid){
+//		Document doc = RPCMessageParseHelper.parserMessage(response);
+//		QueryTerminalSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
+//				QueryTerminalSerialReturnDTO.class);
+//		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+//			String ssid = serialDto.getSsid();
+//			String bssid = serialDto.getAp();
+//			List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+//			if(dtos != null && !dtos.isEmpty()){
+//				deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, ssid, bssid, dtos);
+//			}
+//		}
+//
+//		//2:任务callback
+//		doTaskCallback(taskid, serialDto.getStatus(), response);
+//	}
 	
 	public void taskCommonProcessor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);

@@ -11,9 +11,7 @@
     <result property="data_rx_rate" column="data_rx_rate"/>
     <result property="data_tx_limit" column="data_tx_limit"/>
     <result property="data_rx_limit" column="data_rx_limit"/>
-    <result property="block" column="block"/>
-    <result property="ssid" column="ssid"/>
-    <result property="bssid" column="bssid"/>
+    <result property="vapname" column="vapname"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -31,9 +29,7 @@
 	    	data_rx_rate,
 	    	data_tx_limit,
 	    	data_rx_limit,
-	    	block,
-	    	ssid,
-	    	bssid,
+			vapname,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -44,9 +40,7 @@
 	    	data_rx_rate,
 	    	data_tx_limit,
 	    	data_rx_limit,
-	    	block,
-	    	ssid,
-	    	bssid,
+			vapname,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -59,9 +53,7 @@
 	    	#{data_rx_rate},
 	    	#{data_tx_limit},
 	    	#{data_rx_limit},
-	    	#{block},
-	    	#{ssid},
-	    	#{bssid},
+			#{vapname},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -71,9 +63,7 @@
 			data_rx_rate = #{data_rx_rate},
 			data_tx_limit = #{data_tx_limit},
 			data_rx_limit = #{data_rx_limit},
-			block = #{block},
-			ssid = #{ssid},
-			bssid = #{bssid},
+			vapname = #{vapname},
 	    	updated_at = #{updated_at}
 	</sql>
 	

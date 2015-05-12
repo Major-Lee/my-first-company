@@ -25,6 +25,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -87,7 +88,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			String[] ret = fetchRealtimeRate(wifiId);
 			vto.setTx_rate(ret[0]);
 			vto.setRx_rate(ret[1]);
-			vto.setRate_peak(ret[2]);
+			//vto.setRate_peak(ret[2]);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
@@ -181,19 +182,39 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 	
 	/**
+	 * 获取设备的网速测试
+	 * a:返回当前网速数据 并重新下发网速测试指令 
+	 * b:如果存在数据waiting 不重新下发指令
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+		
+			URouterPeakRateVTO vto = new URouterPeakRateVTO();
+			vto.setRx_peak_rate(fetchPeakRate(wifiId));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
 	 * 获取设备的实时上行行速率
 	 * @param wifiId
-	 * @return 0：上行速率 1：下行速率 2:网速 下行速率峰值
+	 * @return 0：上行速率 1：下行速率
 	 */
 	public String[] fetchRealtimeRate(String wifiId){
 		List<String> result = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getRate(wifiId);
 		//获取实时的上下行速率
 		String realtime_tx_rate = result.get(0);
 		String realtime_rx_rate = result.get(1);
-		String rx_peak_rate = result.get(5);
+		//String rx_peak_rate = result.get(5);
 		//如果有实时速率数据 就直接返回
 		if(!StringUtils.isEmpty(realtime_tx_rate) && !StringUtils.isEmpty(realtime_rx_rate)){
-			return new String[]{realtime_tx_rate, realtime_rx_rate, rx_peak_rate};
+			return new String[]{realtime_tx_rate, realtime_rx_rate};
 		}
 		String waiting = result.get(4);
 		//如果waiting没有标记 则发送指令查询
@@ -205,7 +226,24 @@ public class DeviceURouterRestBusinessFacadeService {
 		//返回last的速率数据
 		String last_tx_rate = result.get(2);
 		String last_rx_rate = result.get(3);
-		return new String[]{last_tx_rate, last_rx_rate, rx_peak_rate};
+		return new String[]{last_tx_rate, last_rx_rate};
+	}
+	
+	/**
+	 * 获取设备的网速测试数据
+	 * @param wifiId
+	 * @return
+	 */
+	public String fetchPeakRate(String wifiId){
+		List<String> result = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
+		String peak_rate = result.get(0);
+		String peak_rate_waiting = result.get(1);
+		//如果waiting没有标记 则发送指令查询
+		if(StringUtils.isEmpty(peak_rate_waiting)){
+			//调用异步消息下发网速测试指令
+			deliverMessageService.sendQueryDeviceSpeedActionMessage(wifiId);
+		}
+		return peak_rate;
 	}
 	
 	/**

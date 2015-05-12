@@ -43,6 +43,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
@@ -637,8 +638,7 @@ public class AsyncMsgHandleService {
 				if(entity == null){
 					WifiHandsetDeviceMark insert_entity = new WifiHandsetDeviceMark();
 					insert_entity.setId(new WifiHandsetDeviceMarkPK(dto.getMac(), terminal.getMac()));
-					insert_entity.setSsid(dto.getSsid());
-					insert_entity.setBssid(dto.getBssid());
+					insert_entity.setVapname(terminal.getVapname());
 					insert_entity.setData_tx_rate(terminal.getData_tx_rate());
 					insert_entity.setData_rx_rate(terminal.getData_rx_rate());
 
@@ -650,8 +650,7 @@ public class AsyncMsgHandleService {
 						need_inserts = new ArrayList<WifiHandsetDeviceMark>();
 					need_inserts.add(insert_entity);
 				}else{
-					entity.setSsid(dto.getSsid());
-					entity.setBssid(dto.getBssid());
+					entity.setVapname(terminal.getVapname());
 					entity.setData_tx_rate(terminal.getData_tx_rate());
 					entity.setData_rx_rate(terminal.getData_rx_rate());
 					
@@ -709,8 +708,19 @@ public class AsyncMsgHandleService {
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
-		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addWaiting(dto.getMac());
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addRateWaiting(dto.getMac());
 		logger.info(String.format("wifiDeviceRealtimeRateFetch message[%s] successful", message));
+	}
+	
+	public void wifiDevicePeakRateFetch(String message){
+		logger.info(String.format("wifiDevicePeakRateFetch message[%s]", message));
+		WifiDeviceSpeedDTO dto = JsonHelper.getDTO(message, WifiDeviceSpeedDTO.class);
+		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
+		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		//DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
+		DaemonHelper.deviceSpeedQuery(dto.getMac(), daemonRpcService);
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeakRateWaiting(dto.getMac());
+		logger.info(String.format("wifiDevicePeakRateFetch message[%s] successful", message));
 	}
 	
 	/**
@@ -721,13 +731,14 @@ public class AsyncMsgHandleService {
 	public void userDeviceRegister(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s]", message));
 		UserDeviceRegisterDTO dto = JsonHelper.getDTO(message, UserDeviceRegisterDTO.class);
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(dto.getMac());
-		if(entity != null){
-			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
-			if(setting_dto != null){
-				afterUserSignedonThenCmdDown(dto.getMac(), DeviceHelper.builderSettingVapNames(setting_dto.getVaps()));
-			}
-		}
+//		WifiDeviceSetting entity = wifiDeviceSettingService.getById(dto.getMac());
+//		if(entity != null){
+//			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+//			if(setting_dto != null){
+//				afterUserSignedonThenCmdDown(dto.getMac(), DeviceHelper.builderSettingVapNames(setting_dto.getVaps()));
+//			}
+//		}
+		afterUserSignedonThenCmdDown(dto.getMac());
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
 	
@@ -743,27 +754,28 @@ public class AsyncMsgHandleService {
 		//获取用户已经绑定的设备
 		List<UserDevicePK> userDevicePks = deviceFacadeService.getUserDevices(dto.getUid());
 		if(!userDevicePks.isEmpty()){
-			List<String> macs = new ArrayList<String>();
-			for(UserDevicePK UserDevicePk : userDevicePks){
-				macs.add(UserDevicePk.getMac());
+			//List<String> macs = new ArrayList<String>();
+			for(UserDevicePK userDevicePk : userDevicePks){
+				//macs.add(UserDevicePk.getMac());
+				afterUserSignedonThenCmdDown(userDevicePk.getMac());
 			}
-			List<WifiDeviceSetting> entitys = wifiDeviceSettingService.findByIds(macs);
-			for(WifiDeviceSetting entity : entitys){
-				WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
-				List<String> vapnames = null;
-				if(entity_dto != null){
-					vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
-				}
-				afterUserSignedonThenCmdDown(entity.getId(), vapnames);
-			}
+//			List<WifiDeviceSetting> entitys = wifiDeviceSettingService.findByIds(macs);
+//			for(WifiDeviceSetting entity : entitys){
+//				WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
+//				List<String> vapnames = null;
+//				if(entity_dto != null){
+//					vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
+//				}
+//				afterUserSignedonThenCmdDown(entity.getId(), vapnames);
+//			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
 	}
 	
 	//下发获取配置，获取设备测速，设备实时速率, 设备终端列表
-	public void afterUserSignedonThenCmdDown(String mac, List<String> vapnames){
+	public void afterUserSignedonThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
-		DaemonHelper.afterUserSignedon(mac, vapnames, daemonRpcService);
+		DaemonHelper.afterUserSignedon(mac, daemonRpcService);
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown message[%s] successful", mac));
 	}
 	
