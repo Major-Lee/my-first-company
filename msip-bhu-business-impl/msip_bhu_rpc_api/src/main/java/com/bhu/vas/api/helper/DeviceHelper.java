@@ -670,7 +670,8 @@ public class DeviceHelper {
 	 */
 	public static String builderDSPowerOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
-		if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower()))
+		if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower()) || 
+				Integer.parseInt(radio_dto.getPower()) < 0)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
 		if(!StringUtils.isEmpty(radio_dto.getName())){
@@ -818,7 +819,7 @@ public class DeviceHelper {
 	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto)
 			throws Exception {
 		WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
-		if(user_dto == null){
+		if(user_dto == null || StringUtils.isEmpty(user_dto.getPassword())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 //		if(StringUtils.isEmpty(user_dto.getOldpassword()) || StringUtils.isEmpty(user_dto.getPassword())){
