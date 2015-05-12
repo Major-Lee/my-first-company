@@ -779,10 +779,12 @@ public class AsyncMsgHandleService {
 		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
 			//获取设备的终端列表
 			DaemonHelper.deviceTerminalsRateQuery(mac, daemonRpcService);
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addHDRateWaiting(mac);
 		}
 		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isRateWaiting(mac)){
 			//获取设备的实时速率
 			DaemonHelper.deviceRateQuery(mac, daemonRpcService);
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addRateWaiting(mac);
 		}
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown message[%s] successful", mac));
 	}
