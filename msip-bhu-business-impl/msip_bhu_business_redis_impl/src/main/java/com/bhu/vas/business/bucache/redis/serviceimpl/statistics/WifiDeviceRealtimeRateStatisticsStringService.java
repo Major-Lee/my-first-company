@@ -31,8 +31,8 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	private WifiDeviceRealtimeRateStatisticsStringService(){
 	}
 	
-	private static final int exprie_realtime_seconds = 10;//10秒
-	private static final int exprie_waiting_seconds = 30;//30秒
+	private static final int exprie_realtime_seconds = 30;//30秒
+	private static final int exprie_waiting_seconds = 60;//60秒
 	
 	public static final int Type_Tx_Rate = 1;//上行速率
 	public static final int Type_Rx_Rate = 2;//下行速率
