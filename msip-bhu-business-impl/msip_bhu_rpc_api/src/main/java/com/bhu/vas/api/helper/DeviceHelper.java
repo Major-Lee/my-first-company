@@ -245,7 +245,7 @@ public class DeviceHelper {
 	 * @return
 	 */
 	public static List<Integer> getDeviceRateControlIndex(List<WifiDeviceSettingRateControlDTO> rc_list){
-		if(rc_list == null || rc_list.isEmpty()) return Collections.emptyList();
+		//if(rc_list == null || rc_list.isEmpty()) return Collections.emptyList();
 		List<Integer> indexs = new ArrayList<Integer>();
 		for(WifiDeviceSettingRateControlDTO rc_dto : rc_list){
 			indexs.add(Integer.parseInt(rc_dto.getIndex()));
@@ -777,9 +777,9 @@ public class DeviceHelper {
 		
 		StringBuffer ds = new StringBuffer();
 		
-		List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
 		List<WifiDeviceSettingRateControlDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
 		if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
+			List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
 			for(WifiDeviceSettingRateControlDTO rc_incr_dto : rc_incr_dtos){
 				WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_incr_dto.getMac());
 				//如果匹配到 说明是修改
