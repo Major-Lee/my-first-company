@@ -718,6 +718,15 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
 	}
 	
+	public static String builderDSVapGuestOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+//		WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+//		if(vap_dto == null)
+//			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		String item = "<ITEM name=\"wlan2\" \"guest_en\":\"enable\" \"enable\":\"enable\"/>";
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
+	}
+	
 	/**
 	 * 构建黑名单列表名单修改配置
 	 * @param config_sequence

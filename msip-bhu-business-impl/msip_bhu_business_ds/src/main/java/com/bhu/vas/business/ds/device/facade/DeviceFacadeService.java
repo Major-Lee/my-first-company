@@ -495,6 +495,8 @@ public class DeviceFacadeService {
 				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams, ds_dto);
 			case DS_MM:
 				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, ds_dto);
+			case DS_VapGuest:
+				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
 			default:
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
