@@ -885,31 +885,37 @@ public class DeviceHelper {
 	 */
 	public static String builderDSHDAliasOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto)
 			throws Exception {
-		List<WifiDeviceSettingMMDTO> mm_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingMMDTO.class);
-		if(mm_dtos == null || mm_dtos.isEmpty()){
+		Map<String, List<WifiDeviceSettingMMDTO>> mm_dto_map = JsonHelper.getDTOMapKeyList(extparams, WifiDeviceSettingMMDTO.class);
+		if(mm_dto_map == null || mm_dto_map.isEmpty())
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		}
-		
+
 		StringBuffer ds = new StringBuffer();
 		
-		for(WifiDeviceSettingMMDTO mm_dto : mm_dtos){
-			if(StringUtils.isEmpty(mm_dto.getMac())){
-				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		List<WifiDeviceSettingMMDTO> mm_incr_dtos = mm_dto_map.get(DeviceSettingAction_Incr);
+		if(mm_incr_dtos != null && !mm_incr_dtos.isEmpty()){
+			for(WifiDeviceSettingMMDTO mm_incr_dto : mm_incr_dtos){
+				if(StringUtils.isEmpty(mm_incr_dto.getMac()) || StringUtils.isEmpty(mm_incr_dto.getName())){
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+				}
+				ds.append(builderDeviceSettingItem(DeviceSetting_MMItem, mm_incr_dto.builderProperties()));
 			}
-			//如果name不为空 说明为新增或修改别名
-			if(!StringUtils.isEmpty(mm_dto.getName())){
-				ds.append(builderDeviceSettingItem(DeviceSetting_MMItem, mm_dto.builderProperties()));
-			}
-			//如果name为空 说明是删除
-			else{
+		}
+		
+		List<WifiDeviceSettingMMDTO> mm_del_dtos = mm_dto_map.get(DeviceSettingAction_Del);
+		if(mm_del_dtos != null && !mm_del_dtos.isEmpty()){
+			for(WifiDeviceSettingMMDTO mm_del_dto : mm_del_dtos){
+				if(StringUtils.isEmpty(mm_del_dto.getMac())){
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+				}
 				//如果存在才可以删除
-				if(matchMacManagement(ds_dto, mm_dto.getMac()) != null){
-					mm_dto.setSsdel(DeviceSettingBuilderDTO.Removed);
-					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveMMItem, mm_dto.
+				if(matchMacManagement(ds_dto, mm_del_dto.getMac()) != null){
+					mm_del_dto.setSsdel(DeviceSettingBuilderDTO.Removed);
+					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveMMItem, mm_del_dto.
 							builderProperties(WifiDeviceSettingMMDTO.BuilderType_RemoveMM)));
 				}
 			}
 		}
+
 		if(ds.length() == 0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
