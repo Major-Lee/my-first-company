@@ -422,7 +422,7 @@ public class DeviceHelper {
 				if(m_vaps != null){
 					target.setVaps(m_vaps);
 				}
-				//合并黑白名单
+				//合并黑白名单 由于黑名单删除方式不是ssdel的 所以特殊处理
 				List<WifiDeviceSettingAclDTO> m_acls = mergeList(source.getAcls(), target.getAcls());
 				if(m_acls != null){
 					target.setAcls(m_acls);
