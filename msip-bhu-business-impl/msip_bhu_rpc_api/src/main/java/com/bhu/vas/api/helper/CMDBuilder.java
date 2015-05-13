@@ -46,7 +46,7 @@ public class CMDBuilder {
 	
 	public static String builderDeviceStatusQuery(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),String.format(SuffixTemplete,taskid));
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),String.format(SuffixTemplete, taskid));
 	}
 	
 	public static String builderDeviceFlowQuery(String wifi_mac,int taskid){
@@ -69,6 +69,11 @@ public class CMDBuilder {
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, max_test_time, builderCMDSerial(opt, taskid_format));
+	}
+
+	public static String builderDeviceUpgrade(String wifi_mac, int taskid, String url) {
+		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), OperationCMD.DeviceUpgrade.getNo(), String.format(SuffixTemplete, taskid), url);
 	}
 	
 	/**
@@ -96,7 +101,7 @@ public class CMDBuilder {
 	
 	public static String builderDeviceLocationStep2Query(String wifi_mac,int taskid,String serialno){
 		return String.format(OperationCMD.QueryDeviceLocationS2.getCmdtpl(),//query_device_location_step2_cmd_template,
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),String.format(SuffixTemplete,taskid),serialno);
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),String.format(SuffixTemplete, taskid),serialno);
 	}
 	
 	public static String builderDeviceLocationNotifyQuery(String wifi_mac,int taskid){
@@ -160,6 +165,10 @@ public class CMDBuilder {
 					String dpiServerIp = extparams;
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),dpiServerIp);
+					break;
+				case DeviceUpgrade:
+					String url = extparams;
+					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, url);
 					break;
 				default:
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
@@ -233,6 +242,8 @@ public class CMDBuilder {
 	public static TaskSequenceFragment device_rate_taskid_fragment = new TaskSequenceFragment(35001,40000);
 	//对于修改设备配置 区间段未40001,45000
 	public static TaskSequenceFragment device_setting_modify_taskid_fragment = new TaskSequenceFragment(40001,45000);
+	//对于升级设备 区间段位45001,50000
+	public static TaskSequenceFragment device_upgrade_fragment = new TaskSequenceFragment(45001,50000);
 	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,-1);
