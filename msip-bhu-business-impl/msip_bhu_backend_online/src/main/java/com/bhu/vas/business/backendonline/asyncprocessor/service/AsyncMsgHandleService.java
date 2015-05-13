@@ -43,7 +43,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
@@ -712,9 +712,19 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiDeviceRealtimeRateFetch message[%s] successful", message));
 	}
 	
+	public void wifiDeviceHDRateFetch(String message){
+		logger.info(String.format("wifiDeviceHDRateFetch message[%s]", message));
+		WifiRealtimeRateFetchDTO dto = JsonHelper.getDTO(message, WifiRealtimeRateFetchDTO.class);
+		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
+		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		DaemonHelper.deviceTerminalsRateQuery(dto.getMac(), daemonRpcService);
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addHDRateWaiting(dto.getMac());
+		logger.info(String.format("wifiDeviceHDRateFetch message[%s] successful", message));
+	}
+	
 	public void wifiDevicePeakRateFetch(String message){
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s]", message));
-		WifiDeviceSpeedDTO dto = JsonHelper.getDTO(message, WifiDeviceSpeedDTO.class);
+		WifiDeviceSpeedFetchDTO dto = JsonHelper.getDTO(message, WifiDeviceSpeedFetchDTO.class);
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		//DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
@@ -776,7 +786,7 @@ public class AsyncMsgHandleService {
 	public void afterUserSignedonThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
 		//DaemonHelper.afterUserSignedon(mac, daemonRpcService);
-		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
+/*		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
 			//获取设备的终端列表
 			DaemonHelper.deviceTerminalsRateQuery(mac, daemonRpcService);
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addHDRateWaiting(mac);
@@ -785,7 +795,7 @@ public class AsyncMsgHandleService {
 			//获取设备的实时速率
 			DaemonHelper.deviceRateQuery(mac, daemonRpcService);
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addRateWaiting(mac);
-		}
+		}*/
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown message[%s] successful", mac));
 	}
 	

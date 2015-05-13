@@ -32,8 +32,8 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	}
 	
 	private static final int exprie_realtime_seconds = 30;//30秒
-	private static final int exprie_rate_waiting_seconds = 1800;//1800秒(跟上报时长一致 防止重复下发此类指令)
-	private static final int exprie_hdrate_waiting_seconds = 1800;//1800秒(跟上报时长一致 防止重复下发此类指令)
+	private static final int exprie_rate_waiting_seconds = 300;//300秒(跟上报时长一致 防止重复下发此类指令)
+	private static final int exprie_hdrate_waiting_seconds = 300;//300秒(跟上报时长一致 防止重复下发此类指令)
 	private static final int exprie_peak_waiting_seconds = 20;//20秒
 	
 	public static final int Type_Tx_Rate = 1;//上行速率

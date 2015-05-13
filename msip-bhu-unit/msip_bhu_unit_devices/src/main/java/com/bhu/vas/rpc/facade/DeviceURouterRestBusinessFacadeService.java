@@ -110,6 +110,11 @@ public class DeviceURouterRestBusinessFacadeService {
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
 			
+			//用户访问终端列表时 判断上报timeout进行获取
+			if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(wifiId)){
+				deliverMessageService.sendDeviceHDRateFetchActionMessage(wifiId);
+			}
+			
 			List<URouterHdVTO> vtos = null;
 			long total = 0;
 			Set<Tuple> presents = null;
@@ -241,7 +246,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		//如果waiting没有标记 则发送指令查询
 		if(StringUtils.isEmpty(peak_rate_waiting)){
 			//调用异步消息下发网速测试指令
-			deliverMessageService.sendQueryDeviceSpeedActionMessage(wifiId);
+			deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId);
 		}
 		return peak_rate;
 	}

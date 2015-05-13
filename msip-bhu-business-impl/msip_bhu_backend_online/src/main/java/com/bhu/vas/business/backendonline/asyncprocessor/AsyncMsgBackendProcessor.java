@@ -78,9 +78,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceRealtimeRateFetch:
 							asyncMsgHandleService.wifiDeviceRealtimeRateFetch(message);
 							break;		
-						case WifiDeviceSpeed:
+						case WifiDeviceSpeedFetch:
 							asyncMsgHandleService.wifiDevicePeakRateFetch(message);
 							break;	
+						case WifiDeviceHDRateFetch:
+							asyncMsgHandleService.wifiDeviceHDRateFetch(message);
+							break;
 						case WifiCmdDownNotify:
 							asyncMsgHandleService.wifiCmdDownNotifyHandle(message);
 							break;
