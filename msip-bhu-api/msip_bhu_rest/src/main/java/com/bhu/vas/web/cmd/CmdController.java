@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseStatus;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -55,9 +56,8 @@ public class CmdController extends BaseController{
 		if(resp.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
-		}else{
-			throw new BusinessException(ResponseStatus.BadRequest,resp.getErrorCode());
 		}
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
 	}
 	
 	/**
@@ -84,9 +84,9 @@ public class CmdController extends BaseController{
 		if(resp.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
-		}else{
-			throw new BusinessException(ResponseStatus.BadRequest,resp.getErrorCode());
 		}
+		
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
 	}
 	
 	/*@ResponseBody()
