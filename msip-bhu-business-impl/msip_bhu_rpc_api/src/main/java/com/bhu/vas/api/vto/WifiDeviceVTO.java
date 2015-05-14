@@ -8,35 +8,36 @@ public class WifiDeviceVTO implements Serializable{
 	private int ol;//online wifi设备是否在线 1表示在线 0标识离线
 	private String adr;//所在地域的格式化地址
 	private String om;//oem设备型号
-	private String osv;//oem后软件版本号
+	private String osv;//原始软件版本号
+	private String oesv;//oem后软件版本号
 	private String ovd;//oem厂商
 	private String cfm;//config model
 	private String wm;//work model
 	//private String wdt;//wifi device type wifi设备类型
 	//private String ast;//added services template 增值服务模板
-	//private String dt;//device type 设备类型
-	private String uof;//up outflow 上行流量
-	private String dof;//down outflow 下行流量
+	private String dt;//device type 设备类型
+	private long uof;//up outflow 上行流量
+	private long dof;//down outflow 下行流量
 	private int cohc;//current online handset count 在线移动设备数量
 	private long cts;//创建时间
 	private long rts;//最后注册时间
-	
+	private boolean ipgen;
 	public String getWid() {
 		return wid;
 	}
 	public void setWid(String wid) {
 		this.wid = wid;
 	}
-	public String getUof() {
+	public long getUof() {
 		return uof;
 	}
-	public void setUof(String uof) {
+	public void setUof(long uof) {
 		this.uof = uof;
 	}
-	public String getDof() {
+	public long getDof() {
 		return dof;
 	}
-	public void setDof(String dof) {
+	public void setDof(long dof) {
 		this.dof = dof;
 	}
 	public int getCohc() {
@@ -98,5 +99,23 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setRts(long rts) {
 		this.rts = rts;
+	}
+	public String getDt() {
+		return dt;
+	}
+	public void setDt(String dt) {
+		this.dt = dt;
+	}
+	public boolean isIpgen() {
+		return ipgen;
+	}
+	public void setIpgen(boolean ipgen) {
+		this.ipgen = ipgen;
+	}
+	public String getOesv() {
+		return oesv;
+	}
+	public void setOesv(String oesv) {
+		this.oesv = oesv;
 	}
 }

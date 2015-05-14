@@ -8,6 +8,7 @@ import org.elasticsearch.common.geo.GeoHashUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolFilterBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.ExistsFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -50,6 +51,12 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		
 		Object workmodel = sourceMap.get(WifiDeviceMapableComponent.M_workmodel);
 		if(workmodel != null) dto.setWorkmodel(workmodel.toString());
+		
+		Object configmodel = sourceMap.get(WifiDeviceMapableComponent.M_configmodel);
+		if(configmodel != null) dto.setConfigmodel(configmodel.toString());
+		
+		Object origswver = sourceMap.get(WifiDeviceMapableComponent.M_origswver);
+		if(origswver != null) dto.setOrigswver(origswver.toString());
 		
 		Object devicetype = sourceMap.get(WifiDeviceMapableComponent.M_devicetype);
 		if(devicetype != null) dto.setDevicetype(devicetype.toString());
@@ -135,7 +142,6 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		}
 		
 		BoolFilterBuilder filter = FilterBuilders.boolFilter();
-		
 		if(!StringUtils.isEmpty(keyword)){
 			filter.must(FilterBuilders.orFilter(
 					FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, keyword.toLowerCase()),
@@ -174,6 +180,78 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		return super.searchListByQuery(queryRequest);
 	}
 	
+	/**
+	 * 根据多个条件来进行搜索
+	 * @param mac 
+	 * @param orig_swver 软件版本号
+	 * @param adr 位置参数
+	 * @param work_mode 工作模式
+	 * @param config_mode 配置模式
+	 * @param online null表示全部 true为在线 
+	 * @param newVersionDevice null 标识全部 true为新版本设备 大于1.2.7的设备 false为老版本 小于等于1.2.7
+	 * @param region 地区
+	 * @param excepts 排除地区
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
+			String work_mode, String config_mode, String devicetype, Boolean online, Boolean newVersionDevice,
+			String region, String excepts, int start, int size) throws ESQueryValidateException {
+
+		FilterBuilder filter = null;
+		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
+				devicetype, region, excepts) || online != null || newVersionDevice != null){
+			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
+			if(!StringUtils.isEmpty(mac)){
+				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
+			}
+			if(!StringUtils.isEmpty(orig_swver)){
+//				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.fuzzyQuery(
+//						WifiDeviceMapableComponent.M_origswver, orig_swver)));
+				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(
+						WifiDeviceMapableComponent.M_origswver, "*"+orig_swver+"*")));
+			}
+			if(!StringUtils.isEmpty(adr)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, adr));
+			}
+			if(!StringUtils.isEmpty(work_mode)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_workmodel, work_mode));
+			}
+			if(!StringUtils.isEmpty(config_mode)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_configmodel, config_mode));
+			}
+			if(!StringUtils.isEmpty(devicetype)){
+				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_devicetype, devicetype));
+			}
+			if(online != null){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_online, online ? 1 : 0));
+			}
+			if(newVersionDevice != null){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_nvd, newVersionDevice ? 1 : 0));
+			}
+			if(!StringUtils.isEmpty(region)){
+				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, region));
+			}
+			if(!StringUtils.isEmpty(excepts)){
+				String[] except_array = excepts.split(StringHelper.COMMA_STRING_GAP);
+				for(String except : except_array){
+					boolfilter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, except));
+				}
+			}
+			filter = boolfilter;
+		}else{
+			filter = FilterBuilders.matchAllFilter();
+		}
+		
+		QueryListRequest queryRequest = super.builderQueryListRequest(BusinessIndexConstants.WifiDeviceIndex, 
+				BusinessIndexConstants.Types.WifiDeviceType, null, null, filter, start, size);
+		queryRequest.addSort(sortByOnline());
+		queryRequest.addSort(sortByCount());
+		return super.searchListByQuery(queryRequest);
+	}
+
 	/**
 	 * 搜索注册时间大于此时间的数据
 	 * @param register_at

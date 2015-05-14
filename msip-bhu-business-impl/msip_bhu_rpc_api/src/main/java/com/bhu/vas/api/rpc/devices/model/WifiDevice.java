@@ -47,6 +47,10 @@ public class WifiDevice extends BaseStringModel{
 	private String rx_bytes;
 	//上行流量
 	private String tx_bytes;
+	//设备下行网速
+	private String data_rx_rate;
+	//设备上行网速
+	private String data_tx_rate;
 	//地理位置坐标 纬度
 	private String lat;
 	//地理位置坐标 经度
@@ -65,6 +69,10 @@ public class WifiDevice extends BaseStringModel{
 	private String formatted_address;
 	//百度geocoding create result id
 	private String bdid;
+	//通过ip得到的坐标和地址
+	private boolean ipgen = false;
+	//设备运行时长
+	private String uptime;
 	//最近一次登录时间
 	private Date last_reged_at;
 	private Date created_at;
@@ -238,6 +246,22 @@ public class WifiDevice extends BaseStringModel{
 		this.tx_bytes = tx_bytes;
 	}
 
+	public String getData_rx_rate() {
+		return data_rx_rate;
+	}
+
+	public void setData_rx_rate(String data_rx_rate) {
+		this.data_rx_rate = data_rx_rate;
+	}
+
+	public String getData_tx_rate() {
+		return data_tx_rate;
+	}
+
+	public void setData_tx_rate(String data_tx_rate) {
+		this.data_tx_rate = data_tx_rate;
+	}
+
 	public String getLat() {
 		return lat;
 	}
@@ -329,4 +353,21 @@ public class WifiDevice extends BaseStringModel{
 	public void setBdid(String bdid) {
 		this.bdid = bdid;
 	}
+
+	public boolean isIpgen() {
+		return ipgen;
+	}
+
+	public void setIpgen(boolean ipgen) {
+		this.ipgen = ipgen;
+	}
+
+	public String getUptime() {
+		return uptime;
+	}
+
+	public void setUptime(String uptime) {
+		this.uptime = uptime;
+	}
+	
 }

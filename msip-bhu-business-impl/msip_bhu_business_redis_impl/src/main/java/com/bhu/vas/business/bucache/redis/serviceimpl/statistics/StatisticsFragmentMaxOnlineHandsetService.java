@@ -18,13 +18,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 
 /**
- *  用户收到所有聊天消息信息存储空间
- *  ZSET 
- *  	key：user 
- *  	score 消息接收时间
- *  	value msgid
- *  包括	
- *  	聊天离线消息
+ * 周期内用户在线数量曲线展示图标接口
  * @author edmond
  *
  */
@@ -45,7 +39,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	}
 	
 	private static String generateKey(String fragment,String buPrefixKey){
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.FragmentOnline);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.FragmentUserOnline);
 		sb.append(buPrefixKey).append(fragment);
 		return sb.toString();
 	}

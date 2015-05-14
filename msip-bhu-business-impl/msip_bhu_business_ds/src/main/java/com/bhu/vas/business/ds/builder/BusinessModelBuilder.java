@@ -1,22 +1,35 @@
 package com.bhu.vas.business.ds.builder;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+
+import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.ArithHelper;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
@@ -120,6 +133,8 @@ public class BusinessModelBuilder {
 			vto.setOl(searchDto.getOnline());
 			vto.setCohc(searchDto.getCount());
 			vto.setAdr(searchDto.getAddress());
+			vto.setDt(searchDto.getDevicetype());
+			vto.setOsv(searchDto.getOrigswver());
 		}
 		if(entity != null){
 			vto.setOm(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());
@@ -128,9 +143,10 @@ public class BusinessModelBuilder {
 			vto.setRts(entity.getLast_reged_at().getTime());
 			vto.setCts(entity.getCreated_at().getTime());
 			vto.setOvd(StringUtils.isEmpty(entity.getOem_vendor()) ? entity.getOrig_vendor() : entity.getOem_vendor());
-			vto.setOsv(StringUtils.isEmpty(entity.getOem_swver()) ? entity.getOrig_swver() : entity.getOem_swver());
-			vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
-			vto.setUof(StringHelper.formateBytes(entity.getTx_bytes()));
+			vto.setOesv(StringUtils.isEmpty(entity.getOem_swver()) ? entity.getOrig_swver() : entity.getOem_swver());
+			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
+			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
+			vto.setIpgen(entity.isIpgen());
 		}
 		return vto;
 	}
@@ -150,12 +166,83 @@ public class BusinessModelBuilder {
 			vto.setCfm(entity.getConfig_mode());
 			vto.setRts(entity.getLast_reged_at().getTime());
 			vto.setCts(entity.getCreated_at().getTime());
+			vto.setDt(entity.getHdtype());
 			vto.setOvd(StringUtils.isEmpty(entity.getOem_vendor()) ? entity.getOrig_vendor() : entity.getOem_vendor());
 			vto.setOsv(StringUtils.isEmpty(entity.getOem_swver()) ? entity.getOrig_swver() : entity.getOem_swver());
-			vto.setDof(StringHelper.formateBytes(entity.getRx_bytes()));
-			vto.setUof(StringHelper.formateBytes(entity.getTx_bytes()));
+			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
+			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
+			vto.setIpgen(entity.isIpgen());
 		}
 		return vto;
+	}
+	
+	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, WifiHandsetDeviceMark mark_entity,
+			WifiDeviceSettingDTO setting_dto){
+		URouterHdVTO vto = new URouterHdVTO();
+		vto.setHd_mac(hd_mac);
+		vto.setOnline(online);
+		if(mark_entity != null){
+			vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
+			//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
+			WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+					setting_dto, hd_mac);
+			if(rc != null){
+				//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+				vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
+				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
+			}
+			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
+			vto.setTx_rate(mark_entity.getData_rx_rate());
+			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
+			vto.setRx_rate(mark_entity.getData_tx_rate());
+			if(!StringUtils.isEmpty(mark_entity.getVapname()))
+				vto.setGuest(DeviceHelper.isGuest(mark_entity.getVapname(), setting_dto));
+		}
+		return vto;
+	}
+	
+	public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
+			HandsetDevice hd_entity){
+		HandsetDeviceVTO vto = new HandsetDeviceVTO();
+		vto.setWid(mac);
+		vto.setHid(hd_mac);
+		vto.setOl(online ? 1 : 0);
+		if(hd_entity != null){
+			if(mac.equals(hd_entity.getLast_wifi_id())){
+				vto.setTs(hd_entity.getLast_login_at().getTime());
+			}
+		}
+		return vto;
+	}
+	
+	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
+		if(hd_macs == null || hd_macs.isEmpty()) return Collections.emptyList();
+		
+		List<WifiHandsetDeviceMarkPK> pks = new ArrayList<WifiHandsetDeviceMarkPK>();
+		for(String hd_mac : hd_macs){
+			pks.add(new WifiHandsetDeviceMarkPK(mac, hd_mac));
+		}
+		return pks;
+	}
+	
+	public static List<String> toWifiDeviceIds(List<WifiDeviceSearchDTO> search_dtos){
+		if(search_dtos == null || search_dtos.isEmpty()) return Collections.emptyList();
+		
+		List<String> ids = new ArrayList<String>();
+		for(WifiDeviceSearchDTO search_dto : search_dtos){
+			ids.add(search_dto.getId());
+		}
+		return ids;
+	}
+	
+	public static List<String> toHandsetDeviceIds(Set<Tuple> tupes){
+		if(tupes == null || tupes.isEmpty()) return Collections.emptyList();
+		
+		List<String> ids = new ArrayList<String>();
+		for(Tuple tuple : tupes){
+			ids.add(tuple.getElement());
+		}
+		return ids;
 	}
 	
 }

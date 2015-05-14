@@ -20,11 +20,12 @@ public class CommonController extends BaseController{
 
 	
 	@ResponseBody()
-	@RequestMapping(value = {"/commons/{commonCode}"},method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = {"/commons/{commonCode}"},method={RequestMethod.POST})
 	public void commons(HttpServletRequest request,
 			HttpServletResponse response, 
 			@PathVariable String commonCode) {
 		System.out.println("-------------------------------commons : " + commonCode);
+		try {
 		loggingWarn(commonCode, request);
 		if(StringUtils.isNotEmpty(commonCode)){
 			if(commonCode.equals("404")){
@@ -61,6 +62,9 @@ public class CommonController extends BaseController{
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, Response.ERROR);
 		}*/
+		}catch (Exception e) {
+			e.printStackTrace(System.out);
+		}
 	}
 	
 /*	 @RequestMapping(value = {"/commons/{commonCode}.html"})

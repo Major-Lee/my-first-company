@@ -19,7 +19,7 @@ public class ErrorController extends BaseController{
 
 	
 	@ResponseBody()
-	@RequestMapping(value = {"/error"},method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = {"/error"},method={RequestMethod.POST})
 	public void commons(HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required = true) String url,

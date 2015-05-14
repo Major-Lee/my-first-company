@@ -32,10 +32,11 @@ public enum ResponseErrorCode {
 	COMMON_DATA_VALIDATE_EMPTY("996", "common.data.validate.empty"),
 	COMMON_DATA_VALIDATE_ILEGAL("995", "common.data.validate.ilegal"),
 	COMMON_DATA_PARAM_ERROR("994", "common.data.param.error"),
-	COMMON_CONNECT_TIMEOUT_ERROR("993", "common.connect.timeout"),
-	COMMON_DATA_ALREADYEXIST("992", "common.data.alreadyexist"),
-	COMMON_DATA_ALREADYDONE("991", "common.data.alreadydone"),
-	
+	COMMON_DATA_PARAM_MISSING("993", "common.data.param.missing"),
+	COMMON_CONNECT_TIMEOUT_ERROR("992", "common.connect.timeout"),
+	COMMON_DATA_ALREADYEXIST("991", "common.data.alreadyexist"),
+	COMMON_DATA_ALREADYDONE("990", "common.data.alreadydone"),
+		
 	
 	SNS_TYPE_NOT_SUPPORT("801", "sns.type.not.support"), 
 	SNS_DUPLICATE_BIND("806", "sns.duplicate.bind"),
@@ -48,13 +49,23 @@ public enum ResponseErrorCode {
 	TASK_ALREADY_ACCEPTED_OR_COMPLETED("699","task.already.acceptedorcompleted"),
 	TASK_UNDEFINED("698","task.undefined"),
 	TASK_VALIDATE_PRETASKUNCOMPLETED("697","task.validate.pretaskuncompleted"),
-	
+	TASK_PARAMS_VALIDATE_ILLEGAL("696", "task.params.validate.illegal"),
+	TASK_PARAMS_CHANNELTASKID_ILLEGAL("695", "task.params.channeltaskid.illegal"),
+	TASK_VALIDATE_ILEGAL("694", "task.validate.ilegal"),
+	TASK_ALREADY_COMPLETED("693","task.already.completed"),
+	TASK_ALREADY_EXIST("692","task.already.exist"),
+	TASK_NOT_EXIST("691","task.not.exist"),
 	
 	FUNC_UNLOCK("650","func.unlock"),
 	
-	FILTER_TAG_NOTEXIST("701", "filter.tag.notexist"),
-	FILTER_TAG_EXIST("702", "filter.tag.exist"),
-	FILTER_TAG_ARTIST("703", "filter.tag.artist"),
+//	FILTER_TAG_NOTEXIST("701", "filter.tag.notexist"),
+//	FILTER_TAG_EXIST("702", "filter.tag.exist"),
+//	FILTER_TAG_ARTIST("703", "filter.tag.artist"),
+	WIFIDEVICE_SETTING_NOTEXIST("701","wifidevice.setting.notexist"),
+	WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST("702","wifidevice.setting.sequence.notexist"),
+	WIFIDEVICE_SETTING_ERROR("710","wifidevice.setting.error"),
+//	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
+//	WIFIDEVICE_OFFLINE("703","wifidevice.offline"),
 	
 	USER_FRD_EXIST("720","user.frd.exist"),
 	USER_FRD_APPLY_EXIST("721","user.frd.apply.exist"),
@@ -116,14 +127,23 @@ public enum ResponseErrorCode {
 	USER_AVATAR_UPLOAD_IMAGE_FILEFORMAT_INVALID("312","user.avatar.upload.image.fileformat.invalid"),
 	USER_OPERATION_UPDPWD_NOTMATCH("313","user.operation.updpwd.notmatch"),
 	USER_NICK_ALREADY_BEUSED("314","user.nick.already.beused"),
-	USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
+	
+	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
+	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
+	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),
+	DEVICE_OWNER_REACHLIMIT("343","device.owner.reachlimit"),
+	DEVICE_ALREADY_BEBINDED_OTHER("344","device.already.bebinded.other"),
+	DEVICE_NOT_BINDED("345","device.not.binded"),
+	DEVICE_NOT_UROOTER("346", "device.not.urooter"),
+	
+	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
 	USER_PERSONAL_INVALID("316","user.personal.invalid"),
 	USER_FRIEND_PERSONAL_INVALID("317","user.friend.personal.invalid"),
 	USER_FORGOTPWD_TIMES_REACHLIMIT("318","user.forgotpwd.times.reachlimit"),
 	USER_TICKER_COLLECT_EXIST("319","user.ticker.collect.exist"),
 	USER_KEYS_NOT_ENOUGH("320","user.keys.notenough"),
 	USER_SHARE_SAME_ARTICLE_TIMES_REACHLIMIT("321","user.share.same.article.times.reachlimit"),
-	USER_EXIST_SUBJECT_ESTIMATE("322","user.exist.subject.estimate"),
+	USER_EXIST_SUBJECT_ESTIMATE("322","user.exist.subject.estimate"),*/
 	
 	UPLOAD_FILE_FORMAT_INVALID("360","upload.file.format.invalid"),
 	UPLOAD_FILE_FID_GEN_ERROR("361","upload.file.fid.gen.error"),
@@ -176,4 +196,8 @@ public enum ResponseErrorCode {
     	}	
     	return errorcode;
     }
+
+	public static void main(String[] args) {
+		System.out.println(DEVICE_DATA_NOT_EXIST.code  + ":::" + DEVICE_DATA_NOT_EXIST.i18n());
+	}
 }

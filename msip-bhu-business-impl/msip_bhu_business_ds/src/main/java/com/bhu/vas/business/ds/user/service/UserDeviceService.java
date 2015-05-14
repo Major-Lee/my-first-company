@@ -1,80 +1,51 @@
 package com.bhu.vas.business.ds.user.service;
 
-import javax.annotation.Resource;
-
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.business.ds.user.dao.UserDeviceDao;
+import com.smartwork.msip.cores.orm.service.EntityService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.user.model.UserDevice;
-import com.bhu.vas.business.ds.user.dao.UserDeviceDao;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.service.EntityService;
+import javax.annotation.Resource;
+import java.util.List;
 
+/**
+ * Created by bluesand on 15/4/10.
+ */
 @Service
 @Transactional("coreTransactionManager")
-public class UserDeviceService extends EntityService<String,UserDevice, UserDeviceDao>{
-	@Resource
-	@Override
-	public void setEntityDao(UserDeviceDao userDeviceDao) {
-		super.setEntityDao(userDeviceDao);
-	}
-	/**
-	 * 注册用户当前设备
-	 * @param uid
-	 * @param devicetoken
-	 * @param devicetype
-	 * @param pushtype
-	 * @param client_system_v
-	 * @param client_app_v
-	 * @param unittype
-	 */
-	public void deviceRegister(String udid, String devicetoken, String devicetype, String pushtype, 
-			String client_system_v, String client_app_v, String unittype){		
-		UserDevice entity = this.getById(udid);
-		if(entity == null){
-			entity = new UserDevice();
-			entity.setId(udid);
-			entity.setDevicetoken(devicetoken);
-			entity.setDevicetype(devicetype);
-			entity.setPushtype(pushtype);
-			entity.setClient_system_v(client_system_v);
-			entity.setClient_app_v(client_app_v);
-			entity.setUnittype(unittype);
-			this.insert(entity);
-		}else{
-			entity.setDevicetoken(devicetoken);
-			entity.setDevicetype(devicetype);
-			entity.setPushtype(pushtype);
-			entity.setClient_system_v(client_system_v);
-			entity.setClient_app_v(client_app_v);
-			entity.setUnittype(unittype);
-			this.update(entity);
-		}
-	}
-	/**
-	 * 用户注销当前设备
-	 * @param uid
-	 * @param dt
-	 * @return
-	 */
-	public boolean destoryRegister(String udid, String dt){
-		if(StringHelper.isEmpty(dt)) return false;
-		UserDevice entity = this.getById(udid);
-		if(entity == null) return false;
-		
-		if(dt.equals(entity.getDevicetoken())){
-			this.delete(entity);
-		}
-		return true;
-	}
-	/**
-	 * 根据dt查找用户id
-	 * @param dt
-	 * @return
-	 */
-//	public List<String> getByDt(String dt){
-//		ModelCriteria mc = new ModelCriteria();
-//		mc.createCriteria().andColumnEqualTo("devicetoken", dt);
-//		return this.findIdsByModelCriteria(mc);
-//	}
+public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, UserDeviceDao> {
+    @Resource
+    @Override
+    public void setEntityDao(UserDeviceDao entityDao) {
+        super.setEntityDao(entityDao);
+    }
+
+    public List<UserDevice> fetchBindDevicesWithLimit(int uid, int limit) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("uid", uid);
+        mc.setPageNumber(1);
+        mc.setPageSize(limit);
+        return findModelByModelCriteria(mc);
+    }
+
+    public List<UserDevice> fetchBindDevicesUsers(String mac) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        return findModelByModelCriteria(mc);
+    }
+
+    
+    /**
+     * 清除用户所有的绑定设备
+     * @param uid
+     * @author Edmond
+     */
+    public void clearBindedDevices(int uid){
+    	ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("uid", uid);
+        this.deleteByCommonCriteria(mc);
+    }
 }

@@ -83,7 +83,8 @@ public class BuilderWifiDeviceIndexOp {
 							wifiDeviceService.update(device);
 						}
 					}
-					long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
+					//long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
+					long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifi_mac);
 					indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
 					indexDto.setOnline(device.isOnline() ? 1 : 0);
 					indexDto.setCount((int)count);

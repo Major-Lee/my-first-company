@@ -8,7 +8,7 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 	private long login_ts;//wifi设备本次登录的时间
 	private long last_login_at;//wifi设备上次的登录时间
 	private boolean newWifi;//是否是新增wifi设备
-
+	private boolean needLocationQuery;//是否需要发送查询地理位置指令
 	@Override
 	public String getActionType() {
 		return ActionMessageType.WifiDeviceOnline.getPrefix();
@@ -36,5 +36,15 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 
 	public void setNewWifi(boolean newWifi) {
 		this.newWifi = newWifi;
+	}
+
+	public boolean isNeedLocationQuery() {
+		return needLocationQuery;
+	}
+
+	public void setNeedLocationQuery(boolean needLocationQuery) {
+		this.needLocationQuery = needLocationQuery;
 	}	
+	
+	
 }

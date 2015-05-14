@@ -1,7 +1,10 @@
 package com.bhu.vas.business.ds.device.facade;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,28 +17,75 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.statistics.DeviceStatistics;
+import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
+import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class DeviceFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
+	/**
+	 * 存在多种混合状态
+	 * 100以上在线状态可以绑定
+	 * 100以下未绑定
+	 * @see com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService
+	 */
+	public final static int WIFI_DEVICE_STATUS_NOT_EXIST = 0;
+	public final static int WIFI_DEVICE_STATUS_NOT_UROOTER = 98;
+	public final static int WIFI_DEVICE_STATUS_NOT_ONLINE = 99;
+	public final static int WIFI_DEVICE_STATUS_ONLINE = 100;
+
+	private final static String WIFI_DEVICE_ORIGIN_MODEL = "Urouter";
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
+	private WifiDeviceSettingService wifiDeviceSettingService;
+	
+	@Resource
 	private HandsetDeviceService handsetDeviceService;
 	
+	@Resource
+	private UserDeviceService userDeviceService;
+	
+	/**
+	 * 指定wifiId进行终端全部下线处理
+	 * @param wifiId
+	 */
+	public void allHandsetDoOfflines(String wifiId){
+		List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
+		if(!handset_devices_online_entitys.isEmpty()){
+			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
+				handset_devices_online_entity.setOnline(false);
+			}
+			handsetDeviceService.updateAll(handset_devices_online_entitys);
+		}
+		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
+	}
 	
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充
@@ -212,4 +262,244 @@ public class DeviceFacadeService {
 		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf(handsetDeviceService.countByOnline()));
 		return system_statistics_map;
 	}
+	
+	/**
+	 * 根据新上线的设备/终端 统计设备/终端的新增、活跃
+	 * @param device_statist 上线的设备/终端
+	 */
+	public void deviceStatisticsOnline(DeviceStatistics device_statists, int type){
+		List<DeviceStatistics> ds = new ArrayList<DeviceStatistics>(1);
+		ds.add(device_statists);
+		deviceStatisticsOnlines(ds, type);
+	}
+	
+	/**
+	 * 根据新上线的设备/终端 统计设备/终端的新增、活跃
+	 * @param device_statists 上线的设备
+	 */
+	public void deviceStatisticsOnlines(List<DeviceStatistics> device_statists, int type){
+		if(device_statists == null || device_statists.isEmpty()) return;
+		
+		//4:统计增量 wifi设备的daily启动次数增量
+		int incr_statistics_accesscount = device_statists.size();
+		//3:统计增量 wifi设备的daily新增设备增量
+		int incr_statistics_news = 0;
+		//3:统计增量 wifi设备的daily活跃设备增量
+		int incr_statistics_active = 0;
+		
+		Date current_date = new Date();
+		for(DeviceStatistics ds : device_statists){
+			if(ds.isNewed()){
+				incr_statistics_news++;
+			}else{
+				//如果最后的登录时间和今天不一样，说明今天是第一次登录
+				if(!DateTimeHelper.isSameDay(ds.getLast_reged_at(), current_date)){
+					incr_statistics_active++;
+				}
+			}
+		}
+		
+		//3:统计增量 wifi设备的daily新增设备增量
+		if(incr_statistics_news > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_News, incr_statistics_news);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_News, incr_statistics_news);
+			}
+		}
+		//3:统计增量 wifi设备的daily活跃设备增量
+		if(incr_statistics_active > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Actives, incr_statistics_active);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Actives, incr_statistics_active);
+			}
+		}
+		//4:统计增量 wifi设备的daily启动次数增量
+		if(incr_statistics_accesscount > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, incr_statistics_accesscount);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_AccessCount, incr_statistics_accesscount);
+			}
+		}
+	}
+	
+	/**
+	 * 统计设备/终端离线
+	 * @param uptime
+	 * @param type
+	 */
+	public void deviceStatisticsOffline(long uptime, int type){
+		if(uptime > 0){
+			if(DeviceStatistics.Statis_Device_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsDeviceInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
+			}
+			else if(DeviceStatistics.Statis_HandsetDevice_Type == type){
+				DailyStatisticsHashService.getInstance().incrStatistics(BusinessKeyDefine.Statistics.
+						DailyStatisticsHandsetInnerPrefixKey, DailyStatisticsDTO.Field_Duration, uptime);
+			}
+		}
+	}
+	
+	
+	/**
+	 * 获取设备在线状态.
+	 * @param mac 设备mac地址
+	 * @return
+	 * WIFI_DEVICE_STATUS_NOT_EXIST : 0 : 设备未接入
+	 * WIFI_DEVICE_STATUS_ONLINE : 100 : 设备在线
+	 * WIFI_DEVICE_STATUS_NOT_ONLINE : 99 : 设备不在线
+	 * WIFI_DEVICE_STATUS_NOT_UROOTER : 98 : 设备不是Urooter设备
+	 */
+	public int getWifiDeviceOnlineStatus(String mac) {
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+
+		if (wifiDevice == null) {
+			return WIFI_DEVICE_STATUS_NOT_EXIST;
+		} else if (!isURooterDevice(mac)) {
+			return WIFI_DEVICE_STATUS_NOT_UROOTER;
+		} else if (wifiDevice.isOnline()){
+			return WIFI_DEVICE_STATUS_ONLINE;
+		} else {
+			return WIFI_DEVICE_STATUS_NOT_ONLINE;
+		}
+	}
+
+	/**
+	 * 判断设备是否是URooter设备
+	 * @param mac
+	 * @return
+	 */
+	public boolean isURooterDevice(String mac) {
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		return wifiDevice.getOrig_model() !=null &&
+				WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model());
+	}
+
+	/**
+	 * 验证用户所管理的设备
+	 * 1：设备是否存在
+	 * 2：设备是否在线
+	 * 3：设备是否被此用户管理
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public WifiDevice validateUserDevice(Integer uid, String mac){
+		//验证设备
+		WifiDevice device_entity = validateDevice(mac);
+		//验证用户是否管理设备
+		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+		if(userdevice_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED);
+		}
+		return device_entity;
+	}
+	
+	/**
+	 * 验证设备
+	 * 1：设备是否存在
+	 * 2：设备是否在线
+	 * @param mac
+	 * @return
+	 */
+	public WifiDevice validateDevice(String mac){
+		//验证设备是否存在
+		WifiDevice device_entity = wifiDeviceService.getById(mac);
+		if(device_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+		}
+		//验证设备是否在线
+		if(!device_entity.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}
+		return device_entity;
+	}
+	/**
+	 * 验证设备是否加载配置
+	 * @param mac
+	 * @return
+	 */
+	public WifiDeviceSetting validateDeviceSetting(String mac){
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
+		}
+		if(entity.getInnerModel() == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+		}
+		return entity;
+	}
+	
+	/**
+	 * 获取用户绑定的设备PKS
+	 * @param uid
+	 * @return
+	 */
+	public List<UserDevicePK> getUserDevices(Integer uid){
+		CommonCriteria mc = new CommonCriteria();
+		mc.createCriteria().andColumnEqualTo("uid", uid);
+		return userDeviceService.findIdsByCommonCriteria(mc);
+	}
+	
+	/**************************  具体业务修改配置数据 封装 **********************************/
+	
+	/**
+	 * 生成设备配置的广告配置数据
+	 * @param mac
+	 * @param ds_opt 修改设备配置的ds_opt
+	 * @param extparams 修改配置具体的参数
+	 * @return
+	 * @throws Exception 
+	 */
+	public String generateDeviceSetting(String mac, String ds_opt, String extparams) throws Exception {
+		if(StringUtils.isEmpty(ds_opt) || StringUtils.isEmpty(extparams))
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
+		if(ods == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		WifiDeviceSetting entity = validateDeviceSetting(mac);
+		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+		
+		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+		if(StringUtils.isEmpty(config_sequence))
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+		
+		switch(ods){
+			case DS_Ad:
+				return DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
+			case DS_Power:
+				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
+			case DS_VapPassword:
+				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, ds_dto);
+			case DS_AclMacs:
+				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, ds_dto);
+			case DS_RateControl:
+				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
+			case DS_AdminPassword:
+				return DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
+			case DS_LinkMode:
+				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams, ds_dto);
+			case DS_MM:
+				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, ds_dto);
+			case DS_VapGuest:
+				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
+			default:
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	}
+
 }

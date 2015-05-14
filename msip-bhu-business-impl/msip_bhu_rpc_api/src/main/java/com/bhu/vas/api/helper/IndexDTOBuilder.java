@@ -16,6 +16,9 @@ public class IndexDTOBuilder {
 		indexDto.setFormat_address(entity.getFormatted_address());
 		indexDto.setWorkmodel(entity.getWork_mode());
 		indexDto.setDevicetype(entity.getHdtype());
+		indexDto.setConfigmodel(entity.getConfig_mode());
+		indexDto.setOrigswver(entity.getOrig_swver());
+		indexDto.setNvd(DeviceHelper.isNewOrigSwverDevice(entity.getOrig_swver()) ? 1 : 0);
 //		indexDto.setCount(1);
 //		indexDto.setOnline(1);
 		indexDto.setLat(entity.getLat());

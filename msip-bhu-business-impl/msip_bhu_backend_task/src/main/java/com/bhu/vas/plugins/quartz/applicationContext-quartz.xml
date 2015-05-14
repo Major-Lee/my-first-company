@@ -16,7 +16,7 @@
 				<!-- 每30分钟执行一次  -->
 				<ref bean="wifiDeviceOnlineCronTrigger" />
 				<!-- 每一个小时执行一次  -->
-				<ref bean="statisticsOnlineUserLoaderCronTrigger" />
+				<ref bean="statisticsOnlineLoaderCronTrigger" />
 				
 			</list>
 		</property>
@@ -85,20 +85,20 @@
 	
 	
 	<!-- Cron式Trigger定义 -->
-	<bean id="statisticsOnlineUserLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="statisticsOnlineUserLoaderCronJobDetail" />
+	<bean id="statisticsOnlineLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="statisticsOnlineLoaderCronJobDetail" />
 		<!-- 每一时执行一次 -->
 		<property name="cronExpression" value="0 0/10 * * * ?" />
 	</bean>
 
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
-	<bean id="statisticsOnlineUserLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="statisticsOnlineUserLoaderJob" />
+	<bean id="statisticsOnlineLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="statisticsOnlineLoaderJob" />
 		<property name="targetMethod" value="execute" />
 		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
 		<property name="concurrent" value="false" />
 	</bean>
 
 	<!-- 被Cron执行的普通Spring Bean -->
-	<bean id="statisticsOnlineUserLoaderJob" class="com.bhu.vas.plugins.quartz.StatisticsOnlineUserLoader" />
+	<bean id="statisticsOnlineLoaderJob" class="com.bhu.vas.plugins.quartz.StatisticsOnlineLoader" />
 </beans>

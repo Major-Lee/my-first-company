@@ -3,22 +3,24 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.user.model.User;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.AssertHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.SimpleCriteria;
 import com.smartwork.msip.cores.orm.support.page.Page;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
@@ -31,6 +33,8 @@ import com.smartwork.msip.localunit.RandomPicker;
  * @author Edmond
  *
  */
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserServiceTest extends BaseTest{
 
 	long unit_test_start = 0;
@@ -43,15 +47,19 @@ public class UserServiceTest extends BaseTest{
 	@Resource
 	UserService userService;
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
-	private static Set<String> key_gen = new HashSet<String>();
-	@Before//Class
-    public void setUp() throws Exception {
+	private static Set<Integer> key_gen = new HashSet<Integer>();
+	@BeforeClass
+    public static void setUp() throws Exception {
+		System.out.println("111111111");
+		Thread.sleep(1000);
 		/*unit_test_start = System.currentTimeMillis();
 		testBatchCreateUser();*/
     }
 
-    @After//Class
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
+    	System.out.println("0000000");
+    	Thread.sleep(1000);
     	/*unit_test_end = System.currentTimeMillis();
     	emptyUser();
     	System.out.println(String.format("Unit test batch insert cost:[%s]s", batch_insert_cost_time/1000));
@@ -59,7 +67,7 @@ public class UserServiceTest extends BaseTest{
     }
     
     @Test
-	public void testBatchCreateUser(){
+	public void test001BatchCreateUser(){
     	System.out.println(Integer.MAX_VALUE);
     	CommonCriteria mc = new CommonCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1");
@@ -68,22 +76,26 @@ public class UserServiceTest extends BaseTest{
 		//int count = 10;
 		for(int i=0;i<batch_create_size;i++){
 			User user = new User();
-			user.setId(doGenKey());
-			user.setScore(RandomData.intNumber(1000));
-			user.setLastlogin_coordination(" 1234  ");
-			user.setReg_coordination(" 5678  ");
-			user.setRegdevice("O");
+			user.setCountrycode(86);
+			user.setMobileno(String.format("1861%s2%s", RandomData.intNumber(100,999),RandomData.intNumber(100,999)));
+			user.setBirthday(String.format("%s-%s-%s", RandomData.intNumber(1969,2010),String.format("%02d", RandomData.intNumber(1,12)),String.format("%02d", RandomData.intNumber(1,28))));
+			user.setNick(RandomPicker.randString(letters, 10));
+			user.setSex(RandomData.flag()?"男":"女");
+			//user.setId(doGenKey());
+			user.setRegdevice(DeviceEnum.IPhone.getSname());
 			user.setRegip("192.168.1.6");
-			user.setUsertype(RandomData.intNumber(1000));
+			user.setLastlogindevice(DeviceEnum.IPhone.getSname());
+			user.setLastlogindevice_uuid(UUID.randomUUID().toString());
 			userService.insert(user);	
+			doGenKey(user.getId());
 		}
 		batch_insert_cost_time = System.currentTimeMillis()-unit_test_start;
 		//userService.insertMulti(users);
 	}	
     
     @Test
-    public void testUdidExistAndCached(){
-    	String randon_key = RandomPicker.pick(key_gen);
+    public void test002UdidExistAndCached(){
+    	Integer randon_key = RandomPicker.pick(key_gen);
     	//System.out.println(randon_key);
     	User random_user = userService.getById(randon_key);
     	AssertHelper.notNull(random_user);
@@ -92,13 +104,13 @@ public class UserServiceTest extends BaseTest{
     }
 
     @Test
-    public void countAllRecords(){
+    public void test003CountAllRecords(){
 		int all = userService.countAllRecords();
 		AssertHelper.isTrue(all == batch_create_size);
 	}
     
     @Test
-	public void testByModelCriteriaEqualCondition(){
+	public void test004ByModelCriteriaEqualCondition(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("regip", "192.168.1.6");
 		List<User> result = userService.findModelByModelCriteria(mc);
@@ -107,7 +119,7 @@ public class UserServiceTest extends BaseTest{
 	}
     
     @Test
-   	public void testByModelCriteriaLikeCondition(){
+   	public void test005ByModelCriteriaLikeCondition(){
    		ModelCriteria mc = new ModelCriteria();
    		mc.createCriteria().andColumnLike("regip", "192.168%");
    		List<User> result = userService.findModelByModelCriteria(mc);
@@ -115,7 +127,7 @@ public class UserServiceTest extends BaseTest{
    		AssertHelper.isTrue(result.size() == batch_create_size);
    	}
     @Test
-	public void testIterAlltables(){
+	public void test006IterAlltables(){
     	int total  = 0;
 		ModelCriteria mc = new ModelCriteria();
 		System.out.println(String.format("UserIterOp开始，startid[%s]", "未指定"));
@@ -123,7 +135,7 @@ public class UserServiceTest extends BaseTest{
 		mc.setOrderByClause(" id asc ");
     	mc.setPageNumber(1);
     	mc.setPageSize(500);
-		EntityIterator<String, User> it = new KeyBasedEntityBatchIterator<String,User>(String.class,User.class, userService.getEntityDao(), mc);
+		EntityIterator<Integer, User> it = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userService.getEntityDao(), mc);
 		while(it.hasNext()){
 			List<User> users = it.next();
 			total += users.size();
@@ -132,36 +144,36 @@ public class UserServiceTest extends BaseTest{
 	}
     
     @Test
-  	public void testFindByIds(){
-    	List<User> result = userService.findByIds(new ArrayList<String>(key_gen));
+  	public void test007FindByIds(){
+    	List<User> result = userService.findByIds(new ArrayList<Integer>(key_gen));
     	AssertHelper.isTrue(!result.isEmpty());
    		AssertHelper.isTrue(result.size() == batch_create_size);
   	}
     
     @Test
   	public void testFindByIdsWhenNotExist(){
-    	key_gen.add("how are u1");
-    	key_gen.add("how are u2");
-    	key_gen.add("how are u3");
+    	key_gen.add(10000);
+    	key_gen.add(10001);
+    	key_gen.add(10002);
     	
-    	List<User> result = userService.findByIds(new ArrayList<String>(key_gen), true, true);
+    	List<User> result = userService.findByIds(new ArrayList<Integer>(key_gen), true, true);
     	AssertHelper.isTrue(!result.isEmpty());
    		AssertHelper.isTrue(result.size() == batch_create_size+3);
    		
-   		key_gen.remove("how are u1");
-    	key_gen.remove("how are u2");
-    	key_gen.remove("how are u3");
+   		key_gen.remove(10000);
+    	key_gen.remove(10001);
+    	key_gen.remove(10002);
   	}
     
     @Test
     public void testFindUniqueIdByProperty(){
-    	String randon_key = RandomPicker.pick(key_gen);
-		String userid = userService.findUniqueIdByProperty("id", randon_key);
+    	Integer randon_key = RandomPicker.pick(key_gen);
+    	Integer userid = userService.findUniqueIdByProperty("id", randon_key);
 		AssertHelper.isTrue(randon_key.equals(userid));
 	}
     
     @Test
-    public void testModelCriteriaPageQuery(){
+    public void test008ModelCriteriaPageQuery(){
     	
     	ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("regip", "192.168.1.6");
@@ -186,7 +198,7 @@ public class UserServiceTest extends BaseTest{
     
     
     @Test
-    public void testModelCriteriaPageQuery4Offset(){
+    public void test009ModelCriteriaPageQuery4Offset(){
     	
     	ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("regip", "192.168.1.6");
@@ -215,7 +227,7 @@ public class UserServiceTest extends BaseTest{
 	}
     
     @Test
-    public void testModelCriteriaWithComplexPageQuery(){
+    public void test010ModelCriteriaWithComplexPageQuery(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("regip", "192.168.1.6");
 		mc.or(mc.createCriteria().andColumnEqualTo("id", "怀玉"));
@@ -232,23 +244,25 @@ public class UserServiceTest extends BaseTest{
 	}
     
     @Test
-    public void testUpdateUser(){
-    	String randon_key = RandomPicker.pick(key_gen);
+    public void test011UpdateUser(){
+    	Integer randon_key = RandomPicker.pick(key_gen);
     	User random_user = userService.getById(randon_key);
     	AssertHelper.notNull(random_user);
-    	int old_point = random_user.getScore();
-    	random_user.setScore(old_point+200);
+    	String oldnick = random_user.getNick();
+    	//int old_point = random_user.getScore();
+    	//random_user.setScore(old_point+200);
+    	random_user.setNick(random_user.getNick()+" g");
     	userService.update(random_user);
     	
     	random_user = userService.getById(randon_key);
-    	AssertHelper.isTrue(old_point+200 == random_user.getScore());
+    	AssertHelper.isTrue(random_user.getNick().equals(oldnick+" g"));
     }
     
     @Test
-    public void testRemoveUser(){
-    	List<String> findAllIds = userService.findAllIds();
+    public void test012RemoveUser(){
+    	List<Integer> findAllIds = userService.findAllIds();
     	System.out.println("~~~~~~~~~~~~"+findAllIds.size());
-    	String randon_key = RandomPicker.pick(key_gen);
+    	Integer randon_key = RandomPicker.pick(key_gen);
     	System.out.println("~~~~~~~~~~~~"+randon_key);
     	User random_user = userService.getById(randon_key);
     	AssertHelper.notNull(random_user);
@@ -265,7 +279,7 @@ public class UserServiceTest extends BaseTest{
     }
     
     @Test
-    public void testRemoveMultiUsers(){
+    public void test013RemoveMultiUsers(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("regip", "192.168.1.6");
 		mc.or(mc.createCriteria().andColumnEqualTo("id", "怀玉"));
@@ -280,13 +294,13 @@ public class UserServiceTest extends BaseTest{
 		System.out.println(users.getPageNumber());
 		this.userService.deleteAll(users.getItems());
 		
-		List<String> findAllIds = userService.findAllIds();
+		List<Integer> findAllIds = userService.findAllIds();
     	AssertHelper.notEmpty(findAllIds);
     	AssertHelper.isTrue(findAllIds.size() == batch_create_size-1-users.getItems().size());
 	}
     
     @Test
-	public void emptyUser(){
+	public void test014EmptyUser(){
 		unit_test_end = System.currentTimeMillis();
     	System.out.println(String.format("Unit test batch insert cost:[%s]s", batch_insert_cost_time/1000));
     	System.out.println(String.format("Unit test cost:[%s]s", (unit_test_end-unit_test_start)/1000));
@@ -296,7 +310,17 @@ public class UserServiceTest extends BaseTest{
 		userService.deleteByCommonCriteria(mc);*/
 	}
     
-	private static String doGenKey(){
+    private static void doGenKey(Integer uid){
+    	key_gen.add(uid);
+		/*String genKey = null;
+		boolean exist = true;
+		do{
+			genKey = RandomPicker.randString(letters,10);
+			exist = key_gen.add(genKey);
+		}while(!exist);
+		return genKey;*/
+	}
+	/*private static String doGenKey(){
 		String genKey = null;
 		boolean exist = true;
 		do{
@@ -304,7 +328,7 @@ public class UserServiceTest extends BaseTest{
 			exist = key_gen.add(genKey);
 		}while(!exist);
 		return genKey;
-	}
+	}*/
 	
 	
 	//@Test

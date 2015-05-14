@@ -11,6 +11,10 @@ public class WifiDeviceSearchDTO implements Serializable{
 	private String address;
 	//工作模式
 	private String workmodel;
+	//配置模式
+	private String configmodel;
+	//原始版本号
+	private String origswver;
 	//设备类型
 	private String devicetype;
 	//wifi设备是否在线
@@ -48,6 +52,18 @@ public class WifiDeviceSearchDTO implements Serializable{
 	public void setLon(double lon) {
 		this.lon = lon;
 	}
+	public String getConfigmodel() {
+		return configmodel;
+	}
+	public void setConfigmodel(String configmodel) {
+		this.configmodel = configmodel;
+	}
+	public String getOrigswver() {
+		return origswver;
+	}
+	public void setOrigswver(String origswver) {
+		this.origswver = origswver;
+	}
 	public String getWorkmodel() {
 		return workmodel;
 	}
@@ -78,4 +94,5 @@ public class WifiDeviceSearchDTO implements Serializable{
 	public void setRegister_at(long register_at) {
 		this.register_at = register_at;
 	}
+	
 }

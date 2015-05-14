@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,11 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.rpc.facade.DeviceBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -125,6 +129,12 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					break;
 //				case 8://3.4.17	应用隧道消息
 //					break;
+				case 10://3.4.19 设备配置变更消息
+					deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+					break;
+				case 11://3.4.20 notify命令执行结果通知消息
+					taskNotifyResponse(ctx, payload, parserHeader);
+					break;
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
@@ -143,22 +153,76 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	public void taskResponse(String ctx, String payload, ParserHeader parserHeader){
 		String opt = parserHeader.getOpt();
 		if(!StringUtils.isEmpty(opt)){
+			String mac = parserHeader.getMac();
+			int taskid = parserHeader.getTaskid();
 			if(OperationCMD.QueryDeviceStatus.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, mac, taskid);
+			}else if(OperationCMD.QueryDeviceFlow.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, mac, taskid);
+			}else if(OperationCMD.TurnOnDeviceDPINotify.getNo().equals(opt) || OperationCMD.TurnOffDeviceDPINotify.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskCommonProcessor(ctx,payload,mac,taskid);
 			}
-			else if(OperationCMD.QueryDeviceFlow.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
-			}
-			else if(OperationCMD.QueryDeviceLocationS1.getNo().equals(opt)){
+			/*else if(OperationCMD.QueryDeviceLocationS1.getNo().equals(opt)){
 				//do nothing 由input processor解析后直接转到daemon
 			}
+			 */
 			else if(OperationCMD.QueryDeviceLocationS2.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, mac, taskid);
+			}
+			else if(OperationCMD.QueryDeviceSetting.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, mac, taskid);
+			}
+			/*
+			else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
+			}
+			*/
+			else if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
+			}
+			else if(OperationCMD.DeviceDelayReboot.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
 			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
 			}
 		}
+	}
+	/**
+	 * 通过notify参数下发的任务响应处理
+	 * @param ctx
+	 * @param payload
+	 * @param parserHeader
+	 */
+	public void taskNotifyResponse(String ctx, String payload, ParserHeader parserHeader){
+		Document doc = RPCMessageParseHelper.parserMessage(payload);
+		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
+				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
+			String serial = serialDto.getSerial();
+			if(!StringUtils.isEmpty(serial)){
+				if(serial.length() == 10){
+					String opt = serial.substring(0, 3);
+					int taskid = Integer.parseInt(serial.substring(3, 10));
+					String mac = parserHeader.getMac();
+					
+					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){
+						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
+					}
+					else if(OperationCMD.QueryDeviceSpeedNotify.getNo().equals(opt)){
+						deviceBusinessFacadeService.taskQueryDeviceSpeedNotify(ctx, doc, serialDto, mac, taskid);
+					}
+					else if(OperationCMD.QueryDeviceRateNotify.getNo().equals(opt)){
+						deviceBusinessFacadeService.taskQueryDeviceRateNotify(ctx, doc, serialDto, mac, taskid);
+					}
+					else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
+						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
+					}
+					//2:任务callback
+					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
+				}
+			}
+		}	
 	}
 	
 	public void messageDispatchUnsupport(String ctx, String payload, ParserHeader parserHeader){

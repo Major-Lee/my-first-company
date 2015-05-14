@@ -12,15 +12,18 @@ import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
-
 public interface IDeviceRestRpcService {
 	public List<WifiDeviceMaxBusyVTO> fetchWDevicesOrderMaxHandset(int pageNo, int pageSize);
 	//public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize);
 	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, String region, String excepts, 
 			int pageNo, int pageSize);
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac,
+			String orig_swver, String adr, String work_mode,
+			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
+			String region, String excepts, int pageNo, int pageSize);
 	public StatisticsGeneralVTO fetchStatisticsGeneral();
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions);
 	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize);
-	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize);
+	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize);
 	public Collection<GeoMapVTO> fetchGeoMap();
 }

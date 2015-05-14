@@ -21,7 +21,8 @@ public class BusinessKeyDefine {
 	}
 	
 	public static class Statistics{
-		public static final String FragmentOnline  					= "FO.";
+		public static final String FragmentUserOnline  				= "FO.";
+		public static final String FragmentDeviceOnline  			= "FD.";
 		public static final String FragmentOnlineDailySuffixKey 	= "D.";
 		public static final String FragmentOnlineWeeklySuffixKey 	= "W.";
 		public static final String FragmentOnlineMonthlySuffixKey 	= "M.";
@@ -42,6 +43,19 @@ public class BusinessKeyDefine {
 		//UserPrefixKey
 		
 		public static final String WifiDeviceStatistics 		= "WDS";
+		public static final String WifiDeviceStatistics_RealtimeRate 		= "RR";
+		public static final String WifiDeviceStatistics_LastRate 		= "LR";
+		public static final String WifiDeviceStatistics_RateWaiting 		= "RWG";
+		public static final String WifiDeviceStatistics_PeakRate 		= "PR";
+		public static final String WifiDeviceStatistics_PeakRateWaiting 		= "PRWG";
+		public static final String WifiDeviceStatistics_HDRateWaiting 		= "HDRWG";
 	}
-	
+	public static class Unique{
+		public static final String EmailCheck = "WUEC";
+		public static final String NickCheck = "WUNC";
+		public static final String MobilenoCheck = "WUMC";
+		//public static final String PermalinkCheck = "UPC";
+		//public static final String SnsTokenCheck = "USC";
+		public static final String UserSnsCheck  = "WUSC";
+	}
 }

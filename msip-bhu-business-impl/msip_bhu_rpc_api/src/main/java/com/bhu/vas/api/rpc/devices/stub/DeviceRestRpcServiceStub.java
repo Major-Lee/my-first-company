@@ -51,6 +51,18 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 	
 	@Override
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac,
+			String orig_swver, String adr, String work_mode,
+			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
+			String region, String excepts,int pageNo, int pageSize) {
+		if(pageNo < 0 || pageSize < 0) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceRestRpcService.fetchWDevicesByKeywords(mac, orig_swver, adr,work_mode, config_mode, 
+				devicetype, online, newVersionDevice, region, excepts, pageNo, pageSize);
+	}
+	
+	@Override
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions){
 		if(StringUtils.isEmpty(regions)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
@@ -67,13 +79,13 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 	
 	@Override
-	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize) {
+	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize) {
 		if(StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		if(pageNo < 0 || pageSize < 0) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceRestRpcService.fetchHDevicesOnline(wifiId, pageNo, pageSize);
+		return deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
 	}
 	
 	@Override
@@ -85,7 +97,5 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	public Collection<GeoMapVTO> fetchGeoMap() {
 		return deviceRestRpcService.fetchGeoMap();
 	}
-
-
 
 }

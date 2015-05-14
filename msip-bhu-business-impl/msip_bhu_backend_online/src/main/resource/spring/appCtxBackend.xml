@@ -12,6 +12,7 @@
        default-lazy-init="true"> 
        
 	<import resource="classpath*:spring/applicationContext*.xml"/>
+	<import resource="classpath*:springunit/applicationContextRpc*.xml"/>
 	<!--
 	<import resource="classpath*:springplugins/applicationContext-plugins-commandserver.xml"/>
 	  -->

@@ -69,8 +69,32 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case CMUPWithWifiDeviceOnlines:
 							asyncMsgHandleService.cmupWithWifiDeviceOnlinesHandle(message);
 							break;
+						case WifiDeviceSettingModify:
+							asyncMsgHandleService.wifiDeviceSettingModify(message);
+							break;
+						case WifiDeviceTerminalNotify:
+							asyncMsgHandleService.WifiDeviceTerminalNotify(message);
+							break;
+						case WifiDeviceRealtimeRateFetch:
+							asyncMsgHandleService.wifiDeviceRealtimeRateFetch(message);
+							break;		
+						case WifiDeviceSpeedFetch:
+							asyncMsgHandleService.wifiDevicePeakRateFetch(message);
+							break;	
+						case WifiDeviceHDRateFetch:
+							asyncMsgHandleService.wifiDeviceHDRateFetch(message);
+							break;
 						case WifiCmdDownNotify:
 							asyncMsgHandleService.wifiCmdDownNotifyHandle(message);
+							break;
+						case USERFETCHCAPTCHACODE:
+							asyncMsgHandleService.sendCaptchaCodeNotifyHandle(message);
+							break;
+						case USERSIGNEDON:
+							asyncMsgHandleService.userSignedon(message);
+							break;
+						case USERDEVICEREGISTER:
+							asyncMsgHandleService.userDeviceRegister(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
@@ -85,7 +109,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	public void throwUnsupportedOperationException(ActionMessageType type, String messagejsonHasPrefix){
 		throw new UnsupportedOperationException(
-				String.format("ActionMessageType[%s] not yet implement handler process!full message[%s]",
+				String.format("ActionMessageType[%s] not yet implement handler processfull message[%s]",
 						type,messagejsonHasPrefix));
 	}
 }

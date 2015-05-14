@@ -7,8 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -59,8 +57,8 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
-				//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
-				logger.info("1");
+				logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+				//logger.info("1");
 				try{
 					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 					int type = Integer.parseInt(message.substring(0, 8));
@@ -98,15 +96,10 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
 								OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
 								if(cmd_opt != null){
-									if(cmd_opt == OperationCMD.QueryDeviceLocationS1){
+									if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
 										daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
 									}
 								}
-								//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
-								/*if(CMDBuilder.wasLocationQueryTaskid(headers.getTaskid())){//任务查询反馈消息
-									//QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(payload, QuerySerialReturnDTO.class);
-									daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);//, retDTO);
-								}*/
 							}
 						}
 						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);

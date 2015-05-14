@@ -9,7 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
@@ -23,6 +25,9 @@ public class WifiDeviceTest extends BaseTest{
 
 	@Resource
 	WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 
 	//@Test
 	public void testInsert(){
@@ -31,8 +36,17 @@ public class WifiDeviceTest extends BaseTest{
 		entity.setOrig_swver("2015-03-11-18:27 Revision: 6855");
 		wifiDeviceService.insert(entity);
 	}
-	
 	@Test
+	public void testinsert(){
+		WifiHandsetDeviceMark mark = new WifiHandsetDeviceMark();
+		mark.setMac("1");
+		mark.setHd_mac("2");
+//		mark.setData_rx_limit("1");
+//		mark.setData_tx_limit("1");
+		wifiHandsetDeviceMarkService.insert(mark);
+	}
+	
+	//@Test
 	public void testGetById(){
 		WifiDevice entity = wifiDeviceService.getById("84:82:f4:05:54:27");
 		System.out.println(entity.getCreated_at().getTime());

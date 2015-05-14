@@ -88,5 +88,4 @@ public class PingController {
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
-	
 }

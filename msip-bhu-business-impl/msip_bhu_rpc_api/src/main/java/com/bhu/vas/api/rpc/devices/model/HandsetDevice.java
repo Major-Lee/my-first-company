@@ -2,6 +2,8 @@ package com.bhu.vas.api.rpc.devices.model;
 
 import java.util.Date;
 
+import org.springframework.util.StringUtils;
+
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 /*
  * 移动设备基础信息
@@ -103,6 +105,13 @@ public class HandsetDevice extends BaseStringModel{
 		return data_rx_rate;
 	}
 
+	public double getData_rx_rate_double(){
+		if(StringUtils.isEmpty(data_rx_rate)){
+			return 0;
+		}
+		return Double.parseDouble(data_rx_rate);
+	}
+	
 	public void setData_rx_rate(String data_rx_rate) {
 		this.data_rx_rate = data_rx_rate;
 	}

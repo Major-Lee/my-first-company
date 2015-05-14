@@ -102,7 +102,7 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
-	
+
 	<!-- 默认首页定义 -->
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

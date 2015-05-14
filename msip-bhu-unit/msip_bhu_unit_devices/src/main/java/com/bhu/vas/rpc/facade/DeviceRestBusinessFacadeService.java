@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
+import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.GeoMapDeviceVTO;
 import com.bhu.vas.api.vto.GeoMapVTO;
@@ -34,6 +35,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCount
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
+import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
@@ -65,6 +67,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private HandsetDeviceService handsetDeviceService;
 	
 	@Resource
 	private WifiDeviceSearchService wifiDeviceSearchService;
@@ -151,6 +156,58 @@ public class DeviceRestBusinessFacadeService {
 		
 	}
 	
+	/**
+	 * 根据多个条件来进行搜索wifi设备数据
+	 * 以当前在线和当前在线移动设备数量排序
+	 * @param mac 
+	 * @param orig_swver 软件版本号
+	 * @param adr 位置参数
+	 * @param work_mode 工作模式
+	 * @param config_mode 配置模式
+	 * @param region 地区
+	 * @param excepts 排除地区
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac,String orig_swver, String adr, String work_mode,
+			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
+			String region, String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
+		List<WifiDeviceVTO> vtos = null;
+		
+		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, 
+				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
+				region, excepts, (pageNo*pageSize)-pageSize, pageSize);
+		
+		int total = search_result.getTotal();
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}
+		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
+		if(searchDtos.isEmpty()) {
+			vtos = Collections.emptyList();
+		}else{
+			List<String> wifiIds = new ArrayList<String>();
+			for(WifiDeviceSearchDTO searchDto : searchDtos){
+				wifiIds.add(searchDto.getId());
+			}
+			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
+			vtos = new ArrayList<WifiDeviceVTO>();
+			WifiDeviceVTO vto = null;
+			WifiDeviceSearchDTO searchDto = null;
+			int cursor = 0;
+			for(WifiDevice entity : entitys){
+				searchDto = searchDtos.get(cursor);
+				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
+				vtos.add(vto);
+				cursor++;
+			}
+		}
+		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
+		
+	}
+
 	/**
 	 * 获取统计数据的通用数据
 		页面中统计数据体现：
@@ -270,35 +327,40 @@ public class DeviceRestBusinessFacadeService {
 		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
 	}
 	/**
-	 * 根据wifi设备的id获取在线的移动设备列表
+	 * 根据wifi设备的id获取移动设备列表
+	 * 如果终端的最后接入设备不是此设备 则不处理接入时间等数据
 	 * @param wifiId
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public TailPage<HandsetDeviceVTO> fetchHDevicesOnline(String wifiId, int pageNo, int pageSize){
+	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize){
 		List<HandsetDeviceVTO> vtos = null;
 		
-		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifiId);
-		if(total == 0){
-			vtos = Collections.emptyList();
-		}else{
-			Set<Tuple> hdevicesList = WifiDeviceHandsetPresentSortedSetService.getInstance().
+		long total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
+		if(total > 0){
+			Set<Tuple> tuples = WifiDeviceHandsetPresentSortedSetService.getInstance().
 					fetchPresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
-			if(hdevicesList.isEmpty()){
-				vtos = Collections.emptyList();
-			}else{
+			
+			List<String> hd_macs = BusinessModelBuilder.toHandsetDeviceIds(tuples);
+			if(!hd_macs.isEmpty()){
 				vtos = new ArrayList<HandsetDeviceVTO>();
+				
+				List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				HandsetDeviceVTO vto = null;
-				for(Tuple tuple : hdevicesList){
-					vto = new HandsetDeviceVTO();
-					vto.setWid(wifiId);
-					vto.setTs(new Double(tuple.getScore()).longValue());
-					vto.setHid(tuple.getElement());
+				int cursor = 0;
+				for(Tuple tuple : tuples){
+					boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+					vto = BusinessModelBuilder.toHandsetDeviceVTO(wifiId, tuple.getElement(), online, hd_entitys.get(cursor));
 					vtos.add(vto);
+					cursor++;
 				}
 			}
 		}
+		
+		if(vtos == null)
+			vtos = Collections.emptyList();
+		
 		return new CommonPage<HandsetDeviceVTO>(pageNo, pageSize, (int)total, vtos);
 	}
 	

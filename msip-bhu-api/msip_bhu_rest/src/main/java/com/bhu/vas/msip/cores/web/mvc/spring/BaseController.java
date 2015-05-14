@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,7 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
+import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
 
 
@@ -62,9 +65,30 @@ public abstract class BaseController implements ServletContextAware {
 		CookieUtils.deleteCookie(request, response, CookieUtils.getCookie(request, LoginTokenHelper.RemoteCookieName));
 	}*/
 	
+	@ExceptionHandler(RpcBusinessI18nCodeException.class)
+    protected ModelAndView rpcBusinessI18nCodeException(RpcBusinessI18nCodeException ex, HttpServletRequest request, HttpServletResponse response) {
+        logging(ex, request);
+        response.setStatus(ResponseStatus.OK.getStatus());
+        if (isJsonRequest(request)) {
+        	String jsonpcallback = request.getParameter("jsonpcallback");
+        	if(StringUtils.isNotEmpty(jsonpcallback))
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+        	else	
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+            return null;
+        }
+        if(isXmlRequest(request)){
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+            return null;        	
+        }
+        ModelAndView mv = new ModelAndView();
+        StaticResultController.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
+        return mv;
+    }
+	
 	@ExceptionHandler(BusinessException.class)
     protected ModelAndView businessException(BusinessException ex, HttpServletRequest request, HttpServletResponse response) {
-        logging(ex, request);
+        //logging(ex, request);
         response.setStatus(ex.getResponse_status().getStatus());
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
@@ -118,6 +142,26 @@ public abstract class BaseController implements ServletContextAware {
         return mv;
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    protected ModelAndView parameterExceptionHandler(Exception ex, HttpServletRequest request, HttpServletResponse response) {
+        logging(ex, request);
+        response.setStatus(ResponseStatus.BadRequest.getStatus());
+        if (isJsonRequest(request)) {
+        	String jsonpcallback = request.getParameter("jsonpcallback");
+        	if(StringUtils.isNotEmpty(jsonpcallback))
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
+        	else	
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
+            return null;
+        }
+        if(isXmlRequest(request)){
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
+            return null;        	
+        }
+        ModelAndView mv = new ModelAndView();
+        StaticResultController.redirectError(mv, "/index.html", ex.getMessage());
+        return mv;
+    }
     /**
      * 处理通用的Exception异常
      *

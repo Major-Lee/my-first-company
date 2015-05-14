@@ -1,7 +1,7 @@
 package com.bhu.vas.api.rpc.task.dto;
 
-//@SuppressWarnings("serial")
-public class TaskResDTO{// implements java.io.Serializable{
+@SuppressWarnings("serial")
+public class TaskResDTO implements java.io.Serializable{
 	private int taskid;
 	private String mac;
 	private String state;

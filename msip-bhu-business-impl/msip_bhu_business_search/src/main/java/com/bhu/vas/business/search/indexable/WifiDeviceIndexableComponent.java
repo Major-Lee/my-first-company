@@ -13,9 +13,12 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	private GeoPointsIndexableField ghash;
 	private String address;
 	private String showaddress;
+	private String origswver;
 	private String workmodel;
+	private String configmodel;
 	private String devicetype;
 	private int online;
+	private int nvd;
 	private int count;
 	private long register_at;
 	private String i_update_at;
@@ -44,6 +47,18 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	public void setShowaddress(String showaddress) {
 		this.showaddress = showaddress;
 	}
+	public String getOrigswver() {
+		return origswver;
+	}
+	public void setOrigswver(String origswver) {
+		this.origswver = origswver;
+	}
+	public String getConfigmodel() {
+		return configmodel;
+	}
+	public void setConfigmodel(String configmodel) {
+		this.configmodel = configmodel;
+	}
 	public String getWorkmodel() {
 		return workmodel;
 	}
@@ -61,6 +76,12 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public int getNvd() {
+		return nvd;
+	}
+	public void setNvd(int nvd) {
+		this.nvd = nvd;
 	}
 	public int getCount() {
 		return count;
@@ -93,6 +114,7 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	public void setI_update_at(String i_update_at) {
 		this.i_update_at = i_update_at;
 	}
+	
 	@Override
 	public String id() {
 		return id;

@@ -9,7 +9,7 @@ import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 
 public class TaskServiceConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUDevicesRpcConsumerApp");
+		System.setProperty("appname", "BHUTasksRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
 		System.setProperty("provider.port", "");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
@@ -19,7 +19,7 @@ public class TaskServiceConsumer {
 		ITaskRpcService taskRpcService = (ITaskRpcService)context.getBean("taskRpcService");
 		
 		RpcResponseDTO<TaskResDTO> ret = taskRpcService.createNewTask("62:68:75:02:00:06", OperationCMD.QueryDeviceStatus.getNo(), 
-				/*"payload content",*/ "APP_VAS", "1236");
+				/*"payload content",*/ "APP_VAS", "9990");
 		
 //		taskRpcService.createNewTask("", OperationCMD.QueryDeviceStatus.getNo(), 
 //				"payload content", "APP_VAS", "123");
@@ -68,5 +68,8 @@ public class TaskServiceConsumer {
 		message = "<event><trap><ITEM name=\"apAcTimeSyncFailureTrap\" serial_number=\"BN009BC100056AA\" ne_name=\"\" mac_addr=\"62:68:75:00:00:3e\" alarm_level=\"1\" alarm_type=\"0\" alarm_cause=\"1\" alarm_reason=\"System Time Synchronize Failure\" alarm_event_time=\"1426325752\" alarm_status=\"1\" alarm_title=\"System Time Synchronize Failure Trap\" alarm_content=\"\" alarm_serial_id=\"1\" /></trap></event>";
 		tokenRpcService.messageDispatch("cm1", message, parserHeader);
 		System.out.println("done4");*/
+		
+		
+		Thread.currentThread().join();
 	}
 }

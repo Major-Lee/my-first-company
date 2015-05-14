@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
@@ -12,6 +14,7 @@ import com.bhu.vas.rpc.facade.TaskUnitFacadeService;
 @Service("taskRpcService")
 public class TaskRpcService implements ITaskRpcService{
 
+	private final Logger logger = LoggerFactory.getLogger(TaskRpcService.class);
 	@Resource
 	private TaskUnitFacadeService taskUnitFacadeService;
 
@@ -23,7 +26,7 @@ public class TaskRpcService implements ITaskRpcService{
 	@Override
 	public RpcResponseDTO<TaskResDTO> createNewTask(String mac, String opt, /*String payload,*/
 			String channel, String channel_taskid) {
-		System.out.println(String.format("createNewTask mac:%s", mac));
+		logger.info(String.format("createNewTask mac:%s", mac));
 		return taskUnitFacadeService.taskGenerate(mac, opt/*, payload*/, channel, channel_taskid);
 	}
 
@@ -32,7 +35,7 @@ public class TaskRpcService implements ITaskRpcService{
 	 */
 	@Override
 	public void taskStatusFetch(int taskid) {
-		System.out.println(String.format("taskStatusFetch mac:%s", taskid));
+		logger.info(String.format("taskStatusFetch mac:%s", taskid));
 	}
 
 	/**
@@ -41,7 +44,7 @@ public class TaskRpcService implements ITaskRpcService{
 	@Override
 	public void taskStatusFetch4ThirdParties(String channel,
 			String channel_taskid) {
-		System.out.println(String.format("taskStatusFetch4ThirdParties channel:%s channel_taskid:%s", channel,channel_taskid));
+		logger.info(String.format("taskStatusFetch4ThirdParties channel:%s channel_taskid:%s", channel,channel_taskid));
 	}
 
 }
