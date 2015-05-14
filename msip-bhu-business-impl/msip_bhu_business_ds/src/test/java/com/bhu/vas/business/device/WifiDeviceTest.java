@@ -41,8 +41,8 @@ public class WifiDeviceTest extends BaseTest{
 		WifiHandsetDeviceMark mark = new WifiHandsetDeviceMark();
 		mark.setMac("1");
 		mark.setHd_mac("2");
-		mark.setData_rx_limit("1");
-		mark.setData_tx_limit("1");
+//		mark.setData_rx_limit("1");
+//		mark.setData_tx_limit("1");
 		wifiHandsetDeviceMarkService.insert(mark);
 	}
 	

@@ -20,9 +20,7 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
-import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
@@ -632,8 +630,8 @@ public class AsyncMsgHandleService {
 			for(WifiHandsetDeviceMark entity : entitys){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
 				//匹配终端是否在限速列表中
-				WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
-						setting_entity_dto, terminal.getMac());
+//				WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+//						setting_entity_dto, terminal.getMac());
 				
 				if(entity == null){
 					WifiHandsetDeviceMark insert_entity = new WifiHandsetDeviceMark();
@@ -642,10 +640,10 @@ public class AsyncMsgHandleService {
 					insert_entity.setData_tx_rate(terminal.getData_tx_rate());
 					insert_entity.setData_rx_rate(terminal.getData_rx_rate());
 
-					if(rc != null){
-						insert_entity.setData_tx_limit(rc.getTx());
-						insert_entity.setData_rx_limit(rc.getRx());
-					}
+//					if(rc != null){
+//						insert_entity.setData_tx_limit(rc.getTx());
+//						insert_entity.setData_rx_limit(rc.getRx());
+//					}
 					if(need_inserts == null)
 						need_inserts = new ArrayList<WifiHandsetDeviceMark>();
 					need_inserts.add(insert_entity);
@@ -655,10 +653,10 @@ public class AsyncMsgHandleService {
 					entity.setData_rx_rate(terminal.getData_rx_rate());
 					
 					//匹配终端是否在限速列表中
-					if(rc != null){
-						entity.setData_tx_limit(rc.getTx());
-						entity.setData_rx_limit(rc.getRx());
-					}
+//					if(rc != null){
+//						entity.setData_tx_limit(rc.getTx());
+//						entity.setData_rx_limit(rc.getRx());
+//					}
 					
 					if(need_updates == null)
 						need_updates = new ArrayList<WifiHandsetDeviceMark>();

@@ -15,6 +15,7 @@ import com.bhu.vas.api.dto.WifiDeviceAlarmDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
@@ -182,8 +183,13 @@ public class BusinessModelBuilder {
 		if(mark_entity != null){
 			vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
 			//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
-			vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
-			vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_tx_limit()));
+			WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+					setting_dto, hd_mac);
+			if(rc != null){
+				//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+				vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
+				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
+			}
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
 			vto.setTx_rate(mark_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps

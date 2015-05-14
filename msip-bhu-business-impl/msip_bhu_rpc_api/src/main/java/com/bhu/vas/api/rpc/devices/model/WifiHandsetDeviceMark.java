@@ -18,9 +18,9 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 	//终端名称
 //	private String hd_name;
 	//设备发送终端的限速 kbps
-	private String data_tx_limit;
-	//设备接收终端的限速 kbps
-	private String data_rx_limit;
+//	private String data_tx_limit;
+//	//设备接收终端的限速 kbps
+//	private String data_rx_limit;
 //	//是否在黑名单
 //	private boolean block;
 //	//终端连接的设备的ssid
@@ -96,21 +96,21 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 //		this.hd_name = hd_name;
 //	}
 
-	public String getData_tx_limit() {
-		return data_tx_limit;
-	}
-
-	public void setData_tx_limit(String data_tx_limit) {
-		this.data_tx_limit = data_tx_limit;
-	}
-
-	public String getData_rx_limit() {
-		return data_rx_limit;
-	}
-
-	public void setData_rx_limit(String data_rx_limit) {
-		this.data_rx_limit = data_rx_limit;
-	}
+//	public String getData_tx_limit() {
+//		return data_tx_limit;
+//	}
+//
+//	public void setData_tx_limit(String data_tx_limit) {
+//		this.data_tx_limit = data_tx_limit;
+//	}
+//
+//	public String getData_rx_limit() {
+//		return data_rx_limit;
+//	}
+//
+//	public void setData_rx_limit(String data_rx_limit) {
+//		this.data_rx_limit = data_rx_limit;
+//	}
 
 	public String getVapname() {
 		return vapname;

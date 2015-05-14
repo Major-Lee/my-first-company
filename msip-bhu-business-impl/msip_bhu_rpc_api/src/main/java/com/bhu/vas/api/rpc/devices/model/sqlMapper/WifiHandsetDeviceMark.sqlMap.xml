@@ -9,8 +9,6 @@
     <result property="hd_mac" column="hd_mac"/>
     <result property="data_tx_rate" column="data_tx_rate"/>
     <result property="data_rx_rate" column="data_rx_rate"/>
-    <result property="data_tx_limit" column="data_tx_limit"/>
-    <result property="data_rx_limit" column="data_rx_limit"/>
     <result property="vapname" column="vapname"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -27,8 +25,6 @@
 	    	hd_mac,
 	    	data_tx_rate,
 	    	data_rx_rate,
-	    	data_tx_limit,
-	    	data_rx_limit,
 			vapname,
 	    	created_at,
 	    	updated_at
@@ -38,8 +34,6 @@
 	    <![CDATA[
 	    	data_tx_rate,
 	    	data_rx_rate,
-	    	data_tx_limit,
-	    	data_rx_limit,
 			vapname,
 	    	created_at,
 	    	updated_at
@@ -51,8 +45,6 @@
 	    	#{hd_mac},
 	    	#{data_tx_rate},
 	    	#{data_rx_rate},
-	    	#{data_tx_limit},
-	    	#{data_rx_limit},
 			#{vapname},
 	    	#{created_at},
 	    	#{updated_at}
@@ -61,8 +53,6 @@
 	<sql id="modelUpdateValues">
 			data_tx_rate = #{data_tx_rate},
 			data_rx_rate = #{data_rx_rate},
-			data_tx_limit = #{data_tx_limit},
-			data_rx_limit = #{data_rx_limit},
 			vapname = #{vapname},
 	    	updated_at = #{updated_at}
 	</sql>
