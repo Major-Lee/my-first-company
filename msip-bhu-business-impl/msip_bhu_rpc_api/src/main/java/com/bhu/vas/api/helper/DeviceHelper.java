@@ -17,6 +17,7 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.RSAHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -741,21 +742,42 @@ public class DeviceHelper {
 		
 		WifiDeviceSettingAclDTO default_acl_dto = matchDefaultAcl(ds_dto);
 		if(default_acl_dto == null)
-			default_acl_dto = new WifiDeviceSettingAclDTO();
+			default_acl_dto = new WifiDeviceSettingAclDTO(WifiDeviceSettingDTO.Default_AclName);
+		
+		WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get(DeviceSettingAction_Incr);
+		List<String> incr_macs = null;
+		if(acl_incr_dto != null){
+			incr_macs = acl_incr_dto.getMacs();
+			if(incr_macs != null && !incr_macs.isEmpty()){
+				if(!StringHelper.isValidMacs(incr_macs)){
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+				}	
+			}
+		}
+			
+		WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get(DeviceSettingAction_Del);
+		List<String> del_macs = null;
+		if(acl_del_dto != null){
+			del_macs = acl_del_dto.getMacs();
+			if(del_macs != null && !del_macs.isEmpty()){
+				if(!StringHelper.isValidMacs(del_macs)){
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+				}
+			}
+		}
+		
+		if((incr_macs == null || incr_macs.isEmpty()) && (del_macs == null || del_macs.isEmpty()))
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
 		Set<String> macs = new HashSet<String>();
 		if(default_acl_dto.getMacs() != null){
 			macs.addAll(default_acl_dto.getMacs());
 		}
-			
-		WifiDeviceSettingAclDTO acl_incr_dto = acl_dto_map.get(DeviceSettingAction_Incr);
-		if(acl_incr_dto != null && acl_incr_dto.getMacs() != null){
-			macs.addAll(acl_incr_dto.getMacs());
+		if(incr_macs != null && !incr_macs.isEmpty()){
+			macs.addAll(incr_macs);
 		}
-			
-		WifiDeviceSettingAclDTO acl_del_dto = acl_dto_map.get(DeviceSettingAction_Del);
-		if(acl_del_dto != null && acl_del_dto.getMacs() != null){
-			macs.removeAll(acl_del_dto.getMacs());
+		if(del_macs != null && !del_macs.isEmpty()){
+			macs.removeAll(del_macs);
 		}
 		default_acl_dto.setMacs(new ArrayList<String>(macs));
 			

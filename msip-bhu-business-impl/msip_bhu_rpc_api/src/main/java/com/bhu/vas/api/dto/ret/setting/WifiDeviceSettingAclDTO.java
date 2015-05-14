@@ -77,4 +77,5 @@ public class WifiDeviceSettingAclDTO implements DeviceSettingBuilderDTO{
 	public boolean beRemoved() {
 		return false;
 	}
+	
 }
