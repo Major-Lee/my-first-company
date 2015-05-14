@@ -8,7 +8,8 @@ public class WifiDeviceVTO implements Serializable{
 	private int ol;//online wifi设备是否在线 1表示在线 0标识离线
 	private String adr;//所在地域的格式化地址
 	private String om;//oem设备型号
-	private String osv;//oem后软件版本号
+	private String osv;//原始软件版本号
+	private String oesv;//oem后软件版本号
 	private String ovd;//oem厂商
 	private String cfm;//config model
 	private String wm;//work model
@@ -111,5 +112,10 @@ public class WifiDeviceVTO implements Serializable{
 	public void setIpgen(boolean ipgen) {
 		this.ipgen = ipgen;
 	}
-	
+	public String getOesv() {
+		return oesv;
+	}
+	public void setOesv(String oesv) {
+		this.oesv = oesv;
+	}
 }
