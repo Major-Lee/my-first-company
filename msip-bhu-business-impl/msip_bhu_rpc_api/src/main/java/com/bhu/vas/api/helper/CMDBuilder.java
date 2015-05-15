@@ -175,7 +175,7 @@ public class CMDBuilder {
 					break;
 				case DeviceUpgrade:
 					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
-					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_begin(), upgradeDto.getUrl());
+					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
 					break;
 				default:
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
