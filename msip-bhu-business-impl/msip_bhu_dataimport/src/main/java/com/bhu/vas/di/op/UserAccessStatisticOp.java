@@ -47,81 +47,24 @@ public class UserAccessStatisticOp {
                 while ((lineTxt = bufferedReader.readLine()) != null) {
                     //System.out.println(lineTxt);
                     if (lineTxt.startsWith("0001") && lineTxt.endsWith("0000")) {
-                        int currentIndex = 0;
-                        String part0001 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- 任务id : " + part0001);
-                        currentIndex = part0001.length();
 
-                        String part0002 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)) + 1);
-                        System.out.println(" --- 客户端MAC : " + part0002);
-                        currentIndex = part0001.length() + part0002.length();
-
-                        String part0003 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- 设备MAC : " + part0003);
-                        currentIndex = part0001.length() + part0002.length() + part0003.length();
-
-                        String part0004 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- 访问IP : " + part0004);
-                        currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length();
-
-                        String part0005 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- HOST : " + part0005);
-                        currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
-                                part0005.length();
-
-                        String part0006 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- URI : " + part0006);
-                        currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
-                                part0005.length() + part0006.length();
-
-                        String part0007 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- ACCEPT : " + part0007);
-                        currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
-                                part0005.length() + part0006.length() + part0007.length();
-
-                        String part0008 = lineTxt.substring(currentIndex, currentIndex + 4) +
-                                lineTxt.substring(currentIndex + 4, currentIndex + 8) +
-                                lineTxt.substring(currentIndex + 8, currentIndex + 8 + Integer.parseInt(lineTxt.substring(currentIndex + 4, currentIndex + 8)));
-                        System.out.println(" --- USER_AGENT : " + part0008);
-                        currentIndex = part0001.length() + part0002.length() + part0003.length() + part0004.length() +
-                                part0005.length() + part0006.length() + part0007.length() + part0008.length();
-
-                        System.out.println("------------------------------");
-
+                        DpiInfo dinfo = DpiInfo.fromTextLine(lineTxt);
 
                         UserDatePK userDatePK = new UserDatePK();
                         userDatePK.setDate(currentDate);
-                        String mac = part0002.substring(8);
-                        userDatePK.setMac(mac.replace(" ", ""));
-                        String deviceMac = part0003.substring(8);
-                        String host = part0005.substring(8);
-
+                        userDatePK.setMac(dinfo.getTmac());
 
                         UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
                         if (resultMapper.get(userDatePK) == null) {
-                            userAccessStatistics.setMac(mac);
+                            userAccessStatistics.setMac(dinfo.getTmac());
                             userAccessStatistics.setId(userDatePK);
                             userAccessStatistics.setDate(currentDate);
-                            userAccessStatistics.setDevice_mac(deviceMac);
+                            userAccessStatistics.setDevice_mac(dinfo.getDmac());
                             userAccessStatistics.setCreated_at(new Date());
                         } else {
                             userAccessStatistics = resultMapper.get(userDatePK);
                         }
-
+                        String host = dinfo.getAhost();
                         String[] hosts = host.split("\\.");
                         if (hosts.length > 2) {
                             host = host.substring(host.indexOf(".") + 1);
