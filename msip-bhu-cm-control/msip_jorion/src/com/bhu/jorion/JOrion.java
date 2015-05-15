@@ -222,18 +222,19 @@ public class JOrion implements JOrionMBean{
 	public void sendXmlApply(UrsidsSession s, PendingTask t) throws JMSException{
 		LOGGER.info("sending xml reply");
 		String xml = t.getMessage().getText().substring(42);
+		byte[] xmlbytes = xml.getBytes();
 		String mac = t.getMessage().getText().substring(8, 20).toLowerCase();
 		int mtype = Integer.parseInt(t.getMessage().getText().substring(30, 34));
 		int stype = Integer.parseInt(t.getMessage().getText().substring(34, 42));
-		IoBuffer ib = IoBuffer.allocate(xml.length() + 1 + DevHeader.DEV_HDR_LEN);
+		IoBuffer ib = IoBuffer.allocate(xmlbytes.length + 1 + DevHeader.DEV_HDR_LEN);
 		DevHeader dev_hdr = new DevHeader();
 		dev_hdr.setVer(0);
 		dev_hdr.setMtype(mtype);
 		dev_hdr.setStype(stype);
 		dev_hdr.setSequence(DevHeader.getNextSendSequence());
-		dev_hdr.setLength(xml.length() + 1);
+		dev_hdr.setLength(xmlbytes.length + 1);
 		dev_hdr.store(ib);
-		ib.put(xml.getBytes());
+		ib.put(xmlbytes);
 		ib.put((byte)0);
 			
 		UrsidsMessage xml_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, t.getTaskid(), ib.array());
@@ -251,15 +252,16 @@ public class JOrion implements JOrionMBean{
 		//need to send join_rsp
 		LOGGER.info("Sending join reply for mac " + mac);
 		String devrsp = "<join_rsp><ITEM result=\"ok\" /></join_rsp>";
-		IoBuffer ib = IoBuffer.allocate(devrsp.length() + 1 + DevHeader.DEV_HDR_LEN);
+		byte[] xmlbytes = devrsp.getBytes();
+		IoBuffer ib = IoBuffer.allocate(xmlbytes.length + 1 + DevHeader.DEV_HDR_LEN);
 		DevHeader dev_hdr = new DevHeader();
 		dev_hdr.setVer(0);
 		dev_hdr.setMtype(0);
 		dev_hdr.setStype(2);
 		dev_hdr.setSequence(DevHeader.getNextSendSequence());
-		dev_hdr.setLength(devrsp.length() + 1);
+		dev_hdr.setLength(xmlbytes.length + 1);
 		dev_hdr.store(ib);
-		ib.put(devrsp.getBytes());
+		ib.put(xmlbytes);
 		ib.put((byte)0);
 			
 		UrsidsMessage join_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, 0, ib.array());
@@ -282,15 +284,16 @@ public class JOrion implements JOrionMBean{
 			addr = url.substring(0, pos);
 		}
 		String devrsp = "<redirect><ITEM addr=\"" + addr + "\" port=\"" + port + "\" /></redirect>";
-		IoBuffer ib = IoBuffer.allocate(devrsp.length() + 1 + DevHeader.DEV_HDR_LEN);
+		byte[] xmlbytes = devrsp.getBytes();
+		IoBuffer ib = IoBuffer.allocate(xmlbytes.length + 1 + DevHeader.DEV_HDR_LEN);
 		DevHeader dev_hdr = new DevHeader();
 		dev_hdr.setVer(0);
 		dev_hdr.setMtype(0);
 		dev_hdr.setStype(3);
 		dev_hdr.setSequence(DevHeader.getNextSendSequence());
-		dev_hdr.setLength(devrsp.length() + 1);
+		dev_hdr.setLength(xmlbytes.length + 1);
 		dev_hdr.store(ib);
-		ib.put(devrsp.getBytes());
+		ib.put(xmlbytes);
 		ib.put((byte)0);
 			
 		UrsidsMessage redirect_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, 0, ib.array());
