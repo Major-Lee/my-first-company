@@ -33,7 +33,7 @@ public enum OperationCMD {
 			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
 			
 	QueryDeviceSetting("103","查询设备配置","",
-			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.net.ad,dev.mod.basic.wan,dev.sys.users,dev.sys.config\"/></query>"),
+			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.net.ad,dev.mod.basic.wan,dev.sys.users,dev.sys.config,dev.net.mac_management\"/></query>"),
 			//dev.wifi.radio 信号强度
 			//dev.wifi.vap WiFi设置（SSID、密码、是否加密）
 			//dev.wifi.vap  dev.wifi.acllist 黑名单
