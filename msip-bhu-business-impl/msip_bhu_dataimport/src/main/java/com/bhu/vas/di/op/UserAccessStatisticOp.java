@@ -65,11 +65,14 @@ public class UserAccessStatisticOp {
                             userAccessStatistics = resultMapper.get(userDatePK);
                         }
                         String host = dinfo.getAhost();
-                        String[] hosts = host.split("\\.");
-                        if (hosts.length > 2) {
-                            host = host.substring(host.indexOf(".") + 1);
+                        if (host!=null) {
+                            String[] hosts = host.split("\\.");
+                            if (hosts.length > 2) {
+                                host = host.substring(host.indexOf(".") + 1);
+                            }
+                            userAccessStatistics.incrKey(host);
                         }
-                        userAccessStatistics.incrKey(host);
+
                         resultMapper.put(userDatePK, userAccessStatistics);
                     }
                 }
