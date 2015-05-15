@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.util.StringUtils;
 
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -71,9 +74,13 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, max_test_time, builderCMDSerial(opt, taskid_format));
 	}
 
-	public static String builderDeviceUpgrade(String wifi_mac, int taskid, String url) {
+	public static String builderDeviceUpgrade(String wifi_mac, int taskid, String upgrade_begin, String upgrade_end, String url) {
+		String opt = OperationCMD.DeviceUpgrade.getNo();
+		String taskid_format = String.format(SuffixTemplete, taskid);
+//		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
+//				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url, builderCMDSerial(opt, taskid_format));
 		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), OperationCMD.DeviceUpgrade.getNo(), String.format(SuffixTemplete, taskid), url);
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, builderCMDSerial(opt, taskid_format));
 	}
 	
 	/**
@@ -167,8 +174,8 @@ public class CMDBuilder {
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),dpiServerIp);
 					break;
 				case DeviceUpgrade:
-					String url = extparams;
-					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, url);
+					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
+					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
 					break;
 				default:
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
