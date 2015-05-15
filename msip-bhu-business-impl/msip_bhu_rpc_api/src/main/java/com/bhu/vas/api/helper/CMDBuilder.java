@@ -78,7 +78,7 @@ public class CMDBuilder {
 		String opt = OperationCMD.DeviceUpgrade.getNo();
 		String taskid_format = String.format(SuffixTemplete, taskid);
 		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url, builderCMDSerial(opt, taskid_format));
 	}
 	
 	/**
