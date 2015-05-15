@@ -30,6 +30,11 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nl.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.2.4</version>
+        </dependency>
     </dependencies>
 
     <build>
