@@ -47,7 +47,7 @@ private String enable;
 	public void setUrl(String url) {
 		this.url = url;
 	}
-//{"enable":"enable","url":"http://auth.wi2o.cn/ad/ad.js"}
+//{"enable":"enable","url":"http://auth.wi2o.cn/ad/ad.zip"}
 	public static void main(String[] argv){
 		WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
 		//dto.setAd_interface(ad_interface);
