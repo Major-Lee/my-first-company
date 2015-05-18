@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,7 +55,7 @@ public class UserAccessStatisticAnaOp {
 	            String terminal = T.catchUserAgentTermianl(dinfo.getUseragent());
 	            if(terminal == null){
 	            	if(useragent.getOperatingSystem().toString().startsWith("WIN")){
-	            		terminal = "未识别PC";
+	            		terminal = "UNKNOW PC";
 	            	}
 	            	if(useragent.getOperatingSystem() == OperatingSystem.MAC_OS){
 	            		terminal = "Macintosh";
@@ -73,7 +74,7 @@ public class UserAccessStatisticAnaOp {
 	            	}
 	            	
 	            	if(useragent.getOperatingSystem() == OperatingSystem.ANDROID){
-	            		terminal = "未识别安卓";
+	            		terminal = "UNKNOW AND";
 	            	}
 	            }//else terminal = "未识别";
 	            if(terminal.startsWith("zh-cn;")) terminal = terminal.substring(7);
@@ -137,4 +138,11 @@ public class UserAccessStatisticAnaOp {
         System.out.println(opTypeMap);
 	}
 	
+	/**
+	 * 根据终端的名称的前缀 匹配Handset枚举进行分组并计数
+	 * @return
+	 */
+	public static List<String> reArrangeMap(){
+		return null;
+	}
 }
