@@ -479,8 +479,15 @@ public class DeviceFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
 		
 		switch(ods){
-			case DS_Ad:
-				return DeviceHelper.builderDSAdOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_Ad:
+				return DeviceHelper.builderDSHttpAdOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_404:
+				return DeviceHelper.builderDSHttp404Outer(config_sequence, extparams, ds_dto);
+			case DS_Http_Redirect:
+				return DeviceHelper.builderDSHttpRedirectOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_Portal:
+				return DeviceHelper.builderDSHttpPortalOuter(config_sequence, extparams, ds_dto);
+
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
 			case DS_VapPassword:

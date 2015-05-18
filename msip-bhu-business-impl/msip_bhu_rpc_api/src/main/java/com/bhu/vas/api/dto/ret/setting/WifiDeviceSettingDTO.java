@@ -36,7 +36,7 @@ public class WifiDeviceSettingDTO {
 	//终端别名列表
 	private List<WifiDeviceSettingMMDTO> mms;
 	//广告
-	private WifiDeviceSettingAdDTO ad;
+	private WifiDeviceSettingVapAdDTO ad;
 	
 //	public String getPower() {
 //		return power;
@@ -118,11 +118,11 @@ public class WifiDeviceSettingDTO {
 		this.mms = mms;
 	}
 
-	public WifiDeviceSettingAdDTO getAd() {
+	public WifiDeviceSettingVapAdDTO getAd() {
 		return ad;
 	}
 
-	public void setAd(WifiDeviceSettingAdDTO ad) {
+	public void setAd(WifiDeviceSettingVapAdDTO ad) {
 		this.ad = ad;
 	}
 }

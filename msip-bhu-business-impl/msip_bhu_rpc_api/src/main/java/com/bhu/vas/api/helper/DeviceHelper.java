@@ -8,10 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.bhu.vas.api.dto.ret.setting.*;
-
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -500,7 +512,15 @@ public class DeviceHelper {
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
-	public static final String DeviceSetting_AdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_HttpAdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	/*
+	<ITEM bhu_http404_enable="enable" bhu_http404_url="" bhu_http_redirect_enable="enable"
+		    bhu_http_redirect_rule="1,20:00:00,21:00:00,http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com ..."
+		 />*/
+	public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" />";
+	public static final String DeviceSetting_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
+	//TODO:待完善
+	public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
@@ -653,15 +673,39 @@ public class DeviceHelper {
 	 * @param ds_dto
 	 * @return throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	 */
-	public static String builderDSAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		WifiDeviceSettingAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAdDTO.class);
+	public static String builderDSHttpAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingVapAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapAdDTO.class);
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_AdItem, ad_dto);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpAdItem, ad_dto);
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
+	
+	public static String builderDSHttp404Outer(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Http404Item, ad_dto);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+	}
+	
+	public static String builderDSHttpRedirectOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, ad_dto);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+	}
+	
+	public static String builderDSHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpPortalItem, ad_dto);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+	}
 	/**
 	 * 构建信号强度配置数据
 	 * @param config_sequence

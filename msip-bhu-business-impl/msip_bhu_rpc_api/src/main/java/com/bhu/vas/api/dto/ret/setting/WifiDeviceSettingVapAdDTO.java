@@ -9,7 +9,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  * @author tangzichao
  *
  */
-public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
+public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
 	
 	private String bhu_id;
 	
@@ -56,7 +56,7 @@ public class WifiDeviceSettingAdDTO implements DeviceSettingBuilderDTO{
 	}
 	
 	public static void main(String[] argv){
-		WifiDeviceSettingAdDTO dto = new WifiDeviceSettingAdDTO();
+		WifiDeviceSettingVapAdDTO dto = new WifiDeviceSettingVapAdDTO();
 		//dto.setAd_interface(ad_interface);
 		//dto.setAd_url(ad_url);
 		dto.setBhu_ad_url("http://auth.wi2o.cn/ad/ad.js");

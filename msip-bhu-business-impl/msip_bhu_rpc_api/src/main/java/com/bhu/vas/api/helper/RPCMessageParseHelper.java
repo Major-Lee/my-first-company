@@ -18,13 +18,13 @@ import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -341,7 +341,7 @@ public class RPCMessageParseHelper {
 			//解析广告
 			Element ad_item = Dom4jHelper.select(doc, "dev/net/ad/ITEM");
 			if(ad_item != null){
-				WifiDeviceSettingAdDTO ad_dto = new WifiDeviceSettingAdDTO();
+				WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
 //				ad_dto.setId(ad_item.attributeValue("id"));
 //				ad_dto.setEnable(ad_item.attributeValue("enable"));
 //				ad_dto.setAd_interface(ad_item.attributeValue("interface"));
