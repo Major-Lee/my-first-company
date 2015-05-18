@@ -181,16 +181,17 @@ public class BusinessModelBuilder {
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
+		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
+		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
+		WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+				setting_dto, hd_mac);
+		if(rc != null){
+			//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+			vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
+			vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
+		}
+		
 		if(mark_entity != null){
-			vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
-			//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
-			WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
-					setting_dto, hd_mac);
-			if(rc != null){
-				//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
-				vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
-				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
-			}
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
 			vto.setTx_rate(mark_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
