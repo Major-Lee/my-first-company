@@ -287,6 +287,7 @@ public class RPCMessageParseHelper {
 					vap_dto.setAcl_type(vap_item.attributeValue("acl_type"));
 					vap_dto.setRadio(vap_item.attributeValue("radio"));
 					vap_dto.setGuest_en(vap_item.attributeValue("guest_en"));
+					vap_dto.setAuth_key_rsa(vap_item.attributeValue("auth_key_rsa"));
 					vap_dtos.add(vap_dto);
 				}
 				dto.setVaps(vap_dtos);
@@ -373,6 +374,7 @@ public class RPCMessageParseHelper {
 					user_dto.setName(user_item.attributeValue("name"));
 					user_dto.setAuth(user_item.attributeValue("auth"));
 					user_dto.setPassword_enc(user_item.attributeValue("password_enc"));
+					user_dto.setPassword_rsa(user_item.attributeValue("password_rsa"));
 					user_dtos.add(user_dto);
 				}
 				dto.setUsers(user_dtos);

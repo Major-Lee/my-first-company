@@ -30,7 +30,9 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	private String guest_en;
 	
 	private String auth_key;
-	
+
+	private String auth_key_rsa;
+
 	public WifiDeviceSettingVapDTO(){
 		
 	}
@@ -93,7 +95,13 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public void setAuth_key(String auth_key) {
 		this.auth_key = auth_key;
 	}
-	
+	public String getAuth_key_rsa() {
+		return auth_key_rsa;
+	}
+	public void setAuth_key_rsa(String auth_key_rsa) {
+		this.auth_key_rsa = auth_key_rsa;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if(o==null)return false;
