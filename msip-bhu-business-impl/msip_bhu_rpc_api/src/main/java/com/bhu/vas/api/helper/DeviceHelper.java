@@ -163,9 +163,8 @@ public class DeviceHelper {
 	 * @param dto
 	 * @return
 	 */
-	public static String getDeviceMode(WifiDeviceSettingDTO dto){
-		if(dto == null) return null;
-		String mode = dto.getMode();
+	public static String getDeviceMode(String mode){
+		if(StringUtils.isEmpty(mode)) return null;
 		if(WifiDeviceSettingDTO.Mode_Static.equals(mode)){
 			return Mode_Static_Show;
 		}
@@ -427,8 +426,9 @@ public class DeviceHelper {
 					target.setRadios(m_radios);
 				}
 				//合并 wan
-				if(!StringUtils.isEmpty(source.getMode())){
-					target.setMode(source.getMode());
+				WifiDeviceSettingLinkModeDTO mode = source.getMode();
+				if(mode != null){
+					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
 				}
 				//合并 vaps
 				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());

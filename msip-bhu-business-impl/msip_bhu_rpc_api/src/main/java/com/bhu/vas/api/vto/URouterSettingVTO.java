@@ -28,7 +28,7 @@ public class URouterSettingVTO implements Serializable{
 	//vap 密码 加密方式
 	private String vap_auth;
 	//上网方式
-	private String mode;
+	//private String mode;
 	//设备wan ip
 	private String wan_ip;
 	
@@ -86,12 +86,12 @@ public class URouterSettingVTO implements Serializable{
 	public void setVap_auth(String vap_auth) {
 		this.vap_auth = vap_auth;
 	}
-	public String getMode() {
+/*	public String getMode() {
 		return mode;
 	}
 	public void setMode(String mode) {
 		this.mode = mode;
-	}
+	}*/
 	public String getWan_ip() {
 		return wan_ip;
 	}

@@ -317,7 +317,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			vto.setOl(device_entity.isOnline());
 			vto.setUptime(DeviceHelper.getCurrentDeviceUptime(device_entity));
 			vto.setWan_ip(device_entity.getWan_ip());
-			vto.setMode(DeviceHelper.getDeviceMode(setting_dto));
+			//vto.setMode(DeviceHelper.getDeviceMode(setting_dto));
 			//获取正常的vap
 			WifiDeviceSettingVapDTO normal_vap = DeviceHelper.getUrouterDeviceVap(setting_dto);
 			if(normal_vap != null){

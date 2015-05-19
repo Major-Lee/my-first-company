@@ -20,7 +20,8 @@ public class WifiDeviceSettingDTO {
 	//信号强度 多频设备会有多个dto
 	private List<WifiDeviceSettingRadioDTO> radios;
 	//上网方式
-	private String mode;
+	//private String mode;
+	private WifiDeviceSettingLinkModeDTO mode;
 	//配置流水号
 	private String sequence;
 	//VAP列表
@@ -46,16 +47,17 @@ public class WifiDeviceSettingDTO {
 //		this.power = power;
 //	}
 
-	public String getMode() {
-		return mode;
-	}
-
-	public void setMode(String mode) {
-		this.mode = mode;
-	}
 
 	public String getSequence() {
 		return sequence;
+	}
+
+	public WifiDeviceSettingLinkModeDTO getMode() {
+		return mode;
+	}
+
+	public void setMode(WifiDeviceSettingLinkModeDTO mode) {
+		this.mode = mode;
 	}
 
 	public void setSequence(String sequence) {

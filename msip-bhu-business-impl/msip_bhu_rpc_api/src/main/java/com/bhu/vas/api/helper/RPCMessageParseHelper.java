@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
@@ -259,7 +260,18 @@ public class RPCMessageParseHelper {
 			//解析 wan
 			Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
 			if(wan_item != null){
-				dto.setMode(wan_item.attributeValue("mode"));
+				WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
+				linkmodel_dto.setModel(wan_item.attributeValue("mode"));
+				linkmodel_dto.setGateway(wan_item.attributeValue("gateway"));
+				linkmodel_dto.setDns(wan_item.attributeValue("dns"));
+				linkmodel_dto.setIp(wan_item.attributeValue("ip"));
+				linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
+				linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
+				linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
+				linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
+				linkmodel_dto.setUsername(wan_item.attributeValue("username"));
+				//dto.setMode(wan_item.attributeValue("mode"));
+				dto.setMode(linkmodel_dto);
 			}
 			//解析 vaps
 			List<Element> vap_items = Dom4jHelper.selectElements(doc, "dev/wifi/vap/ITEM");
