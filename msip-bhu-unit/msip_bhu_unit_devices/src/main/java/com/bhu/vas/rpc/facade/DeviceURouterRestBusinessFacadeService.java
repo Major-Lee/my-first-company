@@ -341,7 +341,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid, String wifiId){
 		try{
-			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, wifiId);
+			deviceFacadeService.validateUserDevice(uid, wifiId);
 			WifiDeviceSetting setting_entity = deviceFacadeService.validateDeviceSetting(wifiId);
 			
 			URouterModeVTO vto = new URouterModeVTO();
