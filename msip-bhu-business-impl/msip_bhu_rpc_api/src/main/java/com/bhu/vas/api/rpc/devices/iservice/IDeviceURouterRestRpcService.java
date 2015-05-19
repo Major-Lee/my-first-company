@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
@@ -21,4 +22,6 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Map<String,Object>> urouterBlockList(Integer uid, String wifiId, int start, int size);
 	
 	public RpcResponseDTO<URouterSettingVTO> urouterSetting(Integer uid, String wifiId);
+	
+	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid, String wifiId);
 }

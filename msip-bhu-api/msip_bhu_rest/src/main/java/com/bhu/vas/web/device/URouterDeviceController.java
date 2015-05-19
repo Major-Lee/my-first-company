@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
@@ -167,6 +168,29 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac) {
 		
 		RpcResponseDTO<URouterSettingVTO> rpcResponse = deviceURouterRestRpcService.urouterSetting(uid, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 设备上网方式设置显示接口
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/mode",method={RequestMethod.POST})
+	public void mode(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterModeVTO> rpcResponse = deviceURouterRestRpcService.urouterLinkMode(uid, mac);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

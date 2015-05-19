@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
@@ -69,6 +70,15 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
 		return deviceURouterRestRpcService.urouterSetting(uid, wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid,
+			String wifiId) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterLinkMode(uid, wifiId);
 	}
 
 }
