@@ -18,6 +18,8 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	//private String oldpassword;
 
 	private String password;
+
+	private String password_rsa;
 	
 	public String getName() {
 		return name;
@@ -49,6 +51,13 @@ public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getPassword_rsa() {
+		return password_rsa;
+	}
+	public void setPassword_rsa(String password_rsa) {
+		this.password_rsa = password_rsa;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if(o==null)return false;
