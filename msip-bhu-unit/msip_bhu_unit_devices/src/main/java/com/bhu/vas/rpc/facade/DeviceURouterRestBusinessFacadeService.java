@@ -350,9 +350,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(setting_dto != null){
 				WifiDeviceSettingLinkModeDTO mode_dto = setting_dto.getMode();
 				if(mode_dto != null){
-					vto.setIp(mode_dto.getIp());
+					vto.setIp(mode_dto.getReal_ipaddr());
 					vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
-					vto.setNetmask(mode_dto.getNetmask());
+					vto.setNetmask(mode_dto.getReal_netmask());
 					vto.setP_un(mode_dto.getUsername());
 					vto.setP_pwd(mode_dto.getPassword_rsa());
 					vto.setGateway(mode_dto.getGateway());
