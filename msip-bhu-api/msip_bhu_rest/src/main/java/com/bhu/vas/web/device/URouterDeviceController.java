@@ -197,5 +197,38 @@ public class URouterDeviceController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
 		}
 	}
+
+
+	/**
+	 * 获取路由器管理密码
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch/admin_password",method={RequestMethod.POST})
+	public void fetchAdminPassword(HttpServletRequest request,
+								   HttpServletResponse response,
+								   @RequestParam(required = true) Integer uid,
+								   @RequestParam(required = true) String mac) {
+
+	}
+
+	/**
+	 * 获取路由器vap密码
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch/vap_password",method={RequestMethod.POST})
+	public void fetchVapPassword(HttpServletRequest request,
+								   HttpServletResponse response,
+								   @RequestParam(required = true) Integer uid,
+								   @RequestParam(required = true) String mac) {
+
+	}
 	
 }

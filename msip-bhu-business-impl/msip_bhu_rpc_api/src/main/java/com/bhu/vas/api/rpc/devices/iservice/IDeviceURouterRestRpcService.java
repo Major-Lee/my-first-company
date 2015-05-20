@@ -3,11 +3,7 @@ package com.bhu.vas.api.rpc.devices.iservice;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.*;
 
 
 public interface IDeviceURouterRestRpcService {
@@ -24,4 +20,8 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterSettingVTO> urouterSetting(Integer uid, String wifiId);
 	
 	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid, String wifiId);
+
+	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
+
+	RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId);
 }
