@@ -187,8 +187,10 @@ public class BusinessModelBuilder {
 				setting_dto, hd_mac);
 		if(rc != null){
 			//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
-			vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
-			vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
+			if(!StringUtils.isEmpty(rc.getRx()))
+				vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
+			if(!StringUtils.isEmpty(rc.getTx()))
+				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
 		}
 		
 		if(mark_entity != null){

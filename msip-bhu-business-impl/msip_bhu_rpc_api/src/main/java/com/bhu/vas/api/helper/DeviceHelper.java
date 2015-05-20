@@ -851,6 +851,10 @@ public class DeviceHelper {
 				rc_indexs = new ArrayList<Integer>();
 			
 			for(RateControlParamDTO rc_incr_dto : rc_incr_dtos){
+				if(StringUtils.isEmpty(rc_incr_dto.getTm_rx()) || StringUtils.isEmpty(rc_incr_dto.getTm_tx())){
+					continue;
+				}
+					
 				WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_incr_dto.getMac());
 				//如果匹配到 说明是修改
 				if(match_rc_dto != null){
