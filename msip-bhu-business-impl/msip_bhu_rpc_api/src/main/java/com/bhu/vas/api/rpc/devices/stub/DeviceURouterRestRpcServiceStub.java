@@ -79,11 +79,11 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 
 	@Override
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
-		return null;
+		return deviceURouterRestRpcService.urouterAdminPassword(uid, wifiId);
 	}
 
 	@Override
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
-		return null;
+		return deviceURouterRestRpcService.urouterVapPassword(uid, wifiId);
 	}
 }
