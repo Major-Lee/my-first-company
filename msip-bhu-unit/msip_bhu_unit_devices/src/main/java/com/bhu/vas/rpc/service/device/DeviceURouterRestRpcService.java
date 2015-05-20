@@ -4,16 +4,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -158,6 +155,41 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
-	
 
+	@Override
+	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid,
+			String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterLinkMode invoke uid [%s] mac [%s]", 
+				uid, wifiId));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterLinkMode(uid, wifiId.toLowerCase());
+		}
+		catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC urouterLinkMode failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterLinkMode exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+
+	@Override
+	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterAdminPassword invoke uid [%s] mac [%s]",
+				uid, wifiId));
+		return deviceURouterRestBusinessFacadeService.urouterAdminPassword(uid, wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterVapPassword invoke uid [%s] mac [%s]",
+				uid, wifiId));
+		return deviceURouterRestBusinessFacadeService.urouterVapPassword(uid, wifiId);
+	}
 }

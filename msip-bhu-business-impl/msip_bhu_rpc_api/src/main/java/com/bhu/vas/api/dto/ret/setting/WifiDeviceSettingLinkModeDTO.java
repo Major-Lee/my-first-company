@@ -52,7 +52,13 @@ public class WifiDeviceSettingLinkModeDTO implements DeviceSettingBuilderDTO {
      * static dns
      */
     private String dns;
-
+    
+    //dhcp ip
+    private String real_ipaddr;
+    
+    //dhcp 子网
+    private String real_netmask;
+    
 
     public String getModel() {
         return model;
@@ -127,7 +133,23 @@ public class WifiDeviceSettingLinkModeDTO implements DeviceSettingBuilderDTO {
         this.dns = dns;
     }
 
-    @Override
+    public String getReal_ipaddr() {
+		return real_ipaddr;
+	}
+
+	public void setReal_ipaddr(String real_ipaddr) {
+		this.real_ipaddr = real_ipaddr;
+	}
+
+	public String getReal_netmask() {
+		return real_netmask;
+	}
+
+	public void setReal_netmask(String real_netmask) {
+		this.real_netmask = real_netmask;
+	}
+
+	@Override
     public Object[] builderProperties() {
         Object[] properties = new Object[7];
         properties[0] = model;
