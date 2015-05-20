@@ -362,7 +362,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
 		try {
-			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(uid.toString());
+			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(wifiId);
 			URouterAdminPasswordVTO uRouterAdminPasswordVTO = new URouterAdminPasswordVTO();
 			if (wifiDeviceSetting != null) {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
@@ -390,7 +390,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
 		try {
-			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(uid.toString());
+			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(wifiId);
 			URouterVapPasswordVTO uRouterVapPasswordVTO = new URouterVapPasswordVTO();
 			if (wifiDeviceSetting != null) {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
@@ -399,7 +399,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (wifiDeviceSettingVapDTOList != null && !wifiDeviceSettingVapDTOList.isEmpty()) {
 					for (WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO : wifiDeviceSettingVapDTOList) {
 
-						if(wifiDeviceSettingVapDTO.getAcl_name().equals("wlan0")) {
+						if(wifiDeviceSettingVapDTO.getName().equals("wlan0")) {
 							uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
 							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
 						}
