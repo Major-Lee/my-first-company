@@ -851,7 +851,9 @@ public class DeviceHelper {
 				rc_indexs = new ArrayList<Integer>();
 			
 			for(RateControlParamDTO rc_incr_dto : rc_incr_dtos){
-				if(StringUtils.isEmpty(rc_incr_dto.getTm_rx()) || StringUtils.isEmpty(rc_incr_dto.getTm_tx())){
+				//验证限速数值是否合法
+				if(StringUtils.isEmpty(rc_incr_dto.getTm_rx()) || StringUtils.isEmpty(rc_incr_dto.getTm_tx())
+						|| !StringUtils.isNumeric(rc_incr_dto.getTm_rx()) || !StringUtils.isNumeric(rc_incr_dto.getTm_tx())){
 					continue;
 				}
 					
@@ -1036,6 +1038,8 @@ public class DeviceHelper {
 		vap_dtos.add(new WifiDeviceSettingVapDTO("2"));
 		int index = vap_dtos.indexOf(new WifiDeviceSettingVapDTO("2"));
 		System.out.println(index);
+		
+		System.out.println(StringUtils.isNumeric(""));
 //		List<WifiDeviceSettingVapDTO> vaps_source = new ArrayList<WifiDeviceSettingVapDTO>();
 //		vaps_source.add(v4);
 //		
