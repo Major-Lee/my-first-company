@@ -186,6 +186,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * b:如果存在数据waiting 不重新下发指令
 	 * @param uid
 	 * @param wifiId
+	 *
 	 * @return
 	 */
 	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId){

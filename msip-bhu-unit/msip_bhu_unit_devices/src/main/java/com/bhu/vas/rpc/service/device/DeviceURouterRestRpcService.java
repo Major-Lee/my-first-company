@@ -183,13 +183,13 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterAdminPassword invoke uid [%s] mac [%s]",
 				uid, wifiId));
-		return null;
+		return deviceURouterRestBusinessFacadeService.urouterAdminPassword(uid, wifiId);
 	}
 
 	@Override
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterVapPassword invoke uid [%s] mac [%s]",
 				uid, wifiId));
-		return null;
+		return deviceURouterRestBusinessFacadeService.urouterVapPassword(uid, wifiId);
 	}
 }
