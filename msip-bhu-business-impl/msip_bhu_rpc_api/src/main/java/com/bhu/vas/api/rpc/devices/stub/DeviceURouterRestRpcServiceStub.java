@@ -2,15 +2,11 @@ package com.bhu.vas.api.rpc.devices.stub;
 
 import java.util.Map;
 
+import com.bhu.vas.api.vto.*;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -81,4 +77,13 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 		return deviceURouterRestRpcService.urouterLinkMode(uid, wifiId);
 	}
 
+	@Override
+	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
+		return deviceURouterRestRpcService.urouterAdminPassword(uid, wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
+		return deviceURouterRestRpcService.urouterVapPassword(uid, wifiId);
+	}
 }

@@ -8,15 +8,13 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.*;
+import com.bhu.vas.api.vto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -24,12 +22,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -194,6 +186,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * b:如果存在数据waiting 不重新下发指令
 	 * @param uid
 	 * @param wifiId
+	 *
 	 * @return
 	 */
 	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId){
@@ -364,4 +357,61 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
+
+
+
+	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
+		try {
+			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(uid.toString());
+			URouterAdminPasswordVTO uRouterAdminPasswordVTO = new URouterAdminPasswordVTO();
+			if (wifiDeviceSetting != null) {
+				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
+				List<WifiDeviceSettingUserDTO> wifiDeviceSettingUserDTOList  = wifiDeviceSettingDTO.getUsers();
+
+				if (wifiDeviceSettingUserDTOList != null && !wifiDeviceSettingUserDTOList.isEmpty()) {
+
+					for (WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO : wifiDeviceSettingUserDTOList) {
+						uRouterAdminPasswordVTO.setPassword(wifiDeviceSettingUserDTO.getPassword_rsa());
+						break;
+					}
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterAdminPasswordVTO);
+		} catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+
+	/**
+	 * 获取vap密码，暂时urooter默认只取第一个
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
+		try {
+			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(uid.toString());
+			URouterVapPasswordVTO uRouterVapPasswordVTO = new URouterVapPasswordVTO();
+			if (wifiDeviceSetting != null) {
+				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
+				List<WifiDeviceSettingVapDTO> wifiDeviceSettingVapDTOList   = wifiDeviceSettingDTO.getVaps();
+
+				if (wifiDeviceSettingVapDTOList != null && !wifiDeviceSettingVapDTOList.isEmpty()) {
+					for (WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO : wifiDeviceSettingVapDTOList) {
+
+						if(wifiDeviceSettingVapDTO.getAcl_name().equals("wlan0")) {
+							uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
+							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
+						}
+
+					}
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
+		} catch(BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+
+	}
+
 }
