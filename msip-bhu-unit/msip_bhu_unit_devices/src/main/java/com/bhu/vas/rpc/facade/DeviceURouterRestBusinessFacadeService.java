@@ -398,8 +398,12 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				if (wifiDeviceSettingVapDTOList != null && !wifiDeviceSettingVapDTOList.isEmpty()) {
 					for (WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO : wifiDeviceSettingVapDTOList) {
-						uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
-						return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
+
+						if(wifiDeviceSettingVapDTO.getAcl_name().equals("wlan0")) {
+							uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
+							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
+						}
+
 					}
 				}
 			}
