@@ -4,7 +4,9 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
+import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -157,7 +159,13 @@ public class CMDBuilder {
 	}
 	
 	public static String builderCMD4HttpPortalResourceUpdate(String wifi_mac, int taskid,String extparams){
-		return null;
+		String opt = OperationCMD.TriggerHttp404ResourceUpdate.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		WifiDeviceSettingVapHttpPortalDTO httpportal_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
+		//Object[] array = http404_dto
+		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(httpportal_dto.getStyle());
+		return String.format(OperationCMD.TriggerHttpPortalResourceUpdate.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getUrl(),adv.getVer());
 		/*String opt = OperationCMD.TriggerPortalResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		WifiDeviceSettingVapHttpPortalDTO portal_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);

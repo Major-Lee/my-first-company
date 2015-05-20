@@ -224,29 +224,21 @@ public class VapModeDefined {
 	 * @author Edmond
 	 *
 	 */
-	public enum Portal{
-		NORMAL("000","normal","1","http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
-		STYLE001("001","style001","1","http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
+	public enum HtmlPortal{
+		STYLE000("style000","00.00.01","http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
+		STYLE001("style001","00.00.01","http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
 		;
 		
-		private String index;
 		private String style;
 		private String ver;
 		private String url;
 		
-		static Map<String, Portal> allPortalTypes;
+		static Map<String, HtmlPortal> allPortalTypes;
 		
-		Portal(String index,String style,String ver,String url){
-			this.index = index;
+		HtmlPortal(String style,String ver,String url){
 			this.style = style;
 			this.ver = ver;
 			this.url = url;
-		}
-		public String getIndex() {
-			return index;
-		}
-		public void setIndex(String index) {
-			this.index = index;
 		}
 		public String getStyle() {
 			return style;
@@ -268,8 +260,7 @@ public class VapModeDefined {
 		}
 		public String toIndentify(){
 			StringBuilder sb = new StringBuilder();
-			sb.append(index)
-				.append(StringHelper.MINUS_CHAR_GAP).append(style)
+			sb.append(style)
 				.append(StringHelper.MINUS_CHAR_GAP).append(ver);
 			return sb.toString();
 		}
@@ -283,7 +274,7 @@ public class VapModeDefined {
 			if(StringUtils.isEmpty(indentify)) return true;
 			String[] array = indentify.split(StringHelper.MINUS_STRING_GAP);
 			if(array.length != 3) return true;
-			Portal p = getByIndex(array[0]);
+			HtmlPortal p = getByStyle(array[0]);
 			if(p == null) return true;
 			if(!p.getStyle().equals(array[1]) || !p.getVer().equals(array[2]) ) return true;
 			return false;
@@ -295,11 +286,11 @@ public class VapModeDefined {
 		 * @param invalidatedThenDefault indentify验证错误后返回的缺省portal值
 		 * @return 为null则代表目前是最新版本
 		 */
-		public Portal getNewVerVap(String indentify,Portal invalidatedThenDefault){
+		public static HtmlPortal getNewVerVap(String indentify,HtmlPortal invalidatedThenDefault){
 			if(StringUtils.isEmpty(indentify)) return invalidatedThenDefault;
 			String[] array = indentify.split(StringHelper.MINUS_STRING_GAP);
 			if(array.length != 3) return invalidatedThenDefault;
-			Portal p = getByIndex(array[0]);
+			HtmlPortal p = getByStyle(array[0]);
 			if(p == null) return invalidatedThenDefault;
 			if(!p.getStyle().equals(array[1]) || !p.getVer().equals(array[2]) ){
 				return p;
@@ -309,14 +300,14 @@ public class VapModeDefined {
 		
 		
 		static {
-			allPortalTypes = new HashMap<String,Portal>();
-			Portal[] types = values();
-			for (Portal type : types)
-				allPortalTypes.put(type.getIndex(), type);
+			allPortalTypes = new HashMap<String,HtmlPortal>();
+			HtmlPortal[] types = values();
+			for (HtmlPortal type : types)
+				allPortalTypes.put(type.getStyle(), type);
 		}
 		
-		public static Portal getByIndex(String index) {
-			return allPortalTypes.get(index);
+		public static HtmlPortal getByStyle(String stype) {
+			return allPortalTypes.get(stype);
 		}
 	}
 	

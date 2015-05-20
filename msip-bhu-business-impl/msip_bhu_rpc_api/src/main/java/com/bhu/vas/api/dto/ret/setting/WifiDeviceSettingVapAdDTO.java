@@ -8,7 +8,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 /**
  * 设备配置信息的ad
  * 广告信息配置
- * @author tangzichao
+ * @author edmond
  *
  */
 public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
