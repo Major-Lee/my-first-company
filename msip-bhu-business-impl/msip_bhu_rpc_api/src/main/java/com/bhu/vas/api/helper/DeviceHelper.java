@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -837,41 +838,47 @@ public class DeviceHelper {
 	 * @return 
 	 */
 	public static String builderDSRateControlOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		Map<String, List<WifiDeviceSettingRateControlDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, WifiDeviceSettingRateControlDTO.class);
+		Map<String, List<RateControlParamDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, RateControlParamDTO.class);
 		if(rc_dto_map == null || rc_dto_map.isEmpty())
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
 		StringBuffer ds = new StringBuffer();
 		
-		List<WifiDeviceSettingRateControlDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
+		List<RateControlParamDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
 		if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
 			List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
 			if(rc_indexs == null)
 				rc_indexs = new ArrayList<Integer>();
 			
-			for(WifiDeviceSettingRateControlDTO rc_incr_dto : rc_incr_dtos){
+			for(RateControlParamDTO rc_incr_dto : rc_incr_dtos){
 				WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_incr_dto.getMac());
 				//如果匹配到 说明是修改
 				if(match_rc_dto != null){
-					rc_incr_dto.setIndex(match_rc_dto.getIndex());
+					//rc_incr_dto.setIndex(match_rc_dto.getIndex());
+					match_rc_dto.setTx(rc_incr_dto.getTm_rx());
+					match_rc_dto.setRx(rc_incr_dto.getTm_tx());
 				}
 				//没匹配到 说明是新增 获取新的index
 				else{
 					int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
-					rc_incr_dto.setIndex(String.valueOf(index));
+					match_rc_dto = new WifiDeviceSettingRateControlDTO();
+					match_rc_dto.setMac(rc_incr_dto.getMac());
+					match_rc_dto.setIndex(String.valueOf(index));
+					match_rc_dto.setTx(rc_incr_dto.getTm_rx());
+					match_rc_dto.setRx(rc_incr_dto.getTm_tx());
 					rc_indexs.add(index);
 				}
-				ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, rc_incr_dto.builderProperties()));
+				ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, match_rc_dto.builderProperties()));
 			}
 		}
 				
-		List<WifiDeviceSettingRateControlDTO> rc_del_dtos = rc_dto_map.get(DeviceSettingAction_Del);
+		List<RateControlParamDTO> rc_del_dtos = rc_dto_map.get(DeviceSettingAction_Del);
 		if(rc_del_dtos != null && !rc_del_dtos.isEmpty()){
-			for(WifiDeviceSettingRateControlDTO rc_del_dto : rc_del_dtos){
+			for(RateControlParamDTO rc_del_dto : rc_del_dtos){
 				WifiDeviceSettingRateControlDTO match_rc_dto = matchRateControl(ds_dto, rc_del_dto.getMac());
 				if(match_rc_dto != null){
-					rc_del_dto.setIndex(match_rc_dto.getIndex());
-					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveRatecontrolItem, rc_del_dto.
+					//rc_del_dto.setIndex(match_rc_dto.getIndex());
+					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveRatecontrolItem, match_rc_dto.
 							builderProperties(WifiDeviceSettingRateControlDTO.BuilderType_RemoveRC)));
 				}
 			}
