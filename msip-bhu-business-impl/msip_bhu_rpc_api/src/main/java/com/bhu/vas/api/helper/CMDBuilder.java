@@ -1,15 +1,13 @@
 package com.bhu.vas.api.helper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.VapModeDefined;
+import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -141,6 +139,34 @@ public class CMDBuilder {
 				builderCMDSerial(opt, taskid_format));
 	}
 	
+	/**
+	 * 生成Http404ResourceUpdate 指令
+	 * @param wifi_mac
+	 * @param taskid
+	 * @param extparams
+	 * @return
+	 */
+	public static String builderCMD4Http404ResourceUpdate(String wifi_mac, int taskid,String extparams){
+		String opt = OperationCMD.TriggerHttp404ResourceUpdate.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		WifiDeviceSettingVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		//Object[] array = http404_dto
+		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(http404_dto.getStyle());
+		return String.format(OperationCMD.TriggerHttp404ResourceUpdate.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getUrl(),adv.getVer());
+	}
+	
+	public static String builderCMD4HttpPortalResourceUpdate(String wifi_mac, int taskid,String extparams){
+		return null;
+		/*String opt = OperationCMD.TriggerPortalResourceUpdate.getNo();
+		String taskid_format = String.format(SuffixTemplete,taskid);
+		WifiDeviceSettingVapHttpPortalDTO portal_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
+		//Object[] array = http404_dto
+		HtmlInject404 adv = VapModeDefined.Portal.getByStyle(portal_dto.getStyle());
+		return String.format(OperationCMD.TriggerHttp404ResourceUpdate.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getUrl(),adv.getVer());*/
+	}
+	
 //	public static String builderDevHTMLInjectionNotify(String wifi_mac,int taskid,String enable,String adUrl,String adid){
 //		String opt = OperationCMD.DevHTMLInjectionNotify.getNo();
 //		String taskid_format = String.format(SuffixTemplete,taskid);
@@ -251,6 +277,12 @@ public class CMDBuilder {
 	public static TaskSequenceFragment device_setting_modify_taskid_fragment = new TaskSequenceFragment(40001,45000);
 	//对于升级设备 区间段位45001,50000
 	public static TaskSequenceFragment device_upgrade_fragment = new TaskSequenceFragment(45001,50000);
+	
+	//对于设备 开启404
+	public static TaskSequenceFragment device_http404_resourceupgrade_fragment = new TaskSequenceFragment(50001,52000);
+	
+	//对于设备 开启portal
+	public static TaskSequenceFragment device_httpportal_resourceupgrade_fragment = new TaskSequenceFragment(52001,54000);
 	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,-1);
