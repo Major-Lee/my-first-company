@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.ret.setting.*;
 import com.bhu.vas.api.vto.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,6 +31,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
+import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 
@@ -347,7 +349,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
 					vto.setNetmask(mode_dto.getReal_netmask());
 					vto.setP_un(mode_dto.getUsername());
-					vto.setP_pwd(mode_dto.getPassword_rsa());
+					vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
 					vto.setGateway(mode_dto.getGateway());
 					vto.setDns(mode_dto.getDns());
 				}

@@ -26,12 +26,11 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.encrypt.RSAHelper;
+import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -918,7 +917,9 @@ public class DeviceHelper {
 //		}
 
 //		user_dto.setOldpassword(RSAHelper.encryptToAp(user_dto.getOldpassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
-		user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+		//user_dto.setPassword(RSAHelper.encryptToAp(user_dto.getPassword(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+		user_dto.setPassword(JNIRsaHelper.jniRsaEncryptHexStr(user_dto.getPassword()));
+		
 		String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 		return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 	}
@@ -934,7 +935,8 @@ public class DeviceHelper {
 			WifiDeviceSettingLinkModeDTO linkModelDTO = JsonHelper.getDTO(extparams, WifiDeviceSettingLinkModeDTO.class);
 			if (linkModelDTO != null) {
 				if (WifiDeviceSettingDTO.Mode_Pppoe.equals(linkModelDTO.getModel())){
-					linkModelDTO.setPassword_rsa(RSAHelper.encryptToAp(linkModelDTO.getPassword_rsa(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+					//linkModelDTO.setPassword_rsa(RSAHelper.encryptToAp(linkModelDTO.getPassword_rsa(), RuntimeConfiguration.BHUDeviceRSAPublicKey));
+					linkModelDTO.setPassword_rsa(JNIRsaHelper.jniRsaEncryptHexStr(linkModelDTO.getPassword_rsa()));
 					linkModelDTO.setLink_mode("auto");
 					linkModelDTO.setIdle("60");
 					String item = builderDeviceSettingItem(DeviceSetting_LinkModelPPPOEItem,
