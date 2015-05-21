@@ -22,6 +22,8 @@ public class WifiDeviceVTO implements Serializable{
 	private long cts;//创建时间
 	private long rts;//最后注册时间
 	private boolean ipgen;
+	private long ofts;//离线时间
+	
 	public String getWid() {
 		return wid;
 	}
@@ -117,5 +119,11 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setOesv(String oesv) {
 		this.oesv = oesv;
+	}
+	public long getOfts() {
+		return ofts;
+	}
+	public void setOfts(long ofts) {
+		this.ofts = ofts;
 	}
 }
