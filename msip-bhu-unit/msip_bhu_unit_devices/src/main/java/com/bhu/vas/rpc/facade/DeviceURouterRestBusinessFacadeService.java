@@ -10,6 +10,8 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.ret.setting.*;
 import com.bhu.vas.api.vto.*;
+
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,6 +32,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
+import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 
@@ -347,7 +350,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
 					vto.setNetmask(mode_dto.getReal_netmask());
 					vto.setP_un(mode_dto.getUsername());
-					vto.setP_pwd(mode_dto.getPassword_rsa());
+					vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
 					vto.setGateway(mode_dto.getGateway());
 					vto.setDns(mode_dto.getDns());
 				}
@@ -374,7 +377,8 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (wifiDeviceSettingUserDTOList != null && !wifiDeviceSettingUserDTOList.isEmpty()) {
 
 					for (WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO : wifiDeviceSettingUserDTOList) {
-						uRouterAdminPasswordVTO.setPassword(wifiDeviceSettingUserDTO.getPassword_rsa());
+						uRouterAdminPasswordVTO.setPassword(
+								JNIRsaHelper.jniRsaDecryptHexStr(wifiDeviceSettingUserDTO.getPassword_rsa()));
 						break;
 					}
 				}
@@ -401,17 +405,17 @@ public class DeviceURouterRestBusinessFacadeService {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
 				List<WifiDeviceSettingVapDTO> wifiDeviceSettingVapDTOList   = wifiDeviceSettingDTO.getVaps();
 
-				if (wifiDeviceSettingVapDTOList != null && !wifiDeviceSettingVapDTOList.isEmpty()) {
-					for (WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO : wifiDeviceSettingVapDTOList) {
 
-						if(wifiDeviceSettingVapDTO.getName().equals("wlan0")) {
-							uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
-							uRouterVapPasswordVTO.setSsid(wifiDeviceSettingVapDTO.getSsid());
-							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
-						}
+				WifiDeviceSettingVapDTO frist_vap_dto = DeviceHelper.getUrouterDeviceVap(wifiDeviceSettingDTO);
+				//如果没有一个可用的vap
+				if(frist_vap_dto == null)
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 
-					}
-				}
+				uRouterVapPasswordVTO.setPassword(
+						JNIRsaHelper.jniRsaDecryptHexStr(frist_vap_dto.getAuth_key_rsa()));
+				uRouterVapPasswordVTO.setSsid(frist_vap_dto.getSsid());
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
+
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
 		} catch(BusinessI18nCodeException bex) {
