@@ -18,7 +18,7 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[2];
+		Object[] properties = new Object[3];
 		properties[0] = enable;
 		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(style);
 		properties[1] = adv.getPackurl();

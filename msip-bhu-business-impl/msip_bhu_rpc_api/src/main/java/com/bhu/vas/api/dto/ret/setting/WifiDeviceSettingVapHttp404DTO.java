@@ -17,7 +17,7 @@ public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[2];
+		Object[] properties = new Object[3];
 		properties[0] = enable;
 		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
 		properties[1] = adv.getPackurl();

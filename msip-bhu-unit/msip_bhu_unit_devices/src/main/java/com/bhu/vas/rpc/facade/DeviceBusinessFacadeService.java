@@ -668,8 +668,8 @@ public class DeviceBusinessFacadeService {
 		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				QuerySerialReturnDTO.class);
 		//2:任务callback
-		WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
-		if(completed != null){
+		//WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
+		//if(completed != null){
 			//发送配置Http404 修改指令
 			HtmlInject404 html404 = HtmlInject404.getNewVerVap(resultDto.getResource_ver(),HtmlInject404.STYLE000);
 			WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
@@ -686,15 +686,15 @@ public class DeviceBusinessFacadeService {
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 			}
-		}
+		//}
 	}
 	public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				QuerySerialReturnDTO.class);
 		//2:任务callback
-		WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
-		if(completed != null){
+		//WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
+		//if(completed != null){
 			//发送配置Http404 修改指令
 			HtmlPortal hp = HtmlPortal.getNewVerVap(resultDto.getResource_ver(),HtmlPortal.STYLE000);
 			WifiDeviceSettingVapHttpPortalDTO dto = new WifiDeviceSettingVapHttpPortalDTO();
@@ -711,7 +711,7 @@ public class DeviceBusinessFacadeService {
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 			}
-		}
+		//}
 	}
 	public void taskCommonProcessor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
