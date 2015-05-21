@@ -332,12 +332,13 @@ public class VapModeDefined {
 	}
 	
 	
-	/*public static void main(String[] argv){
-		String aa = "000-001-sdf";
+	public static void main(String[] argv){
+		System.out.println(String.format("%s %s", 1,2,3));
+		/*String aa = "000-001-sdf";
 		String[] ss = aa.split(StringHelper.MINUS_STRING_GAP);
 		for(String s:ss){
 			System.out.println(s);
-		}
+		}*/
 		
-	}*/
+	}
 }

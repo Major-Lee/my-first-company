@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.dto.ret.setting.*;
 import com.bhu.vas.api.vto.*;
 
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -404,18 +405,17 @@ public class DeviceURouterRestBusinessFacadeService {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
 				List<WifiDeviceSettingVapDTO> wifiDeviceSettingVapDTOList   = wifiDeviceSettingDTO.getVaps();
 
-				if (wifiDeviceSettingVapDTOList != null && !wifiDeviceSettingVapDTOList.isEmpty()) {
-					for (WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO : wifiDeviceSettingVapDTOList) {
 
-						if(wifiDeviceSettingVapDTO.getName().equals("wlan0")) {
-							uRouterVapPasswordVTO.setPassword(
-									JNIRsaHelper.jniRsaDecryptHexStr(wifiDeviceSettingVapDTO.getAuth_key_rsa()));
-							uRouterVapPasswordVTO.setSsid(wifiDeviceSettingVapDTO.getSsid());
-							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
-						}
+				WifiDeviceSettingVapDTO frist_vap_dto = DeviceHelper.getUrouterDeviceVap(wifiDeviceSettingDTO);
+				//如果没有一个可用的vap
+				if(frist_vap_dto == null)
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 
-					}
-				}
+				uRouterVapPasswordVTO.setPassword(
+						JNIRsaHelper.jniRsaDecryptHexStr(frist_vap_dto.getAuth_key_rsa()));
+				uRouterVapPasswordVTO.setSsid(frist_vap_dto.getSsid());
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
+
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
 		} catch(BusinessI18nCodeException bex) {
