@@ -147,6 +147,10 @@ public class BusinessModelBuilder {
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
 			vto.setIpgen(entity.isIpgen());
+			//如果是离线 计算离线时间
+			if(vto.getOl() == 0){
+				vto.setOfts(System.currentTimeMillis() - entity.getUpdated_at().getTime());
+			}
 		}
 		return vto;
 	}
@@ -172,6 +176,10 @@ public class BusinessModelBuilder {
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
 			vto.setIpgen(entity.isIpgen());
+			//如果是离线 计算离线时间
+			if(vto.getOl() == 0){
+				vto.setOfts(System.currentTimeMillis() - entity.getUpdated_at().getTime());
+			}
 		}
 		return vto;
 	}
