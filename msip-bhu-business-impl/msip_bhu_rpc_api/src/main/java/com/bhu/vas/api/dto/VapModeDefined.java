@@ -13,8 +13,8 @@ public class VapModeDefined {
 	private final static String url_prefix = "http://192.168.66.7/vap/";
 	
 	public enum HtmlInjectAdv{
-		STYLE000("STYLE000","00.00.01","http://auth.wi2o.cn/ad/ad.js"),
-		STYLE001("STYLE001","00.00.01",url_prefix.concat("ad/001/js/ad.js")),
+		STYLE000("style000","00.00.01","http://auth.wi2o.cn/ad/ad.js"),
+		STYLE001("style001","00.00.01",url_prefix.concat("ad/001/js/ad.js")),
 		;
 		//private String index;
 		private String style;
@@ -122,20 +122,24 @@ public class VapModeDefined {
 	 * 版本号 修改后为递增修改
 	 * @author Edmond
 	 *
+	 *进入目录style001 执行tar -czf style001.tar.gz *
+	 *tar -xvf style001.tar.gz
 	 */
 	public enum HtmlInject404{
-		STYLE000("style000","00.00.01",url_prefix.concat("404/rawfiles/inject/style000.zip")),
-		STYLE001("style001","00.00.01",url_prefix.concat("404/rawfiles/inject/style001.zip")),
+		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style000.tar.gz")),
+		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style001.tar.gz")),
 		;
 
 		private String style;
 		private String ver;
-		private String url;
+		private String dynaurl;
+		private String packurl;
 		static Map<String, HtmlInject404> allInject404Types;
-		HtmlInject404(String style,String ver,String url){
+		HtmlInject404(String style,String ver,String dynaurl,String packurl){
 			this.style = style;
 			this.ver = ver;
-			this.url = url;
+			this.dynaurl = dynaurl;
+			this.packurl = packurl;
 		}
 		public String getStyle() {
 			return style;
@@ -149,13 +153,20 @@ public class VapModeDefined {
 		public void setVer(String ver) {
 			this.ver = ver;
 		}
-		public String getUrl() {
-			return url;
+		
+		public String getPackurl() {
+			return packurl;
 		}
-		public void setUrl(String url) {
-			this.url = url;
+		public void setPackurl(String packurl) {
+			this.packurl = packurl;
 		}
 		
+		public String getDynaurl() {
+			return dynaurl;
+		}
+		public void setDynaurl(String dynaurl) {
+			this.dynaurl = dynaurl;
+		}
 		public String toIndentify(){
 			StringBuilder sb = new StringBuilder();
 			sb/*.append(index)
@@ -225,20 +236,22 @@ public class VapModeDefined {
 	 *
 	 */
 	public enum HtmlPortal{
-		STYLE000("style000","00.00.01","http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
-		STYLE001("style001","00.00.01","http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
+		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
+		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
 		;
 		
 		private String style;
 		private String ver;
-		private String url;
+		private String dynaurl;
+		private String packurl;
 		
 		static Map<String, HtmlPortal> allPortalTypes;
 		
-		HtmlPortal(String style,String ver,String url){
+		HtmlPortal(String style,String ver,String dynaurl,String packurl){
 			this.style = style;
 			this.ver = ver;
-			this.url = url;
+			this.dynaurl = dynaurl;
+			this.packurl = packurl;
 		}
 		public String getStyle() {
 			return style;
@@ -252,11 +265,18 @@ public class VapModeDefined {
 		public void setVer(String ver) {
 			this.ver = ver;
 		}
-		public String getUrl() {
-			return url;
+		
+		public String getDynaurl() {
+			return dynaurl;
 		}
-		public void setUrl(String url) {
-			this.url = url;
+		public void setDynaurl(String dynaurl) {
+			this.dynaurl = dynaurl;
+		}
+		public String getPackurl() {
+			return packurl;
+		}
+		public void setPackurl(String packurl) {
+			this.packurl = packurl;
 		}
 		public String toIndentify(){
 			StringBuilder sb = new StringBuilder();
