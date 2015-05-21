@@ -376,7 +376,8 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (wifiDeviceSettingUserDTOList != null && !wifiDeviceSettingUserDTOList.isEmpty()) {
 
 					for (WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO : wifiDeviceSettingUserDTOList) {
-						uRouterAdminPasswordVTO.setPassword(wifiDeviceSettingUserDTO.getPassword_rsa());
+						uRouterAdminPasswordVTO.setPassword(
+								JNIRsaHelper.jniRsaDecryptHexStr(wifiDeviceSettingUserDTO.getPassword_rsa()));
 						break;
 					}
 				}
@@ -407,7 +408,8 @@ public class DeviceURouterRestBusinessFacadeService {
 					for (WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO : wifiDeviceSettingVapDTOList) {
 
 						if(wifiDeviceSettingVapDTO.getName().equals("wlan0")) {
-							uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
+							uRouterVapPasswordVTO.setPassword(
+									JNIRsaHelper.jniRsaDecryptHexStr(wifiDeviceSettingVapDTO.getAuth_key_rsa()));
 							uRouterVapPasswordVTO.setSsid(wifiDeviceSettingVapDTO.getSsid());
 							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
 						}
