@@ -362,7 +362,10 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
 		try {
-			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(wifiId);
+
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting wifiDeviceSetting = deviceFacadeService.validateDeviceSetting(wifiId);
+
 			URouterAdminPasswordVTO uRouterAdminPasswordVTO = new URouterAdminPasswordVTO();
 			if (wifiDeviceSetting != null) {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
@@ -390,7 +393,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
 		try {
-			WifiDeviceSetting wifiDeviceSetting  = wifiDeviceSettingService.getById(wifiId);
+
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting wifiDeviceSetting = deviceFacadeService.validateDeviceSetting(wifiId);
 			URouterVapPasswordVTO uRouterVapPasswordVTO = new URouterVapPasswordVTO();
 			if (wifiDeviceSetting != null) {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
