@@ -481,10 +481,11 @@ public class DeviceFacadeService {
 		switch(ods){
 			case DS_Http_Ad:
 				return DeviceHelper.builderDSHttpAdOuter(config_sequence, extparams, ds_dto);
-			case DS_Http_404:
-				return DeviceHelper.builderDSHttp404Outer(config_sequence, extparams, ds_dto);
 			case DS_Http_Redirect:
 				return DeviceHelper.builderDSHttpRedirectOuter(config_sequence, extparams, ds_dto);
+				
+			case DS_Http_404:
+				return DeviceHelper.builderDSHttp404Outer(config_sequence, extparams, ds_dto);
 			case DS_Http_Portal:
 				return DeviceHelper.builderDSHttpPortalOuter(config_sequence, extparams, ds_dto);
 

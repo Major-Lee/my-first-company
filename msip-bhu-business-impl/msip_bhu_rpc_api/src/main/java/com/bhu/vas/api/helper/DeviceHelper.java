@@ -682,6 +682,13 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
+	public static String builderDSHttpRedirectOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, ad_dto);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+	}
 	
 	public static String builderDSHttp404Outer(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
@@ -691,13 +698,7 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttpRedirectOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
-		if(ad_dto == null)
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, ad_dto);
-		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
-	}
+	
 	
 	public static String builderDSHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
@@ -706,6 +707,8 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpPortalItem, ad_dto);
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
+	
+	
 	/**
 	 * 构建信号强度配置数据
 	 * @param config_sequence

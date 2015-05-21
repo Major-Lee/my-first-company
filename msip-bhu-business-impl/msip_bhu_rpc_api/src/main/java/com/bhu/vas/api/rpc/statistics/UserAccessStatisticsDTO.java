@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 4/29/15.
  */
+@SuppressWarnings("serial")
 public class UserAccessStatisticsDTO implements Serializable {
     private String mac;
     private String date;

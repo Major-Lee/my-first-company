@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
@@ -67,9 +68,17 @@ public class TaskUnitFacadeService {
 			logger.info("taskComming ==start==");
 			taskFacadeService.taskComming(downTask);
 			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
-				String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
-				logger.info("payload===" + payload);
-				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
+				if(OperationDS.DS_Http_404.getNo().equals(subopt)){
+					//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
+					downTask.setPayload(CMDBuilder.builderCMD4Http404ResourceUpdate(mac, downTask.getId(), extparams));
+				}else if(OperationDS.DS_Http_Portal.getNo().equals(subopt)){
+					//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
+					downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
+				}else{
+					String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+					logger.info("payload===" + payload);
+					downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
+				}
 			}else{
 				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 			}

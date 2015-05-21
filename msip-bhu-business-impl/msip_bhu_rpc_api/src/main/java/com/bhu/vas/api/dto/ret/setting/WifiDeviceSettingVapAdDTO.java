@@ -1,12 +1,14 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import com.bhu.vas.api.dto.VapModeDefined;
+import com.bhu.vas.api.dto.VapModeDefined.HtmlInjectAdv;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 
 /**
  * 设备配置信息的ad
  * 广告信息配置
- * @author tangzichao
+ * @author edmond
  *
  */
 public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
@@ -40,7 +42,8 @@ public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
 	public Object[] builderProperties() {
 		Object[] properties = new Object[3];
 		properties[0] = bhu_id;
-		properties[1] = bhu_ad_url;
+		HtmlInjectAdv adv = VapModeDefined.HtmlInjectAdv.getByStyle(bhu_ad_url);
+		properties[1] = adv.getUrl();
 		properties[2] = bhu_enable;
 		return properties;
 	}
@@ -54,7 +57,7 @@ public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
 	public boolean beRemoved() {
 		return false;
 	}
-	
+	//http://192.168.66.7/vap/ad/001/js/ad.js
 	public static void main(String[] argv){
 		WifiDeviceSettingVapAdDTO dto = new WifiDeviceSettingVapAdDTO();
 		//dto.setAd_interface(ad_interface);

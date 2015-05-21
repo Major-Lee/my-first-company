@@ -11,6 +11,8 @@ public class QuerySerialReturnDTO implements Serializable{
 	//设备网速
 	private String rate;
 	
+	//资源包版本
+	private String resource_ver;
 	public String getCmd() {
 		return cmd;
 	}
@@ -40,6 +42,12 @@ public class QuerySerialReturnDTO implements Serializable{
 	}
 	public void setRate(String rate) {
 		this.rate = rate;
+	}
+	public String getResource_ver() {
+		return resource_ver;
+	}
+	public void setResource_ver(String resource_ver) {
+		this.resource_ver = resource_ver;
 	}
 	
 //	public boolean isDone(){

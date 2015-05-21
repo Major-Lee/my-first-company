@@ -1,24 +1,27 @@
 package com.bhu.vas.api.dto.ret.setting;
 
-import com.smartwork.msip.cores.helper.JsonHelper;
+import com.bhu.vas.api.dto.VapModeDefined;
+import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
 
 
 /**
  * 设备配置信息的ad
  * 广告信息配置
- * @author tangzichao
+ * @author edmond
  *
  */
 public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
-private String enable;
+	private String enable;
 	
-	private String url;
+	private String style;
 	
 	@Override
 	public Object[] builderProperties() {
 		Object[] properties = new Object[2];
 		properties[0] = enable;
-		properties[1] = url;
+		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
+		properties[1] = adv.getPackurl();
+		properties[2] = adv.toIndentify();
 		return properties;
 	}
 	
@@ -40,20 +43,28 @@ private String enable;
 		this.enable = enable;
 	}
 
-	public String getUrl() {
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	/*public String getUrl() {
 		return url;
 	}
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
+	}*/
 //{"enable":"enable","url":"http://auth.wi2o.cn/ad/ad.zip"}
 	public static void main(String[] argv){
-		WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
+		/*WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
 		//dto.setAd_interface(ad_interface);
 		//dto.setAd_url(ad_url);
 		dto.setUrl("http://auth.wi2o.cn/ad/ad.js");
 		dto.setEnable("enable");
-		System.out.println(JsonHelper.getJSONString(dto));
+		System.out.println(JsonHelper.getJSONString(dto));*/
 	}
 }
