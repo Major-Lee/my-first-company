@@ -21,7 +21,7 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 		Object[] properties = new Object[2];
 		properties[0] = enable;
 		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(style);
-		properties[1] = adv.getUrl();
+		properties[1] = adv.getPackurl();
 		properties[2] = adv.toIndentify();
 		return properties;
 	}
