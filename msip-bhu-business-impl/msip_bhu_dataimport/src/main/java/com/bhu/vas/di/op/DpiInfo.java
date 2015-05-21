@@ -3,7 +3,6 @@ package com.bhu.vas.di.op;
 import java.io.UnsupportedEncodingException;
 
 import com.smartwork.msip.cores.helper.ByteArrayHelper;
-import com.smartwork.msip.cores.helper.ParamHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class DpiInfo {
@@ -106,7 +105,7 @@ public class DpiInfo {
 		int start = 0;
 		//int currentIndex = 0;
 		DpiInfo dinfo = new DpiInfo();
-		byte[] lineBytes = lineText.getBytes(ParamHelper.FILE_WRITING_ENCODING);
+		byte[] lineBytes = lineText.getBytes(StringHelper.CHATSET_GBK);
 		//String currentText = new String(lineText);
 		do{
 			//byte[] index = ByteArrayHelper.get(lineBytes, 0, 4);
@@ -114,12 +113,12 @@ public class DpiInfo {
 			int tlen = Integer.parseInt(new String(ByteArrayHelper.get(lineBytes, start+4, 4)));
 			String payload = null;
 			if(Index_2.equals(index)){
-				payload = new String(ByteArrayHelper.get(lineBytes, start+8, tlen+1),ParamHelper.FILE_WRITING_ENCODING);
+				payload = new String(ByteArrayHelper.get(lineBytes, start+8, tlen+1),StringHelper.CHATSET_GBK);
 				start = start+ 8+tlen+1;
 				//System.out.println(payload);
 				//payload = currentText.substring(8,8+tlen+1);
 			}else{
-				payload = new String(ByteArrayHelper.get(lineBytes, start+8, tlen),ParamHelper.FILE_WRITING_ENCODING);
+				payload = new String(ByteArrayHelper.get(lineBytes, start+8, tlen),StringHelper.CHATSET_GBK);
 				start = start+8+tlen;
 				//System.out.println(payload);
 				//payload = currentText.substring(8,8+tlen);
