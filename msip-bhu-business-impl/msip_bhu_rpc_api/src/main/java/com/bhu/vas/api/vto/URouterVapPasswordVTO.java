@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class URouterVapPasswordVTO implements Serializable {
     private String password;
+    private String ssid;
 
     public String getPassword() {
         return password;
@@ -14,5 +15,13 @@ public class URouterVapPasswordVTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
     }
 }

@@ -401,6 +401,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 						if(wifiDeviceSettingVapDTO.getName().equals("wlan0")) {
 							uRouterVapPasswordVTO.setPassword(wifiDeviceSettingVapDTO.getAuth_key_rsa());
+							uRouterVapPasswordVTO.setSsid(wifiDeviceSettingVapDTO.getSsid());
 							return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
 						}
 
