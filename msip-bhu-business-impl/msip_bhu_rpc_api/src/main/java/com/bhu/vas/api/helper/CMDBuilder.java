@@ -155,7 +155,7 @@ public class CMDBuilder {
 		//Object[] array = http404_dto
 		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(http404_dto.getStyle());
 		return String.format(OperationCMD.TriggerHttp404ResourceUpdate.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getPackurl(),adv.toIndentify());
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getPackurl(),adv.toIndentify(),builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderCMD4HttpPortalResourceUpdate(String wifi_mac, int taskid,String extparams){
@@ -165,7 +165,7 @@ public class CMDBuilder {
 		//Object[] array = http404_dto
 		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(httpportal_dto.getStyle());
 		return String.format(OperationCMD.TriggerHttpPortalResourceUpdate.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getPackurl(),adv.toIndentify());
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getPackurl(),adv.toIndentify(),builderCMDSerial(opt, taskid_format));
 		/*String opt = OperationCMD.TriggerPortalResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		WifiDeviceSettingVapHttpPortalDTO portal_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
