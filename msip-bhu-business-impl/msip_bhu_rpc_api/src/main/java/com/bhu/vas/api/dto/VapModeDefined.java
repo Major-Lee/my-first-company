@@ -14,7 +14,7 @@ public class VapModeDefined {
 	
 	public enum HtmlInjectAdv{
 		STYLE000("STYLE000","00.00.01","http://auth.wi2o.cn/ad/ad.js"),
-		STYLE001("STYLE001","00.00.01",url_prefix+"ad/001/js/ad.js"),
+		STYLE001("STYLE001","00.00.01",url_prefix.concat("ad/001/js/ad.js")),
 		;
 		//private String index;
 		private String style;
@@ -124,8 +124,8 @@ public class VapModeDefined {
 	 *
 	 */
 	public enum HtmlInject404{
-		STYLE000("style000","00.00.01","http://vap.bhunetworks.com/vapfiles/inject/000-normal-1.zip"),
-		STYLE001("style001","00.00.01","http://vap.bhunetworks.com/vapfiles/inject/000-style001-1.zip"),
+		STYLE000("style000","00.00.01",url_prefix.concat("404/rawfiles/inject/style000.zip")),
+		STYLE001("style001","00.00.01",url_prefix.concat("404/rawfiles/inject/style001.zip")),
 		;
 
 		private String style;
