@@ -710,8 +710,6 @@ public class DeviceHelper {
 	}
 	
 	
-	
-	
 	/**
 	 * 构建信号强度配置数据
 	 * @param config_sequence
