@@ -60,9 +60,11 @@ public class TaskUnitFacadeService {
 			}
 			
 			WifiDeviceDownTask downTask = new WifiDeviceDownTask();
+			downTask.setUid(uid);
 			downTask.setChannel(channel);
 			downTask.setChannel_taskid(channel_taskid);
 			//downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, taskid));
+			downTask.setSubopt(subopt);
 			downTask.setOpt(opt);
 			downTask.setMac(mac);
 			logger.info("taskComming ==start==");

@@ -6,6 +6,9 @@
 
   <resultMap id="modelResult" type="wifiDeviceDownTaskCompleted">
     <result property="id" column="id"/>
+    <result property="uid" column="uid"/>
+    <result property="opt" column="opt"/>
+    <result property="subopt" column="subopt"/>
     <result property="payload" column="payload"/>
     <result property="state" column="state"/>
     <result property="task" column="task"/>
@@ -30,7 +33,9 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	uid,
 	    	opt,
+	    	subopt,
 	    	payload,
 	    	state,
 	    	task,
@@ -47,7 +52,9 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	uid,
 	    	opt,
+	    	subopt,
 	    	payload,
 	    	state,
 	    	task,
@@ -65,7 +72,9 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{uid},
 			#{opt},
+			#{subopt},
 	    	#{payload},
 	    	#{state},
 	    	#{task},
@@ -82,7 +91,9 @@
 	
 	
 	<sql id="modelUpdateValues">
+			uid = #{uid},
 			opt = #{opt},
+			subopt = #{subopt},
 			payload = #{payload},
 			state = #{state},
 			task = #{task},

@@ -16,6 +16,9 @@ public enum ActionMessageType {
 	WifiDeviceRealtimeRateFetch("下发设备实时速率","wdrealtime","WR"),
 	WifiDeviceHDRateFetch("下发终端实时速率","wdrealtime","WH"),
 	WifiDeviceSpeedFetch("下发设备的网速","wdspeed","WS"),
+	
+	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
+	
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
 	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),

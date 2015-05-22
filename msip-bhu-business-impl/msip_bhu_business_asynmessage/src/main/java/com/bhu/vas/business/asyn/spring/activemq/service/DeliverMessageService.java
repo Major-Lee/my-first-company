@@ -10,6 +10,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
@@ -229,4 +230,13 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
+	public void sendDeviceModifySettingAclMacsActionMessage(Integer uid, String mac){
+		DeviceModifySettingAclMacsDTO dto = new DeviceModifySettingAclMacsDTO();
+		dto.setUid(uid);
+		dto.setMac(mac);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
 }

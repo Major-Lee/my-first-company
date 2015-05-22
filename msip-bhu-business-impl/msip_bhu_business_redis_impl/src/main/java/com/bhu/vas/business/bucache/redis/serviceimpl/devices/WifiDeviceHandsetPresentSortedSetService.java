@@ -1,6 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.util.StringUtils;
@@ -23,8 +24,6 @@ import com.smartwork.msip.cores.orm.support.page.PageHelper;
  *  	value 移动设备的mac
  *  
  * 1：移动设备上线新增，下线删除，sync更新数据
- * 2：由于移动设备sync消息是多条单item消息，后台服务无法准确的去掉已经下线的移动设备数据，需要后台定时程序来进行维护
- * 例如 后台定时程序每2个小时会以2小时前的时间作为最大阀值，来进行zremrangeByScore来进行删除已下线的移动设备数据
  * @author lawliet
  *
  */
@@ -68,7 +67,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 //		super.zremrangeByScore(generateKey(wifiId), 0, max_login_at);
 //	}
 	
-	private static final long Condition_Offline_TimeGap  = 1*24*60*60*1000l;
+//	private static final long Condition_Offline_TimeGap  = 1*24*60*60*1000l;
 	
 //	public Long presentNotOfflineSize(String wifiId){
 //		return this.zcard(generateKey(wifiId));
@@ -124,6 +123,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
 		return super.zrevrangeWithScores(generateKey(wifiId), start, (start+size-1));
+	}
+	
+	public void removePresents(String wifiId, List<String> handsetIds){
+		if(handsetIds == null || handsetIds.isEmpty()) return;
+		super.pipelineZRem_sameKeyWithDiffMember(generateKey(wifiId), handsetIds.toArray(new String[]{}));
 	}
 	
 	public boolean isOnline(double score){

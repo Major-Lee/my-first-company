@@ -19,8 +19,10 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
@@ -30,6 +32,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
@@ -613,7 +616,7 @@ public class AsyncMsgHandleService {
 		//获取设备的配置的dto
 		WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dto.getMac());
 		if(setting_entity == null) return;
-		WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
+//		WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
 		
 		List<WifiDeviceTerminalDTO> terminals = dto.getTerminals();
 		if(terminals != null && !terminals.isEmpty()){
@@ -685,6 +688,31 @@ public class AsyncMsgHandleService {
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
+	
+	/**
+	 * 修改黑名单列表内容的后续操作
+	 * 黑名单列表里的终端需要删除urouter 终端redis
+	 * 保证不出现在urouter app终端列表中显示
+	 * @param message
+	 */
+	public void deviceModifySettingAclMacs(String message){
+		logger.info(String.format("deviceModifySettingAclMacs message[%s]", message));
+		DeviceModifySettingAclMacsDTO dto = JsonHelper.getDTO(message, DeviceModifySettingAclMacsDTO.class);
+		String mac = dto.getMac();
+		if(!StringUtils.isEmpty(mac)){
+			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(mac);
+			if(setting_entity != null){
+				WifiDeviceSettingDTO setting_dto = setting_entity.getInnerModel();
+				WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
+				if(acl_dto != null){
+					WifiDeviceHandsetPresentSortedSetService.getInstance().removePresents(mac, acl_dto.getMacs());
+				}
+			}
+		}
+		logger.info(String.format("deviceModifySettingAclMacs message[%s] successful", message));
+	}
+	
+	
 	
 //	public void wifiDeviceSettingNotify(String message){
 //		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingNotify message[%s]", message));

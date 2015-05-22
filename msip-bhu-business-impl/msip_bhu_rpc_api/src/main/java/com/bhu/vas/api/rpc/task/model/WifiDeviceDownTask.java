@@ -20,12 +20,17 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public static final String State_Completed = "Completed";//任务已经完成
 	
 	public static final String Task_LOCAL_CHANNEL = "VAS";
+	
+	private Integer uid;
 	//下发指令内容
 	private String payload;
 	//任务状态
 	private String state = State_Pending;
 	//任务类型 OperationCMD no
 	private String opt;
+	//任务子类型
+	private String subopt;
+	
 	private String task;
 	//任务下发的具体设备的mac地址
 	private String mac;
@@ -127,6 +132,22 @@ public class WifiDeviceDownTask extends BaseIntModel{
 
 	public void setOpt(String opt) {
 		this.opt = opt;
+	}
+
+	public String getSubopt() {
+		return subopt;
+	}
+
+	public void setSubopt(String subopt) {
+		this.subopt = subopt;
+	}
+
+	public Integer getUid() {
+		return uid;
+	}
+
+	public void setUid(Integer uid) {
+		this.uid = uid;
 	}
 	
 }
