@@ -151,7 +151,8 @@ public class DpiInfo {
 	
 	public static void main(String[] argv) throws UnsupportedEncodingException{
 		//DpiInfo info = DpiInfo.fromTextLine("0001001000000000080002001774: e5:43:9d:13:c80003001784:82:f4:90:04:1c00040014121.18.239.14000050022miserupdate.aliyun.com00060028/data/2.4.1.6/brfversion.xml00070063text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.800080063Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;Miser Report)00000000");
-		DpiInfo info = DpiInfo.fromTextLine("0001001000000008020002001760: d8:19:d0:73:270003001784:82:f4:90:03:9800040015124.225.131.14800050017upfile1.kdnet.net00060151/textareaeditor/GetPostFast_ubb.asp?boardid=1&followup=16627149&rootid=8952705&star=1&TotalUseTable=DV_BBS8&UserName=&topicname=猫眼看人&pages=3&lay=4200070037text/html, application/xhtml+xml, */*00080081Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0; JuziBrowser) like Gecko00000000");
+		//DpiInfo info = DpiInfo.fromTextLine("0001001000000008020002001760: d8:19:d0:73:270003001784:82:f4:90:03:9800040015124.225.131.14800050017upfile1.kdnet.net00060151/textareaeditor/GetPostFast_ubb.asp?boardid=1&followup=16627149&rootid=8952705&star=1&TotalUseTable=DV_BBS8&UserName=&topicname=猫眼看人&pages=3&lay=4200070037text/html, application/xhtml+xml, */*00080081Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0; JuziBrowser) like Gecko00000000");
+		DpiInfo info = DpiInfo.fromTextLine("0001001000000096270002001700: 61:71:4a:c1:880003001784:82:f4:90:03:4800040015111.206.227.16100050008x.jd.com00060092/exsites?spread_type=2&ad_ids=645:5&location_info=0&mobile_type=1&callback=getjjsku_callback00070063text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.800080145Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X; zh-CN) AppleWebKit/537.51.1 (KHTML, like Gecko) Mobile/11D257 UCBrowser/10.4.5.568 Mobile00000000");
 		System.out.println(info.getTaskid());
 		System.out.println(info.getTmac());
 		System.out.println(info.getDmac());
@@ -161,7 +162,11 @@ public class DpiInfo {
 		System.out.println(info.getAccept());
 		System.out.println(info.getUseragent());
 		
-		
+		/*UserAgent useragent = new UserAgent(info.getUseragent());
+		System.out.println(useragent.getOperatingSystem());
+        System.out.println(useragent.getBrowser());
+        System.out.println(useragent.getId());
+        System.out.println(useragent.getBrowserVersion());*/
 		String ss = "猫眼看人";
 		
 		System.out.println(ss.length());

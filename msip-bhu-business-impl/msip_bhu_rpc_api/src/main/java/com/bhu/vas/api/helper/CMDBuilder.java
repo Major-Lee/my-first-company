@@ -5,9 +5,9 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -151,7 +151,8 @@ public class CMDBuilder {
 	public static String builderCMD4Http404ResourceUpdate(String wifi_mac, int taskid,String extparams){
 		String opt = OperationCMD.TriggerHttp404ResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
-		WifiDeviceSettingVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		//WifiDeviceSettingVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		ParamVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
 		//Object[] array = http404_dto
 		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(http404_dto.getStyle());
 		return String.format(OperationCMD.TriggerHttp404ResourceUpdate.getCmdtpl(),
@@ -161,7 +162,7 @@ public class CMDBuilder {
 	public static String builderCMD4HttpPortalResourceUpdate(String wifi_mac, int taskid,String extparams){
 		String opt = OperationCMD.TriggerHttp404ResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
-		WifiDeviceSettingVapHttpPortalDTO httpportal_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
+		ParamVapHttpPortalDTO httpportal_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//Object[] array = http404_dto
 		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(httpportal_dto.getStyle());
 		return String.format(OperationCMD.TriggerHttpPortalResourceUpdate.getCmdtpl(),

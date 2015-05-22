@@ -28,7 +28,7 @@ public class UserAccessStatisticAnaOp {
 		//出现过的设备mac地址
 		Set<String> macSet = new HashSet<String>();
 		
-		InputStreamReader read = new InputStreamReader(new FileInputStream("/Users/Edmond/Msip.Test/logfile.log"));//考虑到编码格式
+		InputStreamReader read = new InputStreamReader(new FileInputStream("/Users/Edmond/Msip.Test/logfile1.log"),"GBK");//考虑到编码格式
         BufferedReader bufferedReader = new BufferedReader(read);
         String lineTxt = null;
         int total = 0;

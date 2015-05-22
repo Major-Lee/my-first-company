@@ -24,6 +24,10 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapAdDTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -673,42 +677,45 @@ public class DeviceHelper {
 	/**
 	 * 构建广告配置数据
 	 * @param config_sequence
-	 * @param extparams
+	 * @param extparams 页面传递过来的值构建ParamVapAdDTO
 	 * @param ds_dto
 	 * @return throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	 */
 	public static String builderDSHttpAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		WifiDeviceSettingVapAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapAdDTO.class);
-		if(ad_dto == null)
+		//WifiDeviceSettingVapAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapAdDTO.class);
+		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
+		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpAdItem, ad_dto);
+		//WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
 	public static String builderDSHttpRedirectOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
-		if(ad_dto == null)
+		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
+		//WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
+		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, ad_dto);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
 	public static String builderDSHttp404Outer(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		//WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		ParamVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_Http404Item, ad_dto);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
 	
-	
 	public static String builderDSHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
+		ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
+		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpPortalItem, ad_dto);
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	

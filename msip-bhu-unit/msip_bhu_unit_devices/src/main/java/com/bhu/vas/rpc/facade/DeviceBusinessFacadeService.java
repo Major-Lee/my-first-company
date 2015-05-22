@@ -26,8 +26,9 @@ import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -672,7 +673,8 @@ public class DeviceBusinessFacadeService {
 		//if(completed != null){
 			//发送配置Http404 修改指令
 			HtmlInject404 html404 = HtmlInject404.getNewVerVap(resultDto.getResource_ver(),HtmlInject404.STYLE000);
-			WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
+			ParamVapHttp404DTO dto = new ParamVapHttp404DTO();
+			/*WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();*/
 			dto.setEnable("enable");
 			dto.setStyle(html404.getStyle());
 			try{
@@ -697,7 +699,8 @@ public class DeviceBusinessFacadeService {
 		//if(completed != null){
 			//发送配置Http404 修改指令
 			HtmlPortal hp = HtmlPortal.getNewVerVap(resultDto.getResource_ver(),HtmlPortal.STYLE000);
-			WifiDeviceSettingVapHttpPortalDTO dto = new WifiDeviceSettingVapHttpPortalDTO();
+			ParamVapHttpPortalDTO dto = new ParamVapHttpPortalDTO();
+			//WifiDeviceSettingVapHttpPortalDTO dto = new WifiDeviceSettingVapHttpPortalDTO();
 			dto.setEnable("enable");
 			dto.setStyle(hp.getStyle());
 			try{

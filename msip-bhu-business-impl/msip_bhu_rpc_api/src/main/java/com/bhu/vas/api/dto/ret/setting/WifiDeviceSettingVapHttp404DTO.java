@@ -2,6 +2,9 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
+
+
 
 
 /**
@@ -12,16 +15,19 @@ import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
  */
 public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
 	private String enable;
-	
-	private String style;
+	private String url;
+	private String version;
+	//private String style;
 	
 	@Override
 	public Object[] builderProperties() {
 		Object[] properties = new Object[3];
 		properties[0] = enable;
-		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
+		properties[1] = url;
+		properties[2] = version;
+		/*HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
 		properties[1] = adv.getPackurl();
-		properties[2] = adv.toIndentify();
+		properties[2] = adv.toIndentify();*/
 		return properties;
 	}
 	
@@ -43,14 +49,32 @@ public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
 		this.enable = enable;
 	}
 
-	public String getStyle() {
-		return style;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setStyle(String style) {
-		this.style = style;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	
+	public static WifiDeviceSettingVapHttp404DTO fromParamVapAdDTO(ParamVapHttp404DTO dto){
+		WifiDeviceSettingVapHttp404DTO hdto = new WifiDeviceSettingVapHttp404DTO();
+		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(dto.getStyle());
+		hdto.setUrl(adv.getPackurl());//.setBhu_id(adv.getBid());
+		hdto.setEnable(dto.getEnable());
+		hdto.setVersion(adv.toIndentify());;
+		return hdto;
+	}
+	
 	/*public String getUrl() {
 		return url;
 	}

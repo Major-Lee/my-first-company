@@ -13,20 +13,23 @@ public class VapModeDefined {
 	private final static String url_prefix = "http://192.168.66.7/vap/";
 	
 	public enum HtmlInjectAdv{
-		STYLE000("style000","00.00.01","http://auth.wi2o.cn/ad/ad.js"),
-		STYLE001("style001","00.00.01",url_prefix.concat("ad/001/js/ad.js")),
+		STYLE000("style000","00.00.01","1000000","http://auth.wi2o.cn/ad/ad.js"),
+		STYLE001("style001","00.00.01","1000001",url_prefix.concat("ad/001/js/ad.js")),
 		;
 		//private String index;
 		private String style;
 		private String ver;
+		//bhu_id 应该是广告厂商的id
+		private String bid;
 		private String url;
 		
 		static Map<String, HtmlInjectAdv> allInjectAdvTypes;
 		
-		HtmlInjectAdv(/*String index,*/String style,String ver,String url){
+		HtmlInjectAdv(/*String index,*/String style,String ver,String bid,String url){
 			//this.index = index;
 			this.style = style;
 			this.ver = ver;
+			this.bid = bid;
 			this.url = url;
 		}
 		/*public String getIndex() {
@@ -54,6 +57,12 @@ public class VapModeDefined {
 			this.url = url;
 		}
 		
+		public String getBid() {
+			return bid;
+		}
+		public void setBid(String bid) {
+			this.bid = bid;
+		}
 		public String toIndentify(){
 			StringBuilder sb = new StringBuilder();
 			sb/*.append(index)
@@ -111,6 +120,8 @@ public class VapModeDefined {
 				return HtmlInjectAdv.STYLE000;
 		}
 	}
+	
+	
 	
 	
 	/**
@@ -328,6 +339,99 @@ public class VapModeDefined {
 		
 		public static HtmlPortal getByStyle(String stype) {
 			return allPortalTypes.get(stype);
+		}
+	}
+	
+	
+	public enum HtmlRedirect{
+		STYLE000("style000","00.00.01","http://www.bhunetworks.com"),
+		STYLE001("style001","00.00.01","http://baidu.com,http://google.com.hk"),
+		;
+		private String style;
+		private String ver;
+		private String urls;
+		
+		static Map<String, HtmlRedirect> allRedirectTypes;
+		
+		HtmlRedirect(String style,String ver,String urls){
+			this.style = style;
+			this.ver = ver;
+			this.urls = urls;
+		}
+		public String getStyle() {
+			return style;
+		}
+		public void setStyle(String style) {
+			this.style = style;
+		}
+		public String getVer() {
+			return ver;
+		}
+		public void setVer(String ver) {
+			this.ver = ver;
+		}
+
+		
+		public String getUrls() {
+			return urls;
+		}
+		public void setUrls(String urls) {
+			this.urls = urls;
+		}
+		public String toIndentify(){
+			StringBuilder sb = new StringBuilder();
+			sb.append(style)
+				.append(StringHelper.MINUS_CHAR_GAP).append(ver);
+			return sb.toString();
+		}
+		
+		/**
+		 * 当前的设备是否需要升级
+		 * @param indentify
+		 * @return
+		 */
+		public boolean needUpdate(String indentify){
+			if(StringUtils.isEmpty(indentify)) return true;
+			String[] array = indentify.split(StringHelper.MINUS_STRING_GAP);
+			if(array.length != 2) return true;
+			HtmlRedirect p = getByStyle(array[0]);
+			if(p == null) return true;
+			if(!p.getStyle().equals(array[1]) || !p.getVer().equals(array[2]) ) return true;
+			return false;
+		}
+		
+		/**
+		 * 获取新的版本
+		 * @param indentify
+		 * @param invalidatedThenDefault indentify验证错误后返回的缺省portal值
+		 * @return 为null则代表目前是最新版本
+		 */
+		public HtmlRedirect getNewVerVap(String indentify,HtmlRedirect invalidatedThenDefault){
+			if(StringUtils.isEmpty(indentify)) return invalidatedThenDefault;
+			String[] array = indentify.split(StringHelper.MINUS_STRING_GAP);
+			if(array.length != 2) return invalidatedThenDefault;
+			HtmlRedirect p = getByStyle(array[0]);
+			if(p == null) return invalidatedThenDefault;
+			if(!p.getStyle().equals(array[1]) || !p.getVer().equals(array[2]) ){
+				return p;
+			}
+			return null;
+		}
+		
+		
+		static {
+			allRedirectTypes = new HashMap<String,HtmlRedirect>();
+			HtmlRedirect[] types = values();
+			for (HtmlRedirect type : types)
+				allRedirectTypes.put(type.style, type);
+		}
+		
+		public static HtmlRedirect getByStyle(String stype) {
+			HtmlRedirect adv = allRedirectTypes.get(stype);
+			if(adv != null)
+				return adv;
+			else
+				return HtmlRedirect.STYLE000;
 		}
 	}
 	

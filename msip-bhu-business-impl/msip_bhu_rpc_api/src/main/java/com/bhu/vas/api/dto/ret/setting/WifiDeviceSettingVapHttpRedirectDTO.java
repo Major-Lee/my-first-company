@@ -1,7 +1,11 @@
 package com.bhu.vas.api.dto.ret.setting;
 
-import com.smartwork.msip.cores.helper.JsonHelper;
+import com.bhu.vas.api.dto.VapModeDefined;
+import com.bhu.vas.api.dto.VapModeDefined.HtmlRedirect;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpRedirectDTO;
 import com.smartwork.msip.cores.helper.StringHelper;
+
+
 
 
 /**
@@ -11,28 +15,17 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class WifiDeviceSettingVapHttpRedirectDTO implements DeviceSettingBuilderDTO{
-	
 	private String enable;
-	//重定向次数
-	private int times = 1;
-	//开始时间
-	private String start_time;
-	//结束时间
-	private String end_time;
-	//url 逗号,分割
-	private String urls;
+	private String rule;
+	private String version;
+	//private String style;
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[2];
+		Object[] properties = new Object[3];
 		properties[0] = enable;
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(times).append(StringHelper.COMMA_STRING_GAP)
-			.append(start_time).append(StringHelper.COMMA_STRING_GAP)
-			.append(end_time).append(StringHelper.COMMA_STRING_GAP)
-			.append(urls);
-		properties[1] = sb.toString();
+		properties[1] = rule;
+		properties[2] = version;
 		return properties;
 	}
 	
@@ -55,46 +48,55 @@ public class WifiDeviceSettingVapHttpRedirectDTO implements DeviceSettingBuilder
 	}
 
 
-	public int getTimes() {
-		return times;
+	public String getVersion() {
+		return version;
 	}
 
-	public void setTimes(int times) {
-		this.times = times;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
-
-	public String getStart_time() {
-		return start_time;
+	public String getRule() {
+		return rule;
 	}
 
-	public void setStart_time(String start_time) {
-		this.start_time = start_time;
+	public void setRule(String rule) {
+		this.rule = rule;
 	}
 
-	public String getEnd_time() {
-		return end_time;
+	public static WifiDeviceSettingVapHttpRedirectDTO fromParamVapAdDTO(ParamVapHttpRedirectDTO dto){
+		WifiDeviceSettingVapHttpRedirectDTO hdto = new WifiDeviceSettingVapHttpRedirectDTO();
+		hdto.setEnable(dto.getEnable());
+		HtmlRedirect adv = VapModeDefined.HtmlRedirect.getByStyle(dto.getStyle());
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(dto.getTimes()).append(StringHelper.COMMA_STRING_GAP)
+			.append(dto.getStart_time()).append(StringHelper.COMMA_STRING_GAP)
+			.append(dto.getEnd_time()).append(StringHelper.COMMA_STRING_GAP)
+			.append(adv.getUrls());
+		hdto.setRule(sb.toString());
+		hdto.setVersion(adv.toIndentify());
+		//HtmlInject404 adv = VapModeDefined..getByStyle(dto.getStyle());
+		//hdto.setUrl(adv.getPackurl());//.setBhu_id(adv.getBid());
+		//hdto.setEnable(dto.getEnable());
+		//hdto.setVersion(adv.toIndentify());;
+		return hdto;
+	}
+	
+	/*public String getUrl() {
+		return url;
 	}
 
-	public void setEnd_time(String end_time) {
-		this.end_time = end_time;
-	}
-
-	public String getUrls() {
-		return urls;
-	}
-
-	public void setUrls(String urls) {
-		this.urls = urls;
-	}
-//{"enable":"enable","times":10,"start_time":"20:00","end_time":"21:00","urls":"http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com"}
+	public void setUrl(String url) {
+		this.url = url;
+	}*/
+//{"enable":"enable","url":"http://auth.wi2o.cn/ad/ad.zip"}
 	public static void main(String[] argv){
-		WifiDeviceSettingVapHttpRedirectDTO dto = new WifiDeviceSettingVapHttpRedirectDTO();
-		dto.setTimes(10);
-		dto.setStart_time("20:00");
-		dto.setEnd_time("21:00");
-		dto.setUrls("http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com");
+		/*WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
+		//dto.setAd_interface(ad_interface);
+		//dto.setAd_url(ad_url);
+		dto.setUrl("http://auth.wi2o.cn/ad/ad.js");
 		dto.setEnable("enable");
-		System.out.println(JsonHelper.getJSONString(dto));
+		System.out.println(JsonHelper.getJSONString(dto));*/
 	}
 }

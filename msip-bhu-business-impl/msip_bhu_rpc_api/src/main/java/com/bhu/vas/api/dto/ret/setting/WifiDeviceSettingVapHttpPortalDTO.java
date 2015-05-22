@@ -2,6 +2,9 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
+import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
+
+
 
 
 /**
@@ -11,18 +14,20 @@ import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
  *
  */
 public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDTO{
-	
 	private String enable;
-	
-	private String style;
+	private String url;
+	private String version;
+	//private String style;
 	
 	@Override
 	public Object[] builderProperties() {
 		Object[] properties = new Object[3];
 		properties[0] = enable;
-		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(style);
+		properties[1] = url;
+		properties[2] = version;
+		/*HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
 		properties[1] = adv.getPackurl();
-		properties[2] = adv.toIndentify();
+		properties[2] = adv.toIndentify();*/
 		return properties;
 	}
 	
@@ -44,11 +49,46 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 		this.enable = enable;
 	}
 
-	public String getStyle() {
-		return style;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setStyle(String style) {
-		this.style = style;
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	
+	public static WifiDeviceSettingVapHttpPortalDTO fromParamVapAdDTO(ParamVapHttpPortalDTO dto){
+		WifiDeviceSettingVapHttpPortalDTO hdto = new WifiDeviceSettingVapHttpPortalDTO();
+		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(dto.getStyle());
+		hdto.setUrl(adv.getPackurl());//.setBhu_id(adv.getBid());
+		hdto.setEnable(dto.getEnable());
+		hdto.setVersion(adv.toIndentify());;
+		return hdto;
+	}
+	
+	/*public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}*/
+//{"enable":"enable","url":"http://auth.wi2o.cn/ad/ad.zip"}
+	public static void main(String[] argv){
+		/*WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
+		//dto.setAd_interface(ad_interface);
+		//dto.setAd_url(ad_url);
+		dto.setUrl("http://auth.wi2o.cn/ad/ad.js");
+		dto.setEnable("enable");
+		System.out.println(JsonHelper.getJSONString(dto));*/
 	}
 }

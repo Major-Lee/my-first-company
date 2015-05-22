@@ -1,8 +1,6 @@
-package com.bhu.vas.api.dto.ret.setting;
+package com.bhu.vas.api.dto.ret.setting.param;
 
 import com.bhu.vas.api.dto.VapModeDefined;
-import com.bhu.vas.api.dto.VapModeDefined.HtmlInjectAdv;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapAdDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 
@@ -12,15 +10,35 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  * @author edmond
  *
  */
-public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
-	
-	private String bhu_id;
-	
-	private String bhu_ad_url;
-	
-	private String bhu_enable;
+public class ParamVapAdDTO{
+	//private String bid;
+	private String style;
+	private String enable;
+	/*public String getBid() {
+		return bid;
+	}
 
-	public String getBhu_id() {
+	public void setBid(String bid) {
+		this.bid = bid;
+	}*/
+
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	public String getEnable() {
+		return enable;
+	}
+
+	public void setEnable(String enable) {
+		this.enable = enable;
+	}
+
+	/*public String getBhu_id() {
 		return bhu_id;
 	}
 	public void setBhu_id(String bhu_id) {
@@ -57,24 +75,15 @@ public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
 	@Override
 	public boolean beRemoved() {
 		return false;
-	}
+	}*/
 	//http://192.168.66.7/vap/ad/001/js/ad.js
 	public static void main(String[] argv){
-		WifiDeviceSettingVapAdDTO dto = new WifiDeviceSettingVapAdDTO();
+		ParamVapAdDTO dto = new ParamVapAdDTO();
 		//dto.setAd_interface(ad_interface);
 		//dto.setAd_url(ad_url);
-		dto.setBhu_ad_url("http://auth.wi2o.cn/ad/ad.js");
-		dto.setBhu_enable("enable");
-		dto.setBhu_id("400889");
+		dto.setStyle(VapModeDefined.HtmlInjectAdv.STYLE001.getStyle());
+		dto.setEnable("enable");
+		//dto.setBid("400889");
 		System.out.println(JsonHelper.getJSONString(dto));
-	}
-	
-	public static WifiDeviceSettingVapAdDTO fromParamVapAdDTO(ParamVapAdDTO dto){
-		WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
-		HtmlInjectAdv adv = VapModeDefined.HtmlInjectAdv.getByStyle(dto.getStyle());
-		ad_dto.setBhu_id(adv.getBid());
-		ad_dto.setBhu_ad_url(adv.getUrl());
-		ad_dto.setBhu_enable(dto.getEnable());
-		return ad_dto;
 	}
 }
