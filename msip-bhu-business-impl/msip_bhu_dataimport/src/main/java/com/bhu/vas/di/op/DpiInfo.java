@@ -105,6 +105,7 @@ public class DpiInfo {
 		int start = 0;
 		//int currentIndex = 0;
 		DpiInfo dinfo = new DpiInfo();
+		//System.out.println(lineText);
 		byte[] lineBytes = lineText.getBytes(StringHelper.CHATSET_GBK);
 		//String currentText = new String(lineText);
 		do{
