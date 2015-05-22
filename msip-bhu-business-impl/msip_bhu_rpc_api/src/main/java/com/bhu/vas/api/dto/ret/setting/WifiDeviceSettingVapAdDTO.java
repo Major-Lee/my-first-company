@@ -43,8 +43,8 @@ public class WifiDeviceSettingVapAdDTO implements DeviceSettingBuilderDTO{
 	public Object[] builderProperties() {
 		Object[] properties = new Object[3];
 		properties[0] = bhu_id;
-		HtmlInjectAdv adv = VapModeDefined.HtmlInjectAdv.getByStyle(bhu_ad_url);
-		properties[1] = adv.getUrl();
+		//HtmlInjectAdv adv = VapModeDefined.HtmlInjectAdv.getByStyle(bhu_ad_url);
+		properties[1] = bhu_ad_url;
 		properties[2] = bhu_enable;
 		return properties;
 	}

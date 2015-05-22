@@ -112,8 +112,8 @@ public class VapModeDefined {
 				allInjectAdvTypes.put(type.style, type);
 		}
 		
-		public static HtmlInjectAdv getByStyle(String stype) {
-			HtmlInjectAdv adv = allInjectAdvTypes.get(stype);
+		public static HtmlInjectAdv getByStyle(String style) {
+			HtmlInjectAdv adv = allInjectAdvTypes.get(style);
 			if(adv != null)
 				return adv;
 			else
@@ -344,7 +344,7 @@ public class VapModeDefined {
 	
 	
 	public enum HtmlRedirect{
-		STYLE000("style000","00.00.01","http://www.bhunetworks.com"),
+		STYLE000("style000","00.00.01","http://www.sina.com.cn,http://www.bhunetworks.com"),
 		STYLE001("style001","00.00.01","http://baidu.com,http://google.com.hk"),
 		;
 		private String style;
