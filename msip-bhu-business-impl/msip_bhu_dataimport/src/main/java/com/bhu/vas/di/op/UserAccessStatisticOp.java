@@ -41,7 +41,7 @@ public class UserAccessStatisticOp {
         try {
             File file = new File(filePath);
             if (file.isFile() && file.exists()) { //判断文件是否存在
-                InputStreamReader read = new InputStreamReader(new FileInputStream(file));//考虑到编码格式
+                InputStreamReader read = new InputStreamReader(new FileInputStream(file),"gbk");//考虑到编码格式
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
