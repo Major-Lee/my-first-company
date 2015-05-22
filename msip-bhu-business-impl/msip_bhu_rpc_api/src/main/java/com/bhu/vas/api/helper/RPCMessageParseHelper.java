@@ -303,6 +303,8 @@ public class RPCMessageParseHelper {
 					if(!StringUtils.isEmpty(acl_macs)){
 						String[] acl_mac_array = acl_macs.split(StringHelper.COMMA_STRING_GAP);
 						acl_dto.setMacs(ArrayHelper.toList(acl_mac_array));
+					}else{
+						acl_dto.setMacs(new ArrayList<String>());
 					}
 					acl_dtos.add(acl_dto);
 				}
