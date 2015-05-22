@@ -29,22 +29,14 @@ public class T {
         map.put("google.com", 14);
 
 
-        UserAccessStatistics userAccessStatistics = new UserAccessStatistics();
-        userAccessStatistics.setCreated_at(new Date());
-        userAccessStatistics.setMac("123123123123");
-        userAccessStatistics.replaceAll(sortByValue(map));
-        System.out.println(sortByValue(map));
-        System.out.println(userAccessStatistics.getExtension());
-        userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(map), false));
-        System.out.println(JsonHelper.getJSONString(userAccessStatistics.getExtension(), false));
-        System.out.println(userAccessStatistics.getExtension_content());
+//        U1
         
         //String agentString = "Mozilla/5.0 (Linux; Android 4.4.2; SM705 Build/SANFRANCISCO) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
         //String agentString = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36";
-        //String agentString = "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70 MicroMessenger/6.1.5 NetType/WIFI";
+        String agentString = "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70 MicroMessenger/6.1.5 NetType/WIFI";
         //String agentString = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;Miser Report)";
         //String agentString = "Mozilla/5.0 (Linux; U; Android 4.2.2; zh-cn; HUAWEI D2-2010 Build/HuaweiD2-2010) AppleWebKit/533.1 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.4 TBS/025411 Mobile Safari/533.1 MicroMessenger/6.1.0.73_r1097298.543 NetType/WIFI";
-        String agentString = "Mozilla/5.0 (Linux; U; Android 4.1.2; zh-cn; GT-I9268 Build/JZO54K) AppleWebKit/533.1 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.4 TBS/025411 Mobile Safari/533.1 MicroMessenger/6.1.0.66_r1062275.542 NetType/WIFI";
+        //String agentString = "Mozilla/5.0 (Linux; U; Android 4.1.2; zh-cn; GT-I9268 Build/JZO54K) AppleWebKit/533.1 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.4 TBS/025411 Mobile Safari/533.1 MicroMessenger/6.1.0.66_r1062275.542 NetType/WIFI";
         UserAgent useragent = new UserAgent(agentString);
         System.out.println(useragent.getOperatingSystem());
         System.out.println(useragent.getBrowser());
