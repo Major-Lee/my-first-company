@@ -28,6 +28,7 @@ import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
 /**
@@ -163,7 +164,8 @@ public class BusinessModelBuilder {
 		}
 		if(entity != null){
 			vto.setOl(entity.isOnline() ? 1 : 0);
-//			vto.setCohc(searchDto.getCount());
+			long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId());
+			vto.setCohc(count);
 			vto.setAdr(entity.getFormatted_address());
 			vto.setOm(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());
 			vto.setWm(entity.getWork_mode());

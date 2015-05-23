@@ -18,7 +18,7 @@ public class WifiDeviceVTO implements Serializable{
 	private String dt;//device type 设备类型
 	private long uof;//up outflow 上行流量
 	private long dof;//down outflow 下行流量
-	private int cohc;//current online handset count 在线移动设备数量
+	private long cohc;//current online handset count 在线移动设备数量
 	private long cts;//创建时间
 	private long rts;//最后注册时间
 	private boolean ipgen;
@@ -42,10 +42,10 @@ public class WifiDeviceVTO implements Serializable{
 	public void setDof(long dof) {
 		this.dof = dof;
 	}
-	public int getCohc() {
+	public long getCohc() {
 		return cohc;
 	}
-	public void setCohc(int cohc) {
+	public void setCohc(long cohc) {
 		this.cohc = cohc;
 	}
 	public int getOl() {
