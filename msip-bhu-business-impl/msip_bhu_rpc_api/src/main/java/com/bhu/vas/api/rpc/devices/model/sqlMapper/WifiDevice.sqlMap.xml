@@ -40,6 +40,7 @@
     <result property="ipgen" column="ipgen"/>
     <result property="uptime" column="uptime"/>
     <result property="last_reged_at" column="last_reged_at"/>
+    <result property="last_logout_at" column="last_logout_at"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -86,6 +87,7 @@
 	    	ipgen,
 	    	uptime,
 	    	last_reged_at,
+	    	last_logout_at,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -126,6 +128,7 @@
 	    	ipgen,
 	    	uptime,
 	    	last_reged_at,
+	    	last_logout_at,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -167,6 +170,7 @@
 	    	#{ipgen},
 	    	#{uptime},
 	    	#{last_reged_at},
+	    	#{last_logout_at},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -206,6 +210,7 @@
 	    	ipgen = #{ipgen},
 	    	uptime = #{uptime},
 	    	last_reged_at = #{last_reged_at},
+	    	last_logout_at = #{last_logout_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

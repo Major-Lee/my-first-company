@@ -28,6 +28,7 @@ import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
 /**
@@ -149,7 +150,9 @@ public class BusinessModelBuilder {
 			vto.setIpgen(entity.isIpgen());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
-				vto.setOfts(System.currentTimeMillis() - entity.getUpdated_at().getTime());
+				long logout_ts = entity.getLast_logout_at().getTime();
+				vto.setOfts(logout_ts);
+				vto.setOftd(System.currentTimeMillis() - logout_ts);
 			}
 		}
 		return vto;
@@ -163,7 +166,8 @@ public class BusinessModelBuilder {
 		}
 		if(entity != null){
 			vto.setOl(entity.isOnline() ? 1 : 0);
-//			vto.setCohc(searchDto.getCount());
+			long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId());
+			vto.setCohc(count);
 			vto.setAdr(entity.getFormatted_address());
 			vto.setOm(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());
 			vto.setWm(entity.getWork_mode());
@@ -179,7 +183,9 @@ public class BusinessModelBuilder {
 			vto.setIpgen(entity.isIpgen());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
-				vto.setOfts(System.currentTimeMillis() - entity.getUpdated_at().getTime());
+				long logout_ts = entity.getLast_logout_at().getTime();
+				vto.setOfts(logout_ts);
+				vto.setOftd(System.currentTimeMillis() - logout_ts);
 			}
 		}
 		return vto;

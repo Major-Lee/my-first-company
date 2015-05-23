@@ -1,17 +1,17 @@
 package com.bhu.vas.rpc.facade;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
+import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import org.slf4j.LoggerFactory;
@@ -19,11 +19,9 @@ import org.springframework.stereotype.Service;
 
 import ch.qos.logback.classic.Logger;
 
-import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
-import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
 import com.bhu.vas.business.ds.statistics.service.UserAccessStatisticsService;
-import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -37,6 +35,9 @@ public class UserAccessStatisticsFacadeService {
     private final Logger logger = (Logger)LoggerFactory.getLogger(UserAccessStatisticsFacadeService.class);
     @Resource
     private UserAccessStatisticsService userAccessStatisticsService;
+
+    @Resource
+    private UserBrandStatisticsService userBrandStatisticsService;
 
 
     public TailPage<UserAccessStatisticsDTO> fetchUserAccessStatistics(String date, int pageNo, int pageSize) {
@@ -94,11 +95,33 @@ public class UserAccessStatisticsFacadeService {
                 userAccessStatisticsDTO.setExtension_content(JsonHelper.getJSONString(
                         SortMapHelper.sortMapByValue(extension), false));
             }
-
-
         }
 
         return new CommonPage<UserAccessStatisticsDTO>(pageNo, pageSize,
                 result.getTotalItemsCount(), userAccessStatisticsList);
+    }
+
+    public RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date) {
+        UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics.getInnerModels());
+    }
+
+
+    public TailPage<UserBrandStatisticsDTO> fetchUserBrandStatistics(int pageNo, int pageSize) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+        TailPage<UserBrandStatistics> result = userBrandStatisticsService.findModelTailPageByModelCriteria(mc);
+        List<UserBrandStatisticsDTO> userBrandStatisticsDTOs = new ArrayList<UserBrandStatisticsDTO>();
+        for (UserBrandStatistics userBrandStatistics : result.getItems()) {
+            UserBrandStatisticsDTO userBrandStatisticsDTO = new UserBrandStatisticsDTO();
+            userBrandStatisticsDTO.setDate(userBrandStatistics.getId());
+            userBrandStatisticsDTO.setContent(userBrandStatistics.getInnerModelJsons());
+            userBrandStatisticsDTOs.add(userBrandStatisticsDTO);
+        }
+
+        return new CommonPage<UserBrandStatisticsDTO>(pageNo, pageSize,
+                result.getTotalItemsCount(), userBrandStatisticsDTOs);
+
     }
 }
