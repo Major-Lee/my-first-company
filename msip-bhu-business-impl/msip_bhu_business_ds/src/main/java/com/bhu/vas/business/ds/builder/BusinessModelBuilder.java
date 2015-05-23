@@ -150,9 +150,9 @@ public class BusinessModelBuilder {
 			vto.setIpgen(entity.isIpgen());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
-				long offline_ts = entity.getUpdated_at().getTime();
-				vto.setOfts(offline_ts);
-				vto.setOftd(System.currentTimeMillis() - offline_ts);
+				long logout_ts = entity.getLast_logout_at().getTime();
+				vto.setOfts(logout_ts);
+				vto.setOftd(System.currentTimeMillis() - logout_ts);
 			}
 		}
 		return vto;
@@ -183,9 +183,9 @@ public class BusinessModelBuilder {
 			vto.setIpgen(entity.isIpgen());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
-				long offline_ts = entity.getUpdated_at().getTime();
-				vto.setOfts(offline_ts);
-				vto.setOftd(System.currentTimeMillis() - offline_ts);
+				long logout_ts = entity.getLast_logout_at().getTime();
+				vto.setOfts(logout_ts);
+				vto.setOftd(System.currentTimeMillis() - logout_ts);
 			}
 		}
 		return vto;

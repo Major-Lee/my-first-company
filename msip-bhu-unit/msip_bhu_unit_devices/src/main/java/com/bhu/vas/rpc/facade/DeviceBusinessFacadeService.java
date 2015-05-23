@@ -122,6 +122,7 @@ public class DeviceBusinessFacadeService {
 		WifiDevice wifi_device_entity = wifiDeviceService.getById(wifiId);
 		if(wifi_device_entity == null){
 			wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
+			wifi_device_entity.setLast_logout_at(new Date());
 			wifiDeviceService.insert(wifi_device_entity);
 			newWifi = true;
 		}else{
@@ -176,6 +177,7 @@ public class DeviceBusinessFacadeService {
 			WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_wifi_id);
 			if(exist_wifi_device_entity != null){
 				exist_wifi_device_entity.setOnline(false);
+				exist_wifi_device_entity.setLast_logout_at(new Date());
 				wifiDeviceService.update(exist_wifi_device_entity);
 				
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
