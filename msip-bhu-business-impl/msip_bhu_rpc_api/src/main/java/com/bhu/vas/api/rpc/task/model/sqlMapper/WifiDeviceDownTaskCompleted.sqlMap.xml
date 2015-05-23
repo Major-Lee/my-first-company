@@ -9,6 +9,7 @@
     <result property="uid" column="uid"/>
     <result property="opt" column="opt"/>
     <result property="subopt" column="subopt"/>
+    <result property="context_var" column="context_var"/>
     <result property="payload" column="payload"/>
     <result property="state" column="state"/>
     <result property="task" column="task"/>
@@ -36,6 +37,7 @@
 	    	uid,
 	    	opt,
 	    	subopt,
+	    	context_var,
 	    	payload,
 	    	state,
 	    	task,
@@ -55,6 +57,7 @@
 	    	uid,
 	    	opt,
 	    	subopt,
+	    	context_var,
 	    	payload,
 	    	state,
 	    	task,
@@ -75,6 +78,7 @@
 			#{uid},
 			#{opt},
 			#{subopt},
+			#{context_var},
 	    	#{payload},
 	    	#{state},
 	    	#{task},
@@ -94,6 +98,7 @@
 			uid = #{uid},
 			opt = #{opt},
 			subopt = #{subopt},
+			context_var = #{context_var},
 			payload = #{payload},
 			state = #{state},
 			task = #{task},

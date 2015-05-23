@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
-import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.LocationDTO;
@@ -28,7 +27,6 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -789,20 +787,23 @@ public class DeviceBusinessFacadeService {
 		//}
 	}
 	public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, int taskid){
-		Document doc = RPCMessageParseHelper.parserMessage(response);
+		/*Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
-				QuerySerialReturnDTO.class);
+				QuerySerialReturnDTO.class);*/
+		
 		//2:任务callback
 		//WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
 		//if(completed != null){
 			//发送配置Http404 修改指令
-			HtmlPortal hp = HtmlPortal.getNewVerVap(resultDto.getResource_ver(),HtmlPortal.STYLE000);
-			ParamVapHttpPortalDTO dto = new ParamVapHttpPortalDTO();
+			//HtmlPortal hp = HtmlPortal.getNewVerVap(resultDto.getResource_ver(),HtmlPortal.STYLE000);
+			//ParamVapHttpPortalDTO dto = new ParamVapHttpPortalDTO();
 			//WifiDeviceSettingVapHttpPortalDTO dto = new WifiDeviceSettingVapHttpPortalDTO();
-			dto.setEnable("enable");
-			dto.setStyle(hp.getStyle());
+			//dto.setEnable("enable");
+			//dto.setStyle(hp.getStyle());
 			try{
-				String payload = deviceFacadeService.generateDeviceSetting(mac, OperationDS.DS_Http_Portal.getNo(), JsonHelper.getJSONString(dto));
+				WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
+				//ParamVapHttpPortalDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamVapHttpPortalDTO.class);
+				String payload = deviceFacadeService.generateDeviceSetting(mac, OperationDS.DS_Http_Portal.getNo(), downTask.getContext_var());//JsonHelper.getJSONString(dto));
 				logger.info("payload===" + payload);
 				String cmdPayload = CMDBuilder.builderCMD4Opt(OperationCMD.ModifyDeviceSetting.getNo(), mac, 
 						CMDBuilder.device_httpportal_resourceupgrade_fragment.getNextSequence(),payload);

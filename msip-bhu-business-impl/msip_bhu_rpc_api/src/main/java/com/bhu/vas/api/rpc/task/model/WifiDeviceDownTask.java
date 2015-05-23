@@ -22,6 +22,8 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public static final String Task_LOCAL_CHANNEL = "VAS";
 	
 	private Integer uid;
+	//上下文变量，用于存储页面表单中的extparams内容 在有些指令下发后可能会，收到消息后可能会触发别的指令需要用到此数据
+	private String context_var;
 	//下发指令内容
 	private String payload;
 	//任务状态
@@ -149,5 +151,12 @@ public class WifiDeviceDownTask extends BaseIntModel{
 	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
-	
+
+	public String getContext_var() {
+		return context_var;
+	}
+
+	public void setContext_var(String context_var) {
+		this.context_var = context_var;
+	}
 }

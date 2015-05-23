@@ -247,21 +247,28 @@ public class VapModeDefined {
 	 *
 	 */
 	public enum HtmlPortal{
-		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
-		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
+		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://192.168.66.7,http://bhunetworks.com",
+				"http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
+		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://192.168.66.7,http://bhunetworks.com",
+				"http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
 		;
 		
 		private String style;
 		private String ver;
-		private String dynaurl;
+		//private String dynaurl;
+		//认证成功后跳转url after logined in then redirect
+		private String redirect_url;
+		//开放的资源链接
+		private String open_resource;
 		private String packurl;
 		
 		static Map<String, HtmlPortal> allPortalTypes;
 		
-		HtmlPortal(String style,String ver,String dynaurl,String packurl){
+		HtmlPortal(String style,String ver,String redirect_url,String open_resource,String packurl){
 			this.style = style;
 			this.ver = ver;
-			this.dynaurl = dynaurl;
+			this.redirect_url = redirect_url;
+			this.open_resource = open_resource;
 			this.packurl = packurl;
 		}
 		public String getStyle() {
@@ -277,11 +284,17 @@ public class VapModeDefined {
 			this.ver = ver;
 		}
 		
-		public String getDynaurl() {
-			return dynaurl;
+		public String getRedirect_url() {
+			return redirect_url;
 		}
-		public void setDynaurl(String dynaurl) {
-			this.dynaurl = dynaurl;
+		public void setRedirect_url(String redirect_url) {
+			this.redirect_url = redirect_url;
+		}
+		public String getOpen_resource() {
+			return open_resource;
+		}
+		public void setOpen_resource(String open_resource) {
+			this.open_resource = open_resource;
 		}
 		public String getPackurl() {
 			return packurl;

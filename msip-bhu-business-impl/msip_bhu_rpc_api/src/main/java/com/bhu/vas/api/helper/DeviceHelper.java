@@ -503,6 +503,8 @@ public class DeviceHelper {
 	
 	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>");
 	
+	
+	
 	public static final String DeviceSetting_VapOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><vap>%s</vap></wifi></dev>");
 	public static final String DeviceSetting_AclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><acllist>%s</acllist></wifi></dev>");
 	public static final String DeviceSetting_AdOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><ad>%s</ad></net></dev>");
@@ -526,8 +528,29 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"http://auth.wi2o.cn/404/\" />";
 	public static final String DeviceSetting_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
 	//TODO:待完善
-	public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
-	
+	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_HttpPortalItem =  	
+     "<net>"+
+          "<interface>"+
+               "<ITEM name=\"wlan3\" enable=\"enable\" if_tx_rate=\"512\" if_rx_rate=\"512\" />"+
+          "</interface>"+
+          "<bridge>"+
+               "<ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" />"+
+          "</bridge>"+
+          "<webportal>"+
+               "<setting>"+
+                    "<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"answer\" block_mode=\"route\" "
+                    + "extend_memory_enable=\"enable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Remote Get\"  manage_server=\"disable\" "
+                    + "redirect_url=\"%s\"  max_clients=\"256\" idle_timeout=\"%s\" force_timeout=\"%s\" open_resource=\"%s\" />"+
+               "</setting>"+
+               "<users>"+
+                    "<ITEM id=\"1\" username=\"%s\" password=\"%s\" auth_mode=\"4\" share=\"enable\"/>"+
+               "</users>"+
+          "</webportal>"+
+     "</net>"+
+     "<wifi><vap><ITEM name=\"wlan3\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
+     "<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>";
+
 	
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";

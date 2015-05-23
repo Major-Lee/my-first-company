@@ -161,6 +161,16 @@ public class TaskFacadeService {
 		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
 	}
 	
+	public WifiDeviceDownTask findWifiDeviceDownTaskById(Integer taskid){
+		if(taskid != null){
+			WifiDeviceDownTask pending_task = wifiDeviceDownTaskService.getById(taskid);
+			if(pending_task == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
+			}else
+				return pending_task;
+		}
+		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
+	}
 	/**
 	 * 验证任务是否超时 如果超时则修改任务状态
 	 * 下发任务的时候有可能出现2种情况会造成timeout

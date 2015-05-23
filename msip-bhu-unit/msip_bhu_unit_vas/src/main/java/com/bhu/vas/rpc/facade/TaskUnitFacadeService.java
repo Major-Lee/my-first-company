@@ -63,6 +63,8 @@ public class TaskUnitFacadeService {
 			downTask.setUid(uid);
 			downTask.setChannel(channel);
 			downTask.setChannel_taskid(channel_taskid);
+			
+			downTask.setContext_var(extparams);
 			//downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, taskid));
 			downTask.setSubopt(subopt);
 			downTask.setOpt(opt);
