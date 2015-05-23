@@ -90,7 +90,7 @@
 	</select>
 
 	<delete id="deleteByPrimaryKey" parameterType="string">
-		delete from <include refid="modelTableName" />  where date = #{date}
+		delete from <include refid="modelTableName" />  where id = #{id}
 	</delete>
 	
 	<delete id="delete" parameterType="userBrandStatistics">
@@ -115,7 +115,7 @@
 	  	select <include refid="modelColumns" /> from <include refid="modelTableName" />
 	  	<where>
 	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (date= #{item.date}	)
+			   (id= #{item.id}	)
 			</foreach>
 	  	</where>
 	  	
@@ -131,7 +131,7 @@
 	</delete>
 	
 	<select id="pkSelectByModelCriteria" resultType="string">
-		select date from <include refid="modelTableName" />
+		select id from <include refid="modelTableName" />
 		<if test="_parameter != null"> 
 	      	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">
