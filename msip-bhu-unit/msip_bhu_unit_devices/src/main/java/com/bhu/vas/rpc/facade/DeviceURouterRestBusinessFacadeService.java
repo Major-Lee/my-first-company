@@ -10,8 +10,8 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.ret.setting.*;
 import com.bhu.vas.api.vto.*;
-
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -338,22 +338,19 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid, String wifiId){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
-			WifiDeviceSetting setting_entity = deviceFacadeService.validateDeviceSetting(wifiId);
+//			WifiDeviceSetting setting_entity = deviceFacadeService.validateDeviceSetting(wifiId);
 			
 			URouterModeVTO vto = new URouterModeVTO();
 			
-			WifiDeviceSettingDTO setting_dto = setting_entity.getInnerModel();
-			if(setting_dto != null){
-				WifiDeviceSettingLinkModeDTO mode_dto = setting_dto.getMode();
-				if(mode_dto != null){
-					vto.setIp(mode_dto.getIp());
-					vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
-					vto.setNetmask(mode_dto.getNetmask());
-					vto.setP_un(mode_dto.getUsername());
-					vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
-					vto.setGateway(mode_dto.getGateway());
-					vto.setDns(mode_dto.getDns());
-				}
+			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(wifiId);
+			if(mode_dto != null){
+				vto.setIp(mode_dto.getIp());
+				vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
+				vto.setNetmask(mode_dto.getNetmask());
+				vto.setP_un(mode_dto.getUsername());
+				vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
+				vto.setGateway(mode_dto.getGateway());
+				vto.setDns(mode_dto.getDns());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){

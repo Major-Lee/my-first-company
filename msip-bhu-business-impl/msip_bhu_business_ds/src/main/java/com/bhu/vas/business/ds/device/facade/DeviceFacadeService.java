@@ -462,9 +462,22 @@ public class DeviceFacadeService {
 	 * @param dto
 	 */
 	public void updateDeviceModeStatus(String mac, WifiDeviceSettingLinkModeDTO dto){
+		if(StringUtils.isEmpty(mac)) return;
 		if(dto != null && !StringUtils.isEmpty(dto)){
 			WifiDeviceModeStatusService.getInstance().addPresent(mac, JsonHelper.getJSONString(dto));
 		}
+	}
+	
+	/**
+	 * 获取设备的mode状态信息
+	 * @param mac
+	 * @return
+	 */
+	public WifiDeviceSettingLinkModeDTO getDeviceModeStatus(String mac){
+		if(StringUtils.isEmpty(mac)) return null;
+		String mode_status_json = WifiDeviceModeStatusService.getInstance().getPresent(mac);
+		if(StringUtils.isEmpty(mode_status_json))  return null;
+		return JsonHelper.getDTO(mode_status_json, WifiDeviceSettingLinkModeDTO.class);
 	}
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
