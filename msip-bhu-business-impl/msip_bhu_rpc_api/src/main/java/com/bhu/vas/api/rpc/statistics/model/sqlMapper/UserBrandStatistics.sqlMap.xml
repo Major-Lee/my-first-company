@@ -90,7 +90,7 @@
 	</select>
 
 	<delete id="deleteByPrimaryKey" parameterType="string">
-		delete from <include refid="modelTableName" />  where date = #{date}
+		delete from <include refid="modelTableName" />  where id = #{id}
 	</delete>
 	
 	<delete id="delete" parameterType="userBrandStatistics">
@@ -108,30 +108,31 @@
 	<update id="update" parameterType="userBrandStatistics">
 	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where id = #{id}
 	</update>
-	
-	
-	
+
+
+
 	<select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">
-	  	select <include refid="modelColumns" /> from <include refid="modelTableName" />
-	  	<where>
-	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (date= #{item.date}	)
+		select <include refid="modelColumns" /> from <include refid="modelTableName" />
+		<where>
+			id IN
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
 			</foreach>
-	  	</where>
-	  	
+		</where>
 	</select>
-	 
+
 	<delete id="deleteByIds" parameterType="java.util.List">
-	  	delete from <include refid="modelTableName" />  
-	  	<where>
-	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (id= #{item.id}	)
+		delete from <include refid="modelTableName" />
+		<where>
+			id IN
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
 			</foreach>
-	  	</where>
+		</where>
 	</delete>
 	
 	<select id="pkSelectByModelCriteria" resultType="string">
-		select date from <include refid="modelTableName" />
+		select id from <include refid="modelTableName" />
 		<if test="_parameter != null"> 
 	      	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">

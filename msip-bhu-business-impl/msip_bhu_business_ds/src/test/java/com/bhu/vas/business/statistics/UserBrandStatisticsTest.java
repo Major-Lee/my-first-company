@@ -96,6 +96,7 @@ public class UserBrandStatisticsTest extends BaseTest {
             userBrandStatisticsDTO.setContent(userBrandStatistics.getInnerModelJsons());
         }
 
+        System.out.println(result);
 
     }
 
