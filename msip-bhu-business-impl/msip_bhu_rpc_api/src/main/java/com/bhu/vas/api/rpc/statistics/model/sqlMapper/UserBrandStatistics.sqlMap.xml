@@ -2,11 +2,10 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics">
+<mapper namespace="com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics">
 
-  <resultMap id="modelResult" type="userAccessStatistics">
-    <id property="mac" column="mac"/>
-    <id property="date" column="date"/>
+  <resultMap id="modelResult" type="userBrandStatistics">
+    <id property="id" column="id"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
@@ -14,13 +13,12 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_access_statistics
+	    	t_vas_users_brand_statistics
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
-	    	mac,
-	    	date,
+	    	id,
 	    	created_at,
 	    	updated_at,
 	    	extension_content
@@ -35,8 +33,7 @@
 	</sql>   
 	
 	<sql id="modelInsertValues">
-			#{mac},
-	    	#{date},
+	    	#{id},
 	    	#{created_at},
 	    	#{updated_at},
 	    	#{extension_content}
@@ -87,29 +84,29 @@
 	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> 
 			<where>
 		    	<if test="_parameter != null">
-					mac = #{mac} and date = #{date}
+					id = #{id}
 				</if>
 			</where>
 	</select>
 
-	<delete id="deleteByPrimaryKey" parameterType="userDatePK">
-		delete from <include refid="modelTableName" />  where mac = #{mac} and date = #{date}
+	<delete id="deleteByPrimaryKey" parameterType="string">
+		delete from <include refid="modelTableName" />  where date = #{date}
 	</delete>
 	
-	<delete id="delete" parameterType="userAccessStatistics">
+	<delete id="delete" parameterType="userBrandStatistics">
 		delete from <include refid="modelTableName" /> 
 			<if test="_parameter != null">
-					where mac = #{mac} and date = #{date}
+					where  id = #{id}
 			</if>
 	</delete>		
 	 
-	<insert id="insert" parameterType="userAccessStatistics">
+	<insert id="insert" parameterType="userBrandStatistics">
 	    insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues"/>)
 	</insert>
  
   
-	<update id="update" parameterType="userAccessStatistics">
-	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where mac = #{mac} and date = #{date}
+	<update id="update" parameterType="userBrandStatistics">
+	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where id = #{id}
 	</update>
 	
 	
@@ -118,7 +115,7 @@
 	  	select <include refid="modelColumns" /> from <include refid="modelTableName" />
 	  	<where>
 	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (	mac = #{item.mac} and date= #{item.date}	)
+			   (date= #{item.date}	)
 			</foreach>
 	  	</where>
 	  	
@@ -128,13 +125,13 @@
 	  	delete from <include refid="modelTableName" />  
 	  	<where>
 	  		<foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-			   (	mac = #{item.mac} and date= #{item.date}	)
+			   (id= #{item.id}	)
 			</foreach>
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="userDatePK">
-		select mac,date from <include refid="modelTableName" /> 
+	<select id="pkSelectByModelCriteria" resultType="string">
+		select date from <include refid="modelTableName" />
 		<if test="_parameter != null"> 
 	      	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">

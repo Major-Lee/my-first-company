@@ -8,8 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Controller;
