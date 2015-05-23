@@ -661,7 +661,10 @@ public class DeviceBusinessFacadeService {
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			WifiDeviceSettingLinkModeDTO dto = RPCMessageParseHelper.generateDTOFromMessage(doc, WifiDeviceSettingLinkModeDTO.class);
-			deviceFacadeService.updateDeviceModeStatus(wifiId, dto);
+			if(dto != null){
+				dto.setModel(WifiDeviceSettingDTO.Mode_Dhcpc);
+				deviceFacadeService.updateDeviceModeStatus(wifiId, dto);
+			}
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
