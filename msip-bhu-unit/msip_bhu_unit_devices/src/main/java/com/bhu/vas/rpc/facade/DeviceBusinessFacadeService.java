@@ -594,6 +594,7 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
 	}
 	
+	
 	/**
 	 * 修改设备配置的响应处理
 	 * @param ctx
@@ -634,8 +635,30 @@ public class DeviceBusinessFacadeService {
 						setting_dto.setSequence(dto.getConfig_sequence());
 						entity.putInnerModel(setting_dto);
 						wifiDeviceSettingService.update(entity);
+						//修改配置成功的后续业务操作
+						taskModifyDeviceSettingCompletedDeliverMessage(task_completed.getUid(), 
+								wifiId, task_completed.getSubopt());
 					}
 				}
+			}
+		}
+	}
+	
+	/**
+	 * 修改配置成功后 根据不同的操作类型
+	 * 可能会有后续操作
+	 * @param mac
+	 * @param subopt
+	 */
+	public void taskModifyDeviceSettingCompletedDeliverMessage(Integer uid, String mac, String subopt){
+		OperationDS ods = OperationDS.getOperationCMDFromNo(subopt);
+		if(ods != null){
+			switch(ods){
+				case DS_AclMacs:
+					deliverMessageService.sendDeviceModifySettingAclMacsActionMessage(uid, mac);
+					break;
+				default:
+					break;
 			}
 		}
 	}

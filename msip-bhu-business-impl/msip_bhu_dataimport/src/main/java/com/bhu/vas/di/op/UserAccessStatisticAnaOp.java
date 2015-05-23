@@ -28,7 +28,7 @@ public class UserAccessStatisticAnaOp {
         //出现过的设备mac地址
         Set<String> macSet = new HashSet<String>();
 
-        InputStreamReader read = new InputStreamReader(new FileInputStream("/Users/bluesand/Documents/logfile.log"), "gbk");//考虑到编码格式
+        InputStreamReader read = new InputStreamReader(new FileInputStream("/Users/bluesand/Documents/logfile-20150518.log"));//考虑到编码格式
         BufferedReader bufferedReader = new BufferedReader(read);
         String lineTxt = null;
         int total = 0;
@@ -58,7 +58,7 @@ public class UserAccessStatisticAnaOp {
                 /*System.out.println(useragent.getBrowser());
 	            System.out.println(useragent.getId());
 	            System.out.println(useragent.getBrowserVersion());*/
-                String terminal = T.catchUserAgentTermianl(dinfo.getUseragent());
+                String terminal = null;
                 if (terminal == null) {
                     if (useragent.getOperatingSystem().toString().startsWith("WIN")) {
                         terminal = "UNKNOW PC";
@@ -83,7 +83,7 @@ public class UserAccessStatisticAnaOp {
                         terminal = "UNKNOW AND";
                     }
                 }//else terminal = "未识别";
-                if (terminal.toLowerCase().startsWith("zh-cn;")) terminal = terminal.substring(7);
+
                 //System.out.println(terminal);
 
                 if (useragent.getOperatingSystem().toString().startsWith("WINDOWS")) {
@@ -112,12 +112,11 @@ public class UserAccessStatisticAnaOp {
                     } else {
                         Integer hit = innermap.get(terminal);
                         if (hit == null) {
-                            if (terminal.equals("rv:37.0) Gecko")) {
-                                System.out.println(">>>" + lineTxt);
-                            }
-                            if (terminal.equals("zh_CN;S1;netType")) {
-                                System.out.println(">>>" + lineTxt);
-                            }
+                            System.out.println("<<<" + dinfo.getUseragent());
+                            System.out.println("<<<" + T.catchUserAgentTermianl(dinfo.getUseragent()));
+                            System.out.println("<<<"+ useragent.getOperatingSystem());
+                            System.out.println("<<<" + lineTxt);
+                            System.out.println("<<<" + terminal);
                             innermap.put(terminal, 1);
                         } else {
                             hit = hit + 1;
@@ -127,6 +126,13 @@ public class UserAccessStatisticAnaOp {
                 }
 
                 if (useragent.getOperatingSystem().toString().startsWith("ANDROID")) {
+                    terminal = T.catchUserAgentTermianl(dinfo.getUseragent());
+                    if (terminal == null) {
+                        if (useragent.getOperatingSystem() == OperatingSystem.ANDROID) {
+                            terminal = "UNKNOW AND";
+                        }
+                    }
+                    if (terminal.toLowerCase().startsWith("zh-cn;")) terminal = terminal.substring(7);
                     Map<String, Integer> innermap = opTypeMap.get("ANDROID");
                     if (innermap == null) {
                         innermap = new HashMap<String, Integer>();

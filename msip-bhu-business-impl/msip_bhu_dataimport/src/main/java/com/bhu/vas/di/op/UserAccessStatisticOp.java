@@ -41,7 +41,7 @@ public class UserAccessStatisticOp {
         try {
             File file = new File(filePath);
             if (file.isFile() && file.exists()) { //判断文件是否存在
-                InputStreamReader read = new InputStreamReader(new FileInputStream(file),"gbk");//考虑到编码格式
+                InputStreamReader read = new InputStreamReader(new FileInputStream(file));//考虑到编码格式
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
@@ -81,7 +81,7 @@ public class UserAccessStatisticOp {
 
                 for (UserDatePK userDatePK : resultMapper.keySet()) {
                     UserAccessStatistics userAccessStatistics = resultMapper.get(userDatePK);
-                    userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(sortByValue(userAccessStatistics.fetchAll())), false));
+                    //userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(sortByValue(userAccessStatistics.fetchAll())), false));
                     userAccessStatisticsService.insert(userAccessStatistics);
                 }
 
@@ -92,20 +92,5 @@ public class UserAccessStatisticOp {
             System.out.println("读取文件内容出错");
             e.printStackTrace();
         }
-    }
-
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-                return (o2.getValue()).compareTo(o1.getValue());
-            }
-        });
-
-        Map<K, V> result = new LinkedHashMap<K, V>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
     }
 }
