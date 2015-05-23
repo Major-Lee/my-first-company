@@ -83,6 +83,12 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, builderCMDSerial(opt, taskid_format));
 	}
 	
+	public static String builderDhcpcStatusQuery(String wifi_mac,int taskid,String interface_name){
+		return String.format(OperationCMD.QueryDhcpcStatus.getCmdtpl(),//query_device_flow_cmd_template, 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDhcpcStatus.getNo(),
+				String.format(SuffixTemplete,taskid), interface_name);
+	}
+	
 	/**
 	 * 查询设备实时速率指令
 	 * @param wifi_mac
@@ -292,7 +298,8 @@ public class CMDBuilder {
 	
 	//对于设备 开启portal
 	public static TaskSequenceFragment device_httpportal_resourceupgrade_fragment = new TaskSequenceFragment(52001,54000);
-	
+	//获取dhcp模式下的状态信息
+	public static TaskSequenceFragment device_dhcpc_status_fragment = new TaskSequenceFragment(54001,56000);
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,-1);
 	public static boolean wasLocationQueryTaskid(int taskid){

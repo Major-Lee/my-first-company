@@ -26,7 +26,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
@@ -554,7 +554,7 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
-	 * 获取设备配置或者变更配置的响应处理
+	 * 变更配置的响应处理
 	 * 1：更新配置数据
 	 * 2：如果设备是urouter，检查配置是否满足约定 不满足则下发修改配置
 	 * 	  此下发配置为区间任务 不等回应直接修改配置数据
@@ -563,22 +563,68 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
+	public WifiDeviceSettingDTO deviceSettingChanged(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
+		return refreshDeviceSetting(wifiId, dto);
+	}
+	/**
+	 * 获取设备配置
+	 * 1：更新配置数据
+	 * 2：如果设备是urouter，检查配置是否满足约定 不满足则下发修改配置
+	 * 	  此下发配置为区间任务 不等回应直接修改配置数据
+	 * 3:根据设备的mode更新status数据
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public WifiDeviceSettingDTO taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
+		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
+		dto = refreshDeviceSetting(wifiId, dto);
+		
+		//根据设备的mode更新status数据
+		WifiDeviceSettingLinkModeDTO mode = dto.getMode();
+		if(mode != null){
+			//dhcpc
+			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
+				if(!StringUtils.isEmpty(mode.getWan_interface())){
+					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, 
+							CMDBuilder.device_dhcpc_status_fragment.getNextSequence(), mode.getWan_interface());
+					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, taskid, 
+							OperationCMD.QueryDhcpcStatus.getNo(), cmdPayload);
+				}
+			}else{
+				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getMode());
+			}
+		}
+		
+		return dto;
+	}
+	
+	/**
+	 * 全量更新设备配置数据
+	 * 1：更新配置数据
+	 *  2：如果设备是urouter，检查配置是否满足约定 不满足则下发修改配置
+	 * 	  此下发配置为区间任务 不等回应直接修改配置数据
+	 * @param mac
+	 * @param dto
+	 * @return
+	 */
+	public WifiDeviceSettingDTO refreshDeviceSetting(String mac, WifiDeviceSettingDTO dto){
 		//System.out.println("#####################taskQueryDeviceSetting:"+dto.getRadios().get(0).getPower());
 		String modify_urouter_acl = null;
 		//只有URouter的设备才需进行此操作
-		if(deviceFacadeService.isURooterDevice(wifiId)){
+		if(deviceFacadeService.isURooterDevice(mac)){
 			//验证URouter设备配置是否符合约定
 			if(!DeviceHelper.validateURouterBlackList(dto)){
 				modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 			}
 		}
 		
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity == null){
 			entity = new WifiDeviceSetting();
-			entity.setId(wifiId);
+			entity.setId(mac);
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.insert(entity);
 		}else{
@@ -588,10 +634,27 @@ public class DeviceBusinessFacadeService {
 		
 		//如果不符合urouter的配置约定 则下发指定修改配置
 		if(!StringUtils.isEmpty(modify_urouter_acl)){
-			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(wifiId, modify_urouter_acl);
+			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
 		}
-		//2:任务callback
-		doTaskCallback(taskid, WifiDeviceDownTask.State_Done, response);
+		return dto;
+	}
+	
+	/**
+	 * 获取dhcp模式下的状态信息 (ip,网关,dns,子网掩码)
+	 * 更新设备mode的状态信息
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDhcpcStatus(String ctx, String response, String wifiId, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			WifiDeviceSettingLinkModeDTO dto = RPCMessageParseHelper.generateDTOFromMessage(doc, WifiDeviceSettingLinkModeDTO.class);
+			deviceFacadeService.updateDeviceModeStatus(wifiId, dto);
+		}
+		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
 	

@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationDS;
@@ -28,6 +29,7 @@ import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
@@ -36,6 +38,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
@@ -451,6 +454,17 @@ public class DeviceFacadeService {
 		CommonCriteria mc = new CommonCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid);
 		return userDeviceService.findIdsByCommonCriteria(mc);
+	}
+	
+	/**
+	 * 更新设备的mode状态信息
+	 * @param mac
+	 * @param dto
+	 */
+	public void updateDeviceModeStatus(String mac, WifiDeviceSettingLinkModeDTO dto){
+		if(dto != null && !StringUtils.isEmpty(dto)){
+			WifiDeviceModeStatusService.getInstance().addPresent(mac, JsonHelper.getJSONString(dto));
+		}
 	}
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/

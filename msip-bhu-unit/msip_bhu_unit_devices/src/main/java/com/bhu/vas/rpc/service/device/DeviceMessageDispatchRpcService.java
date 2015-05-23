@@ -130,7 +130,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 //				case 8://3.4.17	应用隧道消息
 //					break;
 				case 10://3.4.19 设备配置变更消息
-					deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
+					deviceBusinessFacadeService.deviceSettingChanged(ctx, payload, parserHeader.getMac(), parserHeader.getTaskid());
 					break;
 				case 11://3.4.20 notify命令执行结果通知消息
 					taskNotifyResponse(ctx, payload, parserHeader);
@@ -182,6 +182,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			}
 			else if(OperationCMD.DeviceDelayReboot.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+			}
+			else if(OperationCMD.QueryDhcpcStatus.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskQueryDhcpcStatus(ctx, payload, mac, taskid);
 			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);

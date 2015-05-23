@@ -9,6 +9,7 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 	private long last_login_at;//wifi设备上次的登录时间
 	private boolean newWifi;//是否是新增wifi设备
 	private boolean needLocationQuery;//是否需要发送查询地理位置指令
+	private String dhcpcStatusQuery_interface;//是否需要发送查询dhcp状态信息
 	@Override
 	public String getActionType() {
 		return ActionMessageType.WifiDeviceOnline.getPrefix();
@@ -44,7 +45,14 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 
 	public void setNeedLocationQuery(boolean needLocationQuery) {
 		this.needLocationQuery = needLocationQuery;
+	}
+
+	public String getDhcpcStatusQuery_interface() {
+		return dhcpcStatusQuery_interface;
+	}
+
+	public void setDhcpcStatusQuery_interface(String dhcpcStatusQuery_interface) {
+		this.dhcpcStatusQuery_interface = dhcpcStatusQuery_interface;
 	}	
-	
 	
 }

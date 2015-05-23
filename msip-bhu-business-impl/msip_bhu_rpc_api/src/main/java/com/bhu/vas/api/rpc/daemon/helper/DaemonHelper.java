@@ -7,7 +7,8 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 public class DaemonHelper {
-	public static void afterDeviceOnline(String mac,boolean needLocationQuery,IDaemonRpcService daemonRpcService){
+	public static void afterDeviceOnline(String mac, boolean needLocationQuery,
+			IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
 		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
 		//下发管理参数触发设备自动上报用户通知并同步终端
@@ -21,6 +22,11 @@ public class DaemonHelper {
 			//获取地理位置
 			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		}
+//		if(StringUtils.isNotEmpty(dhcpcStatusQuery_interface)){
+//			//如果是dhcpc模式 获取状态信息
+//			payloads.add(CMDBuilder.builderDhcpcStatusQuery(mac, CMDBuilder.device_dhcpc_status_fragment.getNextSequence(),
+//					dhcpcStatusQuery_interface));
+//		}
 		//获取地理位置
 		//设备上行首先发送查询地理位置指令
 //		if(needLocationQuery){
@@ -69,6 +75,12 @@ public class DaemonHelper {
 			IDaemonRpcService daemonRpcService){
 		String cmd = CMDBuilder.builderDeviceRateNotifyQuery(mac, CMDBuilder.device_rate_taskid_fragment.getNextSequence(), 
 				interface_name, period, duration);
+		daemonCmdDown(mac, cmd, daemonRpcService);
+	}
+	
+	public static void deviceDhcpcStatusQuery(String mac, String interface_name, IDaemonRpcService daemonRpcService){
+		String cmd = CMDBuilder.builderDhcpcStatusQuery(mac, CMDBuilder.device_dhcpc_status_fragment.getNextSequence(), 
+				interface_name);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	

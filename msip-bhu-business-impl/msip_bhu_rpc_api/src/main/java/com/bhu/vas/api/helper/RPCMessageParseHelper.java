@@ -267,8 +267,9 @@ public class RPCMessageParseHelper {
 				linkmodel_dto.setIp(wan_item.attributeValue("ip"));
 				linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
 				linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
-				linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
-				linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
+				linkmodel_dto.setWan_interface(wan_item.attributeValue("wan_interface"));
+				//linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
+				//linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
 				linkmodel_dto.setUsername(wan_item.attributeValue("username"));
 				//dto.setMode(wan_item.attributeValue("mode"));
 				dto.setMode(linkmodel_dto);

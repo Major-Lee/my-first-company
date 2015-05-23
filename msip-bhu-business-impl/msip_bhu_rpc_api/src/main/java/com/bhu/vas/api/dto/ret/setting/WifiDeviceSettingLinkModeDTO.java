@@ -19,6 +19,7 @@ public class WifiDeviceSettingLinkModeDTO implements DeviceSettingBuilderDTO {
      */
     private String model;
 
+    private String wan_interface;
     /**
      * pppoe 用户名
      */
@@ -53,11 +54,11 @@ public class WifiDeviceSettingLinkModeDTO implements DeviceSettingBuilderDTO {
      */
     private String dns;
     
-    //dhcp ip
-    private String real_ipaddr;
-    
-    //dhcp 子网
-    private String real_netmask;
+//    //dhcp ip
+//    private String real_ipaddr;
+//    
+//    //dhcp 子网
+//    private String real_netmask;
     
 
     public String getModel() {
@@ -133,20 +134,28 @@ public class WifiDeviceSettingLinkModeDTO implements DeviceSettingBuilderDTO {
         this.dns = dns;
     }
 
-    public String getReal_ipaddr() {
-		return real_ipaddr;
+//    public String getReal_ipaddr() {
+//		return real_ipaddr;
+//	}
+//
+//	public void setReal_ipaddr(String real_ipaddr) {
+//		this.real_ipaddr = real_ipaddr;
+//	}
+//
+//	public String getReal_netmask() {
+//		return real_netmask;
+//	}
+//
+//	public void setReal_netmask(String real_netmask) {
+//		this.real_netmask = real_netmask;
+//	}
+
+	public String getWan_interface() {
+		return wan_interface;
 	}
 
-	public void setReal_ipaddr(String real_ipaddr) {
-		this.real_ipaddr = real_ipaddr;
-	}
-
-	public String getReal_netmask() {
-		return real_netmask;
-	}
-
-	public void setReal_netmask(String real_netmask) {
-		this.real_netmask = real_netmask;
+	public void setWan_interface(String wan_interface) {
+		this.wan_interface = wan_interface;
 	}
 
 	@Override

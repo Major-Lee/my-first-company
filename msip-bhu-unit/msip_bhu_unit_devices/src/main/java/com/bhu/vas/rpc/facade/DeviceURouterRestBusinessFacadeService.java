@@ -346,9 +346,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(setting_dto != null){
 				WifiDeviceSettingLinkModeDTO mode_dto = setting_dto.getMode();
 				if(mode_dto != null){
-					vto.setIp(mode_dto.getReal_ipaddr());
+					vto.setIp(mode_dto.getIp());
 					vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
-					vto.setNetmask(mode_dto.getReal_netmask());
+					vto.setNetmask(mode_dto.getNetmask());
 					vto.setP_un(mode_dto.getUsername());
 					vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
 					vto.setGateway(mode_dto.getGateway());
@@ -403,7 +403,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			URouterVapPasswordVTO uRouterVapPasswordVTO = new URouterVapPasswordVTO();
 			if (wifiDeviceSetting != null) {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
-				List<WifiDeviceSettingVapDTO> wifiDeviceSettingVapDTOList   = wifiDeviceSettingDTO.getVaps();
+//				List<WifiDeviceSettingVapDTO> wifiDeviceSettingVapDTOList   = wifiDeviceSettingDTO.getVaps();
 
 
 				WifiDeviceSettingVapDTO frist_vap_dto = DeviceHelper.getUrouterDeviceVap(wifiDeviceSettingDTO);
