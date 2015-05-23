@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Controller;
@@ -299,12 +298,10 @@ public class ConsoleController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
-			@RequestParam(required = false) String date) {
-		if (date == null || date.isEmpty()) {
-			date = DateHelper.COMMON_HELPER.getDateText(new Date());
-		}
+			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
 
-		RpcResponseDTO<List<String>> result = statisticsRpcService.fetchUserBrandStatistics(date);
+		TailPage<UserBrandStatisticsDTO> result = statisticsRpcService.fetchUserBrandStatistics(pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }

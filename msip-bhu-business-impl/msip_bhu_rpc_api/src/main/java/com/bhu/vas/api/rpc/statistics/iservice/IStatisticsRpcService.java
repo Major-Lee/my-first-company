@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IStatisticsRpcService {
@@ -17,5 +17,7 @@ public interface IStatisticsRpcService {
 																			 int pageNo, int pageSize);
 
 	RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date);
+
+	TailPage<UserBrandStatisticsDTO> fetchUserBrandStatistics(int pageNo, int pageSize);
 
 }

@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
 import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
@@ -94,8 +95,6 @@ public class UserAccessStatisticsFacadeService {
                 userAccessStatisticsDTO.setExtension_content(JsonHelper.getJSONString(
                         SortMapHelper.sortMapByValue(extension), false));
             }
-
-
         }
 
         return new CommonPage<UserAccessStatisticsDTO>(pageNo, pageSize,
@@ -105,5 +104,24 @@ public class UserAccessStatisticsFacadeService {
     public RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date) {
         UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics.getInnerModels());
+    }
+
+
+    public TailPage<UserBrandStatisticsDTO> fetchUserBrandStatistics(int pageNo, int pageSize) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+        TailPage<UserBrandStatistics> result = userBrandStatisticsService.findModelTailPageByModelCriteria(mc);
+        List<UserBrandStatisticsDTO> userBrandStatisticsDTOs = new ArrayList<UserBrandStatisticsDTO>();
+        for (UserBrandStatistics userBrandStatistics : result.getItems()) {
+            UserBrandStatisticsDTO userBrandStatisticsDTO = new UserBrandStatisticsDTO();
+            userBrandStatisticsDTO.setDate(userBrandStatistics.getId());
+            userBrandStatisticsDTO.setContent(userBrandStatistics.getInnerModelJsons());
+            userBrandStatisticsDTOs.add(userBrandStatisticsDTO);
+        }
+
+        return new CommonPage<UserBrandStatisticsDTO>(pageNo, pageSize,
+                result.getTotalItemsCount(), userBrandStatisticsDTOs);
+
     }
 }

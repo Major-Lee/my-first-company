@@ -2,12 +2,9 @@ package com.bhu.vas.business.statistics;
 
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
-import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
-import com.bhu.vas.business.ds.statistics.service.UserAccessStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
-import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -15,10 +12,6 @@ import com.smartwork.msip.localunit.BaseTest;
 import org.junit.Test;
 
 import javax.annotation.Resource;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -36,40 +29,40 @@ public class UserBrandStatisticsTest extends BaseTest {
         userBrandStatistics.setId("2015-05-23");
         userBrandStatistics.setCreated_at(new Date());
 
-        List<UserBrandDTO> userBrandDTOList = new ArrayList<UserBrandDTO>();
+        List<UserBrandSubDTO> userBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        UserBrandSubDTO userBrandSubDTO = new UserBrandSubDTO();
+        userBrandSubDTO.setBrand("Sumsang T1");
+        userBrandSubDTO.setCount(10);
+        userBrandSubDTO.setRatio("10%");
+        userBrandSubDTOList.add(userBrandSubDTO);
+
+        userBrandSubDTO = new UserBrandSubDTO();
+        userBrandSubDTO.setBrand("Sumsnag T2");
+        userBrandSubDTO.setCount(12);
+        userBrandSubDTO.setRatio("21%");
+        userBrandSubDTOList.add(userBrandSubDTO);
+
+        userBrandSubDTO = new UserBrandSubDTO();
+        userBrandSubDTO.setBrand("Sumsnag T3");
+        userBrandSubDTO.setCount(23);
+        userBrandSubDTO.setRatio("23%");
+        userBrandSubDTOList.add(userBrandSubDTO);
 
         UserBrandDTO userBrandDTO = new UserBrandDTO();
-        userBrandDTO.setBrand("Sumsang T1");
-        userBrandDTO.setCount(10);
-        userBrandDTO.setRatio("10%");
-        userBrandDTOList.add(userBrandDTO);
 
-        userBrandDTO = new UserBrandDTO();
-        userBrandDTO.setBrand("Sumsnag T2");
-        userBrandDTO.setCount(12);
-        userBrandDTO.setRatio("21%");
-        userBrandDTOList.add(userBrandDTO);
+        userBrandDTO.setBrand("Sumsang");
 
-        userBrandDTO = new UserBrandDTO();
-        userBrandDTO.setBrand("Sumsnag T3");
-        userBrandDTO.setCount(23);
-        userBrandDTO.setRatio("23%");
-        userBrandDTOList.add(userBrandDTO);
+        userBrandDTO.setCount(45);
+        userBrandDTO.setRatio("24%");
 
-        UserBrandStatisticsDTO userBrandStatisticsDTO = new UserBrandStatisticsDTO();
+        userBrandDTO.setDetail(userBrandSubDTOList);
 
-        userBrandStatisticsDTO.setBrand("Sumsang");
-
-        userBrandStatisticsDTO.setCount(45);
-        userBrandStatisticsDTO.setRatio("24%");
-
-        userBrandStatisticsDTO.setDetail(userBrandDTOList);
-
-        System.out.println(JsonHelper.getJSONString(userBrandStatisticsDTO));
+        System.out.println(JsonHelper.getJSONString(userBrandDTO));
 
         List<String> userBrandStatisticsDTOs = new ArrayList<String>();
 
-        userBrandStatisticsDTOs.add(JsonHelper.getJSONString(userBrandStatisticsDTO));
+        userBrandStatisticsDTOs.add(JsonHelper.getJSONString(userBrandDTO));
 
         userBrandStatistics.putInnerModels(userBrandStatisticsDTOs);
 
@@ -81,15 +74,29 @@ public class UserBrandStatisticsTest extends BaseTest {
 
     @Test
     public void find() {
-        UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById("2015-05-23");
+//        UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById("2015-05-23");
+//
+//        System.out.println(userBrandStatistics.getExtension_content());
+//
+//        System.out.println(userBrandStatistics.getInnerModels());
+////        List<UserBrandDTO> userBrandStatisticsDTOs  =
+////                JsonHelper.getDTOList(userBrandStatistics.getExtension_content(),UserBrandDTO.class);
+//
+//        //System.out.println(userBrandStatisticsDTOs);
 
-        System.out.println(userBrandStatistics.getExtension_content());
 
-        System.out.println(userBrandStatistics.getInnerModels());
-//        List<UserBrandStatisticsDTO> userBrandStatisticsDTOs  =
-//                JsonHelper.getDTOList(userBrandStatistics.getExtension_content(),UserBrandStatisticsDTO.class);
+        ModelCriteria mc = new ModelCriteria();
+        mc.setPageNumber(1);
+        mc.setPageSize(5);
+        TailPage<UserBrandStatistics> result = userBrandStatisticsService.findModelTailPageByModelCriteria(mc);
 
-        //System.out.println(userBrandStatisticsDTOs);
+        for (UserBrandStatistics userBrandStatistics : result.getItems()) {
+            UserBrandStatisticsDTO userBrandStatisticsDTO = new UserBrandStatisticsDTO();
+            userBrandStatisticsDTO.setDate(userBrandStatistics.getId());
+            userBrandStatisticsDTO.setContent(userBrandStatistics.getInnerModelJsons());
+        }
+
+
     }
 
 
