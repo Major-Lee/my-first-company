@@ -16,6 +16,6 @@ public interface IStatisticsRpcService {
 	TailPage<UserAccessStatisticsDTO> fetchUserAccessStatisticsWithDeviceMac(String date, String device_mac,
 																			 int pageNo, int pageSize);
 
-	RpcResponseDTO<List<UserBrandStatisticsDTO>> fetchUserBrandStatistics(String date);
+	RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date);
 
 }

@@ -102,13 +102,8 @@ public class UserAccessStatisticsFacadeService {
                 result.getTotalItemsCount(), userAccessStatisticsList);
     }
 
-    public RpcResponseDTO<List<UserBrandStatisticsDTO>> fetchUserBrandStatistics(String date) {
+    public RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date) {
         UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
-
-
-        List<UserBrandStatisticsDTO> userBrandStatisticsDTOs  =
-                JsonHelper.getDTOList(userBrandStatistics.getExtension_content(),UserBrandStatisticsDTO.class);
-
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatisticsDTOs);
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics.getInnerModels());
     }
 }

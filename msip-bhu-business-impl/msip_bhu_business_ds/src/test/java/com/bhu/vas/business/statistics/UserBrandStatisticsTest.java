@@ -79,4 +79,18 @@ public class UserBrandStatisticsTest extends BaseTest {
     }
 
 
+    @Test
+    public void find() {
+        UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById("2015-05-23");
+
+        System.out.println(userBrandStatistics.getExtension_content());
+
+        System.out.println(userBrandStatistics.getInnerModels());
+//        List<UserBrandStatisticsDTO> userBrandStatisticsDTOs  =
+//                JsonHelper.getDTOList(userBrandStatistics.getExtension_content(),UserBrandStatisticsDTO.class);
+
+        //System.out.println(userBrandStatisticsDTOs);
+    }
+
+
 }

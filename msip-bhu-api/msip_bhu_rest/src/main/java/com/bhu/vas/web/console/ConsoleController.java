@@ -304,7 +304,7 @@ public class ConsoleController extends BaseController{
 			date = DateHelper.COMMON_HELPER.getDateText(new Date());
 		}
 
-		RpcResponseDTO<List<UserBrandStatisticsDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
+		RpcResponseDTO<List<String>> result = statisticsRpcService.fetchUserBrandStatistics(date);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }
