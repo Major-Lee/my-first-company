@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
 import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -101,8 +102,13 @@ public class UserAccessStatisticsFacadeService {
                 result.getTotalItemsCount(), userAccessStatisticsList);
     }
 
-    public RpcResponseDTO<UserBrandStatistics> fetchUserBrandStatistics(String date) {
+    public RpcResponseDTO<List<UserBrandStatisticsDTO>> fetchUserBrandStatistics(String date) {
         UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics);
+
+
+        List<UserBrandStatisticsDTO> userBrandStatisticsDTOs  =
+                JsonHelper.getDTOList(userBrandStatistics.getExtension_content(),UserBrandStatisticsDTO.class);
+
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatisticsDTOs);
     }
 }

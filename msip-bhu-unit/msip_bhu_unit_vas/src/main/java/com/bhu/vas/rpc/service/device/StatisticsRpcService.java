@@ -67,7 +67,7 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UserBrandStatistics> fetchUserBrandStatistics(String date) {
+	public RpcResponseDTO<List<UserBrandStatisticsDTO>> fetchUserBrandStatistics(String date) {
 		logger.info(String.format("fetchUserBrandStatistics with date[%s] ", date));
 		return userAccessStatisticsFacadeService.fetchUserBrandStatistics(date);
 	}
