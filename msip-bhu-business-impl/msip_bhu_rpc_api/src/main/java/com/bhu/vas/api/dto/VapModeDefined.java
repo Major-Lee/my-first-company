@@ -138,7 +138,7 @@ public class VapModeDefined {
 	 */
 	public enum HtmlInject404{
 		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style000.tar.gz")),
-		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style001.tar.gz")),
+		STYLE001("style001","00.00.02","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style001.tar.gz")),
 		;
 
 		private String style;
