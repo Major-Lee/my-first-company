@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.statistics;
+package com.bhu.vas.api.rpc.statistics.dto;
 
 import java.io.Serializable;
 import java.util.Date;

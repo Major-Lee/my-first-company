@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.statistics.UserAccessStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Controller;
@@ -288,6 +288,20 @@ public class ConsoleController extends BaseController{
 			result = statisticsRpcService.fetchUserAccessStatistics(date, pageNo, pageSize);
 		}
 
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+	}
+
+
+	@ResponseBody()
+	@RequestMapping(value="/statistics/fetch_user_brand_statistics",method={RequestMethod.POST})
+	public void fetch_user_brand_statistics(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = false, defaultValue="1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int pageSize) {
+
+		TailPage<UserBrandStatisticsDTO> result = statisticsRpcService.fetchUserBrandStatistics(pageNo, pageSize);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }
