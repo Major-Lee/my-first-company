@@ -563,9 +563,10 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public WifiDeviceSettingDTO deviceSettingChanged(String ctx, String response, String wifiId, int taskid){
+	public void deviceSettingChanged(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
-		return refreshDeviceSetting(wifiId, dto);
+		dto = refreshDeviceSetting(wifiId, dto);
+		updateDeviceModeStatusWithMode(wifiId, dto);
 	}
 	/**
 	 * 获取设备配置
@@ -578,18 +579,28 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public WifiDeviceSettingDTO taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		dto = refreshDeviceSetting(wifiId, dto);
-		
+		updateDeviceModeStatusWithMode(wifiId, dto);
+	}
+	
+	/**
+	 * 根据设备的mode更新status数据
+	 * 1:如果是dhcp 需要下发指令查询
+	 * 2:如果不是dhcp的 直接从配置中获取
+	 * @param wifiId
+	 * @param dto
+	 */
+	public void updateDeviceModeStatusWithMode(String wifiId, WifiDeviceSettingDTO dto){
 		//根据设备的mode更新status数据
 		WifiDeviceSettingLinkModeDTO mode = dto.getMode();
 		if(mode != null){
 			//dhcpc
 			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
 				if(!StringUtils.isEmpty(mode.getWan_interface())){
-					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, 
-							CMDBuilder.device_dhcpc_status_fragment.getNextSequence(), mode.getWan_interface());
+					int taskid = CMDBuilder.device_dhcpc_status_fragment.getNextSequence();
+					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
 					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, taskid, 
 							OperationCMD.QueryDhcpcStatus.getNo(), cmdPayload);
 				}
@@ -597,8 +608,6 @@ public class DeviceBusinessFacadeService {
 				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getMode());
 			}
 		}
-		
-		return dto;
 	}
 	
 	/**
