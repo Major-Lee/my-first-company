@@ -166,7 +166,7 @@ public class CMDBuilder {
 	}
 	
 	public static String builderCMD4HttpPortalResourceUpdate(String wifi_mac, int taskid,String extparams){
-		String opt = OperationCMD.TriggerHttp404ResourceUpdate.getNo();
+		String opt = OperationCMD.TriggerHttpPortalResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		ParamVapHttpPortalDTO httpportal_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//Object[] array = http404_dto

@@ -26,7 +26,7 @@ public class UserBrandStatisticsTest extends BaseTest {
     @Test
     public void insert() {
         UserBrandStatistics userBrandStatistics = new UserBrandStatistics();
-        userBrandStatistics.setId("2015-05-23");
+        userBrandStatistics.setId("2015-05-22");
         userBrandStatistics.setCreated_at(new Date());
 
         List<UserBrandSubDTO> userBrandSubDTOList = new ArrayList<UserBrandSubDTO>();

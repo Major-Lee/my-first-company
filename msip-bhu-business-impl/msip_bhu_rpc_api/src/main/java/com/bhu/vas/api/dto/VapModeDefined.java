@@ -247,10 +247,10 @@ public class VapModeDefined {
 	 *
 	 */
 	public enum HtmlPortal{
-		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://192.168.66.7,http://bhunetworks.com",
-				"http://vap.bhunetworks.com/vapfiles/portal/000-normal-1.zip"),
-		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","http://192.168.66.7,http://bhunetworks.com",
-				"http://vap.bhunetworks.com/vapfiles/portal/000-style001-1.zip"),
+		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","192.168.66.7,bhunetworks.com",
+				url_prefix.concat("portal/rawfiles/style001.tar.gz")),
+		STYLE001("style001","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","192.168.66.7,bhunetworks.com",
+				url_prefix.concat("portal/rawfiles/style001.tar.gz")),
 		;
 		
 		private String style;
