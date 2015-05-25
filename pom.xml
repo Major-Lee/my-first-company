@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <repositories>
+        <repository>
+            <id>my-internal-site</id>
+            <url>file:${project.basedir}/../../../local_repo</url>
+        </repository>
+    </repositories>
+
     <groupId>com.bhu</groupId>
     <artifactId>bhu-parent</artifactId>
     <version>1.0</version>
@@ -493,31 +500,42 @@
             </dependency>
 
             <dependency>
-                <groupId>com.gexin.platform</groupId>
+                <groupId>gexin</groupId>
                 <artifactId>gexin-rp-sdk-base</artifactId>
                 <!--
                 <version>2.0.0.9</version>
                 -->
                 <version>2.0.0.26</version>
-                
+                <!--
+                <scope>system</scope> 
+                <systemPath>${project.basedir}/../../../local_repo/gexin/gexin-rp-sdk-base/2.0.0.26/gexin-rp-sdk-base-2.0.0.26.jar</systemPath>
+            -->
             </dependency>
 
             <dependency>
-                <groupId>com.gexin.platform</groupId>
+                <groupId>gexin</groupId>
                 <artifactId>gexin-rp-sdk-http</artifactId>
                 <!--
                 <version>3.0.0.2</version>
                 -->
                 <version>3.0.0.14</version>
+                <!--
+                <scope>system</scope> 
+                <systemPath>${project.basedir}/../../../local_repo/gexin/gexin-rp-sdk-http/3.0.0.14/gexin-rp-sdk-http-3.0.0.14.jar</systemPath>
+            -->
             </dependency>
 
             <dependency>
-                <groupId>com.gexin.platform</groupId>
+                <groupId>gexin</groupId>
                 <artifactId>gexin-rp-sdk-template</artifactId>
                 <!--
                 <version>2.0.0.6</version>
                 -->
                 <version>2.0.0.11</version>
+                <!--
+                <scope>system</scope> 
+                <systemPath>${project.basedir}/../../../local_repo/gexin/gexin-rp-sdk-template/2.0.0.11/gexin-rp-sdk-template-2.0.0.11.jar</systemPath>
+            -->
             </dependency>
 
             <dependency>
