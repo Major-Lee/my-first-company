@@ -15,19 +15,26 @@ import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
  */
 public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDTO{
 	private String enable;
-	private String url;
+	//private String url;
+	private String redirect_url;
+		private String open_resource;
+		private int idle_timeout;
+		private int force_timeout;
+		private String question;
+		private String answer;
 	private String version;
 	//private String style;
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[3];
-		properties[0] = enable;
-		properties[1] = url;
-		properties[2] = version;
-		/*HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
-		properties[1] = adv.getPackurl();
-		properties[2] = adv.toIndentify();*/
+		Object[] properties = new Object[6];
+		properties[0] = redirect_url;
+		properties[1] = idle_timeout;
+		properties[2] = force_timeout;
+		properties[3] = open_resource;
+		
+		properties[4] = question;
+		properties[5] = answer;
 		return properties;
 	}
 	
@@ -49,14 +56,6 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 		this.enable = enable;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public String getVersion() {
 		return version;
 	}
@@ -66,11 +65,63 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 	}
 
 	
+	public String getRedirect_url() {
+		return redirect_url;
+	}
+
+	public void setRedirect_url(String redirect_url) {
+		this.redirect_url = redirect_url;
+	}
+
+	public String getOpen_resource() {
+		return open_resource;
+	}
+
+	public void setOpen_resource(String open_resource) {
+		this.open_resource = open_resource;
+	}
+
+	public int getIdle_timeout() {
+		return idle_timeout;
+	}
+
+	public void setIdle_timeout(int idle_timeout) {
+		this.idle_timeout = idle_timeout;
+	}
+
+	public int getForce_timeout() {
+		return force_timeout;
+	}
+
+	public void setForce_timeout(int force_timeout) {
+		this.force_timeout = force_timeout;
+	}
+
+	public String getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
 	public static WifiDeviceSettingVapHttpPortalDTO fromParamVapAdDTO(ParamVapHttpPortalDTO dto){
 		WifiDeviceSettingVapHttpPortalDTO hdto = new WifiDeviceSettingVapHttpPortalDTO();
 		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(dto.getStyle());
-		hdto.setUrl(adv.getPackurl());//.setBhu_id(adv.getBid());
-		hdto.setEnable(dto.getEnable());
+		hdto.setRedirect_url(adv.getRedirect_url());
+		hdto.setOpen_resource(adv.getOpen_resource());
+		hdto.setIdle_timeout(dto.getIdle_timeout());
+		hdto.setForce_timeout(dto.getForce_timeout());
+		hdto.setQuestion(dto.getQuestion());
+		hdto.setAnswer(dto.getAnswer());
 		hdto.setVersion(adv.toIndentify());;
 		return hdto;
 	}

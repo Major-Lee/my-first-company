@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting.param;
 
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 
 
 /**
@@ -9,8 +11,15 @@ package com.bhu.vas.api.dto.ret.setting.param;
  *
  */
 public class ParamVapHttpPortalDTO{
-	private String enable;
 	private String style;
+	
+	//private String redirect_url;
+	//private String open_resource;
+	private int idle_timeout;
+	private int force_timeout;
+	private String question;
+	private String answer;
+	//开放的资源链接
 	
 /*	@Override
 	public Object[] builderProperties() {
@@ -32,19 +41,49 @@ public class ParamVapHttpPortalDTO{
 		return false;
 	}*/
 	
-	public String getEnable() {
-		return enable;
-	}
-
-	public void setEnable(String enable) {
-		this.enable = enable;
-	}
-
 	public String getStyle() {
 		return style;
 	}
 
+	public String getQuestion() {
+		return question;
+	}
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+	public String getAnswer() {
+		return answer;
+	}
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+	public int getIdle_timeout() {
+		return idle_timeout;
+	}
+
+	public void setIdle_timeout(int idle_timeout) {
+		this.idle_timeout = idle_timeout;
+	}
+
+	public int getForce_timeout() {
+		return force_timeout;
+	}
+
+	public void setForce_timeout(int force_timeout) {
+		this.force_timeout = force_timeout;
+	}
+
 	public void setStyle(String style) {
 		this.style = style;
+	}
+	
+	public static void main(String[] argv){
+		ParamVapHttpPortalDTO dto = new ParamVapHttpPortalDTO();
+		dto.setStyle("style001");
+		dto.setIdle_timeout(1200);
+		dto.setForce_timeout(21600);
+		dto.setQuestion("从哪里来？");
+		dto.setAnswer("到哪里去");
+		System.out.println(JsonHelper.getJSONString(dto));
 	}
 }
