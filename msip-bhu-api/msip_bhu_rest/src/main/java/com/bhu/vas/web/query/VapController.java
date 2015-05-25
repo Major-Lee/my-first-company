@@ -36,6 +36,25 @@ public class VapController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed("http://192.168.66.7/vap/404/404_link"+index+".html"));
 	}
 	
+	
+	@ResponseBody()
+	@RequestMapping(value="/urlportal",method={RequestMethod.POST,RequestMethod.GET})
+	public ModelAndView urlportal(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false) String jsonpcallback
+			) {
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		ModelAndView mv = new ModelAndView();
+        StaticResultController.redirectURL(mv, "http://mail.163.com", 100, "redirect");//.redirectError(mv, servletContext.getContextPath()+"/index.html", ex.getMessage());
+        return mv;
+		/*String index = String.format("%02d", RandomData.intNumber(1, 4+1));
+		if(StringUtils.isNotEmpty(jsonpcallback)){
+			SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed("http://192.168.66.7/vap/404/404_link"+index+".html"));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed("http://192.168.66.7/vap/404/404_link"+index+".html"));*/
+	}
+	
 	/**
 	 * 只能站内forward
 	 * @param request
