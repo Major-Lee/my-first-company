@@ -31,6 +31,8 @@ public class URouterSettingVTO implements Serializable{
 	//private String mode;
 	//设备wan ip
 	private String wan_ip;
+	//设备ip
+	private String ip;
 	
 	public String getMac() {
 		return mac;
@@ -97,5 +99,11 @@ public class URouterSettingVTO implements Serializable{
 	}
 	public void setWan_ip(String wan_ip) {
 		this.wan_ip = wan_ip;
+	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 }
