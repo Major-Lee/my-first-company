@@ -23,6 +23,11 @@
 
         <dependency>
             <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_push_common</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_asynmessage</artifactId>
         </dependency>
         
