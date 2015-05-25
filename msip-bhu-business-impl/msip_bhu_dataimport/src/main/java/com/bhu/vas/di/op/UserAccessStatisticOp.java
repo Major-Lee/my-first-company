@@ -309,6 +309,7 @@ public class UserAccessStatisticOp {
                     subSum += value;
                     userBrandSubDTOList.add(userBrandSubDTO);
                 }
+
                 for (UserBrandSubDTO dto : userBrandSubDTOList) {
                     dto.setRatio(dto.getCount() / (subSum / 100.0) + "%");
                 }
@@ -350,7 +351,7 @@ public class UserAccessStatisticOp {
                 sum += subSum;
             }
             windowsUserBrandDTO.setRatio(maxosdUserBrandDTO.getCount()/ (sum / 100.0) + "%");
-            androidUserBrandDTO.setRatio(androidUserBrandDTO.getCount()/ (sum / 100.0) + "%");
+            //androidUserBrandDTO.setRatio(androidUserBrandDTO.getCount()/ (sum / 100.0) + "%");
             maxosdUserBrandDTO.setRatio(maxosdUserBrandDTO.getCount()/ (sum / 100.0) + "%");
 
 
@@ -358,9 +359,11 @@ public class UserAccessStatisticOp {
             windowsUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(windowsUserBrandDTO));
             userBrandStatistics.putInnerModels(windowsUserBrandStatisticsDTOs);
 
-            List<String> androidUserBrandStatisticsDTOs = new ArrayList<String>();
-            androidUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(androidUserBrandDTO));
-            userBrandStatistics.putInnerModels(androidUserBrandStatisticsDTOs);
+//            List<String> androidUserBrandStatisticsDTOs = new ArrayList<String>();
+//            androidUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(androidUserBrandDTO));
+//            userBrandStatistics.putInnerModels(androidUserBrandStatisticsDTOs);
+
+            filterAndroid(android, userBrandStatistics, sum);
 
             List<String> macosUserBrandStatisticsDTOs = new ArrayList<String>();
             macosUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(maxosdUserBrandDTO));
@@ -368,6 +371,160 @@ public class UserAccessStatisticOp {
         }
 
         userBrandStatisticsService.insert(userBrandStatistics);
+    }
 
+
+    private static void filterAndroid(Map<String, Integer> android, UserBrandStatistics userBrandStatistics ,int totalSum) {
+
+        int androidCount = android.size();
+
+        UserBrandDTO coolpadUserBrandDTO = new UserBrandDTO();
+        coolpadUserBrandDTO.setBrand("coolpad");
+        List<UserBrandSubDTO> coolpadUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        UserBrandDTO huaweiUserBrandDTO = new UserBrandDTO();
+        huaweiUserBrandDTO.setBrand("huawei");
+        List<UserBrandSubDTO> huaweiUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        UserBrandDTO xiaomiUserBrandDTO = new UserBrandDTO();
+        xiaomiUserBrandDTO.setBrand("xiaomi");
+        List<UserBrandSubDTO> xiaomiUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        UserBrandDTO sumsangUserBrandDTO = new UserBrandDTO();
+        sumsangUserBrandDTO.setBrand("sumsang");
+        List<UserBrandSubDTO> sumsangUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+
+        UserBrandDTO htcUserBrandDTO = new UserBrandDTO();
+        htcUserBrandDTO.setBrand("htc");
+        List<UserBrandSubDTO> htcUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        UserBrandDTO otherUserBrandDTO = new UserBrandDTO();
+        otherUserBrandDTO.setBrand("other");
+        List<UserBrandSubDTO> otherUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        Iterator<String> it = android.keySet().iterator();
+
+        int coolpadSum = 0;
+        int huaweiSum = 0;
+        int xiaomiSum = 0;
+        int sumsangSum = 0;
+        int htcSum = 0;
+        int otherSum = 0;
+
+        while(it.hasNext()) {
+            UserBrandSubDTO userBrandSubDTO = new UserBrandSubDTO();
+            String key = it.next();
+            Integer value = android.get(key);
+            userBrandSubDTO.setBrand(key);
+            userBrandSubDTO.setCount(value);
+
+            if (key.toLowerCase().startsWith("coolpad")) {
+                coolpadUserBrandSubDTOList.add(userBrandSubDTO);
+                coolpadSum += value;
+            }
+            else if (key.toLowerCase().startsWith("huawei") || key.toLowerCase().startsWith("h60")) {
+                huaweiUserBrandSubDTOList.add(userBrandSubDTO);
+                huaweiSum += value;
+            }
+            else if (key.toLowerCase().startsWith("mi")) {
+                xiaomiUserBrandSubDTOList.add(userBrandSubDTO);
+                xiaomiSum += value;
+            }
+            else if (key.toLowerCase().startsWith("gt") || key.toLowerCase().startsWith("sm")) {
+                sumsangUserBrandSubDTOList.add(userBrandSubDTO);
+                sumsangSum += value;
+            }
+            else if (key.toLowerCase().startsWith("htc")) {
+                htcUserBrandSubDTOList.add(userBrandSubDTO);
+                htcSum += value;
+            }
+            else {
+                otherUserBrandSubDTOList.add(userBrandSubDTO);
+                otherSum += value;
+            }
+        }
+
+        coolpadUserBrandDTO.setCount(coolpadSum);
+        coolpadUserBrandDTO.setDetail(coolpadUserBrandSubDTOList);
+        coolpadUserBrandDTO.setRatio(coolpadSum / (totalSum / 100.0) + "%");
+
+        huaweiUserBrandDTO.setCount(huaweiSum);
+        huaweiUserBrandDTO.setDetail(huaweiUserBrandSubDTOList);
+        huaweiUserBrandDTO.setRatio(huaweiSum / (totalSum / 100.0) + "%");
+
+
+        xiaomiUserBrandDTO.setCount(xiaomiSum);
+        xiaomiUserBrandDTO.setDetail(xiaomiUserBrandSubDTOList);
+        xiaomiUserBrandDTO.setRatio(xiaomiSum / (totalSum / 100.0) + "%");
+
+        sumsangUserBrandDTO.setCount(sumsangSum);
+        sumsangUserBrandDTO.setDetail(sumsangUserBrandSubDTOList);
+        sumsangUserBrandDTO.setRatio(sumsangSum / (totalSum / 100.0) + "%");
+
+        htcUserBrandDTO.setCount(htcSum);
+        htcUserBrandDTO.setDetail(htcUserBrandSubDTOList);
+        htcUserBrandDTO.setRatio(htcSum / (totalSum / 100.0) + "%");
+
+        otherUserBrandDTO.setCount(otherSum);
+        otherUserBrandDTO.setDetail(otherUserBrandSubDTOList);
+        otherUserBrandDTO.setRatio(otherSum / (totalSum / 100.0) + "%");
+
+
+        for(UserBrandSubDTO userBrandSubDTO : coolpadUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(coolpadSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : huaweiUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(huaweiSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : xiaomiUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(xiaomiSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : sumsangUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(sumsangSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : htcUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(htcSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : otherUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(otherSum / 100.0) + "%");
+        }
+
+
+        List<String> coolpadUserBrandStatisticsDTOs = new ArrayList<String>();
+        coolpadUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(coolpadUserBrandDTO));
+        userBrandStatistics.putInnerModels(coolpadUserBrandStatisticsDTOs);
+
+        List<String> huaweiUserBrandStatisticsDTOs = new ArrayList<String>();
+        huaweiUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(huaweiUserBrandDTO));
+        userBrandStatistics.putInnerModels(huaweiUserBrandStatisticsDTOs);
+
+        List<String> xiaomiUserBrandStatisticsDTOs = new ArrayList<String>();
+        xiaomiUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(xiaomiUserBrandDTO));
+        userBrandStatistics.putInnerModels(xiaomiUserBrandStatisticsDTOs);
+
+        List<String> sumsangUserBrandStatisticsDTOs = new ArrayList<String>();
+        sumsangUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(sumsangUserBrandDTO));
+        userBrandStatistics.putInnerModels(sumsangUserBrandStatisticsDTOs);
+
+        List<String> htcUserBrandStatisticsDTOs = new ArrayList<String>();
+        htcUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(htcUserBrandDTO));
+        userBrandStatistics.putInnerModels(htcUserBrandStatisticsDTOs);
+
+        List<String> otherUserBrandStatisticsDTOs = new ArrayList<String>();
+        otherUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(otherUserBrandDTO));
+        userBrandStatistics.putInnerModels(otherUserBrandStatisticsDTOs);
+
+    }
+
+
+    enum MoblieBrand {
+        COOLPAD,
+        HUAWEI,
+        LEONOVO,
+        MI,
+        SUMSANG,
+        HTC,
+        OTHER,
     }
 }
