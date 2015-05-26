@@ -36,11 +36,11 @@
 		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
 		<typeAlias alias="wifiDeviceAlarm" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm"/>
 		<typeAlias alias="handsetDevice" 				type="com.bhu.vas.api.rpc.devices.model.HandsetDevice"/>
-		<typeAlias alias="wifiDeviceSetting" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
+		<typeAlias alias="wifiDeviceSetting" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
 		<typeAlias alias="wifiDeviceDownTaskCompleted" 	type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
 		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
-		<typeAlias alias="wifiHandsetDeviceMark" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark"/>
-		<typeAlias alias="wifiHandsetDeviceMarkPK" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK"/>
+		<typeAlias alias="wifiHandsetDeviceMark" 		type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark"/>
+		<typeAlias alias="wifiHandsetDeviceMarkPK" 		type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK"/>
 	</typeAliases>
 	
 	<!-- 
