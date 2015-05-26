@@ -34,6 +34,8 @@ public interface IUserDeviceRpcService {
 
     RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac);
 
+    boolean modifyDeviceName(String mac, int uid, String deviceName);
+
 
 
 

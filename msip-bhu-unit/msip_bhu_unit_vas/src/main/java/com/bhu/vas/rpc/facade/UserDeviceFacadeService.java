@@ -77,7 +77,7 @@ public class UserDeviceFacadeService {
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(
-                    ResponseErrorCode.RPC_MESSAGE_UNSUPPORT,Boolean.FALSE);
+                    ResponseErrorCode.RPC_MESSAGE_UNSUPPORT, Boolean.FALSE);
         }
 
     }
@@ -126,6 +126,22 @@ public class UserDeviceFacadeService {
         } else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
         }
+    }
+
+    public boolean modifyUserDeviceName(String mac, int uid, String deviceName) {
+
+        try {
+            UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+            UserDevice userDevice = new UserDevice();
+            userDevice.setId(new UserDevicePK(mac, uid));
+            userDevice.setDevice_name(deviceName);
+            userDeviceService.update(userDevice);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
 }

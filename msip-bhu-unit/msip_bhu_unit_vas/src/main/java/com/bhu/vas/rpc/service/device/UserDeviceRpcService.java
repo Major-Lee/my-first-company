@@ -111,4 +111,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
         return userDeviceFacadeService.fetchBindDeviceUser(mac);
     }
+
+    @Override
+    public boolean modifyDeviceName(String mac, int uid, String deviceName) {
+        return userDeviceFacadeService.modifyUserDeviceName(mac, uid, deviceName);
+    }
 }

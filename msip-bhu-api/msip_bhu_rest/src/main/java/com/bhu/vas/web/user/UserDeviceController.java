@@ -3,6 +3,7 @@ package com.bhu.vas.web.user;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -47,11 +49,15 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
         }
 
-
-
-
     }
 
+
+    /**
+     * 设备不在线可以解绑
+     * @param response
+     * @param mac
+     * @param uid
+     */
     @ResponseBody()
     @RequestMapping(value="/unbind",method={RequestMethod.POST})
     public void unBindDevice(HttpServletResponse response,
@@ -68,9 +74,8 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_EXIST));
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_UROOTER));
-        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE));
-        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED) {
+        }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
+                || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             RpcResponseDTO<Boolean> userDeviceResult = userDeviceRpcService.unBindDevice(mac, uid);
             if (userDeviceResult.getPayload()) {
                 SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
@@ -103,4 +108,31 @@ public class UserDeviceController extends BaseController {
         RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
     }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/modify/device_name",method={RequestMethod.POST})
+    public void modifyDeviceName(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 @RequestParam(required = true) Integer uid,
+                                 @RequestParam(required = true) String mac,
+                                 @RequestParam(required = true) String deviceName) {
+
+        if (!StringHelper.isValidMac(mac)) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            return ;
+        }
+
+        if (userDeviceRpcService.modifyDeviceName(mac, uid, deviceName)) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+        }
+
+
+
+
+
+    }
+
 }
