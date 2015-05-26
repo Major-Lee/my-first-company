@@ -3,17 +3,17 @@ package com.bhu.vas.api.rpc.user.model;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
- * 用于ios push 发送的证书类型
+ * 用于区分不同的push通道
  * @author lawliet
  *
  */
-public enum PushTypeEnum {
+public enum PushMode {
 	
 	Official("O"),//正式版
 	Development("D"),//开发版
 	;
 	String type;
-	PushTypeEnum(String type){
+	PushMode(String type){
 		this.type = type;
 	}
 	

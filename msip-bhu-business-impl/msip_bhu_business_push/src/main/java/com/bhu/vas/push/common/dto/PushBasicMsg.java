@@ -1,5 +1,7 @@
 package com.bhu.vas.push.common.dto;
 
+import com.bhu.vas.api.rpc.user.model.PushMode;
+
 public class PushBasicMsg {
 	private Integer uid;
 	//app device token
@@ -8,6 +10,8 @@ public class PushBasicMsg {
 	private String d;
 	//push payload 
 	private String paylod;
+	//push type
+	private String pt = PushMode.Official.getType();
 	
 	public Integer getUid() {
 		return uid;
@@ -32,5 +36,11 @@ public class PushBasicMsg {
 	}
 	public void setPaylod(String paylod) {
 		this.paylod = paylod;
+	}
+	public String getPt() {
+		return pt;
+	}
+	public void setPt(String pt) {
+		this.pt = pt;
 	}
 }

@@ -8,6 +8,8 @@ package com.bhu.vas.api.dto.redis;
 public class DeviceMobilePresentDTO {
 	//用户id
 	private Integer uid;
+	//device type
+	private String d;
 	//mobile设备token
 	private String dt;
 	//push type
@@ -17,8 +19,9 @@ public class DeviceMobilePresentDTO {
 		
 	}
 	
-	public DeviceMobilePresentDTO(Integer uid, String dt, String pt){
+	public DeviceMobilePresentDTO(Integer uid, String d, String dt, String pt){
 		this.uid = uid;
+		this.d = d;
 		this.dt = dt;
 		this.pt = pt;
 	}
@@ -28,6 +31,12 @@ public class DeviceMobilePresentDTO {
 	}
 	public void setUid(Integer uid) {
 		this.uid = uid;
+	}
+	public String getD() {
+		return d;
+	}
+	public void setD(String d) {
+		this.d = d;
 	}
 	public String getDt() {
 		return dt;

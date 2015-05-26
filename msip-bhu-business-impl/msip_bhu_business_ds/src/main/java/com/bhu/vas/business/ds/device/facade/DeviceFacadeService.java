@@ -396,9 +396,14 @@ public class DeviceFacadeService {
 	 * @return
 	 */
 	public boolean isURooterDevice(String mac) {
+		if(StringUtils.isEmpty(mac)) return false;
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-		return wifiDevice.getOrig_model() !=null &&
-				WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model());
+		if(wifiDevice == null) return false;
+		return isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+	}
+	
+	public boolean isURooterDeviceWithOrigModel(String orig_model) {
+		return WIFI_DEVICE_ORIGIN_MODEL.equals(orig_model);
 	}
 
 	/**
@@ -523,7 +528,7 @@ public class DeviceFacadeService {
 		//2:用户使用app移动设备历史数据
 		userMobileDeviceStateService.userNewDeviceRegisterOrReplace(uid, de, dm, dt, cv, pv, ut, pt);
 		//3:用户所管理的设备的数据关系
-		this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, dt, pt));
+		this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, d, dt, pt));
 		
 	}
 	

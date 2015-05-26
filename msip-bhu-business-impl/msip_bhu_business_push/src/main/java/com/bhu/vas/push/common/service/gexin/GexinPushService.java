@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.rpc.user.model.PushMode;
 import com.bhu.vas.push.common.dto.PushBasicMsg;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.gexin.rp.sdk.base.IPushResult;
@@ -19,7 +20,10 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 
 public class GexinPushService{
 	private static final Logger logger = LoggerFactory.getLogger(GexinPushService.class);
-	private static final IGtPush push = new IGtPush(RuntimeConfiguration.GexinPushXmApi, RuntimeConfiguration.GexinPushXmAppKey, 
+	
+	private static final IGtPush official_push = new IGtPush(RuntimeConfiguration.GexinPushXmApi, RuntimeConfiguration.GexinPushXmAppKey, 
+			RuntimeConfiguration.GexinPushXmMasterSecret);
+	private static final IGtPush development_push = new IGtPush(RuntimeConfiguration.GexinPushXmApi, RuntimeConfiguration.GexinPushXmAppKey, 
 			RuntimeConfiguration.GexinPushXmMasterSecret);
 	
 	private static class ServiceHolder{ 
@@ -52,9 +56,9 @@ public class GexinPushService{
 				template.setTransmissionContent(pushMsg.getPaylod());
 		        
 		        SingleMessage message = new SingleMessage();
-	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
+	            //message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
-		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		        //message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
 		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
 		        message.setPushNetWorkType(0); 
@@ -64,7 +68,7 @@ public class GexinPushService{
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);
-		        IPushResult ret = push.pushMessageToSingle(message, target);
+		        IPushResult ret = pushMessageToSingle(pushMsg.getPt(), message, target);
 		        return parseResult(ret);
 			}
 		}catch(Exception ex){
@@ -92,9 +96,9 @@ public class GexinPushService{
 	            // template.setIsClearable(true); // 通知是否可清除，可选，默认可清除
 		        
 		        SingleMessage message = new SingleMessage();
-	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
+	            //message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
-		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		       // message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
 		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
 		        message.setPushNetWorkType(0); 
@@ -104,7 +108,7 @@ public class GexinPushService{
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);
-		        IPushResult ret = push.pushMessageToSingle(message, target);
+		        IPushResult ret = pushMessageToSingle(pushMsg.getPt(), message, target);
 		        return parseResult(ret);
 			}
 			
@@ -144,7 +148,7 @@ public class GexinPushService{
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);
-		        IPushResult ret = push.pushMessageToSingle(message, target);
+		        IPushResult ret = pushMessageToSingle(pushMsg.getPt(), message, target);
 		        return parseResult(ret);
 			}
 			
@@ -153,6 +157,16 @@ public class GexinPushService{
 			logger.error("Gexin Push Transmission Excetion : " + ex.getMessage(), ex);
 		}
 		return false;
+	}
+	
+	protected IPushResult pushMessageToSingle(String pt, SingleMessage message, Target target){
+        IPushResult ret = null;
+        if(PushMode.isOfficial(pt)){
+        	ret = official_push.pushMessageToSingle(message, target);
+        }else{
+        	ret = development_push.pushMessageToSingle(message, target);
+        }
+        return ret;
 	}
 	
 	/**
@@ -174,7 +188,7 @@ public class GexinPushService{
 	
 	public static final String Ret_ResultOK = "ok";
 	
-	public boolean parseResult(IPushResult ret){
+	protected boolean parseResult(IPushResult ret){
 		if(ret == null || StringUtils.isEmpty(ret.getResponse())) {
 			logger.info("Gexin Response empty");
 			return false;
