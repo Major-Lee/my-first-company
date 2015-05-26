@@ -17,17 +17,18 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 	private String enable;
 	//private String url;
 	private String redirect_url;
-		private String open_resource;
-		private int idle_timeout;
-		private int force_timeout;
-		private String question;
-		private String answer;
+	private String open_resource;
+	private String ssid_guest;
+	private int idle_timeout;
+	private int force_timeout;
+	private String question;
+	private String answer;
 	private String version;
 	//private String style;
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[6];
+		Object[] properties = new Object[7];
 		properties[0] = redirect_url;
 		properties[1] = idle_timeout;
 		properties[2] = force_timeout;
@@ -35,6 +36,7 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 		
 		properties[4] = question;
 		properties[5] = answer;
+		properties[6] = ssid_guest;
 		return properties;
 	}
 	
@@ -113,16 +115,26 @@ public class WifiDeviceSettingVapHttpPortalDTO implements DeviceSettingBuilderDT
 		this.answer = answer;
 	}
 
+	public String getSsid_guest() {
+		return ssid_guest;
+	}
+
+	public void setSsid_guest(String ssid_guest) {
+		this.ssid_guest = ssid_guest;
+	}
+
 	public static WifiDeviceSettingVapHttpPortalDTO fromParamVapAdDTO(ParamVapHttpPortalDTO dto){
 		WifiDeviceSettingVapHttpPortalDTO hdto = new WifiDeviceSettingVapHttpPortalDTO();
 		HtmlPortal adv = VapModeDefined.HtmlPortal.getByStyle(dto.getStyle());
 		hdto.setRedirect_url(adv.getRedirect_url());
+		hdto.setSsid_guest(dto.getSsid_guest());
 		hdto.setOpen_resource(adv.getOpen_resource());
 		hdto.setIdle_timeout(dto.getIdle_timeout());
 		hdto.setForce_timeout(dto.getForce_timeout());
 		hdto.setQuestion(dto.getQuestion());
 		hdto.setAnswer(dto.getAnswer());
-		hdto.setVersion(adv.toIndentify());;
+		hdto.setVersion(adv.toIndentify());
+		
 		return hdto;
 	}
 	

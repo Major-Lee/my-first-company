@@ -127,6 +127,8 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 		if(this.getId() == null) this.setId(new Integer(0));
 		return this.getId().hashCode();
 	}
-
-	
+	@Override
+	public int limitSize() {
+		return 100;
+	}
 }

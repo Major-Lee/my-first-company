@@ -550,7 +550,7 @@ public class DeviceHelper {
                "</users>"+
           "</webportal>"+
      "</net>"+
-     "<wifi><vap><ITEM name=\"wlan3\" ssid=\"urouter_guest\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
+     "<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
      "<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>";
 
 	

@@ -12,7 +12,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  */
 public class ParamVapHttpPortalDTO{
 	private String style;
-	
+	private String ssid_guest;
 	//private String redirect_url;
 	//private String open_resource;
 	private int idle_timeout;
@@ -77,9 +77,18 @@ public class ParamVapHttpPortalDTO{
 		this.style = style;
 	}
 	
+	public String getSsid_guest() {
+		return ssid_guest;
+	}
+
+	public void setSsid_guest(String ssid_guest) {
+		this.ssid_guest = ssid_guest;
+	}
+
 	public static void main(String[] argv){
 		ParamVapHttpPortalDTO dto = new ParamVapHttpPortalDTO();
 		dto.setStyle("style001");
+		dto.setSsid_guest("uRouter_guest");
 		dto.setIdle_timeout(1200);
 		dto.setForce_timeout(21600);
 		dto.setQuestion("从哪里来？");
