@@ -73,6 +73,7 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 
 	@Override
 	public TailPage<UserBrandStatisticsDTO> fetchUserBrandStatistics(int pageNo, int pageSize) {
+		logger.info(String.format("fetchUserBrandStatistics with pageNo[%s] pageSize[%s] ", pageNo, pageSize));
 		return userAccessStatisticsFacadeService.fetchUserBrandStatistics(pageNo, pageSize);
 	}
 }

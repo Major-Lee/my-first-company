@@ -186,6 +186,12 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			else if(OperationCMD.QueryDhcpcStatus.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDhcpcStatus(ctx, payload, mac, taskid);
 			}
+			else if(OperationCMD.TriggerHttp404ResourceUpdate.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
+			}
+			else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
+				deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
+			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
 			}
@@ -222,10 +228,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
 					}
 					else if(OperationCMD.TriggerHttp404ResourceUpdate.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
+						deviceBusinessFacadeService.taskNotifyTriggerHttp404Processor(ctx, payload, mac, taskid);
 					}
 					else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
+						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
 					}
 					//2:任务callback
 					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
