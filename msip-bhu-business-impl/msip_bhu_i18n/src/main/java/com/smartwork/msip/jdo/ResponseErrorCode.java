@@ -64,6 +64,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_SETTING_NOTEXIST("701","wifidevice.setting.notexist"),
 	WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST("702","wifidevice.setting.sequence.notexist"),
 	WIFIDEVICE_SETTING_ERROR("710","wifidevice.setting.error"),
+	WIFIDEVICE_GROUP_NOTEXIST("711","wifidevice.group.notexist"),
 //	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
 //	WIFIDEVICE_OFFLINE("703","wifidevice.offline"),
 	
@@ -112,7 +113,7 @@ public enum ResponseErrorCode {
 	
 	AUTH_PASSWORD_EMPTY("263","auth.password.empty"),
 	
-	AUTH_TOPIC_TITLE_INVALID_LENGTH("231","auth.topic.title.length.invalid"),
+	//AUTH_TOPIC_TITLE_INVALID_LENGTH("231","auth.topic.title.length.invalid"),
 	//AUTH_REMOTECOOKIES_EMPTY("255","auth.remotecookies.empty"),
 	//AUTH_REMOTECOOKIES_INVALID("256","auth.remotecookies.invalid"),
 	AUTH_PARAM_SYSTEM_WORD_RESERVED("291","auth.param.system.wordreserved"),
