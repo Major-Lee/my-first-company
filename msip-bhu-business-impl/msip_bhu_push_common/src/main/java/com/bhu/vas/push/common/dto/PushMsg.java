@@ -1,52 +1,36 @@
 package com.bhu.vas.push.common.dto;
 
-public class PushMsg {
-	private Integer uid;
-	//app device token
-	private String dt;
-	//app device type
-	private String d;
-	//push show content
-	private String show;
-	//push payload 
-	private String paylod;
-	//push sound
-	private String sound;
+public class PushMsg extends PushBasicMsg{
+	//应用icon上显示的数字
+	private int badge = 1;
+	private String sound = "default";
+	//push text
+	private String text;
+	//push title
+	private String title;
 	
-	public Integer getUid() {
-		return uid;
+	public int getBadge() {
+		return badge;
 	}
-	public void setUid(Integer uid) {
-		this.uid = uid;
-	}
-	public String getDt() {
-		return dt;
-	}
-	public void setDt(String dt) {
-		this.dt = dt;
-	}
-	public String getD() {
-		return d;
-	}
-	public void setD(String d) {
-		this.d = d;
-	}
-	public String getShow() {
-		return show;
-	}
-	public void setShow(String show) {
-		this.show = show;
-	}
-	public String getPaylod() {
-		return paylod;
-	}
-	public void setPaylod(String paylod) {
-		this.paylod = paylod;
+	public void setBadge(int badge) {
+		this.badge = badge;
 	}
 	public String getSound() {
 		return sound;
 	}
 	public void setSound(String sound) {
 		this.sound = sound;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

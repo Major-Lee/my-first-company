@@ -20,6 +20,11 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterSettingVTO> urouterSetting(Integer uid, String wifiId);
 	
 	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid, String wifiId);
+	
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceRegister(Integer uid,
+			String d, String dt, String dm, String cv, String pv, String ut, String pt);
+	
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceDestory(Integer uid, String d, String dt);
 
 	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
 
