@@ -75,7 +75,7 @@ public class TaskUnitFacadeService {
 				if(OperationDS.DS_Http_404.getNo().equals(subopt)){
 					//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
 					downTask.setPayload(CMDBuilder.builderCMD4Http404ResourceUpdate(mac, downTask.getId(), extparams));
-				}else if(OperationDS.DS_Http_Portal.getNo().equals(subopt)){
+				}else if(OperationDS.DS_Http_Portal_Start.getNo().equals(subopt)){
 					//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
 					downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
 				}else{
