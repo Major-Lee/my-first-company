@@ -491,7 +491,8 @@ public class DeviceFacadeService {
 	 * @throws Exception 
 	 */
 	public String generateDeviceSetting(String mac, String ds_opt, String extparams) throws Exception {
-		if(StringUtils.isEmpty(ds_opt) || StringUtils.isEmpty(extparams))
+		if(StringUtils.isEmpty(ds_opt)){
+			// || StringUtils.isEmpty(extparams))
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
 		OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
