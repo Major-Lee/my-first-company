@@ -6,18 +6,16 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
 import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import ch.qos.logback.classic.Logger;
 
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
@@ -32,7 +30,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 @Service
 public class UserAccessStatisticsFacadeService {
 
-    private final Logger logger = (Logger)LoggerFactory.getLogger(UserAccessStatisticsFacadeService.class);
+    private final Logger logger = LoggerFactory.getLogger(UserAccessStatisticsFacadeService.class);
     @Resource
     private UserAccessStatisticsService userAccessStatisticsService;
 

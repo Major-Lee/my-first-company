@@ -27,7 +27,7 @@ public class CountController extends BaseController {
 
     @ResponseBody()
     @RequestMapping(value="/urlview",method={RequestMethod.POST,RequestMethod.GET})
-    public void url404(
+    public void urlview(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) String key,
