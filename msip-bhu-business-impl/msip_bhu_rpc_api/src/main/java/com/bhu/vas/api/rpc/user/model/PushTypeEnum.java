@@ -7,13 +7,13 @@ import com.smartwork.msip.cores.helper.StringHelper;
  * @author lawliet
  *
  */
-public enum PushEnum {
+public enum PushTypeEnum {
 	
-	Store("S"),//商店版
-	Production("P"),//企业版
+	Official("O"),//正式版
+	Development("D"),//开发版
 	;
 	String type;
-	PushEnum(String type){
+	PushTypeEnum(String type){
 		this.type = type;
 	}
 	
@@ -24,9 +24,9 @@ public enum PushEnum {
 		this.type = type;
 	}
 	
-	public static boolean isStore(String type){
+	public static boolean isOfficial(String type){
 		if(StringHelper.isEmpty(type)) return true;
-		if(type.equals(Store.getType())) return true;
+		if(type.equals(Official.getType())) return true;
 		return false;
 	}
 }

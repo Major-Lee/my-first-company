@@ -49,7 +49,7 @@ public class URouterMobileDeviceController extends BaseController{
 			//设备型号unit type
 			@RequestParam(required = true) String ut,
 			//push type 默认为商店版
-			@RequestParam(required = false, defaultValue="S") String pt
+			@RequestParam(required = false, defaultValue="O") String pt
 //			@RequestParam(required = false,defaultValue = "") String dn,
 //			@RequestParam(required = false,defaultValue = "") String duuid
 			){
