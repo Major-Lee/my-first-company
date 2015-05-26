@@ -132,7 +132,13 @@ public class UserDeviceFacadeService {
 
         try {
             UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-            UserDevice userDevice = new UserDevice();
+
+            UserDevice userDevice = userDeviceService.getById(userDevicePK);
+
+            if (userDevice == null) {
+                return false;
+            }
+            
             userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setDevice_name(deviceName);
             userDeviceService.update(userDevice);

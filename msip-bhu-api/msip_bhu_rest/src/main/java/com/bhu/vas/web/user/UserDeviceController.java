@@ -116,7 +116,7 @@ public class UserDeviceController extends BaseController {
                                  HttpServletResponse response,
                                  @RequestParam(required = true) Integer uid,
                                  @RequestParam(required = true) String mac,
-                                 @RequestParam(required = true) String deviceName) {
+                                 @RequestParam(required = true, value = "device_name") String deviceName) {
 
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
