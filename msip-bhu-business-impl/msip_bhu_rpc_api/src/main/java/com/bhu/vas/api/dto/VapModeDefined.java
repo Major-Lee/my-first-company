@@ -11,7 +11,15 @@ public class VapModeDefined {
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
 	//private final static String url_prefix = "http://vap.bhunetworks.com/vap/";
 	private final static String url_prefix = "http://192.168.66.7/vap/";
-	
+
+	public enum VapMode {
+		HtmlInjectAdv,
+		HtmlInject404,
+		HtmlPortal,
+		HtmlRedirect,
+	}
+
+
 	public enum HtmlInjectAdv{
 		STYLE000("style000","00.00.01","1000000","http://auth.wi2o.cn/ad/ad.js"),
 		STYLE001("style001","00.00.01","1000001",url_prefix.concat("ad/001/js/ad.js")),

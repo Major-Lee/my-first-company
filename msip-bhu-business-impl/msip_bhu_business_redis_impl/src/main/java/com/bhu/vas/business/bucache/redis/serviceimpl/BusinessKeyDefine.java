@@ -60,4 +60,8 @@ public class BusinessKeyDefine {
 		//public static final String SnsTokenCheck = "USC";
 		public static final String UserSnsCheck  = "WUSC";
 	}
+
+	public static class VapMode {
+		public static final String VapModeCount = "VM.";
+	}
 }
