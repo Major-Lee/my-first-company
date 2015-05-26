@@ -819,7 +819,7 @@ public class DeviceBusinessFacadeService {
 		try{
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			//ParamVapHttpPortalDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamVapHttpPortalDTO.class);
-			String payload = deviceFacadeService.generateDeviceSetting(mac, OperationDS.DS_Http_Portal.getNo(), downTask.getContext_var());//JsonHelper.getJSONString(dto));
+			String payload = deviceFacadeService.generateDeviceSetting(mac, OperationDS.DS_Http_Portal_Start.getNo(), downTask.getContext_var());//JsonHelper.getJSONString(dto));
 			logger.info("payload===" + payload);
 			String cmdPayload = CMDBuilder.builderCMD4Opt(OperationCMD.ModifyDeviceSetting.getNo(), mac, 
 					CMDBuilder.device_httpportal_resourceupgrade_fragment.getNextSequence(),payload);

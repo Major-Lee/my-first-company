@@ -513,9 +513,10 @@ public class DeviceFacadeService {
 				
 			case DS_Http_404:
 				return DeviceHelper.builderDSHttp404Outer(config_sequence, extparams, ds_dto);
-			case DS_Http_Portal:
-				return DeviceHelper.builderDSHttpPortalOuter(config_sequence, extparams, ds_dto);
-
+			case DS_Http_Portal_Start:
+				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_Portal_Stop:
+				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence, extparams, ds_dto);
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
 			case DS_VapPassword:
