@@ -54,15 +54,14 @@ public class DeviceGroupUnitFacadeRpcService{
 			dgroup = new WifiDeviceGroup();
 			dgroup.setPid(pid);
 			dgroup.setName(name);
-			wifiDeviceGroupService.insert(dgroup);
+			dgroup = wifiDeviceGroupService.insert(dgroup);
 		}else{
 			dgroup = wifiDeviceGroupService.getById(gid);
 			if(pid != null && pid.intValue() > 0)
 				dgroup.setPid(pid);
 			dgroup.setName(name);
-			wifiDeviceGroupService.update(dgroup);
+			dgroup = wifiDeviceGroupService.update(dgroup);
 		}
-		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup));
 	}
 	public RpcResponseDTO<DeviceGroupDTO> detail(Integer uid, Integer gid) {
