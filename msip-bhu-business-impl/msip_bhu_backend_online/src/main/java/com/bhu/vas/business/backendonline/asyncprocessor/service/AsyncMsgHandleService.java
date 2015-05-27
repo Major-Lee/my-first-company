@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
+import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -61,6 +62,7 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
+import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -102,6 +104,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
+	
+	@Resource
+	private PushService pushService;
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -420,6 +425,13 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())), 
 				DeviceStatistics.Statis_HandsetDevice_Type);
 		
+		//如果是urouter设备 才会发push
+		if(deviceFacadeService.isURooterDevice(dto.getWifiId())){
+			HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
+			pushDto.setMac(dto.getWifiId());
+			pushDto.setHd_mac(dto.getMac());
+			pushService.push(pushDto);
+		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle message[%s] successful", message));
 	}
 	

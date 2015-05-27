@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
+import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -25,10 +26,12 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
@@ -36,6 +39,8 @@ import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
+import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -74,6 +79,12 @@ public class DeviceFacadeService {
 	
 	@Resource
 	private UserDeviceService userDeviceService;
+	
+	@Resource
+	private UserMobileDeviceService userMobileDeviceService;
+	
+	@Resource
+	private UserMobileDeviceStateService userMobileDeviceStateService;
 	
 	/**
 	 * 指定wifiId进行终端全部下线处理
@@ -385,9 +396,14 @@ public class DeviceFacadeService {
 	 * @return
 	 */
 	public boolean isURooterDevice(String mac) {
+		if(StringUtils.isEmpty(mac)) return false;
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-		return wifiDevice.getOrig_model() !=null &&
-				WIFI_DEVICE_ORIGIN_MODEL.equals(wifiDevice.getOrig_model());
+		if(wifiDevice == null) return false;
+		return isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+	}
+	
+	public boolean isURooterDeviceWithOrigModel(String orig_model) {
+		return WIFI_DEVICE_ORIGIN_MODEL.equals(orig_model);
 	}
 
 	/**
@@ -478,6 +494,107 @@ public class DeviceFacadeService {
 		String mode_status_json = WifiDeviceModeStatusService.getInstance().getPresent(mac);
 		if(StringUtils.isEmpty(mode_status_json))  return null;
 		return JsonHelper.getDTO(mode_status_json, WifiDeviceSettingLinkModeDTO.class);
+	}
+	
+	/**
+	 * 用户注册app移动设备信息
+	 * 1:当前用户使用app移动设备数据
+	 * 2:用户使用app移动设备历史数据
+	 * 3:用户所管理的设备的数据关系
+	 * @param uid
+	 * @param d  devicetype
+	 * @param dt 设备token
+	 * @param dm 设备mac
+	 * @param cv client 系统版本号
+	 * @param pv client production 版本号
+	 * @param ut 设备型号
+	 * @param pt (push type 针对ios的不同证书的参数)
+	 * @return
+	 */
+	public void userMobileDeviceRegister(Integer uid, String d, String dt, String dm, 
+			String cv, String pv, String ut, String pt){
+		if(uid == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+		if(StringUtils.isEmpty(d) || StringUtils.isEmpty(dt) || StringUtils.isEmpty(pt)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+		DeviceEnum de = DeviceEnum.getBySName(d);
+		if(de == null || !DeviceEnum.isHandsetDevice(de)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_TYPE_NOT_SUPPORTED);
+		}
+		//1:当前用户使用app移动设备数据
+		userMobileDeviceService.deviceRegister(uid, dt, dm, pt);
+		//2:用户使用app移动设备历史数据
+		userMobileDeviceStateService.userNewDeviceRegisterOrReplace(uid, de, dm, dt, cv, pv, ut, pt);
+		//3:用户所管理的设备的数据关系
+		this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, d, dt, pt));
+		
+	}
+	
+	
+	/**
+	 * 用户注销app移动设备信息
+	 * 1:清除当前用户使用app移动设备数据
+	 * 2:修改用户使用app移动设备历史数据
+	 * 3:清除用户所管理的设备的数据关系
+	 * @param uid
+	 * @param d
+	 * @param dt
+	 */
+	public void userMobileDeviceDestory(Integer uid, String d, String dt){
+		if(uid == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+		if(StringUtils.isEmpty(d) || StringUtils.isEmpty(dt)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+		DeviceEnum de = DeviceEnum.getBySName(d);
+		if(de == null || !DeviceEnum.isHandsetDevice(de)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_TYPE_NOT_SUPPORTED);
+		}
+		//1:清除当前用户使用app移动设备数据
+		userMobileDeviceService.destoryRegister(uid, dt);
+		//2:修改用户使用app移动设备历史数据
+		userMobileDeviceStateService.userDeviceSignedOff(uid, dt, de);
+		//3:清除用户所管理的设备的数据关系
+		this.clearDeviceMobilePresents(uid);
+	}
+	
+	/**
+	 * 根据用户所管理的设备 生成mobile和设备的关系信息
+	 * @param uid
+	 * @param presentDto
+	 */
+	public void generateDeviceMobilePresents(Integer uid, DeviceMobilePresentDTO presentDto){
+		if(uid == null || presentDto == null) return;
+		
+		List<UserDevicePK> userDevices = this.getUserDevices(uid);
+		if(userDevices.isEmpty()) return;
+		
+		List<String> macs = new ArrayList<String>();
+		for(UserDevicePK pk : userDevices){
+			macs.add(pk.getMac());
+		}
+		WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+				JsonHelper.getJSONString(presentDto));
+	}
+	
+	/**
+	 * 根据用户所管理的设备 清除mobile和设备的关系信息
+	 * @param uid
+	 */
+	public void clearDeviceMobilePresents(Integer uid){
+		if(uid == null) return;
+		
+		List<UserDevicePK> userDevices = this.getUserDevices(uid);
+		if(userDevices.isEmpty()) return;
+		
+		List<String> macs = new ArrayList<String>();
+		for(UserDevicePK pk : userDevices){
+			macs.add(pk.getMac());
+		}
+		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(macs);
 	}
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/

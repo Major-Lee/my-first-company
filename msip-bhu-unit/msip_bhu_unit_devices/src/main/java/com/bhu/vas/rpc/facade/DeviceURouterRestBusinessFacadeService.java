@@ -8,15 +8,16 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.ret.setting.*;
-import com.bhu.vas.api.vto.*;
-import com.smartwork.msip.jdo.ResponseErrorCode;
-
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -24,6 +25,14 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
+import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
+import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -35,6 +44,7 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * device urouter Rest RPC组件的业务service
@@ -59,6 +69,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
+
 	
 	/**
 	 * urouter 入口界面数据
@@ -359,6 +370,44 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 
+	/**
+	 * urouter用户注册app移动设备信息
+	 * @param uid
+	 * @param d  devicetype
+	 * @param dt 设备token
+	 * @param dm 设备mac
+	 * @param cv client 系统版本号
+	 * @param pv client production 版本号
+	 * @param ut 设备型号
+	 * @param pt (push type 针对ios的不同证书的参数)
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceRegister(Integer uid,
+			String d, String dt, String dm, String cv, String pv, String ut, String pt) {
+		try{
+			deviceFacadeService.userMobileDeviceRegister(uid, d, dt, dm, cv, pv, ut, pt);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 注销用户目前登录的设备及设备token
+	 * @param uid
+	 * @param d
+	 * @param dt
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceDestory(Integer uid,
+			String d, String dt) {
+		try{
+			deviceFacadeService.userMobileDeviceDestory(uid, d, dt);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
 
 
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {

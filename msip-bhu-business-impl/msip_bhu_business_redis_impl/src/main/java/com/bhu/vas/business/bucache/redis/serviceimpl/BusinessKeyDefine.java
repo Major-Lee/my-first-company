@@ -19,6 +19,7 @@ public class BusinessKeyDefine {
 		public static final String WifiDevicePresentPrefixKey 			= "WDP";
 		public static final String WifiDeviceHandsetPresentPrefixKey 			= "WDHP";
 		public static final String WifiDeviceModeStatusPrefixKey 			= "WDMS";
+		public static final String WifiDeviceMobilePresentPrefixKey 			= "WDMP";
 	}
 	
 	public static class Statistics{
@@ -58,5 +59,9 @@ public class BusinessKeyDefine {
 		//public static final String PermalinkCheck = "UPC";
 		//public static final String SnsTokenCheck = "USC";
 		public static final String UserSnsCheck  = "WUSC";
+	}
+
+	public static class VapMode {
+		public static final String VapModeCount = "VM.";
 	}
 }

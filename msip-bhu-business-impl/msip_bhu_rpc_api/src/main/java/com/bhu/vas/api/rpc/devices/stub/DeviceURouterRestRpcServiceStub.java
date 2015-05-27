@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.Map;
 
 import com.bhu.vas.api.vto.*;
+
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -77,6 +78,32 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 		return deviceURouterRestRpcService.urouterLinkMode(uid, wifiId);
 	}
 
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceRegister(Integer uid,
+			String d, String dt, String dm, String cv, String pv, String ut,
+			String pt) {
+		if(uid == null) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		if(StringUtils.isEmpty(d) || StringUtils.isEmpty(dt) || StringUtils.isEmpty(pt)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterUserMobileDeviceRegister(uid, d, dt, dm, cv, pv, ut, pt);
+	}
+	
+
+	@Override
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceDestory(Integer uid,
+			String d, String dt) {
+		if(uid == null) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		if(StringUtils.isEmpty(d) || StringUtils.isEmpty(dt)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterUserMobileDeviceDestory(uid, d, dt);
+	}
+	
+	
 	@Override
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
 		return deviceURouterRestRpcService.urouterAdminPassword(uid, wifiId);
@@ -86,4 +113,6 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
 		return deviceURouterRestRpcService.urouterVapPassword(uid, wifiId);
 	}
+
+
 }

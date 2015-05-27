@@ -4,13 +4,19 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
+import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -177,8 +183,54 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceRegister(Integer uid,
+			String d, String dt, String dm, String cv, String pv, String ut, String pt) {
+		
+		logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister invoke uid [%s] d [%s] dt [%s]", 
+				uid, d, dt));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterUserMobileDeviceRegister(uid, d, dt, 
+					dm, cv, pv, ut, pt);
+		}
+		catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister failed uid [%s] d [%s] dt [%s]",
+					uid, d, dt));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister exception uid [%s] d [%s] dt [%s] exmsg[%s]",
+					uid, d, dt, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 
+	@Override
+	public RpcResponseDTO<Boolean> urouterUserMobileDeviceDestory(Integer uid,
+			String d, String dt) {
+		logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister invoke uid [%s] d [%s] dt [%s]", 
+				uid, d, dt));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterUserMobileDeviceDestory(uid, d, dt);
+		}
+		catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister failed uid [%s] d [%s] dt [%s]",
+					uid, d, dt));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister exception uid [%s] d [%s] dt [%s] exmsg[%s]",
+					uid, d, dt, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 
+	
 	@Override
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterAdminPassword invoke uid [%s] mac [%s]",

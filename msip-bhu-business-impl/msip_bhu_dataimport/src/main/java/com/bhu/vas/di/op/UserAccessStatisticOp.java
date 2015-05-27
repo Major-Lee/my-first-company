@@ -34,26 +34,11 @@ public class UserAccessStatisticOp {
 
     private static String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
 
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            return;
-        }
-        String filepath = args[0];// ADD REMOVE
-        ApplicationContext ctx = new FileSystemXmlApplicationContext(
-                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-        userAccessStatisticsService = (UserAccessStatisticsService)
-                ctx.getBean("userAccessStatisticsService");
-
-        userBrandStatisticsService = (UserBrandStatisticsService)
-                ctx.getBean("userBrandStatisticsService");
-
-        readTxtFile(filepath);
-
-    }
-
 //    public static void main(String[] args) {
-//
-//        String filepath = "/Users/bluesand/Documents/logfile-20150518.log";// ADD REMOVE
+//        if (args.length < 1) {
+//            return;
+//        }
+//        String filepath = args[0];// ADD REMOVE
 //        ApplicationContext ctx = new FileSystemXmlApplicationContext(
 //                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 //        userAccessStatisticsService = (UserAccessStatisticsService)
@@ -65,6 +50,21 @@ public class UserAccessStatisticOp {
 //        readTxtFile(filepath);
 //
 //    }
+
+    public static void main(String[] args) {
+
+        String filepath = "/Users/bluesand/Documents/logfile-20150518.log";// ADD REMOVE
+        ApplicationContext ctx = new FileSystemXmlApplicationContext(
+                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+        userAccessStatisticsService = (UserAccessStatisticsService)
+                ctx.getBean("userAccessStatisticsService");
+
+        userBrandStatisticsService = (UserBrandStatisticsService)
+                ctx.getBean("userBrandStatisticsService");
+
+        readTxtFile(filepath);
+
+    }
 
 
     public static void readTxtFile(String filePath) {
@@ -399,6 +399,10 @@ public class UserAccessStatisticOp {
         htcUserBrandDTO.setBrand("htc");
         List<UserBrandSubDTO> htcUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
+        UserBrandDTO lenovoUserBrandDTO = new UserBrandDTO();
+        lenovoUserBrandDTO.setBrand("lenovo");
+        List<UserBrandSubDTO> lenovoUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
         UserBrandDTO otherUserBrandDTO = new UserBrandDTO();
         otherUserBrandDTO.setBrand("other");
         List<UserBrandSubDTO> otherUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
@@ -410,6 +414,7 @@ public class UserAccessStatisticOp {
         int xiaomiSum = 0;
         int sumsangSum = 0;
         int htcSum = 0;
+        int lenovoSum = 0;
         int otherSum = 0;
 
         while(it.hasNext()) {
@@ -439,6 +444,10 @@ public class UserAccessStatisticOp {
                 htcUserBrandSubDTOList.add(userBrandSubDTO);
                 htcSum += value;
             }
+            else if (key.toLowerCase().startsWith("lenovo")) {
+                lenovoUserBrandSubDTOList.add(userBrandSubDTO);
+                lenovoSum += value;
+            }
             else {
                 otherUserBrandSubDTOList.add(userBrandSubDTO);
                 otherSum += value;
@@ -453,7 +462,6 @@ public class UserAccessStatisticOp {
         huaweiUserBrandDTO.setDetail(huaweiUserBrandSubDTOList);
         huaweiUserBrandDTO.setRatio(huaweiSum / (totalSum / 100.0) + "%");
 
-
         xiaomiUserBrandDTO.setCount(xiaomiSum);
         xiaomiUserBrandDTO.setDetail(xiaomiUserBrandSubDTOList);
         xiaomiUserBrandDTO.setRatio(xiaomiSum / (totalSum / 100.0) + "%");
@@ -465,6 +473,10 @@ public class UserAccessStatisticOp {
         htcUserBrandDTO.setCount(htcSum);
         htcUserBrandDTO.setDetail(htcUserBrandSubDTOList);
         htcUserBrandDTO.setRatio(htcSum / (totalSum / 100.0) + "%");
+
+        lenovoUserBrandDTO.setCount(lenovoSum);
+        lenovoUserBrandDTO.setDetail(lenovoUserBrandSubDTOList);
+        lenovoUserBrandDTO.setRatio(lenovoSum / (totalSum / 100.0) + "%");
 
         otherUserBrandDTO.setCount(otherSum);
         otherUserBrandDTO.setDetail(otherUserBrandSubDTOList);
@@ -485,6 +497,9 @@ public class UserAccessStatisticOp {
         }
         for(UserBrandSubDTO userBrandSubDTO : htcUserBrandSubDTOList)  {
             userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(htcSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : lenovoUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(lenovoSum / 100.0) + "%");
         }
         for(UserBrandSubDTO userBrandSubDTO : otherUserBrandSubDTOList)  {
             userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(otherSum / 100.0) + "%");
@@ -510,6 +525,10 @@ public class UserAccessStatisticOp {
         List<String> htcUserBrandStatisticsDTOs = new ArrayList<String>();
         htcUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(htcUserBrandDTO));
         userBrandStatistics.putInnerModels(htcUserBrandStatisticsDTOs);
+
+        List<String> lenovoUserBrandStatisticsDTOs = new ArrayList<String>();
+        lenovoUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(lenovoUserBrandDTO));
+        userBrandStatistics.putInnerModels(lenovoUserBrandStatisticsDTOs);
 
         List<String> otherUserBrandStatisticsDTOs = new ArrayList<String>();
         otherUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(otherUserBrandDTO));
