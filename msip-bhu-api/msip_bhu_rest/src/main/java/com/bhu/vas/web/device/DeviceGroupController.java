@@ -37,7 +37,7 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer pid) {
 		RpcResponseDTO<List<DeviceGroupDTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
 		if(birthTree.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, Response.SUCCESS);
+			SpringMVCHelper.renderJson(response, birthTree.getPayload());
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(birthTree.getErrorCode()));
 	}
@@ -59,7 +59,7 @@ public class DeviceGroupController extends BaseController{
 			) {
 		RpcResponseDTO<DeviceGroupDTO> save = deviceGroupRpcService.save(uid, id, pid, name);
 		if(save.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, Response.SUCCESS);
+			SpringMVCHelper.renderJson(response, save.getPayload());
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(save.getErrorCode()));
 	}
