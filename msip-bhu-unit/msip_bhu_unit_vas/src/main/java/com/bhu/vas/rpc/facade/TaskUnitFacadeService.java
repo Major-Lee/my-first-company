@@ -6,16 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -31,8 +26,8 @@ public class TaskUnitFacadeService {
 	@Resource
 	private DeliverMessageService deliverMessageService;
 	
-	@Resource
-	private DeviceFacadeService deviceFacadeService;
+	//@Resource
+	//private DeviceFacadeService deviceFacadeService;
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
@@ -52,7 +47,8 @@ public class TaskUnitFacadeService {
 			String channel, String channel_taskid){
 		logger.info("uid==" + uid + ",mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
 		try{
-			//如果是管理员用户 不进行用户所属设备的验证
+			WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(uid, mac, opt, subopt, extparams, channel, channel_taskid);
+			/*//如果是管理员用户 不进行用户所属设备的验证
 			if(RuntimeConfiguration.isConsoleUser(uid)){
 				deviceFacadeService.validateDevice(mac);
 			}else{
@@ -85,7 +81,7 @@ public class TaskUnitFacadeService {
 				}
 			}else{
 				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
-			}
+			}*/
 
 			logger.info("taskComming ==end==");
 
@@ -95,7 +91,7 @@ public class TaskUnitFacadeService {
 			dto.setState(downTask.getState());
 			dto.setMac(mac);
 			dto.setTaskid(downTask.getId());
-			taskFacadeService.taskUpdate(downTask);
+			
 			//发送异步消息到Queue
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
