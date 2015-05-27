@@ -47,11 +47,7 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
+        
         <dependency>
             <groupId>gexin</groupId>
             <artifactId>gexin-rp-sdk-base</artifactId>
@@ -66,7 +62,7 @@
             <groupId>gexin</groupId>
             <artifactId>gexin-rp-sdk-template</artifactId>
         </dependency>
-
+        <!--
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -91,6 +87,6 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
         </dependency>
-
+        -->
     </dependencies>
 </project>
