@@ -138,7 +138,7 @@ public class UserDeviceFacadeService {
             if (userDevice == null) {
                 return false;
             }
-            
+
             userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setDevice_name(deviceName);
             userDeviceService.update(userDevice);
