@@ -65,6 +65,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST("702","wifidevice.setting.sequence.notexist"),
 	WIFIDEVICE_SETTING_ERROR("710","wifidevice.setting.error"),
 	WIFIDEVICE_GROUP_NOTEXIST("711","wifidevice.group.notexist"),
+	//WIFIDEVICE_GROUP_REMOVE_NOTEXIST("711","wifidevice.group.notexist"),
 //	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
 //	WIFIDEVICE_OFFLINE("703","wifidevice.offline"),
 	

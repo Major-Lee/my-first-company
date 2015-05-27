@@ -1,27 +1,23 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
-import java.util.Map;
+import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.vto.*;
+import com.bhu.vas.api.rpc.devices.dto.DeviceGroupDTO;
 
 
 public interface IDeviceGroupRpcService {
-	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId);
 	
-	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size);
+	public RpcResponseDTO<List<DeviceGroupDTO>> birthTree(Integer uid, Integer pid);
 	
-	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId);
+	public RpcResponseDTO<DeviceGroupDTO> save(Integer uid,Integer gid,Integer pid, String name);
 	
-	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId);
+	public RpcResponseDTO<DeviceGroupDTO> detail(Integer uid, Integer gid);
 	
-	public RpcResponseDTO<Map<String,Object>> urouterBlockList(Integer uid, String wifiId, int start, int size);
+	public RpcResponseDTO<Boolean> remove(Integer uid, String gids);
 	
-	public RpcResponseDTO<URouterSettingVTO> urouterSetting(Integer uid, String wifiId);
+	public RpcResponseDTO<Boolean> grant(Integer uid, Integer gid,String wifi_ids);
 	
-	public RpcResponseDTO<URouterModeVTO> urouterLinkMode(Integer uid, String wifiId);
-
-	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
-
-	RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId);
+	public RpcResponseDTO<Boolean> ungrant(Integer uid, Integer gid,String wifi_ids);
+	
 }
