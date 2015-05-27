@@ -31,10 +31,10 @@ public class CountController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) String key,
-            @RequestParam(required = true) String subkey
+            @RequestParam(required = true) String field
             ) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        vapRpcService.urlView(key, subkey);
+        vapRpcService.urlView(key, field);
         SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
     }
 }
