@@ -13,10 +13,23 @@ public class VapModeDefined {
 	private final static String url_prefix = "http://192.168.66.7/vap/";
 
 	public enum VapMode {
-		HtmlInjectAdv,
-		HtmlInject404,
-		HtmlPortal,
-		HtmlRedirect,
+		HtmlInjectAdv("htmlinjectadv"),
+		HtmlInject404("htmlinject404"),
+		HtmlPortal("htmlportal"),
+		HtmlRedirect("htmlredirect");
+
+		private String key;
+		VapMode(String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
 	}
 
 
@@ -464,6 +477,5 @@ public class VapModeDefined {
 		for(String s:ss){
 			System.out.println(s);
 		}*/
-		
 	}
 }
