@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IStatisticsRpcService {
@@ -16,7 +17,7 @@ public interface IStatisticsRpcService {
 	TailPage<UserAccessStatisticsDTO> fetchUserAccessStatisticsWithDeviceMac(String date, String device_mac,
 																			 int pageNo, int pageSize);
 
-	RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date);
+	RpcResponseDTO<List<UserBrandDTO>> fetchUserBrandStatistics(String date);
 
 	TailPage<UserBrandStatisticsDTO> fetchUserBrandStatistics(int pageNo, int pageSize);
 

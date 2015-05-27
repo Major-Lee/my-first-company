@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -309,7 +310,8 @@ public class ConsoleController extends BaseController {
         if (date == null || date.isEmpty()) {
             date = DateHelper.COMMON_HELPER.getDateText(new Date());
         }
-        RpcResponseDTO<List<String>> result = statisticsRpcService.fetchUserBrandStatistics(date);
+        RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
+
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 
