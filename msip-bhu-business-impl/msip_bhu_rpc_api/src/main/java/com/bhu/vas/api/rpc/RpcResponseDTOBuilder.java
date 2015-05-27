@@ -42,26 +42,13 @@ public class RpcResponseDTOBuilder {
 	
 	public static Map<String,Object> builderUserRpcPayload(int uid, int countrycode, String acc, String nick,
 														   String atoken, String rtoken, boolean isReg,
-														   List<UserDevice> userDevices){
+														   List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,isReg));
 		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
 		ret.put(Key_Setting, new UserSettingDTO(10));
 		ret.put(Key_Cm, "60");
-		
-		
-		List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
-		if(userDevices != null && !userDevices.isEmpty()){
-			for (UserDevice userDevice : userDevices) {
-				UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
-				userDeviceDTO.setMac(userDevice.getMac());
-				userDeviceDTO.setUid(userDevice.getUid());
-				userDeviceDTO.setDevice_name(userDevice.getDevice_name());
-				bindDevicesDTO.add(userDeviceDTO);
-			}
-		}
-
-		ret.put(Key_Devices, bindDevicesDTO);
+		ret.put(Key_Devices, userDeviceDTOList);
 		return ret;
 	}
 	

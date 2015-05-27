@@ -1,9 +1,15 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +43,8 @@ public class UserUnitFacadeService {
 	private DeliverMessageService deliverMessageService;
 	@Resource
 	private UserDeviceService userDeviceService;
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
 		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
@@ -186,7 +194,7 @@ public class UserUnitFacadeService {
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
 				uToken.getAccess_token(), uToken.getRefresh_token(), false,
-				userDeviceService.fetchBindDevicesWithLimit(user.getId(), 3));
+				fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
@@ -270,12 +278,12 @@ public class UserUnitFacadeService {
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 			}
-			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
+			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
 		}
-		
+
+
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), countrycode, acc, user.getNick(), 
-				uToken.getAccess_token(), uToken.getRefresh_token(), reg,
-				userDeviceService.fetchBindDevicesWithLimit(uid,3));
+				uToken.getAccess_token(), uToken.getRefresh_token(), reg,fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
@@ -301,5 +309,30 @@ public class UserUnitFacadeService {
 		UniqueFacadeService.removeByMobileno(countrycode, mobileno);
 		this.userDeviceService.clearBindedDevices(uid);
 		System.out.println(String.format("acc[%s] 记录从redis被移除！", mobileno));
+	}
+
+
+	/**
+	 * 获取用户绑定的设备，设备状态只有在线和不在线
+	 * @param uid
+	 * @return
+	 */
+	private List<UserDeviceDTO>  fetchBindDevices(int uid) {
+		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
+		List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
+		if(userDeviceList != null && !userDeviceList.isEmpty()){
+			for (UserDevice userDevice : userDeviceList) {
+				UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+				userDeviceDTO.setMac(userDevice.getMac());
+				userDeviceDTO.setUid(userDevice.getUid());
+				userDeviceDTO.setDevice_name(userDevice.getDevice_name());
+				WifiDevice wifiDevice = wifiDeviceService.getById(userDevice.getMac());
+				if (wifiDevice != null) {
+					userDeviceDTO.setOnline(wifiDevice.isOnline());
+				}
+				bindDevicesDTO.add(userDeviceDTO);
+			}
+		}
+		return bindDevicesDTO;
 	}
 }

@@ -10,6 +10,8 @@ public class UserDeviceDTO implements Serializable {
     private String mac;
     private int uid;
     private String device_name;
+    //wifi设备是否在线
+    private boolean online;
 
     public String getMac() {
         return mac;
@@ -33,5 +35,13 @@ public class UserDeviceDTO implements Serializable {
 
     public void setDevice_name(String device_name) {
         this.device_name = device_name;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 }
