@@ -33,6 +33,7 @@ public class CountController extends BaseController {
             @RequestParam(required = true) String key,
             @RequestParam(required = true) String subkey
             ) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         vapRpcService.urlView(key, subkey);
         SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
     }
