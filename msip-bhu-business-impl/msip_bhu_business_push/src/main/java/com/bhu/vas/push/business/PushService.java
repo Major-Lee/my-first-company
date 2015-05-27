@@ -69,9 +69,9 @@ public class PushService{
 		if(!StringUtils.isEmpty(present)){
 			return JsonHelper.getDTO(present, DeviceMobilePresentDTO.class);
 		}
-		//return null;
+		return null;
 		//return new DeviceMobilePresentDTO(100017,"D","a0fa58123b6c4735159ba718cdf5d88c","O");
-		return new DeviceMobilePresentDTO(100017,"R","d52bf656bb5f70670c785e62812a2528","O");
+		//return new DeviceMobilePresentDTO(100017,"R","d52bf656bb5f70670c785e62812a2528","O");
 	}
 	
 	/**
