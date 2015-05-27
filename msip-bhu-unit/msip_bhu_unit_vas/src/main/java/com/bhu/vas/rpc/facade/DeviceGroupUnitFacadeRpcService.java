@@ -52,13 +52,15 @@ public class DeviceGroupUnitFacadeRpcService{
 		WifiDeviceGroup dgroup= null;
 		if(gid == null || gid.intValue() == 0){//新建一个组
 			dgroup = new WifiDeviceGroup();
-			dgroup.setPid(pid);
+			dgroup.setPid(pid==null?0:pid.intValue());
 			dgroup.setName(name);
 			dgroup = wifiDeviceGroupService.insert(dgroup);
 		}else{
 			dgroup = wifiDeviceGroupService.getById(gid);
-			if(pid != null && pid.intValue() > 0)
+			dgroup.setPid(pid==null?0:pid.intValue());
+			/*if(pid != null && pid.intValue() > 0)
 				dgroup.setPid(pid);
+			else*/
 			dgroup.setName(name);
 			dgroup = wifiDeviceGroupService.update(dgroup);
 		}
@@ -121,7 +123,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		DeviceGroupDTO dto = new DeviceGroupDTO();
 		dto.setGid(dgroup.getId());
 		dto.setName(dgroup.getName());
-		dto.setPid(dgroup.getPid());
+		dto.setPid(dgroup.getPid().intValue());
 		if(dgroup.getPid() == null || dgroup.getPid().intValue() == 0){
 			dto.setPname("根节点");
 		}else{
