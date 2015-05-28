@@ -62,7 +62,7 @@
             <groupId>gexin</groupId>
             <artifactId>gexin-rp-sdk-template</artifactId>
         </dependency>
-        <!--
+        
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -87,6 +87,6 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
         </dependency>
-        -->
+
     </dependencies>
 </project>

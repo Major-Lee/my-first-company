@@ -628,7 +628,7 @@ public class AsyncMsgHandleService {
 		//获取设备的配置的dto
 		WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dto.getMac());
 		if(setting_entity == null) return;
-//		WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
+		WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
 		
 		List<WifiDeviceTerminalDTO> terminals = dto.getTerminals();
 		if(terminals != null && !terminals.isEmpty()){
@@ -644,6 +644,10 @@ public class AsyncMsgHandleService {
 			List<WifiHandsetDeviceMark> need_updates = null;
 			for(WifiHandsetDeviceMark entity : entitys){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
+				//判断是否在黑名单中
+				if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
+					continue;
+				
 				//匹配终端是否在限速列表中
 //				WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
 //						setting_entity_dto, terminal.getMac());

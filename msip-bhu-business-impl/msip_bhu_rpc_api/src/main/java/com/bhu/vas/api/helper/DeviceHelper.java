@@ -158,6 +158,25 @@ public class DeviceHelper {
 		return null;
 	}
 	
+	/**
+	 * 判断终端mac是否在约定的黑名单中
+	 * @param mac 终端mac
+	 * @param dto
+	 * @return
+	 */
+	public static boolean isAclMac(String mac, WifiDeviceSettingDTO dto){
+		if(StringUtils.isEmpty(mac)) return false;
+		
+		WifiDeviceSettingAclDTO acl_dto = matchDefaultAcl(dto);
+		if(acl_dto != null){
+			List<String> macs = acl_dto.getMacs();
+			if(macs != null && !macs.isEmpty()){
+				return macs.contains(mac);
+			}
+		}
+		return false;
+	}
+	
 	public static final String Mode_Static_Show = "Static";
 	public static final String Mode_Dhcpc_Show = "DHCP";
 	public static final String Mode_Pppoe_Show = "PPPoE";
