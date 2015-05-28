@@ -1,5 +1,6 @@
 package com.bhu.vas.web.console;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
+import com.bhu.vas.api.vto.*;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Controller;
@@ -23,10 +27,6 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
-import com.bhu.vas.api.vto.HandsetDeviceVTO;
-import com.bhu.vas.api.vto.StatisticsGeneralVTO;
-import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
-import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
@@ -312,7 +312,29 @@ public class ConsoleController extends BaseController {
         }
         RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
 
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+
+        List<UserBrandDTO> userBrandDTOList = result.getPayload();
+        List<UserBrandVTO> userBrandVTOList = new ArrayList<UserBrandVTO>();
+
+
+        for (UserBrandDTO userBrandDTO : userBrandDTOList) {
+            UserBrandVTO userBrandVTO = new UserBrandVTO();
+            userBrandVTO.setBrand(userBrandDTO.getBrand());
+            userBrandVTO.setCount(userBrandDTO.getCount());
+            List<String> brandDetail = new ArrayList<String>();
+            List<Integer> countDetail = new ArrayList<Integer>();
+
+            List<UserBrandSubDTO> userBrandSubDTOList = userBrandDTO.getDetail();
+            for (UserBrandSubDTO userBrandSubDTO : userBrandSubDTOList) {
+                brandDetail.add(userBrandSubDTO.getBrand());
+                countDetail.add(userBrandSubDTO.getCount());
+            }
+            userBrandVTO.setBrandDetail(brandDetail);
+            userBrandVTO.setCountDetail(countDetail);
+            userBrandVTOList.add(userBrandVTO);
+        }
+
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
     }
 
 }
