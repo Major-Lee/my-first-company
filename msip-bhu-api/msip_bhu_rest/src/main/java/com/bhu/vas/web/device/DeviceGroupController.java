@@ -17,7 +17,6 @@ import com.bhu.vas.api.rpc.devices.dto.DeviceGroupDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceGroupRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
 
 @Controller
@@ -76,6 +75,11 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) Integer id) {
+		RpcResponseDTO<DeviceGroupDTO> detail = deviceGroupRpcService.detail(uid, id);
+		if(detail.getErrorCode() == null)
+			SpringMVCHelper.renderJson(response, detail.getPayload());
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(detail.getErrorCode()));
 	}
 	
 	/**
@@ -91,6 +95,11 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false) String ids) {
+		RpcResponseDTO<Boolean> remove = deviceGroupRpcService.remove(uid, ids);
+		if(remove.getErrorCode() == null)
+			SpringMVCHelper.renderJson(response, remove.getPayload());
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(remove.getErrorCode()));
 	}
 	
 	/**
@@ -108,6 +117,11 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false) Integer id,
 			@RequestParam(required = false) String wifi_ids) {
+		RpcResponseDTO<Boolean> grant = deviceGroupRpcService.grant(uid, id, wifi_ids);
+		if(grant.getErrorCode() == null)
+			SpringMVCHelper.renderJson(response, grant.getPayload());
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(grant.getErrorCode()));
 	}
 	
 	/**
@@ -125,6 +139,11 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false) Integer id,
 			@RequestParam(required = false) String wifi_ids) {
+		RpcResponseDTO<Boolean> ungrant = deviceGroupRpcService.ungrant(uid, id, wifi_ids);
+		if(ungrant.getErrorCode() == null)
+			SpringMVCHelper.renderJson(response, ungrant.getPayload());
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ungrant.getErrorCode()));
 	}
 	
 }

@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.device.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceGroupDao;
 import com.bhu.vas.business.ds.sequence.service.SequenceService;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
@@ -43,6 +47,35 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 		if(entity.getId() == null)
 			sequenceService.onCreateSequenceKey(entity, false);
 		entity.setPath(generateRelativePath(entity));
+		entity.setHaschild(false);
 		return super.insert(entity);
+	}
+	
+	/**
+	 * 通过path获取所有子节点，包括子节点的子节点
+	 * @param path
+	 * @return
+	 */
+	public List<WifiDeviceGroup> fetchAllByPath(String path,boolean withSelf){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria createCriteria = mc.createCriteria();
+		createCriteria.andSimpleCaulse(" 1=1 ");
+		if(!withSelf){
+			createCriteria.andColumnNotEqualTo("path", path);
+		}
+		createCriteria.andColumnLike("path", path+"%");
+		List<WifiDeviceGroup> groups = this.findModelByModelCriteria(mc);
+		return groups;
+	}
+	
+	public int countAllByPath(String path,boolean withSelf){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria createCriteria = mc.createCriteria();
+		createCriteria.andSimpleCaulse(" 1=1 ");
+		if(!withSelf){
+			createCriteria.andColumnNotEqualTo("path", path);
+		}
+		createCriteria.andColumnLike("path", path+"%");
+		return this.countByModelCriteria(mc);
 	}
 }
