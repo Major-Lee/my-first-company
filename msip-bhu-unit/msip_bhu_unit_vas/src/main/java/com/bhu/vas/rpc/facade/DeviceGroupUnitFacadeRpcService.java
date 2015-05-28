@@ -179,6 +179,7 @@ public class DeviceGroupUnitFacadeRpcService{
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
 			dto.setPname( (parent_group!=null)?parent_group.getName():null);
 		}
+		dto.setHaschild(dgroup.isHaschild());
 		dto.setPath(dgroup.getPath());
 		dto.setDevices(dgroup.getInnerModels());
 		return dto;
