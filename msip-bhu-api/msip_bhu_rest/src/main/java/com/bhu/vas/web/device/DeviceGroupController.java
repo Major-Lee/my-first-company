@@ -39,7 +39,7 @@ public class DeviceGroupController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false) int pid) {
+			@RequestParam(required = false,defaultValue="0") int pid) {
 		RpcResponseDTO<List<DeviceGroupDTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
 		if(birthTree.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, birthTree.getPayload());
@@ -63,10 +63,12 @@ public class DeviceGroupController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false) Integer gid,
+			@RequestParam(required = false,defaultValue="0") int gid,
 			@RequestParam(required = true) String name,
-			@RequestParam(required = false,defaultValue="0") Integer pid
+			@RequestParam(required = false,defaultValue="0") int pid
 			) {
+		System.out.println("~~~~~~~~~~~~save");
+		System.out.println("~~~~~~~~~~~~save:"+deviceGroupRpcService);
 		RpcResponseDTO<DeviceGroupDTO> save = deviceGroupRpcService.save(uid, gid, pid, name);
 		if(save.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, save.getPayload());
@@ -87,7 +89,7 @@ public class DeviceGroupController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) Integer gid) {
+			@RequestParam(required = true) int gid) {
 		RpcResponseDTO<DeviceGroupDTO> detail = deviceGroupRpcService.detail(uid, gid);
 		if(detail.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, detail.getPayload());
@@ -150,7 +152,7 @@ public class DeviceGroupController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) Integer gid,
+			@RequestParam(required = true) int gid,
 			@RequestParam(required = true) String wifi_ids) {
 		RpcResponseDTO<Boolean> ungrant = deviceGroupRpcService.ungrant(uid, gid, wifi_ids);
 		if(ungrant.getErrorCode() == null)
