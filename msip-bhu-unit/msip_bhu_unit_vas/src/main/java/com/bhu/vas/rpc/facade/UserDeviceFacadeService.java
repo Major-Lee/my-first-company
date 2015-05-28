@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -35,7 +37,6 @@ public class UserDeviceFacadeService {
 
     @Resource
     private UserService userService;
-	
 
     //TODO：重复插入异常
     //1、首先得判定UserDevicePK(mac, uid) 是否存在
@@ -86,20 +87,6 @@ public class UserDeviceFacadeService {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andColumnEqualTo("mac", mac);
         return  userDeviceService.countByCommonCriteria(mc) > 0 ? true : false;
-    }
-
-    public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
-        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
-        List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
-        for (UserDevice userDevice : bindDevices) {
-            UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
-            userDeviceDTO.setMac(userDevice.getMac());
-            userDeviceDTO.setUid(userDevice.getUid());
-            userDeviceDTO.setDevice_name(userDevice.getDevice_name());
-            bindDevicesDTO.add(userDeviceDTO);
-        }
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(bindDevicesDTO);
-
     }
 
     public int countBindDevices(int uid) {

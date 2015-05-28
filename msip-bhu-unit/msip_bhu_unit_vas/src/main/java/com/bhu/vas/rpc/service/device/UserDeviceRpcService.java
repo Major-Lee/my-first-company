@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.rpc.facade.UserUnitFacadeService;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -30,6 +31,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 
     @Resource
     private DeviceFacadeService deviceFacadeService;
+
+    @Resource
+    private UserUnitFacadeService userUnitFacadeService;
 
     @Override
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
@@ -76,7 +80,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 
     @Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
-        return userDeviceFacadeService.fetchBindDevices(uid);
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid));
     }
 
     @Override
