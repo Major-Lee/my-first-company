@@ -66,39 +66,53 @@ public class DeviceGroupUnitFacadeRpcService{
 				//pid变化了 所有此gid的子节点全部迁移，并重新生成relationpath
 				//第一步：获取此节点下的所有子节点，包括子节点的子节点
 				List<WifiDeviceGroup> allByPath = wifiDeviceGroupService.fetchAllByPath(oldPath,false);
-				System.out.println("~~~~~~~~~~"+allByPath.size());
+				dgroup.setPid(pid);
+				dgroup.setName(name);
+				dgroup.setPath(wifiDeviceGroupService.generateRelativePath(dgroup));
+				dgroup.setUpdator(uid);
+				for(WifiDeviceGroup child:allByPath){
+					//String child_old_path = child.getPath();
+					child.setPath(StringUtils.replace(child.getPath(), oldPath, dgroup.getPath()));
+					//System.out.println(child_old_path+" "+ oldPath+" "+dgroup.getPath()+" "+child.getPath());
+					child.setUpdator(uid);
+					wifiDeviceGroupService.update(child);
+				}
+				dgroup = wifiDeviceGroupService.update(dgroup);
+				/*System.out.println("~~~~~~~~~~"+allByPath.size());
 				if(allByPath.isEmpty()){//没有子节点
 					dgroup.setPid(pid);
-					dgroup.setHaschild(false);
+					//dgroup.setHaschild(false);
 					dgroup.setName(name);
 					dgroup.setPath(wifiDeviceGroupService.generateRelativePath(dgroup));
 					dgroup.setUpdator(uid);
 					dgroup = wifiDeviceGroupService.update(dgroup);
 				}else{
 					dgroup.setPid(pid);
-					dgroup.setHaschild(true);
+					//dgroup.setHaschild(true);
 					dgroup.setName(name);
 					dgroup.setPath(wifiDeviceGroupService.generateRelativePath(dgroup));
+					dgroup.setUpdator(uid);
 					for(WifiDeviceGroup child:allByPath){
-						String child_old_path = child.getPath();
+						//String child_old_path = child.getPath();
 						child.setPath(StringUtils.replace(child.getPath(), oldPath, dgroup.getPath()));
-						System.out.println(child_old_path+" "+ oldPath+" "+dgroup.getPath()+" "+child.getPath());
+						//System.out.println(child_old_path+" "+ oldPath+" "+dgroup.getPath()+" "+child.getPath());
 						child.setUpdator(uid);
 						wifiDeviceGroupService.update(child);
 					}
-					dgroup.setUpdator(uid);
 					dgroup = wifiDeviceGroupService.update(dgroup);
-				}
+				}*/
 				{//oldPid的节点需要判定hanchild是否为true
 					if(oldPid > 0){
 						WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(oldPid);
 						if(parent_group != null){
-							int count = wifiDeviceGroupService.countAllByPath(parent_group.getPath(), false);
+							parent_group.setChildren(parent_group.getChildren()-1);
+							wifiDeviceGroupService.update(parent_group);
+							/*int count = wifiDeviceGroupService.countAllByPath(parent_group.getPath(), false);
 							if(count == 0 && parent_group.isHaschild()){
 								parent_group.setHaschild(false);
 								parent_group.setUpdator(uid);
 								wifiDeviceGroupService.update(parent_group);
-							}
+							}*/
 						}
 					}
 				}
@@ -112,11 +126,16 @@ public class DeviceGroupUnitFacadeRpcService{
 		//其parent节点的haschild = true
 		if(pid != 0){
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(pid);
-			if(parent_group != null && !parent_group.isHaschild()){
+			if(parent_group != null){
+				parent_group.setChildren(parent_group.getChildren()+1);
+				wifiDeviceGroupService.update(parent_group);
+			}
+			
+			/*if(parent_group != null && !parent_group.isHaschild()){
 				parent_group.setHaschild(true);
 				parent_group.setUpdator(uid);
 				wifiDeviceGroupService.update(parent_group);
-			}
+			}*/
 		}
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup));
@@ -190,7 +209,8 @@ public class DeviceGroupUnitFacadeRpcService{
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
 			dto.setPname( (parent_group!=null)?parent_group.getName():null);
 		}
-		dto.setHaschild(dgroup.isHaschild());
+		dto.setChildren(dgroup.getChildren());
+		//dto.setHaschild(dgroup.isHaschild());
 		dto.setPath(dgroup.getPath());
 		dto.setDevices(dgroup.getInnerModels());
 		return dto;

@@ -8,7 +8,7 @@
     <result property="pid" column="pid"/>
     <result property="path" column="path"/>
     <result property="name" column="name"/>
-    <result property="haschild" column="haschild"/>
+    <result property="children" column="children"/>
     
     <result property="creator" column="creator"/>
     <result property="updator" column="updator"/>
@@ -29,7 +29,7 @@
 	    	pid,
 	    	path,
 	    	name,
-	    	haschild,
+	    	children,
 	    	creator,
 	    	updator,
 	    	created_at,
@@ -42,7 +42,7 @@
 	    	pid,
 	    	path,
 	    	name,
-	    	haschild,
+	    	children,
 	    	creator,
 	    	updator,
 	    	created_at,
@@ -56,7 +56,7 @@
 	    	#{pid},
 	    	#{path},
 	    	#{name},
-	    	#{haschild},
+	    	#{children},
 	    	#{creator},
 	    	#{updator},
 	    	#{created_at},
@@ -68,7 +68,7 @@
 	    	pid = #{pid},
 	    	path = #{path},
 	    	name = #{name},
-	    	haschild = #{haschild},
+	    	children = #{children},
 	    	creator = #{creator},
 	    	updator = #{updator},
 	    	created_at = #{created_at},

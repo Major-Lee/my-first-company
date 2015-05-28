@@ -16,7 +16,9 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 	private int pid;
 	private String path;//树状结构path
 	private String name;
-	private boolean haschild;
+	//此节点下一级的子节点数量
+	private int children;
+	//private boolean haschild;
 	private int creator;
 	private int updator;
 	private Date created_at;
@@ -146,11 +148,11 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 	public int limitSize() {
 		return 100;
 	}
-	public boolean isHaschild() {
-		return haschild;
+	public int getChildren() {
+		return children;
 	}
-	public void setHaschild(boolean haschild) {
-		this.haschild = haschild;
+	public void setChildren(int children) {
+		this.children = children;
 	}
 	
 }

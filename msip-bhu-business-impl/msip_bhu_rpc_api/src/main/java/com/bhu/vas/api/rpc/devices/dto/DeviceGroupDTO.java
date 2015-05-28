@@ -11,7 +11,7 @@ public class DeviceGroupDTO implements java.io.Serializable{
 	private String pname;
 	
 	private String path;
-	private boolean haschild;
+	private int children;
 	private List<String> devices;
 
 	public int getGid() {
@@ -62,13 +62,12 @@ public class DeviceGroupDTO implements java.io.Serializable{
 		this.devices = devices;
 	}
 
-	public boolean isHaschild() {
-		return haschild;
+	public int getChildren() {
+		return children;
 	}
 
-	public void setHaschild(boolean haschild) {
-		this.haschild = haschild;
+	public void setChildren(int children) {
+		this.children = children;
 	}
-	
-	
+
 }

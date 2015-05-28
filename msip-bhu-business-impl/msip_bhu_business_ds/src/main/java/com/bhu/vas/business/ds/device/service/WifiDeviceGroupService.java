@@ -14,6 +14,7 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.localunit.RandomData;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
@@ -48,7 +49,8 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 		if(entity.getId() == null)
 			sequenceService.onCreateSequenceKey(entity, false);
 		entity.setPath(generateRelativePath(entity));
-		entity.setHaschild(false);
+		entity.setChildren(0);
+		//entity.setHaschild(false);
 		return super.insert(entity);
 	}
 	
@@ -115,7 +117,8 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 	private static ModelCriteria builderModelCriteriaByPath(String path,boolean withSelf){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
-		createCriteria.andSimpleCaulse(" 1=1 ");
+		int rand = RandomData.intNumber(10, 10000);
+		createCriteria.andSimpleCaulse(rand+"="+rand);
 		if(!withSelf){
 			createCriteria.andColumnNotEqualTo("path", path);
 		}
@@ -136,15 +139,27 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 			if(group != null){
 				//int gid = group.getId().intValue();
 				int pid = group.getPid();
-				removeAllByPathStepByStep(group.getPath(),true);
+				removeAllByPath(group.getPath(),true);
+				//removeAllByPathStepByStep(group.getPath(),true);
 				//判定每个gid的parentid是否为hanchild
 				if(pid != 0){
+					/*try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}*/
 					WifiDeviceGroup parent_group = this.getById(pid);
-					int count  = countAllByPath(parent_group.getPath(),false);
-					if(count == 0 && parent_group.isHaschild()){
-						parent_group.setHaschild(false);
+					parent_group.setChildren(parent_group.getChildren()-1);
+					this.update(parent_group);
+					/*if(parent_group.getChildren() > 1){
+						
+					}*/
+					/*int count  = countAllByPath(parent_group.getPath(),false);
+					System.out.println("~~~~~~~~~~~~count:"+count);
+					if(count == 0 && parent_group.getChildren() > 0){
+						parent_group.setChildren(0);
 						this.update(parent_group);
-					}
+					}*/
 				}else{//pid == 0 本身是根节点，被删除后，无需动作
 					;
 				}
