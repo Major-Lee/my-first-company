@@ -13,10 +13,12 @@ import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISequenceGenable{
-	private Integer pid;
+	private int pid;
 	private String path;//树状结构path
 	private String name;
 	private boolean haschild;
+	private int creator;
+	private int updator;
 	private Date created_at;
 	
 	public WifiDeviceGroup() {
@@ -34,11 +36,10 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 		this.name = name;
 	}
 	
-	
-	public Integer getPid() {
+	public int getPid() {
 		return pid;
 	}
-	public void setPid(Integer pid) {
+	public void setPid(int pid) {
 		this.pid = pid;
 	}
 	
@@ -53,6 +54,20 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 	}
 	public void setPath(String path) {
 		this.path = path;
+	}
+	
+	
+	public int getCreator() {
+		return creator;
+	}
+	public void setCreator(int creator) {
+		this.creator = creator;
+	}
+	public int getUpdator() {
+		return updator;
+	}
+	public void setUpdator(int updator) {
+		this.updator = updator;
 	}
 	@Override
 	public void preInsert() {

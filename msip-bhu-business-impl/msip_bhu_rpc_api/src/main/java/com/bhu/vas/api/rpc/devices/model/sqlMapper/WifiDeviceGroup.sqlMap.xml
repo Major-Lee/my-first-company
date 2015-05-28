@@ -9,6 +9,10 @@
     <result property="path" column="path"/>
     <result property="name" column="name"/>
     <result property="haschild" column="haschild"/>
+    
+    <result property="creator" column="creator"/>
+    <result property="updator" column="updator"/>
+    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
@@ -26,6 +30,8 @@
 	    	path,
 	    	name,
 	    	haschild,
+	    	creator,
+	    	updator,
 	    	created_at,
 	    	updated_at,
 	    	extension_content
@@ -37,6 +43,8 @@
 	    	path,
 	    	name,
 	    	haschild,
+	    	creator,
+	    	updator,
 	    	created_at,
 	    	updated_at,
 	    	extension_content
@@ -49,6 +57,8 @@
 	    	#{path},
 	    	#{name},
 	    	#{haschild},
+	    	#{creator},
+	    	#{updator},
 	    	#{created_at},
 	    	#{updated_at},
 	    	#{extension_content}
@@ -59,6 +69,8 @@
 	    	path = #{path},
 	    	name = #{name},
 	    	haschild = #{haschild},
+	    	creator = #{creator},
+	    	updator = #{updator},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at},
 	    	extension_content = #{extension_content}

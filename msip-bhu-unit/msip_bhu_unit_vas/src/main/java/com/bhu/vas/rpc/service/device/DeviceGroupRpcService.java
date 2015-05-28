@@ -21,18 +21,18 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 	private DeviceGroupUnitFacadeRpcService deviceGroupUnitFacadeRpcService;
 	@Override
 	public RpcResponseDTO<List<DeviceGroupDTO>> birthTree(Integer uid,
-			Integer pid) {
+			int pid) {
 		logger.info(String.format("birthTree uid:%s pid:%s",uid,pid));
 		return deviceGroupUnitFacadeRpcService.birthTree(uid, pid);
 	}
 	@Override
-	public RpcResponseDTO<DeviceGroupDTO> save(Integer uid, Integer gid,
-			Integer pid, String name) {
+	public RpcResponseDTO<DeviceGroupDTO> save(Integer uid, int gid,
+			int pid, String name) {
 		logger.info(String.format("save uid:%s gid:%s pid:%s name:%s",uid,gid,pid,name));
 		return deviceGroupUnitFacadeRpcService.save(uid, gid, pid, name);
 	}
 	@Override
-	public RpcResponseDTO<DeviceGroupDTO> detail(Integer uid, Integer gid) {
+	public RpcResponseDTO<DeviceGroupDTO> detail(Integer uid, int gid) {
 		logger.info(String.format("detail uid:%s gid:%s",uid,gid));
 		return deviceGroupUnitFacadeRpcService.detail(uid, gid);
 	}
@@ -42,12 +42,12 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		return deviceGroupUnitFacadeRpcService.remove(uid, gids);
 	}
 	@Override
-	public RpcResponseDTO<Boolean> grant(Integer uid, Integer gid, String wifi_ids) {
+	public RpcResponseDTO<Boolean> grant(Integer uid, int gid, String wifi_ids) {
 		logger.info(String.format("grant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
 		return deviceGroupUnitFacadeRpcService.grant(uid, gid, wifi_ids);
 	}
 	@Override
-	public RpcResponseDTO<Boolean> ungrant(Integer uid, Integer gid,String wifi_ids) {
+	public RpcResponseDTO<Boolean> ungrant(Integer uid, int gid,String wifi_ids) {
 		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
 		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids);
 	}

@@ -29,7 +29,7 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 
 	public String generateRelativePath(WifiDeviceGroup group){//,boolean hasParent){
 		if(group == null) return null;
-		boolean hasParent = (group.getPid()!=null && group.getPid().intValue()!= 0);
+		boolean hasParent = group.getPid() != 0;//(group.getPid()!=null && group.getPid().intValue()!= 0);
 		if(!hasParent){
 			StringBuilder sb = new StringBuilder();
 			sb.append(group.getId()).append('/');
