@@ -60,9 +60,9 @@ public class UserBrandStatisticsTest extends BaseTest {
 
         System.out.println(JsonHelper.getJSONString(userBrandDTO));
 
-        List<String> userBrandStatisticsDTOs = new ArrayList<String>();
+        List<UserBrandDTO> userBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
 
-        userBrandStatisticsDTOs.add(JsonHelper.getJSONString(userBrandDTO));
+        userBrandStatisticsDTOs.add(userBrandDTO);
 
         userBrandStatistics.putInnerModels(userBrandStatisticsDTOs);
 

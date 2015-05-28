@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -99,7 +100,7 @@ public class UserAccessStatisticsFacadeService {
                 result.getTotalItemsCount(), userAccessStatisticsList);
     }
 
-    public RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date) {
+    public RpcResponseDTO<List<UserBrandDTO>> fetchUserBrandStatistics(String date) {
         UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics.getInnerModels());
     }

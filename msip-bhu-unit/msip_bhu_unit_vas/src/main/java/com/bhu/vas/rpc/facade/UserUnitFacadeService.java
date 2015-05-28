@@ -317,7 +317,7 @@ public class UserUnitFacadeService {
 	 * @param uid
 	 * @return
 	 */
-	private List<UserDeviceDTO>  fetchBindDevices(int uid) {
+	public List<UserDeviceDTO>  fetchBindDevices(int uid) {
 		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
 		List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
 		if(userDeviceList != null && !userDeviceList.isEmpty()){

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.bhu.vas.rpc.facade.UserAccessStatisticsFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -66,7 +67,7 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<List<String>> fetchUserBrandStatistics(String date) {
+	public RpcResponseDTO<List<UserBrandDTO>> fetchUserBrandStatistics(String date) {
 		logger.info(String.format("fetchUserBrandStatistics with date[%s] ", date));
 		return userAccessStatisticsFacadeService.fetchUserBrandStatistics(date);
 	}

@@ -34,26 +34,11 @@ public class UserAccessStatisticOp {
 
     private static String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
 
-//    public static void main(String[] args) {
-//        if (args.length < 1) {
-//            return;
-//        }
-//        String filepath = args[0];// ADD REMOVE
-//        ApplicationContext ctx = new FileSystemXmlApplicationContext(
-//                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-//        userAccessStatisticsService = (UserAccessStatisticsService)
-//                ctx.getBean("userAccessStatisticsService");
-//
-//        userBrandStatisticsService = (UserBrandStatisticsService)
-//                ctx.getBean("userBrandStatisticsService");
-//
-//        readTxtFile(filepath);
-//
-//    }
-
     public static void main(String[] args) {
-
-        String filepath = "/Users/bluesand/Documents/logfile-20150518.log";// ADD REMOVE
+        if (args.length < 1) {
+            return;
+        }
+        String filepath = args[0];// ADD REMOVE
         ApplicationContext ctx = new FileSystemXmlApplicationContext(
                 "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
         userAccessStatisticsService = (UserAccessStatisticsService)
@@ -65,6 +50,21 @@ public class UserAccessStatisticOp {
         readTxtFile(filepath);
 
     }
+
+//    public static void main(String[] args) {
+//
+//        String filepath = "/Users/bluesand/Documents/logfile-20150518.log";// ADD REMOVE
+//        ApplicationContext ctx = new FileSystemXmlApplicationContext(
+//                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+//        userAccessStatisticsService = (UserAccessStatisticsService)
+//                ctx.getBean("userAccessStatisticsService");
+//
+//        userBrandStatisticsService = (UserBrandStatisticsService)
+//                ctx.getBean("userBrandStatisticsService");
+//
+//        readTxtFile(filepath);
+//
+//    }
 
 
     public static void readTxtFile(String filePath) {
@@ -355,9 +355,10 @@ public class UserAccessStatisticOp {
             maxosdUserBrandDTO.setRatio(maxosdUserBrandDTO.getCount()/ (sum / 100.0) + "%");
 
 
-            List<String> windowsUserBrandStatisticsDTOs = new ArrayList<String>();
-            windowsUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(windowsUserBrandDTO));
+            List<UserBrandDTO> windowsUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+            windowsUserBrandStatisticsDTOs.add(windowsUserBrandDTO);
             userBrandStatistics.putInnerModels(windowsUserBrandStatisticsDTOs);
+
 
 //            List<String> androidUserBrandStatisticsDTOs = new ArrayList<String>();
 //            androidUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(androidUserBrandDTO));
@@ -365,8 +366,8 @@ public class UserAccessStatisticOp {
 
             filterAndroid(android, userBrandStatistics, sum);
 
-            List<String> macosUserBrandStatisticsDTOs = new ArrayList<String>();
-            macosUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(maxosdUserBrandDTO));
+            List<UserBrandDTO> macosUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+            macosUserBrandStatisticsDTOs.add(maxosdUserBrandDTO);
             userBrandStatistics.putInnerModels(macosUserBrandStatisticsDTOs);
         }
 
@@ -506,32 +507,32 @@ public class UserAccessStatisticOp {
         }
 
 
-        List<String> coolpadUserBrandStatisticsDTOs = new ArrayList<String>();
-        coolpadUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(coolpadUserBrandDTO));
+        List<UserBrandDTO> coolpadUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        coolpadUserBrandStatisticsDTOs.add(coolpadUserBrandDTO);
         userBrandStatistics.putInnerModels(coolpadUserBrandStatisticsDTOs);
 
-        List<String> huaweiUserBrandStatisticsDTOs = new ArrayList<String>();
-        huaweiUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(huaweiUserBrandDTO));
+        List<UserBrandDTO> huaweiUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        huaweiUserBrandStatisticsDTOs.add(huaweiUserBrandDTO);
         userBrandStatistics.putInnerModels(huaweiUserBrandStatisticsDTOs);
 
-        List<String> xiaomiUserBrandStatisticsDTOs = new ArrayList<String>();
-        xiaomiUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(xiaomiUserBrandDTO));
+        List<UserBrandDTO> xiaomiUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        xiaomiUserBrandStatisticsDTOs.add(xiaomiUserBrandDTO);
         userBrandStatistics.putInnerModels(xiaomiUserBrandStatisticsDTOs);
 
-        List<String> sumsangUserBrandStatisticsDTOs = new ArrayList<String>();
-        sumsangUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(sumsangUserBrandDTO));
+        List<UserBrandDTO> sumsangUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        sumsangUserBrandStatisticsDTOs.add(sumsangUserBrandDTO);
         userBrandStatistics.putInnerModels(sumsangUserBrandStatisticsDTOs);
 
-        List<String> htcUserBrandStatisticsDTOs = new ArrayList<String>();
-        htcUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(htcUserBrandDTO));
+        List<UserBrandDTO> htcUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        htcUserBrandStatisticsDTOs.add(htcUserBrandDTO);
         userBrandStatistics.putInnerModels(htcUserBrandStatisticsDTOs);
 
-        List<String> lenovoUserBrandStatisticsDTOs = new ArrayList<String>();
-        lenovoUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(lenovoUserBrandDTO));
+        List<UserBrandDTO> lenovoUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        lenovoUserBrandStatisticsDTOs.add(lenovoUserBrandDTO);
         userBrandStatistics.putInnerModels(lenovoUserBrandStatisticsDTOs);
 
-        List<String> otherUserBrandStatisticsDTOs = new ArrayList<String>();
-        otherUserBrandStatisticsDTOs.add(JsonHelper.getJSONString(otherUserBrandDTO));
+        List<UserBrandDTO> otherUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        otherUserBrandStatisticsDTOs.add(otherUserBrandDTO);
         userBrandStatistics.putInnerModels(otherUserBrandStatisticsDTOs);
 
     }

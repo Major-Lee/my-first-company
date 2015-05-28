@@ -5,24 +5,39 @@ import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class VapModeDefined {
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
 	//private final static String url_prefix = "http://vap.bhunetworks.com/vap/";
-	private final static String url_prefix = "http://192.168.66.7/vap/";
-
+	//private final static String url_prefix = "http://192.168.66.7/vap/";
+	//private final static String url_res_prefix = RuntimeConfiguration.Vap_Http_Res_UrlPrefix;
+	//private final static String url_api_prefix = RuntimeConfiguration.Vap_Http_Api_UrlPrefix;
 	public enum VapMode {
-		HtmlInjectAdv,
-		HtmlInject404,
-		HtmlPortal,
-		HtmlRedirect,
+		HtmlInjectAdv("htmlinjectadv"),
+		HtmlInject404("htmlinject404"),
+		HtmlPortal("htmlportal"),
+		HtmlRedirect("htmlredirect");
+
+		private String key;
+		VapMode(String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
 	}
 
 
 	public enum HtmlInjectAdv{
 		STYLE000("style000","00.00.01","1000000","http://auth.wi2o.cn/ad/ad.js"),
-		STYLE001("style001","00.00.01","1000001",url_prefix.concat("ad/001/js/ad.js")),
+		STYLE001("style001","00.00.01","1000001",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/001/js/ad.js")),
 		;
 		//private String index;
 		private String style;
@@ -145,10 +160,9 @@ public class VapModeDefined {
 	 *tar -xvf style001.tar.gz
 	 */
 	public enum HtmlInject404{
-		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style000.tar.gz")),
-		STYLE001("style001","00.00.02","http://192.168.66.7/bhu_api/v1/noauth/vap/url404",url_prefix.concat("404/rawfiles/style001.tar.gz")),
+		STYLE000("style000","00.00.01",RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
+		STYLE001("style001","00.00.02",RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style001.tar.gz")),
 		;
-
 		private String style;
 		private String ver;
 		private String dynaurl;
@@ -256,9 +270,9 @@ public class VapModeDefined {
 	 */
 	public enum HtmlPortal{
 		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","192.168.66.7,bhunetworks.com",
-				url_prefix.concat("portal/rawfiles/style001.tar.gz")),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
 		STYLE001("style001","00.00.02","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","192.168.66.7,bhunetworks.com",
-				url_prefix.concat("portal/rawfiles/style001.tar.gz")),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
 		;
 		
 		private String style;
@@ -464,6 +478,5 @@ public class VapModeDefined {
 		for(String s:ss){
 			System.out.println(s);
 		}*/
-		
 	}
 }
