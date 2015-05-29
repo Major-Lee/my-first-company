@@ -41,54 +41,11 @@ public class UserAccessStatisticOp {
 
     private static Map<String, String> userUrlCategory = new HashMap<String, String>();
 
-
-    //    enum UserUrlCategory {
-//        //音乐
-//        douban_fm("douban.fm"),
-//        xiami("xiami.com"),
-//
-//        //视频
-//        youku("youku.com"),
-//        tudou("tudou.com"),
-//        iqiyi("iqiyi.com"),
-//
-//        //电商
-//        taobao("taobao.com"),
-//        tmall("tmall.com"),
-//        jd("jd.com"),
-//        meituan("meituan.com"),
-//
-//        //sns社区
-//        qq("qq.com"),
-//        weixin("weixin.com"),
-//        qzone("qzone.com"),
-//        weibo("weibo.com"),
-//        douban("douban.com")
-//        ;
-//
-
-//    }
-
-//    public static void main(String[] args) {
-//        if (args.length < 1) {
-//            return;
-//        }
-//        String filepath = args[0];// ADD REMOVE
-//        ApplicationContext ctx = new FileSystemXmlApplicationContext(
-//                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-//        userAccessStatisticsService = (UserAccessStatisticsService)
-//                ctx.getBean("userAccessStatisticsService");
-//
-//        userBrandStatisticsService = (UserBrandStatisticsService)
-//                ctx.getBean("userBrandStatisticsService");
-//
-//        readTxtFile(filepath);
-//
-//    }
-
     public static void main(String[] args) {
-
-        String filepath = "/Users/bluesand/Documents/logfile-20150527.log";// ADD REMOVE
+        if (args.length < 1) {
+            return;
+        }
+        String filepath = args[0];// ADD REMOVE
         ApplicationContext ctx = new FileSystemXmlApplicationContext(
                 "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
         userAccessStatisticsService = (UserAccessStatisticsService)
@@ -97,12 +54,27 @@ public class UserAccessStatisticOp {
         userBrandStatisticsService = (UserBrandStatisticsService)
                 ctx.getBean("userBrandStatisticsService");
 
-        userUrlStatisticsService = (UserUrlStatisticsService)
-                ctx.getBean("userUrlStatisticsService");
-
         readTxtFile(filepath);
 
     }
+
+//    public static void main(String[] args) {
+//
+//        String filepath = "/Users/bluesand/Documents/logfile-20150527.log";// ADD REMOVE
+//        ApplicationContext ctx = new FileSystemXmlApplicationContext(
+//                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+//        userAccessStatisticsService = (UserAccessStatisticsService)
+//                ctx.getBean("userAccessStatisticsService");
+//
+//        userBrandStatisticsService = (UserBrandStatisticsService)
+//                ctx.getBean("userBrandStatisticsService");
+//
+//        userUrlStatisticsService = (UserUrlStatisticsService)
+//                ctx.getBean("userUrlStatisticsService");
+//
+//        readTxtFile(filepath);
+//
+//    }
 
 
     public static void readTxtFile(String filePath) {
