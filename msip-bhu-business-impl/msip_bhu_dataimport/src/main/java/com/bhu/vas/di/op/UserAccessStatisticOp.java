@@ -262,7 +262,6 @@ public class UserAccessStatisticOp {
 
 
                         //3.用户网站访问统计
-                        System.out.println("================" + dinfo.getAhost());
                         fileterUserUrl(hostMap, dinfo);
 
 

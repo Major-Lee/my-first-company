@@ -108,12 +108,12 @@ public class UserAccessStatisticsFacadeService {
 
     public RpcResponseDTO<List<UserBrandDTO>> fetchUserBrandStatistics(String date) {
         UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics.getInnerModels());
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics == null ? null : userBrandStatistics.getInnerModels());
     }
 
     public RpcResponseDTO<List<UserUrlDTO>> fetchUserUrlStatistics(String date) {
         UserUrlStatistics userUrlStatistics = userUrlStatisticsService.getById(date);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUrlStatistics.getInnerModels());
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse( userUrlStatistics ==null ? null : userUrlStatistics.getInnerModels());
     }
 
 

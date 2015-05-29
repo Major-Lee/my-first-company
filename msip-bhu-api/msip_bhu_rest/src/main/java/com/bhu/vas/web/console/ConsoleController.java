@@ -310,28 +310,34 @@ public class ConsoleController extends BaseController {
         RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
 
 
-        List<UserBrandDTO> userBrandDTOList = result.getPayload();
-        List<UserBrandVTO> userBrandVTOList = new ArrayList<UserBrandVTO>();
+        if (result != null) {
+            List<UserBrandDTO> userBrandDTOList = result.getPayload();
+            List<UserBrandVTO> userBrandVTOList = new ArrayList<UserBrandVTO>();
 
 
-        for (UserBrandDTO userBrandDTO : userBrandDTOList) {
-            UserBrandVTO userBrandVTO = new UserBrandVTO();
-            userBrandVTO.setBrand(userBrandDTO.getBrand());
-            userBrandVTO.setCount(userBrandDTO.getCount());
-            List<String> brandDetail = new ArrayList<String>();
-            List<Integer> countDetail = new ArrayList<Integer>();
+            for (UserBrandDTO userBrandDTO : userBrandDTOList) {
+                UserBrandVTO userBrandVTO = new UserBrandVTO();
+                userBrandVTO.setBrand(userBrandDTO.getBrand());
+                userBrandVTO.setCount(userBrandDTO.getCount());
+                List<String> brandDetail = new ArrayList<String>();
+                List<Integer> countDetail = new ArrayList<Integer>();
 
-            List<UserBrandSubDTO> userBrandSubDTOList = userBrandDTO.getDetail();
-            for (UserBrandSubDTO userBrandSubDTO : userBrandSubDTOList) {
-                brandDetail.add(userBrandSubDTO.getBrand());
-                countDetail.add(userBrandSubDTO.getCount());
+                List<UserBrandSubDTO> userBrandSubDTOList = userBrandDTO.getDetail();
+                for (UserBrandSubDTO userBrandSubDTO : userBrandSubDTOList) {
+                    brandDetail.add(userBrandSubDTO.getBrand());
+                    countDetail.add(userBrandSubDTO.getCount());
+                }
+                userBrandVTO.setBrandDetail(brandDetail);
+                userBrandVTO.setCountDetail(countDetail);
+                userBrandVTOList.add(userBrandVTO);
             }
-            userBrandVTO.setBrandDetail(brandDetail);
-            userBrandVTO.setCountDetail(countDetail);
-            userBrandVTOList.add(userBrandVTO);
+
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
         }
 
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
+
     }
 
 
@@ -348,28 +354,32 @@ public class ConsoleController extends BaseController {
         RpcResponseDTO<List<UserUrlDTO>> result = statisticsRpcService.fetchUserUrlStatistics(date);
 
 
-        List<UserUrlDTO> userUrlDTOList = result.getPayload();
-        List<UserUrlVTO> userUrlVTOList = new ArrayList<UserUrlVTO>();
+        if (result != null) {
+            List<UserUrlDTO> userUrlDTOList = result.getPayload();
+            List<UserUrlVTO> userUrlVTOList = new ArrayList<UserUrlVTO>();
 
 
-        for (UserUrlDTO userUrlDTO : userUrlDTOList) {
-            UserUrlVTO userUrlVTO = new UserUrlVTO();
-            userUrlVTO.setCategory(userUrlDTO.getCategory());
-            userUrlVTO.setCount(userUrlDTO.getCount());
-            List<String> categoryDetail = new ArrayList<String>();
-            List<Integer> countDetail = new ArrayList<Integer>();
+            for (UserUrlDTO userUrlDTO : userUrlDTOList) {
+                UserUrlVTO userUrlVTO = new UserUrlVTO();
+                userUrlVTO.setCategory(userUrlDTO.getCategory());
+                userUrlVTO.setCount(userUrlDTO.getCount());
+                List<String> categoryDetail = new ArrayList<String>();
+                List<Integer> countDetail = new ArrayList<Integer>();
 
-            List<UserUrlSubDTO> userUrlSubDTOList = userUrlDTO.getDetail();
-            for (UserUrlSubDTO userUrlSubDTO : userUrlSubDTOList) {
-                categoryDetail.add(userUrlSubDTO.getCategory());
-                countDetail.add(userUrlSubDTO.getCount());
+                List<UserUrlSubDTO> userUrlSubDTOList = userUrlDTO.getDetail();
+                for (UserUrlSubDTO userUrlSubDTO : userUrlSubDTOList) {
+                    categoryDetail.add(userUrlSubDTO.getCategory());
+                    countDetail.add(userUrlSubDTO.getCount());
+                }
+                userUrlVTO.setCategoryDetail(categoryDetail);
+                userUrlVTO.setCountDetail(countDetail);
+                userUrlVTOList.add(userUrlVTO);
             }
-            userUrlVTO.setCategoryDetail(categoryDetail);
-            userUrlVTO.setCountDetail(countDetail);
-            userUrlVTOList.add(userUrlVTO);
-        }
 
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userUrlVTOList)));
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userUrlVTOList)));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+        }
     }
 
 }
