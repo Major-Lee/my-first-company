@@ -1,5 +1,10 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -7,9 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -31,7 +40,73 @@ public class TaskUnitFacadeService {
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
+	@Resource
+	private WifiDeviceGroupService wifiDeviceGroupService;
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
+	public RpcResponseDTO<Boolean> taskGroupGenerate(Integer uid, int gid,boolean dependency, String opt, String subopt, String extparams,
+			String channel, String channel_taskid){
+		logger.info("uid==" + uid + ",gid==" + gid + ",ds_opt==" + opt + ",extparams==" + extparams);
+		//发异步消息执行,所有操作在异步环境中执行
+		deliverMessageService.sendWifiCmdGenMessage(uid.intValue(), gid,dependency, null, opt, subopt, extparams, channel, channel_taskid);//sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		/*if(gid == 0)
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
+		WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
+		if(dgroup == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
+		}
+		Set<String> totalDevices = new HashSet<String>();
+		if(!dependency){
+			if(dgroup.getInnerModels().isEmpty()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY);
+			}else{
+				totalDevices.addAll(dgroup.getInnerModels());
+			}
+		}else{
+			List<WifiDeviceGroup> allByPath = wifiDeviceGroupService.fetchAllByPath(dgroup.getPath(), true);
+			for(WifiDeviceGroup _dgroup:allByPath){
+				totalDevices.addAll(_dgroup.getInnerModels());
+			}
+			if(totalDevices.isEmpty()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_DEPENDENCY_DEVICES_EMPTY);
+			}
+		}
+		//只给在线的设备发送指令
+		List<String> onlineDevices = wifiDeviceService.filterOnlineIdsWith(new ArrayList<String>(totalDevices), true);
+		if(onlineDevices.isEmpty()){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_ONLINE_DEVICES_EMPTY);
+		}
+		
+		for(String wifi_id:onlineDevices){
+			
+		}*/
+		
+		//List<TaskResDTO>
+		
+		/*try{
+			WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(uid, mac, opt, subopt, extparams, channel, channel_taskid);
 
+			TaskResDTO dto = new TaskResDTO();
+			dto.setChannel(channel);
+			dto.setChannel_taskid(channel_taskid);
+			dto.setState(downTask.getState());
+			dto.setMac(mac);
+			dto.setTaskid(downTask.getId());
+			
+			//发送异步消息到Queue
+			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
+			return new RpcResponseDTO<TaskResDTO>(null,dto);
+		}catch(BusinessI18nCodeException bex){
+			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
+			return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
+			return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}*/
+	}
 	
 	/**
 	 * @param uid

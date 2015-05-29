@@ -4,8 +4,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -28,9 +30,11 @@ import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
@@ -41,6 +45,7 @@ import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -55,6 +60,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
@@ -70,6 +76,7 @@ import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.WangjianSMSHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 @Service
 public class AsyncMsgHandleService {
@@ -101,6 +108,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
+	
+	@Resource
+	private WifiDeviceGroupService wifiDeviceGroupService;
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -876,5 +886,65 @@ public class AsyncMsgHandleService {
 		
 		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s] successful", message));
 
+	}
+	
+	
+	
+	public void deviceAsyncCmdGen(String message){
+		logger.info(String.format("deviceAsyncCmdGen message[%s]", message));
+		Set<String> totalDevices = null;
+		WifiDeviceGroup dgroup = null;
+		List<String> onlineDevices = null;
+		try{
+			WifiDeviceAsynCmdGenerateDTO dto = JsonHelper.getDTO(message, WifiDeviceAsynCmdGenerateDTO.class);
+			totalDevices = new HashSet<String>();
+			if(!StringUtils.isEmpty(dto.getMac())) totalDevices.add(dto.getMac());
+			if(dto.getGid() > 0){
+				dgroup = wifiDeviceGroupService.getById(dto.getGid());
+				if(dgroup != null){
+					if(!dto.isDependency()){
+						totalDevices.addAll(dgroup.getInnerModels());
+					}else{
+						List<WifiDeviceGroup> allByPath = wifiDeviceGroupService.fetchAllByPath(dgroup.getPath(), true);
+						for(WifiDeviceGroup _dgroup:allByPath){
+							totalDevices.addAll(_dgroup.getInnerModels());
+						}
+					}
+				}
+			}
+			if(totalDevices.isEmpty()) return;
+			//只给在线的设备发送指令
+			onlineDevices = wifiDeviceService.filterOnlineIdsWith(new ArrayList<String>(totalDevices), true);
+			if(onlineDevices.isEmpty()){
+				return;
+			}
+			for(String wifi_id:onlineDevices){
+				try{
+					WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(dto.getUid(), wifi_id, dto.getOpt(), dto.getSubopt(), 
+							dto.getExtparams(), dto.getChannel(), dto.getChannel_taskid());
+					DaemonHelper.daemonCmdDown(wifi_id, downTask.getPayload(), daemonRpcService);
+				}catch(BusinessI18nCodeException bex){
+					bex.printStackTrace(System.out);
+					logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+					logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
+				}
+			}
+		}finally{
+			if(onlineDevices != null){
+				onlineDevices.clear();
+				onlineDevices = null;
+			}
+			if(totalDevices != null){
+				totalDevices.clear();
+				totalDevices = null;
+			}
+			if(dgroup != null){
+				dgroup = null;
+			}
+		}
+		
+		logger.info(String.format("deviceAsyncCmdGen message[%s] successful", message));
 	}
 }

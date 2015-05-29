@@ -1,5 +1,8 @@
 package com.bhu.vas.business.ds.device.service;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -29,11 +32,17 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 		return super.findModelTailPageByModelCriteria(mc);
 	}
 	
-//	public List<WifiDevice> findByIdsAndOnline(List<String> ids, boolean online){
-//		ModelCriteria mc = new ModelCriteria();
-//		mc.createCriteria().andColumnIn("id", ids).an.andColumnEqualTo("online", online);
-//		return super.findModelByModelCriteria(mc);
-//	}
+	/*public List<WifiDevice> findOnlineByIds(List<String> ids, boolean online){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnIn("id", ids).an.andColumnEqualTo("online", online);
+		return super.findModelByModelCriteria(mc);
+	}*/
+	
+	public List<String> filterOnlineIdsWith(List<String> ids, boolean online){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnIn("id", ids).andColumnEqualTo("online", online);
+		return super.findIdsByModelCriteria(mc);
+	}
 	
 	public long countByOnline(){
 		ModelCriteria mc = new ModelCriteria();

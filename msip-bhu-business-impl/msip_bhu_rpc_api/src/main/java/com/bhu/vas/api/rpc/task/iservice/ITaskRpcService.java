@@ -15,6 +15,8 @@ public interface ITaskRpcService {
 			String channel,
 			String channel_taskid);
 	
+	
+	
 	public void taskStatusFetch(
 			int taskid
 			);

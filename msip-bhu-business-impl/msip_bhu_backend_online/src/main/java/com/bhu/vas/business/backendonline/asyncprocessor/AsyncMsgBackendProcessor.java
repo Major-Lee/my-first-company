@@ -99,6 +99,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case USERDEVICEREGISTER:
 							asyncMsgHandleService.userDeviceRegister(message);
 							break;
+						case WifiDeviceAsyncCMDGen:
+							asyncMsgHandleService.deviceAsyncCmdGen(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

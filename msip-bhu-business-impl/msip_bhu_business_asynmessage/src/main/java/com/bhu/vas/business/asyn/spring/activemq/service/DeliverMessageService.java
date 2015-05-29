@@ -20,6 +20,7 @@ import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -38,6 +39,21 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(message);
 	}
 
+	public void sendWifiCmdGenMessage(int uid,int gid,boolean dependency,String mac,String opt,String subopt, String extparams,String channel,String channel_taskid){
+		WifiDeviceAsynCmdGenerateDTO dto = new WifiDeviceAsynCmdGenerateDTO();
+		dto.setUid(uid);
+		dto.setGid(gid);
+		dto.setDependency(dependency);
+		dto.setMac(mac);
+		dto.setOpt(opt);
+		dto.setSubopt(subopt);
+		dto.setExtparams(extparams);
+		dto.setChannel(channel);
+		dto.setChannel_taskid(channel_taskid);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 	public void sendWifiCmdCommingNotifyMessage(String mac,int taskid,String opt,String payload){
 		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
 		dto.setMac(mac);

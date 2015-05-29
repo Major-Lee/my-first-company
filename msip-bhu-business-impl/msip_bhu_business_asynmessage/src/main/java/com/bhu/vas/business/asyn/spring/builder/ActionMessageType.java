@@ -17,11 +17,14 @@ public enum ActionMessageType {
 	WifiDeviceHDRateFetch("下发终端实时速率","wdrealtime","WH"),
 	WifiDeviceSpeedFetch("下发设备的网速","wdspeed","WS"),
 	
+	
+	
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
 	
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
 	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),
+	WifiDeviceAsyncCMDGen("给设备组下发指令","wdgcmd","WA"),
 	
 	USERREGISTERED("用户注册成功","registered","UR"),//用户注册成功
 	USERSIGNEDON("用户登陆","signedon","US"),//用户登陆成功动作
