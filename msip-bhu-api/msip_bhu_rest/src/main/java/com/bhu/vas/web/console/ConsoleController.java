@@ -356,15 +356,15 @@ public class ConsoleController extends BaseController {
             UserUrlVTO userUrlVTO = new UserUrlVTO();
             userUrlVTO.setCategory(userUrlDTO.getCategory());
             userUrlVTO.setCount(userUrlDTO.getCount());
-            List<String> brandDetail = new ArrayList<String>();
+            List<String> categoryDetail = new ArrayList<String>();
             List<Integer> countDetail = new ArrayList<Integer>();
 
             List<UserUrlSubDTO> userUrlSubDTOList = userUrlDTO.getDetail();
             for (UserUrlSubDTO userUrlSubDTO : userUrlSubDTOList) {
-                brandDetail.add(userUrlSubDTO.getCategory());
+                categoryDetail.add(userUrlSubDTO.getCategory());
                 countDetail.add(userUrlSubDTO.getCount());
             }
-            userUrlVTO.setCategoryDetail(brandDetail);
+            userUrlVTO.setCategoryDetail(categoryDetail);
             userUrlVTO.setCountDetail(countDetail);
             userUrlVTOList.add(userUrlVTO);
         }
