@@ -4,18 +4,16 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
@@ -30,11 +28,9 @@ import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
 import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
-import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
@@ -45,7 +41,6 @@ import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -60,7 +55,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
@@ -76,7 +70,6 @@ import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.WangjianSMSHelper;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 @Service
 public class AsyncMsgHandleService {
@@ -109,8 +102,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 	
-	@Resource
-	private WifiDeviceGroupService wifiDeviceGroupService;
+	//@Resource
+	//private WifiDeviceGroupService wifiDeviceGroupService;
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -887,10 +880,7 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s] successful", message));
 
 	}
-	
-	
-	
-	public void deviceAsyncCmdGen(String message){
+	/*public void deviceAsyncCmdGen(String message){
 		logger.info(String.format("deviceAsyncCmdGen message[%s]", message));
 		Set<String> totalDevices = null;
 		WifiDeviceGroup dgroup = null;
@@ -898,7 +888,7 @@ public class AsyncMsgHandleService {
 		try{
 			WifiDeviceAsynCmdGenerateDTO dto = JsonHelper.getDTO(message, WifiDeviceAsynCmdGenerateDTO.class);
 			totalDevices = new HashSet<String>();
-			if(!StringUtils.isEmpty(dto.getMac())) totalDevices.add(dto.getMac());
+			if(StringUtils.isNotEmpty(dto.getMac())) totalDevices.add(dto.getMac());
 			if(dto.getGid() > 0){
 				dgroup = wifiDeviceGroupService.getById(dto.getGid());
 				if(dgroup != null){
@@ -946,5 +936,5 @@ public class AsyncMsgHandleService {
 		}
 		
 		logger.info(String.format("deviceAsyncCmdGen message[%s] successful", message));
-	}
+	}*/
 }

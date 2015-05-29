@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 
@@ -28,6 +29,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private AsyncMsgHandleService asyncMsgHandleService;
+	
+	@Resource
+	private IMsgHandlerService wifiDeviceGroupServiceHandler;
 	
 	@PostConstruct
 	public void initialize() {
@@ -100,7 +104,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							asyncMsgHandleService.userDeviceRegister(message);
 							break;
 						case WifiDeviceAsyncCMDGen:
-							asyncMsgHandleService.deviceAsyncCmdGen(message);
+							wifiDeviceGroupServiceHandler.process(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

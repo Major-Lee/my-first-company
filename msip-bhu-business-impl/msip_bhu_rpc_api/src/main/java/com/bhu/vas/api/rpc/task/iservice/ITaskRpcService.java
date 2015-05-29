@@ -5,6 +5,16 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 
 
 public interface ITaskRpcService {
+	public RpcResponseDTO<Boolean> createNewTask4Group(
+			Integer uid, 
+			int gid,
+			boolean dependency, 
+			String mac,
+			String opt, 
+			String subopt, 
+			String extparams,
+			String channel, 
+			String channel_taskid);
 	public RpcResponseDTO<TaskResDTO> createNewTask(
 			Integer uid,
 			String mac,

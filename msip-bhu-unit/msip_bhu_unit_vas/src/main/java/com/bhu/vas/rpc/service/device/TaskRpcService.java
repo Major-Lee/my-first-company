@@ -18,6 +18,15 @@ public class TaskRpcService implements ITaskRpcService{
 	@Resource
 	private TaskUnitFacadeService taskUnitFacadeService;
 
+	@Override
+	public RpcResponseDTO<Boolean> createNewTask4Group(Integer uid, int gid,
+			boolean dependency,String mac, String opt, String subopt, String extparams,
+			String channel, String channel_taskid) {
+		logger.info(String.format("createNewTask4Group uid:%s gid:%s dependency:%s mac:%s opt:%s extparams:%s channel:%s channel_taskid:%s", 
+				uid,gid,dependency,mac,opt,extparams,channel,channel_taskid));
+		return taskUnitFacadeService.taskGroupGenerate(uid, gid, dependency, mac, opt, subopt, extparams, channel, channel_taskid);
+	}
+	
 	/**
 	 * 创建任务
 	 * 创建任务成功后发送任务创建成功的异步消息

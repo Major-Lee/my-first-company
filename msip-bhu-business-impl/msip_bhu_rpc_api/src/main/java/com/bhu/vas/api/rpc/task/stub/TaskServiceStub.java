@@ -51,4 +51,13 @@ public class TaskServiceStub implements ITaskRpcService{
 		return taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
 	}
 
+	@Override
+	public RpcResponseDTO<Boolean> createNewTask4Group(Integer uid, int gid,
+			boolean dependency, String mac, String opt, String subopt,
+			String extparams, String channel, String channel_taskid) {
+		if(uid == null || (gid == 0 && StringUtils.isEmpty(mac))) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return taskRpcService.createNewTask4Group(uid, gid, dependency, mac, opt, subopt, extparams, channel, channel_taskid);
+	}
+
 }

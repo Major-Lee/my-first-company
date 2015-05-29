@@ -58,6 +58,30 @@ public class CmdController extends BaseController{
 		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
 	}
 	
+	@ResponseBody()
+	@RequestMapping(value="/generate4group",method={RequestMethod.POST})
+	public void cmdGenerate4Group(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) int gid,
+			@RequestParam(required = false) boolean dependency,
+			@RequestParam(required = false) String mac,
+			
+			@RequestParam(required = true) String opt,
+			@RequestParam(required = false, defaultValue="00") String subopt,
+			@RequestParam(required = false) String extparams,
+			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
+			@RequestParam(required = false) String channel_taskid) {
+		RpcResponseDTO<Boolean> resp = taskRpcService.createNewTask4Group(uid, gid, dependency, mac, opt, subopt, extparams, channel, channel_taskid);
+		if(resp.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+	}
+	
+	
 	/**
 	 * 查询任务状态接口
 	 * @param request

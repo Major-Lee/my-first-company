@@ -1,10 +1,5 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -13,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -45,11 +39,11 @@ public class TaskUnitFacadeService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-	public RpcResponseDTO<Boolean> taskGroupGenerate(Integer uid, int gid,boolean dependency, String opt, String subopt, String extparams,
+	public RpcResponseDTO<Boolean> taskGroupGenerate(Integer uid, int gid,boolean dependency,String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid){
 		logger.info("uid==" + uid + ",gid==" + gid + ",ds_opt==" + opt + ",extparams==" + extparams);
 		//发异步消息执行,所有操作在异步环境中执行
-		deliverMessageService.sendWifiCmdGenMessage(uid.intValue(), gid,dependency, null, opt, subopt, extparams, channel, channel_taskid);//sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
+		deliverMessageService.sendWifiCmdGenMessage(uid.intValue(), gid,dependency, mac, opt, subopt, extparams, channel, channel_taskid);//sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		/*if(gid == 0)
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
