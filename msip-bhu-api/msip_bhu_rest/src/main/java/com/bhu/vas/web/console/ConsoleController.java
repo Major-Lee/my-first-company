@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
+import com.bhu.vas.api.rpc.statistics.dto.*;
 import com.bhu.vas.api.vto.*;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -335,6 +332,44 @@ public class ConsoleController extends BaseController {
         }
 
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
+    }
+
+
+    @ResponseBody()
+    @RequestMapping(value = "/statistics/fetch_user_url_statistics", method = {RequestMethod.POST})
+    public void fetch_user_url_statistics(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false) String date) {
+        if (date == null || date.isEmpty()) {
+            date = DateHelper.COMMON_HELPER.getDateText(new Date());
+        }
+        RpcResponseDTO<List<UserUrlDTO>> result = statisticsRpcService.fetchUserUrlStatistics(date);
+
+
+        List<UserUrlDTO> userUrlDTOList = result.getPayload();
+        List<UserUrlVTO> userUrlVTOList = new ArrayList<UserUrlVTO>();
+
+
+        for (UserUrlDTO userUrlDTO : userUrlDTOList) {
+            UserUrlVTO userUrlVTO = new UserUrlVTO();
+            userUrlVTO.setCategory(userUrlDTO.getCategory());
+            userUrlVTO.setCount(userUrlDTO.getCount());
+            List<String> brandDetail = new ArrayList<String>();
+            List<Integer> countDetail = new ArrayList<Integer>();
+
+            List<UserUrlSubDTO> userUrlSubDTOList = userUrlDTO.getDetail();
+            for (UserUrlSubDTO userUrlSubDTO : userUrlSubDTOList) {
+                brandDetail.add(userUrlSubDTO.getCategory());
+                countDetail.add(userUrlSubDTO.getCount());
+            }
+            userUrlVTO.setCategoryDetail(brandDetail);
+            userUrlVTO.setCountDetail(countDetail);
+            userUrlVTOList.add(userUrlVTO);
+        }
+
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userUrlVTOList)));
     }
 
 }

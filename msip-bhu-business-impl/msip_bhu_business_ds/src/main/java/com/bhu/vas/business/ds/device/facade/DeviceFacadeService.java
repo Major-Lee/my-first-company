@@ -524,7 +524,7 @@ public class DeviceFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_TYPE_NOT_SUPPORTED);
 		}
 		//1:当前用户使用app移动设备数据
-		userMobileDeviceService.deviceRegister(uid, dt, dm, pt);
+		userMobileDeviceService.deviceRegister(uid, dt, d, pt);
 		//2:用户使用app移动设备历史数据
 		userMobileDeviceStateService.userNewDeviceRegisterOrReplace(uid, de, dm, dt, cv, pv, ut, pt);
 		//3:用户所管理的设备的数据关系

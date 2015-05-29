@@ -2,13 +2,16 @@ package com.bhu.vas.di.op;
 
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlSubDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
+import com.bhu.vas.api.rpc.statistics.model.UserUrlStatistics;
 import com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK;
 import com.bhu.vas.business.ds.statistics.service.UserAccessStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
+import com.bhu.vas.business.ds.statistics.service.UserUrlStatisticsService;
 import com.smartwork.msip.cores.helper.DateHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import nl.bitwalker.useragentutils.OperatingSystem;
 import nl.bitwalker.useragentutils.UserAgent;
 import org.springframework.context.ApplicationContext;
@@ -32,28 +35,45 @@ public class UserAccessStatisticOp {
 
     private static UserBrandStatisticsService userBrandStatisticsService;
 
+    private static UserUrlStatisticsService userUrlStatisticsService;
+
     private static String currentDate = DateHelper.COMMON_HELPER.getDateText(new Date());
 
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            return;
-        }
-        String filepath = args[0];// ADD REMOVE
-        ApplicationContext ctx = new FileSystemXmlApplicationContext(
-                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-        userAccessStatisticsService = (UserAccessStatisticsService)
-                ctx.getBean("userAccessStatisticsService");
+    private static Map<String, String> userUrlCategory = new HashMap<String, String>();
 
-        userBrandStatisticsService = (UserBrandStatisticsService)
-                ctx.getBean("userBrandStatisticsService");
 
-        readTxtFile(filepath);
+    //    enum UserUrlCategory {
+//        //音乐
+//        douban_fm("douban.fm"),
+//        xiami("xiami.com"),
+//
+//        //视频
+//        youku("youku.com"),
+//        tudou("tudou.com"),
+//        iqiyi("iqiyi.com"),
+//
+//        //电商
+//        taobao("taobao.com"),
+//        tmall("tmall.com"),
+//        jd("jd.com"),
+//        meituan("meituan.com"),
+//
+//        //sns社区
+//        qq("qq.com"),
+//        weixin("weixin.com"),
+//        qzone("qzone.com"),
+//        weibo("weibo.com"),
+//        douban("douban.com")
+//        ;
+//
 
-    }
+//    }
 
 //    public static void main(String[] args) {
-//
-//        String filepath = "/Users/bluesand/Documents/logfile-20150518.log";// ADD REMOVE
+//        if (args.length < 1) {
+//            return;
+//        }
+//        String filepath = args[0];// ADD REMOVE
 //        ApplicationContext ctx = new FileSystemXmlApplicationContext(
 //                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 //        userAccessStatisticsService = (UserAccessStatisticsService)
@@ -66,8 +86,46 @@ public class UserAccessStatisticOp {
 //
 //    }
 
+    public static void main(String[] args) {
+
+        String filepath = "/Users/bluesand/Documents/logfile-20150527.log";// ADD REMOVE
+        ApplicationContext ctx = new FileSystemXmlApplicationContext(
+                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+        userAccessStatisticsService = (UserAccessStatisticsService)
+                ctx.getBean("userAccessStatisticsService");
+
+        userBrandStatisticsService = (UserBrandStatisticsService)
+                ctx.getBean("userBrandStatisticsService");
+
+        userUrlStatisticsService = (UserUrlStatisticsService)
+                ctx.getBean("userUrlStatisticsService");
+
+        readTxtFile(filepath);
+
+    }
+
 
     public static void readTxtFile(String filePath) {
+
+        //初始化要统计的类型
+
+        userUrlCategory.put("youku", "youku.com");
+        userUrlCategory.put("tudou", "tudou.com");
+        userUrlCategory.put("iqiyi", "iqiyi.com");
+        userUrlCategory.put("taobao", "taobao.com");
+        userUrlCategory.put("tmall", "tmall.com");
+        userUrlCategory.put("jd", "jd.com");
+        userUrlCategory.put("meituan", "meituan.com");
+
+        userUrlCategory.put("qq", "qq.com");
+        userUrlCategory.put("weixin", "weixin.com");
+        userUrlCategory.put("qzone", "qzone.com");
+        userUrlCategory.put("weibo", "weibo.com");
+        userUrlCategory.put("douban", "douban.com");
+
+        userUrlCategory.put("baidu","baidu.com");
+        userUrlCategory.put("sina", "sina.com.cn");
+
 
         //操作系统
         //Map<String,Integer> opMap = new HashMap<String,Integer>();
@@ -79,6 +137,10 @@ public class UserAccessStatisticOp {
 
 
         Map<UserDatePK, UserAccessStatistics> resultMapper = new HashMap<UserDatePK, UserAccessStatistics>();
+
+        Map<String, Integer> hostMap = new HashMap<String, Integer>();
+
+
 
         try {
             File file = new File(filePath);
@@ -159,7 +221,6 @@ public class UserAccessStatisticOp {
                                 if (useragent.getOperatingSystem() == OperatingSystem.MAC_OS_X_IPAD) {
                                     terminal = "iPad";
                                 }
-
                                 if (useragent.getOperatingSystem() == OperatingSystem.ANDROID) {
                                     terminal = "UNKNOW AND";
                                 }
@@ -209,6 +270,7 @@ public class UserAccessStatisticOp {
                                     }
                                 }
                                 if (terminal.toLowerCase().startsWith("zh-cn;")) terminal = terminal.substring(7);
+                                if (terminal.toLowerCase().startsWith("en-us;")) terminal = terminal.substring(7);
                                 Map<String, Integer> innermap = opTypeMap.get("ANDROID");
                                 if (innermap == null) {
                                     innermap = new HashMap<String, Integer>();
@@ -225,18 +287,34 @@ public class UserAccessStatisticOp {
                                 }
                             }
                         }
+
+
+                        //3.用户网站访问统计
+                        System.out.println("================" + dinfo.getAhost());
+                        fileterUserUrl(hostMap, dinfo);
+
+
+
                     }
                 }
                 read.close();
 
-
-                for (UserDatePK userDatePK : resultMapper.keySet()) {
-                    UserAccessStatistics userAccessStatistics = resultMapper.get(userDatePK);
-                    //userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(sortByValue(userAccessStatistics.fetchAll())), false));
-                    userAccessStatisticsService.insert(userAccessStatistics);
+                try {
+                    for (UserDatePK userDatePK : resultMapper.keySet()) {
+                        UserAccessStatistics userAccessStatistics = resultMapper.get(userDatePK);
+                        //userAccessStatistics.setExtension_content(JsonHelper.getJSONString(sortByValue(sortByValue(userAccessStatistics.fetchAll())), false));
+                        userAccessStatisticsService.insert(userAccessStatistics);
+                    }
+                } catch (Exception e) {
+                    //e.printStackTrace();
                 }
                 System.out.println(opTypeMap);
                 handle(opTypeMap);
+
+
+                System.out.println(hostMap);
+                handleUserUrl(hostMap);
+
 
             } else {
                 System.out.println("找不到指定的文件");
@@ -325,7 +403,7 @@ public class UserAccessStatisticOp {
             Map<String, Integer> macOS = resultMap.get("MAC_OS");
             UserBrandDTO maxosdUserBrandDTO = new UserBrandDTO();
             if (macOS != null) {
-                maxosdUserBrandDTO.setBrand("MAC_OS");
+                maxosdUserBrandDTO.setBrand("苹果");
 
                 List<UserBrandSubDTO> userBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
@@ -370,8 +448,11 @@ public class UserAccessStatisticOp {
             macosUserBrandStatisticsDTOs.add(maxosdUserBrandDTO);
             userBrandStatistics.putInnerModels(macosUserBrandStatisticsDTOs);
         }
-
-        userBrandStatisticsService.insert(userBrandStatistics);
+        try {
+            userBrandStatisticsService.insert(userBrandStatistics);
+        }catch (Exception e) {
+            //e.printStackTrace();;
+        }
     }
 
 
@@ -380,32 +461,39 @@ public class UserAccessStatisticOp {
         int androidCount = android.size();
 
         UserBrandDTO coolpadUserBrandDTO = new UserBrandDTO();
-        coolpadUserBrandDTO.setBrand("coolpad");
+        coolpadUserBrandDTO.setBrand("酷派");
         List<UserBrandSubDTO> coolpadUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
         UserBrandDTO huaweiUserBrandDTO = new UserBrandDTO();
-        huaweiUserBrandDTO.setBrand("huawei");
+        huaweiUserBrandDTO.setBrand("华为");
         List<UserBrandSubDTO> huaweiUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
         UserBrandDTO xiaomiUserBrandDTO = new UserBrandDTO();
-        xiaomiUserBrandDTO.setBrand("xiaomi");
+        xiaomiUserBrandDTO.setBrand("小米");
         List<UserBrandSubDTO> xiaomiUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
         UserBrandDTO sumsangUserBrandDTO = new UserBrandDTO();
-        sumsangUserBrandDTO.setBrand("sumsang");
+        sumsangUserBrandDTO.setBrand("三星");
         List<UserBrandSubDTO> sumsangUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
-
         UserBrandDTO htcUserBrandDTO = new UserBrandDTO();
-        htcUserBrandDTO.setBrand("htc");
+        htcUserBrandDTO.setBrand("HTC");
         List<UserBrandSubDTO> htcUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
         UserBrandDTO lenovoUserBrandDTO = new UserBrandDTO();
-        lenovoUserBrandDTO.setBrand("lenovo");
+        lenovoUserBrandDTO.setBrand("联想");
         List<UserBrandSubDTO> lenovoUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
+        UserBrandDTO meizuUserBrandDTO = new UserBrandDTO();
+        meizuUserBrandDTO.setBrand("魅族");
+        List<UserBrandSubDTO> meizuUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
+        UserBrandDTO nexusUserBrandDTO = new UserBrandDTO();
+        nexusUserBrandDTO.setBrand("Nexus");
+        List<UserBrandSubDTO> nexusUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
+
         UserBrandDTO otherUserBrandDTO = new UserBrandDTO();
-        otherUserBrandDTO.setBrand("other");
+        otherUserBrandDTO.setBrand("其他");
         List<UserBrandSubDTO> otherUserBrandSubDTOList = new ArrayList<UserBrandSubDTO>();
 
         Iterator<String> it = android.keySet().iterator();
@@ -416,6 +504,8 @@ public class UserAccessStatisticOp {
         int sumsangSum = 0;
         int htcSum = 0;
         int lenovoSum = 0;
+        int meizuSum = 0;
+        int nexusSum = 0;
         int otherSum = 0;
 
         while(it.hasNext()) {
@@ -425,7 +515,7 @@ public class UserAccessStatisticOp {
             userBrandSubDTO.setBrand(key);
             userBrandSubDTO.setCount(value);
 
-            if (key.toLowerCase().startsWith("coolpad")) {
+            if (key.toLowerCase().startsWith("coolpad") || key.toLowerCase().contains("coolpad")) {
                 coolpadUserBrandSubDTOList.add(userBrandSubDTO);
                 coolpadSum += value;
             }
@@ -437,7 +527,7 @@ public class UserAccessStatisticOp {
                 xiaomiUserBrandSubDTOList.add(userBrandSubDTO);
                 xiaomiSum += value;
             }
-            else if (key.toLowerCase().startsWith("gt") || key.toLowerCase().startsWith("sm")) {
+            else if (key.toLowerCase().startsWith("gt") || key.toLowerCase().startsWith("sm") || key.toLowerCase().startsWith("samsung") ) {
                 sumsangUserBrandSubDTOList.add(userBrandSubDTO);
                 sumsangSum += value;
             }
@@ -448,6 +538,14 @@ public class UserAccessStatisticOp {
             else if (key.toLowerCase().startsWith("lenovo")) {
                 lenovoUserBrandSubDTOList.add(userBrandSubDTO);
                 lenovoSum += value;
+            }
+            else if (key.toLowerCase().startsWith("mx")) {
+                meizuUserBrandSubDTOList.add(userBrandSubDTO);
+                meizuSum += value;
+            }
+            else if (key.toLowerCase().startsWith("nexus")) {
+                nexusUserBrandSubDTOList.add(userBrandSubDTO);
+                nexusSum += value;
             }
             else {
                 otherUserBrandSubDTOList.add(userBrandSubDTO);
@@ -479,6 +577,14 @@ public class UserAccessStatisticOp {
         lenovoUserBrandDTO.setDetail(lenovoUserBrandSubDTOList);
         lenovoUserBrandDTO.setRatio(lenovoSum / (totalSum / 100.0) + "%");
 
+        meizuUserBrandDTO.setCount(meizuSum);
+        meizuUserBrandDTO.setDetail(meizuUserBrandSubDTOList);
+        meizuUserBrandDTO.setRatio(meizuSum / (totalSum / 100.0) + "%");
+
+        nexusUserBrandDTO.setCount(nexusSum);
+        nexusUserBrandDTO.setDetail(nexusUserBrandSubDTOList);
+        nexusUserBrandDTO.setRatio(nexusSum / (totalSum / 100.0) + "%");
+
         otherUserBrandDTO.setCount(otherSum);
         otherUserBrandDTO.setDetail(otherUserBrandSubDTOList);
         otherUserBrandDTO.setRatio(otherSum / (totalSum / 100.0) + "%");
@@ -501,6 +607,12 @@ public class UserAccessStatisticOp {
         }
         for(UserBrandSubDTO userBrandSubDTO : lenovoUserBrandSubDTOList)  {
             userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(lenovoSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : meizuUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(meizuSum / 100.0) + "%");
+        }
+        for(UserBrandSubDTO userBrandSubDTO : nexusUserBrandSubDTOList)  {
+            userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(nexusSum / 100.0) + "%");
         }
         for(UserBrandSubDTO userBrandSubDTO : otherUserBrandSubDTOList)  {
             userBrandSubDTO.setRatio(userBrandSubDTO.getCount()/(otherSum / 100.0) + "%");
@@ -531,12 +643,165 @@ public class UserAccessStatisticOp {
         lenovoUserBrandStatisticsDTOs.add(lenovoUserBrandDTO);
         userBrandStatistics.putInnerModels(lenovoUserBrandStatisticsDTOs);
 
+        List<UserBrandDTO> meizuUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        meizuUserBrandStatisticsDTOs.add(meizuUserBrandDTO);
+        userBrandStatistics.putInnerModels(meizuUserBrandStatisticsDTOs);
+
+        List<UserBrandDTO> nexusUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
+        nexusUserBrandStatisticsDTOs.add(nexusUserBrandDTO);
+        userBrandStatistics.putInnerModels(nexusUserBrandStatisticsDTOs);
+
         List<UserBrandDTO> otherUserBrandStatisticsDTOs = new ArrayList<UserBrandDTO>();
         otherUserBrandStatisticsDTOs.add(otherUserBrandDTO);
         userBrandStatistics.putInnerModels(otherUserBrandStatisticsDTOs);
 
     }
 
+    private static void fileterUserUrl(Map<String, Integer> map, DpiInfo dpiInfo) {
+
+        String host = dpiInfo.getAhost();
+        if (host != null) {
+            Iterator<String> it = userUrlCategory.keySet().iterator();
+
+            while (it.hasNext()) {
+                String key = it.next();
+                String value = userUrlCategory.get(key);
+                if (host.contains(value)) {
+                    if (map.containsKey(key)) {
+                        map.put(key, map.get(key) + 1);
+                    } else {
+                        map.put(key, 1);
+                    }
+                } else {
+                    if (map.containsKey("ohter")) {
+                        map.put("other", map.get("other") + 1);
+                    } else {
+                        map.put("other", 1);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void handleUserUrl(Map<String, Integer> map) {
+
+        Iterator<String> it = map.keySet().iterator();
+        UserUrlStatistics userUrlStatistics = new UserUrlStatistics();
+        userUrlStatistics.setId(currentDate);
+        userUrlStatistics.setCreated_at(new Date());
+
+
+        List<UserUrlDTO> userUrlDTOs = new ArrayList<UserUrlDTO>();
+
+        UserUrlDTO shipinUrlDTO = new UserUrlDTO();
+        shipinUrlDTO.setCategory("视频");
+
+        UserUrlDTO dianshangUrlDTO = new UserUrlDTO();
+        dianshangUrlDTO.setCategory("电商");
+
+        UserUrlDTO snsUrlDTO = new UserUrlDTO();
+        snsUrlDTO.setCategory("SNS");
+
+        UserUrlDTO newsUrlDTO = new UserUrlDTO();
+        newsUrlDTO.setCategory("新闻");
+
+        UserUrlDTO searchUrlDTO = new UserUrlDTO();
+        searchUrlDTO.setCategory("搜索");
+
+        List<UserUrlSubDTO> shipinUserUrlSubDTOList = new ArrayList<UserUrlSubDTO>();
+        List<UserUrlSubDTO> dianshangUserUrlSubDTOList = new ArrayList<UserUrlSubDTO>();
+        List<UserUrlSubDTO> snsUserUrlSubDTOList = new ArrayList<UserUrlSubDTO>();
+        List<UserUrlSubDTO> newsUserUrlSubDTOList = new ArrayList<UserUrlSubDTO>();
+        List<UserUrlSubDTO> searchUserUrlSubDTOList = new ArrayList<UserUrlSubDTO>();
+
+
+        int shipinSum = 0;
+        int dianshangSum = 0;
+        int snsSum = 0;
+        int newsSum = 0;
+        int searchSum = 0;
+
+        while (it.hasNext()) {
+
+            UserUrlSubDTO userUrlSubDTO = new UserUrlSubDTO();
+
+            String key = it.next();
+            Integer count = map.get(key);
+
+            if ("youku".equals(key)) {
+                userUrlSubDTO.setCategory("youku");
+                userUrlSubDTO.setCount(count);
+                shipinSum += count;
+                shipinUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("iqiyi".equals(key)) {
+                userUrlSubDTO.setCategory("iqiyi");
+                userUrlSubDTO.setCount(count);
+                shipinSum += count;
+                shipinUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("taobao".equals(key)) {
+                userUrlSubDTO.setCategory("taobao");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("tmall".equals(key)) {
+                userUrlSubDTO.setCategory("tmall");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("meituan".equals(key)) {
+                userUrlSubDTO.setCategory("meituan");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("jd".equals(key)) {
+                userUrlSubDTO.setCategory("jd");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("qq".equals(key)) {
+                userUrlSubDTO.setCategory("qq");
+                userUrlSubDTO.setCount(count);
+                snsSum += count;
+                snsUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("weibo".equals(key)) {
+                userUrlSubDTO.setCategory("weibo");
+                userUrlSubDTO.setCount(count);
+                snsSum += count;
+                snsUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("baidu".equals(key)) {
+                userUrlSubDTO.setCategory("baidu");
+                userUrlSubDTO.setCount(count);
+                searchSum += count;
+                searchUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("sina".equals(key)) {
+                userUrlSubDTO.setCategory("sina");
+                userUrlSubDTO.setCount(count);
+                newsSum += count;
+                newsUserUrlSubDTOList.add(userUrlSubDTO);
+            }
+        }
+
+        shipinUrlDTO.setCount(shipinSum);
+        shipinUrlDTO.setDetail(shipinUserUrlSubDTOList);
+        dianshangUrlDTO.setCount(dianshangSum);
+        dianshangUrlDTO.setDetail(dianshangUserUrlSubDTOList);
+        snsUrlDTO.setCount(snsSum);
+        snsUrlDTO.setDetail(snsUserUrlSubDTOList);
+        newsUrlDTO.setCount(newsSum);
+        newsUrlDTO.setDetail(newsUserUrlSubDTOList);
+        searchUrlDTO.setCount(searchSum);
+        searchUrlDTO.setDetail(searchUserUrlSubDTOList);
+
+        userUrlDTOs.add(shipinUrlDTO);
+        userUrlDTOs.add(dianshangUrlDTO);
+        userUrlDTOs.add(snsUrlDTO);
+        userUrlDTOs.add(newsUrlDTO);
+        userUrlDTOs.add(searchUrlDTO);
+
+        userUrlStatistics.putInnerModels(userUrlDTOs);
+
+        userUrlStatisticsService.insert(userUrlStatistics);
+    }
 
     enum MoblieBrand {
         COOLPAD,

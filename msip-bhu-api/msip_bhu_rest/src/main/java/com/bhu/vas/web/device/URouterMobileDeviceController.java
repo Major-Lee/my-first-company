@@ -33,7 +33,7 @@ public class URouterMobileDeviceController extends BaseController{
 	 * @param dtk
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/register",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/register",method={RequestMethod.POST})
 	public void register(HttpServletResponse response, HttpServletRequest request,
 			@RequestParam(required = true) Integer uid,
 			//device type
@@ -69,7 +69,7 @@ public class URouterMobileDeviceController extends BaseController{
 	 * @param uid
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/destory",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/destory",method={RequestMethod.POST})
 	public void destory(HttpServletResponse response, HttpServletRequest request,
 			@RequestParam(required = true) int uid,
 			//device type

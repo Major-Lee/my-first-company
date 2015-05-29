@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
 import com.bhu.vas.rpc.facade.UserAccessStatisticsFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,12 @@ public class StatisticsRpcService implements IStatisticsRpcService{
 	public RpcResponseDTO<List<UserBrandDTO>> fetchUserBrandStatistics(String date) {
 		logger.info(String.format("fetchUserBrandStatistics with date[%s] ", date));
 		return userAccessStatisticsFacadeService.fetchUserBrandStatistics(date);
+	}
+
+	@Override
+	public RpcResponseDTO<List<UserUrlDTO>> fetchUserUrlStatistics(String date) {
+		logger.info(String.format("fetchUserUrlStatistics with date[%s] ", date));
+		return userAccessStatisticsFacadeService.fetchUserUrlStatistics(date);
 	}
 
 	@Override
