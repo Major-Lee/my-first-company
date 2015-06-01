@@ -6,6 +6,8 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 import redis.clients.jedis.JedisPool;
 
+import java.util.List;
+
 /**
  * Created by bluesand on 5/26/15.
  */
@@ -33,6 +35,19 @@ public class VapModeHashService extends AbstractRelationHashCache {
         return this.hincrby(generatePrefixKey(key), field, increment);
     }
 
+    public Long getTotalCountKey(String key) {
+        List<String> totalValues = this.hvalues(generatePrefixKey(key));
+        long count = 0;
+        for (String s: totalValues) {
+            try {
+                count += Long.parseLong(s);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
     @Override
     public String getRedisKey() {
         return null;
@@ -48,9 +63,12 @@ public class VapModeHashService extends AbstractRelationHashCache {
 
     public static void main(String[] args) {
 
-        VapModeHashService.getInstance().incrStatistics("htmlad","style001",1);
+        System.out.println(VapModeHashService.getInstance().incrStatistics("htmlad", "style000", 1));
+        System.out.println(VapModeHashService.getInstance().hget(generatePrefixKey("htmlad"), "style000"));
         System.out.println(VapModeHashService.getInstance().hget(generatePrefixKey("htmlad"), "style001"));
         System.out.println(VapModeHashService.getInstance().keys("VM.*"));
+
+        System.out.println(VapModeHashService.getInstance().hvalues(generatePrefixKey("htmlad")));
 
     }
 }

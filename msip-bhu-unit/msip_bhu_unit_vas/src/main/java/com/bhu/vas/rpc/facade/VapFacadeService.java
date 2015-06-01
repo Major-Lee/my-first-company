@@ -1,8 +1,13 @@
 package com.bhu.vas.rpc.facade;
 
 import com.bhu.vas.api.dto.VapModeDefined;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.VapModeHashService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by bluesand on 5/26/15.
@@ -10,11 +15,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class VapFacadeService {
 
-    public void urlView(String key, String field) {
+    public RpcResponseDTO<VapModeUrlViewCountDTO> urlView(String key, String field) {
+        VapModeUrlViewCountDTO vapModeUrlViewCountDTO = new VapModeUrlViewCountDTO();
         if (vailidateVapMode(key, field)) {
-            VapModeHashService.getInstance().incrStatistics(key, field, 1);
+            long count = VapModeHashService.getInstance().incrStatistics(key, field, 1);
+            vapModeUrlViewCountDTO.setCount(count);
+            long totalCount = VapModeHashService.getInstance().getTotalCountKey(key);
+            vapModeUrlViewCountDTO.setTotal_count(totalCount);
         }
-
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(vapModeUrlViewCountDTO);
     }
 
     /**

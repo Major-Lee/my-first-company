@@ -1,6 +1,8 @@
 package com.bhu.vas.web.query;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -34,7 +36,7 @@ public class CountController extends BaseController {
             @RequestParam(required = true) String field
             ) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        vapRpcService.urlView(key, field);
-        SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+        RpcResponseDTO<VapModeUrlViewCountDTO> ret =  vapRpcService.urlView(key, field);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret.getPayload()));
     }
 }
