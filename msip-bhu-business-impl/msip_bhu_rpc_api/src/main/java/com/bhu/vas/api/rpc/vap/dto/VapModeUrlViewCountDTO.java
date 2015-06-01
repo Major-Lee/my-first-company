@@ -1,9 +1,11 @@
 package com.bhu.vas.api.rpc.vap.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by bluesand on 6/1/15.
  */
-public class VapModeUrlViewCountDTO {
+public class VapModeUrlViewCountDTO implements Serializable {
     private long total_count;
     private long count;
 
