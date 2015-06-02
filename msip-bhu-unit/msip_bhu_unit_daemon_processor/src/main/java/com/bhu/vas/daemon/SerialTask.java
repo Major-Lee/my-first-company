@@ -47,7 +47,7 @@ public class SerialTask {
 	 * @return
 	 */
 	public boolean canBeExecute(long now){
-		return ((now-rects)>3*60*1000 );
+		return ((now-rects)>5*60*1000 );
 	}
 	
 	public String toString(){
