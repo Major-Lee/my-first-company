@@ -12,8 +12,10 @@ public abstract class PushDTO implements Serializable{
 //	private Integer uid;
 	//设备mac
 	private String mac;
-	//透传内容
-	private String payload;
+	
+	private long ts;
+//	//透传内容
+//	private String payload;
 	
 	public abstract String getPushType();
 	
@@ -29,10 +31,18 @@ public abstract class PushDTO implements Serializable{
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-	public String getPayload() {
-		return payload;
+
+	public long getTs() {
+		return ts;
 	}
-	public void setPayload(String payload) {
-		this.payload = payload;
+
+	public void setTs(long ts) {
+		this.ts = ts;
 	}
+//	public String getPayload() {
+//		return payload;
+//	}
+//	public void setPayload(String payload) {
+//		this.payload = payload;
+//	}
 }

@@ -497,6 +497,21 @@ public class DeviceFacadeService {
 	}
 	
 	/**
+	 * 根据设备mac获取设备配置数据
+	 * @param mac
+	 * @return
+	 */
+	public WifiDeviceSettingDTO queryDeviceSettingDTO(String mac){
+		if(StringUtils.isEmpty(mac)) return null;
+		
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity != null){
+			return entity.getInnerModel();
+		}
+		return null;
+	}
+	
+	/**
 	 * 用户注册app移动设备信息
 	 * 1:当前用户使用app移动设备数据
 	 * 2:用户使用app移动设备历史数据

@@ -11,11 +11,16 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
@@ -33,6 +38,12 @@ public class PushService{
 	
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private HandsetDeviceService handsetDeviceService;
 	
 	/**
 	 * 业务逻辑发送push消息统一接口
@@ -98,7 +109,7 @@ public class PushService{
 											pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
 											pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), 
 													hd_push_dto.getHd_mac(), hd_push_dto.getMac()));
-											pushMsg.setPaylod(hd_push_dto.getPayload());
+											pushMsg.setPaylod(builderHandsetDeviceOnlinePushPaylod(hd_push_dto));
 											boolean ret = pushNotification(pushMsg);
 											if(ret){
 												logger.info("PushHandsetDeviceOnline Successed " + pushMsg.toString());
@@ -119,6 +130,27 @@ public class PushService{
 		}
 	}
 	
+	/**
+	 * 构建终端上线push的透传内容
+	 * @param hd_push_dto
+	 * @return
+	 */
+	public String builderHandsetDeviceOnlinePushPaylod(HandsetDeviceOnlinePushDTO hd_push_dto){
+		WifiDeviceSettingDTO setting_dto = deviceFacadeService.queryDeviceSettingDTO(hd_push_dto.getMac());
+		if(setting_dto != null){
+			//设置终端别名
+			String alias = DeviceHelper.getHandsetDeviceAlias(hd_push_dto.getHd_mac(), setting_dto);
+			hd_push_dto.setN(alias);
+		}
+		//如果没有别名 以终端主机名填充
+		if(StringUtils.isEmpty(hd_push_dto.getN())){
+			HandsetDevice hd_entity = handsetDeviceService.getById(hd_push_dto.getHd_mac());
+			if(hd_entity != null){
+				hd_push_dto.setN(hd_entity.getHostname());
+			}
+		}
+		return JsonHelper.getJSONString(hd_push_dto);
+	}
 	
 	/**
 	 * 获取用户的mobile push信息数据
