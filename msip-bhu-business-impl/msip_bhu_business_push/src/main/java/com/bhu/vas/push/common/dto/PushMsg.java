@@ -33,4 +33,23 @@ public class PushMsg extends PushBasicMsg{
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	@Override
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("uid [").append(String.valueOf(this.getUid())).append("] ");
+		sb.append("dt [").append(this.getDt()).append("] ");
+		sb.append("d [").append(this.getD()).append("] ");
+		sb.append("paylod [").append(this.getPaylod()).append("] ");
+		sb.append("pt [").append(this.getPt()).append("] ");
+		sb.append("badge [").append(this.getBadge()).append("] ");
+		sb.append("sound [").append(this.getSound()).append("] ");
+		sb.append("text [").append(this.getText()).append("] ");
+		sb.append("title [").append(this.getTitle()).append("] ");
+		return sb.toString();
+	}
+	
+//	public static void main(String[] args){
+//		PushMsg msg = new PushMsg();
+//		System.out.println(msg);
+//	}
 }

@@ -25,6 +25,7 @@
   		<typeAlias alias="user" 						type="com.bhu.vas.api.rpc.user.model.User"/>
 		<typeAlias alias="userToken" 					type="com.bhu.vas.api.rpc.user.model.UserToken"/>
 		<typeAlias alias="userLoginState" 				type="com.bhu.vas.api.rpc.user.model.UserLoginState"/>
+		<typeAlias alias="userSettingState" 				type="com.bhu.vas.api.rpc.user.model.UserSettingState"/>
 		<typeAlias alias="userCaptchaCode" 				type="com.bhu.vas.api.rpc.user.model.UserCaptchaCode"/>
 		<typeAlias alias="userDevice" 					type="com.bhu.vas.api.rpc.user.model.UserDevice"/>
 		<typeAlias alias="userDevicePK" 				type="com.bhu.vas.api.rpc.user.model.pk.UserDevicePK"/>
@@ -79,6 +80,8 @@
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDeviceState.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDevice.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSettingState.sqlMap.xml"/>
+		
 	</mappers>
 	
 </configuration>

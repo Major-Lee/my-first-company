@@ -1,5 +1,9 @@
 package com.bhu.vas.push.business;
 
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -7,11 +11,15 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
+import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
@@ -21,6 +29,10 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  */
 @Service
 public class PushService{
+	private static final Logger logger = LoggerFactory.getLogger(PushService.class);
+	
+	@Resource
+	private UserSettingStateService userSettingStateService;
 	
 	/**
 	 * 业务逻辑发送push消息统一接口
@@ -48,13 +60,62 @@ public class PushService{
 	 * @param hd_mac 终端mac
 	 */
 	public void pushHandsetDeviceOnline(PushDTO pushDto){
-		HandsetDeviceOnlinePushDTO dto = (HandsetDeviceOnlinePushDTO)pushDto;
-		PushMsg pushMsg = this.generatePushMsg(dto.getMac());
-		if(pushMsg != null){
-			pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
-			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), dto.getHd_mac(), dto.getMac()));
-			pushMsg.setPaylod(dto.getPayload());
-			pushNotification(pushMsg);
+		try{
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			if(presentDto != null){
+				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
+				UserSettingState userSettingState = userSettingStateService.getById(presentDto.getUid());
+				if(userSettingState != null){
+					UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
+							.Setting_Key, UserTerminalOnlineSettingDTO.class);
+					if(dto != null){
+						//判断终端上线通知开关
+						if(dto.isOn()){
+							if(!StringUtils.isEmpty(dto.getTimeslot())){
+								//根据时间段模式 判断是否在有效的时间段内
+								boolean valid_time = false;
+								//正常模式
+								if(UserTerminalOnlineSettingDTO.Timeslot_Mode_Normal == dto.getTimeslot_mode()){
+									valid_time = DateTimeHelper.isInTime(dto.getTimeslot());
+								}else if(UserTerminalOnlineSettingDTO.Timeslot_Mode_Silent == dto.getTimeslot_mode()){
+									valid_time = !DateTimeHelper.isInTime(dto.getTimeslot());
+								}
+								
+								if(valid_time){
+									boolean need_push = false;
+									//判断是否开启陌生终端设置
+									if(dto.isStranger_on()){
+										//第一次接入的终端算是陌生终端
+										if(hd_push_dto.isNewed()) 
+											need_push = true;
+									}else{
+										need_push = true;
+									}
+									
+									if(need_push){
+										PushMsg pushMsg = this.generatePushMsg(hd_push_dto.getMac());
+										if(pushMsg != null){
+											pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
+											pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), 
+													hd_push_dto.getHd_mac(), hd_push_dto.getMac()));
+											pushMsg.setPaylod(hd_push_dto.getPayload());
+											boolean ret = pushNotification(pushMsg);
+											if(ret){
+												logger.info("PushHandsetDeviceOnline Successed " + pushMsg.toString());
+											}else{
+												logger.info("PushHandsetDeviceOnline Failed " + pushMsg.toString());
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("PushHandsetDeviceOnline exception " + ex.getMessage(), ex);
 		}
 	}
 	
@@ -78,11 +139,11 @@ public class PushService{
 	 * 发送通知类型push
 	 * @param pushMsg
 	 */
-	protected void pushNotification(PushMsg pushMsg){
+	protected boolean pushNotification(PushMsg pushMsg){
 		if(DeviceEnum.isIos(pushMsg.getD())){
-			GexinPushService.getInstance().pushNotification4ios(pushMsg);
+			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
 		}else{
-			GexinPushService.getInstance().pushNotification(pushMsg);
+			return GexinPushService.getInstance().pushNotification(pushMsg);
 		}
 	}
 	

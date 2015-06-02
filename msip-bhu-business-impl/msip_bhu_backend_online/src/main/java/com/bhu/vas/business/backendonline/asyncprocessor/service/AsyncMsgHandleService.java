@@ -39,6 +39,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
+import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
@@ -61,6 +62,7 @@ import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMServic
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -107,6 +109,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
+	
+	@Resource
+	private UserSettingStateService userSettingStateService;
 	
 	@Resource
 	private PushService pushService;
@@ -433,6 +438,8 @@ public class AsyncMsgHandleService {
 			HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
 			pushDto.setMac(dto.getWifiId());
 			pushDto.setHd_mac(dto.getMac());
+			if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
+				pushDto.setNewed(true);
 			pushService.push(pushDto);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle message[%s] successful", message));
@@ -825,6 +832,18 @@ public class AsyncMsgHandleService {
 //			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
+	}
+	
+	/**
+	 * 用户注册after
+	 * 1：生成用户设置数据初始化
+	 * @param message
+	 */
+	public void userRegister(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s]", message));
+		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
+		userSettingStateService.initUserSettingState(dto.getUid());
+		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s] successful", message));
 	}
 	
 	//设备实时速率, 设备终端列表
