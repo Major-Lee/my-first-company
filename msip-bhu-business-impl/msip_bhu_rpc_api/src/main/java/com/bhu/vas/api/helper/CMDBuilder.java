@@ -299,11 +299,12 @@ public class CMDBuilder {
 	//对于升级设备 区间段位45001,50000
 	public static TaskSequenceFragment device_upgrade_fragment = new TaskSequenceFragment(45001,50000);
 	
-	//对于设备 开启404
+	public static TaskSequenceFragment device_wifitimer_fragment = new TaskSequenceFragment(50001,55000);
+	/*//对于设备 开启404
 	public static TaskSequenceFragment device_http404_resourceupgrade_fragment = new TaskSequenceFragment(50001,52000);
 	
 	//对于设备 开启portal
-	public static TaskSequenceFragment device_httpportal_resourceupgrade_fragment = new TaskSequenceFragment(52001,54000);
+	public static TaskSequenceFragment device_httpportal_resourceupgrade_fragment = new TaskSequenceFragment(52001,54000);*/
 	//获取dhcp模式下的状态信息
 	public static TaskSequenceFragment device_dhcpc_status_fragment = new TaskSequenceFragment(54001,56000);
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid

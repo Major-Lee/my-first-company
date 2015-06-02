@@ -186,6 +186,15 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			else if(OperationCMD.QueryDhcpcStatus.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDhcpcStatus(ctx, payload, mac, taskid);
 			}
+			else if(OperationCMD.DeviceWifiTimerStart.getNo().equals(opt)){
+				
+			}
+			else if(OperationCMD.DeviceWifiTimerStop.getNo().equals(opt)){
+				
+			}
+			else if(OperationCMD.DeviceWifiTimerQuery.getNo().equals(opt)){
+				
+			}
 			else if(OperationCMD.TriggerHttp404ResourceUpdate.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
 			}

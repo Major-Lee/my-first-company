@@ -19,10 +19,12 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.dto.ret.QueryWifiTimerSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
+import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
@@ -50,6 +52,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -667,6 +670,42 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	
+	public void taskWifiTimerStart(String ctx, String response, String wifiId, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
+			ParamCmdWifiTimerStartDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamCmdWifiTimerStartDTO.class);
+			//TODO:更新app设置到数据库中
+			/*d
+			WifiDeviceSettingLinkModeDTO dto = RPCMessageParseHelper.generateDTOFromMessage(doc, WifiDeviceSettingLinkModeDTO.class);
+			if(dto != null){
+				dto.setModel(WifiDeviceSettingDTO.Mode_Dhcpc);
+				deviceFacadeService.updateDeviceModeStatus(wifiId, dto);
+			}*/
+		}
+		doTaskCallback(taskid, serialDto.getStatus(), response);
+	}
+	
+	public void taskWifiTimerStop(String ctx, String response, String wifiId, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
+			//TODO:去除app设置到数据库中
+		}
+		doTaskCallback(taskid, serialDto.getStatus(), response);
+	}
+	
+	public void taskWifiTimerQuery(String ctx, String response, String wifiId, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
+			//TODO:更新app设置到数据库中
+		}
+		doTaskCallback(taskid, serialDto.getStatus(), response);
+	}
 	/**
 	 * 修改设备配置的响应处理
 	 * @param ctx
