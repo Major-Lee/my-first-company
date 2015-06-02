@@ -2,7 +2,7 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlRedirect;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 

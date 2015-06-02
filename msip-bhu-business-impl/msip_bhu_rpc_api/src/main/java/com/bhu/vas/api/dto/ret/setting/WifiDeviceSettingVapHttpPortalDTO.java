@@ -2,7 +2,7 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 
 
 

@@ -57,6 +57,10 @@ public enum OperationCMD {
 	TriggerHttp404ResourceUpdate("118","触发设备更新http404资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"http404\" url=\"%s\" resource_ver=\"%s\" serial=\"%s\" __notify=\"true\"/></cmd>"),
 	TriggerHttpPortalResourceUpdate("119","触发设备更新portal资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"portal\" url=\"%s\" resource_ver=\"%s\"serial=\"%s\" __notify=\"true\"/></cmd>"),
 	
+	DeviceWifiTimerStart("125","开启wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"enable\" rule=\"%s-on,%s-off\" __notify=\"true\"/></cmd>"),
+	DeviceWifiTimerStop("126","关闭wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"disable\" __notify=\"true\"/></cmd>"),
+	DeviceWifiTimerQuery("127","查询wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" __notify=\"true\"/></cmd>"),
+	
 	//<dev><net><ad><ITEM  bhu_enable=\"enable/disable\"  bhu_ad_url=\"广告url\" id=\"xxxx\" /></ad></net></dev>
 	//在广告注入以后，会在广告url后附加参数gw_id=xxxx&stamac=xxxx, 第一个参数来源于配置时候的id，可用于标识AP。比如安装于某个商户，每个商户id不同。第二个参数是关联的终端mac.
 	//DevHTMLInjectionNotify("150","Html注入","","00001001%s%s%s"+"000100000001"+"<dev><net><ad><ITEM  bhu_enable=\"%s\"  bhu_ad_url=\"%s\" bhu_id=\"%s\" /></ad></net></dev>"),

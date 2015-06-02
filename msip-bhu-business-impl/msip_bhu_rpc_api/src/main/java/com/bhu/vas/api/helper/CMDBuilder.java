@@ -5,9 +5,10 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
+import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -218,7 +219,12 @@ public class CMDBuilder {
 					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
 					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
 					break;
-				default:
+				case DeviceWifiTimerStart:
+					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
+					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),timerDto.getStart_time(),timerDto.getEnd_time());
+					break;
+				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
 					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 

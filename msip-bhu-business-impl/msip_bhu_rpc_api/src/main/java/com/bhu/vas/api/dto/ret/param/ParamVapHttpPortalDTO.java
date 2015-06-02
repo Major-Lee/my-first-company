@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.ret.setting.param;
+package com.bhu.vas.api.dto.ret.param;
 
 import com.smartwork.msip.cores.helper.JsonHelper;
 
