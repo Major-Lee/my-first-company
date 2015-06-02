@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 public class DaemonHelper {
@@ -33,6 +34,7 @@ public class DaemonHelper {
 //			payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 //		}
 		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
+		payloads.add(CMDBuilder.builderCMD4Opt(OperationCMD.DeviceWifiTimerQuery.getNo(), mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
 		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}
 	
