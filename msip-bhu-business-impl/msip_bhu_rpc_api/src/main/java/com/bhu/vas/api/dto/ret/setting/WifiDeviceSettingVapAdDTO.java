@@ -2,7 +2,7 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlInjectAdv;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapAdDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 

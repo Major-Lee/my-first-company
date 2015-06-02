@@ -10,6 +10,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -24,10 +28,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapAdDTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpPortalDTO;
-import com.bhu.vas.api.dto.ret.setting.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.ArrayHelper;
