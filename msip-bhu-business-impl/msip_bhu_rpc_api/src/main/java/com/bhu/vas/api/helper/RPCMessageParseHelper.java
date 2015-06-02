@@ -415,6 +415,7 @@ public class RPCMessageParseHelper {
 				for(Element element : elements){
 					if(WifiDeviceTerminalDTO.Mode_STA.equals(element.attributeValue("mode"))){
 						WifiDeviceTerminalDTO dto = new WifiDeviceTerminalDTO();
+						dto.setVapname(element.attributeValue("interface"));
 						dto.setMac(element.attributeValue("mac"));
 						dto.setData_tx_rate(element.attributeValue("data_tx_rate"));
 						dto.setData_rx_rate(element.attributeValue("data_rx_rate"));
