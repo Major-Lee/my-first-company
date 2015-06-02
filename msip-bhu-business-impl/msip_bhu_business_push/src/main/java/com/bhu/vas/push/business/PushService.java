@@ -1,5 +1,7 @@
 package com.bhu.vas.push.business;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -142,7 +144,8 @@ public class PushService{
 		String hd_name = deviceFacadeService.queryHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
 		//设备名称
 		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
-		
+		//格式化连接时间
+		String date_format = DateTimeHelper.getDateTime(new Date(hd_push_dto.getTs()), DateTimeHelper.DefalutFormatPattern);
 		//构造payload
 		hd_push_dto.setN(hd_name);
 		String payload = JsonHelper.getJSONString(hd_push_dto);
@@ -150,7 +153,8 @@ public class PushService{
 		//构造title和text
 		pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
 		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), 
-				hd_name == null ? hd_push_dto.getHd_mac() : hd_name, d_name == null ? hd_push_dto.getMac() : d_name));
+				hd_name == null ? hd_push_dto.getHd_mac() : hd_name, d_name == null ? hd_push_dto.getMac() : d_name,
+						date_format));
 	}
 	
 	/**

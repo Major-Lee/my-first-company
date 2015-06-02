@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
  */
 public enum PushType {
 	
-	HandsetDeviceOnline("HDO", "新终端连接", "终端 [%s] 与设备 [%s] 连接成功 "),//终端上线
+	HandsetDeviceOnline("HDO", "新终端连接", "终端 [%s] 与设备 [%s] 连接成功在%s"),//终端上线
 	;
 	String type;
 	String title;
