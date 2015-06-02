@@ -15,6 +15,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
@@ -177,6 +178,16 @@ public class DeliverMessageService {
 		dto.setUid(uid);
 		dto.setRemoteip(remoteip);
 		dto.setD(d);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserDeviceDestoryActionMessage(int uid, String mac){
+		UserDeviceDestoryDTO dto = new UserDeviceDestoryDTO();
+		dto.setUid(uid);
+		dto.setMac(mac);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

@@ -103,6 +103,25 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 		return deviceURouterRestRpcService.urouterUserMobileDeviceDestory(uid, d, dt);
 	}
 	
+	@Override
+	public RpcResponseDTO<Map<String, Object>> urouterPlugins(Integer uid,
+			String wifiId) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterPlugins(uid, wifiId);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid,
+			String wifiId, boolean on, boolean stranger_on, String timeslot,
+			int timeslot_mode) {
+		if(uid == null || StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(timeslot)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(uid, wifiId, on, 
+				stranger_on, timeslot, timeslot_mode);
+	}
 	
 	@Override
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {

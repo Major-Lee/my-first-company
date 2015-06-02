@@ -1,13 +1,10 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -75,6 +72,7 @@ public class UserDeviceFacadeService {
 
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
         if (userDeviceService.deleteById(userDevicePK) > 0)  {
+        	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(

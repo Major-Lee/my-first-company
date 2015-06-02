@@ -229,7 +229,50 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
-
+	
+	@Override
+	public RpcResponseDTO<Map<String,Object>> urouterPlugins(Integer uid, String wifiId){
+		logger.info(String.format("DeviceURouterRestRPC urouterPlugins invoke uid [%s] mac [%s]", 
+				uid, wifiId));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterPlugins(uid, wifiId);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterPlugins failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterPlugins exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid,
+			String wifiId, boolean on, boolean stranger_on, String timeslot,
+			int timeslot_mode) {
+		logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline invoke uid [%s] mac [%s]", 
+				uid, wifiId));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterUpdPluginTerminalOnline(uid, wifiId, 
+					on, stranger_on, timeslot, timeslot_mode);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
 	
 	@Override
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
@@ -244,4 +287,5 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 				uid, wifiId));
 		return deviceURouterRestBusinessFacadeService.urouterVapPassword(uid, wifiId);
 	}
+
 }

@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
@@ -12,7 +13,7 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserSettingStateService extends AbstractCoreService<Integer,UserSettingState,UserSettingStateDao>{
+public class UserSettingStateService extends AbstractCoreService<String,UserSettingState,UserSettingStateDao>{
 	
 	@Resource
 	@Override
@@ -24,12 +25,26 @@ public class UserSettingStateService extends AbstractCoreService<Integer,UserSet
 	 * 初始化用户设置数据
 	 * @param uid
 	 */
-	public void initUserSettingState(Integer uid){
-		if(uid != null){
+	public UserSettingState initUserSettingState(String mac){
+		if(!StringUtils.isEmpty(mac)){
 			UserSettingState entity = new UserSettingState();
-			entity.setId(uid);
+			entity.setId(mac);
 			entity.putUserSetting(new UserTerminalOnlineSettingDTO());
-			super.insert(entity);
+			return super.insert(entity);
 		}
+		return null;
+	}
+	
+	/**
+	 * 重新封装
+	 * 如果获取的数据不存在 直接初始化数据
+	 */
+	@Override
+	public UserSettingState getById(String mac){
+		UserSettingState entity = super.getById(mac);
+		if(entity == null){
+			return initUserSettingState(mac);
+		}
+		return entity;
 	}
 }

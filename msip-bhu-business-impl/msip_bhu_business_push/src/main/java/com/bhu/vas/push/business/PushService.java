@@ -75,7 +75,7 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			if(presentDto != null){
 				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
-				UserSettingState userSettingState = userSettingStateService.getById(presentDto.getUid());
+				UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
 				if(userSettingState != null){
 					UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
 							.Setting_Key, UserTerminalOnlineSettingDTO.class);

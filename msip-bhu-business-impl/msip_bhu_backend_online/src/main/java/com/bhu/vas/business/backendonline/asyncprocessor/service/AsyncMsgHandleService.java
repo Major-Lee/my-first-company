@@ -36,8 +36,8 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
@@ -811,6 +811,19 @@ public class AsyncMsgHandleService {
 	}
 	
 	/**
+	 * 用户解绑设备之后 会清除用户设备的设置数据
+	 * @param message
+	 */
+	public void userDeviceDestory(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s]", message));
+		
+		UserDeviceDestoryDTO dto = JsonHelper.getDTO(message, UserDeviceDestoryDTO.class);
+		userSettingStateService.deleteById(dto.getMac());
+		
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
+	}
+	
+	/**
 	 * 用户登录after
 	 * 根据用户管理的设备
 	 * 下发获取配置，获取设备测速，设备实时速率, 设备终端列表
@@ -847,8 +860,8 @@ public class AsyncMsgHandleService {
 	 */
 	public void userRegister(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s]", message));
-		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
-		userSettingStateService.initUserSettingState(dto.getUid());
+//		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
+//		userSettingStateService.initUserSettingState(dto.getUid());
 		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s] successful", message));
 	}
 	

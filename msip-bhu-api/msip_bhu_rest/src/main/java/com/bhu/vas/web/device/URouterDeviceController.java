@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.vto.*;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -194,6 +195,60 @@ public class URouterDeviceController extends BaseController{
 		}
 	}
 
+	/**
+	 * 获取设备的智能插件数据
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/plugins",method={RequestMethod.POST})
+	public void plugins(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterPlugins(uid, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 插件设置 终端上线通知数据
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 * @param on 终端上线通知开关
+	 * @param stranger_on 陌生终端通知开关
+	 * @param timeslot 时间段
+	 * @param timeslot_mode 时间段通知模式
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/upd_plugin_terminal_online",method={RequestMethod.POST})
+	public void upd_plugin_terminal_online(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) boolean on,
+			@RequestParam(required = true) boolean stranger_on,
+			@RequestParam(required = true) String timeslot,
+			@RequestParam(required = true) int timeslot_mode) {
+		
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(
+				uid, mac, on, stranger_on, timeslot, timeslot_mode);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
 
 	/**
 	 * 获取路由器管理密码

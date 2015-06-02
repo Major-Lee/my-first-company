@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,8 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
@@ -40,6 +43,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -68,6 +72,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private UserSettingStateService userSettingStateService;
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -343,6 +350,80 @@ public class DeviceURouterRestBusinessFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
+	}
+	
+	/**
+	 * 获取智能插件设置数据
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String,Object>> urouterPlugins(Integer uid, String wifiId){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			
+			UserSettingState user_setting_entity = userSettingStateService.getById(wifiId);
+			if(user_setting_entity == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+			}
+			
+			Map<String,Object> ret = new HashMap<String,Object>();
+			//终端上线通知插件
+			this.urouterPlugins4TerminalOnline(user_setting_entity, ret);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 设置智能插件 终端上线设置数据
+	 * @param uid
+	 * @param wifiId
+	 * @param on
+	 * @param stranger_on
+	 * @param timeslot
+	 * @param timeslot_mode
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid,
+			String wifiId, boolean on, boolean stranger_on, String timeslot,
+			int timeslot_mode){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			
+			UserSettingState user_setting_entity = userSettingStateService.getById(wifiId);
+			
+			UserTerminalOnlineSettingDTO uto_dto = new UserTerminalOnlineSettingDTO();
+			uto_dto.setOn(on);
+			uto_dto.setStranger_on(stranger_on);
+			uto_dto.setTimeslot(timeslot);
+			uto_dto.setTimeslot_mode(timeslot_mode);
+			
+			user_setting_entity.putUserSetting(uto_dto);
+			userSettingStateService.update(user_setting_entity);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	
+	/**
+	 * 插件数据 终端上线通知
+	 * @param user_setting_entity
+	 * @return
+	 */
+	protected void urouterPlugins4TerminalOnline(UserSettingState user_setting_entity,
+			Map<String,Object> ret){
+		UserTerminalOnlineSettingDTO uto_dto = user_setting_entity.getUserSetting(UserTerminalOnlineSettingDTO.
+				Setting_Key, UserTerminalOnlineSettingDTO.class);
+		if(uto_dto == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+		}
+		ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
 	}
 	
 	/**

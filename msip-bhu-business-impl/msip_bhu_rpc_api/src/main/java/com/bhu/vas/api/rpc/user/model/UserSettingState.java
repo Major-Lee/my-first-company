@@ -4,7 +4,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.user.dto.UserSettingDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtIntModel;
+import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtStringModel;
 
 /**
  * 记录用户登录的标识
@@ -13,7 +13,7 @@ import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtIntModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserSettingState extends KeyDtoMapJsonExtIntModel<String> {
+public class UserSettingState extends KeyDtoMapJsonExtStringModel<String> {
 	
 	@Override
 	public Class<String> getJsonParserModel() {

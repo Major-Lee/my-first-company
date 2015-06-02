@@ -106,6 +106,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case USERDEVICEREGISTER:
 							asyncMsgHandleService.userDeviceRegister(message);
 							break;
+						case USERDEVICEDESTORY:
+							asyncMsgHandleService.userDeviceDestory(message);
+							break;							
 						case WifiDeviceAsyncCMDGen:
 							wifiDeviceGroupServiceHandler.process(message);
 							break;
