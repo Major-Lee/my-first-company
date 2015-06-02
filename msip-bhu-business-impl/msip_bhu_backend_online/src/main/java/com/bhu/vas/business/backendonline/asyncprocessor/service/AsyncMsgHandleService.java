@@ -435,6 +435,7 @@ public class AsyncMsgHandleService {
 			HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
 			pushDto.setMac(dto.getWifiId());
 			pushDto.setHd_mac(dto.getMac());
+			pushDto.setTs(System.currentTimeMillis());
 			if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
 				pushDto.setNewed(true);
 			pushService.push(pushDto);
