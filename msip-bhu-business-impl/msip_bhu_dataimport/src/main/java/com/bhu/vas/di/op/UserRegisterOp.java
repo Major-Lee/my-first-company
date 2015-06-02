@@ -17,6 +17,9 @@ import com.bhu.vas.business.ds.user.service.UserTokenService;
  * ./startupbuilder_bhu_userregister.sh ADD 3 18612272825 bhunetworks 李文华
  * ./startupbuilder_bhu_userregister.sh ADD 4 18001161616 bhunetworks 姚永新
  * ./startupbuilder_bhu_userregister.sh ADD 5 18601267579 bhunetworks 罗征
+ * ./startupbuilder_bhu_userregister.sh ADD 6 18601002857 bhunetworks 熊出没
+ * ./startupbuilder_bhu_userregister.sh ADD 7 13810048517 bhunetworks 唐子超
+ * 
  */
 public class UserRegisterOp {
 	
