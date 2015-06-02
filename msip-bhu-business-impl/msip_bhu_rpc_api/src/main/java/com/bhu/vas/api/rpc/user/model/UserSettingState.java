@@ -43,4 +43,5 @@ public class UserSettingState extends KeyDtoMapJsonExtStringModel<String> {
 		}
 		return null;
 	}
+	
 }

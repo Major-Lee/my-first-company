@@ -47,4 +47,10 @@ public class UserSettingStateService extends AbstractCoreService<String,UserSett
 		}
 		return entity;
 	}
+	
+	public void updateUserSetting(String mac, String setting_key,String data){
+		UserSettingState entity = getById(mac);
+		entity.putInnerModel(setting_key, data);
+		this.update(entity);
+	}
 }

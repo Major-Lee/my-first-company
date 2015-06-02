@@ -187,13 +187,13 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				deviceBusinessFacadeService.taskQueryDhcpcStatus(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.DeviceWifiTimerStart.getNo().equals(opt)){
-				
+				deviceBusinessFacadeService.taskWifiTimerStart(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.DeviceWifiTimerStop.getNo().equals(opt)){
-				
+				deviceBusinessFacadeService.taskWifiTimerStop(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.DeviceWifiTimerQuery.getNo().equals(opt)){
-				
+				deviceBusinessFacadeService.taskWifiTimerQuery(ctx, payload, mac, taskid);
 			}
 			else if(OperationCMD.TriggerHttp404ResourceUpdate.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
