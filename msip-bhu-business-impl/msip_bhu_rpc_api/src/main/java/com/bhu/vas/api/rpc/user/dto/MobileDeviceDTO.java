@@ -84,7 +84,7 @@ public class MobileDeviceDTO implements Serializable{
 		this.pt = pt;
 	}
 	public boolean hasChanged(MobileDeviceDTO dto){
-		if(!dto.getDm().equals(this.getDm())) return true;
+		//if(!dto.getDm().equals(this.getDm())) return true;
 		//if(!dto.getDn().equals(this.getDn())) return true;
 		if(!dto.getDt().equals(this.getDt())) return true;
 //		if(!dto.getDu().equals(this.getDu())) return true;
