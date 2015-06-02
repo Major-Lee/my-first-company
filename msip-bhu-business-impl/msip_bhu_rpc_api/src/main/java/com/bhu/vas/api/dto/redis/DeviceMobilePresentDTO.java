@@ -14,16 +14,19 @@ public class DeviceMobilePresentDTO {
 	private String dt;
 	//push type
 	private String pt;
+	//终端mac
+	private String dm;
 	
 	public DeviceMobilePresentDTO(){
 		
 	}
 	
-	public DeviceMobilePresentDTO(Integer uid, String d, String dt, String pt){
+	public DeviceMobilePresentDTO(Integer uid, String d, String dt, String pt, String dm){
 		this.uid = uid;
 		this.d = d;
 		this.dt = dt;
 		this.pt = pt;
+		this.dm = dm;
 	}
 	
 	public Integer getUid() {
@@ -49,5 +52,13 @@ public class DeviceMobilePresentDTO {
 	}
 	public void setPt(String pt) {
 		this.pt = pt;
+	}
+
+	public String getDm() {
+		return dm;
+	}
+
+	public void setDm(String dm) {
+		this.dm = dm;
 	}
 }

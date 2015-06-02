@@ -512,6 +512,52 @@ public class DeviceFacadeService {
 	}
 	
 	/**
+	 * 查询终端名称
+	 * 1:根据设备配置查询是否存在别名
+	 * 2:查询是否存在hostname
+	 * 3:如果1，2都没有，则返回null
+	 * @param hd_mac
+	 * @param mac
+	 * @return
+	 */
+	public String queryHandsetDeviceName(String hd_mac, String mac){
+		WifiDeviceSettingDTO setting_dto = queryDeviceSettingDTO(mac);
+		if(setting_dto != null){
+			//查询终端别名
+			String alias = DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto);
+			if(!StringUtils.isEmpty(alias)){
+				return alias;
+			}
+		}
+		//如果没有别名 以终端主机名填充
+		HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
+		if(hd_entity != null){
+			String hostname = hd_entity.getHostname();
+			if(!StringUtils.isEmpty(hostname)){
+				return hostname;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取设备的名称
+	 * 1：根据用户设备绑定信息中查询设备别名
+	 * 2：如果没有 则返回null
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public String queryDeviceName(Integer uid, String mac){
+		UserDevice userDevice = userDeviceService.getById(new UserDevicePK(mac, uid));
+		if(userDevice != null){
+			if(!StringUtils.isEmpty(userDevice.getDevice_name())){
+				return userDevice.getDevice_name();
+			}
+		}
+		return null;
+	}
+	/**
 	 * 用户注册app移动设备信息
 	 * 1:当前用户使用app移动设备数据
 	 * 2:用户使用app移动设备历史数据
@@ -543,8 +589,7 @@ public class DeviceFacadeService {
 		//2:用户使用app移动设备历史数据
 		userMobileDeviceStateService.userNewDeviceRegisterOrReplace(uid, de, dm, dt, cv, pv, ut, pt);
 		//3:用户所管理的设备的数据关系
-		this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, d, dt, pt));
-		
+		this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, d, dt, pt, dm));
 	}
 	
 	

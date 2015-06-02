@@ -11,9 +11,6 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
@@ -75,6 +72,11 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			if(presentDto != null){
 				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
+				//判断是否是自己
+				if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
+					return;
+				}
+				
 				UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
 				if(userSettingState != null){
 					UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
@@ -106,10 +108,9 @@ public class PushService{
 									if(need_push){
 										PushMsg pushMsg = this.generatePushMsg(hd_push_dto.getMac());
 										if(pushMsg != null){
-											pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
-											pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), 
-													hd_push_dto.getHd_mac(), hd_push_dto.getMac()));
-											pushMsg.setPaylod(builderHandsetDeviceOnlinePushPaylod(hd_push_dto));
+											//构建终端上线通知push内容
+											this.builderHandsetDeviceOnlinePushMsg(pushMsg, presentDto, hd_push_dto);
+											//发送push
 											boolean ret = pushNotification(pushMsg);
 											if(ret){
 												logger.info("PushHandsetDeviceOnline Successed " + pushMsg.toString());
@@ -135,21 +136,21 @@ public class PushService{
 	 * @param hd_push_dto
 	 * @return
 	 */
-	public String builderHandsetDeviceOnlinePushPaylod(HandsetDeviceOnlinePushDTO hd_push_dto){
-		WifiDeviceSettingDTO setting_dto = deviceFacadeService.queryDeviceSettingDTO(hd_push_dto.getMac());
-		if(setting_dto != null){
-			//设置终端别名
-			String alias = DeviceHelper.getHandsetDeviceAlias(hd_push_dto.getHd_mac(), setting_dto);
-			hd_push_dto.setN(alias);
-		}
-		//如果没有别名 以终端主机名填充
-		if(StringUtils.isEmpty(hd_push_dto.getN())){
-			HandsetDevice hd_entity = handsetDeviceService.getById(hd_push_dto.getHd_mac());
-			if(hd_entity != null){
-				hd_push_dto.setN(hd_entity.getHostname());
-			}
-		}
-		return JsonHelper.getJSONString(hd_push_dto);
+	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto, 
+			HandsetDeviceOnlinePushDTO hd_push_dto){
+		//终端名称
+		String hd_name = deviceFacadeService.queryHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+		//设备名称
+		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
+		
+		//构造payload
+		hd_push_dto.setN(hd_name);
+		String payload = JsonHelper.getJSONString(hd_push_dto);
+		pushMsg.setPaylod(payload);
+		//构造title和text
+		pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
+		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), 
+				hd_name == null ? hd_push_dto.getHd_mac() : hd_name, d_name == null ? hd_push_dto.getMac() : d_name));
 	}
 	
 	/**
