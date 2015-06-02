@@ -18,8 +18,8 @@ public class QueryWifiTimerSerialReturnDTO extends QuerySerialReturnDTO{
 	//设备的 "18:00:00-on,05:00:00-off" 
 	private String rule;
 	
-	private String start_time;
-	private String stop_time;
+	private String start;
+	private String end;
 	public String getEnable() {
 		return enable;
 	}
@@ -38,28 +38,27 @@ public class QueryWifiTimerSerialReturnDTO extends QuerySerialReturnDTO{
 				String[] inner_array = array[0].split(StringHelper.MINUS_STRING_GAP);
 				if(inner_array.length == 2){
 					if(Timer_On.equals(inner_array[1])){
-						this.setStart_time(inner_array[0]);
+						this.setStart(inner_array[0]);
 					}
 					
 					if(Timer_Off.equals(inner_array[1])){
-						this.setStart_time(inner_array[0]);
+						this.setEnd(inner_array[0]);
 					}
 				}
 			}
 		}
 	}
-	
-	public String getStart_time() {
-		return start_time;
+	public String getStart() {
+		return start;
 	}
-	public void setStart_time(String start_time) {
-		this.start_time = start_time;
+	public void setStart(String start) {
+		this.start = start;
 	}
-	public String getStop_time() {
-		return stop_time;
+	public String getEnd() {
+		return end;
 	}
-	public void setStop_time(String stop_time) {
-		this.stop_time = stop_time;
+	public void setEnd(String end) {
+		this.end = end;
 	}
 	
 }

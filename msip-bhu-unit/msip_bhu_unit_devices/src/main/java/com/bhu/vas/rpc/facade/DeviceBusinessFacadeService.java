@@ -38,6 +38,8 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
+import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
@@ -51,6 +53,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -92,6 +95,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
+	
+	@Resource
+	private UserSettingStateService userSettingStateService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -676,13 +682,12 @@ public class DeviceBusinessFacadeService {
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			ParamCmdWifiTimerStartDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamCmdWifiTimerStartDTO.class);
-			//TODO:更新app设置到数据库中
-			/*d
-			WifiDeviceSettingLinkModeDTO dto = RPCMessageParseHelper.generateDTOFromMessage(doc, WifiDeviceSettingLinkModeDTO.class);
-			if(dto != null){
-				dto.setModel(WifiDeviceSettingDTO.Mode_Dhcpc);
-				deviceFacadeService.updateDeviceModeStatus(wifiId, dto);
-			}*/
+			//更新app设置到数据库中
+			UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
+			innerDTO.setOn(true);
+			innerDTO.setStart(dto.getStart_time());
+			innerDTO.setEnd(dto.getEnd_time());
+			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
@@ -691,8 +696,12 @@ public class DeviceBusinessFacadeService {
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
-			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
-			//TODO:去除app设置到数据库中
+			//WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
+			//去除app设置到数据库中
+			UserSettingState setting = userSettingStateService.getById(wifiId);
+			UserWifiTimerSettingDTO timerStarSetting = setting.getUserSetting( UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
+			timerStarSetting.setOn(false);
+			userSettingStateService.update(setting);
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
@@ -701,8 +710,19 @@ public class DeviceBusinessFacadeService {
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
-			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
-			//TODO:更新app设置到数据库中
+			//WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
+			//更新app设置到数据库中
+			UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
+			String enable = serialDto.getEnable();
+			if("enable".equals(enable)){
+				innerDTO.setOn(true);
+			}else{
+				innerDTO.setOn(false);
+			}
+			innerDTO.setStart(serialDto.getStart());
+			innerDTO.setEnd(serialDto.getEnd());
+			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
+
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
