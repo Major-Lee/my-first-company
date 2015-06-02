@@ -21,10 +21,9 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
-import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
-import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
@@ -38,9 +37,9 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceMarkService;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -62,7 +61,10 @@ public class DeviceURouterRestBusinessFacadeService {
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
 	@Resource
-	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
+	private HandsetDeviceService handsetDeviceService;
+	
+//	@Resource
+//	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -141,20 +143,21 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			//System.out.println("###################presents.size():"+presents.size());
 			if(!presents.isEmpty()){
-				List<WifiHandsetDeviceMarkPK> mark_pks = new ArrayList<WifiHandsetDeviceMarkPK>();
+				List<String> hd_macs = new ArrayList<String>();
 				for(Tuple tuple : presents){
-					mark_pks.add(new WifiHandsetDeviceMarkPK(wifiId, tuple.getElement()));
+					hd_macs.add(tuple.getElement());
 				}
-				List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
-				if(!mark_entitys.isEmpty()){
+				List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
+				//List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
+				if(!hd_entitys.isEmpty()){
 					vtos = new ArrayList<URouterHdVTO>();
 					int cursor = 0;
-					WifiHandsetDeviceMark mark_entity = null;
+					HandsetDevice hd_entity = null;
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 					for(Tuple tuple : presents){
-						mark_entity = mark_entitys.get(cursor);
+						hd_entity = hd_entitys.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, mark_entity, setting_dto);
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, hd_entity, setting_dto);
 						vtos.add(vto);
 						cursor++;
 					}
@@ -282,14 +285,15 @@ public class DeviceURouterRestBusinessFacadeService {
 					total = block_hd_macs_all.size();
 					List<String> block_hd_macs = PageHelper.partialList(acl_dto.getMacs(), start, size);
 					
-					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
-					if(!mark_pks.isEmpty()){
+//					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
+					List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
+					if(!block_hd_macs.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
-						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
+//						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 						WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
-							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, mark_entitys.get(cursor), setting_dto);
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, hd_entitys.get(cursor), setting_dto);
 							vtos.add(vto);
 							cursor++;
 						}

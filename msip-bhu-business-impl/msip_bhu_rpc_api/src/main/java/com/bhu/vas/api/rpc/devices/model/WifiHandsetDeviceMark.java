@@ -1,14 +1,14 @@
-package com.bhu.vas.api.rpc.devices.model;
+/*package com.bhu.vas.api.rpc.devices.model;
 
 import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BasePKModel;
-/**
+*//**
  * wifi设备对应的终端标记记录
  * 只有绑定了urouter的设备才会进行记录
  * @author tangzichao
  *
- */
+ *//*
 @SuppressWarnings("serial")
 public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 	//设备发送终端的速率 终端的下行速率 bps
@@ -142,4 +142,4 @@ public class WifiHandsetDeviceMark extends BasePKModel<WifiHandsetDeviceMarkPK>{
 	public int hashCode() {
 		return this.getId().toString().hashCode();
 	}
-}
+}*/

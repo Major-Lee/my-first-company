@@ -22,8 +22,6 @@ import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
-import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark;
-import com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -191,7 +189,7 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, WifiHandsetDeviceMark mark_entity,
+	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDevice hd_entity,
 			WifiDeviceSettingDTO setting_dto){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
@@ -208,13 +206,13 @@ public class BusinessModelBuilder {
 				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
 		}
 		
-		if(mark_entity != null){
+		if(hd_entity != null){
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
-			vto.setTx_rate(mark_entity.getData_rx_rate());
+			vto.setTx_rate(hd_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
-			vto.setRx_rate(mark_entity.getData_tx_rate());
-			if(!StringUtils.isEmpty(mark_entity.getVapname()))
-				vto.setGuest(DeviceHelper.isGuest(mark_entity.getVapname(), setting_dto));
+			vto.setRx_rate(hd_entity.getData_tx_rate());
+			if(!StringUtils.isEmpty(hd_entity.getVapname()))
+				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
 		}
 		return vto;
 	}
@@ -233,7 +231,7 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
+/*	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
 		if(hd_macs == null || hd_macs.isEmpty()) return Collections.emptyList();
 		
 		List<WifiHandsetDeviceMarkPK> pks = new ArrayList<WifiHandsetDeviceMarkPK>();
@@ -241,7 +239,7 @@ public class BusinessModelBuilder {
 			pks.add(new WifiHandsetDeviceMarkPK(mac, hd_mac));
 		}
 		return pks;
-	}
+	}*/
 	
 	public static List<String> toWifiDeviceIds(List<WifiDeviceSearchDTO> search_dtos){
 		if(search_dtos == null || search_dtos.isEmpty()) return Collections.emptyList();

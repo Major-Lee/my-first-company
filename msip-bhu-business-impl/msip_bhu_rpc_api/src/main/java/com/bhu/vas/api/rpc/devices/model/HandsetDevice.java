@@ -14,9 +14,9 @@ public class HandsetDevice extends BaseStringModel{
 	private String phy_tx_rate;
 	
 	private String phy_rx_rate;	
-	
+	//设备发送终端的速率 终端的下行速率 bps
 	private String data_tx_rate;
-	
+	//设备接收终端的速率 终端的上行速率 bps
 	private String data_rx_rate;
 	
 	private String phy_rate;
@@ -50,6 +50,10 @@ public class HandsetDevice extends BaseStringModel{
 	private String ssid;
 	
 	private String bssid;
+	//终端连接的vap的name
+	private String vapname;
+	//终端主机名称
+	private String hostname;
 	
 	private String location;
 	
@@ -172,6 +176,14 @@ public class HandsetDevice extends BaseStringModel{
 		this.state = state;
 	}
 
+	public String getVapname() {
+		return vapname;
+	}
+
+	public void setVapname(String vapname) {
+		this.vapname = vapname;
+	}
+
 	public String getUptime() {
 		return uptime;
 	}
@@ -186,6 +198,14 @@ public class HandsetDevice extends BaseStringModel{
 
 	public void setRx_pkts(String rx_pkts) {
 		this.rx_pkts = rx_pkts;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
 	}
 
 	public String getRx_bytes() {

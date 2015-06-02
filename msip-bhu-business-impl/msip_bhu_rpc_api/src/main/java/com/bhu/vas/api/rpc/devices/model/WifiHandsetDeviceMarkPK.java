@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.devices.model;
+/*package com.bhu.vas.api.rpc.devices.model;
 
 import java.io.Serializable;
 
@@ -43,3 +43,4 @@ public class WifiHandsetDeviceMarkPK implements Serializable{
 		return this.toString().hashCode();
 	}
 }
+*/

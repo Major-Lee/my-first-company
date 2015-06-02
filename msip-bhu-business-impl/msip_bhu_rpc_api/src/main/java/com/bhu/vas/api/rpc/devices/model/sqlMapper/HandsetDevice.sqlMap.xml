@@ -26,6 +26,8 @@
     <result property="tx_assoc" column="tx_assoc"/>
     <result property="ssid" column="ssid"/>
     <result property="bssid" column="bssid"/>
+    <result property="vapname" column="vapname"/>
+    <result property="hostname" column="hostname"/>
     <result property="location" column="location"/>
     <result property="channel" column="channel"/>
     <result property="mobileno" column="mobileno"/>
@@ -65,6 +67,8 @@
 	    	tx_assoc,
 	    	ssid,
 	    	bssid,
+	    	vapname,
+	    	hostname,
 	    	location,
 	    	channel,
 	    	mobileno,
@@ -97,6 +101,8 @@
 	    	tx_assoc,
 	    	ssid,
 	    	bssid,
+	    	vapname,
+	    	hostname,
 	    	location,
 	    	channel,
 	    	mobileno,
@@ -130,6 +136,8 @@
 	    	#{tx_assoc},
 	    	#{ssid},
 	    	#{bssid},
+	    	#{vapname},
+	    	#{hostname},
 	    	#{location},
 	    	#{channel},
 	    	#{mobileno},
@@ -162,6 +170,8 @@
 	    	tx_assoc = #{tx_assoc},
 	    	ssid = #{ssid},
 	    	bssid = #{bssid},
+	    	vapname = #{vapname},
+	    	hostname = #{hostname},
 	    	location = #{location},
 	    	channel = #{channel},
 			mobileno = #{mobileno},

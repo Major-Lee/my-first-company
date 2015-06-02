@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.device.service;
+/*package com.bhu.vas.business.ds.device.service;
 
 import javax.annotation.Resource;
 
@@ -20,3 +20,4 @@ public class WifiHandsetDeviceMarkService extends AbstractCoreService<WifiHandse
 		super.setEntityDao(wifiHandsetDeviceMarkDao);
 	}
 }
+*/

@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.device.dao;
+/*package com.bhu.vas.business.ds.device.dao;
 
 import org.springframework.stereotype.Repository;
 
@@ -10,3 +10,4 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 public class WifiHandsetDeviceMarkDao extends AbstractCoreDao<WifiHandsetDeviceMarkPK,WifiHandsetDeviceMark>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
 	
 }
+*/
