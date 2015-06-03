@@ -176,7 +176,7 @@ public class DpiInfo {
         System.out.println(useragent.getBrowser());
         System.out.println(useragent.getId());
         System.out.println(useragent.getBrowserVersion());*/
-		String ss = "猫眼看人";
+		String ss = "123";
 
 		System.out.println(ss.length());
 		System.out.println(ss.getBytes().length);

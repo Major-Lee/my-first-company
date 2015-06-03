@@ -37,11 +37,17 @@ public class UserDeviceController extends BaseController {
     public void bindDevice(HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
                            @RequestParam(required = true, value = "uid") int uid,
-                           @RequestParam(required = true, value = "device_name") String deviceName) {
+                           @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-            return ;
+            return;
         }
+        if (!validateDeviceName(deviceName)) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            return;
+
+        }
+
         RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid, deviceName);
         if (userDeviceResult.getErrorCode() != null) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult.getErrorCode()));
@@ -117,11 +123,16 @@ public class UserDeviceController extends BaseController {
                                  HttpServletResponse response,
                                  @RequestParam(required = true) Integer uid,
                                  @RequestParam(required = true) String mac,
-                                 @RequestParam(required = true, value = "device_name") String deviceName) {
+                                 @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
 
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-            return ;
+            return;
+        }
+
+        if (!validateDeviceName(deviceName)) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            return;
         }
 
         if (userDeviceRpcService.modifyDeviceName(mac, uid, deviceName)) {
@@ -129,11 +140,13 @@ public class UserDeviceController extends BaseController {
         } else {
             SpringMVCHelper.renderJson(response, ResponseError.ERROR);
         }
+    }
 
-
-
-
-
+    private boolean validateDeviceName(String deviceName) throws  Exception {
+        if (deviceName.getBytes("utf-8").length < 32) {
+            return true;
+        }
+        return false;
     }
 
 }
