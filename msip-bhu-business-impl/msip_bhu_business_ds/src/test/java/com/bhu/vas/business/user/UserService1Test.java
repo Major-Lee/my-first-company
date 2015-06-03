@@ -95,10 +95,8 @@ public class UserService1Test extends BaseTest{
 		//userService.insertMulti(users);
 	}	
     
-    @Test
-	public void testDelete(){
-    	System.out.println(userService.countByCommonCriteria(new CommonCriteria()));
-    	int ret = userService.deleteById(100028);
-    	System.out.println(userService.countByCommonCriteria(new CommonCriteria()));
-    }
+//    @Test
+//	public void testDelete(){
+//    	userService.deleteAndCount();
+//    }
 }

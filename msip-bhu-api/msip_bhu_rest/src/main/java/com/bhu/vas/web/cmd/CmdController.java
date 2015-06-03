@@ -4,6 +4,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,7 +53,73 @@ public class CmdController extends BaseController{
 			@RequestParam(required = false, defaultValue="00") String subopt,
 			@RequestParam(required = false) String extparams,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
-			@RequestParam(required = false) String channel_taskid) {
+			@RequestParam(required = false) String channel_taskid) throws  Exception{
+
+
+		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {
+			if (OperationDS.DS_VapPassword.getNo().equals(subopt)) {
+				WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO =
+						JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+
+				if (wifiDeviceSettingVapDTO == null) {
+					//非法格式
+					SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+					return;
+				} else {
+					String ssid = wifiDeviceSettingVapDTO.getSsid();
+					if (ssid == null) {
+						//非法格式
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+						return;
+					}
+					String auth = wifiDeviceSettingVapDTO.getAuth();
+					//TODO(bluesand):此处auth： WPA2-PSK / open
+
+					if (!"WPA2-PSK".equals(auth) && !"open".equals(auth)) {
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+						return;
+					} else {
+						if ("WPA2-PSK".equals(auth)) {
+							String auth_key = wifiDeviceSettingVapDTO.getAuth_key();
+							if (auth_key == null) {
+								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+								return;
+							}
+							if(auth_key.getBytes("utf-8").length < 8  || auth_key.getBytes("utf-8").length > 32) {
+								//非法长度
+								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+								return;
+							}
+						}
+						if ("open".equals(auth)) {
+							//nothing
+						}
+					}
+				}
+
+			}
+			if (OperationDS.DS_AdminPassword.getNo().equals(subopt)) {
+				WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO =
+						JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
+				if (wifiDeviceSettingUserDTO == null) {
+					//非法格式
+					SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+					return;
+				} else {
+					String password = wifiDeviceSettingUserDTO.getPassword();
+					if (password == null) {
+						//密码为空
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+						return;
+					}
+					if(password.getBytes("utf-8").length < 4  || password.getBytes("utf-8").length > 31) {
+						//非法长度
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+						return;
+					}
+				}
+			}
+		}
 		
 		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(uid, mac.toLowerCase(), opt , subopt, extparams,/*payload,*/ channel, channel_taskid);
 		
