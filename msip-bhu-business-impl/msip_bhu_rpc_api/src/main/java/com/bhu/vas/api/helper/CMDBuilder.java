@@ -221,8 +221,9 @@ public class CMDBuilder {
 					break;
 				case DeviceWifiTimerStart:
 					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
+					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
-							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),timerDto.getStart_time(),timerDto.getEnd_time());
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),timeSlot[0],timeSlot[1]);
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);

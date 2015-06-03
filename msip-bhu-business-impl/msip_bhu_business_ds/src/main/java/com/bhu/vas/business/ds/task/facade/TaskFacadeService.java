@@ -7,15 +7,19 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
+import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
+import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -28,6 +32,8 @@ public class TaskFacadeService {
 	@Resource
 	private WifiDeviceDownTaskCompletedService wifiDeviceDownTaskCompletedService;
 	
+	@Resource
+	private UserSettingStateService userSettingStateService;
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	/**
@@ -233,6 +239,14 @@ public class TaskFacadeService {
 				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
 			}
 		}else{
+			if(OperationCMD.DeviceWifiTimerStart.getNo().equals(opt)){//需要先增加到个人配置表中
+				ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
+				UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
+				innerDTO.setOn(true);
+				innerDTO.setDs(false);
+				innerDTO.setTimeslot(param_dto.getTimeslot());
+				userSettingStateService.updateUserSetting(mac, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
+			}
 			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 		}
 		this.taskUpdate(downTask);

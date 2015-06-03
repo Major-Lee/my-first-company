@@ -7,8 +7,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.dom4j.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -67,7 +65,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class DeviceBusinessFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(DeviceBusinessFacadeService.class);
+	//private final Logger logger = LoggerFactory.getLogger(DeviceBusinessFacadeService.class);
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -685,8 +683,10 @@ public class DeviceBusinessFacadeService {
 			//更新app设置到数据库中
 			UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
 			innerDTO.setOn(true);
-			innerDTO.setStart(dto.getStart_time());
-			innerDTO.setEnd(dto.getEnd_time());
+			innerDTO.setDs(true);
+			innerDTO.setTimeslot(dto.getTimeslot());
+			//innerDTO.setStart(dto.getStart_time());
+			//innerDTO.setEnd(dto.getEnd_time());
 			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
@@ -701,6 +701,7 @@ public class DeviceBusinessFacadeService {
 			UserSettingState setting = userSettingStateService.getById(wifiId);
 			UserWifiTimerSettingDTO timerStarSetting = setting.getUserSetting( UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
 			timerStarSetting.setOn(false);
+			timerStarSetting.setDs(true);
 			userSettingStateService.update(setting);
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
@@ -719,10 +720,11 @@ public class DeviceBusinessFacadeService {
 			}else{
 				innerDTO.setOn(false);
 			}
-			innerDTO.setStart(serialDto.getStart());
-			innerDTO.setEnd(serialDto.getEnd());
+			innerDTO.setDs(false);
+			if(serialDto.hasRule()){
+				innerDTO.setTimeslot(serialDto.getStart().concat("-").concat(serialDto.getEnd()));
+			}
 			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
-
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}

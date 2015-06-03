@@ -1,6 +1,9 @@
 package com.bhu.vas.api.dto.ret.param;
 
+import org.springframework.util.StringUtils;
+
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 
 /**
@@ -10,12 +13,14 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 public class ParamCmdWifiTimerStartDTO{
-	
+	public static final String Default_Timeslot = "02:00:00-23:00:00";
+	public static final String[] Default_Timeslot_Array = {"02:00:00","23:00:00"};
 	private String enable;
+	private String timeslot = Default_Timeslot;
 	//开始时间 18:00:00
-	private String start_time;
+	//private String start_time;
 	//结束时间 05:00:00
-	private String end_time;
+	//private String end_time;
 	
 	public String getEnable() {
 		return enable;
@@ -26,7 +31,7 @@ public class ParamCmdWifiTimerStartDTO{
 	}
 
 
-	public String getStart_time() {
+	/*public String getStart_time() {
 		return start_time;
 	}
 
@@ -40,14 +45,30 @@ public class ParamCmdWifiTimerStartDTO{
 
 	public void setEnd_time(String end_time) {
 		this.end_time = end_time;
+	}*/
+
+   public String getTimeslot() {
+		return timeslot;
 	}
 
-   //{"enable":"enable","start_time":"20:00","end_time":"21:00"}
+	public void setTimeslot(String timeslot) {
+		this.timeslot = timeslot;
+	}
+
+	public static String[] fetchSlot(String _timeslot){
+		if(StringUtils.isEmpty(_timeslot)){
+			return Default_Timeslot_Array;
+		}
+		String[] array = _timeslot.split(StringHelper.COMMA_STRING_GAP);
+		if(array.length == 2) return array;
+		return Default_Timeslot_Array;
+	}
+	//{"enable":"enable","timeslot":"02:00:00-23:00:00"}
 	public static void main(String[] argv){
 		ParamCmdWifiTimerStartDTO dto = new ParamCmdWifiTimerStartDTO();
 		dto.setEnable("enable");
-		dto.setStart_time("20:00");
-		dto.setEnd_time("21:00");
+		/*dto.setStart_time("20:00");
+		dto.setEnd_time("21:00");*/
 		//dto.setUrls("http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com");
 		System.out.println(JsonHelper.getJSONString(dto));
 	}

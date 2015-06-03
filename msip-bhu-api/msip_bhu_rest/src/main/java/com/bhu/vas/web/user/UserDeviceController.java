@@ -1,25 +1,26 @@
 package com.bhu.vas.web.user;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
-import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
-import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseErrorCode;
-import com.smartwork.msip.jdo.ResponseSuccess;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
  * 用户和设备直接操作,绑定，解绑。

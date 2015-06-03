@@ -11,16 +11,15 @@ package com.bhu.vas.api.rpc.user.dto;
 @SuppressWarnings("serial")
 public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	public static final String Setting_Key = "uwt";
-	//开启模式
-	//public static final int Timeslot_Mode_Normal = 1;
-	//关闭模式
-	//public static final int Timeslot_Mode_Silent = 2;
 	//Wifi Timer开关
 	private boolean on = true;
-	//开始时间段
+	//device response ok 时 为true
+	private boolean ds = false;
+	private String timeslot;
+	/*//开始时间段
 	private String start;
 	//结束
-	private String end;
+	private String end;*/
 	//时间段通知模式
 	//private int timeslot_mode = Timeslot_Mode_Normal;
 	
@@ -30,7 +29,14 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	public void setOn(boolean on) {
 		this.on = on;
 	}
-	public String getStart() {
+	
+	public String getTimeslot() {
+		return timeslot;
+	}
+	public void setTimeslot(String timeslot) {
+		this.timeslot = timeslot;
+	}
+	/*public String getStart() {
 		return start;
 	}
 	public void setStart(String start) {
@@ -41,9 +47,16 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	}
 	public void setEnd(String end) {
 		this.end = end;
-	}
+	}*/
+	
 	@Override
 	public String getSettingKey() {
 		return Setting_Key;
+	}
+	public boolean isDs() {
+		return ds;
+	}
+	public void setDs(boolean ds) {
+		this.ds = ds;
 	}
 }

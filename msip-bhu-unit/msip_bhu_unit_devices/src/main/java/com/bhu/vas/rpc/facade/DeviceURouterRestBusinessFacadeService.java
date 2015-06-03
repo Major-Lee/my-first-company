@@ -26,6 +26,7 @@ import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
@@ -420,10 +421,17 @@ public class DeviceURouterRestBusinessFacadeService {
 			Map<String,Object> ret){
 		UserTerminalOnlineSettingDTO uto_dto = user_setting_entity.getUserSetting(UserTerminalOnlineSettingDTO.
 				Setting_Key, UserTerminalOnlineSettingDTO.class);
-		if(uto_dto == null){
+		UserWifiTimerSettingDTO uwt_dto = user_setting_entity.getUserSetting(UserWifiTimerSettingDTO.
+				Setting_Key, UserWifiTimerSettingDTO.class);
+		
+		/*if(uto_dto == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
-		}
-		ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
+		}*/
+		if(uto_dto != null)
+			ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
+		if(uwt_dto != null)
+			ret.put(UserWifiTimerSettingDTO.Setting_Key, uwt_dto);
+		
 	}
 	
 	/**

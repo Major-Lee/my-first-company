@@ -48,6 +48,11 @@ public class QueryWifiTimerSerialReturnDTO extends QuerySerialReturnDTO{
 			}
 		}
 	}
+	
+	public boolean hasRule(){
+		return StringUtils.isNotEmpty(rule);
+	}
+	
 	public String getStart() {
 		return start;
 	}
