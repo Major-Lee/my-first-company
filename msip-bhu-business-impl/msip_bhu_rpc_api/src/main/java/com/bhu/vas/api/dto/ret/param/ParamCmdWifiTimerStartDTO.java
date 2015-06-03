@@ -2,7 +2,6 @@ package com.bhu.vas.api.dto.ret.param;
 
 import org.springframework.util.StringUtils;
 
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 
@@ -64,12 +63,12 @@ public class ParamCmdWifiTimerStartDTO{
 		return Default_Timeslot_Array;
 	}
 	//{"enable":"enable","timeslot":"02:00:00-23:00:00"}
-	public static void main(String[] argv){
+	/*public static void main(String[] argv){
 		ParamCmdWifiTimerStartDTO dto = new ParamCmdWifiTimerStartDTO();
 		dto.setEnable("enable");
-		/*dto.setStart_time("20:00");
-		dto.setEnd_time("21:00");*/
+		dto.setStart_time("20:00");
+		dto.setEnd_time("21:00");
 		//dto.setUrls("http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com");
 		System.out.println(JsonHelper.getJSONString(dto));
-	}
+	}*/
 }

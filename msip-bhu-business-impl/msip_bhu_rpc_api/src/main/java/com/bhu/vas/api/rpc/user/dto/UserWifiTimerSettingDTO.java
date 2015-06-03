@@ -61,4 +61,12 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	public void setDs(boolean ds) {
 		this.ds = ds;
 	}
+	//{"on":false,"ds":false,"timeslot":"02:00:00-23:00:00"}
+	/*public static void main(String[] argv){
+		UserWifiTimerSettingDTO dto = new UserWifiTimerSettingDTO();
+		dto.setStart_time("20:00");
+		dto.setEnd_time("21:00");
+		//dto.setUrls("http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com");
+		System.out.println(JsonHelper.getJSONString(dto));
+	}*/
 }
