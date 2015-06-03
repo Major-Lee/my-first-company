@@ -724,7 +724,7 @@ public class DeviceBusinessFacadeService {
 			}else{
 				innerDTO.setOn(false);
 			}
-			innerDTO.setDs(false);
+			innerDTO.setDs(true);
 			if(serialDto.hasRule()){
 				innerDTO.setTimeslot(serialDto.getStart().concat("-").concat(serialDto.getEnd()));
 			}else{
