@@ -34,6 +34,7 @@ public class TaskFacadeService {
 	
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	/**

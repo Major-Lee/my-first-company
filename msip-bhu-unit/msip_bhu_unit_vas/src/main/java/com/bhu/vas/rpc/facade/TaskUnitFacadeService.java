@@ -11,8 +11,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -34,10 +32,10 @@ public class TaskUnitFacadeService {
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
-	@Resource
-	private WifiDeviceGroupService wifiDeviceGroupService;
-	@Resource
-	private WifiDeviceService wifiDeviceService;
+	//@Resource
+	//private WifiDeviceGroupService wifiDeviceGroupService;
+	//@Resource
+	//private WifiDeviceService wifiDeviceService;
 	
 	public RpcResponseDTO<Boolean> taskGroupGenerate(Integer uid, int gid,boolean dependency,String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid){
