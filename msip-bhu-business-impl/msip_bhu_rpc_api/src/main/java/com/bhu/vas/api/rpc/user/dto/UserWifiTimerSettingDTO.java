@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+
 
 
 /**
@@ -12,10 +14,10 @@ package com.bhu.vas.api.rpc.user.dto;
 public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	public static final String Setting_Key = "uwt";
 	//Wifi Timer开关
-	private boolean on = true;
+	private boolean on = false;
 	//device response ok 时 为true
 	private boolean ds = false;
-	private String timeslot;
+	private String timeslot = ParamCmdWifiTimerStartDTO.Default_Timeslot;
 	/*//开始时间段
 	private String start;
 	//结束

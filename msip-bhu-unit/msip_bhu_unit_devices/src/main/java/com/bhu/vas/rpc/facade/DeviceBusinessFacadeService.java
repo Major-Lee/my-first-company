@@ -700,6 +700,10 @@ public class DeviceBusinessFacadeService {
 			//去除app设置到数据库中
 			UserSettingState setting = userSettingStateService.getById(wifiId);
 			UserWifiTimerSettingDTO timerStarSetting = setting.getUserSetting( UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
+			if(timerStarSetting == null){
+				timerStarSetting = new UserWifiTimerSettingDTO();
+				timerStarSetting.setTimeslot(ParamCmdWifiTimerStartDTO.Default_Timeslot);
+			}
 			timerStarSetting.setOn(false);
 			timerStarSetting.setDs(true);
 			userSettingStateService.update(setting);
@@ -723,6 +727,8 @@ public class DeviceBusinessFacadeService {
 			innerDTO.setDs(false);
 			if(serialDto.hasRule()){
 				innerDTO.setTimeslot(serialDto.getStart().concat("-").concat(serialDto.getEnd()));
+			}else{
+				innerDTO.setTimeslot(ParamCmdWifiTimerStartDTO.Default_Timeslot);
 			}
 			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 		}
