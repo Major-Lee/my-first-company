@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -238,7 +239,7 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) boolean on,
 			@RequestParam(required = true) boolean stranger_on,
-			@RequestParam(required = true) String timeslot,
+			@RequestParam(required = false, defaultValue=UserTerminalOnlineSettingDTO.Default_Timeslot) String timeslot,
 			@RequestParam(required = true) int timeslot_mode) {
 		
 		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(

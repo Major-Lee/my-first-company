@@ -66,7 +66,7 @@ public class UserService1Test extends BaseTest{
     	System.out.println(String.format("Unit test cost:[%s]s", (unit_test_end-unit_test_start)/1000));*/
     }
     
-    @Test
+    //@Test
 	public void test001BatchCreateUser(){
     	System.out.println(Integer.MAX_VALUE);
     	CommonCriteria mc = new CommonCriteria();
@@ -94,5 +94,11 @@ public class UserService1Test extends BaseTest{
 		batch_insert_cost_time = System.currentTimeMillis()-unit_test_start;
 		//userService.insertMulti(users);
 	}	
-
+    
+    @Test
+	public void testDelete(){
+    	System.out.println(userService.countByCommonCriteria(new CommonCriteria()));
+    	int ret = userService.deleteById(100028);
+    	System.out.println(userService.countByCommonCriteria(new CommonCriteria()));
+    }
 }

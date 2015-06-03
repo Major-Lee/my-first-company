@@ -10,6 +10,8 @@ package com.bhu.vas.api.rpc.user.dto;
 @SuppressWarnings("serial")
 public class UserTerminalOnlineSettingDTO extends UserSettingDTO{
 	public static final String Setting_Key = "uto";
+	public static final String Default_Timeslot = "00:00-24:00";
+	
 	//正常通知模式 按时间段通知
 	public static final int Timeslot_Mode_Normal = 1;
 	//静默通知模式 按时间段外通知
@@ -19,7 +21,7 @@ public class UserTerminalOnlineSettingDTO extends UserSettingDTO{
 	//陌生终端通知开关
 	private boolean stranger_on;
 	//时间段
-	private String timeslot = "00:00-24:00";
+	private String timeslot = Default_Timeslot;
 	//时间段通知模式
 	private int timeslot_mode = Timeslot_Mode_Normal;
 	
