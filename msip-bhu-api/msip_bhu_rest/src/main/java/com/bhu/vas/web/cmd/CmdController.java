@@ -85,11 +85,7 @@ public class CmdController extends BaseController{
 								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 								return;
 							}
-							if (!StringHelper.isValidPermalinkCharacter(auth_key)) {
-								//非法字符串
-								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-								return;
-							} else if(auth_key.getBytes("utf-8").length < 8  || auth_key.getBytes("utf-8").length > 32) {
+							if(auth_key.getBytes("utf-8").length < 8  || auth_key.getBytes("utf-8").length > 32) {
 								//非法长度
 								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 								return;
@@ -116,11 +112,7 @@ public class CmdController extends BaseController{
 						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 						return;
 					}
-					if (!StringHelper.isValidPermalinkCharacter(password)) {
-						//非法字符串
-						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-						return;
-					} else if(password.getBytes("utf-8").length < 4  || password.getBytes("utf-8").length > 31) {
+					if(password.getBytes("utf-8").length < 4  || password.getBytes("utf-8").length > 31) {
 						//非法长度
 						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 						return;
