@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
+	//限速成员最多128个
+	public static final int Max_MemberCount = 128;
 	//不限制速率
 	public static final String Rate_Unlimited = "0";
 	//所处序号

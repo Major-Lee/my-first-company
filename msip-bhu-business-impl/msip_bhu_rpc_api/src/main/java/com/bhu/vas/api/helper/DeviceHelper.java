@@ -837,14 +837,14 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
 	}
 	
-	public static String builderDSVapGuestOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-//		WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
-//		if(vap_dto == null)
-//			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
-		String item = "<ITEM name=\"wlan2\" \"guest_en\":\"enable\" \"enable\":\"enable\"/>";
-		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
-	}
+//	public static String builderDSVapGuestOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+////		WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+////		if(vap_dto == null)
+////			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+//		
+//		String item = "<ITEM name=\"wlan2\" \"guest_en\":\"enable\" \"enable\":\"enable\"/>";
+//		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
+//	}
 	
 	/**
 	 * 构建黑名单列表名单修改配置
@@ -897,6 +897,10 @@ public class DeviceHelper {
 		if(del_macs != null && !del_macs.isEmpty()){
 			macs.removeAll(del_macs);
 		}
+		//验证黑名单数量 一个黑名单列表最多256个
+		if(WifiDeviceSettingAclDTO.Max_MemberCount < macs.size()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ACLMAC_MAX_MEMBER);
+		}
 		default_acl_dto.setMacs(new ArrayList<String>(macs));
 			
 		String item = builderDeviceSettingItem(DeviceSetting_AclItem, default_acl_dto.builderProperties());
@@ -916,10 +920,14 @@ public class DeviceHelper {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
 		StringBuffer ds = new StringBuffer();
+		//此次修改产生的数量变化 增加或减少的数量
+		int rc_changed_count = 0;
+		//当前的限速的成员
+		List<WifiDeviceSettingRateControlDTO> rc_current_dtos = ds_dto.getRatecontrols();
 		
 		List<RateControlParamDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
 		if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
-			List<Integer> rc_indexs = getDeviceRateControlIndex(ds_dto.getRatecontrols());
+			List<Integer> rc_indexs = getDeviceRateControlIndex(rc_current_dtos);
 			if(rc_indexs == null)
 				rc_indexs = new ArrayList<Integer>();
 			
@@ -946,6 +954,7 @@ public class DeviceHelper {
 					match_rc_dto.setTx(rc_incr_dto.getTm_rx());
 					match_rc_dto.setRx(rc_incr_dto.getTm_tx());
 					rc_indexs.add(index);
+					rc_changed_count++;
 				}
 				ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, match_rc_dto.builderProperties()));
 			}
@@ -959,6 +968,7 @@ public class DeviceHelper {
 					//rc_del_dto.setIndex(match_rc_dto.getIndex());
 					ds.append(builderDeviceSettingItem(DeviceSetting_RemoveRatecontrolItem, match_rc_dto.
 							builderProperties(WifiDeviceSettingRateControlDTO.BuilderType_RemoveRC)));
+					rc_changed_count--;
 				}
 			}
 		}
@@ -966,6 +976,16 @@ public class DeviceHelper {
 		if(ds.length() == 0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
+		
+		//验证指定mac限速最多不能超过128个
+		int rc_current_count = 0;
+		if(rc_current_dtos != null)
+			rc_current_count = rc_current_dtos.size();
+		
+		if(WifiDeviceSettingRateControlDTO.Max_MemberCount < (rc_current_count + rc_changed_count)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_RATECONTROL_MAX_MEMBER);
+		}
+		
 		return builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, config_sequence, ds.toString());
 	}
 	

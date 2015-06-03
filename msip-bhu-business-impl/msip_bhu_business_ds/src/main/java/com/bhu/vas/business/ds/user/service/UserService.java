@@ -1,15 +1,21 @@
 package com.bhu.vas.business.ds.user.service;
 
+import java.util.UUID;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.sequence.service.SequenceService;
 import com.bhu.vas.business.ds.user.dao.UserDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
+import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.localunit.RandomData;
+import com.smartwork.msip.localunit.RandomPicker;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
@@ -60,6 +66,27 @@ public class UserService extends AbstractCoreService<Integer,User, UserDao>{//En
 			return Integer.class.cast(obj).intValue();
 		}
 	}
+	
+//	public void deleteAndCount(){
+//		//System.out.println(this.countByCommonCriteria(new CommonCriteria()));
+////    	int ret = this.deleteById(100023);
+//		User user = new User();
+//		//user.setId(i+5);
+//		user.setCountrycode(86);
+//		user.setMobileno(String.format("1861%s2%s", RandomData.intNumber(100,999),RandomData.intNumber(100,999)));
+//		user.setBirthday(String.format("%s-%s-%s", RandomData.intNumber(1969,2010),String.format("%02d", RandomData.intNumber(1,12)),String.format("%02d", RandomData.intNumber(1,28))));
+//		user.setNick("dasddsadsadsa");
+//		user.setSex(RandomData.flag()?"男":"女");
+//		//user.setId(doGenKey());
+//		user.setRegdevice(DeviceEnum.IPhone.getSname());
+//		user.setRegip("192.168.1.6");
+//		user.setLastlogindevice(DeviceEnum.IPhone.getSname());
+//		user.setLastlogindevice_uuid(UUID.randomUUID().toString());
+//		this.insert(user);
+//    	//super.getEntityDao().getSqlSessionSlaverTemplate().clearCache();
+//    	System.out.println(this.countByCommonCriteria(new CommonCriteria()));
+//    	throw new RuntimeException();
+//	}
 	/*public List<User> findRandUsers(int pagesize){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnIsNotNull("avatar").andColumnEqualTo("newbie", 0);

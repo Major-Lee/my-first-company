@@ -10,6 +10,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class WifiDeviceSettingAclDTO implements DeviceSettingBuilderDTO{
+	//同一个黑名单列表最多256个成员
+	public static final int Max_MemberCount = 256;
 	//acl名称
 	private String name;
 	//acl对应的mac列表
