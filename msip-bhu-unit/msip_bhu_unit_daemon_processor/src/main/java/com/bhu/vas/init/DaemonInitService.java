@@ -41,7 +41,7 @@ public class DaemonInitService {
 		}else{
 			logger.info(String.format("init failed at [%s]", DateTimeHelper.getDateTime()));
 		}
-		
+		//74-27-EA   (hex)		Elitegroup Computer Systems Co., Ltd.
 	}
 	
 	public boolean execute(){
