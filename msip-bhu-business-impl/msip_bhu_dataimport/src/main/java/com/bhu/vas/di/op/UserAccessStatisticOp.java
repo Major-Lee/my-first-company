@@ -54,6 +54,9 @@ public class UserAccessStatisticOp {
         userBrandStatisticsService = (UserBrandStatisticsService)
                 ctx.getBean("userBrandStatisticsService");
 
+        userUrlStatisticsService = (UserUrlStatisticsService)
+               ctx.getBean("userUrlStatisticsService");
+
         readTxtFile(filepath);
 
     }
