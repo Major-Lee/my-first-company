@@ -72,6 +72,12 @@ public class CmdController extends BaseController{
 						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 						return;
 					}
+					if (ssid.getBytes("utf-8").length < 1 || ssid.getBytes("utf-8").length > 32 ) {
+						//非法长度
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL));
+						return;
+					}
+
 					String auth = wifiDeviceSettingVapDTO.getAuth();
 					//TODO(bluesand):此处auth：  WPA/WPA2-PSK / open
 
