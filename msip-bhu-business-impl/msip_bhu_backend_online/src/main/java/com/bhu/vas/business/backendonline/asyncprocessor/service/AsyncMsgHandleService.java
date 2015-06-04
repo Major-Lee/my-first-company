@@ -894,9 +894,10 @@ public class AsyncMsgHandleService {
 					//logger.info("step 3");
 					if(dto.getCountrycode() == PhoneHelper.Default_CountryCode_Int){
 						//logger.info("step 4 -1");
-						String response = WangjianSMSHelper.postSendMsg(String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha()), new String[]{dto.getAcc()});
+						String smsg = String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha());
+						String response = WangjianSMSHelper.postSendMsg(smsg, new String[]{dto.getAcc()});
 						//logger.info("CaptchaCodeNotifyActHandler Guodu msg:"+message);
-						logger.info("sendCaptchaCodeNotifyHandle Chanzor res:"+response);
+						logger.info("sendCaptchaCodeNotifyHandle new Chanzor res:"+response+" msg:"+smsg);
 					}else{
 						//logger.info("step 4 -2");
 						logger.info("sendCaptchaCodeNotifyHandle not supported foreign sms res");

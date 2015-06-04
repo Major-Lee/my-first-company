@@ -47,6 +47,8 @@
 		  -->
 		<typeAlias alias="userMobileDeviceState" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState"/>
 		<typeAlias alias="userMobileDevice" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
+		
+		<typeAlias alias="dictMacPrefix" 		type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix"/>
 	</typeAliases>
 	
 	<!-- 
@@ -85,6 +87,8 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSettingState.sqlMap.xml"/>
 		
+		<!-- Dict defined Area -->
+		<mapper resource="com/bhu/vas/api/rpc/dict/model/sqlMapper/DictMacPrefix.sqlMap.xml"/>
 	</mappers>
 	
 </configuration>
