@@ -73,13 +73,13 @@ public class CmdController extends BaseController{
 						return;
 					}
 					String auth = wifiDeviceSettingVapDTO.getAuth();
-					//TODO(bluesand):此处auth： WPA2-PSK / open
+					//TODO(bluesand):此处auth：  WPA/WPA2-PSK / open
 
-					if (!"WPA2-PSK".equals(auth) && !"open".equals(auth)) {
+					if (!"WPA/WPA2-PSK".equals(auth) && !"open".equals(auth)) {
 						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
 						return;
 					} else {
-						if ("WPA2-PSK".equals(auth)) {
+						if ("WPA/WPA2-PSK".equals(auth)) {
 							String auth_key = wifiDeviceSettingVapDTO.getAuth_key();
 							if (auth_key == null) {
 								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
@@ -121,7 +121,7 @@ public class CmdController extends BaseController{
 			}
 		}
 		
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(uid, mac.toLowerCase(), opt , subopt, extparams,/*payload,*/ channel, channel_taskid);
+		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(uid, mac.toLowerCase(), opt, subopt, extparams,/*payload,*/ channel, channel_taskid);
 		
 		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
 		if(resp.getErrorCode() == null){
