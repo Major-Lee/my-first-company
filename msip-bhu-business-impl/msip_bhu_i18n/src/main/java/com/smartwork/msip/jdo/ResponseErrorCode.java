@@ -36,6 +36,8 @@ public enum ResponseErrorCode {
 	COMMON_CONNECT_TIMEOUT_ERROR("992", "common.connect.timeout"),
 	COMMON_DATA_ALREADYEXIST("991", "common.data.alreadyexist"),
 	COMMON_DATA_ALREADYDONE("990", "common.data.alreadydone"),
+
+	COMMON_DATA_VALIDATE_LENGTH_ILEGAL("900","common.data.validate.length.ilegal"),
 		
 	
 	SNS_TYPE_NOT_SUPPORT("801", "sns.type.not.support"), 

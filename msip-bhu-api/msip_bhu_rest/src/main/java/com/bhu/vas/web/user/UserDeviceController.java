@@ -131,7 +131,7 @@ public class UserDeviceController extends BaseController {
         }
 
         if (!validateDeviceName(deviceName)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL));
             return;
         }
 

@@ -87,7 +87,7 @@ public class CmdController extends BaseController{
 							}
 							if(auth_key.getBytes("utf-8").length < 8  || auth_key.getBytes("utf-8").length > 32) {
 								//非法长度
-								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+								SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL));
 								return;
 							}
 						}
@@ -114,7 +114,7 @@ public class CmdController extends BaseController{
 					}
 					if(password.getBytes("utf-8").length < 4  || password.getBytes("utf-8").length > 31) {
 						//非法长度
-						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL));
 						return;
 					}
 				}
