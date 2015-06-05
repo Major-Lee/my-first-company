@@ -63,7 +63,7 @@ public class UserAccessStatisticOp {
 
 //    public static void main(String[] args) {
 //
-//        String filepath = "/Users/bluesand/Documents/logfile-20150527.log";// ADD REMOVE
+//        String filepath = "/Users/bluesand/Documents/logfile-20150604.log";// ADD REMOVE
 //        ApplicationContext ctx = new FileSystemXmlApplicationContext(
 //                "classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 //        userAccessStatisticsService = (UserAccessStatisticsService)
@@ -89,12 +89,12 @@ public class UserAccessStatisticOp {
         userUrlCategory.put("iqiyi", "iqiyi.com");
         userUrlCategory.put("taobao", "taobao.com");
         userUrlCategory.put("tmall", "tmall.com");
+        userUrlCategory.put("qqvideo", "v.qq.com");
         userUrlCategory.put("jd", "jd.com");
         userUrlCategory.put("meituan", "meituan.com");
 
-        userUrlCategory.put("qq", "qq.com");
-        userUrlCategory.put("weixin", "weixin.com");
-        userUrlCategory.put("qzone", "qzone.com");
+        userUrlCategory.put("weixin", "weixin.qq.com");
+        userUrlCategory.put("qzone", "qzone.qq.com");
         userUrlCategory.put("weibo", "weibo.com");
         userUrlCategory.put("douban", "douban.com");
 
@@ -640,14 +640,14 @@ public class UserAccessStatisticOp {
             while (it.hasNext()) {
                 String key = it.next();
                 String value = userUrlCategory.get(key);
-                if (host.contains(value)) {
+                if (host.lastIndexOf(value) > -1) {
                     if (map.containsKey(key)) {
                         map.put(key, map.get(key) + 1);
                     } else {
                         map.put(key, 1);
                     }
                 } else {
-                    if (map.containsKey("ohter")) {
+                    if (map.containsKey("other")) {
                         map.put("other", map.get("other") + 1);
                     } else {
                         map.put("other", 1);
@@ -712,6 +712,11 @@ public class UserAccessStatisticOp {
                 userUrlSubDTO.setCount(count);
                 shipinSum += count;
                 shipinUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("qqvideo".equals(key)){
+                userUrlSubDTO.setCategory("qqvideo");
+                userUrlSubDTO.setCount(count);
+                shipinSum += count;
+                shipinUserUrlSubDTOList.add(userUrlSubDTO);
             } else if ("taobao".equals(key)) {
                 userUrlSubDTO.setCategory("taobao");
                 userUrlSubDTO.setCount(count);
@@ -732,8 +737,13 @@ public class UserAccessStatisticOp {
                 userUrlSubDTO.setCount(count);
                 dianshangSum += count;
                 dianshangUserUrlSubDTOList.add(userUrlSubDTO);
-            } else if ("qq".equals(key)) {
-                userUrlSubDTO.setCategory("qq");
+            }else if ("weixin".equals(key)) {
+                userUrlSubDTO.setCategory("weixin");
+                userUrlSubDTO.setCount(count);
+                snsSum += count;
+                snsUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("qzone".equals(key)) {
+                userUrlSubDTO.setCategory("qzone");
                 userUrlSubDTO.setCount(count);
                 snsSum += count;
                 snsUserUrlSubDTOList.add(userUrlSubDTO);
