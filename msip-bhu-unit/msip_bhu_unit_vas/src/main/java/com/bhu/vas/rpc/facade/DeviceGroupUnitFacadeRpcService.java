@@ -71,11 +71,8 @@ public class DeviceGroupUnitFacadeRpcService{
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
 				}
 
-				ModelCriteria mc = new ModelCriteria();
-				mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-				mc.setPageNumber(1);
-				mc.setPageSize(5);
-				List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
+
+				List<String> groups = pgroup.getWifiIds();
 				if (groups != null && groups.size() > 0) {
 					//父节点上有数据，无法添加
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_EXIST_CHILDREN);
@@ -85,7 +82,7 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		}else{
 			dgroup = wifiDeviceGroupService.getById(gid);
-			
+
 			if (pid >0) {
 				WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
 				if (pgroup == null) {
@@ -98,11 +95,7 @@ public class DeviceGroupUnitFacadeRpcService{
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
 				}
 
-				ModelCriteria mc = new ModelCriteria();
-				mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-				mc.setPageNumber(1);
-				mc.setPageSize(5);
-				List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
+				List<String> groups = pgroup.getWifiIds();
 				if (groups != null && groups.size() > 0) {
 					//父节点上有数据，无法添加
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_EXIST_CHILDREN);
