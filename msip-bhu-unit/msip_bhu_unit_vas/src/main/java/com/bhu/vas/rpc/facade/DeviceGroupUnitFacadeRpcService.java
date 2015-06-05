@@ -52,12 +52,6 @@ public class DeviceGroupUnitFacadeRpcService{
 		//if(pid == null) pid = 0;
 		WifiDeviceGroup dgroup= null;
 		if(gid == 0){//新建一个组
-			dgroup = new WifiDeviceGroup();
-			dgroup.setPid(pid);
-			dgroup.setName(name);
-			dgroup.setCreator(uid);
-			dgroup.setUpdator(uid);
-			dgroup = wifiDeviceGroupService.insert(dgroup);
 
 			if (pid >0) {
 				WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
@@ -79,6 +73,12 @@ public class DeviceGroupUnitFacadeRpcService{
 				}
 			}
 
+			dgroup = new WifiDeviceGroup();
+			dgroup.setPid(pid);
+			dgroup.setName(name);
+			dgroup.setCreator(uid);
+			dgroup.setUpdator(uid);
+			dgroup = wifiDeviceGroupService.insert(dgroup);
 
 		}else{
 			dgroup = wifiDeviceGroupService.getById(gid);
