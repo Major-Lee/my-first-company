@@ -75,6 +75,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_GROUP_ONLINE_DEVICES_EMPTY("753","wifidevice.group.devices.online.empty"),
 	WIFIDEVICE_GROUP_TOO_LONG("754","wifidevice.group.devices.too.long"),
 	WIFIDEVICE_GROUP_EXIST_CHILDREN("755", "wifidevice.group.devices.exist.children"),
+	WIFIDEVICE_GROUP_NOTEXIST_PARENT("766", "wifidevice.group.devices.notexist.parent"),
 
 	
 	//WIFIDEVICE_GROUP_REMOVE_NOTEXIST("711","wifidevice.group.notexist"),
