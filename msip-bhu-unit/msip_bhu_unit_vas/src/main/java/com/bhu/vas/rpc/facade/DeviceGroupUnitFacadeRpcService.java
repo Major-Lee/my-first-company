@@ -60,6 +60,23 @@ public class DeviceGroupUnitFacadeRpcService{
 			dgroup = wifiDeviceGroupService.insert(dgroup);
 		}else{
 			dgroup = wifiDeviceGroupService.getById(gid);
+
+			String path = dgroup.getPath();
+			if (path.split("/").length >= 3) {
+				//节点已上限
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
+			}
+
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
+			mc.setPageNumber(1);
+			mc.setPageSize(5);
+			List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
+			if (groups != null && groups.size() > 0) {
+				//父节点上有数据，无法添加
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_EXIST_CHILDREN);
+			}
+
 			int oldPid = dgroup.getPid();
 			String oldPath = dgroup.getPath();
 			if(oldPid != pid){

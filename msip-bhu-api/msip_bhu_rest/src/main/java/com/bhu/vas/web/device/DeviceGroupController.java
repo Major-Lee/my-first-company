@@ -31,7 +31,7 @@ public class DeviceGroupController extends BaseController{
 	 * @param request
 	 * @param response
 	 * @param uid
-	 * @param gid
+	 * @param pid
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/birthTree",method={RequestMethod.POST})
@@ -50,6 +50,9 @@ public class DeviceGroupController extends BaseController{
 	
 	/**
 	 * 增加及修改群组
+	 *
+	 * 目前限制最多3级节点，限制只允许末节点有数据
+	 *
 	 * @param request
 	 * @param response
 	 * @param uid
@@ -101,7 +104,7 @@ public class DeviceGroupController extends BaseController{
 	 * 删除群组
 	 * @param request
 	 * @param response
-	 * @param ids 逗号分割
+	 * @param gids 逗号分割
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/remove",method={RequestMethod.POST})
@@ -121,7 +124,7 @@ public class DeviceGroupController extends BaseController{
 	 * 给指定的群组分配wifi设备
 	 * @param request
 	 * @param response
-	 * @param id
+	 * @param gid
 	 * @param wifi_ids
 	 */
 	@ResponseBody()
@@ -143,7 +146,7 @@ public class DeviceGroupController extends BaseController{
 	 * 从指定的群组删除wifi设备
 	 * @param request
 	 * @param response
-	 * @param id
+	 * @param gid
 	 * @param wifi_ids
 	 */
 	@ResponseBody()
