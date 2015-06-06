@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserUrlStatistics;
 import com.bhu.vas.business.ds.statistics.service.UserUrlStatisticsService;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -108,12 +109,26 @@ public class UserAccessStatisticsFacadeService {
 
     public RpcResponseDTO<List<UserBrandDTO>> fetchUserBrandStatistics(String date) {
         UserBrandStatistics userBrandStatistics = userBrandStatisticsService.getById(date);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics == null ? null : userBrandStatistics.getInnerModels());
+
+        if (userBrandStatistics == null) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+        } else {
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandStatistics.getInnerModels());
+        }
+
+
     }
 
     public RpcResponseDTO<List<UserUrlDTO>> fetchUserUrlStatistics(String date) {
         UserUrlStatistics userUrlStatistics = userUrlStatisticsService.getById(date);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse( userUrlStatistics ==null ? null : userUrlStatistics.getInnerModels());
+
+        if (userUrlStatistics == null) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+        } else {
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUrlStatistics.getInnerModels());
+        }
+
+
     }
 
 
