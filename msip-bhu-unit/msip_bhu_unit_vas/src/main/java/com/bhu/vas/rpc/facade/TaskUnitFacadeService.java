@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -193,7 +194,7 @@ public class TaskUnitFacadeService {
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);
-			dto.setState(task.getState());
+			dto.setState(formatedTaskState(task.getState()));
 			dto.setMac(task.getMac());
 			dto.setTaskid(task.getId());
 			
@@ -206,6 +207,22 @@ public class TaskUnitFacadeService {
 			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
 			return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
+	}
+	
+	/**
+	 * 任务状态查询接口的状态转换
+	 * api接口只提供4种状态
+	 * State_Done State_Timeout State_Failed State_Pending
+	 * @param state
+	 * @return
+	 */
+	protected String formatedTaskState(String state){
+		if(StringUtils.isEmpty(state)) return WifiDeviceDownTask.State_Failed;
+		if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Pending.equals(state)
+				|| WifiDeviceDownTask.State_Timeout.equals(state)){
+			return state;
+		}
+		return WifiDeviceDownTask.State_Failed;
 	}
 	
 //	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,

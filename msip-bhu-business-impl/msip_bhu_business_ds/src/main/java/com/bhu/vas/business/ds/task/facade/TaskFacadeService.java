@@ -47,7 +47,7 @@ public class TaskFacadeService {
 		if(downtask == null) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_UNDEFINED);
 		}
-		if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Failed.equals(state)){
+		/*if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Failed.equals(state)){
 			WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, state, response);
 			WifiDeviceDownTaskCompleted result = wifiDeviceDownTaskCompletedService.insert(completed);
 			wifiDeviceDownTaskService.deleteById(taskid);
@@ -56,7 +56,11 @@ public class TaskFacadeService {
 			downtask.setState(state);
 			wifiDeviceDownTaskService.update(downtask);
 			return null;
-		}
+		}*/
+		WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, state, response);
+		WifiDeviceDownTaskCompleted result = wifiDeviceDownTaskCompletedService.insert(completed);
+		wifiDeviceDownTaskService.deleteById(taskid);
+		return result;
 	}
 	
 	public void taskComming(WifiDeviceDownTask downtask){
