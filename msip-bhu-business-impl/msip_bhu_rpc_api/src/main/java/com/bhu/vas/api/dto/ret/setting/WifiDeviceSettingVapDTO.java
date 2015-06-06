@@ -137,11 +137,12 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = null;
 		switch(type){
 			case BuilderType_VapPassword:
-				properties = new Object[4];
+				properties = new Object[5];
 				properties[0] = name;
 				properties[1] = ssid;
 				properties[2] = auth;
 				properties[3] = auth_key;
+				properties[4] = auth_key_rsa;
 				break;
 			default:
 				properties = builderProperties();

@@ -583,7 +583,7 @@ public class DeviceHelper {
      "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";
 	
 	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
-	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" />";
+	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\"/>";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
 	public static final String DeviceSetting_MMItem = "<ITEM mac=\"%s\" name=\"%s\" />";
