@@ -822,15 +822,16 @@ public class DeviceHelper {
 		WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
 		if(vap_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
+
+		String auth_key = vap_dto.getAuth_key();
 		//如果没有指定vap的具体名称 则获取默认第一个非访客的vap进行修改
 		if(StringUtils.isEmpty(vap_dto.getName())){
 			WifiDeviceSettingVapDTO frist_vap_dto = getUrouterDeviceVap(ds_dto);
 			//如果没有一个可用的vap
 			if(frist_vap_dto == null) 
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
-			
 			vap_dto.setName(frist_vap_dto.getName());
+			vap_dto.setAuth(auth_key);
 		}
 		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
