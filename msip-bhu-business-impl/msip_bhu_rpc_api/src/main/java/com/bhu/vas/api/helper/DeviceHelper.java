@@ -832,6 +832,7 @@ public class DeviceHelper {
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 			vap_dto.setName(frist_vap_dto.getName());
 			vap_dto.setAuth_key(auth_key);
+			vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
 		}
 		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
