@@ -310,7 +310,7 @@ public class ConsoleController extends BaseController {
         RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
 
 
-        if (result != null) {
+        if (result != null && result.getPayload() != null) {
             List<UserBrandDTO> userBrandDTOList = result.getPayload();
             List<UserBrandVTO> userBrandVTOList = new ArrayList<UserBrandVTO>();
 
@@ -354,7 +354,7 @@ public class ConsoleController extends BaseController {
         RpcResponseDTO<List<UserUrlDTO>> result = statisticsRpcService.fetchUserUrlStatistics(date);
 
 
-        if (result != null) {
+        if (result != null && result.getPayload() != null) {
             List<UserUrlDTO> userUrlDTOList = result.getPayload();
             List<UserUrlVTO> userUrlVTOList = new ArrayList<UserUrlVTO>();
 

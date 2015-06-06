@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.consumer;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -21,12 +23,7 @@ public class UserAccessStatisticsConsumer {
         //System.out.println(statisticsRpcService.createUserAccessStatistics("/var/log/bhu/2015-04-29/logfile.log"));
         //statisticsRpcService.createUserAccessStatistics("/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-business-impl/msip_bhu_business_ds/src/test/java/com/bhu/vas/business/statistics/logfile.log");
 
-		List<UserUrlDTO> userUrlDTOList = statisticsRpcService.fetchUserUrlStatistics("2015-05-29").getPayload();
-
-		for (UserUrlDTO userUrlDTO : userUrlDTOList) {
-			System.out.println(userUrlDTO.getCount());
-			System.out.println(userUrlDTO.getCategory());
-		}
+		RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics("2015-06-07");
 
 		Thread.currentThread().join();
 	}
