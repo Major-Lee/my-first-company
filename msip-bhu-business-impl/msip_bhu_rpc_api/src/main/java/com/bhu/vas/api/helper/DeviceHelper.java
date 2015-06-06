@@ -831,6 +831,7 @@ public class DeviceHelper {
 			if(frist_vap_dto == null) 
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 			vap_dto.setName(frist_vap_dto.getName());
+			vap_dto.setAuth("ttt");
 			vap_dto.setAuth_key("1230987654321");
 			vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr("1230987654321"));
 		}
