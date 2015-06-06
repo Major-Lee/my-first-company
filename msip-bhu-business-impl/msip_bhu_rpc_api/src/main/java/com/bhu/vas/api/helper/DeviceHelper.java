@@ -831,9 +831,8 @@ public class DeviceHelper {
 			if(frist_vap_dto == null) 
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 			vap_dto.setName(frist_vap_dto.getName());
-			vap_dto.setAuth("ttt");
-			vap_dto.setAuth_key("1230987654321");
-			vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr("1230987654321"));
+			vap_dto.setAuth_key(auth_key);
+			vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
 		}
 		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
@@ -1150,6 +1149,33 @@ public class DeviceHelper {
 //		for(WifiDeviceSettingVapDTO vap : target.getVaps()){
 //			System.out.println(vap.getName() + "=" + vap.getSsid());
 //		}
+
+
+		String extparams = "{\"ssid\":\"urouter_admin\",\"auth\":\"WPA/WPA2-PSK\",\"auth_key\":\"12345678999\"}";
+		WifiDeviceSettingVapDTO vap_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+
+		String auth_key = vap_dto.getAuth_key();
+		//如果没有指定vap的具体名称 则获取默认第一个非访客的vap进行修改
+		if(StringUtils.isEmpty(vap_dto.getName())){
+
+			String old = "{\"name\":\"wlan0\",\"radio\":\"wifi0\",\"ssid\":\"urouter_admin\",\"auth\":\"ttt\",\"enable\":\"enable\",\"acl_type\":\"deny\",\"acl_name\":\"blackList\",\"guest_en\":\"disable\",\"auth_key\":null,\"auth_key_rsa\":\"14e61a755a682c17d24fb11844864c4bee67861fbd226493f9230734b14b75945b28e072cb7c0587f87094f19452786059b5140fcdc9faf1e08f3fe4597ebdef\"}";
+
+			WifiDeviceSettingVapDTO frist_vap_dto = JsonHelper.getDTO(old, WifiDeviceSettingVapDTO.class);
+			//如果没有一个可用的vap
+			if(frist_vap_dto == null)
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+			vap_dto.setName(frist_vap_dto.getName());
+			vap_dto.setAuth_key(auth_key);
+			vap_dto.setAuth_key_rsa("1234567890");
+		}
+		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem,
+				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+
+
+		System.out.println(item);
+
 	}
 
 }
