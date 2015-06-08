@@ -512,6 +512,9 @@ public class AsyncMsgHandleService {
 						ds.add(new DeviceStatistics(dto.getMac(), entity.getLast_login_at()));
 						
 						BeanUtils.copyProperties(dto, entity, HandsetDeviceDTO.copyIgnoreProperties);
+						if(!StringUtils.isEmpty(dto.getDhcp_name())){
+							entity.setHostname(dto.getDhcp_name());
+						}
 						entity.setLast_login_at(new Date());
 						entity.setLast_wifi_id(wifiId);
 						entity.setOnline(true);
