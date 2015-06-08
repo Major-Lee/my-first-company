@@ -37,8 +37,13 @@ public class WifiDeviceLocationQueryLoader {
 			List<WifiDevice> entitys = it.next();
 			for(WifiDevice device:entitys){
 				if(StringUtils.isEmpty(device.getLat()) || StringUtils.isEmpty(device.getLon())){
-					DaemonHelper.locationQuery(device.getId(), daemonRpcService);
-					count++;
+					//if('1.2.12','1.2.11','1.2.10'){
+					if(device.getOrig_swver().indexOf("1.2.12") >=0 
+							|| device.getOrig_swver().indexOf("1.2.11")>=0
+							|| device.getOrig_swver().indexOf("1.2.10")>=0){
+						DaemonHelper.locationQuery(device.getId(), daemonRpcService);
+						count++;
+					}
 				}
 			}
 		}
