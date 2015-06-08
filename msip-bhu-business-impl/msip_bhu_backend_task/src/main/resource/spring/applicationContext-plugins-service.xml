@@ -6,6 +6,7 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd" default-lazy-init="true">
 	
 	<import resource="classpath*:com/bhu/vas/plugins/quartz/applicationContext-quartz.xml"/>
+	<import resource="classpath*:springunit/applicationContextRpc*.xml"/>
 	<!-- 
 	<import resource="classpath*:com/et/msip/plugins/mail/applicationContext-mail.xml"/> -->
 	<!-- load activemq ticker business conf "classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-producer.xml" -->
