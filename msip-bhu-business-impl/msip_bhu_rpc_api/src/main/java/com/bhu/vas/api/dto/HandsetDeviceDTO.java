@@ -58,7 +58,8 @@ public class HandsetDeviceDTO implements Serializable{
 	private String channel;
 	//终端hostname
 	private String dhcp_name;
-	
+	//终端连接的设备vapname
+	private String vapname;
 	
 	public String getAction() {
 		return action;
@@ -210,5 +211,12 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setDhcp_name(String dhcp_name) {
 		this.dhcp_name = dhcp_name;
 	}
+	public String getVapname() {
+		return vapname;
+	}
+	public void setVapname(String vapname) {
+		this.vapname = vapname;
+	}
+	
 	
 }

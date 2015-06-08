@@ -295,6 +295,7 @@ public class DeviceBusinessFacadeService {
 			handset_device_entity.setSsid(dto.getSsid());
 			handset_device_entity.setBssid(dto.getBssid());
 			handset_device_entity.setPhy_rate(dto.getPhy_rate());
+			handset_device_entity.setVapname(dto.getVapname());
 			handset_device_entity.setRssi(dto.getRssi());
 			handset_device_entity.setSnr(dto.getSnr());
 			handset_device_entity.setLast_login_at(new Date());
