@@ -109,6 +109,7 @@ public class BusinessModelBuilder {
 		handset_device_entity.setLocation(dto.getLocation());
 		handset_device_entity.setChannel(dto.getChannel());
 		handset_device_entity.setLast_login_at(new Date());
+		handset_device_entity.setHostname(dto.getDhcp_name());
 		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		handset_device_entity.setOnline(true);
 		return handset_device_entity;

@@ -251,7 +251,11 @@ public class DeviceBusinessFacadeService {
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
 			handsetDeviceSync(ctx, parserHeader.getMac(), dtos);
-		}else{
+		}
+		else if(HandsetDeviceDTO.Action_Update.equals(fristDto.getAction())){
+			handsetDeviceUpdate(ctx, fristDto, parserHeader.getMac());
+		}
+		else{
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 		}
 	}
@@ -354,6 +358,28 @@ public class DeviceBusinessFacadeService {
 						exist_handset_device_entity.getId(), dto.getUptime());
 			}
 
+		}
+
+	}
+	
+	/**
+	 * 更新终端的hostname
+	 * @param ctx
+	 * @param dto
+	 * @param wifiId
+	 */
+	public void handsetDeviceUpdate(String ctx, HandsetDeviceDTO dto, String wifiId){
+		if(dto == null) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getDhcp_name()) || StringUtils.isEmpty(ctx))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+
+		String lowercase_d_mac = dto.getMac().toLowerCase();
+		//1:更新终端的hostname
+		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_d_mac);
+		if(exist_handset_device_entity != null){
+			exist_handset_device_entity.setHostname(dto.getDhcp_name());
+			handsetDeviceService.update(exist_handset_device_entity);
 		}
 
 	}
