@@ -395,10 +395,13 @@ public class DeviceHelper {
 					return false;
 				}
 			}
-			//2:验证vap是否都关联到此黑名单
+			//2:验证vap是否都关联到此黑名单 只判断vap为ap模式的
 			List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
 			if(vap_dtos != null && !vap_dtos.isEmpty()){
 				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+					if(!WifiDeviceSettingVapDTO.VapMode_AP.equals(vap_dto.getMode())){
+						continue;
+					}
 					if(!WifiDeviceSettingDTO.Default_AclName.equals(vap_dto.getAcl_name())
 							|| !WifiDeviceSettingVapDTO.AclType_Deny.equals(vap_dto.getAcl_type())){
 						return false;

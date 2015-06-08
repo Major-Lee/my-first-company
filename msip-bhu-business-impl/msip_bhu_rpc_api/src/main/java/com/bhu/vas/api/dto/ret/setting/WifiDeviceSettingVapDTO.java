@@ -12,6 +12,10 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	//白名单类型
 	public static final String AclType_Allow = "allow";
 	
+	public static final String VapMode_AP = "ap";
+	public static final String VapMode_STA = "sta";
+	
+	private String mode;
 	//VAP名称
 	private String name;
 	//所属的频
@@ -100,6 +104,12 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	}
 	public void setAuth_key_rsa(String auth_key_rsa) {
 		this.auth_key_rsa = auth_key_rsa;
+	}
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 
 	@Override
