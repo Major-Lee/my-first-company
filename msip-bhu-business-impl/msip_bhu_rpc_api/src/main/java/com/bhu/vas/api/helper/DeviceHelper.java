@@ -399,9 +399,9 @@ public class DeviceHelper {
 			List<WifiDeviceSettingVapDTO> vap_dtos = dto.getVaps();
 			if(vap_dtos != null && !vap_dtos.isEmpty()){
 				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
-					if(!WifiDeviceSettingVapDTO.VapMode_AP.equals(vap_dto.getMode())){
+/*					if(!WifiDeviceSettingVapDTO.VapMode_AP.equals(vap_dto.getMode())){
 						continue;
-					}
+					}*/
 					if(!WifiDeviceSettingDTO.Default_AclName.equals(vap_dto.getAcl_name())
 							|| !WifiDeviceSettingVapDTO.AclType_Deny.equals(vap_dto.getAcl_type())){
 						return false;
