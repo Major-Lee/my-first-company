@@ -61,6 +61,20 @@ public class UserCaptchaCode extends BaseStringModel{
 		super.preInsert();
 	}
 	
+	/**
+	 * 是否可以获取下一条验证码
+	 * 规则
+	 *  1、如果过期 true
+	 *  2、超过时间UserCanFetchNextCaptchaCode值 true
+	 * @return
+	 */
+	public boolean canFetchNext(){
+		long gap = System.currentTimeMillis() - this.getUpdated_at().getTime();
+		if(gap > RuntimeConfiguration.UserCanFetchNextCaptchaCode*1000) return true;
+		
+		return false;
+	}
+	
 	public boolean wasExpired(){
 		long gap = System.currentTimeMillis() - this.getUpdated_at().getTime();
 		if(gap > this.expired_sec*1000) return true;
