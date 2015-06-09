@@ -87,7 +87,14 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 					if(code.getTimes()>=RuntimeConfiguration.UserCaptchaCodeLimit){//同一天，次数超出限制
 						throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_TIMES_NOENOUGH);
 					}else{
-						if(igonreExpired || code.canFetchNext() || code.wasExpired()){//过期
+						/*if(igonreExpired){
+							code.setTimes(code.getTimes()+1);
+							code = this.update(code);
+							return code;
+						}else{
+							
+						}*/
+						if(igonreExpired || code.canFetchNext()/* || code.wasExpired()*/){//过期
 							code.setTimes(code.getTimes()+1);
 							code = this.update(code);
 							return code;

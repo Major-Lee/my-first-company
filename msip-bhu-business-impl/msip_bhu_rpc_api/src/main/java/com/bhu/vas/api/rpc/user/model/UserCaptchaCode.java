@@ -64,8 +64,7 @@ public class UserCaptchaCode extends BaseStringModel{
 	/**
 	 * 是否可以获取下一条验证码
 	 * 规则
-	 *  1、如果过期 true
-	 *  2、超过时间UserCanFetchNextCaptchaCode值 true
+	 *  超过时间UserCanFetchNextCaptchaCode值 true
 	 * @return
 	 */
 	public boolean canFetchNext(){
