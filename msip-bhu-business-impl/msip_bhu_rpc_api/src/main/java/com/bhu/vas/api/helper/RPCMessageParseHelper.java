@@ -289,6 +289,7 @@ public class RPCMessageParseHelper {
 					vap_dto.setRadio(vap_item.attributeValue("radio"));
 					vap_dto.setGuest_en(vap_item.attributeValue("guest_en"));
 					vap_dto.setAuth_key_rsa(vap_item.attributeValue("auth_key_rsa"));
+					vap_dto.setMode(vap_item.attributeValue("mode"));
 					vap_dtos.add(vap_dto);
 				}
 				dto.setVaps(vap_dtos);
