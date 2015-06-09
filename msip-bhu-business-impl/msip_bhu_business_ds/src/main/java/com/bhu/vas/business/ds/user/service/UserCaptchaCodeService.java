@@ -62,7 +62,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 	 *      
 	 * @param accWithContryCode
 	 * @param foreceGen 如果为true，则不考虑约束条件 下面一个参数失效
-	 * @param igonreExpired 如果为true，则不考虑是否过期
+	 * @param igonreExpired 如果为true，则不考虑是否过期,或是否可以获取next
 	 * @return
 	 */
 	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode,boolean foreceGen,boolean igonreExpired){
@@ -104,7 +104,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 		}
 	}
 	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode){
-		return this.doGenerateCaptchaCode(accWithContryCode, false, true);
+		return this.doGenerateCaptchaCode(accWithContryCode, false, false);
 	}
 	
 }
