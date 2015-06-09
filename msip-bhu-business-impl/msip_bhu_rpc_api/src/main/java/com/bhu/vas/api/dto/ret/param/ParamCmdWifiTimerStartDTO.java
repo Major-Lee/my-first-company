@@ -58,7 +58,7 @@ public class ParamCmdWifiTimerStartDTO{
 		if(StringUtils.isEmpty(_timeslot)){
 			return Default_Timeslot_Array;
 		}
-		String[] array = _timeslot.split(StringHelper.COMMA_STRING_GAP);
+		String[] array = _timeslot.split(StringHelper.MINUS_STRING_GAP);
 		if(array.length == 2) return array;
 		return Default_Timeslot_Array;
 	}
