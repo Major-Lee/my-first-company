@@ -87,19 +87,27 @@ public class UserAccessStatisticOp {
         userUrlCategory.put("youku", "youku.com");
         userUrlCategory.put("tudou", "tudou.com");
         userUrlCategory.put("iqiyi", "iqiyi.com");
-        userUrlCategory.put("taobao", "taobao.com");
-        userUrlCategory.put("tmall", "tmall.com");
         userUrlCategory.put("qqvideo", "v.qq.com");
+
         userUrlCategory.put("jd", "jd.com");
         userUrlCategory.put("meituan", "meituan.com");
+        userUrlCategory.put("taobao", "taobao.com");
+        userUrlCategory.put("tmall", "tmall.com");
+        userUrlCategory.put("vip", "vip.com");
+        userUrlCategory.put("nuomi", "nuomi.com");
+        userUrlCategory.put("paipai", "paipai.com");
+        userUrlCategory.put("amazon", "amazon.cn");
 
         userUrlCategory.put("weixin", "weixin.qq.com");
         userUrlCategory.put("qzone", "qzone.qq.com");
         userUrlCategory.put("weibo", "weibo.com");
         userUrlCategory.put("douban", "douban.com");
 
+
         userUrlCategory.put("baidu","baidu.com");
         userUrlCategory.put("sina", "sina.com.cn");
+
+        userUrlCategory.put("bhu", "bhunetworks.com");
 
 
         //操作系统
@@ -702,6 +710,8 @@ public class UserAccessStatisticOp {
             String key = it.next();
             Integer count = map.get(key);
 
+
+            //视频
             if ("youku".equals(key)) {
                 userUrlSubDTO.setCategory("youku");
                 userUrlSubDTO.setCount(count);
@@ -717,7 +727,10 @@ public class UserAccessStatisticOp {
                 userUrlSubDTO.setCount(count);
                 shipinSum += count;
                 shipinUserUrlSubDTOList.add(userUrlSubDTO);
-            } else if ("taobao".equals(key)) {
+            }
+
+            //电商
+            else if ("taobao".equals(key)) {
                 userUrlSubDTO.setCategory("taobao");
                 userUrlSubDTO.setCount(count);
                 dianshangSum += count;
@@ -737,7 +750,35 @@ public class UserAccessStatisticOp {
                 userUrlSubDTO.setCount(count);
                 dianshangSum += count;
                 dianshangUserUrlSubDTOList.add(userUrlSubDTO);
-            }else if ("weixin".equals(key)) {
+            } else if ("vip".equals(key)) {
+                userUrlSubDTO.setCategory("vip");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("nuomi".equals(key)) {
+                userUrlSubDTO.setCategory("nuomi");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("paipai".equals(key)) {
+                userUrlSubDTO.setCategory("paipai");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("paipai".equals(key)) {
+                userUrlSubDTO.setCategory("paipai");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            } else if ("amazon".equals(key)) {
+                userUrlSubDTO.setCategory("amazon");
+                userUrlSubDTO.setCount(count);
+                dianshangSum += count;
+                dianshangUserUrlSubDTOList.add(userUrlSubDTO);
+            }
+
+
+            else if ("weixin".equals(key)) {
                 userUrlSubDTO.setCategory("weixin");
                 userUrlSubDTO.setCount(count);
                 snsSum += count;

@@ -143,7 +143,7 @@ public class UserDeviceController extends BaseController {
     }
 
     private boolean validateDeviceName(String deviceName) throws  Exception {
-        if (deviceName.getBytes("utf-8").length < 32) {
+        if (deviceName.getBytes("utf-8").length < 48) {
             return true;
         }
         return false;

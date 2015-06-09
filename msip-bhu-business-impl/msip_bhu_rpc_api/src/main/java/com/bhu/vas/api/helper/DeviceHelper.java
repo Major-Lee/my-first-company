@@ -1077,6 +1077,9 @@ public class DeviceHelper {
 				if(StringUtils.isEmpty(mm_incr_dto.getMac()) || StringUtils.isEmpty(mm_incr_dto.getName())){
 					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 				}
+				if (mm_incr_dto.getName().getBytes("utf8").length > 32) {
+					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL);
+				}
 				ds.append(builderDeviceSettingItem(DeviceSetting_MMItem, mm_incr_dto.builderProperties()));
 			}
 		}
