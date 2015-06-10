@@ -23,6 +23,9 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
+        <!--
+        <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
+    -->
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
         
         <!--
