@@ -23,7 +23,7 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	private String timeslot = ParamCmdWifiTimerStartDTO.Default_Timeslot;
 	
 	//根据timeslot换算出当前时间是否wifi开启或关闭，此字段只用于展示，存储的值无效，取出后需重设定
-	private boolean enable = false;
+	private boolean enable = true;
 	/*//开始时间段
 	private String start;
 	//结束
@@ -86,7 +86,7 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 		if(on){
 			return DateTimeHelper.rangeInDefined(new Date(), timeslot, DateTimeHelper.longDateFormat);
 		}else{
-			return false;
+			return true;
 		}
 	}
 }
