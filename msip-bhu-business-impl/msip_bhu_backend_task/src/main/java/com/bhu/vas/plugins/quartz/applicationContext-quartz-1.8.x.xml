@@ -17,8 +17,7 @@
 				<ref bean="wifiDeviceOnlineCronTrigger" />
 				<!-- 每一个小时执行一次  -->
 				<ref bean="statisticsOnlineLoaderCronTrigger" />
-				<!-- 每一个小时执行一次  -->
-				<ref bean="wifiDeviceLocationQueryLoaderCronTrigger" />
+				
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -30,7 +29,7 @@
 	</bean>
 
 	<!-- Cron式Trigger定义 -->
-	<bean id="systemStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<bean id="systemStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="systemStatisticsLoaderJobDetail" />
 		<!-- 每隔5分钟执行一次   0 0/1 * * * ?  -->
 		<property name="cronExpression" value="0 0/5 * * * ?" />
@@ -48,7 +47,7 @@
 	<bean id="systemStatisticsLoaderJob" class="com.bhu.vas.plugins.quartz.SystemStatisticsLoader" />
 	
 	<!-- Cron式Trigger定义 -->
-	<bean id="statisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<bean id="statisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="statisticsLoaderJobDetail" />
 		<!-- 每天凌晨0点1分执行一次   0 1 0 * * ?  -->
 		<property name="cronExpression" value="0 1 0 * * ?" />
@@ -67,7 +66,7 @@
 	
 	
 	<!-- Cron式Trigger定义 -->
-	<bean id="wifiDeviceOnlineCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<bean id="wifiDeviceOnlineCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="wifiDeviceOnlineJobDetail" />
 		<!-- 每30分钟执行一次   0 0/30 * * * ?  -->
 		<property name="cronExpression" value="0 0/30 * * * ?" />
@@ -86,7 +85,7 @@
 	
 	
 	<!-- Cron式Trigger定义 -->
-	<bean id="statisticsOnlineLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<bean id="statisticsOnlineLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="statisticsOnlineLoaderCronJobDetail" />
 		<!-- 每一时执行一次 -->
 		<property name="cronExpression" value="0 0/60 * * * ?" />
@@ -105,12 +104,13 @@
 	
 	
 	
-	<!-- Cron式Trigger定义 -->
-	<bean id="wifiDeviceLocationQueryLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<!-- Cron式Trigger定义 -->
+	<bean id="wifiDeviceLocationQueryLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="wifiDeviceLocationQueryLoaderCronJobDetail" />
 		<!-- 每一时执行一次 -->
 		<property name="cronExpression" value="0 0/60 * * * ?" />
 	</bean>
+
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
 	<bean id="wifiDeviceLocationQueryLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="wifiDeviceLocationQueryLoaderJob" />
