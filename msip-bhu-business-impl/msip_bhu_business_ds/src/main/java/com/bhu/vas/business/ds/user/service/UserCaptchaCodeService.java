@@ -57,7 +57,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 	 * 	1、如果不存在记录则创建一条新纪录
 	 *  2、如果存在记录
 	 *  	a、对于当天的记录
-	 *  		需要首先判断验证码生成次数达到上限，如果没有则看上次生成的验证码是否过期，如果没有过期则返回错误码，让客户端继续等待，如果过期则重新生成一个
+	 *  		需要首先判断验证码生成次数达到上限，如果没有则看上次生成的验证码是否过期或者可以获取下一条验证码，如果不行返回等待错误码，让客户端继续等待，如果过期则重新生成一个
 	 *      b、如果不是当天记录 则重新生成一个
 	 *      
 	 * @param accWithContryCode
@@ -94,6 +94,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 						}else{
 							
 						}*/
+						//是否可以获取下一条验证码
 						if(igonreExpired || code.canFetchNext()/* || code.wasExpired()*/){//过期
 							code.setTimes(code.getTimes()+1);
 							code = this.update(code);
