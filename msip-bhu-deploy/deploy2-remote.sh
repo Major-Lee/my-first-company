@@ -63,7 +63,7 @@ DeployUser=$1
 echo '准备发布业务组件到'
 
 echo 'deploy msip_bhu_unit_input_processor to ...@'Deploy2Server
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/spring*-4.1.2.RELEASE.jar  	root@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/spring*-4.1.2.RELEASE.jar 	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/msip_*.jar  	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/classes/com/ 		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server
