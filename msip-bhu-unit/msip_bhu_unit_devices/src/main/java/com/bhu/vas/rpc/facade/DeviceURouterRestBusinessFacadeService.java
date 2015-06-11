@@ -424,6 +424,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		UserWifiTimerSettingDTO uwt_dto = user_setting_entity.getUserSetting(UserWifiTimerSettingDTO.
 				Setting_Key, UserWifiTimerSettingDTO.class);
 		
+		uwt_dto.setEnable(uwt_dto.wifiCurrentEnable());
 		/*if(uto_dto == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		}*/

@@ -51,40 +51,68 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 			}
 		}
 	}*/
-	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode){
+	
+	/**
+	 * 策略：
+	 * 	1、如果不存在记录则创建一条新纪录
+	 *  2、如果存在记录
+	 *  	a、对于当天的记录
+	 *  		需要首先判断验证码生成次数达到上限，如果没有则看上次生成的验证码是否过期或者可以获取下一条验证码，如果不行返回等待错误码，让客户端继续等待，如果过期则重新生成一个
+	 *      b、如果不是当天记录 则重新生成一个
+	 *      
+	 * @param accWithContryCode
+	 * @param foreceGen 如果为true，则不考虑约束条件 下面一个参数失效
+	 * @param igonreExpired 如果为true，则不考虑是否过期,或是否可以获取next
+	 * @return
+	 */
+	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode,boolean foreceGen,boolean igonreExpired){
 		UserCaptchaCode code = this.getById(accWithContryCode);
 		if(code == null){
 			code = new UserCaptchaCode();
 			code.setId(accWithContryCode);
 			code.setTimes(1);
 			code = this.insert(code);
+			return code;
 		}else{
-			if(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5).equals(code.getDate())){//如果是同一天
-				if(code.getTimes()>=RuntimeConfiguration.UserCaptchaCodeLimit){//同一天，次数超出限制
-					throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_TIMES_NOENOUGH);
+			if(foreceGen){
+				if(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5).equals(code.getDate())){//如果是同一天
+					code.setTimes(code.getTimes()+1);
 				}else{
-					if(code.wasExpired()){//过期
-						code.setTimes(code.getTimes()+1);
-						code = this.update(code);
-					}else{//还没过期
-						throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_PATIENT_WAITING);
-					}
+					code.setTimes(1);
 				}
-			}else{//不是同一天
-				code.setTimes(1);
 				code = this.update(code);
+				return code;
+			}else{
+				if(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5).equals(code.getDate())){//如果是同一天
+					if(code.getTimes()>=RuntimeConfiguration.UserCaptchaCodeLimit){//同一天，次数超出限制
+						throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_TIMES_NOENOUGH);
+					}else{
+						/*if(igonreExpired){
+							code.setTimes(code.getTimes()+1);
+							code = this.update(code);
+							return code;
+						}else{
+							
+						}*/
+						//是否可以获取下一条验证码
+						if(igonreExpired || code.canFetchNext()/* || code.wasExpired()*/){//过期
+							code.setTimes(code.getTimes()+1);
+							code = this.update(code);
+							return code;
+						}else{//还没过期
+							throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_PATIENT_WAITING);
+						}
+					}
+				}else{
+					code.setTimes(1);
+					code = this.update(code);
+					return code;
+				}
 			}
-			
-			/*if(code.getTimes()>=RuntimeConfiguration.UserCaptchaCodeLimit 
-					&& DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5).equals(code.getDate())){
-				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_TIMES_NOENOUGH);
-				//throw new RuntimeException(acc+"每天申请的码超过限制！");
-			}
-			if(code.wasExpired()){
-				code.setTimes(code.getTimes()+1);
-				code = this.update(code);
-			}*/
 		}
-		return code;
 	}
+	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode){
+		return this.doGenerateCaptchaCode(accWithContryCode, false, false);
+	}
+	
 }

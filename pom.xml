@@ -23,6 +23,9 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
+        <!--
+        <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
+    -->
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
         
         <!--
@@ -53,18 +56,33 @@
         <module>msip-wecite-api/msip_wecite_rest</module>
 -->
     </modules>
-
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <smartwork.version>3.0-SNAPSHOT</smartwork.version>
+        <spring.version>4.1.2.RELEASE</spring.version>
+        <spring-data.version>1.3.0.RELEASE</spring-data.version>
+        <mybatis.version>3.2.8</mybatis.version>
+        <!--
+        <spring-integration.version>4.0.3.RELEASE</spring-integration.version>
+        <spring-integration-stream.version>4.1.0.RELEASE</spring-integration-stream.version>
+        <spring-integration-kafka.version>1.0.0.M2</spring-integration-kafka.version>
+        <kafka.version>0.8.1.1</kafka.version>
+        <log4j.version>1.2.15</log4j.version>
+        -->
+        <logback.version>[1.1.2,)</logback.version>
+        <slf4j.version>[1.7.7,)</slf4j.version>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core</artifactId>
-                <version>3.0-SNAPSHOT</version>
+                <version>${smartwork.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core_cachedext</artifactId>
-                <version>3.0-SNAPSHOT</version>
+                <version>${smartwork.version}</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>xmemcached</artifactId>
@@ -79,17 +97,17 @@
             <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core_plugins_wordfilter</artifactId>
-                <version>3.0-SNAPSHOT</version>
+                <version>${smartwork.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_fsstorerule</artifactId>
-                <version>3.0-SNAPSHOT</version>
+                <version>${smartwork.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core_dubbo_logger_ext</artifactId>
-                <version>3.0-SNAPSHOT</version>
+                <version>${smartwork.version}</version>
             </dependency>
             
             <dependency>
@@ -220,7 +238,7 @@
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
-                <version>3.2.8</version>
+                <version>${mybatis.version}</version>
             </dependency>
 
             <dependency>
@@ -402,13 +420,13 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.7</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.7</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <dependency>
@@ -558,7 +576,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.2</version>
+                <version>${logback.version}</version>
             </dependency>
 
             <dependency>
@@ -602,44 +620,44 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>  
                 <groupId>org.springframework</groupId>  
                 <artifactId>spring-tx</artifactId>  
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>            
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jms</artifactId>
-                <version>3.2.7.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.spark</groupId>
@@ -657,7 +675,7 @@
               <groupId>org.apache.spark</groupId>
               <artifactId>spark-streaming-kafka_2.10</artifactId>
               <version>1.3.1</version>
-            </dependency>  
+            </dependency>          
       </dependencies>
 
     </dependencyManagement>
