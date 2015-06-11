@@ -720,8 +720,10 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	public void taskWifiTimerStop(String ctx, String response, String wifiId, int taskid){
+		System.out.println("taskWifiTimerStop: ctx"+ctx+" response:"+response+" wifiid:"+wifiId+" taskid:"+taskid);
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
+		System.out.println("taskWifiTimerStop: serialDto status:"+serialDto.getStatus());
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			//WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			//去除app设置到数据库中
@@ -733,7 +735,9 @@ public class DeviceBusinessFacadeService {
 			}
 			timerStarSetting.setOn(false);
 			timerStarSetting.setDs(true);
+			setting.putUserSetting(timerStarSetting);
 			userSettingStateService.update(setting);
+			System.out.println("taskWifiTimerStop: Setting update ok");
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
