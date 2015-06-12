@@ -9,7 +9,6 @@ import org.apache.spark.streaming.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.business.ds.user.service.UserService;
 

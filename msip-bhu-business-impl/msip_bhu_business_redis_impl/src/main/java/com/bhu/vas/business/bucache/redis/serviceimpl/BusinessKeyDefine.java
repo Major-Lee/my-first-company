@@ -61,6 +61,11 @@ public class BusinessKeyDefine {
 		public static final String UserSnsCheck  = "WUSC";
 	}
 
+	public static class WifiStasniffer{
+		public static final String TerminalRecent = "WSTR";
+		public static final String TerminalHot = "WSTH";
+		public static final String TerminalDetailRecent = "WSTDR";
+	}
 	public static class VapMode {
 		public static final String VapModeCount = "VM.";
 	}
