@@ -11,6 +11,8 @@ public class WifistasnifferItemRddto implements Serializable{
 	private int state;
 	//终端mac
 	private String mac;
+	//设备mac
+	private String d_mac;
 	//探测发现时间
 	private long snifftime;
 	//停留时间 单位秒
@@ -71,6 +73,12 @@ public class WifistasnifferItemRddto implements Serializable{
 	}
 	public void setDevice_name(String device_name) {
 		this.device_name = device_name;
+	}
+	public String getD_mac() {
+		return d_mac;
+	}
+	public void setD_mac(String d_mac) {
+		this.d_mac = d_mac;
 	}
 	public boolean isOnline(){
 		if(State_Online == this.getState()) return true;
