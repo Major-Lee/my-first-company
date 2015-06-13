@@ -93,20 +93,14 @@
 	<bean id="messageDispatcher" class="com.smartwork.async.messagequeue.kafka.KafkaMessageDispatcher">
 		<property name="messageHandlers" ref="messageHandlers"></property>
 	</bean>
-	
+	<!-- 
 	<util:map id="messageHandlers" value-type="com.smartwork.async.messagequeue.kafka.parser.iface.IMessageHandler">  
 	    <entry key="CommonMessageQueue" value-ref="commonMessageHandler">  
 	    </entry>
-	    <!-- 
-	    <entry key="test22" value-ref="stringMessageHandler"> 
-	     </entry>
-	    <entry key="regextopic1" 	value-ref="stringMessageHandler">  
-	    </entry>
-	    <entry key="regextopic2" 	value-ref="stringMessageHandler">
-	    </entry> -->  
 	</util:map> 
 	
 	<bean id="commonMessageHandler" class="com.smartwork.async.messagequeue.kafka.parser.impl.CommonMessageHandler"/>
+	 -->
 	<!-- 
 	<bean id="stringMessageHandler" class="org.springframework.integration.samples.kafka.parser.impl.StringMessageHandler"/>
 	 -->

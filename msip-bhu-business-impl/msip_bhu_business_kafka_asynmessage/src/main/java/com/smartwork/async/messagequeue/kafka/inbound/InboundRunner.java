@@ -6,7 +6,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class InboundRunner {
 	//private static final String CONFIG = "kafkaInboundAdapterParserTests-context.xml";
-	private static final String CONFIG = "/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafkaAdapterParser.xml";
+	private static final String[] CONFIG = {
+		"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-MessageHandler.xml",
+		"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafkaAdapterParser.xml"};
 
 	public static void main(final String args[]) throws UnsupportedEncodingException {
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, InboundRunner.class);
