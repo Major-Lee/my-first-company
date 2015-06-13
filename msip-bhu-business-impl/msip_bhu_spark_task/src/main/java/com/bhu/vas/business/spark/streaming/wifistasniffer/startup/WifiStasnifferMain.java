@@ -33,10 +33,10 @@ import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferRddto;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.action.WifiStasnifferForeachRDDAction;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.conf.WifistasnifferRuntimeConf;
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferItemRddto;
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferRddto;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.transform.WifiStasnifferToPairTransform;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.transform.WifiStasnifferToRddtoIterableTransform;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.transform.WifiStasnifferToRddtoTransform;

@@ -1,4 +1,4 @@
-package com.bhu.vas.business.spark.streaming.wifistasniffer.rddto;
+package com.bhu.vas.api.dto.wifistasniffer;
 
 import java.io.Serializable;
 import java.util.List;

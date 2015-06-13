@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.springframework.stereotype.Component;
 
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferItemRddto;
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferRddto;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferRddto;
 import com.google.common.collect.Lists;
 
 /**

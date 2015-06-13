@@ -50,6 +50,10 @@ public class TerminalHotSortedSetService extends AbstractRelationSortedSetCache{
 		super.zincrby(generateKey(mac), incr_sniffcount, hd_mac);
 	}
 	
+	public void addTerminalHots(String mac, String[] hd_macs, double[] incr_sniffcounts){
+		super.pipelineZIncr_SameKeyWithDiffMember(generateKey(mac), incr_sniffcounts, hd_macs);
+	}
+	
 	public Set<Tuple> fetchTerminalHotWithScores(String mac,int start,int size){
 		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
 		return super.zrevrangeWithScores(generateKey(mac), start, (start+size-1));
