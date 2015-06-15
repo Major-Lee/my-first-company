@@ -1,6 +1,7 @@
 package com.bhu.vas.processor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,6 +9,7 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+
 
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
@@ -146,20 +148,20 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	
 	@PreDestroy
 	public void destory(){
+		String simplename = this.getClass().getSimpleName();
 		if(exec_dispatcher != null){
-			String simplename = this.getClass().getSimpleName();
-			System.out.println(simplename+" exec正在shutdown");
+			System.out.println(simplename+" exec_dispatcher正在shutdown");
 			exec_dispatcher.shutdown();
-			System.out.println(simplename+" exec正在shutdown成功");
+			System.out.println(simplename+" exec_dispatcher正在shutdown成功");
 			while(true){
-				System.out.println(simplename+" 正在判断exec是否执行完毕");
+				System.out.println(simplename+" 正在判断exec_dispatcher是否执行完毕");
 				if(exec_dispatcher.isTerminated()){
-					System.out.println(simplename+" exec是否执行完毕,终止exec...");
+					System.out.println(simplename+" exec_dispatcher是否执行完毕,终止exec...");
 					exec_dispatcher.shutdownNow();
-					System.out.println(simplename+" exec是否执行完毕,终止exec成功");
+					System.out.println(simplename+" exec_dispatcher是否执行完毕,终止exec成功");
 					break;
 				}else{
-					System.out.println(simplename+" exec未执行完毕...");
+					System.out.println(simplename+" exec_dispatcher未执行完毕...");
 					try {
 						Thread.sleep(2*1000);
 					} catch (InterruptedException e) {
@@ -168,6 +170,34 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 				}
 			}
 		}
+		if(exec_processes != null){
+			int index = 0;
+			Iterator<ExecutorService> iter = exec_processes.iterator();
+			while(iter.hasNext()){
+				ExecutorService exec = iter.next();
+				exec.shutdown();
+				System.out.println(String.format("[%s] exec[%s]正在shutdown成功",simplename,index));
+				while(true){
+					System.out.println(String.format("[%s] 正在判断exec[%s]是否执行完毕",simplename,index));
+					if(exec.isTerminated()){
+						System.out.println(String.format("[%s] exec[%s]是否执行完毕,终止exec...",simplename,index));
+						exec.shutdownNow();
+						System.out.println(String.format("[%s] exec[%s]是否执行完毕,终止exec成功",simplename,index));
+						break;
+					}else{
+						System.out.println(String.format("[%s] exec[%s]未执行完毕...",simplename,index));
+						try {
+							Thread.sleep(2*1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				iter.remove();
+				index++;
+			}
+		}
+		
 	}
 
 	public int[] getHits() {
