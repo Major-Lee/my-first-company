@@ -66,7 +66,7 @@ public class UserServiceTest extends BaseTest{
     	System.out.println(String.format("Unit test cost:[%s]s", (unit_test_end-unit_test_start)/1000));*/
     }
     
-    @Test
+    //@Test
 	public void test001BatchCreateUser(){
     	System.out.println(Integer.MAX_VALUE);
     	CommonCriteria mc = new CommonCriteria();
@@ -299,7 +299,7 @@ public class UserServiceTest extends BaseTest{
     	AssertHelper.isTrue(findAllIds.size() == batch_create_size-1-users.getItems().size());
 	}
     
-    @Test
+    //@Test
 	public void test014EmptyUser(){
 		unit_test_end = System.currentTimeMillis();
     	System.out.println(String.format("Unit test batch insert cost:[%s]s", batch_insert_cost_time/1000));
@@ -369,29 +369,5 @@ public class UserServiceTest extends BaseTest{
 		System.out.println(tailusers.isLastPage());
 		System.out.println(tailusers.getPageNumber());
 	}	
-	//
-	/*public void testPageJson(){
-		TailPage<User> page =(TailPage<User>) this.userService.findTail(null, null, 1, 15);
-		//Page<Map> pagemap = JsonHelper.filterPageData(page, false, "id","username","truename","email");
-		//String jsonStr = JsonHelper.getPageData(pagemap, true);
-		String jsonStr = JsonHelper.getPageJsonData(page,DateConvertType.TOLONG,false, "id","username","truename","email");
-		System.out.println(jsonStr);
-	}*/
-	//@Test
-	/*public void testFindUniqueModel(){
-		String username = "木藤下雨";
-		User user  = this.userService.findUserByNickname(username);
-		//System.out.println(user.getSalt());
-		System.out.println(user.getNickname());
-	}*/
-	
-	//@Test
-	/*public void testFindUniqueModelByNickname(){
-		//String username = "edmond";
-		User user  = this.userService.findUserByNickname("木藤下雨");//施凯文Kay");//findUniqueByProperty("username", username);
-		//System.out.println(user.getSalt());
-		System.out.println(user.getPassword());
-	}*/
-	//@Test
 
 }
