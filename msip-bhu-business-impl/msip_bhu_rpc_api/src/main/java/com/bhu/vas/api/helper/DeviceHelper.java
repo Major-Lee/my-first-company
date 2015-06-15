@@ -275,6 +275,24 @@ public class DeviceHelper {
 	}
 	
 	/**
+	 * 返回设备配置数据中的admin的用户数据
+	 * @param dto
+	 * @return
+	 */
+	public static WifiDeviceSettingUserDTO getURouterDeviceAdminUser(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		List<WifiDeviceSettingUserDTO> users = dto.getUsers();
+		if(users == null || users.isEmpty()) return null;
+		WifiDeviceSettingUserDTO user_dto = new WifiDeviceSettingUserDTO();
+		user_dto.setName(WifiDeviceSettingUserDTO.Admin_Name);
+		int index = users.indexOf(user_dto);
+		if(index != -1){
+			return users.get(index);
+		}
+		return null;
+	}
+	
+	/**
 	 * 获取ratecontorl的indexs
 	 * @param rc_list
 	 * @return

@@ -17,6 +17,8 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -36,6 +38,9 @@ import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -45,6 +50,7 @@ import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -340,7 +346,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			vto.setWan_ip(device_entity.getWan_ip());
 			vto.setIp(device_entity.getIp());
 			//vto.setMode(DeviceHelper.getDeviceMode(setting_dto));
-			//获取正常的vap
+			//获取正常的vap COMMENT
 			WifiDeviceSettingVapDTO normal_vap = DeviceHelper.getUrouterDeviceVap(setting_dto);
 			if(normal_vap != null){
 				vto.setVap_auth(normal_vap.getAuth());
@@ -464,6 +470,70 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 
+	/**
+	 * 获取urouter相关的设备配置数据
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac) {
+		try{
+			deviceFacadeService.validateUserDevice(uid, mac);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
+			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+			
+			URouterDeviceConfigVTO vto = new URouterDeviceConfigVTO();
+			//获取正常的vap
+			WifiDeviceSettingVapDTO normal_vap = DeviceHelper.getUrouterDeviceVap(setting_dto);
+			if(normal_vap != null){
+				vto.setVap_auth(normal_vap.getAuth());
+				vto.setVap_name(normal_vap.getName());
+				vto.setVap_ssid(normal_vap.getSsid());
+				vto.setVap_pwd(JNIRsaHelper.jniRsaDecryptHexStr(normal_vap.getAuth_key_rsa()));
+			}
+			//黑名单列表
+			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
+			if(acl_dto != null){
+				vto.setBlock_macs(acl_dto.getMacs());
+			}
+			//终端别名
+			List<WifiDeviceSettingMMDTO> mm_dtos = setting_dto.getMms();
+			if(mm_dtos != null){
+				List<URouterDeviceConfigMMVTO> mm_vtos = new ArrayList<URouterDeviceConfigMMVTO>();
+				for(WifiDeviceSettingMMDTO mm_dto : mm_dtos){
+					mm_vtos.add(new URouterDeviceConfigMMVTO(mm_dto.getMac(), mm_dto.getName()));
+				}
+				vto.setMms(mm_vtos);
+			}
+			//终端限速
+			List<WifiDeviceSettingRateControlDTO> rateControls = setting_dto.getRatecontrols();
+			if(rateControls != null){
+				List<URouterDeviceConfigRateControlVTO> rcs_vtos = new ArrayList<URouterDeviceConfigRateControlVTO>();
+				for(WifiDeviceSettingRateControlDTO rc_dto : rateControls){
+					URouterDeviceConfigRateControlVTO rc = new URouterDeviceConfigRateControlVTO();
+					rc.setMac(rc_dto.getMac());
+					if(!StringUtils.isEmpty(rc_dto.getRx()))
+						rc.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc_dto.getRx()));
+					if(!StringUtils.isEmpty(rc_dto.getTx()))
+						rc.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc_dto.getTx()));
+					rcs_vtos.add(rc);
+				}
+				vto.setRcs(rcs_vtos);
+			}
+			//信号强度
+			vto.setPower(DeviceHelper.getURouterDevicePower(setting_dto));
+			//admin密码
+			WifiDeviceSettingUserDTO admin_user_dto = DeviceHelper.getURouterDeviceAdminUser(setting_dto);
+			if(admin_user_dto != null){
+				vto.setAdmin_pwd(JNIRsaHelper.jniRsaDecryptHexStr(admin_user_dto.getPassword_rsa()));
+			}
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
 	/**
 	 * urouter用户注册app移动设备信息
 	 * @param uid

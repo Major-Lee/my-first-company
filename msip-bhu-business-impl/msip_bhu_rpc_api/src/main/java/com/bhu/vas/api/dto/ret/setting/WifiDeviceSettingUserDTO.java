@@ -8,6 +8,7 @@ package com.bhu.vas.api.dto.ret.setting;
  *
  */
 public class WifiDeviceSettingUserDTO implements DeviceSettingBuilderDTO{
+	public static final String Admin_Name = "admin";
 	//用户名称
 	private String name;
 	//加密密码

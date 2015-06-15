@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.Map;
 
 import com.bhu.vas.api.vto.*;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 
 import org.springframework.util.StringUtils;
 
@@ -121,6 +122,15 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 		
 		return deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(uid, wifiId, on, 
 				stranger_on, timeslot, timeslot_mode);
+	}
+	
+	@Override
+	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid,
+			String mac) {
+		if(uid == null || StringUtils.isEmpty(mac)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterConfigs(uid, mac);
 	}
 	
 	@Override
