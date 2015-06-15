@@ -44,6 +44,7 @@ import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
@@ -520,13 +521,13 @@ public class DeviceFacadeService {
 	 * @param mac
 	 * @return
 	 */
-	public String queryHandsetDeviceName(String hd_mac, String mac){
+	public String queryPushHandsetDeviceName(String hd_mac, String mac){
 		WifiDeviceSettingDTO setting_dto = queryDeviceSettingDTO(mac);
 		if(setting_dto != null){
 			//查询终端别名
 			String alias = DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto);
 			if(!StringUtils.isEmpty(alias)){
-				return alias;
+				return StringHelper.chopMiddleString(alias, 8, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
 		//如果没有别名 以终端主机名填充
@@ -534,10 +535,13 @@ public class DeviceFacadeService {
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
-				return hostname;
+				if(hostname.startsWith("android-")){
+					return "安卓设备";
+				}
+				return StringHelper.chopMiddleString(hostname, 8, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
-		return null;
+		return hd_mac;
 	}
 	
 	/**
