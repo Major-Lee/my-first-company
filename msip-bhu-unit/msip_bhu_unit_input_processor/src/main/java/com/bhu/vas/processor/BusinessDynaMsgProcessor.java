@@ -1,11 +1,14 @@
 package com.bhu.vas.processor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+
 
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
@@ -20,6 +23,7 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
+import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -32,7 +36,11 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 @Service
 public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(100);
+	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
+	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
+	
+	private int hash_prime = 10;
+	private int per_threads = 10;
 	//private static String Online_Prefix = "00000001";
 	/*private static final int DeviceOffline_Prefix = 3;
 	private static final int DeviceNotExist_Prefix = 4;
@@ -45,6 +53,11 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	@PostConstruct
 	public void initialize(){
 		logger.info("BusinessDynaMsgProcessor initialize...");
+		
+		for(int i=0;i<hash_prime;i++){
+			exec_processes.add(Executors.newFixedThreadPool(per_threads));
+		}
+		
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
@@ -54,11 +67,10 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	public void onMessage(final String ctx,final String message) {
 		//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 		validateStep1(message);
-		exec.submit((new Runnable() {
+		exec_dispatcher.submit((new Runnable() {
 			@Override
 			public void run() {
 				logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
-				//logger.info("1");
 				try{
 					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 					int type = Integer.parseInt(message.substring(0, 8));
@@ -69,7 +81,6 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							headers = ParserHeader.builder(null,type);
 							payload = StringHelper.formatMacAddress(message.substring(8));
 							headers.setMac(payload);
-							
 							break;
 						case ParserHeader.DeviceNotExist_Prefix:
 							headers = ParserHeader.builder(null,type);
@@ -102,13 +113,24 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 								}
 							}
 						}
-						deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+						onProcessor(ctx,payload,headers);
+						//deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 					}
 					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("BusinessDynaMsgProcessor", ex);
 				}
+			}
+		}));
+	}
+	
+	public void onProcessor(final String ctx,final String payload,final ParserHeader headers) {
+		String mac = headers.getMac();
+		exec_processes.get(HashAlgorithmsHelper.rotatingHash1(mac, hash_prime)).submit((new Runnable() {
+			@Override
+			public void run() {
+				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
 	}
@@ -140,16 +162,16 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	
 	@PreDestroy
 	public void destory(){
-		if(exec != null){
+		if(exec_dispatcher != null){
 			String simplename = this.getClass().getSimpleName();
 			System.out.println(simplename+" exec正在shutdown");
-			exec.shutdown();
+			exec_dispatcher.shutdown();
 			System.out.println(simplename+" exec正在shutdown成功");
 			while(true){
 				System.out.println(simplename+" 正在判断exec是否执行完毕");
-				if(exec.isTerminated()){
+				if(exec_dispatcher.isTerminated()){
 					System.out.println(simplename+" exec是否执行完毕,终止exec...");
-					exec.shutdownNow();
+					exec_dispatcher.shutdownNow();
 					System.out.println(simplename+" exec是否执行完毕,终止exec成功");
 					break;
 				}else{
