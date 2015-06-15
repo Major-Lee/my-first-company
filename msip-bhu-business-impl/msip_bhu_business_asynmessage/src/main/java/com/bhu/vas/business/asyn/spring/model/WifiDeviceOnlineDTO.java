@@ -4,7 +4,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class WifiDeviceOnlineDTO extends ActionDTO {
-	
+	private String join_reason;//设备加入原因类型
 	private long login_ts;//wifi设备本次登录的时间
 	private long last_login_at;//wifi设备上次的登录时间
 	private boolean newWifi;//是否是新增wifi设备
@@ -13,6 +13,14 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 	@Override
 	public String getActionType() {
 		return ActionMessageType.WifiDeviceOnline.getPrefix();
+	}
+
+	public String getJoin_reason() {
+		return join_reason;
+	}
+
+	public void setJoin_reason(String join_reason) {
+		this.join_reason = join_reason;
 	}
 
 	public long getLogin_ts() {

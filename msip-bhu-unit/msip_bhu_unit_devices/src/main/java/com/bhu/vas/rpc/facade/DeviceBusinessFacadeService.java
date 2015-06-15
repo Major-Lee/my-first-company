@@ -25,6 +25,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -145,7 +146,7 @@ public class DeviceBusinessFacadeService {
 		 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
-		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), 
+		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
 				this_login_at, last_login_at, newWifi,needLocationQuery);
 	}
 	
@@ -180,6 +181,25 @@ public class DeviceBusinessFacadeService {
 			if(exist_wifi_device_entity != null){
 				exist_wifi_device_entity.setOnline(false);
 				exist_wifi_device_entity.setLast_logout_at(new Date());
+				//wifi设备上次登录的时间
+				long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
+				long current_at = System.currentTimeMillis();
+				//5:统计增量 wifi设备的daily访问时长增量
+				if(last_login_at > 0){
+					long uptime = current_at - last_login_at;
+					if(uptime > 0){
+						deviceFacadeService.deviceStatisticsOffline(uptime, DeviceStatistics.Statis_Device_Type);
+						
+						String entity_uptime = exist_wifi_device_entity.getUptime();
+						BigInteger bi = new BigInteger(String.valueOf(uptime));
+						BigInteger entity_bi = null;
+						if(!StringUtils.isEmpty(entity_uptime)){
+							entity_bi = new BigInteger(entity_uptime);
+							bi = bi.add(entity_bi);
+						}
+						exist_wifi_device_entity.setUptime(bi.toString());
+					}
+				}
 				wifiDeviceService.update(exist_wifi_device_entity);
 				
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
@@ -191,9 +211,9 @@ public class DeviceBusinessFacadeService {
 				 * 5:统计增量 wifi设备的daily访问时长增量 (backend)
 				 */
 				//wifi设备上次登录的时间
-				long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
+				//long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
 				
-				deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id, last_login_at);
+				deliverMessageService.sendWifiDeviceOfflineActionMessage(lowercase_wifi_id);
 			}
 		}
 	}

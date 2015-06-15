@@ -10,8 +10,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
@@ -55,6 +57,9 @@ public class PushService{
 				switch(pushType){
 					case HandsetDeviceOnline:
 						this.pushHandsetDeviceOnline(pushDto);
+						break;
+					case WifiDeviceReboot:
+						this.pushWifiDeviceReboot(pushDto);
 						break;
 					default:
 						break;
@@ -108,7 +113,7 @@ public class PushService{
 									}
 									
 									if(need_push){
-										PushMsg pushMsg = this.generatePushMsg(hd_push_dto.getMac());
+										PushMsg pushMsg = this.generatePushMsg(presentDto);
 										if(pushMsg != null){
 											//构建终端上线通知push内容
 											this.builderHandsetDeviceOnlinePushMsg(pushMsg, presentDto, hd_push_dto);
@@ -130,6 +135,35 @@ public class PushService{
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("PushHandsetDeviceOnline exception " + ex.getMessage(), ex);
+		}
+	}
+	
+	/**
+	 * 用户通过指令重启设备成功push
+	 * @param pushDto
+	 */
+	public void pushWifiDeviceReboot(PushDTO pushDto){
+		try{
+			WifiDeviceRebootPushDTO reboot_dto = (WifiDeviceRebootPushDTO)pushDto;
+			if(WifiDeviceDTO.UserCmdRebootReason.equals(reboot_dto.getJoin_reason())){
+				DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+				if(presentDto != null){
+					PushMsg pushMsg = this.generatePushMsg(presentDto);
+					if(pushMsg != null){
+						pushMsg.setPaylod(JsonHelper.getJSONString(reboot_dto));
+						//发送push
+						boolean ret = pushTransmission(pushMsg);
+						if(ret){
+							logger.info("PushWifiDeviceReboot Successed " + pushMsg.toString());
+						}else{
+							logger.info("PushWifiDeviceReboot Failed " + pushMsg.toString());
+						}
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("pushWifiDeviceReboot exception " + ex.getMessage(), ex);
 		}
 	}
 	
@@ -185,12 +219,29 @@ public class PushService{
 	}
 	
 	/**
+	 * 发送透传消息push
+	 * @param pushMsg
+	 * @return
+	 */
+	protected boolean pushTransmission(PushMsg pushMsg){
+		if(DeviceEnum.isIos(pushMsg.getD())){
+			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
+		}else{
+			return GexinPushService.getInstance().pushTransmission(pushMsg);
+		}
+	}
+	
+	/**
 	 * 根据mobile push信息数据生成PushMsg对象
 	 * @param mac 设备mac
 	 * @return
 	 */
 	protected PushMsg generatePushMsg(String mac){
 		DeviceMobilePresentDTO presentDto = this.getMobilePresent(mac);
+		return generatePushMsg(presentDto);
+	}
+	
+	protected PushMsg generatePushMsg(DeviceMobilePresentDTO presentDto){
 		if(presentDto == null) return null;
 		
 		PushMsg pushMsg = new PushMsg();

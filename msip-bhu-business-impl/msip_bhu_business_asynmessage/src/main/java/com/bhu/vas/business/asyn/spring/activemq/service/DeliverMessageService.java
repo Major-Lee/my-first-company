@@ -64,10 +64,12 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
-	public void sendWifiDeviceOnlineActionMessage(String wifiId, long login_ts, 
+	
+	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
 			long last_login_at, boolean newWifi,boolean needLocationQuery){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
 		dto.setMac(wifiId);
+		dto.setJoin_reason(join_reason);
 		dto.setNewWifi(newWifi);
 		dto.setLogin_ts(login_ts);
 		dto.setLast_login_at(last_login_at);
@@ -84,10 +86,10 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendWifiDeviceOfflineActionMessage(String wifiId, long last_login_at){
+	public void sendWifiDeviceOfflineActionMessage(String wifiId){
 		WifiDeviceOfflineDTO dto = new WifiDeviceOfflineDTO();
 		dto.setMac(wifiId);
-		dto.setLast_login_at(last_login_at);
+//		dto.setLast_login_at(last_login_at);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

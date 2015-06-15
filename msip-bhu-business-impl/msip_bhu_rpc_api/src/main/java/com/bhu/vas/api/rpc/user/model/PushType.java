@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 public enum PushType {
 	
 	HandsetDeviceOnline("HDO", "新终端连接", "终端 [%s] 与设备 [%s] 连接成功在%s"),//终端上线
+	WifiDeviceReboot("WDR", null, null),//设备重启成功后
 	;
 	String type;
 	String title;

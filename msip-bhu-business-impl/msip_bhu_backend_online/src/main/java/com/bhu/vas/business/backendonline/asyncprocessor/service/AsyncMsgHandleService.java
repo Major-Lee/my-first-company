@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -126,18 +127,20 @@ public class AsyncMsgHandleService {
 		
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		//3:wifi设备对应handset在线列表初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备
-		deviceFacadeService.allHandsetDoOfflines(dto.getMac());
+		//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac(), dto.getLogin_ts());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
-		
-		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
-		
+
 		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery());
 		
+		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
 		//设备统计
 		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 				new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
-		
+		//如果是urouter设备 才会发push
+		if(deviceFacadeService.isURooterDevice(dto.getMac())){
+			pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	
@@ -372,7 +375,7 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.allHandsetDoOfflines(dto.getMac());
 			
 			//5:统计增量 wifi设备的daily访问时长增量
-			if(dto.getLast_login_at() > 0){
+/*			if(dto.getLast_login_at() > 0){
 				long uptime = dto.getTs() - dto.getLast_login_at();
 				if(uptime > 0){
 					deviceFacadeService.deviceStatisticsOffline(uptime, DeviceStatistics.Statis_Device_Type);
@@ -387,7 +390,7 @@ public class AsyncMsgHandleService {
 					entity.setUptime(bi.toString());
 					wifiDeviceService.update(entity);
 				}
-			}
+			}*/
 			
 			//7:清除已经下发给设备的未完成的任务状态
 			taskFacadeService.taskStateFailByDevice(dto.getMac());
