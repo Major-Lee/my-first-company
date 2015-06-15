@@ -1,7 +1,5 @@
 package com.bhu.vas.push.business;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -27,6 +25,9 @@ import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.Handset;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 /**
  * 业务push service
@@ -175,20 +176,24 @@ public class PushService{
 	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto, 
 			HandsetDeviceOnlinePushDTO hd_push_dto){
 		//终端名称
-		String hd_name = deviceFacadeService.queryHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+		String hd_name = deviceFacadeService.queryPushHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
 		//设备名称
-		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
+//		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
 		//格式化连接时间
-		String date_format = DateTimeHelper.getDateTime(new Date(hd_push_dto.getTs()), DateTimeHelper.DefalutFormatPattern);
+//		String date_format = DateTimeHelper.getDateTime(new Date(hd_push_dto.getTs()), DateTimeHelper.DefalutFormatPattern);
 		//构造payload
 		hd_push_dto.setN(hd_name);
 		String payload = JsonHelper.getJSONString(hd_push_dto);
 		pushMsg.setPaylod(payload);
 		//构造title和text
-		pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
-		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), 
-				hd_name == null ? hd_push_dto.getHd_mac() : hd_name, d_name == null ? hd_push_dto.getMac() : d_name,
-						date_format));
+		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : ""));
+		//根据设备mac匹配终端厂商
+		String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true);
+		if(Handset.Unknow.getScn().equals(scn)){
+			scn = StringHelper.EMPTY_STRING_GAP;
+		}
+		
+		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hd_name));
 	}
 	
 	/**
