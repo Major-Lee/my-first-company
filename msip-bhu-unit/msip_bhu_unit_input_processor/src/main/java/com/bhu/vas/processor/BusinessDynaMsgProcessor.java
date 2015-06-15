@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -23,8 +22,10 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
+import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -38,7 +39,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
 	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
 	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
-	
+	private int[] hits;
 	private int hash_prime = 50;
 	private int per_threads = 1;
 	//private static String Online_Prefix = "00000001";
@@ -57,7 +58,8 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		for(int i=0;i<hash_prime;i++){
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
-		
+		hits = new int[hash_prime];
+		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 5*60*1000,5*60*1000);
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
@@ -111,7 +113,9 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	
 	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
 		String mac = headers.getMac();
-		exec_processes.get(HashAlgorithmsHelper.rotatingHash1(mac, hash_prime)).submit((new Runnable() {
+		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
+		hits[hash] = hits[hash]+1;
+		exec_processes.get(hash).submit((new Runnable() {
 			@Override
 			public void run() {
 				if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
@@ -140,26 +144,6 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 	}
 	
-/*	public static String[] parserTransferMsgHeader(String msg){
-		String[] array = new String[4];
-		array[0] = msg.substring(0, 12);//12字节mac
-		array[1] = msg.substring(12, 22);//10字节任务id
-		array[2] = msg.substring(22, 26);//设备报文主类型(4字节)
-		array[3] = msg.substring(26, 34);//子类型(8字节)
-		return array;
-	}
-	
-	public static void main(String[] argv){
-		//00000005
-		String[] array = parserTransferMsgHeader("62687500003e0000000000000100000007");
-		int i=0;
-		for(String str:array){
-			
-			System.out.println(i==0?StringHelper.formatMacAddress(str):str);
-			i++;
-		}
-	}*/
-	
 	@PreDestroy
 	public void destory(){
 		if(exec_dispatcher != null){
@@ -185,4 +169,13 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			}
 		}
 	}
+
+	public int[] getHits() {
+		return hits;
+	}
+
+	public void setHits(int[] hits) {
+		this.hits = hits;
+	}
+	
 }
