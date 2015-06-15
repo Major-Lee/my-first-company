@@ -109,7 +109,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		}));
 	}
 	
-	public void onProcessor(final String ctx,final String payload,int type,final ParserHeader headers) {
+	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
 		String mac = headers.getMac();
 		exec_processes.get(HashAlgorithmsHelper.rotatingHash1(mac, hash_prime)).submit((new Runnable() {
 			@Override
