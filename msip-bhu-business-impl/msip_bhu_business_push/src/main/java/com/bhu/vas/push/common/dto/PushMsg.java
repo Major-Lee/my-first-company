@@ -4,7 +4,7 @@ public class PushMsg extends PushBasicMsg{
 	//应用icon上显示的数字
 	private int badge = 1;
 	private String sound = "default";
-	private String logo = "app_logo.png";
+	private String logo = "logo_notify.png";
 	//push text
 	private String text;
 	//push title
