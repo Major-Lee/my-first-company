@@ -31,7 +31,7 @@
 		<bean class="org.springframework.integration.samples.kafka.TestKafka"/>
 	</int:service-activator> -->
 
-	<int-kafka:zookeeper-connect id="zookeeperConnect" zk-connect="192.168.66.7:2181"
+	<int-kafka:zookeeper-connect id="zookeeperConnect" zk-connect="${kafka.zk-connect}"
 			zk-connection-timeout="6000"
 			zk-session-timeout="6000"
 			zk-sync-time="2000"/>
