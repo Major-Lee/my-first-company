@@ -1,6 +1,5 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -508,9 +507,13 @@ public class AsyncMsgHandleService {
 					if(entity == null){
 						ds.add(new DeviceStatistics(dto.getMac(), true));
 						
-						HandsetDevice handset = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-						handset.setLast_wifi_id(wifiId);
-						entityNewRegisters.add(handset);
+						entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+						entity.setLast_wifi_id(wifiId);
+						entityNewRegisters.add(entity);
+						
+//						HandsetDevice handset = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+//						handset.setLast_wifi_id(wifiId);
+//						entityNewRegisters.add(handset);
 					}else{
 						ds.add(new DeviceStatistics(dto.getMac(), entity.getLast_login_at()));
 						
