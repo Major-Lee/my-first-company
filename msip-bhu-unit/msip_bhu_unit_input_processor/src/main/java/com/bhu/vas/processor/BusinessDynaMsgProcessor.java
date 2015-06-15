@@ -170,7 +170,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 				}
 			}
 		}
-		if(exec_processes != null){
+		if(exec_processes != null && !exec_processes.isEmpty()){
 			int index = 0;
 			Iterator<ExecutorService> iter = exec_processes.iterator();
 			while(iter.hasNext()){
