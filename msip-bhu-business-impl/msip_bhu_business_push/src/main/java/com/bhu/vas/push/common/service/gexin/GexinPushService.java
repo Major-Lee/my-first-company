@@ -90,7 +90,7 @@ public class GexinPushService{
 				template.setTransmissionContent(pushMsg.getPaylod());
 				template.setTitle(pushMsg.getTitle());
 		        template.setText(pushMsg.getText());
-	            //template.setLogo("push.png"); // 通知图标，需要客户端开发时嵌入
+	            template.setLogo(pushMsg.getLogo()); // 通知图标，需要客户端开发时嵌入
 	            //template.setIsRing(false); // 收到通知是否响铃，可选，默认响铃
 	            //template.setIsVibrate(false); // 收到通知是否震动，可选，默认振动
 	            // template.setIsClearable(true); // 通知是否可清除，可选，默认可清除

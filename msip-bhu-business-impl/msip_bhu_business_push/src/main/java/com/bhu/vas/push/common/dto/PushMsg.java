@@ -4,6 +4,7 @@ public class PushMsg extends PushBasicMsg{
 	//应用icon上显示的数字
 	private int badge = 1;
 	private String sound = "default";
+	private String logo = "app_logo.png";
 	//push text
 	private String text;
 	//push title
@@ -32,6 +33,12 @@ public class PushMsg extends PushBasicMsg{
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public String getLogo() {
+		return logo;
+	}
+	public void setLogo(String logo) {
+		this.logo = logo;
 	}
 	@Override
 	public String toString(){

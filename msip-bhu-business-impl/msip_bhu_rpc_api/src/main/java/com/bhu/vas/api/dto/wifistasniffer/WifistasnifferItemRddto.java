@@ -1,4 +1,4 @@
-package com.bhu.vas.business.spark.streaming.wifistasniffer.rddto;
+package com.bhu.vas.api.dto.wifistasniffer;
 
 import java.io.Serializable;
 
@@ -84,4 +84,50 @@ public class WifistasnifferItemRddto implements Serializable{
 		if(State_Online == this.getState()) return true;
 		return false;
 	}
+	
+
+	@Override
+	public int hashCode() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(this.d_mac).append(this.mac).append(this.snifftime);
+		return sb.toString().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		WifistasnifferItemRddto dto = (WifistasnifferItemRddto)obj;
+		if(dto.getMac().equals(this.getMac()) && dto.getD_mac().equals(this.getD_mac())
+				&& dto.getSnifftime() == this.getSnifftime()){
+			return true;
+		}
+		return false;
+	}
+	
+/*	public static void main(String[] args){
+		WifistasnifferItemRddto dto1 = new WifistasnifferItemRddto();
+		dto1.setD_mac("11");
+		dto1.setMac("22");
+		dto1.setSnifftime(1111);
+		WifistasnifferItemRddto dto2 = new WifistasnifferItemRddto();
+		dto2.setD_mac("11");
+		dto2.setMac("22");
+		dto2.setSnifftime(1111);
+		dto2.setDuration(100);
+		
+		Set<WifistasnifferItemRddto> wifistasnifferOnlines1 = new HashSet<WifistasnifferItemRddto>();
+		wifistasnifferOnlines1.add(dto1);
+		Set<WifistasnifferItemRddto> wifistasnifferOnlines2 = new HashSet<WifistasnifferItemRddto>();
+		wifistasnifferOnlines2.add(dto2);
+		
+//		Set<WifistasnifferItemRddto> all = new HashSet<WifistasnifferItemRddto>();
+//		all.addAll(wifistasnifferOnlines2);
+//		all.addAll(wifistasnifferOnlines1);
+		
+		wifistasnifferOnlines1.removeAll(wifistasnifferOnlines2);
+		
+		for(WifistasnifferItemRddto dto : wifistasnifferOnlines1){
+			System.out.println(dto.getDuration());
+		}
+	}*/
 }

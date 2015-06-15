@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 import scala.Tuple2;
 
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferRddto;
 import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferItemRddto;
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferRddto;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**

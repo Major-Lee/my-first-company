@@ -1,6 +1,9 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.util.StringUtils;
@@ -46,8 +49,24 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 		return super.zcard(generateKey(mac));
 	}
 	
-	public long addTerminalRecent(String mac, String hd_mac, double snifftime){
-		return super.zadd(generateKey(mac), snifftime, hd_mac);
+	public void addTerminalRecent(String mac, String hd_mac, double snifftime){
+		super.zadd(generateKey(mac), snifftime, hd_mac);
+	}
+	
+	public void addTerminalRecents(String mac, String[] hd_macs, double[] snifftimes){
+		if(hd_macs == null || snifftimes == null) return;
+		
+		Map<Double,String> members = new HashMap<Double,String>();
+		int length = hd_macs.length;
+		for(int i = 0;i<length;i++){
+			members.put(snifftimes[i], hd_macs[i]);
+		}
+		super.zadd(generateKey(mac), members);
+	}
+	
+	public void addTerminalRecents(String mac, Map<Double,String> snifftimesAndHdmacs_map){
+		if(snifftimesAndHdmacs_map == null || snifftimesAndHdmacs_map.isEmpty()) return;
+		super.zadd(generateKey(mac), snifftimesAndHdmacs_map);
 	}
 	
 	public Set<Tuple> fetchTerminalRecentWithScores(String mac,int start,int size){

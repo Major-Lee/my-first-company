@@ -39,7 +39,7 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 	
 	private static String generateKey(String mac, String hd_mac){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.WifiStasniffer.TerminalDetailRecent);
-		sb.append(StringHelper.POINT_CHAR_GAP).append(mac);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(mac).append(StringHelper.POINT_CHAR_GAP).append(hd_mac);
 		return sb.toString();
 	}
 	

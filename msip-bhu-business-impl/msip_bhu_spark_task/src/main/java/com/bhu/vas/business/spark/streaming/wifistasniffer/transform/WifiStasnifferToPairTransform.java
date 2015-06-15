@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import scala.Tuple2;
 
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferItemRddto;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 
 /**
  * 把itemdto序列转换成KV形式 key为设备mac value为itemdto

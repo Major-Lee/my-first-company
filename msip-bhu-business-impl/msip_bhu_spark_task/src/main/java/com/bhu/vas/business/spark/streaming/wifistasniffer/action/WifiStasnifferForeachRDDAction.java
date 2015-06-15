@@ -10,7 +10,7 @@ import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.streaming.Time;
 import org.springframework.stereotype.Component;
 
-import com.bhu.vas.business.spark.streaming.wifistasniffer.rddto.WifistasnifferItemRddto;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 
 /**
  * 触发foreachRDD action 进行数据落地
