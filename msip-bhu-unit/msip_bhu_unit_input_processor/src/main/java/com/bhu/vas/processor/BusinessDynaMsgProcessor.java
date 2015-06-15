@@ -97,23 +97,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 											type,ctx,message));
 					}
 					if(headers != null){
-						if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
-							daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
-						}
-						if(ParserHeader.Transfer_Prefix == type){
-							if(headers.getMt() == 0 && headers.getSt()==1){//设备上线
-								daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
-							}
-							if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
-								OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
-								if(cmd_opt != null){
-									if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
-										daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
-									}
-								}
-							}
-						}
-						onProcessor(ctx,payload,headers);
+						onProcessor(ctx,payload,type,headers);
 						//deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 					}
 					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
@@ -125,11 +109,27 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		}));
 	}
 	
-	public void onProcessor(final String ctx,final String payload,final ParserHeader headers) {
+	public void onProcessor(final String ctx,final String payload,int type,final ParserHeader headers) {
 		String mac = headers.getMac();
 		exec_processes.get(HashAlgorithmsHelper.rotatingHash1(mac, hash_prime)).submit((new Runnable() {
 			@Override
 			public void run() {
+				if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
+					daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
+				}
+				if(ParserHeader.Transfer_Prefix == type){
+					if(headers.getMt() == 0 && headers.getSt()==1){//设备上线
+						daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+					}
+					if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
+						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
+						if(cmd_opt != null){
+							if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
+								daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
+							}
+						}
+					}
+				}
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
