@@ -236,7 +236,7 @@ public class PushService{
 	 */
 	protected boolean pushTransmission(PushMsg pushMsg){
 		if(DeviceEnum.isIos(pushMsg.getD())){
-			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
+			return GexinPushService.getInstance().pushTransmission4ios(pushMsg);
 		}else{
 			return GexinPushService.getInstance().pushTransmission(pushMsg);
 		}
