@@ -130,7 +130,7 @@ public class GexinPushService{
 			    template.setTransmissionContent(pushMsg.getPaylod());
 			 
 			    /*iOS 推送需要对该字段进行设置具体参数详见iOS模板说明*/
-			    template.setPushInfo(pushMsg.getTitle(), pushMsg.getBadge(), pushMsg.getText(), pushMsg.getSound(), 
+			    template.setPushInfo("", 0, "", "", 
 			    		"", "", "", "1");
 			    /*template.setPushInfo("actionLocKey", 4, "message", "sound", 
 			    "payload", "locKey", "locArgs", "launchImage","ContentAvailable");*/
@@ -168,9 +168,9 @@ public class GexinPushService{
 			    // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动。
 			    template.setTransmissionType(2);
 			    template.setTransmissionContent(pushMsg.getPaylod());
-			 
+
 			    /*iOS 推送需要对该字段进行设置具体参数详见iOS模板说明*/
-			    template.setPushInfo(pushMsg.getTitle(), pushMsg.getBadge(), pushMsg.getText(), pushMsg.getSound(), 
+			    template.setPushInfo("", pushMsg.getBadge(), pushMsg.getText(), pushMsg.getSound(), 
 			    		"", "", "", "");
 			    /*template.setPushInfo("actionLocKey", 4, "message", "sound", 
 			    "payload", "locKey", "locArgs", "launchImage","ContentAvailable");*/
