@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -22,6 +21,7 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
@@ -49,9 +49,13 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private static final int DeviceNotExist_Prefix = 4;
 	private static final int Transfer_Prefix = 5;*/
 	@Resource
-	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
-	@Resource
 	private IDaemonRpcService daemonRpcService;
+
+	@Resource
+	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
+
+	@Resource
+	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
 
 	@PostConstruct
 	public void initialize(){
@@ -121,11 +125,13 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			@Override
 			public void run() {
 				if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
-					daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
+					deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 				}
 				if(ParserHeader.Transfer_Prefix == type){
 					if(headers.getMt() == 0 && headers.getSt()==1){//设备上线
-						daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
+						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 					}
 					if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
 						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
