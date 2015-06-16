@@ -48,6 +48,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -112,6 +113,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private PushService pushService;
+	
+	@Resource
+	private BusinessCacheService businessCacheService;
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -434,13 +438,24 @@ public class AsyncMsgHandleService {
 		
 		//如果是urouter设备 才会发push
 		if(deviceFacadeService.isURooterDevice(dto.getWifiId())){
-			HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
-			pushDto.setMac(dto.getWifiId());
-			pushDto.setHd_mac(dto.getMac());
-			pushDto.setTs(System.currentTimeMillis());
-//			if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
-			pushDto.setNewed(dto.isNewHandset());
-			pushService.push(pushDto);
+			boolean terminal_notify_push_mark = businessCacheService.getQTerminalPushNotifyCacheByQ(dto.getWifiId(), dto.getMac());
+			if(!terminal_notify_push_mark){
+				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle do Push");
+				
+				HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
+				pushDto.setMac(dto.getWifiId());
+				pushDto.setHd_mac(dto.getMac());
+				pushDto.setTs(System.currentTimeMillis());
+//				if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
+				pushDto.setNewed(dto.isNewHandset());
+				boolean push_successed = pushService.push(pushDto);
+				if(push_successed){
+					businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
+				}
+			}else{
+				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle push has mark");
+			}
+
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle message[%s] successful", message));
 	}
