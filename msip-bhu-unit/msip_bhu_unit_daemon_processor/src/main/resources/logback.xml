@@ -36,13 +36,26 @@
 		</encoder>
 	</appender>	
 
+	<appender name="unittopicrecvfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.unittopicrecvfile.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.unittopicrecvfile.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>	
+
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="unitrequestfile" />
 	</logger>	
 	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
 	</logger>
-
+	<logger name="com.bhu.vas.daemon.processor" additivity="false" level="INFO">
+		<appender-ref ref="unittopicrecvfile" />
+	</logger>
 	<root level="WARN">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />

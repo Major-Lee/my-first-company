@@ -39,7 +39,9 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 
 	@PostConstruct
 	public void initialize(){
+		logger.info("initialize...");
 		QueueMsgObserverManager.SpringTopicMessageObserver.addSpringTopicMessageListener(this);
+		logger.info("initialize successfully!");
 	}
 
 	@Override
@@ -115,17 +117,20 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private void processCmJoinNotify(String message){
 		CmJoinNotifyDTO dto = JsonHelper.getDTO(message, CmJoinNotifyDTO.class);
 		ActiveMQConnectionManager.getInstance().createNewProducerQueues("down", dto.toString(), true);
+		logger.info(String.format("processCmJoinNotify receive message[%s] successfully!", message));
 	}
 
 	private void processCmLeaveNotify(String message){
 		CmLeaveNotifyDTO dto = JsonHelper.getDTO(message, CmLeaveNotifyDTO.class);
 		SessionManager.getInstance().removeSessionByCtx(dto.toString());
+		logger.info(String.format("processCmLeaveNotify receive message[%s] successfully!", message));
 	}
 	
 	
 	private void processDeviceOnlineNotify(String message){
 		DeviceOnlineNotifyDTO dto = JsonHelper.getDTO(message, DeviceOnlineNotifyDTO.class);
 		SessionManager.getInstance().addSession(dto.getMac(), dto.getCtx());
+		logger.info(String.format("processDeviceOnlineNotify receive message[%s] successfully!", message));
 	}
 	
 	private void processDevicesOnlineNotify(String message){
@@ -133,6 +138,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 		for(String mac:dto.getMacs()){
 			SessionManager.getInstance().addSession(mac, dto.getCtx());
 		}
+		logger.info(String.format("processDevicesOnlineNotify receive message[%s] successfully!", message));
 	}
 	
 	private void processDeviceOfflineNotify(String message){
@@ -143,6 +149,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 		}else{
 			;//TODO:如何处理
 		}
+		logger.info(String.format("processDeviceOfflineNotify receive message[%s] successfully!", message));
 	}
 	
 }
