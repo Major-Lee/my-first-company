@@ -15,6 +15,7 @@ public enum PushType {
 	
 	HandsetDeviceOnline("HDO", "%s终端上线", "%s终端%s上线"),//终端上线
 	WifiDeviceReboot("WDR", null, null),//设备重启成功后
+	WifiDeviceSettingChanged("WDC", null, null),//设备配置变更
 	;
 	String type;
 	String title;

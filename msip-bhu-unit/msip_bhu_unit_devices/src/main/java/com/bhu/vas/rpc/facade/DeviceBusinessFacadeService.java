@@ -668,16 +668,18 @@ public class DeviceBusinessFacadeService {
 	 * 	  此下发配置为区间任务 不等回应直接修改配置数据
 	 * @param mac
 	 * @param dto
+	 * @param changed 是否是配置变更
 	 * @return
 	 */
 	public WifiDeviceSettingDTO refreshDeviceSetting(String mac, WifiDeviceSettingDTO dto){
 		//System.out.println("#####################taskQueryDeviceSetting:"+dto.getRadios().get(0).getPower());
-		String modify_urouter_acl = null;
+		boolean init_default_acl = false;
 		//只有URouter的设备才需进行此操作
 		if(deviceFacadeService.isURooterDevice(mac)){
 			//验证URouter设备配置是否符合约定
 			if(!DeviceHelper.validateURouterBlackList(dto)){
-				modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
+				//modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
+				init_default_acl = true;
 			}
 		}
 		
@@ -693,9 +695,10 @@ public class DeviceBusinessFacadeService {
 		}
 		
 		//如果不符合urouter的配置约定 则下发指定修改配置
-		if(!StringUtils.isEmpty(modify_urouter_acl)){
+/*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
-		}
+		}*/
+		deliverMessageService.sendDeviceSettingChangedActionMessage(mac, init_default_acl);
 		return dto;
 	}
 	

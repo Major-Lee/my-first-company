@@ -25,6 +25,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
@@ -215,6 +216,16 @@ public class DeliverMessageService {
 		WifiDeviceSettingModifyDTO dto = new WifiDeviceSettingModifyDTO();
 		dto.setMac(mac);
 		dto.setPayload(payload);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendDeviceSettingChangedActionMessage(String mac, boolean init_default_acl){
+		WifiDeviceSettingChangedDTO dto = new WifiDeviceSettingChangedDTO();
+		dto.setMac(mac);
+		dto.setInit_default_acl(init_default_acl);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
