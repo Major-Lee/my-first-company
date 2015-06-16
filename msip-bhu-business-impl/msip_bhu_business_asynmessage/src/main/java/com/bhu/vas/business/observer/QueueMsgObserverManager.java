@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
+import com.bhu.vas.business.observer.listener.SpringTopicMessageListener;
 
 public class QueueMsgObserverManager {
 	private static final Logger logger = LoggerFactory.getLogger(QueueMsgObserverManager.class);
@@ -42,7 +43,7 @@ public class QueueMsgObserverManager {
 			spingQueueMessageListeners.remove(listener);
 	    }
 		public static void notifyMsgComming(String msg){
-			logger.info(String.format("notifyMsgComming msg[%s]",msg));
+			logger.info(String.format("notifyQueueMsgComming msg[%s]",msg));
 	    	for(SpringQueueMessageListener listener:spingQueueMessageListeners){
 	    		listener.onMessage(msg);
 	    	}
@@ -63,4 +64,22 @@ public class QueueMsgObserverManager {
 		}*/
 	}
 	
+	
+	private static List<SpringTopicMessageListener> spingTopicMessageListeners = new CopyOnWriteArrayList<SpringTopicMessageListener>();
+
+	public static class SpringTopicMessageObserver{
+		public static void addSpringQueueMessageListener(SpringTopicMessageListener listener) {
+			spingTopicMessageListeners.add(listener);
+	    }
+		
+		public static void removeSpringQueueMessageListener(SpringTopicMessageListener listener) {
+			spingTopicMessageListeners.remove(listener);
+	    }
+		public static void notifyMsgComming(String msg){
+			logger.info(String.format("notifyTopicMsgComming msg[%s]",msg));
+	    	for(SpringTopicMessageListener listener:spingTopicMessageListeners){
+	    		listener.onMessage(msg);
+	    	}
+		}
+	}
 }

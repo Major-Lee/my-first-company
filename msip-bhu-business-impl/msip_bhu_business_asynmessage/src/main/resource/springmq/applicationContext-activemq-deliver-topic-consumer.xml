@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+    <!--  ActiveMQ destinations  -->
+    <!--  使用Topic方式-->
+	<bean id="destinationDeliverMessageTopic" class="org.apache.activemq.command.ActiveMQTopic">  
+        <constructor-arg index="0" value="${activemq.topic.name}" />  
+        <!-- 同时监听多个queue,同时对queue1进行预取处理
+        <constructor-arg index="0" value="queue1?consumer.prefetchSize=100,queue2" />
+         -->
+    </bean> 
+	<!--  Spring JmsTemplate config -->
+	<bean id="jmsDeliverMessageTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsFactory" />  
+		<!-- custom MessageConverter
+		<property name="messageConverter" ref="defaultFeedMessageConverter" />
+		 -->
+	</bean>
+	<!--  Message Driven POJO (MDP) -->
+    <!-- consumer for queue-->
+    <bean id="deliverMessageTopicConsumer" class="com.bhu.vas.business.asyn.spring.activemq.topic.consumer.TopicMessageConsumer" />
+    <!-- Message Listener for  -->
+    <bean id="deliverMessageTopicListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<constructor-arg ref="deliverMessageTopicConsumer" />
+		<!--  may be other method -->
+		<property name="defaultListenerMethod" value="receive" />
+		<!-- custom MessageConverter define
+		<property name="messageConverter" ref="defaultFeedMessageConverter" />
+		 -->
+	</bean>
+    <!--  listener container，MDP无需实现接口 -->
+    <bean id="deliverMessageTopicListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="jmsFactory" />
+		<property name="destination" ref="destinationDeliverMessageTopic" />
+		<!-- 
+		<property name="messageSelector" value="${jms.messageSelector}" />
+		 -->
+		<property name="messageListener" ref="deliverMessageTopicListener" />
+		<!-- 多线程消费数量
+		<property name="concurrentConsumers" value="2" />  -->
+	</bean>
+</beans>

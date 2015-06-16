@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+    <!--  ActiveMQ destinations  -->
+    <!--  使用Topic方式-->
+	<bean id="destinationDeliverMessageTopicQueue" class="org.apache.activemq.command.ActiveMQTopic">  
+        <constructor-arg index="0" value="${activemq.topic.name}" />  
+    </bean> 
+	<!--  Spring JmsTemplate config -->
+	<bean id="jmsDeliverMessageTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsFactory" />  
+		<!-- custom MessageConverter 
+		<property name="messageConverter" ref="defaultFeedMessageConverter" />-->
+	</bean>
+	<!-- POJO which send Message uses  Spring JmsTemplate -->
+	<bean id="deliverMessageTopicProducer" class="com.bhu.vas.business.asyn.spring.activemq.topic.producer.TopicMessageProducer">
+		<property name="template" ref="jmsDeliverMessageTopicTemplate" />
+		<property name="destination" ref="destinationDeliverMessageTopicQueue" />
+	</bean>
+	
+	<bean id="deliverTopicMessageService" class="com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService">
+	</bean>
+	
+</beans>

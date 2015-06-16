@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 public class BusinessStatisticsLogger {
 	private static final Logger logger = LoggerFactory.getLogger(BusinessStatisticsLogger.class);
+	
+	private static final String Queue_Recv_Template = "Queue Recv:%s";
+	private static final String Topic_Recv_Template = "Topic Recv:%s";
 	/*
 	public static void doSignedLog(int uid,long signedontime,long signedofftime){
 		DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(DeliverMessageType.AC.getPrefix(), uid, ActionMessageFactoryBuilder.toJsonHasPrefix(new UserSignedDTO(uid,signedontime,signedofftime)));
@@ -16,10 +19,16 @@ public class BusinessStatisticsLogger {
 		logger.info(DeliverMessageFactoryBuilder.toJson(message));
 	}*/
 	
-	public static void doActionMessageLog(String messagejson){
+	public static void doActionQueueMessageLog(String messagejson){
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(DeliverMessageType.AC.getPrefix(), uid, ActionMessageFactoryBuilder.toJsonHasPrefix(new UserSnsShareDTO(uid,snsto,mid,sharemark,sharetime)));
 		//System.out.println("+++++++++++++++ doActionMessageLog : " + json);
-		logger.info(messagejson);
+		logger.info(String.format(Queue_Recv_Template, messagejson));
+	}
+	
+	public static void doActionTopicMessageLog(String messagejson){
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(DeliverMessageType.AC.getPrefix(), uid, ActionMessageFactoryBuilder.toJsonHasPrefix(new UserSnsShareDTO(uid,snsto,mid,sharemark,sharetime)));
+		//System.out.println("+++++++++++++++ doActionMessageLog : " + json);
+		logger.info(String.format(Topic_Recv_Template, messagejson));
 	}
 	/*
 	public static void doActionMessageLog(ActionDTO dto){

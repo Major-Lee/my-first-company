@@ -23,7 +23,7 @@ public class DeliverMessageQueueConsumer {
     	//contain.st
     	//long t0 = System.currentTimeMillis();
     	//System.out.println(message);
-    	BusinessStatisticsLogger.doActionMessageLog(message);
+    	BusinessStatisticsLogger.doActionQueueMessageLog(message);
     	QueueMsgObserverManager.SpringQueueMessageObserver.notifyMsgComming(message);
     	//deliverMsgProcessor.onMessage(message);
     	/*exec.submit((new Runnable() {
