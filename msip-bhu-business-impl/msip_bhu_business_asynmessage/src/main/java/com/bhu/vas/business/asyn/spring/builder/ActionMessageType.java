@@ -32,6 +32,12 @@ public enum ActionMessageType {
 	USERFETCHCAPTCHACODE("请求验证码","fetchcaptchacode","FC"),//请求验证码动作
 	USERDEVICEREGISTER("用户设备注册","user device register","DR"),
 	USERDEVICEDESTORY("用户设备注销","user device destory","DD"),
+	
+	TOPICCMJoinNotify("topic消息CM加入通知","topic cm join","TJ"),
+	TOPICCMLeaveNotify("topic消息CM离开通知","topic cm leave","TL"),
+	TOPICDeviceOnlineNotify("topic消息Device上线","topic device online","TO"),
+	TOPICDevicesOnlineNotify("topic消息Devices上线","topic cm devices online","TS"),
+	TOPICDeviceOfflineNotify("topic消息Device下线","topic cm offline","TF"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

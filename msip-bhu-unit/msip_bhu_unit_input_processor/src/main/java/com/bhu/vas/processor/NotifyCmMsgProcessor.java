@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
+import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -37,12 +38,12 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 	private static String Offline_Prefix = "00000002";*/
 	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
+	//@Resource
+	//private IDaemonRpcService daemonRpcService;
 	@Resource
-	private IDaemonRpcService daemonRpcService;
-	
+	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
 	
 	//private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
-	
 	@PostConstruct
 	public void initialize() {
 		logger.info("NotifyCmMsgProcessor initialize...");
@@ -69,10 +70,12 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 							for(WifiDeviceDTO dto:cmInfo.getClient()){
 								macs.add(dto.getMac());
 							}
-							daemonRpcService.wifiDevicesOnline(ctx, macs);
+							//daemonRpcService.wifiDevicesOnline(ctx, macs);
+							deliverTopicMessageService.sendDevicesOnline(ctx, macs);
 							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
 						}
-						daemonRpcService.cmJoinService(cmInfo);
+						deliverTopicMessageService.sendCmJoinMessage(cmInfo);
+						//daemonRpcService.cmJoinService(cmInfo);
 						/*if(cmInfo.getLast_frag() == 1){//最后一条拆包指令,数据发送成功后需要清除缓存中的ctx数据
 							if(cmInfo != null && cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){//有同步过来的在线用户
 								put2CtxLocalCache(ctx,cmInfo.getClient());
@@ -93,6 +96,7 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 						}*/
 					}else if(ParserHeader.Offline_Prefix == type){//移除所有属于此cm的用户，并且down queue不能写入数据
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
+						deliverTopicMessageService.sendCmLeaveMessage(cmInfo);
 					}else{
 						throw new UnsupportedOperationException(message+" message not yet implement handler process!");
 					}
