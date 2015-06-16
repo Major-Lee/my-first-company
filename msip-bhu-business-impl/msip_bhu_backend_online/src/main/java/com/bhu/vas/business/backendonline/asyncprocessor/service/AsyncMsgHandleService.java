@@ -438,8 +438,8 @@ public class AsyncMsgHandleService {
 			pushDto.setMac(dto.getWifiId());
 			pushDto.setHd_mac(dto.getMac());
 			pushDto.setTs(System.currentTimeMillis());
-			if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
-				pushDto.setNewed(true);
+//			if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
+			pushDto.setNewed(dto.isNewHandset());
 			pushService.push(pushDto);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle message[%s] successful", message));

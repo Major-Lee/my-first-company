@@ -527,7 +527,7 @@ public class DeviceFacadeService {
 			//查询终端别名
 			String alias = DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto);
 			if(!StringUtils.isEmpty(alias)){
-				return StringHelper.chopMiddleString(alias, 8, StringHelper.ELLIPSIS_STRING_GAP);
+				return StringHelper.chopMiddleString(alias, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
 		//如果没有别名 以终端主机名填充
@@ -538,7 +538,7 @@ public class DeviceFacadeService {
 				if(hostname.startsWith("android-")){
 					return "安卓设备";
 				}
-				return StringHelper.chopMiddleString(hostname, 8, StringHelper.ELLIPSIS_STRING_GAP);
+				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
 		return hd_mac;
