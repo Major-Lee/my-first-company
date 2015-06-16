@@ -12,6 +12,7 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
@@ -62,6 +63,9 @@ public class PushService{
 						break;
 					case WifiDeviceReboot:
 						push_ret = this.pushWifiDeviceReboot(pushDto);
+						break;
+					case WifiDeviceSettingChanged:
+						push_ret = this.pushWifiDeviceSettingChanged(pushDto);
 						break;
 					default:
 						break;
@@ -170,6 +174,37 @@ public class PushService{
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("pushWifiDeviceReboot exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
+	 * 服务器接收到设备变更消息后的push
+	 * @param pushDto
+	 */
+	public boolean pushWifiDeviceSettingChanged(PushDTO pushDto){
+		boolean ret = false;
+		try{
+			WifiDeviceSettingChangedPushDTO wds_changed_dto = (WifiDeviceSettingChangedPushDTO)pushDto;
+
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					pushMsg.setPaylod(JsonHelper.getJSONString(wds_changed_dto));
+					//发送push
+					ret = pushTransmission(pushMsg);
+					if(ret){
+						logger.info("pushWifiDeviceSettingChanged Successed " + pushMsg.toString());
+					}else{
+						logger.info("pushWifiDeviceSettingChanged Failed " + pushMsg.toString());
+					}
+				}
+			}
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("pushWifiDeviceSettingChanged exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}
