@@ -26,7 +26,7 @@ public class DynaMessageConsumerListener implements MessageListener{
 		try {
 			String message = ((TextMessage)m).getText();
 			logger.info(message);
-			BusinessStatisticsLogger.doActionMessageLog(message);
+			BusinessStatisticsLogger.doActionDynaQueueMessageLog(message);
 			QueueMsgObserverManager.DynaMsgCommingObserver.notifyMsgComming(cminfo, message);
 		} catch (JMSException e) {
 			e.printStackTrace(System.out);

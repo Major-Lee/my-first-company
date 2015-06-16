@@ -77,6 +77,7 @@ public class QueueMsgObserverManager {
 	    }
 		public static void notifyMsgComming(String msg){
 			logger.info(String.format("notifyTopicMsgComming msg[%s]",msg));
+			System.out.println(String.format("notifyTopicMsgComming msg[%s]",msg));
 	    	for(SpringTopicMessageListener listener:spingTopicMessageListeners){
 	    		listener.onMessage(msg);
 	    	}
