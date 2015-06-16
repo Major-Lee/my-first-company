@@ -15,4 +15,7 @@
 	<context:component-scan base-package="com.bhu.vas.processor"/> -->
 	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-server.xml"/> 
 	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-producer.xml"/> 
+	
+	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
+	<import resource="classpath*:springmq/applicationContext-activemq-deliver-topic-consumer.xml"/>
 </beans>

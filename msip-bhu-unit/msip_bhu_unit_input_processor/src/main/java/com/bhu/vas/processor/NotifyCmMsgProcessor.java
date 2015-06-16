@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;

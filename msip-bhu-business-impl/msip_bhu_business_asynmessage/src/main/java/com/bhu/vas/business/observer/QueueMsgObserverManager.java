@@ -68,11 +68,11 @@ public class QueueMsgObserverManager {
 	private static List<SpringTopicMessageListener> spingTopicMessageListeners = new CopyOnWriteArrayList<SpringTopicMessageListener>();
 
 	public static class SpringTopicMessageObserver{
-		public static void addSpringQueueMessageListener(SpringTopicMessageListener listener) {
+		public static void addSpringTopicMessageListener(SpringTopicMessageListener listener) {
 			spingTopicMessageListeners.add(listener);
 	    }
 		
-		public static void removeSpringQueueMessageListener(SpringTopicMessageListener listener) {
+		public static void removeSpringTopicMessageListener(SpringTopicMessageListener listener) {
 			spingTopicMessageListeners.remove(listener);
 	    }
 		public static void notifyMsgComming(String msg){
