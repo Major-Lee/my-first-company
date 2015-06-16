@@ -119,6 +119,46 @@ public class GexinPushService{
 		return false;
 	}
 	
+	public boolean pushTransmission4ios(PushMsg pushMsg){
+		try{
+			if(validatePushMsg(pushMsg)){
+				TransmissionTemplate template = new TransmissionTemplate();
+		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
+		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
+			    // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动。
+			    template.setTransmissionType(2);
+			    template.setTransmissionContent(pushMsg.getPaylod());
+			 
+			    /*iOS 推送需要对该字段进行设置具体参数详见iOS模板说明*/
+			    template.setPushInfo(pushMsg.getTitle(), pushMsg.getBadge(), pushMsg.getText(), pushMsg.getSound(), 
+			    		pushMsg.getPaylod(), "", "", "1");
+			    /*template.setPushInfo("actionLocKey", 4, "message", "sound", 
+			    "payload", "locKey", "locArgs", "launchImage","ContentAvailable");*/
+		        
+		        SingleMessage message = new SingleMessage();
+	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
+		        //离线有效时间，单位为毫秒，可选
+		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		        message.setData(template);
+		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
+		        message.setPushNetWorkType(0); 
+		        
+		        Target target = new Target();
+		        target.setAppId(RuntimeConfiguration.GexinPushXmAppID);
+		        target.setClientId(pushMsg.getDt());
+		        //用户别名推送，cid和用户别名只能2者选其一
+		        //target.setAlias(alias);
+		        IPushResult ret = pushMessageToSingle(pushMsg.getPt(), message, target);
+		        return parseResult(ret);
+			}
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("Gexin Push Transmission Excetion : " + ex.getMessage(), ex);
+		}
+		return false;
+	}
+	
 	public boolean pushNotification4ios(PushMsg pushMsg){
 		try{
 			if(validatePushMsg(pushMsg)){
