@@ -582,7 +582,7 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 * @throws Exception
 	 */
-	public void wifiDeviceSettingModify(String message) throws Exception{
+/*	public void wifiDeviceSettingModify(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s]", message));
 		
 		WifiDeviceSettingModifyDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingModifyDTO.class);
@@ -591,7 +591,7 @@ public class AsyncMsgHandleService {
 		DaemonHelper.deviceSettingModify(dto.getMac(), dto.getPayload(), daemonRpcService);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s] successful", message));
-	}
+	}*/
 	
 	/**
 	 * 配置变更或者获取设备配置的后续处理
@@ -599,7 +599,7 @@ public class AsyncMsgHandleService {
 	 * @throws Exception
 	 */
 	public void wifiDeviceSettingChanged(String message) throws Exception{
-		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s]", message));
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingChanged message[%s]", message));
 		
 		WifiDeviceSettingChangedDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingChangedDTO.class);
 		//如果是urouter设备 才会发push
@@ -616,7 +616,7 @@ public class AsyncMsgHandleService {
 			}
 		}
 		
-		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s] successful", message));
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingChanged message[%s] successful", message));
 	}
 	
 	/**
