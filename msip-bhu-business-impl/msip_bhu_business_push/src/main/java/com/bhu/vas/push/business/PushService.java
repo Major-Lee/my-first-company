@@ -51,22 +51,24 @@ public class PushService{
 	 * 业务逻辑发送push消息统一接口
 	 * @param pushDto
 	 */
-	public void push(PushDTO pushDto){
+	public boolean push(PushDTO pushDto){
+		boolean push_ret = false;
 		if(pushDto != null){
 			PushType pushType = PushType.getPushTypeFromType(pushDto.getPushType());
 			if(pushType != null){
 				switch(pushType){
 					case HandsetDeviceOnline:
-						this.pushHandsetDeviceOnline(pushDto);
+						push_ret = this.pushHandsetDeviceOnline(pushDto);
 						break;
 					case WifiDeviceReboot:
-						this.pushWifiDeviceReboot(pushDto);
+						push_ret = this.pushWifiDeviceReboot(pushDto);
 						break;
 					default:
 						break;
 				}
 			}
 		}
+		return push_ret;
 	}
 	
 	/**
@@ -75,14 +77,15 @@ public class PushService{
 	 * @param mac 设备mac 
 	 * @param hd_mac 终端mac
 	 */
-	public void pushHandsetDeviceOnline(PushDTO pushDto){
+	public boolean pushHandsetDeviceOnline(PushDTO pushDto){
+		boolean ret = false;
 		try{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			if(presentDto != null){
 				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
 				//判断是否是自己
 				if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
-					return;
+					return false;
 				}
 				
 				UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
@@ -119,7 +122,7 @@ public class PushService{
 											//构建终端上线通知push内容
 											this.builderHandsetDeviceOnlinePushMsg(pushMsg, presentDto, hd_push_dto);
 											//发送push
-											boolean ret = pushNotification(pushMsg);
+											ret = pushNotification(pushMsg);
 											if(ret){
 												logger.info("PushHandsetDeviceOnline Successed " + pushMsg.toString());
 											}else{
@@ -137,13 +140,15 @@ public class PushService{
 			ex.printStackTrace();
 			logger.error("PushHandsetDeviceOnline exception " + ex.getMessage(), ex);
 		}
+		return ret;
 	}
 	
 	/**
 	 * 用户通过指令重启设备成功push
 	 * @param pushDto
 	 */
-	public void pushWifiDeviceReboot(PushDTO pushDto){
+	public boolean pushWifiDeviceReboot(PushDTO pushDto){
+		boolean ret = false;
 		try{
 			WifiDeviceRebootPushDTO reboot_dto = (WifiDeviceRebootPushDTO)pushDto;
 			if(WifiDeviceDTO.UserCmdRebootReason.equals(reboot_dto.getJoin_reason())){
@@ -153,7 +158,7 @@ public class PushService{
 					if(pushMsg != null){
 						pushMsg.setPaylod(JsonHelper.getJSONString(reboot_dto));
 						//发送push
-						boolean ret = pushTransmission(pushMsg);
+						ret = pushTransmission(pushMsg);
 						if(ret){
 							logger.info("PushWifiDeviceReboot Successed " + pushMsg.toString());
 						}else{
@@ -166,6 +171,7 @@ public class PushService{
 			ex.printStackTrace();
 			logger.error("pushWifiDeviceReboot exception " + ex.getMessage(), ex);
 		}
+		return ret;
 	}
 	
 	/**
