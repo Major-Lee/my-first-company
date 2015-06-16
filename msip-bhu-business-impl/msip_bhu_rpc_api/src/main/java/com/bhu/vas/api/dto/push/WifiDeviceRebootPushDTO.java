@@ -30,4 +30,9 @@ public class WifiDeviceRebootPushDTO extends PushDTO{
 		return PushType.WifiDeviceReboot.getType();
 	}
 	
+//	public static void main(String[] args){
+//		WifiDeviceRebootPushDTO dto = new WifiDeviceRebootPushDTO("aa:aa:aa:aa:aa:aa", "6");
+//		dto.setTs(System.currentTimeMillis());
+//		System.out.println(JsonHelper.getJSONString(dto));
+//	}
 }

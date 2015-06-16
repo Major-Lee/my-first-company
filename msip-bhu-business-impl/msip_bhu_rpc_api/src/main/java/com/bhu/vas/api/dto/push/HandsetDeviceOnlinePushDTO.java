@@ -48,6 +48,11 @@ public class HandsetDeviceOnlinePushDTO extends PushDTO{
 	}
 	
 //	public static void main(String[] args){
-//		System.out.println(JsonHelper.getJSONString(new HandsetDeviceOnlinePushDTO()));
+//		HandsetDeviceOnlinePushDTO dto = new HandsetDeviceOnlinePushDTO();
+//		dto.setMac("aa:aa:aa:aa:aa:aa");
+//		dto.setHd_mac("11:11:11:11:11:11");
+//		dto.setN("law");
+//		dto.setTs(System.currentTimeMillis());
+//		System.out.println(JsonHelper.getJSONString(dto));
 //	}
 }
