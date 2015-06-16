@@ -1,5 +1,7 @@
 package com.bhu.vas.daemon.processor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,17 +31,24 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
  * @author Edmond
- *
+ * 由于此部分notify消息涉及的都是内存操作，因此目前以单线程执行实现，保证消息次序问题
+ * 如果此部分存在性能问题，则分发消息 以 mac hash策略 到n个ExecutorService ，每个ExecutorService保证一个线程，这样就是 n线程消息处理
  */
 @Service
 public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessTopicMsgProcessor.class);
-	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(10);
-
-
+	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
+	/*private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
+	private int[] hits;
+	private int hash_prime = 5;
+	private int per_threads = 1;*/
 	@PostConstruct
 	public void initialize(){
 		logger.info("initialize...");
+		/*for(int i=0;i<hash_prime;i++){
+			exec_processes.add(Executors.newFixedThreadPool(per_threads));
+		}
+		hits = new int[hash_prime];*/
 		QueueMsgObserverManager.SpringTopicMessageObserver.addSpringTopicMessageListener(this);
 		logger.info("initialize successfully!");
 	}
@@ -49,7 +58,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 		exec_dispatcher.submit((new Runnable() {
 			@Override
 			public void run() {
-				logger.info(String.format("BusinessTopicMsgProcessor receive message[%s]", messagejsonHasPrefix));
+				logger.info(String.format("receive message[%s]", messagejsonHasPrefix));
 				try{
 					ActionMessageType type = ActionMessageFactoryBuilder.determineActionType(messagejsonHasPrefix);
 					if(type == null){
@@ -87,6 +96,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 				String.format("Action Topic MessageType[%s] not yet implement handler processfull message[%s]",
 						type,messagejsonHasPrefix));
 	}
+	
 	@PreDestroy
 	public void destory(){
 		String simplename = this.getClass().getSimpleName();
