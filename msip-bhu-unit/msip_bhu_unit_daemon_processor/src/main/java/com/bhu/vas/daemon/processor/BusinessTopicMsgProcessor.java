@@ -39,18 +39,17 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessTopicMsgProcessor.class);
 	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
 	/*private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
-	private int[] hits;
 	private int hash_prime = 5;
 	private int per_threads = 1;*/
+	
 	@PostConstruct
 	public void initialize(){
-		logger.info("initialize...");
+		logger.info("BusinessTopicMsgProcessor initialize...");
 		/*for(int i=0;i<hash_prime;i++){
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
-		}
-		hits = new int[hash_prime];*/
+		}*/
 		QueueMsgObserverManager.SpringTopicMessageObserver.addSpringTopicMessageListener(this);
-		logger.info("initialize successfully!");
+		logger.info("BusinessTopicMsgProcessor initialize successfully!");
 	}
 
 	@Override
@@ -91,6 +90,18 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 			}
 		}));
 	}
+	
+	/*public void onProcessor(final ActionMessageType type,final String message) {
+		String mac = headers.getMac();
+		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
+		exec_processes.get(hash).submit((new Runnable() {
+			@Override
+			public void run() {
+			}
+		}));
+	}*/
+	
+	
 	public void throwUnsupportedOperationException(ActionMessageType type, String messagejsonHasPrefix){
 		throw new UnsupportedOperationException(
 				String.format("Action Topic MessageType[%s] not yet implement handler processfull message[%s]",
