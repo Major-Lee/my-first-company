@@ -38,16 +38,16 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessTopicMsgProcessor.class);
 	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
-	/*private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
+	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
 	private int hash_prime = 5;
-	private int per_threads = 1;*/
+	private int per_threads = 1;
 	
 	@PostConstruct
 	public void initialize(){
 		logger.info("BusinessTopicMsgProcessor initialize...");
-		/*for(int i=0;i<hash_prime;i++){
+		for(int i=0;i<hash_prime;i++){
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
-		}*/
+		}
 		QueueMsgObserverManager.SpringTopicMessageObserver.addSpringTopicMessageListener(this);
 		logger.info("BusinessTopicMsgProcessor initialize successfully!");
 	}
@@ -81,6 +81,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 							processDeviceOfflineNotify(message);
 							break;
 						default:
+							//onProcessor(type,message);
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
 				}catch(Exception ex){
@@ -92,11 +93,50 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	}
 	
 	/*public void onProcessor(final ActionMessageType type,final String message) {
-		String mac = headers.getMac();
+		//String mac = null;
+		//List<String> macs = null;
+		//ActionDTO dto = null;
+		switch(type){
+			case TOPICDeviceOnlineNotify:
+				DeviceOnlineNotifyDTO deviceOnlineDto = JsonHelper.getDTO(message, DeviceOnlineNotifyDTO.class);
+				onProcessor(type,deviceOnlineDto.getCtx(),deviceOnlineDto.getMac());
+				break;
+			case TOPICDevicesOnlineNotify:
+				DevicesOnlineNotifyDTO devicesOnlineDto = JsonHelper.getDTO(message, DevicesOnlineNotifyDTO.class);
+				for(String mac:devicesOnlineDto.getMacs()){
+					onProcessor(ActionMessageType.TOPICDeviceOnlineNotify,devicesOnlineDto.getCtx(),mac);
+				}
+				break;
+			case TOPICDeviceOfflineNotify:
+				DeviceOfflineNotifyDTO deviceOfflineDto = JsonHelper.getDTO(message, DeviceOfflineNotifyDTO.class);
+				onProcessor(type,deviceOfflineDto.getCtx(),deviceOfflineDto.getMac());
+				break;
+			default:
+				throwUnsupportedOperationException(type, message);
+		}
+	}
+	
+	public void onProcessor(final ActionMessageType type,final String ctx,final String mac){
 		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
 		exec_processes.get(hash).submit((new Runnable() {
 			@Override
 			public void run() {
+				switch(type){
+				case TOPICDeviceOnlineNotify:
+					SessionManager.getInstance().addSession(mac, ctx);
+					break;
+				case TOPICDeviceOfflineNotify:
+					SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
+					if(sessionCtx != null && ctx.equals(sessionCtx.getCtx())){
+						SessionManager.getInstance().removeSession(mac);
+					}else{
+						;//TODO:如何处理
+					}
+					break;
+				default:
+					break;
+				//throwUnsupportedOperationException(type, messagejsonHasPrefix);
+			}
 			}
 		}));
 	}*/
