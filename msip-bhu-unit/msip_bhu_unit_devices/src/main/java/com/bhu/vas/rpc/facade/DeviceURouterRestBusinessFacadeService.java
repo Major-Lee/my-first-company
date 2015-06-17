@@ -583,16 +583,15 @@ public class DeviceURouterRestBusinessFacadeService {
 			URouterAdminPasswordVTO uRouterAdminPasswordVTO = new URouterAdminPasswordVTO();
 			if (wifiDeviceSetting != null) {
 				WifiDeviceSettingDTO wifiDeviceSettingDTO = wifiDeviceSetting.getInnerModel();
-				List<WifiDeviceSettingUserDTO> wifiDeviceSettingUserDTOList  = wifiDeviceSettingDTO.getUsers();
 
-				if (wifiDeviceSettingUserDTOList != null && !wifiDeviceSettingUserDTOList.isEmpty()) {
+				WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO =
+						DeviceHelper.getURouterDeviceAdminUser(wifiDeviceSettingDTO);
 
-					for (WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO : wifiDeviceSettingUserDTOList) {
-						uRouterAdminPasswordVTO.setPassword(
-								JNIRsaHelper.jniRsaDecryptHexStr(wifiDeviceSettingUserDTO.getPassword_rsa()));
-						break;
-					}
+				if (wifiDeviceSettingUserDTO !=null) {
+					uRouterAdminPasswordVTO.setPassword(
+							JNIRsaHelper.jniRsaDecryptHexStr(wifiDeviceSettingUserDTO.getPassword_rsa()));
 				}
+
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterAdminPasswordVTO);
 		} catch(BusinessI18nCodeException bex){
