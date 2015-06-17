@@ -2,6 +2,7 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import redis.clients.jedis.JedisPool;
 
@@ -55,17 +56,8 @@ public class WifiDevicePresentCtxService extends AbstractRelationHashCache{
 	}
 	
 	public void addPresents(List<String> wifiIds, String ctx){
-		
-		/*for(String wifiId:wifiIds){
-			this.hset(generateKey(wifiId), wifiId, ctx);
-			//this.p
-		}*/
-		/*String[] keys = this.generateKeys(wifiIds);
-		String[] values = new String[keys.length];
-		for(int i = 0;i<values.length;i++){
-			values[i] = ctx;
-		}
-		super.mset(keys, values);*/
+		String[][] keyAndFields = generateKeyAndFieldsAndValues(wifiIds,ctx);
+		this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
 	}
 	
 	public String getPresent(String wifiId){
@@ -82,15 +74,15 @@ public class WifiDevicePresentCtxService extends AbstractRelationHashCache{
 		int size = macs.size();
 		String[][] result = new String[2][size];
 		String[] keys = new String[size];
-		String[] values = new String[size];
+		String[] fields = new String[size];
 		int cursor = 0;
 		for(String mac : macs){
 			keys[cursor] = generateKey(mac);
-			values[cursor] = mac;
+			fields[cursor] = mac;
 			cursor++;
 		}
 		result[0] = keys;
-		result[1] = values;
+		result[1] = fields;
 		return result;
 	}
 	
@@ -98,17 +90,20 @@ public class WifiDevicePresentCtxService extends AbstractRelationHashCache{
 	private String[][] generateKeyAndFieldsAndValues(List<String> macs,String ctx){
 		if(macs == null || macs.isEmpty()) return null;
 		int size = macs.size();
-		String[][] result = new String[2][size];
+		String[][] result = new String[3][size];
 		String[] keys = new String[size];
+		String[] fields = new String[size];
 		String[] values = new String[size];
 		int cursor = 0;
 		for(String mac : macs){
 			keys[cursor] = generateKey(mac);
-			values[cursor] = mac;
+			fields[cursor] = mac;
+			values[cursor] = ctx;
 			cursor++;
 		}
 		result[0] = keys;
-		result[1] = values;
+		result[1] = fields;
+		result[2] = values;
 		return result;
 	}
 	public void removePresent(String wifiId){
@@ -119,6 +114,15 @@ public class WifiDevicePresentCtxService extends AbstractRelationHashCache{
 	public void clearOrResetAll(){
 		for(int i=0;i<hasPrimeValue;i++){
 			this.expire(generateKeyByHashValue(i),0);
+		}
+	}
+	
+	public void iteratorAll(IteratorNotify<Map<String,String>> notify){
+		for(int i=0;i<hasPrimeValue;i++){
+			String key = generateKeyByHashValue(i);
+			Map<String, String> hashKeyAll = this.hgetall(key);
+			if(!hashKeyAll.isEmpty())
+				notify.notifyComming(hashKeyAll);
 		}
 	}
 	
@@ -135,7 +139,6 @@ public class WifiDevicePresentCtxService extends AbstractRelationHashCache{
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
-
 	
 	public static void main(String[] argv){
 		List<String> argg = new ArrayList<String>();
@@ -145,9 +148,17 @@ public class WifiDevicePresentCtxService extends AbstractRelationHashCache{
 		argg.add("ad");
 		argg.add("ae");
 		
-		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx001");
+		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx002");
 		System.out.println(WifiDevicePresentCtxService.getInstance().getPresents(argg));
-		/*String[][] result = WifiDevicePresentCtxService.getInstance().generateKeyAndFields(argg);
-		System.out.println(result.length);*/
+		//String[][] result = WifiDevicePresentCtxService.getInstance().generateKeyAndFields(argg);
+		//System.out.println(result.length);
+		
+		/*WifiDevicePresentCtxService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
+			@Override
+			public void notifyComming(Map<String, String> t) {
+				System.out.println(t);
+			}
+		});*/
+		//WifiDevicePresentCtxService.getInstance().clearOrResetAll();
 	}
 }

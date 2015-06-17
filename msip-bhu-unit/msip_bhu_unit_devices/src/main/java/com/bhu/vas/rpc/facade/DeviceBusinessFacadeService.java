@@ -41,6 +41,7 @@ import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
@@ -120,7 +121,7 @@ public class DeviceBusinessFacadeService {
 		String wifiId = dto.getMac().toLowerCase();
 		
 		//2:wifi设备在线状态Redis更新
-		WifiDevicePresentService.getInstance().addPresent(wifiId, ctx);
+		WifiDevicePresentCtxService.getInstance().addPresent(wifiId, ctx);
 		//1:wifi设备基础信息更新
 		WifiDevice wifi_device_entity = wifiDeviceService.getById(wifiId);
 		if(wifi_device_entity == null){
@@ -174,7 +175,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		String lowercase_wifi_id = wifiId.toLowerCase();
 
-		String ctx_present = WifiDevicePresentService.getInstance().getPresent(lowercase_wifi_id);
+		String ctx_present = WifiDevicePresentCtxService.getInstance().getPresent(lowercase_wifi_id);
 		if(ctx.equals(ctx_present)){
 			//1:wifi设备基础信息表中的在线状态更新
 			WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_wifi_id);
@@ -203,7 +204,7 @@ public class DeviceBusinessFacadeService {
 				wifiDeviceService.update(exist_wifi_device_entity);
 				
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
-				WifiDevicePresentService.getInstance().removePresent(lowercase_wifi_id);
+				WifiDevicePresentCtxService.getInstance().removePresent(lowercase_wifi_id);
 				
 				/*
 				 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
