@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
+import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.vto.*;
@@ -131,6 +132,14 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
 		return deviceURouterRestRpcService.urouterConfigs(uid, mac);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
+		if(uid == null || StringUtils.isEmpty(macs)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.terminalHostnames(uid, macs);
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -290,6 +292,26 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterConfigs exception uid [%s] mac [%s] exmsg[%s]",
 					uid, mac, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
+		logger.info(String.format("DeviceURouterRestRPC terminalHostnames invoke uid [%s] macs [%s]", 
+				uid, macs));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.terminalHostnames(uid, macs);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC terminalHostnames failed uid [%s] macs [%s]",
+					uid, macs));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC terminalHostnames exception uid [%s] macs [%s] exmsg[%s]",
+					uid, macs, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}

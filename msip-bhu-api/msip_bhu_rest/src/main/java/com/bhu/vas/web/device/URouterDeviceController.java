@@ -1,5 +1,6 @@
 package com.bhu.vas.web.device;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -17,6 +18,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -273,6 +275,29 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac) {
 		
 		RpcResponseDTO<URouterDeviceConfigVTO> rpcResponse = deviceURouterRestRpcService.urouterConfigs(uid, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 获取多个终端的hostname
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param macs
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/terminal_hostnames",method={RequestMethod.POST})
+	public void terminal_hostnames(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String macs) {
+		
+		RpcResponseDTO<List<URouterHdHostNameVTO>> rpcResponse = deviceURouterRestRpcService.terminalHostnames(uid, macs);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

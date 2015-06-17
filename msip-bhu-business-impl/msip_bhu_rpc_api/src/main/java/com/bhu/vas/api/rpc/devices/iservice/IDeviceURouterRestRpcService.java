@@ -1,10 +1,12 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
+import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -39,6 +41,8 @@ public interface IDeviceURouterRestRpcService {
 			boolean stranger_on, String timeslot, int timeslot_mode);
 	
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac);
+	
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs);
 
 	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
 
