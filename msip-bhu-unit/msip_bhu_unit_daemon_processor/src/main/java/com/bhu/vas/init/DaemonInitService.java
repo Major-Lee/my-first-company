@@ -43,7 +43,7 @@ public class DaemonInitService {
 		}
 		//74-27-EA   (hex)		Elitegroup Computer Systems Co., Ltd.
 	}
-	
+	//TODO:如果在线设备量级太多如果加载数据
 	public boolean execute(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("online", 1).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);

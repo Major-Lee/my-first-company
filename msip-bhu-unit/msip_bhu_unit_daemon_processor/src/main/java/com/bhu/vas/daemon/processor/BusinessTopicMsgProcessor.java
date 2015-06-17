@@ -1,7 +1,5 @@
 package com.bhu.vas.daemon.processor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,17 +35,18 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @Service
 public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessTopicMsgProcessor.class);
-	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
-	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
+	private ExecutorService exec_dispatcher = null;//Executors.newFixedThreadPool(1);
+	/*private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
 	private int hash_prime = 5;
 	private int per_threads = 1;
-	
+	*/
 	@PostConstruct
 	public void initialize(){
 		logger.info("BusinessTopicMsgProcessor initialize...");
-		for(int i=0;i<hash_prime;i++){
+		exec_dispatcher = Executors.newFixedThreadPool(1);
+		/*for(int i=0;i<hash_prime;i++){
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
-		}
+		}*/
 		QueueMsgObserverManager.SpringTopicMessageObserver.addSpringTopicMessageListener(this);
 		logger.info("BusinessTopicMsgProcessor initialize successfully!");
 	}
@@ -178,20 +177,20 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private void processCmJoinNotify(String message){
 		CmJoinNotifyDTO dto = JsonHelper.getDTO(message, CmJoinNotifyDTO.class);
 		ActiveMQConnectionManager.getInstance().createNewProducerQueues("down", dto.toString(), true);
-		logger.info(String.format("processCmJoinNotify receive message[%s] successfully!", message));
+		logger.info(String.format("processCmJoinNotify message[%s] successfully!", message));
 	}
 
 	private void processCmLeaveNotify(String message){
 		CmLeaveNotifyDTO dto = JsonHelper.getDTO(message, CmLeaveNotifyDTO.class);
 		SessionManager.getInstance().removeSessionByCtx(dto.toString());
-		logger.info(String.format("processCmLeaveNotify receive message[%s] successfully!", message));
+		logger.info(String.format("processCmLeaveNotify message[%s] successfully!", message));
 	}
 	
 	
 	private void processDeviceOnlineNotify(String message){
 		DeviceOnlineNotifyDTO dto = JsonHelper.getDTO(message, DeviceOnlineNotifyDTO.class);
 		SessionManager.getInstance().addSession(dto.getMac(), dto.getCtx());
-		logger.info(String.format("processDeviceOnlineNotify receive message[%s] successfully!", message));
+		logger.info(String.format("process message[%s] successfully!", message));
 	}
 	
 	private void processDevicesOnlineNotify(String message){
@@ -199,7 +198,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 		for(String mac:dto.getMacs()){
 			SessionManager.getInstance().addSession(mac, dto.getCtx());
 		}
-		logger.info(String.format("processDevicesOnlineNotify receive message[%s] successfully!", message));
+		logger.info(String.format("process [%s] successfully!", message));
 	}
 	
 	private void processDeviceOfflineNotify(String message){
@@ -210,7 +209,7 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 		}else{
 			;//TODO:如何处理
 		}
-		logger.info(String.format("processDeviceOfflineNotify receive message[%s] successfully!", message));
+		logger.info(String.format("process [%s] successfully!", message));
 	}
 	
 }
