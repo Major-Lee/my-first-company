@@ -2,14 +2,13 @@ package com.bhu.vas.business.asyn.spring.model.topic;
 
 import java.util.List;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
-public class DevicesOnlineNotifyDTO extends ActionDTO {
+public class DevicesOnlineNotifyDTO extends NotifyDTO {
 	private String ctx;
 	private List<String> macs;
 	@Override
-	public String getActionType() {
+	public String getNotifyType() {
 		return ActionMessageType.TOPICDevicesOnlineNotify.getPrefix();
 	}
 

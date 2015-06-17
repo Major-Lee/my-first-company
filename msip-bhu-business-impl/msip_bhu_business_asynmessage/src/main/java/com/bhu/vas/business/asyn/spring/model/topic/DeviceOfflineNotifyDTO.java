@@ -1,13 +1,12 @@
 package com.bhu.vas.business.asyn.spring.model.topic;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
-public class DeviceOfflineNotifyDTO extends ActionDTO {
+public class DeviceOfflineNotifyDTO extends NotifyDTO {
 	private String ctx;
 
 	@Override
-	public String getActionType() {
+	public String getNotifyType() {
 		return ActionMessageType.TOPICDeviceOfflineNotify.getPrefix();
 	}
 
