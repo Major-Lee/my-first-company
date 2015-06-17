@@ -32,6 +32,7 @@ import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakRateVTO;
@@ -51,6 +52,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -529,6 +532,41 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 获取终端的主机名
+	 * @param uid
+	 * @param macs
+	 * @return
+	 */
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
+		try{
+			List<URouterHdHostNameVTO> vto_list = null;
+			if(StringUtils.isEmpty(macs)){
+				vto_list = Collections.emptyList();
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
+			}
+
+			String[] macs_array = macs.split(StringHelper.COMMA_STRING_GAP);
+			vto_list = new ArrayList<URouterHdHostNameVTO>(macs_array.length);
+			List<HandsetDevice> entitys = handsetDeviceService.findByIds(ArrayHelper.toList(macs_array), true, true);
+			int cursor = 0;
+			for(HandsetDevice entity : entitys){
+				URouterHdHostNameVTO vto = new URouterHdHostNameVTO();
+				if(entity != null){
+					vto.setHd_mac(entity.getId());
+					vto.setHn(entity.getHostname());
+				}else{
+					vto.setHd_mac(macs_array[cursor]);
+				}
+				vto_list.add(vto);
+				cursor++;
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
