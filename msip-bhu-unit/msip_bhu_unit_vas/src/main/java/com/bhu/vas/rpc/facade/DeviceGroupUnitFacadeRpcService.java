@@ -289,8 +289,9 @@ public class DeviceGroupUnitFacadeRpcService{
 					wifiDeviceVTO.setOfts(logout_ts);
 					wifiDeviceVTO.setOftd(System.currentTimeMillis() - logout_ts);
 				}
+				vtos.add(wifiDeviceVTO);
 			}
-			vtos.add(wifiDeviceVTO);
+
 		}
 
 		vto.setDetail_devices(vtos);
