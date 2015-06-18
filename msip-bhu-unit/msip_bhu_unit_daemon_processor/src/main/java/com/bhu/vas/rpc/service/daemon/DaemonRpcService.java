@@ -13,17 +13,15 @@ import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
-import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
-import com.bhu.vas.daemon.SerialTask;
+import com.bhu.vas.daemon.DaemonCheckTask;
 import com.bhu.vas.daemon.SessionInfo;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
 import com.bhu.vas.daemon.observer.listener.CmdDownListener;
+import com.smartwork.msip.cores.helper.task.TaskEngine;
 
 /**
  * @author Edmond
@@ -133,7 +131,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public boolean wifiDeviceSerialTaskComming(String ctx,String payload,ParserHeader header){
 		logger.info(String.format("wifiDeviceSerialTaskComming ctx[%s] header[%s] payload[%s]",ctx,header,payload));
 		try{
@@ -145,6 +143,30 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			logger.error("wifiDeviceSerialTaskComming paser payload", ex);
 		}
 		return true;
+	}*/
+
+	@Override
+	public boolean wifiDevicesOnlineTimer() {
+		logger.info("wifiDevicesOnlineTimer notify");
+		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 5*1000);
+		return true;
 	}
 
+	/*@Override
+	public boolean wifiDevicesLocationQuerySerialTimer() {
+		logger.info("wifiDevicesLocationQuerySerialTimer notify");
+		TaskEngine.getInstance().schedule(new DaemonCheckSerialTask(), 5*1000);
+		return true;
+	}*/
+	
+	/*public static void main(String[] argv) throws InterruptedException{
+		TaskEngine.getInstance().schedule(new TimerTask(){
+			@Override
+			public void run() {
+				System.out.println(1234);
+			}
+		}, 5*1000);
+		
+		Thread.sleep(100000);
+	}*/
 }

@@ -3,7 +3,6 @@ package com.bhu.vas.api.rpc.daemon.iservice;
 import java.util.List;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.header.ParserHeader;
 
 public interface IDaemonRpcService {
 	public boolean cmJoinService(CmCtxInfo info);
@@ -13,5 +12,7 @@ public interface IDaemonRpcService {
 	public boolean wifiDeviceOffline(String ctx,String mac);
 	public boolean wifiDeviceCmdDown(String ctx,String mac,String cmd );
 	public boolean wifiDeviceCmdsDown(String ctx,String mac,List<String> cmds );
-	public boolean wifiDeviceSerialTaskComming(String ctx,String payload, ParserHeader parserHeader);//String mac,QuerySerialReturnDTO dto);
+	//public boolean wifiDeviceSerialTaskComming(String ctx,String payload, ParserHeader parserHeader);//String mac,QuerySerialReturnDTO dto);
+	public boolean wifiDevicesOnlineTimer();
+	//public boolean wifiDevicesLocationQuerySerialTimer();
 }
