@@ -19,8 +19,10 @@
 				<ref bean="statisticsOnlineLoaderCronTrigger" />
 				<!-- 每一个小时执行一次  -->
 				<ref bean="wifiDeviceLocationQueryLoaderCronTrigger" />
-				<!-- 每隔5分钟执行一次 -->
-				<ref bean="wifiDeviceOnlineCmdDownLoaderCronTrigger" />				
+				<!-- 每隔10分钟执行一次 -->
+				<ref bean="wifiDeviceOnlineCmdDownLoaderCronTrigger" />		
+				<!-- 每隔3分钟执行一次 -->
+				<ref bean="wifiDeviceLocationStep2QueryLoaderCronTrigger" />		
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -130,7 +132,7 @@
 	<bean id="wifiDeviceOnlineCmdDownLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="wifiDeviceOnlineCmdDownLoaderCronJobDetail" />
 		<!-- 每隔5分钟执行一次   0 0/1 * * * ?  -->
-		<property name="cronExpression" value="0 0/5 * * * ?" />
+		<property name="cronExpression" value="0 0/10 * * * ?" />
 	</bean>
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
 	<bean id="wifiDeviceOnlineCmdDownLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -144,6 +146,22 @@
 	<bean id="wifiDeviceOnlineCmdDownLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineCmdDownLoader" />
 	
 	
+	<!-- Cron式Trigger定义 -->
+	<bean id="wifiDeviceLocationStep2QueryLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="wifiDeviceLocationStep2QueryLoaderCronJobDetail" />
+		<!-- 每隔5分钟执行一次   0 0/1 * * * ?  -->
+		<property name="cronExpression" value="0 0/3 * * * ?" />
+	</bean>
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="wifiDeviceLocationStep2QueryLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="wifiDeviceLocationStep2QueryLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="wifiDeviceLocationStep2QueryLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceLocationStep2QueryLoader" />
 	
 	
 	
