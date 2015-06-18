@@ -1,15 +1,14 @@
 package com.bhu.vas.business.asyn.spring.model.topic;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
-public class CmJoinNotifyDTO extends ActionDTO {
+public class CmJoinNotifyDTO extends NotifyDTO {
 	private String name;
 	private String process_seq;
 
 	@Override
-	public String getActionType() {
+	public String getNotifyType() {
 		return ActionMessageType.TOPICCMJoinNotify.getPrefix();
 	}
 

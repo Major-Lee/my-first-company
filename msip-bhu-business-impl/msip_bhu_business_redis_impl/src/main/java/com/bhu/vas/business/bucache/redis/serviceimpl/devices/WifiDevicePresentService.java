@@ -15,6 +15,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
  * @author tangzichao
  *
  */
+@Deprecated
 public class WifiDevicePresentService extends AbstractRelationStringCache{
 	
 	//public static final int Present_Exprie_Seconds = 60 * 60;//1小时过期

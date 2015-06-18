@@ -45,14 +45,13 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -247,7 +246,7 @@ public class AsyncMsgHandleService {
 		
 		//2:wifi设备在线状态Redis更新
 		if(!idsSyncRegeds.isEmpty()){
-			WifiDevicePresentService.getInstance().addPresents(idsSyncRegeds, ctx);
+			WifiDevicePresentCtxService.getInstance().addPresents(idsSyncRegeds, ctx);
 		}
 		//5:增量索引
 		wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);

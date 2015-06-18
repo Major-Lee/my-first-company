@@ -1,24 +1,19 @@
 package com.bhu.vas.init;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.IteratorNotify;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.daemon.SessionManager;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.IdHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * 系统重新启动后加载数据库中在线标记的设备
@@ -29,23 +24,27 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 @Service
 public class DaemonInitService {
 	private final Logger logger = LoggerFactory.getLogger(DaemonInitService.class);
-	@Resource
-	private WifiDeviceService wifiDeviceService;
+	//@Resource
+	//private WifiDeviceService wifiDeviceService;
 	
 	@PostConstruct
 	public void initialize(){
+		//System.out.println("DaemonInitService start initialize...");
 		logger.info("DaemonInitService start initialize...");
 		//1：数据库连接池预热
 		if(execute()){
+			//System.out.println(String.format("init success at [%s]", DateTimeHelper.getDateTime()));
 			logger.info(String.format("init success at [%s]", DateTimeHelper.getDateTime()));
 		}else{
+			//System.out.println(String.format("init failed at [%s]", DateTimeHelper.getDateTime()));
 			logger.info(String.format("init failed at [%s]", DateTimeHelper.getDateTime()));
 		}
 		//74-27-EA   (hex)		Elitegroup Computer Systems Co., Ltd.
 	}
-	
+	//TODO:如果在线设备量级太多如果加载数据 || 通过线程执行
 	public boolean execute(){
-		ModelCriteria mc = new ModelCriteria();
+		//WifiDevicePresentCtxService.getInstance().iteratorAll(new );
+		/*ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("online", 1).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
     	mc.setPageNumber(1);
     	mc.setPageSize(200);
@@ -69,9 +68,27 @@ public class DaemonInitService {
 					index++;
 				}
 			}
-		}
-		logger.info(String.format("Init Online total[%s] count[%s]", it.getTotalItemsCount(),count));
-		System.out.println(String.format("Init Online total[%s] count[%s]", it.getTotalItemsCount(),count));
+		}*/
+		//int index = 0;
+		//int count = 0;
+		//System.out.println("~~~~~~~~~~ gogogo:");
+		WifiDevicePresentCtxService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
+			@Override
+			public void notifyComming(Map<String, String> onlineMap) {
+				//System.out.println("~~~~~~~~~~:"+onlineMap);
+				Iterator<Entry<String, String>> iter = onlineMap.entrySet().iterator();
+				while(iter.hasNext()){
+					Entry<String, String> next = iter.next();
+					String key = next.getKey();//mac
+					String value = next.getValue();//ctx
+					SessionManager.getInstance().addSession(key, value);
+					//System.out.println(String.format("Online device[%s] ctx[%s]", key,value));
+				}
+				//System.out.println(t);
+			}
+		});
+		//logger.info(String.format("Init Online total[%s] count[%s]", it.getTotalItemsCount(),count));
+		//System.out.println(String.format("Init Online total[%s] count[%s]", it.getTotalItemsCount(),count));
 		return true;
 	}
 }

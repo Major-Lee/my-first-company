@@ -2,6 +2,7 @@ package com.bhu.vas.business.asyn.spring.builder;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.business.asyn.spring.model.topic.NotifyDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class ActionMessageFactoryBuilder {
@@ -29,6 +30,15 @@ public class ActionMessageFactoryBuilder {
 		return JsonHelper.getJSONString(message,false);
 	}
 	
+	
+	public static String toJsonHasPrefix(NotifyDTO message){
+		StringBuilder sb = new StringBuilder();
+		sb.append(message.getNotifyType()).append(toJson(message));
+		return sb.toString();
+	}
+	public static String toJson(NotifyDTO message){
+		return JsonHelper.getJSONString(message,false);
+	}
 	/*public static ActionDTO fromJsonHasPrefix(String messagejson){
 		if(StringUtils.isEmpty(messagejson)) return null;
 		char prefix = messagejson.charAt(0);

@@ -4,9 +4,6 @@ import javax.jms.Queue;
 
 import org.springframework.jms.core.JmsTemplate;
 
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessageFactoryBuilder;
-
 /**
  * Author：Edmond Lee
  * Date: 2008-8-28

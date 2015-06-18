@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.smartwork.msip.cores.cache.entitycache.impl.local.DefaultCacheImpl;
-import com.smartwork.msip.cores.helper.task.TaskEngine;
 
 public class SessionManager {
 	private static class SessionCacheFacadeHolder{ 
@@ -14,8 +13,8 @@ public class SessionManager {
 	}
 
 	private SessionManager(){
-		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 5*60*1000,5*60*1000);//5*60*1000,5*60*1000);//5*60*1000);
-		TaskEngine.getInstance().schedule(new DaemonCheckSerialTask(), 3*60*1000,3*60*1000);//5*60*1000,5*60*1000);//5*60*1000);
+		//TaskEngine.getInstance().schedule(new DaemonCheckTask(), 5*60*1000,5*60*1000);//5*60*1000,5*60*1000);//5*60*1000);
+		//TaskEngine.getInstance().schedule(new DaemonCheckSerialTask(), 3*60*1000,3*60*1000);//5*60*1000,5*60*1000);//5*60*1000);
 	}
 	
 	/**
