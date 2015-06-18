@@ -269,6 +269,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		for(WifiDevice entity : entitys){
 			if(entity != null){
 				wifiDeviceVTO = new WifiDeviceVTO();
+				wifiDeviceVTO.setWid(entity.getId());
 				wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_model())
 						? entity.getOrig_model() : entity.getOem_model());
 				wifiDeviceVTO.setWm(entity.getWork_mode());
