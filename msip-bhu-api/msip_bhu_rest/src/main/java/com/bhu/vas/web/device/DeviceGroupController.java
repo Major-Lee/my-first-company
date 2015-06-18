@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.vto.DeviceGroupVTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +41,7 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue="0") int pid) {
-		RpcResponseDTO<List<DeviceGroupDTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
+		RpcResponseDTO<List<DeviceGroupVTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
 		if(birthTree.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, birthTree.getPayload());
 		else
@@ -72,7 +73,7 @@ public class DeviceGroupController extends BaseController{
 			) {
 		System.out.println("~~~~~~~~~~~~save");
 		System.out.println("~~~~~~~~~~~~save:"+deviceGroupRpcService);
-		RpcResponseDTO<DeviceGroupDTO> save = deviceGroupRpcService.save(uid, gid, pid, name);
+		RpcResponseDTO<DeviceGroupVTO> save = deviceGroupRpcService.save(uid, gid, pid, name);
 		if(save.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, save.getPayload());
 		else
@@ -93,7 +94,7 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) int gid) {
-		RpcResponseDTO<DeviceGroupDTO> detail = deviceGroupRpcService.detail(uid, gid);
+		RpcResponseDTO<DeviceGroupVTO> detail = deviceGroupRpcService.detail(uid, gid);
 		if(detail.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, detail.getPayload());
 		else

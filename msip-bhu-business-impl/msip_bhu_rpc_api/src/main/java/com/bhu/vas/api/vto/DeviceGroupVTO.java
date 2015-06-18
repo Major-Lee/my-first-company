@@ -1,11 +1,11 @@
-package com.bhu.vas.api.rpc.devices.dto;
+package com.bhu.vas.api.vto;
 
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class DeviceGroupDTO implements java.io.Serializable{
+public class DeviceGroupVTO implements java.io.Serializable{
 	private int gid;
 	private int pid;
 	
@@ -16,7 +16,7 @@ public class DeviceGroupDTO implements java.io.Serializable{
 	private int children;
 	private List<String> devices;
 
-	private List<WifiDeviceDTO> detail_devices;
+	private List<WifiDeviceVTO> detail_devices;
 
 	public int getGid() {
 		return gid;
@@ -66,12 +66,11 @@ public class DeviceGroupDTO implements java.io.Serializable{
 		this.devices = devices;
 	}
 
-
-	public List<WifiDeviceDTO> getDetail_devices() {
+	public List<WifiDeviceVTO> getDetail_devices() {
 		return detail_devices;
 	}
 
-	public void setDetail_devices(List<WifiDeviceDTO> detail_devices) {
+	public void setDetail_devices(List<WifiDeviceVTO> detail_devices) {
 		this.detail_devices = detail_devices;
 	}
 
