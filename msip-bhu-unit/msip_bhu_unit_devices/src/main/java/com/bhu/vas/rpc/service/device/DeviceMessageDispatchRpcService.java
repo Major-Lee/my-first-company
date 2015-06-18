@@ -162,10 +162,11 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			}else if(OperationCMD.TurnOnDeviceDPINotify.getNo().equals(opt) || OperationCMD.TurnOffDeviceDPINotify.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskCommonProcessor(ctx,payload,mac,taskid);
 			}
-			/*else if(OperationCMD.QueryDeviceLocationS1.getNo().equals(opt)){
-				//do nothing 由input processor解析后直接转到daemon
+			else if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){
+				//老版本由于不支持notify，所以会出现到这里，需要特殊处理
+				//TODO：do nothing 由input processor解析后直接转到daemon
+				deviceBusinessFacadeService.taskQueryOldDeviceLocationNotifyProcessor(ctx,payload,mac,taskid);
 			}
-			 */
 			else if(OperationCMD.QueryDeviceLocationS2.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, mac, taskid);
 			}

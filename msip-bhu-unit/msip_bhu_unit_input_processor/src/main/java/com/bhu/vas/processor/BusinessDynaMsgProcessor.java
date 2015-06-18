@@ -18,7 +18,6 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
@@ -133,14 +132,14 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
 						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 					}
-					if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串
+					/*if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理
 						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
 						if(cmd_opt != null){
 							if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
 								daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
 							}
 						}
-					}
+					}*/
 				}
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}

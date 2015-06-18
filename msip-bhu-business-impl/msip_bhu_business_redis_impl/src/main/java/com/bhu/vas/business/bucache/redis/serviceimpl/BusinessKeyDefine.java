@@ -18,6 +18,7 @@ public class BusinessKeyDefine {
 		public static final String SubjectPrefixKey 			= "SP.";//"BuMarkH.";
 		public static final String WifiDevicePresentPrefixKey 			= "WDP";
 		public static final String WifiDevicePresentCtxPrefixKey 			= "WDPC";
+		public static final String WifiDeviceSerialTaskPrefixKey 			= "WDST";
 		public static final String WifiDeviceHandsetPresentPrefixKey 			= "WDHP";
 		public static final String WifiDeviceModeStatusPrefixKey 			= "WDMS";
 		public static final String WifiDeviceMobilePresentPrefixKey 			= "WDMP";

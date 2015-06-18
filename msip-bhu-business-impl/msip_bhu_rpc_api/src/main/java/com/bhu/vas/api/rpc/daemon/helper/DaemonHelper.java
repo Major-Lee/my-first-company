@@ -43,6 +43,12 @@ public class DaemonHelper {
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 	}
 	
+	public static void locationStep2Query(String mac,int taskid,String serialno,IDaemonRpcService daemonRpcService){
+		String cmd = CMDBuilder.builderDeviceLocationStep2Query(mac, taskid, serialno);
+		//String cmd = CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence());
+		//daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
+	}
+	
 //	public static void afterUserSignedon(String mac, IDaemonRpcService daemonRpcService){
 //		//List<String> payloads = new ArrayList<String>();
 //		//获取设备测速

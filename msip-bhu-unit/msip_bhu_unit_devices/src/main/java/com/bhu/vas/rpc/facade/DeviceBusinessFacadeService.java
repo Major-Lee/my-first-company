@@ -6,14 +6,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
@@ -41,8 +42,8 @@ import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -982,5 +983,25 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 处理查询地理位置第一步的返回指令
+	 * @param ctx
+	 * @param response
+	 * @param mac
+	 * @param taskid
+	 */
+	public void taskQueryOldDeviceLocationNotifyProcessor(String ctx, String response, String mac, int taskid){
+		System.out.println(String.format("taskQueryOldDeviceLocationNotifyProcessor mac[%s] taskid[%s]", mac,taskid));
+		try{
+			QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(response, QuerySerialReturnDTO.class);
+			if(StringUtils.isNotEmpty(retDTO.getSerial())){//如果此类消息没有serial则忽略掉
+				WifiDeviceLocationSerialTaskService.getInstance().addSerialTask(mac, new SerialTaskDTO(mac,taskid,retDTO.getSerial()));
+				System.out.println(String.format("taskQueryOldDeviceLocationNotifyProcessor mac[%s] taskid[%s] serial[%s] update2redis successfully", mac,taskid,retDTO.getSerial()));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 }
