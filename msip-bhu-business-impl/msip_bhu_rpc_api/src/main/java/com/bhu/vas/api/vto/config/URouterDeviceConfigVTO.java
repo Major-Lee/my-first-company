@@ -3,6 +3,8 @@ package com.bhu.vas.api.vto.config;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bhu.vas.api.vto.URouterModeVTO;
+
 @SuppressWarnings("serial")
 public class URouterDeviceConfigVTO implements Serializable{
 	//vap名称
@@ -12,7 +14,7 @@ public class URouterDeviceConfigVTO implements Serializable{
 	//vap 密码 加密方式
 	private String vap_auth;
 	//信号强度
-	private String power;
+	private int power;
 	//admin管理密码
 	private String admin_pwd;
 	//vap 密码
@@ -23,6 +25,8 @@ public class URouterDeviceConfigVTO implements Serializable{
 	private List<URouterDeviceConfigRateControlVTO> rcs;
 	//终端别名列表
 	private List<URouterDeviceConfigMMVTO> mms;
+	//上网方式
+	private URouterModeVTO linkmode;
 	
 	public String getVap_name() {
 		return vap_name;
@@ -42,10 +46,10 @@ public class URouterDeviceConfigVTO implements Serializable{
 	public void setVap_auth(String vap_auth) {
 		this.vap_auth = vap_auth;
 	}
-	public String getPower() {
+	public int getPower() {
 		return power;
 	}
-	public void setPower(String power) {
+	public void setPower(int power) {
 		this.power = power;
 	}
 	public String getAdmin_pwd() {
@@ -78,5 +82,10 @@ public class URouterDeviceConfigVTO implements Serializable{
 	public void setMms(List<URouterDeviceConfigMMVTO> mms) {
 		this.mms = mms;
 	}
-
+	public URouterModeVTO getLinkmode() {
+		return linkmode;
+	}
+	public void setLinkmode(URouterModeVTO linkmode) {
+		this.linkmode = linkmode;
+	}
 }

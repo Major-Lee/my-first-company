@@ -524,13 +524,25 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setRcs(rcs_vtos);
 			}
 			//信号强度
-			vto.setPower(DeviceHelper.getURouterDevicePower(setting_dto));
+			vto.setPower(Integer.parseInt(DeviceHelper.getURouterDevicePower(setting_dto)));
 			//admin密码
 			WifiDeviceSettingUserDTO admin_user_dto = DeviceHelper.getURouterDeviceAdminUser(setting_dto);
 			if(admin_user_dto != null){
 				vto.setAdmin_pwd(JNIRsaHelper.jniRsaDecryptHexStr(admin_user_dto.getPassword_rsa()));
 			}
-			
+			//上网方式
+			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(mac);
+			if(mode_dto != null){
+				URouterModeVTO link_vto = new URouterModeVTO();
+				link_vto.setIp(mode_dto.getIp());
+				link_vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
+				link_vto.setNetmask(mode_dto.getNetmask());
+				link_vto.setP_un(mode_dto.getUsername());
+				link_vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
+				link_vto.setGateway(mode_dto.getGateway());
+				link_vto.setDns(mode_dto.getDns());
+				vto.setLinkmode(link_vto);
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
