@@ -41,7 +41,7 @@ public class WifiDeviceLocationQueryLoader {
 					if(device.getOrig_swver().indexOf("1.2.12") >=0 
 							|| device.getOrig_swver().indexOf("1.2.11")>=0
 							|| device.getOrig_swver().indexOf("1.2.10")>=0){
-						DaemonHelper.locationQuery(device.getId(), daemonRpcService);
+						DaemonHelper.locationStep1Query(device.getId(), daemonRpcService);
 						count++;
 					}
 				}
