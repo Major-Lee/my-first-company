@@ -26,6 +26,7 @@ public class WifiDeviceLocationQueryLoader {
 	private IDaemonRpcService daemonRpcService;
 	public void execute() {
 		logger.info("WifiDeviceLocationQueryLoader starting...");
+		//DaemonHelper.locationStep1Query("62:68:75:02:ff:05", daemonRpcService);
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("online", 1).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
     	mc.setPageNumber(1);
