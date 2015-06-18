@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -12,7 +16,6 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.devices.dto.DeviceGroupDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -25,6 +28,9 @@ public class DeviceGroupUnitFacadeRpcService{
 	private final Logger logger = LoggerFactory.getLogger(DeviceGroupUnitFacadeRpcService.class);
 	@Resource
 	private WifiDeviceGroupService wifiDeviceGroupService;
+
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	
 	/**
 	 * 通过pid取得pid=pid的节点
@@ -32,14 +38,14 @@ public class DeviceGroupUnitFacadeRpcService{
 	 * @param pid
 	 * @return
 	 */
-	public RpcResponseDTO<List<DeviceGroupDTO>> birthTree(Integer uid, int pid) {
+	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid) {
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
     	//mc.setPageNumber(1);
     	//mc.setPageSize(400);
     	List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
-    	List<DeviceGroupDTO> result = new ArrayList<DeviceGroupDTO>();
+    	List<DeviceGroupVTO> result = new ArrayList<DeviceGroupVTO>();
     	for(WifiDeviceGroup group:groups){
     		result.add(fromWifiDeviceGroup(group));
     	}
@@ -47,7 +53,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 	
 	
-	public RpcResponseDTO<DeviceGroupDTO> save(Integer uid, int gid,int pid, String name) {
+	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, int gid,int pid, String name) {
 		//if(gid == null) gid = 0;
 		//if(pid == null) pid = 0;
 		WifiDeviceGroup dgroup= null;
@@ -182,7 +188,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup));
 	}
-	public RpcResponseDTO<DeviceGroupDTO> detail(Integer uid, Integer gid) {
+	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, Integer gid) {
 		WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
 		if(dgroup != null){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup));
@@ -240,24 +246,58 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 
-	private DeviceGroupDTO fromWifiDeviceGroup(WifiDeviceGroup dgroup){
-		DeviceGroupDTO dto = new DeviceGroupDTO();
-		dto.setGid(dgroup.getId());
-		dto.setName(dgroup.getName());
-		dto.setPid(dgroup.getPid());
+	private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup){
+		DeviceGroupVTO vto = new DeviceGroupVTO();
+		vto.setGid(dgroup.getId());
+		vto.setName(dgroup.getName());
+		vto.setPid(dgroup.getPid());
 		if(dgroup.getPid() == 0){
-			dto.setPname("根节点");
+			vto.setPname("根节点");
 		}else{
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
-			dto.setPname( (parent_group!=null)?parent_group.getName():null);
+			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		dto.setChildren(dgroup.getChildren());
+		vto.setChildren(dgroup.getChildren());
 		//dto.setHaschild(dgroup.isHaschild());
-		dto.setPath(dgroup.getPath());
-		dto.setDevices(dgroup.getInnerModels());
-		return dto;
+		vto.setPath(dgroup.getPath());
+		vto.setDevices(dgroup.getInnerModels());
+
+
+		List<WifiDevice> entitys = wifiDeviceService.findByIds(dgroup.getInnerModels(), true, true);
+		List<WifiDeviceVTO> vtos = new ArrayList<WifiDeviceVTO>();
+		WifiDeviceVTO wifiDeviceVTO = null;
+		for(WifiDevice entity : entitys){
+			if(entity != null){
+				wifiDeviceVTO = new WifiDeviceVTO();
+				wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_model())
+						? entity.getOrig_model() : entity.getOem_model());
+				wifiDeviceVTO.setWm(entity.getWork_mode());
+				wifiDeviceVTO.setCfm(entity.getConfig_mode());
+				wifiDeviceVTO.setRts(entity.getLast_reged_at().getTime());
+				wifiDeviceVTO.setCts(entity.getCreated_at().getTime());
+				wifiDeviceVTO.setOvd(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_vendor())
+						? entity.getOrig_vendor() : entity.getOem_vendor());
+				wifiDeviceVTO.setOesv(entity.getOem_swver());
+				wifiDeviceVTO.setDof(org.apache.commons.lang.StringUtils.isEmpty(entity.getRx_bytes())
+						? 0 : Long.parseLong(entity.getRx_bytes()));
+				wifiDeviceVTO.setUof(org.apache.commons.lang.StringUtils.isEmpty(entity.getTx_bytes())
+						? 0 : Long.parseLong(entity.getTx_bytes()));
+				wifiDeviceVTO.setIpgen(entity.isIpgen());
+				//如果是离线 计算离线时间
+				if(wifiDeviceVTO.getOl() == 0){
+					long logout_ts = entity.getLast_logout_at().getTime();
+					wifiDeviceVTO.setOfts(logout_ts);
+					wifiDeviceVTO.setOftd(System.currentTimeMillis() - logout_ts);
+				}
+			}
+			vtos.add(wifiDeviceVTO);
+		}
+
+		vto.setDetail_devices(vtos);
+
+		return vto;
 	}
-	
+
 	
 	/*public static void main(String[] argv){
 		String path = "15/18/21/";

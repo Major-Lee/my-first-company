@@ -4,15 +4,16 @@ import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.DeviceGroupDTO;
+import com.bhu.vas.api.vto.DeviceGroupVTO;
 
 
 public interface IDeviceGroupRpcService {
 	
-	public RpcResponseDTO<List<DeviceGroupDTO>> birthTree(Integer uid, int pid);
+	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid);
 	
-	public RpcResponseDTO<DeviceGroupDTO> save(Integer uid,int gid,int pid, String name);
+	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid,int gid,int pid, String name);
 	
-	public RpcResponseDTO<DeviceGroupDTO> detail(Integer uid, int gid);
+	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, int gid);
 	
 	public RpcResponseDTO<Boolean> remove(Integer uid, String gids);
 	
