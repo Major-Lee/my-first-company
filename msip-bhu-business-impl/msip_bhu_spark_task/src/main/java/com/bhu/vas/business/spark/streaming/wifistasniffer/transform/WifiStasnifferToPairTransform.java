@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import scala.Tuple2;
 
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
+import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
 
 /**
  * 把itemdto序列转换成KV形式 key为设备mac value为itemdto
@@ -19,6 +20,7 @@ import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 public class WifiStasnifferToPairTransform implements PairFunction<WifistasnifferItemRddto, String, WifistasnifferItemRddto>,Serializable {
 	@Override
 	public Tuple2<String, WifistasnifferItemRddto> call(WifistasnifferItemRddto dto) throws Exception {
+		  SparkTaskLog.wifistasniffer().info("执行 WifiStasnifferToPairTransform");
 	      if(dto != null){
 	    	  return new Tuple2<String, WifistasnifferItemRddto>(dto.getD_mac(), dto);
 	      }

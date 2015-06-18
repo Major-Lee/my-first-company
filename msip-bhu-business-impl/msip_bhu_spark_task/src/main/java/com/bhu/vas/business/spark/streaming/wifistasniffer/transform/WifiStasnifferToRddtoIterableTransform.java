@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferRddto;
+import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
 import com.google.common.collect.Lists;
 
 /**
@@ -22,6 +23,7 @@ public class WifiStasnifferToRddtoIterableTransform implements FlatMapFunction<W
     @Override
     public Iterable<WifistasnifferItemRddto> call(WifistasnifferRddto rddto) {
 	  	  if(rddto != null){
+	  		  SparkTaskLog.wifistasniffer().info("执行 WifiStasnifferToPairTransform");
 	  		  List<WifistasnifferItemRddto> items = rddto.getItems();
 	  		  if(items != null && !items.isEmpty()){
 	  			  return Lists.newArrayList(items);
