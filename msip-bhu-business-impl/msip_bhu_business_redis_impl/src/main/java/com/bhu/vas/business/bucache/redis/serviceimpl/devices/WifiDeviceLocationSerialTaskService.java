@@ -152,6 +152,9 @@ public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCac
 	}
 	
 	public static void main(String[] argv){
+		
+		SerialTaskDTO serialTask = WifiDeviceLocationSerialTaskService.getInstance().getSerialTask("62:68:75:02:ff:05");
+		System.out.println(serialTask);
 		/*List<String> argg = new ArrayList<String>();
 		argg.add("aa");
 		argg.add("ab");

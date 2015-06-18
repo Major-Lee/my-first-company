@@ -30,6 +30,7 @@ public class WifiDeviceLocationStep2QueryLoader {
 					String mac = entry.getKey();
 					SerialTaskDTO taskDto = entry.getValue();
 					DaemonHelper.locationStep2Query(mac, taskDto.getTaskid(), taskDto.getSerialno(), daemonRpcService);//.locationQuery(device.getId(), daemonRpcService);
+					WifiDeviceLocationSerialTaskService.getInstance().removeSerialTask(mac);
 					logger.info("WifiDeviceLocationStep2QueryLoader mac:"+mac);
 				}
 			}
