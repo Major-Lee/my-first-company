@@ -4,26 +4,25 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -160,7 +159,27 @@ public class CmdController extends BaseController{
 		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
 	}
 	
-	
+/*	@ResponseBody()
+	@RequestMapping(value="/wifiSniffer",method={RequestMethod.POST})
+	public void cmdWifiSniffer(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String opt,
+			@RequestParam(required = false, defaultValue="00") String subopt,
+			@RequestParam(required = false) String extparams) {
+		
+		RpcResponseDTO<TaskResDTO> resp = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
+		
+		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
+		if(resp.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}
+		
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+	}*/
 	/**
 	 * 查询任务状态接口
 	 * @param request
@@ -190,28 +209,4 @@ public class CmdController extends BaseController{
 		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
 	}
 	
-	/*@ResponseBody()
-	@RequestMapping(value="/htmlingenerate",method={RequestMethod.GET,RequestMethod.POST})
-	public void htmlInjectionGenerate(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) String mac,
-			@RequestParam(required = true) String opt,
-			@RequestParam(required = true) String enable,
-			@RequestParam(required = true) String adurl,
-			@RequestParam(required = true) String adid,
-			
-			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
-			@RequestParam(required = false) String channel_taskid) {
-		
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(mac, opt, payload, channel, channel_taskid);
-		
-		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
-		if(resp.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
-			return;
-		}else{
-			throw new BusinessException(ResponseStatus.BadRequest,resp.getErrorCode());
-		}
-	}*/
 }

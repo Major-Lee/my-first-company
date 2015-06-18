@@ -7,12 +7,21 @@ import java.util.Map;
  * 由于设备端限制任务号 FFFFFFFF 对应为 4294967295
  * 业务取前3位为 429，为了不溢出，最大值为428 后7位为任务id，组合下行给设备 数据库中任务id超过9999999后需要重置，0-100000区间保留给自动触发任务
  * OperationCMD no 区间 100~428
+ * 
+ * 
+ * 备注：特殊处理Param指令，不涉及到任务id，设备上线后需要下发这些指令
  * @author Edmond
  *
  */
 public enum OperationCMD {
+	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制  下发管理参数触发设备自动上报用户通知并同步终端
+	ParamQueryTeminals("001","Param指令查询当前在线终端","param",
+			"00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>"),
+	//2. 设备终端探测开启关闭指令
+	ParamWifiSinffer("002","Param指令设备终端探测开启关闭","param",
+			"00001001%s0000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
+
 	
-	//QueryTeminals("01","查询设备当前在线终端"),
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",
 			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>"),
@@ -27,7 +36,6 @@ public enum OperationCMD {
 	QueryDeviceLocationS2("040","查询设备地理位置Step2","sysdebug",
 			"00001001%s%s%s"+"000100000001"+"<report><ITEM cmd=\"sysdebug\" serial=\"%s\" op=\"get\"/></report>"),
 		
-			
 	//1. 查询wifi地理位置 等待设备通知结果
 	QueryDeviceLocationNotify("102","查询设备地理位置notify","",
 			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  serial=\"%s\"/></cmd>"),

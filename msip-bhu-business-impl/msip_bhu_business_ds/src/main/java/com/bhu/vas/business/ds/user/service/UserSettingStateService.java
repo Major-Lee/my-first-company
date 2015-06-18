@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.ds.user.dao.UserSettingStateDao;
@@ -32,6 +33,7 @@ public class UserSettingStateService extends AbstractCoreService<String,UserSett
 			entity.setId(mac);
 			entity.putUserSetting(new UserTerminalOnlineSettingDTO());
 			entity.putUserSetting(new UserWifiTimerSettingDTO());
+			entity.putUserSetting(new UserWifiSinfferSettingDTO());
 			return super.insert(entity);
 		}
 		return null;
