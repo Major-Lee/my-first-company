@@ -9,6 +9,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -26,17 +27,14 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class CMDBuilder {
 	
 	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制  下发管理参数触发设备自动上报用户通知并同步终端
-	private static final String query_device_teminals_cmd_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>";
+	//private static final String Device_Query_Teminals_Param_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>";
 	/*
-	//1. 查询cpu,内存利用率
-	private static final String query_device_status_cmd_template =   "00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>";
-	//1. 查询设备流量
-	private static final String query_device_flow_cmd_template 	 =   "00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"if_stat\"/></cmd>";
-	//1. 查询wifi地理位置命令第一步
-	private static final String query_device_location_step1_cmd_template = "00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" /></cmd>";
-	//1. 查询wifi地理位置命令第二步
-	private static final String query_device_location_step2_cmd_template = "00001001%s%s%s"+"000100000001"+"<report><ITEM cmd=\"sysdebug\" serial=\"%s\" op=\"get\"/></report>";
-*/	
+	sta_sniffer	enable/disable	终端探测的开关
+	sta_sniffer_url	STRING	终端探测信息上报的url
+	sta_sniffer_batch_num 到达多少量上报
+	sta_sniffer_delay 延迟多少秒*/
+	//2. 设备终端探测开启关闭指令
+	//private static final String Device_Wifi_Sniffer_Param_template = "00001001%s0000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>";
 	
 	//任务id format为七位，前面补零
 	public static final String SuffixTemplete = "%07d";
@@ -45,8 +43,13 @@ public class CMDBuilder {
 	public static final int Cmd_Header_Length = 42;
 	
 	public static String builderDeviceOnlineTeminalQuery(String wifi_mac){
-		return String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac));
+		return String.format(OperationCMD.ParamQueryTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));
 	}
+	
+	public static String builderDeviceWifiSnifferSetting(String wifi_mac,String sta_sniffer){
+		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),sta_sniffer,RuntimeConfiguration.Vap_Wifistasniffer_Batch_Num,RuntimeConfiguration.Vap_Wifistasniffer_Delay,RuntimeConfiguration.Vap_Wifistasniffer_Url);
+	}
+	
 	
 	public static String builderDeviceStatusQuery(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
