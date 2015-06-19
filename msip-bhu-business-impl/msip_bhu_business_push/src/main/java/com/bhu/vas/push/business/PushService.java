@@ -27,7 +27,7 @@ import com.bhu.vas.push.common.service.gexin.GexinPushService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.plugins.dictparser.impl.mac.Handset;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 /**
@@ -238,8 +238,8 @@ public class PushService{
 				hostname = hd_push_dto.getHd_mac();
 			}
 			//根据设备mac匹配终端厂商
-			String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true);
-			if(Handset.Unknow.getScn().equals(scn)){
+			String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
+			if(DevicesSet.Unknow.getScn().equals(scn)){
 				scn = "终端";
 			}
 			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hostname));
