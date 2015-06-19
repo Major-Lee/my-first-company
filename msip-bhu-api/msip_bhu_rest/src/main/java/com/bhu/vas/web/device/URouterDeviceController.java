@@ -267,14 +267,12 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) boolean on) {
-		111
-		/*RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(
-				uid, mac, on, stranger_on, timeslot, timeslot_mode);
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginWifisniffer(uid, mac, on);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
-		}*/
+		}
 	}
 	
 	/**
