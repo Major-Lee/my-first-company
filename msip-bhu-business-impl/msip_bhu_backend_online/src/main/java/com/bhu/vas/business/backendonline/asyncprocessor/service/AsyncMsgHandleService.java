@@ -30,6 +30,8 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
@@ -134,8 +136,15 @@ public class AsyncMsgHandleService {
 		//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac(), dto.getLogin_ts());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
-
-		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery());
+		boolean needWiffsniffer = false;
+		UserSettingState settingState = userSettingStateService.getById(dto.getMac());
+		if(settingState != null){
+			UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
+			if(wifiSniffer != null){
+				needWiffsniffer = wifiSniffer.isOn();
+			}
+		}
+		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer);
 		
 		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
 		//设备统计
@@ -149,9 +158,9 @@ public class AsyncMsgHandleService {
 	}
 	
 	//下发获取配置，获取设备测速，地理位置
-	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery){
+	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,boolean needWiffsniffer){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
-		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, daemonRpcService);
+		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, needWiffsniffer, daemonRpcService);
 		/*List<String> payloads = new ArrayList<String>();
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
