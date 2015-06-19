@@ -24,6 +24,7 @@ public class DaemonHelper {
 			//获取地理位置
 			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		}
+		//开启或关闭wiffsinffer
 		payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
 		/*if(needWiffsniffer){
 			//开启wiffsinffer
