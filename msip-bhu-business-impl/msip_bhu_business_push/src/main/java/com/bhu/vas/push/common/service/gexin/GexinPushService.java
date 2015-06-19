@@ -126,12 +126,12 @@ public class GexinPushService{
 		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
 		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
 			    // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动。
-			    template.setTransmissionType(2);
+			    template.setTransmissionType(1);
 			    template.setTransmissionContent(pushMsg.getPaylod());
 			 
 			    /*iOS 推送需要对该字段进行设置具体参数详见iOS模板说明*/
 			    template.setPushInfo("", 0, pushMsg.getPaylod(), "com.gexin.ios.silence", 
-			    		"", "", "", "1");
+			    		"", "", "", "", 1);
 			    /*template.setPushInfo("actionLocKey", 4, "message", "sound", 
 			    "payload", "locKey", "locArgs", "launchImage","ContentAvailable");*/
 		        
