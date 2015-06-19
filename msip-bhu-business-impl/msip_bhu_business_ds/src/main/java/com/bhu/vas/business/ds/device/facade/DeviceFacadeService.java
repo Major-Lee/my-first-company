@@ -27,6 +27,7 @@ import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -555,8 +556,8 @@ public class DeviceFacadeService {
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
-				if(hostname.startsWith("android-")){
-					return "安卓终端";
+				if(hostname.toLowerCase().startsWith(PushMessageConstant.Android_Host_Name_Match)){
+					return PushMessageConstant.Android_Host_Name;
 				}
 				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
