@@ -521,7 +521,17 @@ public class DeviceFacadeService {
 	 * @param mac
 	 * @return
 	 */
-	public String queryPushHandsetDeviceName(String hd_mac, String mac){
+/*	public String queryPushHandsetDeviceName(String hd_mac, String mac){
+
+
+	}*/
+	/**
+	 * 获取终端别名
+	 * @param hd_mac
+	 * @param mac
+	 * @return
+	 */
+	public String queryPushHandsetDeviceAliasName(String hd_mac, String mac){
 		WifiDeviceSettingDTO setting_dto = queryDeviceSettingDTO(mac);
 		if(setting_dto != null){
 			//查询终端别名
@@ -530,18 +540,28 @@ public class DeviceFacadeService {
 				return StringHelper.chopMiddleString(alias, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
+		return null;
+	}
+	
+	/**
+	 * 获取终端主机名
+	 * @param hd_mac
+	 * @param mac
+	 * @return
+	 */
+	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
 		//如果没有别名 以终端主机名填充
 		HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
 				if(hostname.startsWith("android-")){
-					return "安卓设备";
+					return "安卓终端";
 				}
 				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
-		return hd_mac;
+		return null;
 	}
 	
 	/**

@@ -217,24 +217,39 @@ public class PushService{
 	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto, 
 			HandsetDeviceOnlinePushDTO hd_push_dto){
 		//终端名称
-		String hd_name = deviceFacadeService.queryPushHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+		//String hd_name = deviceFacadeService.queryPushHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
 		//设备名称
 //		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
 		//格式化连接时间
 //		String date_format = DateTimeHelper.getDateTime(new Date(hd_push_dto.getTs()), DateTimeHelper.DefalutFormatPattern);
 		//构造payload
-		hd_push_dto.setN(hd_name);
+		String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+		//如果终端有别名 则不显示终端厂商短名称
+		if(!StringUtils.isEmpty(aliasName)){
+			hd_push_dto.setN(aliasName);
+			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, 
+					aliasName));
+		}
+		//如果不存在终端别名 显示厂商短名称
+		else{
+			String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+			//如果终端主机名也不存在 直接显示终端mac
+			if(StringUtils.isEmpty(hostname)){
+				hostname = hd_push_dto.getHd_mac();
+			}
+			//根据设备mac匹配终端厂商
+			String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true);
+			if(Handset.Unknow.getScn().equals(scn)){
+				scn = "终端";
+			}
+			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hostname));
+		}
+		
 		String payload = JsonHelper.getJSONString(hd_push_dto);
 		pushMsg.setPaylod(payload);
 		//构造title和text
 		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : ""));
-		//根据设备mac匹配终端厂商
-		String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true);
-		if(Handset.Unknow.getScn().equals(scn)){
-			scn = StringHelper.EMPTY_STRING_GAP;
-		}
 		
-		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hd_name));
 	}
 	
 	/**
