@@ -268,8 +268,10 @@ public class DeviceGroupUnitFacadeRpcService{
 		WifiDeviceVTO wifiDeviceVTO = null;
 		for(WifiDevice entity : entitys){
 			if(entity != null){
+				//todo(bluesand):此处以后会跟搜索结果合并？现在用于群组菜单业务。
 				wifiDeviceVTO = new WifiDeviceVTO();
 				wifiDeviceVTO.setWid(entity.getId());
+				wifiDeviceVTO.setOl(entity.isOnline()? 1: 0);
 				wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_model())
 						? entity.getOrig_model() : entity.getOem_model());
 				wifiDeviceVTO.setWm(entity.getWork_mode());
