@@ -556,7 +556,7 @@ public class DeviceFacadeService {
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
-				if(hostname.startsWith("android-")){
+				if(hostname.toLowerCase().startsWith(PushMessageConstant.Android_Host_Name_Match)){
 					return PushMessageConstant.Android_Host_Name;
 				}
 				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);

@@ -249,7 +249,7 @@ public class PushService{
 			//如果主机名和短名称都存在 显示短名称+主机名
 			if(exist_hostname && exist_scn){
 				//如果短名称包含 手机 字样
-				if(scn.equals(PushMessageConstant.Android_Mobile_String)){
+				if(scn.contains(PushMessageConstant.Android_Mobile_String)){
 					//主机名是安卓标记的显示为安卓os
 					if(PushMessageConstant.Android_Host_Name.equals(hostname)){
 						hostname = PushMessageConstant.Android_OS;
