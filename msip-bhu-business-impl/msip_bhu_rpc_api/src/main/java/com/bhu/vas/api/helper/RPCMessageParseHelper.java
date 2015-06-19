@@ -351,6 +351,7 @@ public class RPCMessageParseHelper {
 					WifiDeviceSettingMMDTO mm_dto = new WifiDeviceSettingMMDTO();
 					mm_dto.setName(mac_management_element.attributeValue("name"));
 					mm_dto.setMac(mac_management_element.attributeValue("mac"));
+					mm_dto.setSsdel(mac_management_element.attributeValue("ssdel"));
 					mac_management_dtos.add(mm_dto);
 				}
 				dto.setMms(mac_management_dtos);
