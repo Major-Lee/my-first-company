@@ -259,6 +259,24 @@ public class URouterDeviceController extends BaseController{
 		}
 	}
 
+	@ResponseBody()
+	@RequestMapping(value="/upd_plugin_wifisniffer",method={RequestMethod.POST})
+	public void upd_plugin_wifisniffer(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) boolean on) {
+		111
+		/*RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(
+				uid, mac, on, stranger_on, timeslot, timeslot_mode);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}*/
+	}
+	
 	/**
 	 * 获取urouter设备的相关配置数据
 	 * @param request

@@ -78,6 +78,42 @@ public class BuilderMacOrganizationDataOp {
                     				macPrefix.setId(prefixmac);
                     				macPrefix.setName(name);
                     				macPrefix.setOrg(org);
+                    				if(org.contains("Yulong Computer") || org.contains("Shenzhen Siviton")){
+                    					macPrefix.setName("Coolpad");
+                    				}
+                    				if(org.contains("Hangzhou H3C")){
+                    					macPrefix.setName("HUAWEI");
+                    				}
+                    				if(org.contains("Shenzhen TCL")){
+                    					macPrefix.setName("TCL");
+                    				}
+                    				if(org.contains("Beijing Huasun")){
+                    					macPrefix.setName("Huasun");
+                    				}
+                    				if(org.contains("Jiangsu Datang")){
+                    					macPrefix.setName("Datang");
+                    				}
+                    				 
+                    				if(org.contains("SHENZHEN MERCURY")){
+                    					macPrefix.setName("Mercury");
+                    				}
+                    				if(org.contains("Tp-Link") || org.contains("TP-LINK")){
+                    					macPrefix.setName("Tp-Link");
+                    				}
+                    				
+                    				if(org.contains("N.V. PHILIPS")){
+                    					macPrefix.setName("PHILIPS");
+                    				}
+                    				if(org.contains("SHENZHEN HUAPU") || org.contains("Shenzhen Huapu")){
+                    					macPrefix.setName("HUAPU");
+                    				}
+                    				if(org.contains("Hisense") || org.contains("HISENSE")){
+                    					macPrefix.setName("Hisense");
+                    				}
+                    				if(org.contains("EDISA HEWLETT PACKARD")){
+                    					macPrefix.setName("Hewlett-Packard");
+                    				}
+                    				
                     				macPrefix.setAddress(address.toString());
                     				macPrefix.setVisibility(true);
                     				dictMacPrefixService.insert(macPrefix);

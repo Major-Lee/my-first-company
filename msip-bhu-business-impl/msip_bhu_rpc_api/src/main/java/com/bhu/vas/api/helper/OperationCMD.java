@@ -9,7 +9,7 @@ import java.util.Map;
  * OperationCMD no 区间 100~428
  * 
  * 
- * 备注：特殊处理Param指令，不涉及到任务id，设备上线后需要下发这些指令
+ * 备注：特殊处理Param指令，不涉及到任务id，设备上线后需要下发这些指令 < 100的定义不加入 特殊处理
  * @author Edmond
  *
  */
@@ -20,7 +20,7 @@ public enum OperationCMD {
 	//2. 设备终端探测开启关闭指令
 	ParamWifiSinffer("002","Param指令设备终端探测开启关闭","param",
 			"00001001%s0000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
-
+			
 	
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",

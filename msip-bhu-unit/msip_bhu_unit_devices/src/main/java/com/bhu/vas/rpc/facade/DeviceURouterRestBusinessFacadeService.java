@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -21,13 +22,16 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
@@ -420,9 +424,40 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
+	/**
+	 * 设置智能插件 开启关闭wifisniffer 终端探测
+	 * @param uid
+	 * @param wifiId
+	 * @param on
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,
+			String wifiId, boolean on){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			UserSettingState user_setting_entity = userSettingStateService.getById(wifiId);
+			
+			UserWifiSinfferSettingDTO uto_dto = new UserWifiSinfferSettingDTO();
+			uto_dto.setOn(on);
+			user_setting_entity.putUserSetting(uto_dto);
+			userSettingStateService.update(user_setting_entity);
+			deliverMessageService.sendWifiCmdCommingNotifyMessage(
+					wifiId,0,OperationCMD.ParamWifiSinffer.getNo(),
+					CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,
+							on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	
 	
 	/**
-	 * 插件数据 终端上线通知
+	 * 插件数据 
+	 * 	终端上线通知
+	 *  终端wifi定时开关
+	 *  终端wifi终端探测
 	 * @param user_setting_entity
 	 * @return
 	 */
@@ -432,8 +467,10 @@ public class DeviceURouterRestBusinessFacadeService {
 				Setting_Key, UserTerminalOnlineSettingDTO.class);
 		UserWifiTimerSettingDTO uwt_dto = user_setting_entity.getUserSetting(UserWifiTimerSettingDTO.
 				Setting_Key, UserWifiTimerSettingDTO.class);
-		
 		uwt_dto.setEnable(uwt_dto.wifiCurrentEnable());
+		UserWifiSinfferSettingDTO uws_dto = user_setting_entity.getUserSetting(UserWifiSinfferSettingDTO.
+				Setting_Key, UserWifiSinfferSettingDTO.class);
+		
 		/*if(uto_dto == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		}*/
@@ -441,6 +478,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
 		if(uwt_dto != null)
 			ret.put(UserWifiTimerSettingDTO.Setting_Key, uwt_dto);
+		if(uws_dto != null)
+			ret.put(UserWifiSinfferSettingDTO.Setting_Key, uws_dto);
 		
 	}
 	

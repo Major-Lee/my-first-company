@@ -277,6 +277,26 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
+	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,
+			String wifiId, boolean on) {
+		logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginWifisniffer invoke uid [%s] mac [%s]", 
+				uid, wifiId));
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterUpdPluginWifisniffer(uid, wifiId,on);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginWifisniffer failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterUpdPluginWifisniffer exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	@Override
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac) {
 		logger.info(String.format("DeviceURouterRestRPC urouterConfigs invoke uid [%s] mac [%s]", 
 				uid, mac));

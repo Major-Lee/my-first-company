@@ -3,13 +3,19 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.List;
 import java.util.Map;
 
-import com.bhu.vas.api.vto.*;
-import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
-
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
+import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -126,6 +132,15 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 	
 	@Override
+	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,
+			String wifiId, boolean on) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterUpdPluginWifisniffer(uid, wifiId, on);
+	}
+	
+	@Override
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid,
 			String mac) {
 		if(uid == null || StringUtils.isEmpty(mac)) 
@@ -151,6 +166,5 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
 		return deviceURouterRestRpcService.urouterVapPassword(uid, wifiId);
 	}
-
 
 }
