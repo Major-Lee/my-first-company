@@ -18,7 +18,6 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -47,8 +46,8 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	/*private static final int DeviceOffline_Prefix = 3;
 	private static final int DeviceNotExist_Prefix = 4;
 	private static final int Transfer_Prefix = 5;*/
-	@Resource
-	private IDaemonRpcService daemonRpcService;
+	//@Resource
+	//private IDaemonRpcService daemonRpcService;
 
 	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
