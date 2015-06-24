@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.devices.iservice;
 import java.util.List;
 import java.util.Map;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
@@ -40,6 +41,7 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid, String wifiId, boolean on, 
 			boolean stranger_on, String timeslot, int timeslot_mode);
 	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,String wifiId, boolean on);
+	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId);
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac);
 	
 	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs);
@@ -47,4 +49,8 @@ public interface IDeviceURouterRestRpcService {
 	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
 
 	RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId);
+	
+	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size);
+	
+	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid, String mac, int start, int size);
 }

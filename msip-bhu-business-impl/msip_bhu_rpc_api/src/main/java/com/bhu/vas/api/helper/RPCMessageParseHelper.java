@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -13,6 +14,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.dto.redis.element.DailyUsedStatisticsDTO;
+import com.bhu.vas.api.dto.redis.element.HourUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
@@ -28,6 +32,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
@@ -202,6 +207,79 @@ public class RPCMessageParseHelper {
 		return dtos;
 	}
 	
+	
+	private static final String Node_Today = "//today";
+	private static final String Node_Yesterday = "//yesterday";
+	private static final String Node_Time_Attr = "time";
+	private static final String Node_Time_ALL_Value = "all";
+	/**
+	 * 解析获取wifi设备使用情况
+		<return>         
+		   <ITEM cmd="data_stats" status="done">
+		     <today>
+		        <SUB time="0" tx_bytes="1234" rx_bytes="222" sta="4" />
+		        <SUB time="1" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="2" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="3" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="4" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="5" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="22" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="all" tx_bytes="62816" rx_bytes="5654" sta="100" sta_max_time="458" sta_max_time_num ="5"/>
+		     </today>
+		     <yesterday>
+		        <SUB time="0" tx_bytes="1234" rx_bytes="222" sta="4" />
+		        <SUB time="1" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="2" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="3" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="4" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="5" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="22" tx_bytes="6816" rx_bytes="5468" sta="0"/>
+		        <SUB time="23" tx_bytes="6816" rx_bytes="5468" sta="0"/> 
+		        <SUB time="all" tx_bytes="62816" rx_bytes="5654" sta="100" sta_max_time ="458" sta_max_time_num ="2"/>
+		     </yesterday>
+		  </ITEM>
+		</return> 
+	 * @param doc
+	 * @return
+	 */
+	@SuppressWarnings({"rawtypes" })
+	public static DeviceUsedStatisticsDTO generateDTOFromQueryDeviceUsedStatus(Document doc){
+		DeviceUsedStatisticsDTO dto = null;
+		Element today = null;
+		Element yesterday = null;
+		try{
+			dto = new DeviceUsedStatisticsDTO();
+			dto.setToday_detail(new ArrayList<HourUsedStatisticsDTO>());
+			dto.setYesterday_detail(new ArrayList<HourUsedStatisticsDTO>());
+			today = (Element)doc.selectSingleNode(Node_Today);
+			Iterator iter_today = today.elements().iterator();
+			while(iter_today.hasNext()){
+				Element next =(Element) iter_today.next();
+				String time = next.attribute(Node_Time_Attr).getStringValue();
+				if(Node_Time_ALL_Value.equals(time)){
+					dto.setToday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
+				}else{
+					dto.getToday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
+				}
+			}
+			yesterday = (Element)doc.selectSingleNode(Node_Yesterday);
+			Iterator iter_yesterday = yesterday.elements().iterator();
+			while(iter_yesterday.hasNext()){
+				Element next =(Element) iter_yesterday.next();
+				String time = next.attribute(Node_Time_Attr).getStringValue();
+				if(Node_Time_ALL_Value.equals(time)){
+					dto.setYesterday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
+				}else{
+					dto.getYesterday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}finally{
+		}
+		return dto;
+	}
 	/***
 	 * 获取实时速率的解析xml
 	 * @param doc
@@ -448,26 +526,39 @@ public class RPCMessageParseHelper {
 //		for(WifiDeviceFlowDTO dto : dtos){
 //			System.out.println(dto.getName() + "-" + dto.getRx_bytes());
 //		}
-		BufferedReader in = new BufferedReader(new FileReader(new File("/Users/tangzichao/work/document/device_setting.xml")));
+		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
         String str;
         StringBuffer content = new StringBuffer();
         while ((str = in.readLine()) != null) 
         {
-        	content.append(str);
+        	content.append(str+"\n");
         }
         in.close();
         
         System.out.println(content.toString());
+        Document doc = parserMessage(content.toString());
+        DeviceUsedStatisticsDTO dto = generateDTOFromQueryDeviceUsedStatus(doc);
         
+        System.out.println(JsonHelper.getJSONString(dto));
+        
+        String json = JsonHelper.getJSONString(dto);
+        
+        DeviceUsedStatisticsDTO dto2 = JsonHelper.getDTO(json, DeviceUsedStatisticsDTO.class);
+        System.out.println(dto2);
 //        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
 //		String status = WifiDeviceDownTask.State_Failed;
 //		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
 //			status = WifiDeviceDownTask.State_Done;
 //		}
 		
-		String text = "<root><dev><sys><config><ITEM sequence=\"63\"/></config></sys></dev><dev><net><ad><ITEM id=\"400889\" bhu_ad_url=\"http://auth.wi2o.cn/ad/ad.js\" bhu_enable=\"enable\" /></ad></net></dev></root>";
+		/*String text = "<root><dev><sys><config><ITEM sequence=\"63\"/></config></sys></dev><dev><net><ad><ITEM id=\"400889\" bhu_ad_url=\"http://auth.wi2o.cn/ad/ad.js\" bhu_enable=\"enable\" /></ad></net></dev></root>";
 		WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(text);
 		//WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(content.toString());
-		System.out.println(dto.getSequence());
+		System.out.println(dto.getSequence());*/
+		
+		
+		
+		
+		//generateDTOFromQueryDeviceUsedStatus
 	}
 }

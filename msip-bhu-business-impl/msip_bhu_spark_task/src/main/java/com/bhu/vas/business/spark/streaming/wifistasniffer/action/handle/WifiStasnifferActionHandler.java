@@ -8,12 +8,14 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
-import com.bhu.vas.business.ds.builder.WifiStasnifferBuilder;
 import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 @SuppressWarnings("serial")
 @Component
@@ -75,11 +77,27 @@ public class WifiStasnifferActionHandler implements Serializable{
 			snifftimes[cursor] = item_dto.getSnifftime();
 			incr_sniffcounts[cursor] = 1d;
 			cursor++;
+			this.doTerminalDeviceTypeCount(mac, item_dto.getMac());
 		}
 		//录入最近出现的终端记录
 		TerminalRecentSortedSetService.getInstance().addTerminalRecents(mac, hd_macs, snifftimes);
 		//录入最热的终端记录
 		TerminalHotSortedSetService.getInstance().addTerminalHots(mac, hd_macs, incr_sniffcounts);
+	}
+	
+	/**
+	 * 根据终端mac分析终端设备型号
+	 * 统计周边探测的型号次数
+	 * @param mac
+	 * @param hd_mac
+	 */
+	public void doTerminalDeviceTypeCount(String mac, String hd_mac){
+		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
+			String scn = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
+			if(!StringUtils.isEmpty(scn)){
+				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, scn);
+			}
+		}
 	}
 	
 	/**
@@ -101,23 +119,29 @@ public class WifiStasnifferActionHandler implements Serializable{
 		//处理终端流水上线情况
 		if(detail_onlines > 0){
 			for(WifistasnifferItemRddto item_dto : wifistasnifferOnlines){
-				String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
-				if(!StringUtils.isEmpty(detail_item_value)){
-					TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
-							detail_item_value, item_dto.getSnifftime());
-				}
+				//String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
+				//if(!StringUtils.isEmpty(detail_item_value)){
+				TerminalDetailDTO online_dto = new TerminalDetailDTO();
+				online_dto.setSnifftime(item_dto.getSnifftime());
+				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
+						online_dto);
+				//}
 			}
 		}
 		
 		//处理终端流水下线情况
 		if(detail_offlines > 0){
 			for(WifistasnifferItemRddto item_dto : wifistasnifferOfflines){
-				String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
-				String detail_item_online_value = WifiStasnifferBuilder.generateDetailItemOnlineValue(item_dto);
-				if(!StringUtils.isEmpty(detail_item_value) && !StringUtils.isEmpty(detail_item_online_value)){
-					TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
-							detail_item_online_value, detail_item_value, item_dto.getSnifftime());
-				}
+				//String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
+				//String detail_item_online_value = WifiStasnifferBuilder.generateDetailItemOnlineValue(item_dto);
+				//if(!StringUtils.isEmpty(detail_item_value) && !StringUtils.isEmpty(detail_item_online_value)){
+				TerminalDetailDTO offline_dto = new TerminalDetailDTO();
+				offline_dto.setSnifftime(item_dto.getSnifftime());
+				offline_dto.setDuration(item_dto.getDuration());
+				offline_dto.setState(WifistasnifferItemRddto.State_Online);
+				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
+						offline_dto);
+				//}
 			}
 		}
 	}

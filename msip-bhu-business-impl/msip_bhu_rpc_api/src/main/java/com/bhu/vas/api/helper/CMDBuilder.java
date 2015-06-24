@@ -50,7 +50,15 @@ public class CMDBuilder {
 		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),sta_sniffer,RuntimeConfiguration.Vap_Wifistasniffer_Batch_Num,RuntimeConfiguration.Vap_Wifistasniffer_Delay,RuntimeConfiguration.Vap_Wifistasniffer_Url);
 	}
 	
-	
+	public static String builderDeviceUsedStatusQuery(String wifi_mac){
+		//return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
+		//		StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, query_device_used_status.getNextSequence()));
+		return builderDeviceUsedStatusQuery(wifi_mac,query_device_used_status.getNextSequence());
+	}
+	public static String builderDeviceUsedStatusQuery(String wifi_mac,int taskid){
+		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, taskid));
+	}
 	public static String builderDeviceStatusQuery(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),String.format(SuffixTemplete, taskid));
@@ -302,8 +310,8 @@ public class CMDBuilder {
 	public static TaskSequenceFragment device_setting_modify_taskid_fragment = new TaskSequenceFragment(40001,45000);
 	//对于升级设备 区间段位45001,50000
 	public static TaskSequenceFragment device_upgrade_fragment = new TaskSequenceFragment(45001,50000);
-	
 	public static TaskSequenceFragment device_wifitimer_fragment = new TaskSequenceFragment(50001,55000);
+	public static TaskSequenceFragment query_device_used_status = new TaskSequenceFragment(55001,65000);
 	/*//对于设备 开启404
 	public static TaskSequenceFragment device_http404_resourceupgrade_fragment = new TaskSequenceFragment(50001,52000);
 	

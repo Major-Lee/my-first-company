@@ -12,6 +12,7 @@ public class BusinessKeyDefine {
 	
 	
 	public static class Present{
+		public static final String MarkPrefixKey = "MP";
 		public static final String UserTokenPrefixKey  			= "WTH";//"TokenH";
 		public static final String UserPushNotifyCountPrefixKey = "UPN";
 		public static final String UserMarkPrefixKey 			= "BMH.";//"BuMarkH.";
@@ -67,6 +68,8 @@ public class BusinessKeyDefine {
 		public static final String TerminalRecent = "WSTR";
 		public static final String TerminalHot = "WSTH";
 		public static final String TerminalDetailRecent = "WSTDR";
+		public static final String TerminalDeviceTypeCount = "WSDTC";
+		public static final String UserTerminalFocus = "WSUTF";
 	}
 	public static class VapMode {
 		public static final String VapModeCount = "VM.";

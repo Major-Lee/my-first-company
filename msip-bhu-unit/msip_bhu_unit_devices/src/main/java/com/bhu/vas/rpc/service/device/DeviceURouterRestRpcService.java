@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
@@ -297,6 +298,26 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
+	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterDeviceUsedStatusQuery invoke uid [%s] mac [%s]", 
+				uid, wifiId));
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterDeviceUsedStatusQuery(uid, wifiId);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterDeviceUsedStatusQuery failed uid [%s] mac [%s]",
+					uid, wifiId));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterDeviceUsedStatusQuery exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	
+	@Override
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac) {
 		logger.info(String.format("DeviceURouterRestRPC urouterConfigs invoke uid [%s] mac [%s]", 
 				uid, mac));
@@ -348,6 +369,48 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		logger.info(String.format("DeviceURouterRestRPC urouterVapPassword invoke uid [%s] mac [%s]",
 				uid, wifiId));
 		return deviceURouterRestBusinessFacadeService.urouterVapPassword(uid, wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid,
+			String mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSRecent invoke uid [%s] mac [%s]", 
+				uid, mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSRecent(uid, mac, start, size);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSRecent failed uid [%s] mac [%s]",
+					uid, mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSRecent exception uid [%s] mac [%s] exmsg[%s]",
+					uid, mac, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid,
+			String mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour invoke uid [%s] mac [%s]", 
+				uid, mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSNeighbour(uid, mac, start, size);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] mac [%s]",
+					uid, mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] mac [%s] exmsg[%s]",
+					uid, mac, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
 	}
 
 }

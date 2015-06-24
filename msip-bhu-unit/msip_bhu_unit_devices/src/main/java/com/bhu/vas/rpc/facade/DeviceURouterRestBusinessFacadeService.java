@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -22,6 +23,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -43,12 +45,19 @@ import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.URouterWSHotVTO;
+import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
@@ -60,6 +69,7 @@ import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -451,6 +461,24 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
+	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			DeviceUsedStatisticsDTO dto = BusinessMarkerService.getInstance().deviceUsedStatisticsGet(wifiId);
+			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId);
+			if(true){
+				deliverMessageService.sendWifiCmdCommingNotifyMessage(
+						wifiId,0,OperationCMD.QueryDeviceUsedStatus.getNo(),
+						CMDBuilder.builderDeviceUsedStatusQuery(wifiId));
+			}
+			if(dto == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+			}else
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
 	
 	
 	/**
@@ -618,6 +646,95 @@ public class DeviceURouterRestBusinessFacadeService {
 				cursor++;
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 周边探测的最近出现列表
+	 * 最近12小时内出现的终端
+	 * @param uid
+	 * @param mac
+	 * @param start
+	 * @param size
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size){
+		try{
+			if(StringUtils.isEmpty(mac)){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
+			List<URouterWSRecentVTO> vto_list = null;
+			//当前时间
+			long current_ts = System.currentTimeMillis();
+			//12小时之前的时间
+			//long hours12_ago_ts = current_ts - (12 * 3600 * 1000l);
+			long hours12_ago_ts = 0;
+			
+			long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, hours12_ago_ts, current_ts);
+			if(count == 0){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
+			Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
+					hours12_ago_ts, current_ts, start, size);
+			
+			vto_list = new ArrayList<URouterWSRecentVTO>();
+			for(Tuple tuple : tuples){
+				URouterWSRecentVTO vto = new URouterWSRecentVTO();
+				vto.setHd_mac(tuple.getElement());
+				vto.setLast_ts(Double.valueOf(tuple.getScore()).longValue());
+				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
+				vto_list.add(vto);
+			}
+			
+			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 周边探测的隔壁老王列表
+	 * @param uid
+	 * @param mac
+	 * @param start
+	 * @param size
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid, String mac, int start, int size){
+		try{
+			if(StringUtils.isEmpty(mac)){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
+
+			long count = TerminalHotSortedSetService.getInstance().terminalHotSize(mac);
+			if(count == 0){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
+			Set<Tuple> tuples = TerminalHotSortedSetService.getInstance().fetchTerminalHotWithScores(mac, 
+					start, size);
+			
+			List<URouterWSHotVTO> vto_list = new ArrayList<URouterWSHotVTO>();
+			String[] hd_macs = new String[tuples.size()];
+			int cursor = 0;
+			for(Tuple tuple : tuples){
+				hd_macs[cursor] = tuple.getElement();
+				
+				URouterWSHotVTO vto = new URouterWSHotVTO();
+				vto.setHd_mac(tuple.getElement());
+				vto.setWs_count(Double.valueOf(tuple.getScore()).longValue());
+				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
+				vto_list.add(vto);
+				cursor++;
+			}
+			
+			List<UserTerminalFocusDTO> focus_dtos = UserTerminalFocusHashService.getInstance().fetchUserTerminalFocus(uid, hd_macs);
+			List<Object> terminal_detail_rets = TerminalDetailRecentSortedSetService.getInstance().fetchTerminalDetailRecents(mac, start, size, hd_macs);
+			
+			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}

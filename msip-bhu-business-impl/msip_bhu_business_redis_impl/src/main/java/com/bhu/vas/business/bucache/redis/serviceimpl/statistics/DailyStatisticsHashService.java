@@ -10,7 +10,6 @@ import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
-import com.bhu.vas.business.bucache.redis.serviceimpl.updown.UserBuinessMarkHashService;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
@@ -79,7 +78,7 @@ public class DailyStatisticsHashService extends AbstractRelationHashCache{
 	}
 	@Override
 	public String getName() {
-		return UserBuinessMarkHashService.class.getName();
+		return DailyStatisticsHashService.class.getName();
 	}
 	@Override
 	public JedisPool getRedisPool() {

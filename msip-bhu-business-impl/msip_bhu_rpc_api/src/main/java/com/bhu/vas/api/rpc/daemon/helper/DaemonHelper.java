@@ -3,7 +3,6 @@ package com.bhu.vas.api.rpc.daemon.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -25,7 +24,7 @@ public class DaemonHelper {
 			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 		}
 		//开启或关闭wiffsinffer
-		payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
+		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
 		/*if(needWiffsniffer){
 			//开启wiffsinffer
 			//CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
@@ -58,18 +57,21 @@ public class DaemonHelper {
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 	}
 	
-//	public static void afterUserSignedon(String mac, IDaemonRpcService daemonRpcService){
-//		//List<String> payloads = new ArrayList<String>();
-//		//获取设备测速
-//		//deviceSpeedQuery(mac, daemonRpcService);
-//		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
-//		//获取设备的终端列表
-//		deviceTerminalsRateQuery(mac, daemonRpcService);
-//		//获取设备的实时速率
-//		deviceRateQuery(mac, daemonRpcService);
-//		
-//		//daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
-//	}
+	public static void afterUserSignedon(String mac,boolean needDeviceUsedQuery, IDaemonRpcService daemonRpcService){
+		List<String> payloads = new ArrayList<String>();
+		//用户登录后 给其绑定的设备mac地址发送设备使用情况
+		if(needDeviceUsedQuery)
+			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac));//(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
+		//获取设备测速
+		//deviceSpeedQuery(mac, daemonRpcService);
+		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
+		//获取设备的终端列表
+		//deviceTerminalsRateQuery(mac, daemonRpcService);
+		//获取设备的实时速率
+		//deviceRateQuery(mac, daemonRpcService);
+		if(!payloads.isEmpty())
+			daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
+	}
 	
 	public static void daemonCmdDown(String mac,String cmd,IDaemonRpcService daemonRpcService){
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);

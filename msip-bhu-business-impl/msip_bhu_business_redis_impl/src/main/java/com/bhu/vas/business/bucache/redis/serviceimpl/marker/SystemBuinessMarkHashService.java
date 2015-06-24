@@ -1,4 +1,4 @@
-package com.bhu.vas.business.bucache.redis.serviceimpl.updown;
+package com.bhu.vas.business.bucache.redis.serviceimpl.marker;
 
 import java.util.List;
 
@@ -12,26 +12,26 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
- * 承载业务 
+ * 系统业务标记类 用于数据量少的情况下 进行数据标记
  * 	1、文章顶踩业务
  * 	2、文章评星业务
  * @author edmond
  *
  */
-public class UserBuinessMarkHashService extends AbstractRelationHashCache{
+public class SystemBuinessMarkHashService extends AbstractRelationHashCache{
 	
 	
 	private static class ServiceHolder{ 
-		private static UserBuinessMarkHashService instance =new UserBuinessMarkHashService(); 
+		private static SystemBuinessMarkHashService instance =new SystemBuinessMarkHashService(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static UserBuinessMarkHashService getInstance() { 
+	public static SystemBuinessMarkHashService getInstance() { 
 		return ServiceHolder.instance; 
 	}
-	private UserBuinessMarkHashService(){
+	private SystemBuinessMarkHashService(){
 		
 	}
 	private static String generateMarkPrefixKey(String businessKey,String uid){
@@ -148,7 +148,7 @@ public class UserBuinessMarkHashService extends AbstractRelationHashCache{
 	}
 	@Override
 	public String getName() {
-		return UserBuinessMarkHashService.class.getName();
+		return SystemBuinessMarkHashService.class.getName();
 	}
 	@Override
 	public JedisPool getRedisPool() {

@@ -54,6 +54,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiD
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -928,7 +929,9 @@ public class AsyncMsgHandleService {
 	//设备实时速率, 设备终端列表
 	public void afterUserSignedonThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
-		//DaemonHelper.afterUserSignedon(mac, daemonRpcService);
+		boolean needDeviceUsedQuery = false;
+		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac);
+		DaemonHelper.afterUserSignedon(mac,needDeviceUsedQuery, daemonRpcService);
 /*		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
 			//获取设备的终端列表
 			DaemonHelper.deviceTerminalsRateQuery(mac, daemonRpcService);

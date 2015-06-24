@@ -35,5 +35,7 @@ public class RpcResponseDTO<T> implements java.io.Serializable{
 		this.payload = payload;
 	}
 	
-	
+	public boolean hasError(){
+		return getErrorCode() != null;
+	}
 }

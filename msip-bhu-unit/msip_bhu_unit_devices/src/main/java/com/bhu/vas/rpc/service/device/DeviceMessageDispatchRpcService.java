@@ -155,7 +155,64 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		if(!StringUtils.isEmpty(opt)){
 			String mac = parserHeader.getMac();
 			int taskid = parserHeader.getTaskid();
-			if(OperationCMD.QueryDeviceStatus.getNo().equals(opt)){
+			OperationCMD cmd = OperationCMD.getOperationCMDFromNo(opt);
+			if(cmd != null){
+				switch(cmd){
+					case QueryDeviceStatus:
+						deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, mac, taskid);
+						break;
+					case QueryDeviceFlow:
+						deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, mac, taskid);
+						break;
+					case TurnOnDeviceDPINotify:
+						deviceBusinessFacadeService.taskCommonProcessor(ctx,payload,mac,taskid);
+						break;
+						
+					case QueryDeviceLocationNotify:
+						deviceBusinessFacadeService.taskQueryOldDeviceLocationNotifyProcessor(ctx,payload,mac,taskid);
+						break;
+					case QueryDeviceLocationS2:
+						deviceBusinessFacadeService.taskQueryDeviceLocationS2(ctx, payload, mac, taskid);
+						break;
+					case QueryDeviceSetting:
+						deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, mac, taskid);
+						break;
+					case ModifyDeviceSetting:
+						deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
+						break;
+					case DeviceDelayReboot:
+						deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+						break;
+					case QueryDhcpcStatus:
+						deviceBusinessFacadeService.taskQueryDhcpcStatus(ctx, payload, mac, taskid);
+						break;
+					case QueryDeviceUsedStatus:
+						deviceBusinessFacadeService.taskQueryDeviceUsedStatus(ctx, payload, mac, taskid);
+						break;
+					case DeviceWifiTimerStart:
+						deviceBusinessFacadeService.taskWifiTimerStart(ctx, payload, mac, taskid);
+						break;
+					case DeviceWifiTimerStop:
+						deviceBusinessFacadeService.taskWifiTimerStop(ctx, payload, mac, taskid);
+						break;
+					case DeviceWifiTimerQuery:
+						deviceBusinessFacadeService.taskWifiTimerQuery(ctx, payload, mac, taskid);
+						break;
+					case TriggerHttp404ResourceUpdate:
+						deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
+						break;	
+					case TriggerHttpPortalResourceUpdate:
+						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
+						break;	
+					default:
+						messageDispatchUnsupport(ctx, payload, parserHeader);
+						break;
+				}
+			}else{
+				messageDispatchUnsupport(ctx, payload, parserHeader);
+			}
+			
+			/*if(OperationCMD.QueryDeviceStatus.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceStatus(ctx, payload, mac, taskid);
 			}else if(OperationCMD.QueryDeviceFlow.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceFlow(ctx, payload, mac, taskid);
@@ -173,11 +230,6 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			else if(OperationCMD.QueryDeviceSetting.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, mac, taskid);
 			}
-			/*
-			else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
-				deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
-			}
-			*/
 			else if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
 			}
@@ -186,6 +238,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			}
 			else if(OperationCMD.QueryDhcpcStatus.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskQueryDhcpcStatus(ctx, payload, mac, taskid);
+			}
+			else if(OperationCMD.QueryDeviceUsedStatus.getNo().equals(opt)){
+				
 			}
 			else if(OperationCMD.DeviceWifiTimerStart.getNo().equals(opt)){
 				deviceBusinessFacadeService.taskWifiTimerStart(ctx, payload, mac, taskid);
@@ -204,7 +259,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			}
 			else{
 				messageDispatchUnsupport(ctx, payload, parserHeader);
-			}
+			}*/
 		}
 	}
 	/**
