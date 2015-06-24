@@ -94,7 +94,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 	public void doTerminalDeviceTypeCount(String mac, String hd_mac){
 		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
 			String scn = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
-			if(StringUtils.isEmpty(scn)){
+			if(!StringUtils.isEmpty(scn)){
 				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, hd_mac);
 			}
 		}
