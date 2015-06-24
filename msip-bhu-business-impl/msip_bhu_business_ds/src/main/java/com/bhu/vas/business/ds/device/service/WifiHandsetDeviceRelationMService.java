@@ -96,6 +96,7 @@ public class WifiHandsetDeviceRelationMService {
                     }
                     wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                    i++;
                 }
 
 
@@ -116,6 +117,7 @@ public class WifiHandsetDeviceRelationMService {
                     }
                     wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                    i++;
                 }
 
             }
