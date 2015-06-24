@@ -44,6 +44,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -725,6 +726,15 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
+	public void taskQueryDeviceUsedStatus(String ctx, String response, String mac, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus()) 
+				&& OperationCMD.QueryDeviceUsedStatus.getCmd().equals(serialDto.getCmd())){
+			BusinessMarkerService.getInstance().deviceUsedStatisticsSet(mac, 
+					RPCMessageParseHelper.generateDTOFromQueryDeviceUsedStatus(doc));
+		}
+	}
 	
 	public void taskWifiTimerStart(String ctx, String response, String wifiId, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
