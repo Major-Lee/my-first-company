@@ -51,12 +51,13 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceUsedStatusQuery(String wifi_mac){
-		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),String.format(SuffixTemplete, query_device_used_status.getNextSequence()));
+		//return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
+		//		StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, query_device_used_status.getNextSequence()));
+		return builderDeviceUsedStatusQuery(wifi_mac,query_device_used_status.getNextSequence());
 	}
 	public static String builderDeviceUsedStatusQuery(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),String.format(SuffixTemplete, taskid));
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, taskid));
 	}
 	public static String builderDeviceStatusQuery(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
