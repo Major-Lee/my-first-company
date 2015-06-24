@@ -27,7 +27,7 @@ public class WifiHandsetDeviceRelationMDTO{
 	//最后登录wifi的时间 用string存储格式化好的日期 因为直接用date，mongodb就会用标准时间存储
 	private String last_login_at;
 
-	private Map<String, WifiHandsetDeviceItemMDTO> items;
+	private Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items;
 
 	public WifiHandsetDeviceRelationMDTO(){
 		
@@ -71,11 +71,11 @@ public class WifiHandsetDeviceRelationMDTO{
 		this.last_login_at = last_login_at;
 	}
 
-	public Map<String, WifiHandsetDeviceItemMDTO> getItems() {
+	public Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> getItems() {
 		return items;
 	}
 
-	public void setItems(Map<String, WifiHandsetDeviceItemMDTO> items) {
+	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items) {
 		this.items = items;
 	}
 }

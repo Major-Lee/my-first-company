@@ -9,9 +9,9 @@ public class WifiHandsetDeviceItemDetailMTDTO {
 
     private String online;
 
-    private Date last_login_at;
+    private String last_login_at;
 
-    private Date last_logout_at;
+    private String last_logout_at;
 
     private long online_time;
 
@@ -32,19 +32,19 @@ public class WifiHandsetDeviceItemDetailMTDTO {
         this.online_time = online_time;
     }
 
-    public Date getLast_login_at() {
+    public String getLast_login_at() {
         return last_login_at;
     }
 
-    public void setLast_login_at(Date last_login_at) {
+    public void setLast_login_at(String last_login_at) {
         this.last_login_at = last_login_at;
     }
 
-    public Date getLast_logout_at() {
+    public String getLast_logout_at() {
         return last_logout_at;
     }
 
-    public void setLast_logout_at(Date last_logout_at) {
+    public void setLast_logout_at(String last_logout_at) {
         this.last_logout_at = last_logout_at;
     }
 }
