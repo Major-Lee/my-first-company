@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.builder.WifiStasnifferBuilder;
 import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 @SuppressWarnings("serial")
 @Component
@@ -75,11 +77,27 @@ public class WifiStasnifferActionHandler implements Serializable{
 			snifftimes[cursor] = item_dto.getSnifftime();
 			incr_sniffcounts[cursor] = 1d;
 			cursor++;
+			this.doTerminalDeviceTypeCount(mac, item_dto.getMac());
 		}
 		//录入最近出现的终端记录
 		TerminalRecentSortedSetService.getInstance().addTerminalRecents(mac, hd_macs, snifftimes);
 		//录入最热的终端记录
 		TerminalHotSortedSetService.getInstance().addTerminalHots(mac, hd_macs, incr_sniffcounts);
+	}
+	
+	/**
+	 * 根据终端mac分析终端设备型号
+	 * 统计周边探测的型号次数
+	 * @param mac
+	 * @param hd_mac
+	 */
+	public void doTerminalDeviceTypeCount(String mac, String hd_mac){
+		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
+			String scn = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
+			if(!StringUtils.isEmpty(scn)){
+				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, hd_mac);
+			}
+		}
 	}
 	
 	/**
