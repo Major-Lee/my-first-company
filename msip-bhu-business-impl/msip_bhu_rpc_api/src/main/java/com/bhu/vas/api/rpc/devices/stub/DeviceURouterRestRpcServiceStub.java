@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
@@ -138,6 +139,15 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
 		return deviceURouterRestRpcService.urouterUpdPluginWifisniffer(uid, wifiId, on);
+	}
+	
+	@Override
+	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(
+			Integer uid, String wifiId) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterDeviceUsedStatusQuery(uid, wifiId);
 	}
 	
 	@Override

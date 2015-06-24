@@ -18,6 +18,8 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 	private DailyUsedStatisticsDTO today;
 	private List<HourUsedStatisticsDTO> yesterday_detail;
 	private DailyUsedStatisticsDTO yesterday;
+	//最后获取数据的时间 yyyy-MM-dd hh:mm:ss
+	private String current;
 	public List<HourUsedStatisticsDTO> getToday_detail() {
 		return today_detail;
 	}

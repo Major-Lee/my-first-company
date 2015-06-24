@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -48,6 +49,7 @@ import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -451,6 +453,25 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
+	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			DeviceUsedStatisticsDTO dto = BusinessMarkerService.getInstance().deviceUsedStatisticsGet(wifiId);
+			if(dto == null){
+				
+			}
+			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId);
+			if(true){
+				deliverMessageService.sendWifiCmdCommingNotifyMessage(
+						wifiId,0,OperationCMD.QueryDeviceUsedStatus.getNo(),
+						CMDBuilder.builderDeviceUsedStatusQuery(wifiId));
+			}
+				
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
 	
 	
 	/**
