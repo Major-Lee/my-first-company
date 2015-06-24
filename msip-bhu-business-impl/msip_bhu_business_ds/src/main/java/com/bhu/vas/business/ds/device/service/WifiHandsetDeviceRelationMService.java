@@ -102,7 +102,7 @@ public class WifiHandsetDeviceRelationMService {
             } else {
                 wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
 
-                int i=0;
+                int i = 0;
                 for (String date : week) {
                     List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList =
                             wifiHandsetDeviceItemDetailMTDTOMap.get(date);
@@ -115,6 +115,7 @@ public class WifiHandsetDeviceRelationMService {
                         wifiHandsetDeviceItemDetailMTDTO.setLast_login_at(mdto.getLast_login_at());
                     }
                     wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
                 }
 
             }
