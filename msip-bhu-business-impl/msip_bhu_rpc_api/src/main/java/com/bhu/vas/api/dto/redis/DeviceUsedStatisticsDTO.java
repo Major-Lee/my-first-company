@@ -19,7 +19,7 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 	private List<HourUsedStatisticsDTO> yesterday_detail;
 	private DailyUsedStatisticsDTO yesterday;
 	//最后获取数据的时间 yyyy-MM-dd hh:mm:ss
-	private String current;
+	private long ts  = System.currentTimeMillis();
 	public List<HourUsedStatisticsDTO> getToday_detail() {
 		return today_detail;
 	}
@@ -43,5 +43,11 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 	}
 	public void setYesterday(DailyUsedStatisticsDTO yesterday) {
 		this.yesterday = yesterday;
+	}
+	public long getTs() {
+		return ts;
+	}
+	public void setTs(long ts) {
+		this.ts = ts;
 	}
 }

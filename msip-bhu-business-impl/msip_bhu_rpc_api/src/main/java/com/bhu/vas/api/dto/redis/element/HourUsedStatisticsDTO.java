@@ -1,5 +1,6 @@
 package com.bhu.vas.api.dto.redis.element;
 
+
 public class HourUsedStatisticsDTO {
 	 //time="0" tx_bytes="1234" rx_bytes="222" sta="4"
 	private String time;
@@ -16,12 +17,18 @@ public class HourUsedStatisticsDTO {
 		return tx_bytes;
 	}
 	public void setTx_bytes(String tx_bytes) {
+		/*if(tx_bytes != null){
+			this.tx_bytes = ConvertHelper.speedByteFormat(Double.parseDouble(tx_bytes));
+		}*/
 		this.tx_bytes = tx_bytes;
 	}
 	public String getRx_bytes() {
 		return rx_bytes;
 	}
 	public void setRx_bytes(String rx_bytes) {
+		/*if(rx_bytes != null){
+			this.rx_bytes = ConvertHelper.speedByteFormat(Double.parseDouble(rx_bytes));
+		}*/
 		this.rx_bytes = rx_bytes;
 	}
 	public String getSta() {

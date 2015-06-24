@@ -460,17 +460,16 @@ public class DeviceURouterRestBusinessFacadeService {
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 			DeviceUsedStatisticsDTO dto = BusinessMarkerService.getInstance().deviceUsedStatisticsGet(wifiId);
-			if(dto == null){
-				
-			}
 			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId);
 			if(true){
 				deliverMessageService.sendWifiCmdCommingNotifyMessage(
 						wifiId,0,OperationCMD.QueryDeviceUsedStatus.getNo(),
 						CMDBuilder.builderDeviceUsedStatusQuery(wifiId));
 			}
-				
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+			if(dto == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+			}else
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
