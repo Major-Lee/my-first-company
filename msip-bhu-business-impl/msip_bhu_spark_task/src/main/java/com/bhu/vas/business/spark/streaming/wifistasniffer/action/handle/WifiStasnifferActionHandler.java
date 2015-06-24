@@ -9,11 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
+import com.bhu.vas.api.helper.WifiStasnifferBuilder;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
-import com.bhu.vas.business.ds.builder.WifiStasnifferBuilder;
 import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
@@ -95,7 +95,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
 			String scn = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
 			if(!StringUtils.isEmpty(scn)){
-				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, hd_mac);
+				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, scn);
 			}
 		}
 	}

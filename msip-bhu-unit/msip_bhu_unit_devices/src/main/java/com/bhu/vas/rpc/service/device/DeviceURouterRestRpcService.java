@@ -20,6 +20,7 @@ import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -369,6 +370,27 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		logger.info(String.format("DeviceURouterRestRPC urouterVapPassword invoke uid [%s] mac [%s]",
 				uid, wifiId));
 		return deviceURouterRestBusinessFacadeService.urouterVapPassword(uid, wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<List<URouterWSRecentVTO>> urouterWSRecent(Integer uid,
+			String mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSRecent invoke uid [%s] mac [%s]", 
+				uid, mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSRecent(uid, mac, start, size);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSRecent failed uid [%s] mac [%s]",
+					uid, mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSRecent exception uid [%s] mac [%s] exmsg[%s]",
+					uid, mac, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
 	}
 
 }

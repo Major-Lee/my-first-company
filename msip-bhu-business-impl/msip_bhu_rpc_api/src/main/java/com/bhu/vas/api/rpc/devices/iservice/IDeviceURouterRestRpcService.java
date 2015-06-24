@@ -13,6 +13,7 @@ import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 
 
@@ -49,4 +50,6 @@ public interface IDeviceURouterRestRpcService {
 	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
 
 	RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId);
+	
+	public RpcResponseDTO<List<URouterWSRecentVTO>> urouterWSRecent(Integer uid, String mac, int start, int size);
 }
