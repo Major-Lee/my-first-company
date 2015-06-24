@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
@@ -274,6 +275,22 @@ public class URouterDeviceController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
 		}
 	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/device_query_used_status",method={RequestMethod.POST})
+	public void device_query_used_status(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		RpcResponseDTO<DeviceUsedStatisticsDTO> rpcResponse = deviceURouterRestRpcService.urouterDeviceUsedStatusQuery(uid, mac);
+		if(!rpcResponse.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
 	
 	/**
 	 * 获取urouter设备的相关配置数据
