@@ -908,7 +908,7 @@ public class DeviceHelper {
 		}
 		
 		if((incr_macs == null || incr_macs.isEmpty()) && (del_macs == null || del_macs.isEmpty()))
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_MODIFY_VALIDATE_ILEGAL);
 		
 		Set<String> macs = new HashSet<String>();
 		if(default_acl_dto.getMacs() != null){
@@ -997,7 +997,7 @@ public class DeviceHelper {
 		}
 				
 		if(ds.length() == 0){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_MODIFY_VALIDATE_ILEGAL);
 		}
 		
 		//验证指定mac限速最多不能超过128个
@@ -1118,7 +1118,7 @@ public class DeviceHelper {
 		}
 
 		if(ds.length() == 0){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_MODIFY_VALIDATE_ILEGAL);
 		}
 		return builderDeviceSettingOuter(DeviceSetting_MMOuter, config_sequence, ds.toString());
 	}
