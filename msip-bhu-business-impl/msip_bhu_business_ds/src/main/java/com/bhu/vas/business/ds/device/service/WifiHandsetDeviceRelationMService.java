@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceTimelineMDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -67,6 +69,18 @@ public class WifiHandsetDeviceRelationMService {
 		update.set("wifiId", wifiId);
 		update.set("handsetId", handsetId);
 		update.set("last_login_at", mdto.getLast_login_at());
+
+//		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+//				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
+
+		WifiHandsetDeviceTimelineMDTO wifiHandsetDeviceTimelineMDTO = new WifiHandsetDeviceTimelineMDTO();
+
+		wifiHandsetDeviceTimelineMDTO.setDate(DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5));
+		wifiHandsetDeviceTimelineMDTO.setDetail(mdto.getLast_login_at());
+
+
+		update.set("item", JsonHelper.getJSONString(wifiHandsetDeviceTimelineMDTO));
+
 		WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 		if(writeResult.isUpdateOfExisting()){
 			return AddRelation_Update;
