@@ -15,6 +15,7 @@ import com.bhu.vas.api.vto.URouterPeakRateVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -165,6 +166,11 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	@Override
 	public RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId) {
 		return deviceURouterRestRpcService.urouterVapPassword(uid, wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<List<URouterWSRecentVTO>> urouterWSRecent(Integer uid, String mac, int start, int size) {
+		return deviceURouterRestRpcService.urouterWSRecent(uid, mac, start, size);
 	}
 
 }

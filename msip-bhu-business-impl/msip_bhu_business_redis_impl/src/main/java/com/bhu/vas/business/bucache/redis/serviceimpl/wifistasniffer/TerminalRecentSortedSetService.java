@@ -2,7 +2,6 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,6 +71,11 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 	public Set<Tuple> fetchTerminalRecentWithScores(String mac,int start,int size){
 		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
 		return super.zrevrangeWithScores(generateKey(mac), start, (start+size-1));
+	}
+	
+	public Set<Tuple> fetchTerminalRecentByScoreWithScores(String mac,double min, double max, int start,int size){
+		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
+		return super.zrangeByScoreWithScores(generateKey(mac), min, max, start, size);
 	}
 
 	

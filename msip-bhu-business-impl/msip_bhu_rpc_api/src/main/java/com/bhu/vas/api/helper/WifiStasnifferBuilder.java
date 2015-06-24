@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.builder;
+package com.bhu.vas.api.helper;
 
 import java.io.Serializable;
 
