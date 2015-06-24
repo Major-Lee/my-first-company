@@ -177,6 +177,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					case QueryDeviceSetting:
 						deviceBusinessFacadeService.taskQueryDeviceSetting(ctx, payload, mac, taskid);
 						break;
+					case ModifyDeviceSetting:
+						deviceBusinessFacadeService.taskModifyDeviceSetting(ctx, payload, mac, taskid);
+						break;
 					case DeviceDelayReboot:
 						deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
 						break;
@@ -188,6 +191,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						break;
 					case DeviceWifiTimerStart:
 						deviceBusinessFacadeService.taskWifiTimerStart(ctx, payload, mac, taskid);
+						break;
+					case DeviceWifiTimerStop:
+						deviceBusinessFacadeService.taskWifiTimerStop(ctx, payload, mac, taskid);
 						break;
 					case DeviceWifiTimerQuery:
 						deviceBusinessFacadeService.taskWifiTimerQuery(ctx, payload, mac, taskid);

@@ -1,5 +1,6 @@
 package com.bhu.vas.api.dto.redis.element;
 
+@SuppressWarnings("serial")
 public class DailyUsedStatisticsDTO extends HourUsedStatisticsDTO{
 	// time="all" tx_bytes="62816" rx_bytes="5654" sta="100" sta_max_time="458" sta_max_time_num ="5"
 	private String sta_max_time;

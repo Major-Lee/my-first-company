@@ -1,7 +1,10 @@
 package com.bhu.vas.api.dto.redis.element;
 
+import java.io.Serializable;
 
-public class HourUsedStatisticsDTO {
+
+@SuppressWarnings("serial")
+public class HourUsedStatisticsDTO implements Serializable{
 	 //time="0" tx_bytes="1234" rx_bytes="222" sta="4"
 	private String time;
 	private String tx_bytes;

@@ -20,6 +20,8 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 	private DailyUsedStatisticsDTO yesterday;
 	//最后获取数据的时间 yyyy-MM-dd hh:mm:ss
 	private long ts  = System.currentTimeMillis();
+	private String ko;
+	private String score;
 	public List<HourUsedStatisticsDTO> getToday_detail() {
 		return today_detail;
 	}
@@ -50,4 +52,18 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 	public void setTs(long ts) {
 		this.ts = ts;
 	}
+	public String getKo() {
+		return ko;
+	}
+	public void setKo(String ko) {
+		this.ko = ko;
+	}
+	public String getScore() {
+		return score;
+	}
+	public void setScore(String score) {
+		this.score = score;
+	}
+	
+	
 }
