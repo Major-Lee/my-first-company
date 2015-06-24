@@ -1,10 +1,11 @@
 package com.bhu.vas.business.ds.device.service;
 
-import java.util.Date;
+import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceTimelineMDTO;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMTDTO;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemMDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -73,13 +74,30 @@ public class WifiHandsetDeviceRelationMService {
 //		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 //				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
-		WifiHandsetDeviceTimelineMDTO wifiHandsetDeviceTimelineMDTO = new WifiHandsetDeviceTimelineMDTO();
 
-		wifiHandsetDeviceTimelineMDTO.setDate(DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5));
-		wifiHandsetDeviceTimelineMDTO.setDetail(mdto.getLast_login_at());
+		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
 
-		update.set("item", JsonHelper.getJSONString(wifiHandsetDeviceTimelineMDTO));
+        try {
+            if (wifiHandsetDeviceRelationMDTO == null) {
+                Map<String, WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOMap
+                        = new LinkedHashMap<String, WifiHandsetDeviceItemDetailMTDTO>();
+                List<Date> week = generateWeekCalendar();
+                for (Date date : week) {
+                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO = new WifiHandsetDeviceItemDetailMTDTO();
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(
+                            DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern5), wifiHandsetDeviceItemDetailMTDTO);
+                }
+
+                update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
+            } else {
+
+
+            }
+        }catch (Exception e) {
+            
+        }
 
 		WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 		if(writeResult.isUpdateOfExisting()){
@@ -88,7 +106,22 @@ public class WifiHandsetDeviceRelationMService {
 			return AddRelation_Insert;
 		}
 	}
-	
+
+	private List<Date> generateWeekCalendar() {
+		List<Date> week = new ArrayList<Date>();
+		Calendar calendar = Calendar.getInstance();
+		week.add(calendar.getTime());
+		int i =0;
+		while (i < 6){
+			calendar.add(Calendar.DAY_OF_MONTH, -1);
+			week.add(calendar.getTime());
+			System.out.println( DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
+			i++;
+		}
+		return week;
+	}
+
+
 	public WifiHandsetDeviceRelationMDTO getRelation(String wifiId, String handsetId){
 		return wifiHandsetDeviceRelationMDao.findById(WifiHandsetDeviceRelationMDTO.generateId(wifiId, handsetId));
 	}

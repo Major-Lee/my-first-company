@@ -4,6 +4,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.smartwork.msip.cores.helper.StringHelper;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * 移动设备接入wifi设备的接入记录
  * 一个移动设备接入同一个wifi设备多次，只有一条记录
@@ -23,9 +27,8 @@ public class WifiHandsetDeviceRelationMDTO{
 	//最后登录wifi的时间 用string存储格式化好的日期 因为直接用date，mongodb就会用标准时间存储
 	private String last_login_at;
 
+	private Map<String, WifiHandsetDeviceItemMDTO> items;
 
-	private WifiHandsetDeviceTimelineMDTO wifiHandsetDeviceTimelineMDTO;
-	
 	public WifiHandsetDeviceRelationMDTO(){
 		
 	}
@@ -68,11 +71,11 @@ public class WifiHandsetDeviceRelationMDTO{
 		this.last_login_at = last_login_at;
 	}
 
-	public WifiHandsetDeviceTimelineMDTO getWifiHandsetDeviceTimelineMDTO() {
-		return wifiHandsetDeviceTimelineMDTO;
+	public Map<String, WifiHandsetDeviceItemMDTO> getItems() {
+		return items;
 	}
 
-	public void setWifiHandsetDeviceTimelineMDTO(WifiHandsetDeviceTimelineMDTO wifiHandsetDeviceTimelineMDTO) {
-		this.wifiHandsetDeviceTimelineMDTO = wifiHandsetDeviceTimelineMDTO;
+	public void setItems(Map<String, WifiHandsetDeviceItemMDTO> items) {
+		this.items = items;
 	}
 }
