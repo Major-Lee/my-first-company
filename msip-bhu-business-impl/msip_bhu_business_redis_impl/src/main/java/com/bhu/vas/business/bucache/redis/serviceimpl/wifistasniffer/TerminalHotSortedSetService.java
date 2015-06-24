@@ -42,7 +42,7 @@ public class TerminalHotSortedSetService extends AbstractRelationSortedSetCache{
 		return sb.toString();
 	}
 	
-	public Long TerminalHotSize(String mac){
+	public Long terminalHotSize(String mac){
 		return super.zcard(generateKey(mac));
 	}
 	

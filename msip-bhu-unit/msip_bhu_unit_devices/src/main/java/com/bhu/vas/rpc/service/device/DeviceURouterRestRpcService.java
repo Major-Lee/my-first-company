@@ -392,4 +392,25 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		}
 	}
 
+	@Override
+	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid,
+			String mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour invoke uid [%s] mac [%s]", 
+				uid, mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSNeighbour(uid, mac, start, size);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] mac [%s]",
+					uid, mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] mac [%s] exmsg[%s]",
+					uid, mac, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
 }

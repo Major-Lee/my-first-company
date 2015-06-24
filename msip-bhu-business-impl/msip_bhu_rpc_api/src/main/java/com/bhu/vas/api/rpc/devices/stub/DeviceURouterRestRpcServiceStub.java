@@ -179,7 +179,18 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size) {
+		if(uid == null || StringUtils.isEmpty(mac)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
 		return deviceURouterRestRpcService.urouterWSRecent(uid, mac, start, size);
+	}
+	
+	@Override
+	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid, String mac, int start, int size) {
+		if(uid == null || StringUtils.isEmpty(mac)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterWSNeighbour(uid, mac, start, size);
 	}
 
 }

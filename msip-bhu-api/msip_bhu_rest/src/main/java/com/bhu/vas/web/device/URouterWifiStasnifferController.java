@@ -60,4 +60,24 @@ public class URouterWifiStasnifferController extends BaseController{
 		}
 	}
 	
+	
+	@ResponseBody()
+	@RequestMapping(value="/neighbour",method={RequestMethod.POST})
+	public void neighbour(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="0", value = "st") int start,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
+		
+		RpcResponseDTO<Map<String, Object>> rpcResponse = deviceURouterRestRpcService.urouterWSRecent(uid, 
+				mac, start, size);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
 }
