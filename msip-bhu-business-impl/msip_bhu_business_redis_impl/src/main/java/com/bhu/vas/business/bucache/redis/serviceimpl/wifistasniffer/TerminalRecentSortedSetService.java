@@ -75,7 +75,7 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 	
 	public Set<Tuple> fetchTerminalRecentByScoreWithScores(String mac,double min, double max, int start,int size){
 		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
-		return super.zrangeByScoreWithScores(generateKey(mac), min, max, start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(mac), min, max, start, size);
 	}
 
 	
