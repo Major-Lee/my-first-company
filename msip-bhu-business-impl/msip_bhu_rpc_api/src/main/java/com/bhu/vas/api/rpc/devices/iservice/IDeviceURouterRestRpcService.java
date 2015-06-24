@@ -51,5 +51,5 @@ public interface IDeviceURouterRestRpcService {
 
 	RpcResponseDTO<URouterVapPasswordVTO> urouterVapPassword(Integer uid, String wifiId);
 	
-	public RpcResponseDTO<List<URouterWSRecentVTO>> urouterWSRecent(Integer uid, String mac, int start, int size);
+	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size);
 }

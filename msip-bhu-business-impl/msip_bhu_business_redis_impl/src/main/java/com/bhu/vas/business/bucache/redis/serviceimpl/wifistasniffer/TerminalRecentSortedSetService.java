@@ -78,6 +78,9 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 		return super.zrevrangeByScoreWithScores(generateKey(mac), min, max, start, size);
 	}
 
+	public long sizeByScore(String mac,double min, double max){
+		return super.zcount(generateKey(mac), min, max);
+	}
 	
 	@Override
 	public String getRedisKey() {

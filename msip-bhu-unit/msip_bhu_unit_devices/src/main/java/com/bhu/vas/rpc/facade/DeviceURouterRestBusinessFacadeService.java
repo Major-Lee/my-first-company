@@ -656,23 +656,25 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param size
 	 * @return
 	 */
-	public RpcResponseDTO<List<URouterWSRecentVTO>> urouterWSRecent(Integer uid, String mac, int start, int size){
+	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size){
 		try{
 			if(StringUtils.isEmpty(mac)){
-				return null;
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 			List<URouterWSRecentVTO> vto_list = null;
 			//当前时间
 			long current_ts = System.currentTimeMillis();
 			//12小时之前的时间
-			long hours12_ago_ts = current_ts - (12 * 3600 * 1000l);
+			//long hours12_ago_ts = current_ts - (12 * 3600 * 1000l);
+			long hours12_ago_ts = 0;
 			
+			long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, hours12_ago_ts, current_ts);
+			if(count == 0){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
 			Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
 					hours12_ago_ts, current_ts, start, size);
-			if(tuples.isEmpty()){
-				vto_list = Collections.emptyList();
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
-			}
+			
 			vto_list = new ArrayList<URouterWSRecentVTO>();
 			for(Tuple tuple : tuples){
 				URouterWSRecentVTO vto = new URouterWSRecentVTO();
@@ -681,7 +683,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
 				vto_list.add(vto);
 			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
+			
+			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
