@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
-    private String online;
+    private String online_time_ext;
 
     private String login_at;
 
@@ -15,13 +15,12 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     private long online_time;
 
-
-    public String getOnline() {
-        return online;
+    public String getOnline_time_ext() {
+        return online_time_ext;
     }
 
-    public void setOnline(String online) {
-        this.online = online;
+    public void setOnline_time_ext(String online_time_ext) {
+        this.online_time_ext = online_time_ext;
     }
 
     public long getOnline_time() {
