@@ -220,7 +220,7 @@ public class DeviceURouterRestBusinessFacadeService {
 //										uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
 //									}
 
-									uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
+									uRouterHdTimeLineVTO.setDetail(wifiHandsetDeviceItemDetailMDTOList);
 
 									uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 								}
