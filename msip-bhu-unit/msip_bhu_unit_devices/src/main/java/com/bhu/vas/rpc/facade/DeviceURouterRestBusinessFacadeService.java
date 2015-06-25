@@ -201,26 +201,28 @@ public class DeviceURouterRestBusinessFacadeService {
 						List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
 
 						//todo(bluesand):三个for？？？
-						for (String key : map.keySet()) {
-							URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
-							uRouterHdTimeLineVTO.setDate(key);
+						if (map != null) {
+							for (String key : map.keySet()) {
+								URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+								uRouterHdTimeLineVTO.setDate(key);
 
-							List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
-									new ArrayList<URouterHdTimeLineItemVTO>();
+								List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
+										new ArrayList<URouterHdTimeLineItemVTO>();
 
-							List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
-									= map.get(key);
+								List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
+										= map.get(key);
 
-							for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
-								URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
-								timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
-								timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
-								uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
+								for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
+									URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
+									timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
+									timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
+									uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
+								}
+
+								uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
+
+								uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 							}
-
-							uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
-
-							uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 						}
 
 						vto.setTimeline(uRouterHdTimeLineVTOList);
