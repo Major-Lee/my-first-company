@@ -23,6 +23,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -54,6 +55,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
@@ -66,6 +68,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -685,7 +688,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			for(Tuple tuple : tuples){
 				URouterWSRecentVTO vto = new URouterWSRecentVTO();
 				vto.setHd_mac(tuple.getElement());
-				vto.setLast_ts(Double.valueOf(tuple.getScore()).longValue());
+				vto.setLast_snifftime(Double.valueOf(tuple.getScore()).longValue());
 				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
 				vto_list.add(vto);
 			}
@@ -737,7 +740,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				String last_time = last_time_strings.get(cursor);
 				if(!StringUtils.isEmpty(last_time)){
-					vto.setLast_ts(Long.parseLong(last_time));
+					vto.setLast_snifftime(Long.parseLong(last_time));
 				}
 				vto_list.add(vto);
 				cursor++;
@@ -776,6 +779,33 @@ public class DeviceURouterRestBusinessFacadeService {
 		try{
 			UserTerminalFocusHashService.getInstance().setNickValue(uid, hd_mac, nick);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 终端探测的细节列表
+	 * @param uid
+	 * @param mac
+	 * @param hd_mac
+	 * @param start
+	 * @param size
+	 * @return
+	 */
+	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
+		try{
+			Set<String> rets = TerminalDetailRecentSortedSetService.getInstance().fetchTerminalDetailRecent(mac, hd_mac, start, size);
+			if(rets == null || rets.isEmpty()){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
+			List<TerminalDetailDTO> dtos = new ArrayList<TerminalDetailDTO>();
+			for(String ret : rets){
+				if(!StringUtils.isEmpty(ret)){
+					dtos.add(JsonHelper.getDTO(ret, TerminalDetailDTO.class));
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dtos);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}

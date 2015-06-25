@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
@@ -449,6 +450,26 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] hd_mac [%s] nick [%s] exmsg[%s]",
 					uid, hd_mac, nick, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSDetails invoke uid [%s] mac [%s] hd_mac [%s]", 
+				uid, mac, hd_mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSDetails(uid, mac, hd_mac, start, size);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSDetails failed uid [%s] mac [%s] hd_mac [%s]",
+					uid, mac, hd_mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSDetails exception uid [%s] mac [%s] hd_mac [%s] exmsg[%s]",
+					uid, mac, hd_mac, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
