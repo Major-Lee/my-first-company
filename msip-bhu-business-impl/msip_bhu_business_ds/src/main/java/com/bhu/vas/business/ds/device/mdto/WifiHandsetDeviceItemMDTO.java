@@ -1,13 +1,15 @@
 package com.bhu.vas.business.ds.device.mdto;
 
+import java.util.List;
+
 /**
  * Created by bluesand on 6/24/15.
  */
-public class WifiHandsetDeviceTimelineMDTO {
+public class WifiHandsetDeviceItemMDTO {
 
     private String date;
 
-    private String detail;
+    private List<WifiHandsetDeviceItemDetailMTDTO> detail;
 
     public String getDate() {
         return date;
@@ -17,11 +19,11 @@ public class WifiHandsetDeviceTimelineMDTO {
         this.date = date;
     }
 
-    public String getDetail() {
+    public List<WifiHandsetDeviceItemDetailMTDTO> getDetail() {
         return detail;
     }
 
-    public void setDetail(String detail) {
+    public void setDetail(List<WifiHandsetDeviceItemDetailMTDTO> detail) {
         this.detail = detail;
     }
 }

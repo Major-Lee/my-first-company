@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.junit.Test;
-
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.localunit.BaseTest;
@@ -74,12 +72,37 @@ public class WifiTaskTest extends BaseTest{
 	}	
 	static String[] states = {WifiDeviceDownTask.State_Failed,WifiDeviceDownTask.State_Pending,WifiDeviceDownTask.State_Completed,WifiDeviceDownTask.State_Timeout};
 	static String[] responses = {"1234","5678","2345","4567"};
-	@Test
+	//@Test
 	public void taskCallbackTest(){
 		for(int i=0;i<100;i++){
 			taskFacadeService.taskExecuteCallback(i, RandomPicker.pick(states),RandomPicker.pick(responses));
 		}
 		
 	}
+	
+	//@Test
+//	public static void testRedis(){
+//		String mac = "11:11:11:11:11:11";
+//		String hd_mac = "aa:aa:aa:aa:aa:aa";
+//		TerminalDetailDTO dto = new TerminalDetailDTO();
+//		dto.setSnifftime(11111111112l);
+//		TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, hd_mac, dto);
+//		Set<String> rets = TerminalDetailRecentSortedSetService.getInstance().fetchTerminalDetailRecent(mac, hd_mac, 0, 5);
+//		for(String ret : rets){
+//			System.out.println(ret);
+//		}
+//		dto.setState(1);
+//		dto.setDuration(50);
+//		TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, hd_mac, dto);
+//		
+//		rets = TerminalDetailRecentSortedSetService.getInstance().fetchTerminalDetailRecent(mac, hd_mac, 0, 5);
+//		for(String ret : rets){
+//			System.out.println(ret);
+//		}
+//	}
+//	
+//	public static void main(String[] args){
+//		testRedis();
+//	}
 	
 }

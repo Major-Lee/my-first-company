@@ -8,8 +8,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
-import com.bhu.vas.api.helper.WifiStasnifferBuilder;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
@@ -119,23 +119,29 @@ public class WifiStasnifferActionHandler implements Serializable{
 		//处理终端流水上线情况
 		if(detail_onlines > 0){
 			for(WifistasnifferItemRddto item_dto : wifistasnifferOnlines){
-				String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
-				if(!StringUtils.isEmpty(detail_item_value)){
-					TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
-							detail_item_value, item_dto.getSnifftime());
-				}
+				//String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
+				//if(!StringUtils.isEmpty(detail_item_value)){
+				TerminalDetailDTO online_dto = new TerminalDetailDTO();
+				online_dto.setSnifftime(item_dto.getSnifftime());
+				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
+						online_dto);
+				//}
 			}
 		}
 		
 		//处理终端流水下线情况
 		if(detail_offlines > 0){
 			for(WifistasnifferItemRddto item_dto : wifistasnifferOfflines){
-				String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
-				String detail_item_online_value = WifiStasnifferBuilder.generateDetailItemOnlineValue(item_dto);
-				if(!StringUtils.isEmpty(detail_item_value) && !StringUtils.isEmpty(detail_item_online_value)){
-					TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
-							detail_item_online_value, detail_item_value, item_dto.getSnifftime());
-				}
+				//String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
+				//String detail_item_online_value = WifiStasnifferBuilder.generateDetailItemOnlineValue(item_dto);
+				//if(!StringUtils.isEmpty(detail_item_value) && !StringUtils.isEmpty(detail_item_online_value)){
+				TerminalDetailDTO offline_dto = new TerminalDetailDTO();
+				offline_dto.setSnifftime(item_dto.getSnifftime());
+				offline_dto.setDuration(item_dto.getDuration());
+				offline_dto.setState(WifistasnifferItemRddto.State_Online);
+				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
+						offline_dto);
+				//}
 			}
 		}
 	}

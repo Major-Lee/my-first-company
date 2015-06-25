@@ -1,5 +1,9 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.JedisPool;
@@ -112,6 +116,31 @@ public class UserTerminalFocusHashService extends AbstractRelationHashCache{
 		}
 		dto.setNick(nick);
 		super.hset(key, hd_mac, JsonHelper.getJSONString(dto));
+	}
+	
+	/**
+	 * 获取多个用户终端的关系数据
+	 * @param uid
+	 * @param hd_macs
+	 * @return
+	 */
+	public List<UserTerminalFocusDTO> fetchUserTerminalFocus(int uid, String... hd_macs){
+		if(hd_macs == null || hd_macs.length == 0){
+			return Collections.emptyList();
+		}
+		List<String> rets = super.hmget(generateMarkPrefixKey(uid), hd_macs);
+		if(rets == null || rets.isEmpty()){
+			return Collections.emptyList();
+		}
+		List<UserTerminalFocusDTO> dtos = new ArrayList<UserTerminalFocusDTO>();
+		for(String ret : rets){
+			if(!StringUtils.isEmpty(ret)){
+				dtos.add(JsonHelper.getDTO(ret, UserTerminalFocusDTO.class));
+			}else{
+				dtos.add(null);
+			}
+		}
+		return dtos;
 	}
 	
 	@Override

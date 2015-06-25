@@ -48,6 +48,7 @@ public class WifiStasnifferToRddtoTransform implements Function<Tuple2<String, S
 						if(items != null && !items.isEmpty()){
 							for(WifistasnifferItemRddto item_dto : items){
 								item_dto.setD_mac(d_mac);
+								item_dto.setSnifftime(item_dto.getSnifftime() * 1000l);//上报的是秒 转换成毫秒
 							}
 							return dto;
 						}
