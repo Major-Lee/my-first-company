@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -78,6 +79,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 			incr_sniffcounts[cursor] = 1d;
 			cursor++;
 			this.doTerminalDeviceTypeCount(mac, item_dto.getMac());
+			this.doTerminalLastTime(mac, item_dto.getMac(), item_dto.getSnifftime());
 		}
 		//录入最近出现的终端记录
 		TerminalRecentSortedSetService.getInstance().addTerminalRecents(mac, hd_macs, snifftimes);
@@ -97,6 +99,17 @@ public class WifiStasnifferActionHandler implements Serializable{
 			if(!StringUtils.isEmpty(scn)){
 				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, scn);
 			}
+		}
+	}
+	/**
+	 * 记录终端最后探测时间
+	 * @param mac
+	 * @param hd_mac
+	 * @param snifftime
+	 */
+	public void doTerminalLastTime(String mac, String hd_mac, long snifftime){
+		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
+			TerminalLastTimeStringService.getInstance().set(mac, hd_mac, snifftime);
 		}
 	}
 	

@@ -342,7 +342,7 @@ public class DeviceRestBusinessFacadeService {
 			Set<Tuple> tuples = WifiDeviceHandsetPresentSortedSetService.getInstance().
 					fetchPresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
 			
-			List<String> hd_macs = BusinessModelBuilder.toHandsetDeviceIds(tuples);
+			List<String> hd_macs = BusinessModelBuilder.toElementsList(tuples);
 			if(!hd_macs.isEmpty()){
 				vtos = new ArrayList<HandsetDeviceVTO>();
 				

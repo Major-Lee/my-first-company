@@ -133,7 +133,49 @@ public class WifiHandsetDeviceRelationMService {
 	}
 
 
-    public void updateWifiHandsetDeviceItems() {
+    public void updateWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime) {
+        WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
+
+        WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+                wifiHandsetDeviceRelationMDao.findById(mdto.getId());
+
+
+        Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
+        List<String> week = generateWeekCalendar();
+
+
+        //离线的情况下，肯定有七天的在线记录
+        try {
+            wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
+
+            int i = 0;
+            for (String date : week) {
+                List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList =
+                        wifiHandsetDeviceItemDetailMTDTOMap.get(date);
+
+                if (i == 0 ) {
+                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO =
+                            wifiHandsetDeviceItemDetailMTDTOList.get(0);
+                    wifiHandsetDeviceItemDetailMTDTO.setOnline_time(Long.parseLong(uptime));
+                    wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
+                }
+                wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                i++;
+            }
+
+        }catch (Exception e) {
+
+        }
+
+        Query query = new Query(Criteria.where("_id").is(mdto.getId()));
+        Update update = new Update();
+        update.set("wifiId", wifiId);
+        update.set("handsetId", handsetId);
+        update.set("last_login_at", wifiHandsetDeviceRelationMDTO.getLast_login_at());
+
+        update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
+
+        WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 
     }
 

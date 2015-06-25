@@ -1,6 +1,5 @@
 package com.bhu.vas.api.vto;
 
-import java.util.List;
 
 
 /**
@@ -12,20 +11,10 @@ import java.util.List;
 public class URouterWSHotVTO extends URouterWSRecentVTO{
 	//近期探测到的次数
 	private long ws_count;
-	//终端的探测细节流水
-	private List<URouterWSDetailVTO> details;
 	//终端昵称
 	private String nick;
 	//是否关注
 	private boolean focus;
-
-	public List<URouterWSDetailVTO> getDetails() {
-		return details;
-	}
-
-	public void setDetails(List<URouterWSDetailVTO> details) {
-		this.details = details;
-	}
 
 	public long getWs_count() {
 		return ws_count;

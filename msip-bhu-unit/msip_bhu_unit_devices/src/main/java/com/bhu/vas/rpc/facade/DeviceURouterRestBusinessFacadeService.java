@@ -54,8 +54,8 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
@@ -717,24 +717,62 @@ public class DeviceURouterRestBusinessFacadeService {
 					start, size);
 			
 			List<URouterWSHotVTO> vto_list = new ArrayList<URouterWSHotVTO>();
-			String[] hd_macs = new String[tuples.size()];
+			
+			String[] hd_macs = BusinessModelBuilder.toElementsArray(tuples);
+			List<String> last_time_strings = TerminalLastTimeStringService.getInstance().getMulti(mac, hd_macs);
+			List<UserTerminalFocusDTO> focus_dtos = UserTerminalFocusHashService.getInstance().fetchUserTerminalFocus(uid, hd_macs);
 			int cursor = 0;
 			for(Tuple tuple : tuples){
-				hd_macs[cursor] = tuple.getElement();
-				
 				URouterWSHotVTO vto = new URouterWSHotVTO();
-				vto.setHd_mac(tuple.getElement());
+				vto.setHd_mac(hd_macs[cursor]);
 				vto.setWs_count(Double.valueOf(tuple.getScore()).longValue());
-				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
+				vto.setTt(MacDictParserFilterHelper.prefixMactch(hd_macs[cursor],true,false));
+				UserTerminalFocusDTO focus_dto = focus_dtos.get(cursor);
+				if(focus_dto != null){
+					vto.setNick(focus_dto.getNick());
+					vto.setFocus(focus_dto.isFocus());
+				}
+				String last_time = last_time_strings.get(cursor);
+				if(!StringUtils.isEmpty(last_time)){
+					vto.setLast_ts(Long.parseLong(last_time));
+				}
 				vto_list.add(vto);
 				cursor++;
 			}
-			
-			List<UserTerminalFocusDTO> focus_dtos = UserTerminalFocusHashService.getInstance().fetchUserTerminalFocus(uid, hd_macs);
-			List<Object> terminal_detail_rets = TerminalDetailRecentSortedSetService.getInstance().fetchTerminalDetailRecents(mac, start, size, hd_macs);
-			
 			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 用户设置关注或者取消关注终端
+	 * @param uid
+	 * @param hd_mac
+	 * @param focus
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterWSFocus(Integer uid, String hd_mac, boolean focus){
+		try{
+			UserTerminalFocusHashService.getInstance().setFocusValue(uid, hd_mac, focus);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 用户修改探测终端的昵称
+	 * @param uid
+	 * @param hd_mac
+	 * @param nick
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick){
+		try{
+			UserTerminalFocusHashService.getInstance().setNickValue(uid, hd_mac, nick);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}

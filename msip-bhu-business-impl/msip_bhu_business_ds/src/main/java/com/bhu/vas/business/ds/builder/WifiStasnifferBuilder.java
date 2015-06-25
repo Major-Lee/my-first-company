@@ -1,22 +1,18 @@
-package com.bhu.vas.api.helper;
+package com.bhu.vas.business.ds.builder;
 
 import java.io.Serializable;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 
 @SuppressWarnings("serial")
 public class WifiStasnifferBuilder implements Serializable{
 	
-	public static final String Special_Detail_Outer_Gap = "$#";
+/*	public static final String Special_Detail_Outer_Gap = "$#";
 	public static final String Split_Special_Detail_Outer_Gap = "\\$#";
 	
-	/**
+	*//**
 	 * 根据WifistasnifferItemRddto生成detail数据
 	 * @param item_dto
 	 * @return
-	 */
+	 *//*
 	public static String generateDetailItemValue(WifistasnifferItemRddto item_dto){
 		if(item_dto != null){
 			String hd_mac = item_dto.getMac();
@@ -37,11 +33,11 @@ public class WifiStasnifferBuilder implements Serializable{
 		return null;
 	}
 	
-	/**
+	*//**
 	 * 根据WifistasnifferItemRddto生成上线detail数据
 	 * @param item_dto
 	 * @return
-	 */
+	 *//*
 	public static String generateDetailItemOnlineValue(WifistasnifferItemRddto item_dto){
 		if(item_dto != null){
 			String hd_mac = item_dto.getMac();
@@ -56,5 +52,5 @@ public class WifiStasnifferBuilder implements Serializable{
 			}
 		}
 		return null;
-	}
+	}*/
 }
