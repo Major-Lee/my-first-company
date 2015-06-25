@@ -662,6 +662,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size){
 		try{
+			//System.out.println("step1");
 			if(StringUtils.isEmpty(mac)){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
@@ -671,11 +672,12 @@ public class DeviceURouterRestBusinessFacadeService {
 			//12小时之前的时间
 			//long hours12_ago_ts = current_ts - (12 * 3600 * 1000l);
 			long hours12_ago_ts = 0;
-			
+			//System.out.println("step2");
 			long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, hours12_ago_ts, current_ts);
 			if(count == 0){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
+			//System.out.println("step3:"+count);
 			Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
 					hours12_ago_ts, current_ts, start, size);
 			
@@ -687,8 +689,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
 				vto_list.add(vto);
 			}
-			
+			//System.out.println("step4:"+vto_list.size());
 			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
+			//System.out.println("step5:"+payload);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());

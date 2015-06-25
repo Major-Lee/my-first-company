@@ -97,4 +97,24 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.WIFISTASNIFFER);
 	}
 	
+//	public static void main(String[] args){
+//		String mac = "84:82:f4:19:01:0c";
+//		long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, 0, System.currentTimeMillis());
+//		System.out.println(count);
+//		Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
+//				0, System.currentTimeMillis(), 0, 5);
+//		
+//		ArrayList<URouterWSRecentVTO> vto_list = new ArrayList<URouterWSRecentVTO>();
+//		for(Tuple tuple : tuples){
+//			URouterWSRecentVTO vto = new URouterWSRecentVTO();
+//			vto.setHd_mac(tuple.getElement());
+//			vto.setLast_ts(Double.valueOf(tuple.getScore()).longValue());
+//			vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
+//			vto_list.add(vto);
+//		}
+//		System.out.println(vto_list.size());
+//		Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, 0, 5);
+//		System.out.println(payload);
+//	}
+	
 }
