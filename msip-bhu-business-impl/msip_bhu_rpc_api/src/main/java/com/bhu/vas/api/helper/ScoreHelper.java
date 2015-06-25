@@ -177,6 +177,7 @@ public class ScoreHelper {
 	public static void main(String[] argv){
 		//System.out.println((double)3261840/flow_max);
 		System.out.println(ConvertHelper.speedByteFormat(3261840l));
+		System.out.println(ConvertHelper.speedBitFormat(969386264l));
 		ScoreDTO analyse = analyse(30*1024*1024l,40);
 		System.out.println(analyse);
 	}

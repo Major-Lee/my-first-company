@@ -51,6 +51,8 @@ public class BusinessMarkerService extends AbstractRelationHashCache{
 		this.hset(generateMarkPrefixKey(DeviceUsedStatusMarkerPrefixKey,mac), mac, String.valueOf(System.currentTimeMillis()));
 	}
 
+	//开关控制 是否需要发起请求
+	//TODO:always return true
 	public boolean needNewRequestAndMarker(String mac){
 		String key = generateMarkPrefixKey(DeviceUsedStatusMarkerPrefixKey,mac);
 		String value = this.hget(key, mac);
@@ -58,7 +60,9 @@ public class BusinessMarkerService extends AbstractRelationHashCache{
 		if(StringUtils.isNotEmpty(value)){
 			long previous_time = Long.parseLong(value);
 			if( current - previous_time < timeout){
-				return false;
+				//return false;
+				//TODO:
+				return true;
 			}
 		}
 		this.hset(key, mac, String.valueOf(current));
