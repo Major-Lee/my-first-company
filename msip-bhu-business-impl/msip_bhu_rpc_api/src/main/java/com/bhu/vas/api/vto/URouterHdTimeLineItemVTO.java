@@ -1,9 +1,11 @@
 package com.bhu.vas.api.vto;
 
+import java.io.Serializable;
+
 /**
  * Created by bluesand on 6/25/15.
  */
-public class URouterHdTimeLineItemVTO {
+public class URouterHdTimeLineItemVTO implements Serializable{
 
     private String online_time;
 
