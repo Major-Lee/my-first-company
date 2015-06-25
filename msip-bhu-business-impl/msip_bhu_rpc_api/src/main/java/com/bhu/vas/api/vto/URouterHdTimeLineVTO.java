@@ -10,7 +10,7 @@ public class URouterHdTimeLineVTO implements Serializable {
 
     private String date;
 
-    private List<URouterHdTimeLineItemVTO> detail;
+    private List detail;
 
 
     public String getDate() {
@@ -21,11 +21,11 @@ public class URouterHdTimeLineVTO implements Serializable {
         this.date = date;
     }
 
-    public List<URouterHdTimeLineItemVTO> getDetail() {
+    public List getDetail() {
         return detail;
     }
 
-    public void setDetail(List<URouterHdTimeLineItemVTO> detail) {
+    public void setDetail(List detail) {
         this.detail = detail;
     }
 }

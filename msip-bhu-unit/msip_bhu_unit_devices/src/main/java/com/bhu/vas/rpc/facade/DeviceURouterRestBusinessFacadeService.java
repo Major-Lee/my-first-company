@@ -211,15 +211,14 @@ public class DeviceURouterRestBusinessFacadeService {
 									List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
 											new ArrayList<URouterHdTimeLineItemVTO>();
 
-									List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
-											= map.get(key);
+									List wifiHandsetDeviceItemDetailMDTOList = map.get(key);
 
-									for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
-										URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
-										timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
-										timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
-										uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
-									}
+//									for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
+//										URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
+//										timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
+//										timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
+//										uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
+//									}
 
 									uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
 
