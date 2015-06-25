@@ -91,7 +91,7 @@ public class WifiHandsetDeviceRelationMService {
                             = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
                     WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0) {
-                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(String.valueOf(last_login_at.getTime()));
                     }
                     wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
