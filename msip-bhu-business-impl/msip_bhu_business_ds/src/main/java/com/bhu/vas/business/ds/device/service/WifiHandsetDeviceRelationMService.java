@@ -91,7 +91,7 @@ public class WifiHandsetDeviceRelationMService {
                             = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
                     WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0) {
-                        wifiHandsetDeviceItemDetailMDTO.setLast_login_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(mdto.getLast_login_at());
                     }
                     wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
@@ -111,7 +111,7 @@ public class WifiHandsetDeviceRelationMService {
                     }
                     WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0 ) {
-                        wifiHandsetDeviceItemDetailMDTO.setLast_login_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(mdto.getLast_login_at());
                         wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
                     }
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);

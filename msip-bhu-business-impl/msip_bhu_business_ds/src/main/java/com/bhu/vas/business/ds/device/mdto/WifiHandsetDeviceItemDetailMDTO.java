@@ -9,9 +9,9 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     private String online;
 
-    private String last_login_at;
+    private String login_at;
 
-    private String last_logout_at;
+    private String logout_at;
 
     private long online_time;
 
@@ -32,19 +32,19 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
         this.online_time = online_time;
     }
 
-    public String getLast_login_at() {
-        return last_login_at;
+    public String getLogin_at() {
+        return login_at;
     }
 
-    public void setLast_login_at(String last_login_at) {
-        this.last_login_at = last_login_at;
+    public void setLogin_at(String login_at) {
+        this.login_at = login_at;
     }
 
-    public String getLast_logout_at() {
-        return last_logout_at;
+    public String getLogout_at() {
+        return logout_at;
     }
 
-    public void setLast_logout_at(String last_logout_at) {
-        this.last_logout_at = last_logout_at;
+    public void setLogout_at(String logout_at) {
+        this.logout_at = logout_at;
     }
 }

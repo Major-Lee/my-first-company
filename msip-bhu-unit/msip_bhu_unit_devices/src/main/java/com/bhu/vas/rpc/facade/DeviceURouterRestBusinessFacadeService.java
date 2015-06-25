@@ -172,6 +172,9 @@ public class DeviceURouterRestBusinessFacadeService {
 					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
 			}
 			//System.out.println("###################presents.size():"+presents.size());
+
+
+			//todo(bluesand): 客户端现在获取实时速率会5秒一次请求。
 			if(!presents.isEmpty()){
 				List<String> hd_macs = new ArrayList<String>();
 				for(Tuple tuple : presents){
@@ -199,29 +202,14 @@ public class DeviceURouterRestBusinessFacadeService {
 							Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
 									wifiHandsetDeviceRelationMDTO.getItems();
 
-
 							List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
 
-							//todo(bluesand):三个for？？？
 							if (map != null) {
+								//集合中只有七天的在线记录
 								for (String key : map.keySet()) {
 									URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
 									uRouterHdTimeLineVTO.setDate(key);
-
-									List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
-											new ArrayList<URouterHdTimeLineItemVTO>();
-
-									List wifiHandsetDeviceItemDetailMDTOList = map.get(key);
-
-//									for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
-//										URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
-//										timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
-//										timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
-//										uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
-//									}
-
-									uRouterHdTimeLineVTO.setDetail(wifiHandsetDeviceItemDetailMDTOList);
-
+									uRouterHdTimeLineVTO.setDetail( map.get(key));
 									uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 								}
 							}
