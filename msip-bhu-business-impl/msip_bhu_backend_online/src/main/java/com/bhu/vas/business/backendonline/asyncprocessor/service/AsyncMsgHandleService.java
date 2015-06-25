@@ -485,7 +485,8 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
 		}
 
-		wifiHandsetDeviceRelationMService.updateWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(), dto.getUptime());
+		wifiHandsetDeviceRelationMService.updateWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(),
+				dto.getUptime(), dto.getRx_bytes());
 
 
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));

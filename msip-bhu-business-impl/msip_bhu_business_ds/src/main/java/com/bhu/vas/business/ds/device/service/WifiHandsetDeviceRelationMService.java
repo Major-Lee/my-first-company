@@ -69,6 +69,7 @@ public class WifiHandsetDeviceRelationMService {
 		update.set("handsetId", handsetId);
 		update.set("last_login_at", mdto.getLast_login_at());
 
+
 //		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 //				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
@@ -96,7 +97,7 @@ public class WifiHandsetDeviceRelationMService {
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
                     i++;
                 }
-
+                update.set("total_rx_bytes", 0);
             } else {
                 wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
 
@@ -116,7 +117,7 @@ public class WifiHandsetDeviceRelationMService {
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
                     i++;
                 }
-
+                update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
             }
         }catch (Exception e) {
             
@@ -133,7 +134,7 @@ public class WifiHandsetDeviceRelationMService {
 	}
 
 
-    public void updateWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime) {
+    public void updateWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime, String rx_bytes) {
         WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
 
         WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
@@ -172,6 +173,8 @@ public class WifiHandsetDeviceRelationMService {
         update.set("wifiId", wifiId);
         update.set("handsetId", handsetId);
         update.set("last_login_at", wifiHandsetDeviceRelationMDTO.getLast_login_at());
+
+        update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
 
         update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
 

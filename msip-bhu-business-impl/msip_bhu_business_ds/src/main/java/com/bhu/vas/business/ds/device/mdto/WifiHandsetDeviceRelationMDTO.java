@@ -27,6 +27,9 @@ public class WifiHandsetDeviceRelationMDTO{
 	//最后登录wifi的时间 用string存储格式化好的日期 因为直接用date，mongodb就会用标准时间存储
 	private String last_login_at;
 
+	//todo(bluesand): 累加终端的下载字节数会越来越大
+	private long total_rx_bytes;
+
 	private Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items;
 
 	public WifiHandsetDeviceRelationMDTO(){
@@ -77,5 +80,13 @@ public class WifiHandsetDeviceRelationMDTO{
 
 	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items) {
 		this.items = items;
+	}
+
+	public long getTotal_rx_bytes() {
+		return total_rx_bytes;
+	}
+
+	public void setTotal_rx_bytes(long total_rx_bytes) {
+		this.total_rx_bytes = total_rx_bytes;
 	}
 }
