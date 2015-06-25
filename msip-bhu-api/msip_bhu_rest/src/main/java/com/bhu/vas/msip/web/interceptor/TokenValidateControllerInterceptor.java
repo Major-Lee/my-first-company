@@ -102,7 +102,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		/*if(uri.indexOf("config") != -1){
 			output = true;
 		}*/
-		logger.info(String.format("Rest Request uri[%s] URL [%s] Params [%s]",uri, request.getRequestURI(), request.getParameterMap()));
+		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
+		logger.info(String.format("Rest Request uri[%s] URL [%s] uid [%s]",uri, request.getRequestURI(), UID));
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
@@ -133,7 +134,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}
 		}
-		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
+		
 		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
