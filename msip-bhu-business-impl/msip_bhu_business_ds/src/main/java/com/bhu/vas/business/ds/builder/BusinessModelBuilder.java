@@ -256,7 +256,7 @@ public class BusinessModelBuilder {
 		return ids;
 	}
 	
-	public static List<String> toHandsetDeviceIds(Set<Tuple> tupes){
+	public static List<String> toElementsList(Set<Tuple> tupes){
 		if(tupes == null || tupes.isEmpty()) return Collections.emptyList();
 		
 		List<String> ids = new ArrayList<String>();
@@ -264,6 +264,18 @@ public class BusinessModelBuilder {
 			ids.add(tuple.getElement());
 		}
 		return ids;
+	}
+	
+	public static String[] toElementsArray(Set<Tuple> tuples){
+		if(tuples == null || tuples.isEmpty()) return null;
+		
+		String[] rets = new String[tuples.size()];
+		int cursor = 0;
+		for(Tuple tuple : tuples){
+			rets[cursor] = tuple.getElement();
+			cursor++;
+		}
+		return rets;
 	}
 	
 }

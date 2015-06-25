@@ -61,6 +61,15 @@ public class URouterWifiStasnifferController extends BaseController{
 	}
 	
 	
+	/**
+	 * 隔壁老王列表
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 * @param start
+	 * @param size
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/neighbour",method={RequestMethod.POST})
 	public void neighbour(
@@ -71,8 +80,57 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		RpcResponseDTO<Map<String, Object>> rpcResponse = deviceURouterRestRpcService.urouterWSRecent(uid, 
-				mac, start, size);
+		RpcResponseDTO<Map<String, Object>> rpcResponse = deviceURouterRestRpcService.urouterWSNeighbour(uid, mac, 
+				start, size);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 用户关注或者取消关注探测的终端
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param hd_mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/focus",method={RequestMethod.POST})
+	public void focus(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String hd_mac,
+			@RequestParam(required = false, defaultValue="true") boolean focus) {
+		
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSFocus(uid, hd_mac, focus);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 用户修改探测终端的昵称
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param hd_mac
+	 * @param nick
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/nick",method={RequestMethod.POST})
+	public void nick(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String hd_mac,
+			@RequestParam(required = false) String nick) {
+		
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSNick(uid, hd_mac, nick);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

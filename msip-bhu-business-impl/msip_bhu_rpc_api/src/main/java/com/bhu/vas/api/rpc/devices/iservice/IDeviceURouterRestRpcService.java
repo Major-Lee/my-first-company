@@ -53,4 +53,8 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size);
 	
 	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid, String mac, int start, int size);
+	
+	public RpcResponseDTO<Boolean> urouterWSFocus(Integer uid, String hd_mac, boolean focus);
+	
+	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick);
 }

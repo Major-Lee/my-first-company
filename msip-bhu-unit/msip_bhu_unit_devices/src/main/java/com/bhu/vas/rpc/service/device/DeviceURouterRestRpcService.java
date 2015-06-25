@@ -413,4 +413,44 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		}
 	}
 
+	@Override
+	public RpcResponseDTO<Boolean> urouterWSFocus(Integer uid, String hd_mac, boolean focus) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour invoke uid [%s] hd_mac [%s]", 
+				uid, hd_mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSFocus(uid, hd_mac, focus);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] hd_mac [%s]",
+					uid, hd_mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] hd_mac [%s] exmsg[%s]",
+					uid, hd_mac, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick) {
+		logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour invoke uid [%s] hd_mac [%s] nick [%s]", 
+				uid, hd_mac, nick));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterWSNick(uid, hd_mac, nick);
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] hd_mac [%s] nick [%s]",
+					uid, hd_mac, nick));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] hd_mac [%s] nick [%s] exmsg[%s]",
+					uid, hd_mac, nick, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
 }
