@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMTDTO;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMDTO;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -69,6 +69,7 @@ public class WifiHandsetDeviceRelationMService {
 		update.set("handsetId", handsetId);
 		update.set("last_login_at", mdto.getLast_login_at());
 
+
 //		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 //				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
@@ -77,46 +78,46 @@ public class WifiHandsetDeviceRelationMService {
 				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
 
-        Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
         List<String> week = generateWeekCalendar();
 
         try {
             if (wifiHandsetDeviceRelationMDTO == null) {
                 wifiHandsetDeviceItemDetailMTDTOMap
-                        = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMTDTO>>();
+                        = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
                 int i = 0;
                 for (String date : week) {
-                    List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList
-                            = new ArrayList<WifiHandsetDeviceItemDetailMTDTO>();
-                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO = new WifiHandsetDeviceItemDetailMTDTO();
+                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
+                            = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0) {
-                        wifiHandsetDeviceItemDetailMTDTO.setLast_login_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(mdto.getLast_login_at());
                     }
-                    wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
-                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                    wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                     i++;
                 }
-
+                update.set("total_rx_bytes", 0);
             } else {
                 wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
 
                 int i = 0;
                 for (String date : week) {
-                    List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList =
+                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
                             wifiHandsetDeviceItemDetailMTDTOMap.get(date);
 
-                    if (wifiHandsetDeviceItemDetailMTDTOList == null) {
-                        wifiHandsetDeviceItemDetailMTDTOList = new ArrayList<WifiHandsetDeviceItemDetailMTDTO>();
+                    if (wifiHandsetDeviceItemDetailMDTOList == null) {
+                        wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
                     }
-                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO = new WifiHandsetDeviceItemDetailMTDTO();
+                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0 ) {
-                        wifiHandsetDeviceItemDetailMTDTO.setLast_login_at(mdto.getLast_login_at());
-                        wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
+                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
                     }
-                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                     i++;
                 }
-
+                update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
             }
         }catch (Exception e) {
             
@@ -133,14 +134,14 @@ public class WifiHandsetDeviceRelationMService {
 	}
 
 
-    public void updateWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime) {
+    public void updateWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime, String rx_bytes) {
         WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
 
         WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
                 wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
 
-        Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
         List<String> week = generateWeekCalendar();
 
 
@@ -150,16 +151,16 @@ public class WifiHandsetDeviceRelationMService {
 
             int i = 0;
             for (String date : week) {
-                List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList =
+                List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
                         wifiHandsetDeviceItemDetailMTDTOMap.get(date);
 
                 if (i == 0 ) {
-                    int size = wifiHandsetDeviceItemDetailMTDTOList.size();
-                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO =
-                            wifiHandsetDeviceItemDetailMTDTOList.get(size - 1);
-                    wifiHandsetDeviceItemDetailMTDTO.setOnline_time(Long.parseLong(uptime));
+                    int size = wifiHandsetDeviceItemDetailMDTOList.size();
+                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
+                            wifiHandsetDeviceItemDetailMDTOList.get(size - 1);
+                    wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
                 }
-                wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                 i++;
             }
 
@@ -172,6 +173,8 @@ public class WifiHandsetDeviceRelationMService {
         update.set("wifiId", wifiId);
         update.set("handsetId", handsetId);
         update.set("last_login_at", wifiHandsetDeviceRelationMDTO.getLast_login_at());
+
+        update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
 
         update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
 

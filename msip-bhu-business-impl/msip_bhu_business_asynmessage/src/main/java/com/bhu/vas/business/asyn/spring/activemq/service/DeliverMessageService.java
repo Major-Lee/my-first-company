@@ -107,11 +107,14 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendHandsetDeviceOfflineActionMessage(String wifiId, String handsetId, String uptime){
+	public void sendHandsetDeviceOfflineActionMessage(String wifiId, String handsetId, String uptime,
+													  String rx_bytes, String tx_bytes){
 		HandsetDeviceOfflineDTO dto = new HandsetDeviceOfflineDTO();
 		dto.setMac(handsetId);
 		dto.setWifiId(wifiId);
 		dto.setUptime(uptime);
+		dto.setRx_bytes(rx_bytes);
+		dto.setTx_bytes(tx_bytes);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

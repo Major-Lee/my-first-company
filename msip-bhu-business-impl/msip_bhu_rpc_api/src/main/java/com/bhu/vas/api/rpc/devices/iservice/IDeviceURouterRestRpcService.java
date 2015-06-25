@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
@@ -57,4 +58,6 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Boolean> urouterWSFocus(Integer uid, String hd_mac, boolean focus);
 	
 	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick);
+	
+	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size);
 }

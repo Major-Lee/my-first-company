@@ -1,5 +1,6 @@
 package com.bhu.vas.web.device;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -131,6 +133,26 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = false) String nick) {
 		
 		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSNick(uid, hd_mac, nick);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/details",method={RequestMethod.POST})
+	public void details(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String hd_mac,
+			@RequestParam(required = false, defaultValue="0", value = "st") int start,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
+		
+		RpcResponseDTO<List<TerminalDetailDTO>> rpcResponse = deviceURouterRestRpcService.urouterWSDetails(uid, mac, 
+				hd_mac, start, size);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

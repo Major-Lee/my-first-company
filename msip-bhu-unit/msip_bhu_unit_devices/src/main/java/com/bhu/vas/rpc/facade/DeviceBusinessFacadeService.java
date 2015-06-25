@@ -380,7 +380,7 @@ public class DeviceBusinessFacadeService {
 			if(DateTimeHelper.isSameDay(exist_handset_device_entity.getLast_login_at().getTime(), 
 					System.currentTimeMillis())){
 				deliverMessageService.sendHandsetDeviceOfflineActionMessage(exist_handset_device_entity.getLast_wifi_id(), 
-						exist_handset_device_entity.getId(), dto.getUptime());
+						exist_handset_device_entity.getId(), dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
 			}
 
 		}

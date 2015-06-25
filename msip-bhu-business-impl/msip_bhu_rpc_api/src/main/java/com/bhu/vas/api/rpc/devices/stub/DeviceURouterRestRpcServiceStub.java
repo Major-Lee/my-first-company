@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
@@ -207,6 +208,14 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
 		return deviceURouterRestRpcService.urouterWSNick(uid, hd_mac, nick);
+	}
+
+	@Override
+	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
+		if(uid == null || StringUtils.isEmpty(mac) || StringUtils.isEmpty(hd_mac)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterWSDetails(uid, mac, hd_mac, start, size);
 	}
 
 }
