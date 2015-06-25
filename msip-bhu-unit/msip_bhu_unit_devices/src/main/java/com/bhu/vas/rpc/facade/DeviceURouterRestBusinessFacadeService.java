@@ -192,40 +192,45 @@ public class DeviceURouterRestBusinessFacadeService {
 
 						WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 								wifiHandsetDeviceRelationMService.getRelation(wifiId, vto.getHd_mac());
-						vto.setTotal_rx_bytes(String.valueOf(wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes()));
 
-						Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
-								wifiHandsetDeviceRelationMDTO.getItems();
+						if (wifiHandsetDeviceRelationMDTO != null) {
+							vto.setTotal_rx_bytes(String.valueOf(wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes()));
+
+							Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
+									wifiHandsetDeviceRelationMDTO.getItems();
 
 
-						List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
+							List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
 
-						//todo(bluesand):三个for？？？
-						if (map != null) {
-							for (String key : map.keySet()) {
-								URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
-								uRouterHdTimeLineVTO.setDate(key);
+							//todo(bluesand):三个for？？？
+							if (map != null) {
+								for (String key : map.keySet()) {
+									URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+									uRouterHdTimeLineVTO.setDate(key);
 
-								List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
-										new ArrayList<URouterHdTimeLineItemVTO>();
+									List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
+											new ArrayList<URouterHdTimeLineItemVTO>();
 
-								List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
-										= map.get(key);
+									List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
+											= map.get(key);
 
-								for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
-									URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
-									timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
-									timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
-									uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
+									for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
+										URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
+										timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
+										timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
+										uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
+									}
+
+									uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
+
+									uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 								}
-
-								uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
-
-								uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 							}
+
+							vto.setTimeline(uRouterHdTimeLineVTOList);
 						}
 
-						vto.setTimeline(uRouterHdTimeLineVTOList);
+
 
 						vtos.add(vto);
 						cursor++;
