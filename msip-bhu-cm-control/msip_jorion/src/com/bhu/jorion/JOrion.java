@@ -360,34 +360,36 @@ public class JOrion implements JOrionMBean{
 		String id = (String)is.getAttribute(SESSION_KEY);
 		if(id == null)
 			return;
-		try{
-			s = ursidsSessionMap.get(id);
-		}catch(NullPointerException e){
-			LOGGER.error(StringHelper.getStackTrace(e));
-			e.printStackTrace();
-		}
-		if(s == null)
-			return;
-		LOGGER.info(" id " + id);
-		UUID uid = (UUID)is.getAttribute(SESSION_ID);
-		if(uid != null && !uid.equals(s.getSessionId())){
-			LOGGER.error("can't close this ursids session, maybe it's reconnectd!");
-			return;
-		}
-		s.setSession(null);
-		s.setJoinedFlag(false);
-		StringBuffer sb = new StringBuffer();
-		JSONWriter writer = new JSONWriter();
-		Map<String, String> m = new ConcurrentHashMap<String, String>();
-		int pos = id.lastIndexOf("_");
-		sb.append(JOrionConfig.MSG_URSIDS_OFFLINE);
-		m.put("name", id.substring(0, pos));
-		m.put("process_seq", id.substring(pos + 1));
-		sb.append(writer.write(m));
-		mqWorker.publishManagementMessage(sb.toString());
-		mqWorker.ursidsLeave(id);
-		s.clearAllDevs();
-		ursidsSessionMap.remove(id);
+		synchronized(this){
+			try{
+				s = ursidsSessionMap.get(id);
+			}catch(NullPointerException e){
+				LOGGER.error(StringHelper.getStackTrace(e));
+				e.printStackTrace();
+			}
+			if(s == null)
+				return;
+			LOGGER.info(" id " + id);
+			UUID uid = (UUID)is.getAttribute(SESSION_ID);
+			if(uid != null && !uid.equals(s.getSessionId())){
+				LOGGER.error("can't close this ursids session, maybe it's reconnectd!");
+				return;
+			}
+			s.setSession(null);
+			s.setJoinedFlag(false);
+			StringBuffer sb = new StringBuffer();
+			JSONWriter writer = new JSONWriter();
+			Map<String, String> m = new ConcurrentHashMap<String, String>();
+			int pos = id.lastIndexOf("_");
+			sb.append(JOrionConfig.MSG_URSIDS_OFFLINE);
+			m.put("name", id.substring(0, pos));
+			m.put("process_seq", id.substring(pos + 1));
+			sb.append(writer.write(m));
+			mqWorker.publishManagementMessage(sb.toString());
+			mqWorker.ursidsLeave(id);
+			s.clearAllDevs();
+			ursidsSessionMap.remove(id);
+		}		
 		zkWorker.removeUrisdsSession(s);
 	}
 	
@@ -412,38 +414,38 @@ public class JOrion implements JOrionMBean{
 				ursidsSessionMap.put(id, s);
 				LOGGER.info(" create new ursids for id " + id);
 			}
-		}
-		s.setSessionId((UUID)is.getAttribute(SESSION_ID));
-		String state = (String)m.get("state");
-		Long last_frag = (Long)m.get("last_frag");
-		if(s.getJoinedFlag() == false && last_frag == 1)
-			s.setJoinedFlag(true);
-		s.setBalanceUrl((String)m.get("balance_url"));
-		if(s.getJoinedFlag()){
-			String str = (String)m.get("max_client");
-			if(str != null)
-				s.setMaxClient(Long.parseLong(str));
-			str = (String)m.get("current_client");
-			if(str != null)
-				s.setDevCount(Long.parseLong(str));
-			str = (String)m.get("reserved_connection");
-			if(str != null)
-				s.setReservedConection(Long.parseLong(str));
-		}
-		if(state.equals("init") && s.getJoinedFlag()){
-			s.clearAllDevs();
-		}
-		if(mqWorker.ursidsJoin(id)){
-			StringBuffer sb = new StringBuffer();
-			sb.append(JOrionConfig.MSG_URSIDS_ONLINE);
-			sb.append(content);
-			mqWorker.publishManagementMessage(sb.toString());
-		} else {
-			LOGGER.error("Ursids join failed!");
-			s.clearAllDevs();
-			ursidsSessionMap.remove(id);
-			is.close(true);
-			return;
+			s.setSessionId((UUID)is.getAttribute(SESSION_ID));
+			String state = (String)m.get("state");
+			Long last_frag = (Long)m.get("last_frag");
+			if(s.getJoinedFlag() == false && last_frag == 1)
+				s.setJoinedFlag(true);
+			s.setBalanceUrl((String)m.get("balance_url"));
+			if(s.getJoinedFlag()){
+				String str = (String)m.get("max_client");
+				if(str != null)
+					s.setMaxClient(Long.parseLong(str));
+				str = (String)m.get("current_client");
+				if(str != null)
+					s.setDevCount(Long.parseLong(str));
+				str = (String)m.get("reserved_connection");
+				if(str != null)
+					s.setReservedConection(Long.parseLong(str));
+			}
+			if(state.equals("init") && s.getJoinedFlag()){
+				s.clearAllDevs();
+			}
+			if(mqWorker.ursidsJoin(id)){
+				StringBuffer sb = new StringBuffer();
+				sb.append(JOrionConfig.MSG_URSIDS_ONLINE);
+				sb.append(content);
+				mqWorker.publishManagementMessage(sb.toString());
+			} else {
+				LOGGER.error("Ursids join failed!");
+				s.clearAllDevs();
+				ursidsSessionMap.remove(id);
+				is.close(true);
+				return;
+			}
 		}
 		zkWorker.refreshDevCounts(s);
 	}
