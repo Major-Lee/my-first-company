@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.device.mdto;
+package com.bhu.vas.api.mdto;
 
 import java.io.Serializable;
 

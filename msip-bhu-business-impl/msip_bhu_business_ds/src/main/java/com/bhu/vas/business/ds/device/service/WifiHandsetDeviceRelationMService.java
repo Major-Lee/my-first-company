@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
