@@ -15,19 +15,19 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
-public class HandsetDeviceService{// extends AbstractCoreService<String,HandsetDevice, HandsetDeviceDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class HandsetDeviceService extends AbstractCoreService<String,HandsetDevice, HandsetDeviceDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
-	/*@Resource
+	@Resource
 	@Override
 	public void setEntityDao(HandsetDeviceDao handsetDeviceDao) {
 		super.setEntityDao(handsetDeviceDao);
 	}
 	
-	*//**
+	/**
 	 * 查询指定wifiId下的在线的移动设备
 	 * @param wifiId
 	 * @return
-	 *//*
+	 */
 	public List<HandsetDevice> findModelByWifiIdAndOnline(String wifiId){
 		CommonCriteria mc = new CommonCriteria();
 		mc.createCriteria().andColumnEqualTo("online", true)
@@ -43,5 +43,5 @@ public class HandsetDeviceService{// extends AbstractCoreService<String,HandsetD
 	
 	public long count(){
 		return super.countByModelCriteria(new ModelCriteria());
-	}*/
+	}
 }
