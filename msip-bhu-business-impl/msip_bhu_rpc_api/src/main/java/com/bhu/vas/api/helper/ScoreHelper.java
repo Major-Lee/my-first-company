@@ -95,16 +95,16 @@ public class ScoreHelper {
 	}
 	
 	public enum KoHint{
-		KoLevel1(0,50,"30%"),
-		KoLevel2(50,60,"40%"),
-		KoLevel3(60,70,"60%"),
-		KoLevel4(70,90,"80%"),
-		KoLevel5(90,-1,"95%"),
+		KoLevel1(0,50,30),
+		KoLevel2(50,60,40),
+		KoLevel3(60,70,60),
+		KoLevel4(70,90,80),
+		KoLevel5(90,-1,95),
 		;
 		int start;
 		int end;
-		String hint;
-		KoHint(int start,int end,String hint){
+		int hint;
+		KoHint(int start,int end,int hint){
 			this.start = start;
 			this.end = end;
 			this.hint = hint;
@@ -121,10 +121,10 @@ public class ScoreHelper {
 		public void setEnd(int end) {
 			this.end = end;
 		}
-		public String getHint() {
+		public int getHint() {
 			return hint;
 		}
-		public void setHint(String hint) {
+		public void setHint(int hint) {
 			this.hint = hint;
 		}
 		public boolean wasInScore(int score){
@@ -170,8 +170,8 @@ public class ScoreHelper {
 				break;
 			}
 		}
-		
-		return new ScoreDTO(score,matched_hint.getHint());
+		int hint = matched_hint.getHint() +RandomData.intNumber(-4,5);
+		return new ScoreDTO(score,String.format("%s%%", hint));
 		//System.out.println(matched_flow.getScore()+matched_sta.getScore());
 	}
 	public static void main(String[] argv){
