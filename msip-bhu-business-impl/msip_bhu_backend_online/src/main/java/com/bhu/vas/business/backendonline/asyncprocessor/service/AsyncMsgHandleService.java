@@ -485,7 +485,7 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
 		}
 
-
+		wifiHandsetDeviceRelationMService.updateWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(), dto.getUptime());
 
 
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
@@ -934,7 +934,7 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
 		boolean needDeviceUsedQuery = false;
 		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac);
-		DaemonHelper.afterUserSignedon(mac,needDeviceUsedQuery, daemonRpcService);
+		DaemonHelper.afterUserSignedon(mac, needDeviceUsedQuery, daemonRpcService);
 /*		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
 			//获取设备的终端列表
 			DaemonHelper.deviceTerminalsRateQuery(mac, daemonRpcService);
