@@ -21,7 +21,6 @@ import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
@@ -46,8 +45,8 @@ public class PushService{
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
-	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	//@Resource
+	//private HandsetDeviceService handsetDeviceService;
 	
 	/**
 	 * 业务逻辑发送push消息统一接口
