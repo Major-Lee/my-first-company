@@ -5,8 +5,6 @@ import java.util.*;
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMTDTO;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemMDTO;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -99,7 +97,6 @@ public class WifiHandsetDeviceRelationMService {
                     i++;
                 }
 
-
             } else {
                 wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
 
@@ -114,8 +111,8 @@ public class WifiHandsetDeviceRelationMService {
                     WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO = new WifiHandsetDeviceItemDetailMTDTO();
                     if (i == 0 ) {
                         wifiHandsetDeviceItemDetailMTDTO.setLast_login_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
                     }
-                    wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
                     i++;
                 }
@@ -134,6 +131,11 @@ public class WifiHandsetDeviceRelationMService {
 			return AddRelation_Insert;
 		}
 	}
+
+
+    public void updateWifiHandsetDeviceItems() {
+
+    }
 
 	private List<String> generateWeekCalendar() {
 		List<String> week = new ArrayList<String>();
