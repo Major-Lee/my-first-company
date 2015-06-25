@@ -13,16 +13,30 @@ public class Test {
 
     public static void main(String[] args){
 
-            List<String> week = new ArrayList<String>();
-            Calendar calendar = Calendar.getInstance();
+//            List<String> week = new ArrayList<String>();
+//            Calendar calendar = Calendar.getInstance();
+//
+//            int i =0;
+//            while (i < 6){
+//                calendar.add(Calendar.DAY_OF_MONTH, -1);
+//                week.add(
+//                        DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
+//                System.out.println( DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
+//                i++;
+//            }
 
-            int i =0;
-            while (i < 6){
-                calendar.add(Calendar.DAY_OF_MONTH, -1);
-                week.add(
-                        DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
-                System.out.println( DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
-                i++;
+
+            List<String> timeline = new ArrayList<String>();
+
+            timeline.add("1");
+
+            timeline.add("3");
+
+            timeline.add("5");
+
+            for (String t : timeline) {
+                System.out.println(t);
             }
+
     }
 }
