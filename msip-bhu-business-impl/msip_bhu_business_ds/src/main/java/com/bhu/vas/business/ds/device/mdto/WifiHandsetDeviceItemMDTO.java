@@ -9,7 +9,7 @@ public class WifiHandsetDeviceItemMDTO {
 
     private String date;
 
-    private List<WifiHandsetDeviceItemDetailMTDTO> detail;
+    private List<WifiHandsetDeviceItemDetailMDTO> detail;
 
     public String getDate() {
         return date;
@@ -19,11 +19,11 @@ public class WifiHandsetDeviceItemMDTO {
         this.date = date;
     }
 
-    public List<WifiHandsetDeviceItemDetailMTDTO> getDetail() {
+    public List<WifiHandsetDeviceItemDetailMDTO> getDetail() {
         return detail;
     }
 
-    public void setDetail(List<WifiHandsetDeviceItemDetailMTDTO> detail) {
+    public void setDetail(List<WifiHandsetDeviceItemDetailMDTO> detail) {
         this.detail = detail;
     }
 }

@@ -30,7 +30,7 @@ public class WifiHandsetDeviceRelationMDTO{
 	//todo(bluesand): 累加终端的下载字节数会越来越大
 	private long total_rx_bytes;
 
-	private Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items;
+	private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> items;
 
 	public WifiHandsetDeviceRelationMDTO(){
 		
@@ -74,11 +74,11 @@ public class WifiHandsetDeviceRelationMDTO{
 		this.last_login_at = last_login_at;
 	}
 
-	public Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> getItems() {
+	public Map<String, List<WifiHandsetDeviceItemDetailMDTO>> getItems() {
 		return items;
 	}
 
-	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items) {
+	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMDTO>> items) {
 		this.items = items;
 	}
 

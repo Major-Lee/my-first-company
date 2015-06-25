@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMTDTO;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMDTO;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -78,23 +78,23 @@ public class WifiHandsetDeviceRelationMService {
 				wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
 
-        Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
         List<String> week = generateWeekCalendar();
 
         try {
             if (wifiHandsetDeviceRelationMDTO == null) {
                 wifiHandsetDeviceItemDetailMTDTOMap
-                        = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMTDTO>>();
+                        = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
                 int i = 0;
                 for (String date : week) {
-                    List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList
-                            = new ArrayList<WifiHandsetDeviceItemDetailMTDTO>();
-                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO = new WifiHandsetDeviceItemDetailMTDTO();
+                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
+                            = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0) {
-                        wifiHandsetDeviceItemDetailMTDTO.setLast_login_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTO.setLast_login_at(mdto.getLast_login_at());
                     }
-                    wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
-                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                    wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                     i++;
                 }
                 update.set("total_rx_bytes", 0);
@@ -103,18 +103,18 @@ public class WifiHandsetDeviceRelationMService {
 
                 int i = 0;
                 for (String date : week) {
-                    List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList =
+                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
                             wifiHandsetDeviceItemDetailMTDTOMap.get(date);
 
-                    if (wifiHandsetDeviceItemDetailMTDTOList == null) {
-                        wifiHandsetDeviceItemDetailMTDTOList = new ArrayList<WifiHandsetDeviceItemDetailMTDTO>();
+                    if (wifiHandsetDeviceItemDetailMDTOList == null) {
+                        wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
                     }
-                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO = new WifiHandsetDeviceItemDetailMTDTO();
+                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0 ) {
-                        wifiHandsetDeviceItemDetailMTDTO.setLast_login_at(mdto.getLast_login_at());
-                        wifiHandsetDeviceItemDetailMTDTOList.add(wifiHandsetDeviceItemDetailMTDTO);
+                        wifiHandsetDeviceItemDetailMDTO.setLast_login_at(mdto.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
                     }
-                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                     i++;
                 }
                 update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
@@ -141,7 +141,7 @@ public class WifiHandsetDeviceRelationMService {
                 wifiHandsetDeviceRelationMDao.findById(mdto.getId());
 
 
-        Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
         List<String> week = generateWeekCalendar();
 
 
@@ -151,16 +151,16 @@ public class WifiHandsetDeviceRelationMService {
 
             int i = 0;
             for (String date : week) {
-                List<WifiHandsetDeviceItemDetailMTDTO> wifiHandsetDeviceItemDetailMTDTOList =
+                List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
                         wifiHandsetDeviceItemDetailMTDTOMap.get(date);
 
                 if (i == 0 ) {
-                    int size = wifiHandsetDeviceItemDetailMTDTOList.size();
-                    WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO =
-                            wifiHandsetDeviceItemDetailMTDTOList.get(size - 1);
-                    wifiHandsetDeviceItemDetailMTDTO.setOnline_time(Long.parseLong(uptime));
+                    int size = wifiHandsetDeviceItemDetailMDTOList.size();
+                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
+                            wifiHandsetDeviceItemDetailMDTOList.get(size - 1);
+                    wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
                 }
-                wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
+                wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                 i++;
             }
 

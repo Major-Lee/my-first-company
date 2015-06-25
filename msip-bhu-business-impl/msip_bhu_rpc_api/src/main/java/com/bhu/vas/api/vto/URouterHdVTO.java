@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * urouter的终端vto
@@ -25,6 +26,10 @@ public class URouterHdVTO implements Serializable{
 	private boolean online;
 	//是否是访客网络的
 	private boolean guest;
+	//下行字节累加
+	private String total_rx_bytes;
+
+	private List<URouterHdTimeLineVTO> timeline;
 	
 	public String getHd_mac() {
 		return hd_mac;
@@ -73,5 +78,21 @@ public class URouterHdVTO implements Serializable{
 	}
 	public void setGuest(boolean guest) {
 		this.guest = guest;
+	}
+
+	public String getTotal_rx_bytes() {
+		return total_rx_bytes;
+	}
+
+	public void setTotal_rx_bytes(String total_rx_bytes) {
+		this.total_rx_bytes = total_rx_bytes;
+	}
+
+	public List<URouterHdTimeLineVTO> getTimeline() {
+		return timeline;
+	}
+
+	public void setTimeline(List<URouterHdTimeLineVTO> timeline) {
+		this.timeline = timeline;
 	}
 }

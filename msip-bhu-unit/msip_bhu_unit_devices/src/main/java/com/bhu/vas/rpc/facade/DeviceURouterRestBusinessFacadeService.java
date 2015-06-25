@@ -9,6 +9,10 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.*;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,17 +41,6 @@ import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
-import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdHostNameVTO;
-import com.bhu.vas.api.vto.URouterHdVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
-import com.bhu.vas.api.vto.URouterWSHotVTO;
-import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
@@ -105,6 +98,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
+
+	@Resource
+	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 	
 	/**
@@ -192,6 +188,43 @@ public class DeviceURouterRestBusinessFacadeService {
 						hd_entity = hd_entitys.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
 						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, hd_entity, setting_dto);
+
+
+						WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+								wifiHandsetDeviceRelationMService.getRelation(wifiId, vto.getHd_mac());
+						vto.setTotal_rx_bytes(String.valueOf(wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes()));
+
+						Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
+								wifiHandsetDeviceRelationMDTO.getItems();
+
+
+						List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
+
+						//todo(bluesand):三个for？？？
+						for (String key : map.keySet()) {
+							URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+							uRouterHdTimeLineVTO.setDate(key);
+
+							List<URouterHdTimeLineItemVTO> uRouterHdTimeLineItemVTOList =
+									new ArrayList<URouterHdTimeLineItemVTO>();
+
+							List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
+									= map.get(key);
+
+							for (WifiHandsetDeviceItemDetailMDTO mdto : wifiHandsetDeviceItemDetailMDTOList) {
+								URouterHdTimeLineItemVTO timeLineItemVTO = new URouterHdTimeLineItemVTO();
+								timeLineItemVTO.setLast_login_at(mdto.getLast_login_at());
+								timeLineItemVTO.setOnline_time(String.valueOf(mdto.getOnline_time()));
+								uRouterHdTimeLineItemVTOList.add(timeLineItemVTO);
+							}
+
+							uRouterHdTimeLineVTO.setDetail(uRouterHdTimeLineItemVTOList);
+
+							uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
+						}
+
+						vto.setTimeline(uRouterHdTimeLineVTOList);
+
 						vtos.add(vto);
 						cursor++;
 					}
