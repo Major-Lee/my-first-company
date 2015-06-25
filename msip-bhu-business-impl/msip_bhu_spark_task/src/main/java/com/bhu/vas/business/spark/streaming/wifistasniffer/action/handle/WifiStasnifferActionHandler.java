@@ -151,7 +151,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 				TerminalDetailDTO offline_dto = new TerminalDetailDTO();
 				offline_dto.setSnifftime(item_dto.getSnifftime());
 				offline_dto.setDuration(item_dto.getDuration());
-				offline_dto.setState(WifistasnifferItemRddto.State_Online);
+				offline_dto.setState(WifistasnifferItemRddto.State_Offline);
 				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
 						offline_dto);
 				//}
