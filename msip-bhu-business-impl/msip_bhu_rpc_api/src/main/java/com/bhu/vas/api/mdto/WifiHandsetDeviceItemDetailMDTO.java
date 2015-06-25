@@ -7,20 +7,26 @@ import java.io.Serializable;
  */
 public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
-    private String online_time_ext;
+    private long login_at;
 
-    private String login_at;
-
-    private String logout_at;
+    private long logout_at;
 
     private long online_time;
 
-    public String getOnline_time_ext() {
-        return online_time_ext;
+    public long getLogin_at() {
+        return login_at;
     }
 
-    public void setOnline_time_ext(String online_time_ext) {
-        this.online_time_ext = online_time_ext;
+    public void setLogin_at(long login_at) {
+        this.login_at = login_at;
+    }
+
+    public long getLogout_at() {
+        return logout_at;
+    }
+
+    public void setLogout_at(long logout_at) {
+        this.logout_at = logout_at;
     }
 
     public long getOnline_time() {
@@ -29,21 +35,5 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     public void setOnline_time(long online_time) {
         this.online_time = online_time;
-    }
-
-    public String getLogin_at() {
-        return login_at;
-    }
-
-    public void setLogin_at(String login_at) {
-        this.login_at = login_at;
-    }
-
-    public String getLogout_at() {
-        return logout_at;
-    }
-
-    public void setLogout_at(String logout_at) {
-        this.logout_at = logout_at;
     }
 }
