@@ -2,6 +2,7 @@ package com.bhu.vas.api.helper;
 
 import com.bhu.vas.api.dto.ScoreDTO;
 import com.smartwork.msip.cores.helper.ConvertHelper;
+import com.smartwork.msip.localunit.RandomData;
 
 public class ScoreHelper {
 	//流量区间
@@ -157,7 +158,10 @@ public class ScoreHelper {
 				break;
 			}
 		}
-		int score = matched_flow.getScore()+matched_sta.getScore();
+		int score = matched_flow.getScore()+matched_sta.getScore()+RandomData.intNumber(0, 5);
+		if(score >=100){
+			score = 100- RandomData.intNumber(0, 3);
+		}
 		KoHint matched_hint = null;
 		KoHint[] hints = KoHint.values();
 		for(KoHint hint:hints){
