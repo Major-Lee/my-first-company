@@ -154,8 +154,9 @@ public class WifiHandsetDeviceRelationMService {
                         wifiHandsetDeviceItemDetailMTDTOMap.get(date);
 
                 if (i == 0 ) {
+                    int size = wifiHandsetDeviceItemDetailMTDTOList.size();
                     WifiHandsetDeviceItemDetailMTDTO wifiHandsetDeviceItemDetailMTDTO =
-                            wifiHandsetDeviceItemDetailMTDTOList.get(0);
+                            wifiHandsetDeviceItemDetailMTDTOList.get(size - 1);
                     wifiHandsetDeviceItemDetailMTDTO.setOnline_time(Long.parseLong(uptime));
                 }
                 wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMTDTOList);
