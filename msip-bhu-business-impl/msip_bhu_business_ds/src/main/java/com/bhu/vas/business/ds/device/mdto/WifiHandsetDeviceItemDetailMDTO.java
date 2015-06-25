@@ -1,11 +1,11 @@
 package com.bhu.vas.business.ds.device.mdto;
 
-import java.util.Date;
+import java.io.Serializable;
 
 /**
  * Created by bluesand on 6/24/15.
  */
-public class WifiHandsetDeviceItemDetailMDTO {
+public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     private String online;
 
