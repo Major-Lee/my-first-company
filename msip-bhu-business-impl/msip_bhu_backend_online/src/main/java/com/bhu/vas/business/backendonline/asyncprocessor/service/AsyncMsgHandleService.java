@@ -484,7 +484,10 @@ public class AsyncMsgHandleService {
 		if(!StringUtils.isEmpty(dto.getUptime())){
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
 		}
-		
+
+
+
+
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
 	}
 	
