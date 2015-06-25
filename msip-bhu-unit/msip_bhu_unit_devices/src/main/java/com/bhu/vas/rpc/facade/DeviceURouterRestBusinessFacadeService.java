@@ -466,7 +466,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 			DeviceUsedStatisticsDTO dto = BusinessMarkerService.getInstance().deviceUsedStatisticsGet(wifiId);
 			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId);
-			if(true){
+			if(needNewRequestAndMarker){
 				deliverMessageService.sendWifiCmdCommingNotifyMessage(
 						wifiId,0,OperationCMD.QueryDeviceUsedStatus.getNo(),
 						CMDBuilder.builderDeviceUsedStatusQuery(wifiId));
