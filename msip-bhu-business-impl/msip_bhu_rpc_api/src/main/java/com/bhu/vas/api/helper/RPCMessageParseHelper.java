@@ -14,6 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.ScoreDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.DailyUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.HourUsedStatisticsDTO;
@@ -258,6 +259,11 @@ public class RPCMessageParseHelper {
 				String time = next.attribute(Node_Time_Attr).getStringValue();
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setToday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
+					if(dto.getToday() != null){
+						ScoreDTO analyse = ScoreHelper.analyse(Long.parseLong(dto.getToday().getRx_bytes()), Integer.parseInt(dto.getToday().getSta_max_time_num()));
+						dto.getToday().setKo(analyse.getHint());
+						dto.getToday().setScore(analyse.getScore());
+					}
 				}else{
 					dto.getToday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
 				}
@@ -269,10 +275,17 @@ public class RPCMessageParseHelper {
 				String time = next.attribute(Node_Time_Attr).getStringValue();
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setYesterday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
+					if(dto.getYesterday() != null){
+						ScoreDTO analyse = ScoreHelper.analyse(Long.parseLong(dto.getYesterday().getRx_bytes()), Integer.parseInt(dto.getYesterday().getSta_max_time_num()));
+						dto.getYesterday().setKo(analyse.getHint());
+						dto.getYesterday().setScore(analyse.getScore());
+					}
 				}else{
 					dto.getYesterday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
 				}
 			}
+			//dto.setScore(score);
+			//dto.setKo(ko);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());

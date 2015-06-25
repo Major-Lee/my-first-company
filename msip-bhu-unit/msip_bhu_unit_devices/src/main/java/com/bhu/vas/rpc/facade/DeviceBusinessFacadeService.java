@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
@@ -731,8 +732,8 @@ public class DeviceBusinessFacadeService {
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus()) 
 				&& OperationCMD.QueryDeviceUsedStatus.getCmd().equals(serialDto.getCmd())){
-			BusinessMarkerService.getInstance().deviceUsedStatisticsSet(mac, 
-					RPCMessageParseHelper.generateDTOFromQueryDeviceUsedStatus(doc));
+			DeviceUsedStatisticsDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceUsedStatus(doc);
+			BusinessMarkerService.getInstance().deviceUsedStatisticsSet(mac, dto);
 		}
 	}
 	
