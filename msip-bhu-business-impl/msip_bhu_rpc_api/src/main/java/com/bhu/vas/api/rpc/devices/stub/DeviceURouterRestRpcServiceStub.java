@@ -211,7 +211,7 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 
 	@Override
-	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
+	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
 		if(uid == null || StringUtils.isEmpty(mac) || StringUtils.isEmpty(hd_mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		

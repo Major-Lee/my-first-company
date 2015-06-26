@@ -59,5 +59,5 @@ public interface IDeviceURouterRestRpcService {
 	
 	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick);
 	
-	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size);
+	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size);
 }

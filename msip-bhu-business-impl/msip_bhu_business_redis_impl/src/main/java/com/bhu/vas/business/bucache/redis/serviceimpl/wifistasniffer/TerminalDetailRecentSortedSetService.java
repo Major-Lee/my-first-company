@@ -45,7 +45,7 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		return sb.toString();
 	}
 	
-	public Long TerminalDetailRecentSize(String mac, String hd_mac){
+	public Long terminalDetailRecentSize(String mac, String hd_mac){
 		return super.zcard(generateKey(mac, hd_mac));
 	}
 	
