@@ -116,6 +116,41 @@ public class BusinessModelBuilder {
 		return handset_device_entity;
 	}
 	
+	public static HandsetDeviceDTO fromHandsetDevice(HandsetDevice hDevice){
+		HandsetDeviceDTO result = new HandsetDeviceDTO();
+		result.setMac(hDevice.getId());
+		result.setAction(hDevice.isOnline()?HandsetDeviceDTO.Action_Online:HandsetDeviceDTO.Action_Offline);
+		result.setPhy_tx_rate(hDevice.getPhy_tx_rate());
+		result.setPhy_rx_rate(hDevice.getPhy_rx_rate());
+		result.setData_tx_rate(hDevice.getData_tx_rate());
+		result.setData_rx_rate(hDevice.getData_rx_rate());
+		result.setPhy_rate(hDevice.getPhy_rate());
+		result.setTx_power(hDevice.getTx_power());
+		result.setRx_chain_num(hDevice.getRx_chain_num());
+		result.setRssi(hDevice.getRssi());
+		result.setSnr(hDevice.getSnr());
+		result.setIdle(hDevice.getIdle());
+		result.setState(hDevice.getState());
+		result.setUptime(hDevice.getUptime());
+		result.setRx_pkts(hDevice.getRx_pkts());
+		result.setRx_bytes(hDevice.getRx_bytes());
+		result.setTx_pkts(hDevice.getTx_pkts());
+		result.setTx_bytes(hDevice.getTx_bytes());
+		result.setRx_unicast(hDevice.getRx_unicast());
+		result.setTx_assoc(hDevice.getTx_assoc());
+		result.setSsid(hDevice.getSsid());
+		result.setBssid(hDevice.getBssid().toLowerCase());
+		result.setLocation(hDevice.getLocation());
+		result.setChannel(hDevice.getChannel());
+		result.setTs(hDevice.getLast_login_at().getTime());
+		//result.setLast_login_at(new Date());
+		result.setDhcp_name(hDevice.getHostname());
+		result.setVapname(hDevice.getVapname());
+		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
+		//handset_device_entity.setOnline(true);
+		return null;
+	}
+	
 	public static WifiDeviceStatus wifiDeviceStatusDtoToEntity(WifiDeviceStatusDTO dto){
 		WifiDeviceStatus wifi_device_status_entity = new WifiDeviceStatus();
 		wifi_device_status_entity.setCurrent_cpu_usage(Integer.parseInt(dto.getCurrent_cpu_usage()));

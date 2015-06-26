@@ -60,7 +60,8 @@ public class HandsetDeviceDTO implements Serializable{
 	private String dhcp_name;
 	//终端连接的设备vapname
 	private String vapname;
-	
+	//记录生成或更新时间
+	private long ts;
 	public String getAction() {
 		return action;
 	}
@@ -217,6 +218,13 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setVapname(String vapname) {
 		this.vapname = vapname;
 	}
-	
-	
+	public long getTs() {
+		return ts;
+	}
+	public void setTs(long ts) {
+		this.ts = ts;
+	}
+	public boolean wasOnline(){
+		return !Action_Offline.equals(action);
+	}
 }
