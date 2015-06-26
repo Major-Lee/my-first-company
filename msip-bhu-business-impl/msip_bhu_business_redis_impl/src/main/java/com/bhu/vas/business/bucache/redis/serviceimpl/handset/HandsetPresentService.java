@@ -1,101 +1,71 @@
-package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
+package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.JedisPool;
 
-import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 考虑以后设备量非常多的情况，类似拆表数据存储实现机制，并且不用通过数据库遍历可以把所有数据提取出来
  * 目前拆成2000个redis hash存储数据
- * 拆分对象为mac地址，存储数据为SerialTaskDTO
+ * 拆分对象为mac地址，存储数据为ctx
  * @author edmond
  *
  */
-public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCache{
+public class HandsetPresentService extends AbstractRelationHashCache{
 	
-	private static class WifiDevicePresentCtxServiceHolder{ 
-		private static WifiDeviceLocationSerialTaskService instance =new WifiDeviceLocationSerialTaskService(); 
+	private static class ServiceHolder{ 
+		private static HandsetPresentService instance =new HandsetPresentService(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static WifiDeviceLocationSerialTaskService getInstance() { 
-		return WifiDevicePresentCtxServiceHolder.instance; 
+	public static HandsetPresentService getInstance() { 
+		return ServiceHolder.instance; 
 	}
 	
-	private WifiDeviceLocationSerialTaskService(){
+	private HandsetPresentService(){
 	}
-	//暫時假定1百萬设备，但是周期内查询地理位置的数据不会很多，10个分片应该够了，而且这些数据丢失掉也无所谓
-	public static final int hasPrimeValue = 10;
+	//暫時假定1百萬设备，保證每個hashkey中存儲的不超過1000條數據，遵循redis 對於hash結構在不超過1000條數據的情況下壓縮及性能最優
+	public static final int hasPrimeValue = 2000;
 	
 	private static String generateKey(String mac){
 		int hashvalue = HashAlgorithmsHelper.additiveHash(mac, hasPrimeValue);
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceSerialTaskPrefixKey);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDevicePresentCtxPrefixKey);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%04d", hashvalue));
 		return sb.toString();
 	}
 	
 	private static String generateKeyByHashValue(int hashvalue){
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceSerialTaskPrefixKey);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDevicePresentCtxPrefixKey);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%04d", hashvalue));
 		return sb.toString();
 	}
 	
-	public void addSerialTask(String wifiId, SerialTaskDTO serialTask){
-		this.hset(generateKey(wifiId), wifiId, JsonHelper.getJSONString(serialTask));
+	public void addPresent(String wifiId, String ctx){
+		this.hset(generateKey(wifiId), wifiId, ctx);
 	}
 	
-	public SerialTaskDTO getSerialTask(String wifiId){
-		String result = this.hget(generateKey(wifiId),wifiId);
-		if(StringUtils.isNotEmpty(result)){
-			return JsonHelper.getDTO(result, SerialTaskDTO.class);
-		}
-		return null;
-	}
-	public void removeSerialTask(String wifiId){
-		this.hdel(generateKey(wifiId),wifiId);
+	public void addPresents(List<String> wifiIds, String ctx){
+		String[][] keyAndFields = generateKeyAndFieldsAndValues(wifiIds,ctx);
+		this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
 	}
 	
-	public void clearOrResetAll(){
-		for(int i=0;i<hasPrimeValue;i++){
-			this.expire(generateKeyByHashValue(i),0);
-		}
+	public String getPresent(String wifiId){
+		return this.hget(generateKey(wifiId),wifiId);
 	}
 	
-	public void iteratorAll(IteratorNotify<Map<String,SerialTaskDTO>> notify){
-		for(int i=0;i<hasPrimeValue;i++){
-			String key = generateKeyByHashValue(i);
-			Map<String, String> hashKeyAll = this.hgetall(key);
-			if(!hashKeyAll.isEmpty()){
-				Map<String, SerialTaskDTO> result = new HashMap<String,SerialTaskDTO>();
-				Set<Entry<String, String>> entrySet = hashKeyAll.entrySet();
-				for(Entry<String, String> element:entrySet){
-					if(StringUtils.isNotEmpty(element.getValue())){
-						result.put(element.getKey(),JsonHelper.getDTO(element.getValue(), SerialTaskDTO.class));
-					}
-				}
-				notify.notifyComming(result);
-			}
-		}
-	}
-	
-	/*public List<Object> getPresents(List<String> wifiIds){
+	public List<Object> getPresents(List<String> wifiIds){
 		String[][] keyAndFields = generateKeyAndFields(wifiIds);
 		return this.pipelineHGet_diffKeyWithDiffFieldValue(keyAndFields[0],keyAndFields[1]);
 	}
@@ -136,7 +106,26 @@ public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCac
 		result[1] = fields;
 		result[2] = values;
 		return result;
-	}*/
+	}
+	public void removePresent(String wifiId){
+		this.hdel(generateKey(wifiId),wifiId);
+	}
+	
+	
+	public void clearOrResetAll(){
+		for(int i=0;i<hasPrimeValue;i++){
+			this.expire(generateKeyByHashValue(i),0);
+		}
+	}
+	
+	public void iteratorAll(IteratorNotify<Map<String,String>> notify){
+		for(int i=0;i<hasPrimeValue;i++){
+			String key = generateKeyByHashValue(i);
+			Map<String, String> hashKeyAll = this.hgetall(key);
+			if(!hashKeyAll.isEmpty())
+				notify.notifyComming(hashKeyAll);
+		}
+	}
 	
 	@Override
 	public String getRedisKey() {
@@ -145,7 +134,7 @@ public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCac
 	
 	@Override
 	public String getName() {
-		return WifiDeviceLocationSerialTaskService.class.getName();
+		return HandsetPresentService.class.getName();
 	}
 	@Override
 	public JedisPool getRedisPool() {
@@ -153,18 +142,15 @@ public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCac
 	}
 	
 	public static void main(String[] argv){
-		
-		SerialTaskDTO serialTask = WifiDeviceLocationSerialTaskService.getInstance().getSerialTask("62:68:75:02:ff:05");
-		System.out.println(serialTask);
-		/*List<String> argg = new ArrayList<String>();
+		List<String> argg = new ArrayList<String>();
 		argg.add("aa");
 		argg.add("ab");
 		argg.add("ac");
 		argg.add("ad");
-		argg.add("ae");*/
+		argg.add("ae");
 		
 		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx002");
-		//System.out.println(WifiDeviceLocationSerialTaskService.getInstance().getPresents(argg));
+		System.out.println(HandsetPresentService.getInstance().getPresents(argg));
 		//String[][] result = WifiDevicePresentCtxService.getInstance().generateKeyAndFields(argg);
 		//System.out.println(result.length);
 		

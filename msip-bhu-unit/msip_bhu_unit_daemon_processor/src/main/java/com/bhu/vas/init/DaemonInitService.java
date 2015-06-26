@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.IteratorNotify;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.daemon.SessionManager;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 系统重新启动后加载数据库中在线标记的设备
