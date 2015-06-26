@@ -12,6 +12,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 考虑以后设备量非常多的情况，类似拆表数据存储实现机制，并且不用通过数据库遍历可以把所有数据提取出来
