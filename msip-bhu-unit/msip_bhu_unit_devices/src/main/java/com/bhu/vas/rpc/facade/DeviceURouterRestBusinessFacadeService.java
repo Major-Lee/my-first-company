@@ -820,8 +820,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param size
 	 * @return
 	 */
-	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
+	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
 		try{
+			long count = TerminalDetailRecentSortedSetService.getInstance().terminalDetailRecentSize(mac, hd_mac);
+			if(count == 0){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
 			Set<String> rets = TerminalDetailRecentSortedSetService.getInstance().fetchTerminalDetailRecent(mac, hd_mac, start, size);
 			if(rets == null || rets.isEmpty()){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
@@ -832,7 +836,8 @@ public class DeviceURouterRestBusinessFacadeService {
 					dtos.add(JsonHelper.getDTO(ret, TerminalDetailDTO.class));
 				}
 			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dtos);
+			Map<String, Object> payload = PageHelper.partialAllList(dtos, count, start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}

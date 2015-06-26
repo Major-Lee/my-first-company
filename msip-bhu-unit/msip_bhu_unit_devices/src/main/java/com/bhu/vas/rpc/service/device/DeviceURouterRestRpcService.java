@@ -455,7 +455,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
-	public RpcResponseDTO<List<TerminalDetailDTO>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
+	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
 		logger.info(String.format("DeviceURouterRestRPC urouterWSDetails invoke uid [%s] mac [%s] hd_mac [%s]", 
 				uid, mac, hd_mac));
 		

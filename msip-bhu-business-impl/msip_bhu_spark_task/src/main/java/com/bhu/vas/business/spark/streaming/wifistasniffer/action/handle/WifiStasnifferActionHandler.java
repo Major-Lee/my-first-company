@@ -144,7 +144,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 					wifistasnifferOnlines.remove(item_dto);
 				}
 			}
-			for(WifistasnifferItemRddto item_dto : merge_onlines){
+/*			for(WifistasnifferItemRddto item_dto : merge_onlines){
 				//String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
 				//if(!StringUtils.isEmpty(detail_item_value)){
 				TerminalDetailDTO online_dto = new TerminalDetailDTO();
@@ -152,7 +152,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
 						online_dto);
 				//}
-			}
+			}*/
 		}
 		
 		//处理终端流水下线情况
@@ -165,8 +165,12 @@ public class WifiStasnifferActionHandler implements Serializable{
 				offline_dto.setSnifftime(item_dto.getSnifftime());
 				offline_dto.setDuration(item_dto.getDuration());
 				offline_dto.setState(WifistasnifferItemRddto.State_Offline);
-				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
+				boolean newed = TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
 						offline_dto);
+				//设备有可能会重复上报相同时间的相同探测终端 这种情况不需要重复记录最近最热次数等数据
+				if(!newed){
+					wifistasnifferOnlines.remove(item_dto);
+				}
 				//}
 			}
 		}

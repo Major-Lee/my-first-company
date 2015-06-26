@@ -45,7 +45,7 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		return sb.toString();
 	}
 	
-	public Long TerminalDetailRecentSize(String mac, String hd_mac){
+	public Long terminalDetailRecentSize(String mac, String hd_mac){
 		return super.zcard(generateKey(mac, hd_mac));
 	}
 	
@@ -63,13 +63,17 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		return false;
 	}
 	
-	public void addTerminalDetailOffline(String mac, String hd_mac, TerminalDetailDTO dto){
+	public boolean addTerminalDetailOffline(String mac, String hd_mac, TerminalDetailDTO dto){
 		String key = generateKey(mac, hd_mac);
-		super.zadd(key, dto.getSnifftime(), JsonHelper.getJSONString(dto));
+		long ret = super.zadd(key, dto.getSnifftime(), JsonHelper.getJSONString(dto));
 		
 		TerminalDetailDTO online_dto = new TerminalDetailDTO();
 		online_dto.setSnifftime(dto.getSnifftime());
 		super.zrem(key, JsonHelper.getJSONString(online_dto));
+		if(ret > 0){
+			return true;
+		}
+		return false;
 	}
 	
 	public Set<String> fetchTerminalDetailRecent(String mac, String hd_mac, int start,int size){
