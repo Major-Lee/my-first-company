@@ -13,14 +13,15 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 考虑以后设备所属的终端量非常多的情况，类似拆表数据存储实现机制，并且不用通过数据库遍历可以把所有数据提取出来
- * 目前拆成2000个redis hash存储数据
- * 拆分对象为mac地址，存储数据为ctx
+ * 目前拆成20000个redis hash存储数据 可以支持2千w的数据散列
+ * 拆分对象为mac地址，存储数据为Handset信息数据HandsetDeviceDTO
  * @author edmond
  *
  */
@@ -99,13 +100,26 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	}*/
 	
 	public void clearOrResetAll(){
-		for(int i=0;i<hasPrimeValue;i++){
+		/*for(int i=0;i<hasPrimeValue;i++){
 			this.expire(generateKeyByHashValue(i),0);
+		}*/
+		int pipe_size = 1000;
+		String[] keys_array = new String[pipe_size];
+		for(int i=0;i<hasPrimeValue;i++){
+			int index = i%pipe_size;
+			keys_array[index] = generateKeyByHashValue(i);
+			if(index == 999){
+				this.expire_pipeline(ArrayHelper.toList(keys_array), 0);//.pipelineHLen_diffKey(keys_array);
+			}
+			/*String key = generateKeyByHashValue(i);
+			//this.pipelineHLen_diffKey(keys).pipelineHLen_diffKey
+			long sub_total = this.hlen(key);//.hgetall(key);
+			total += sub_total;*/
 		}
 	}
 	
 	/**
-	 * 非常慢
+	 * 读取速度相对慢，可以在生产环境运行
 	 * @return
 	 */
 	public long countAll(){
@@ -217,11 +231,11 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		HandsetDeviceDTO dto1 = new HandsetDeviceDTO();
 		dto1.setMac("gogog");
 		
-		//HandsetStorageService.getInstance().handsetComming(dto1);
+		HandsetStorageService.getInstance().handsetComming(dto1);
 		
 		HandsetDeviceDTO handset = HandsetStorageService.getInstance().handset("gogog");
 		System.out.println(handset.getMac());
-		
+		//HandsetStorageService.getInstance().clearOrResetAll();
 		
 		System.out.println(HandsetStorageService.getInstance().countAll());
 		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx002");

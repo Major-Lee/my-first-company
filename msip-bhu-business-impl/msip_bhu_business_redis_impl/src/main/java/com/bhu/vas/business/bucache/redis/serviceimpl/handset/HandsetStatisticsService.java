@@ -16,7 +16,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
  * @author edmond
  *
  */
-public class HandsetStatisticsService extends AbstractRelationHashCache{
+public class HandsetStatisticsService extends AbstractRelationHashCache {
 	
 	private static class ServiceHolder{ 
 		private static HandsetStatisticsService instance =new HandsetStatisticsService(); 

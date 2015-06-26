@@ -148,7 +148,7 @@ public class BusinessModelBuilder {
 		result.setVapname(hDevice.getVapname());
 		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		//handset_device_entity.setOnline(true);
-		return null;
+		return result;
 	}
 	
 	public static WifiDeviceStatus wifiDeviceStatusDtoToEntity(WifiDeviceStatusDTO dto){
