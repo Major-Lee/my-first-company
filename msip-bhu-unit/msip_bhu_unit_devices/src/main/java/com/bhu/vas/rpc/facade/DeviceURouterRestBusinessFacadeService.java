@@ -229,8 +229,6 @@ public class DeviceURouterRestBusinessFacadeService {
 							vto.setTimeline(uRouterHdTimeLineVTOList);
 						}
 
-
-
 						vtos.add(vto);
 						cursor++;
 					}
@@ -245,6 +243,51 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
+
+
+	/**
+	 * 获取终端详情
+	 * @param uid
+	 * @param wifiId
+	 * @param mac
+	 * @return
+	 */
+	public RpcResponseDTO<URouterHdDetailVTO>  urouterHdDetail(Integer uid, String wifiId, String mac) {
+
+		URouterHdDetailVTO vto = new URouterHdDetailVTO();
+		vto.setHd_mac(mac);
+		try {
+			WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+					wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
+
+			if (wifiHandsetDeviceRelationMDTO != null) {
+				vto.setTotal_rx_bytes(String.valueOf(wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes()));
+
+				Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
+						wifiHandsetDeviceRelationMDTO.getItems();
+
+				List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
+
+				if (map != null) {
+					//集合中只有七天的在线记录
+					for (String key : map.keySet()) {
+						URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+						uRouterHdTimeLineVTO.setDate(key);
+						uRouterHdTimeLineVTO.setDetail(map.get(key));
+						uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
+					}
+				}
+
+				vto.setTimeline(uRouterHdTimeLineVTOList);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+
+		} catch (BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+
+
 	
 	/**
 	 * 获取设备的实时速率

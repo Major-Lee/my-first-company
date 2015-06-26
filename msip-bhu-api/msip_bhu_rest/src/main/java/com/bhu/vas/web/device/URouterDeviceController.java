@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.vto.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,14 +18,6 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
-import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdHostNameVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -88,6 +81,28 @@ public class URouterDeviceController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
 		}
 	}
+
+
+	@ResponseBody()
+	@RequestMapping(value="/hd_detail",method={RequestMethod.POST})
+	public void hd_detail(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String wifi_id,
+			@RequestParam(required = true) String mac) {
+
+		RpcResponseDTO<URouterHdDetailVTO> rpcResponse = deviceURouterRestRpcService.urouterHdDetail(uid, wifi_id, mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+
+	}
+
+
+
 	
 	/**
 	 * 设备的实时速率查询
