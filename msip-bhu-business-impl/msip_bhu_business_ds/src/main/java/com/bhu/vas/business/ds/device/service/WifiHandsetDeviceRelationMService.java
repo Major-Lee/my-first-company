@@ -147,37 +147,39 @@ public class WifiHandsetDeviceRelationMService {
         List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
 
 
-        //离线的情况下，肯定有七天的在线记录
-        try {
-            wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
-
-            int i = 0;
-            for (String date : week) {
-                List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
-                        wifiHandsetDeviceItemDetailMTDTOMap.get(date);
-
-                if (i == 0 ) {
-                    int size = wifiHandsetDeviceItemDetailMDTOList.size();
-                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
-                            wifiHandsetDeviceItemDetailMDTOList.get(size - 1);
-                    wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
-                    wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
-                }
-                wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
-                i++;
-            }
-
-        }catch (Exception e) {
-
-        }
-
         Query query = new Query(Criteria.where("_id").is(mdto.getId()));
         Update update = new Update();
         update.set("wifiId", wifiId);
         update.set("handsetId", handsetId);
-        update.set("last_login_at", wifiHandsetDeviceRelationMDTO.getLast_login_at());
 
-        update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
+
+        //离线的情况下，肯定有七天的在线记录
+        try {
+            if (wifiHandsetDeviceRelationMDTO != null) {
+                wifiHandsetDeviceItemDetailMTDTOMap = wifiHandsetDeviceRelationMDTO.getItems();
+
+                int i = 0;
+                for (String date : week) {
+                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
+                            wifiHandsetDeviceItemDetailMTDTOMap.get(date);
+
+                    if (i == 0) {
+                        int size = wifiHandsetDeviceItemDetailMDTOList.size();
+                        WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
+                                wifiHandsetDeviceItemDetailMDTOList.get(size - 1);
+                        wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
+                        wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
+                    }
+                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
+                    i++;
+                }
+
+                update.set("last_login_at", wifiHandsetDeviceRelationMDTO.getLast_login_at());
+                update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
+            }
+        }catch (Exception e) {
+
+        }
 
         update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
 
