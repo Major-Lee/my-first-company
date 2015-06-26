@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,6 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
-import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdHostNameVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -82,7 +75,28 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
-	
+
+	@Override
+	public RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac) {
+		logger.info(String.format("DeviceURouterRestRPC urouterHdDetail invoke uid [%s] wifi_mac [%s] hd_mac [%s]",
+				uid, wifiId, hd_mac));
+
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterHdDetail(uid, wifiId, hd_mac);
+		}
+		catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail failed uid [%s] wifi_mac [%s] hd_mac [%s]",
+					uid, wifiId, hd_mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail exception uid [%s] wifi_mac [%s] hd_mac [%s]",
+					uid, wifiId, hd_mac));
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
 	@Override
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterRealtimeRate invoke uid [%s] mac [%s] ", 

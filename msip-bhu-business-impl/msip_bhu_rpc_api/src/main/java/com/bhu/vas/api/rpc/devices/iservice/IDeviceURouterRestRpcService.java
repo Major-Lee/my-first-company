@@ -6,14 +6,7 @@ import java.util.Map;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdHostNameVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.*;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 
 
@@ -21,6 +14,8 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId);
 	
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size);
+
+	RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac);
 	
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId);
 	
