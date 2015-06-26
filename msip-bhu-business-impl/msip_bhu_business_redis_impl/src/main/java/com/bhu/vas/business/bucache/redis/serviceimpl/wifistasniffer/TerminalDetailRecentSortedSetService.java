@@ -55,8 +55,10 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		//判断此上下文的下线状态是否已经存在
 		long count = super.zcount(key, snifftime, snifftime);
 		if(count == 0){
-			super.zadd(key, snifftime, JsonHelper.getJSONString(dto));
-			return true;
+			long ret = super.zadd(key, snifftime, JsonHelper.getJSONString(dto));
+			if(ret > 0){
+				return true;
+			}
 		}
 		return false;
 	}
