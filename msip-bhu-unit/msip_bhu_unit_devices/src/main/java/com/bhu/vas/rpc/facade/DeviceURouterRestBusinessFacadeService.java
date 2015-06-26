@@ -9,8 +9,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.vto.*;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import org.springframework.stereotype.Service;
@@ -209,7 +209,7 @@ public class DeviceURouterRestBusinessFacadeService {
 								for (String key : map.keySet()) {
 									URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
 									uRouterHdTimeLineVTO.setDate(key);
-									uRouterHdTimeLineVTO.setDetail( map.get(key));
+									uRouterHdTimeLineVTO.setDetail(map.get(key));
 									uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 								}
 							}

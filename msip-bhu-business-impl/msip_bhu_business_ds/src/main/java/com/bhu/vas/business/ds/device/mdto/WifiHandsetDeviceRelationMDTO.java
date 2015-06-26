@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.device.mdto;
 
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

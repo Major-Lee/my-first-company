@@ -2,6 +2,8 @@ package com.bhu.vas.api.dto.ret;
 
 import java.io.Serializable;
 
+import com.smartwork.msip.cores.helper.StringHelper;
+
 /**
  * 修改设备配置的上报dto
  * <return>
@@ -20,6 +22,10 @@ import java.io.Serializable;
 public class ModifyDeviceSettingDTO implements Serializable{
 	public static final String Result_Fail = "fail";
 	public static final String Result_Success = "ok";
+	//配置序列号不匹配的错误码
+	public static final String Errno_Sequence_Not_Match = "-2";
+	//配置序列号不匹配的路径
+	public static final String Path_Sequence_Not_Match = "bhutop";
 	//修改配置结果
 	private String result;
 	//错误原因
@@ -28,7 +34,7 @@ public class ModifyDeviceSettingDTO implements Serializable{
 	private String errno;
 	//错误细节
 	private String err;
-	
+	//错误路径
 	private String path;
 
 	//返回配置当前的序列号
@@ -69,6 +75,18 @@ public class ModifyDeviceSettingDTO implements Serializable{
 	public void setConfig_sequence(String config_sequence) {
 		this.config_sequence = config_sequence;
 	}
-	
+	/**
+	 * 是否是配置序列号不匹配错误
+	 * @return
+	 */
+	public boolean isConfigSequenceMatchError(){
+		if(StringHelper.isEmpty(path) || StringHelper.isEmpty(errno)){
+			return false;
+		}
+		if(Errno_Sequence_Not_Match.equals(errno) && Path_Sequence_Not_Match.equals(path)){
+			return true;
+		}
+		return false;
+	}
 	
 }
