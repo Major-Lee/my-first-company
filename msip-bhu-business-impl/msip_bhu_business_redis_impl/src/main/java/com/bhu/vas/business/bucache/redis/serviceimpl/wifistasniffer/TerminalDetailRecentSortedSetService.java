@@ -49,14 +49,16 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		return super.zcard(generateKey(mac, hd_mac));
 	}
 	
-	public void addTerminalDetailOnline(String mac, String hd_mac, TerminalDetailDTO dto){
+	public boolean addTerminalDetailOnline(String mac, String hd_mac, TerminalDetailDTO dto){
 		String key = generateKey(mac, hd_mac);
 		long snifftime = dto.getSnifftime();
 		//判断此上下文的下线状态是否已经存在
 		long count = super.zcount(key, snifftime, snifftime);
 		if(count == 0){
 			super.zadd(key, snifftime, JsonHelper.getJSONString(dto));
+			return true;
 		}
+		return false;
 	}
 	
 	public void addTerminalDetailOffline(String mac, String hd_mac, TerminalDetailDTO dto){

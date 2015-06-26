@@ -5,6 +5,7 @@ import java.util.*;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -79,7 +80,7 @@ public class WifiHandsetDeviceRelationMService {
 
 
         Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
-        List<String> week = generateWeekCalendar();
+        List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
 
         try {
             if (wifiHandsetDeviceRelationMDTO == null) {
@@ -143,7 +144,7 @@ public class WifiHandsetDeviceRelationMService {
 
 
         Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
-        List<String> week = generateWeekCalendar();
+        List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
 
 
         //离线的情况下，肯定有七天的在线记录
@@ -184,19 +185,7 @@ public class WifiHandsetDeviceRelationMService {
 
     }
 
-	private List<String> generateWeekCalendar() {
-		List<String> week = new ArrayList<String>();
-		Calendar calendar = Calendar.getInstance();
-		week.add(DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
-		int i =0;
-		while (i < 6){
-			calendar.add(Calendar.DAY_OF_MONTH, -1);
-			week.add(DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
-			System.out.println( DateTimeHelper.formatDate(calendar.getTime(), DateTimeHelper.FormatPattern5));
-			i++;
-		}
-		return week;
-	}
+
 
 
 	public WifiHandsetDeviceRelationMDTO getRelation(String wifiId, String handsetId){

@@ -457,8 +457,8 @@ public class AsyncMsgHandleService {
 				pushDto.setMac(dto.getWifiId());
 				pushDto.setHd_mac(dto.getMac());
 				pushDto.setTs(System.currentTimeMillis());
-//				if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
-				pushDto.setNewed(dto.isNewHandset());
+				if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
+					pushDto.setNewed(true);
 				boolean push_successed = pushService.push(pushDto);
 				if(push_successed){
 					businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
