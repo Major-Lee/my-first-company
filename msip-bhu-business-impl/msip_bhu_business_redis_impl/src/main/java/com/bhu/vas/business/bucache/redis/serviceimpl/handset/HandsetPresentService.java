@@ -15,7 +15,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
- * 考虑以后设备量非常多的情况，类似拆表数据存储实现机制，并且不用通过数据库遍历可以把所有数据提取出来
+ * 考虑以后设备所属的终端量非常多的情况，类似拆表数据存储实现机制，并且不用通过数据库遍历可以把所有数据提取出来
  * 目前拆成2000个redis hash存储数据
  * 拆分对象为mac地址，存储数据为ctx
  * @author edmond
@@ -36,19 +36,19 @@ public class HandsetPresentService extends AbstractRelationHashCache{
 	
 	private HandsetPresentService(){
 	}
-	//暫時假定1百萬设备，保證每個hashkey中存儲的不超過1000條數據，遵循redis 對於hash結構在不超過1000條數據的情況下壓縮及性能最優
-	public static final int hasPrimeValue = 2000;
+	//暫時假定2千萬设备，保證每個hashkey中存儲的不超過1000條數據，遵循redis 對於hash結構在不超過1000條數據的情況下壓縮及性能最優
+	public static final int hasPrimeValue = 20000;
 	
 	private static String generateKey(String mac){
 		int hashvalue = HashAlgorithmsHelper.additiveHash(mac, hasPrimeValue);
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDevicePresentCtxPrefixKey);
-		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%04d", hashvalue));
+		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%05d", hashvalue));
 		return sb.toString();
 	}
 	
 	private static String generateKeyByHashValue(int hashvalue){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDevicePresentCtxPrefixKey);
-		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%04d", hashvalue));
+		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%05d", hashvalue));
 		return sb.toString();
 	}
 	
@@ -138,7 +138,7 @@ public class HandsetPresentService extends AbstractRelationHashCache{
 	}
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.HANDSETPRESENT);
 	}
 	
 	public static void main(String[] argv){
