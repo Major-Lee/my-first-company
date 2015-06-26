@@ -10,6 +10,10 @@ public class BusinessKeyDefine {
 		public static final String WorldHotSubject 					= "WHS";
 	}
 	
+	public static class HandsetPresent{
+		public static final String StatisticsPrefixKey 			= "HPS.";
+		public static final String PresentPrefixKey 			= "HPP.";
+	}
 	
 	public static class Present{
 		public static final String MarkPrefixKey = "MP";
