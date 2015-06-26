@@ -93,8 +93,9 @@ public class WifiHandsetDeviceRelationMService {
                     WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
                     if (i == 0) {
                         wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
+                        wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
                     }
-                    wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+
                     wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
                     i++;
                 }
@@ -102,22 +103,46 @@ public class WifiHandsetDeviceRelationMService {
             } else {
                 wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
 
-                int i = 0;
-                for (String date : week) {
-                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
-                            wifiHandsetDeviceItemDetailMTDTOMap.get(date);
+                //旧版本数据，不存在记录
+                if (wifiHandsetDeviceItemDetailMTDTOMap == null || wifiHandsetDeviceItemDetailMTDTOMap.size() ==0) {
+                    wifiHandsetDeviceItemDetailMTDTOMap
+                            = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
 
-                    if (wifiHandsetDeviceItemDetailMDTOList == null) {
-                        wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                    int i = 0;
+                    for (String date : week) {
+                        List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
+                                = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                        WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
+                        if (i == 0) {
+                            wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
+                            wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+                        }
+                        wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
+                        i++;
                     }
-                    WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
-                    if (i == 0 ) {
-                        wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
-                        wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+
+
+                } else {
+                    int i = 0;
+                    for (String date : week) {
+                        List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
+                                wifiHandsetDeviceItemDetailMTDTOMap.get(date);
+
+                        if (wifiHandsetDeviceItemDetailMDTOList == null) {
+                            wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                        }
+                        WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
+                        if (i == 0 ) {
+                            wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
+                            wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+                        }
+                        wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
+                        i++;
                     }
-                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
-                    i++;
                 }
+
+
+
                 update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
             }
         }catch (Exception e) {
