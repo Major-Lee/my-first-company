@@ -104,6 +104,32 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		}
 	}
 	
+	/**
+	 * 非常慢
+	 * @return
+	 */
+	public long countAll(){
+		int pipe_size = 1000;
+		String[] keys_array = new String[pipe_size];
+		long total = 0;
+		for(int i=0;i<hasPrimeValue;i++){
+			int index = i%pipe_size;
+			keys_array[index] = generateKeyByHashValue(i);
+			if(index == 999){
+				List<Object> result = this.pipelineHLen_diffKey(keys_array);
+				for(Object obj:result){
+					total += Long.class.cast(obj);
+				}
+			}
+			/*String key = generateKeyByHashValue(i);
+			//this.pipelineHLen_diffKey(keys).pipelineHLen_diffKey
+			long sub_total = this.hlen(key);//.hgetall(key);
+			total += sub_total;*/
+		}
+		return total;
+	}
+	
+	
 	public void iteratorAll(IteratorNotify<Map<String,String>> notify){
 		for(int i=0;i<hasPrimeValue;i++){
 			String key = generateKeyByHashValue(i);
@@ -196,6 +222,8 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		HandsetDeviceDTO handset = HandsetStorageService.getInstance().handset("gogog");
 		System.out.println(handset.getMac());
 		
+		
+		System.out.println(HandsetStorageService.getInstance().countAll());
 		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx002");
 		//String[][] result = WifiDevicePresentCtxService.getInstance().generateKeyAndFields(argg);
 		//System.out.println(result.length);
