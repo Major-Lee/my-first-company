@@ -1,7 +1,5 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
-import java.util.List;
-
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -33,24 +31,18 @@ public class HandsetStatisticsService extends AbstractRelationHashCache {
 	}
 	
 	private static final String Field_Online = "O";
-	private static final String Field_Total = "T";
+	//private static final String Field_Total = "T";
 	
 	private static String generateKey(){
 		return BusinessKeyDefine.HandsetPresent.StatisticsPrefixKey;
 	}
 	
-	
-	public long online(String mac){
-		return 0l;//this.hincrby(generateKey(), , value);
-		//this.hset(generateKey(), wifiId, ctx);
+	public long online(boolean isOnline){
+		return online(isOnline,1);
 	}
-	
-	public long offline(List<String> wifiIds, String ctx){
-		return 0l;
-		//String[][] keyAndFields = generateKeyAndFieldsAndValues(wifiIds,ctx);
-		//this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
+	public long online(boolean isOnline,int incr){
+		return this.hincrby(generateKey(), Field_Online, isOnline?incr:-incr);
 	}
-	
 	
 	@Override
 	public String getRedisKey() {
