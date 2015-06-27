@@ -3,19 +3,14 @@ package com.bhu.vas.di.op.repair;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStatisticsService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
-import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
