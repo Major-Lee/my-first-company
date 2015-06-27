@@ -484,7 +484,7 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
 		}
 
-		wifiHandsetDeviceRelationMService.updateWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(),
+		wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(),
 				dto.getUptime(), dto.getRx_bytes(), dto.getTs());
 
 
