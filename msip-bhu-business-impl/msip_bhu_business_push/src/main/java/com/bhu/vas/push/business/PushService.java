@@ -241,6 +241,7 @@ public class PushService{
 			}
 			//根据设备mac匹配终端厂商
 			String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
+			logger.info(String.format("builderHandsetDeviceOnlinePushMsg scn [%s] hostname [%s]", scn, hostname));
 			if(!DevicesSet.Unknow.getScn().equals(scn)){
 				exist_scn = true;
 				//scn = "终端";
