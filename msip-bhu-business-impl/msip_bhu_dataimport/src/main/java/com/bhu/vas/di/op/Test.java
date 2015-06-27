@@ -26,17 +26,54 @@ public class Test {
 //            }
 
 
-            List<String> timeline = new ArrayList<String>();
+//            List<String> timeline = new ArrayList<String>();
+//
+//            timeline.add("1");
+//
+//            timeline.add("3");
+//
+//            timeline.add("5");
+//
+//            timeline.get(2)
+//
+//            for (String t : timeline) {
+//                System.out.println(t);
+//            }
 
-            timeline.add("1");
+//        List<String> timeline = null;
+//
+//        System.out.println(timeline.isEmpty());
 
-            timeline.add("3");
 
-            timeline.add("5");
+        List<Person> persons = new ArrayList<Person>();
 
-            for (String t : timeline) {
-                System.out.println(t);
-            }
+        persons.add(new Person("baidu"));
 
+        persons.add(new Person("google"));
+
+        persons.add(new Person("bing"));
+
+        persons.get(2).setName("360");
+
+        for (Person person : persons) {
+            System.out.println(person.getName());
+        }
+
+    }
+
+}
+
+class Person {
+    private String name;
+    public Person(String name) {
+        this.name = name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }
