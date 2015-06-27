@@ -433,6 +433,8 @@ public class DeviceBusinessFacadeService {
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
 		if(handset != null){
 			dto.setDhcp_name(handset.getDhcp_name());
+			dto.setData_tx_rate(handset.getData_tx_rate());
+			dto.setData_rx_rate(handset.getData_rx_rate());
 			//String old_Last_wifi_id = handset.getLast_wifi_id();
 		}
 		//handset.setAction(HandsetDeviceDTO.Action_Offline);
