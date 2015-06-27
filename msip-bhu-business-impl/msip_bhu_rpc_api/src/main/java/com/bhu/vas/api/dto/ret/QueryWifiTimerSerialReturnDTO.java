@@ -35,14 +35,16 @@ public class QueryWifiTimerSerialReturnDTO extends QuerySerialReturnDTO{
 		if(StringUtils.isNotEmpty(rule)){
 			String[] array = rule.split(StringHelper.COMMA_STRING_GAP);
 			if(array.length == 2){
-				String[] inner_array = array[0].split(StringHelper.MINUS_STRING_GAP);
-				if(inner_array.length == 2){
-					if(Timer_On.equals(inner_array[1])){
-						this.setStart(inner_array[0]);
-					}
-					
-					if(Timer_Off.equals(inner_array[1])){
-						this.setEnd(inner_array[0]);
+				for(String element:array){
+					String[] inner_array = element.split(StringHelper.MINUS_STRING_GAP);
+					if(inner_array.length == 2){
+						if(Timer_On.equals(inner_array[1].trim())){
+							this.setStart(inner_array[0]);
+						}
+						
+						if(Timer_Off.equals(inner_array[1].trim())){
+							this.setEnd(inner_array[0]);
+						}
 					}
 				}
 			}

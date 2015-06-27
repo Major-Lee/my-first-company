@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.DailyUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.HourUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.QueryWifiTimerSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
@@ -539,7 +540,7 @@ public class RPCMessageParseHelper {
 //		for(WifiDeviceFlowDTO dto : dtos){
 //			System.out.println(dto.getName() + "-" + dto.getRx_bytes());
 //		}
-		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
+		/*BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
         String str;
         StringBuffer content = new StringBuffer();
         while ((str = in.readLine()) != null) 
@@ -557,8 +558,21 @@ public class RPCMessageParseHelper {
         String json = JsonHelper.getJSONString(dto);
         
         DeviceUsedStatisticsDTO dto2 = JsonHelper.getDTO(json, DeviceUsedStatisticsDTO.class);
-        System.out.println(dto2);
-//        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
+        System.out.println(dto2);*/
+        
+        
+		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/wifitimer.xml")));
+        String str;
+        StringBuffer content = new StringBuffer();
+        while ((str = in.readLine()) != null) 
+        {
+        	content.append(str+"\n");
+        }
+        in.close();
+        Document doc = parserMessage(content.toString());
+        QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
+        System.out.println(serialDto);
+        //        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
 //		String status = WifiDeviceDownTask.State_Failed;
 //		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
 //			status = WifiDeviceDownTask.State_Done;
