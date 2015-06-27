@@ -39,7 +39,7 @@ public class HandsetRedisDataRepairOp {
 		EntityIterator<String, HandsetDevice> it = new KeyBasedEntityBatchIterator<String,HandsetDevice>(String.class
 				,HandsetDevice.class, handsetDeviceService.getEntityDao(), mc);
 		while(it.hasNext()){
-			List<HandsetDevice> entitys = it.next();ddd
+			List<HandsetDevice> entitys = it.next();
 			List<String> ids = IdHelper.getStringIds(entitys);
 			List<String> presents = WifiDevicePresentService.getInstance().getPresents(ids);
 			if(presents !=null && !presents.isEmpty()){
