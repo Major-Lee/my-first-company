@@ -16,14 +16,14 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 public class HandsetStorageFacadeService{
 	
 	public static Long handsetComming(HandsetDeviceDTO dto){
-		HandsetStatisticsService.getInstance().online(dto.wasOnline());
+		//HandsetStatisticsService.getInstance().online(dto.wasOnline());
 		return HandsetStorageService.getInstance().handsetComming(dto);
 		//String mac = dto.getMac();
 		//this.hset(generateKey(mac), mac, JsonHelper.getJSONString(dto));
 	}
 	
 	public static List<Object> handsetsComming(List<HandsetDeviceDTO> dtos){
-		HandsetStatisticsService.getInstance().online(true, dtos.size());
+		//HandsetStatisticsService.getInstance().online(true, dtos.size());
 		return HandsetStorageService.getInstance().handsetsComming(dtos);
 		//String[][] keyAndFields = generateKeyAndFieldsAndValues(dtos);
 		//this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);

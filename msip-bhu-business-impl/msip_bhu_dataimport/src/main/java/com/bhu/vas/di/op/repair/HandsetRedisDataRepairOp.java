@@ -34,8 +34,9 @@ public class HandsetRedisDataRepairOp {
 		mc.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
     	mc.setPageNumber(1);
     	mc.setPageSize(200);
-    	int total = 0;
-    	int count = 0;
+    	long total = 0;
+    	long count = 0;
+    	long online = 0;
 		EntityIterator<String, HandsetDevice> it = new KeyBasedEntityBatchIterator<String,HandsetDevice>(String.class
 				,HandsetDevice.class, handsetDeviceService.getEntityDao(), mc);
 		while(it.hasNext()){
@@ -43,16 +44,19 @@ public class HandsetRedisDataRepairOp {
 			total+= entitys.size();
 			List<HandsetDeviceDTO> dtos = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDevice hd:entitys){
-				dtos.add(BusinessModelBuilder.fromHandsetDevice(hd));
+				HandsetDeviceDTO handset = BusinessModelBuilder.fromHandsetDevice(hd);
+				if(handset.wasOnline()) online++;
+				dtos.add(handset);
 			}
 			if(!dtos.isEmpty()){
 				HandsetStorageFacadeService.handsetsComming(dtos);
 				count+=dtos.size();
 			}
 		}
-		System.out.println("数据迁移成功 count:"+count +" total:"+total);
+		System.out.println("数据迁移成功 count:"+count +" total:"+total+" online:"+online);
 		
 		System.out.println("开始统计redis记录条数");
+		HandsetStorageFacadeService.statisticsSet(online, total);
 		long all = HandsetStorageFacadeService.countAll();
 		System.out.println("开始统计redis记录条数 all:"+all);
 	}
