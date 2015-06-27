@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,18 +39,6 @@ import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
-import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdHostNameVTO;
-import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
-import com.bhu.vas.api.vto.URouterHdVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
-import com.bhu.vas.api.vto.URouterWSHotVTO;
-import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
