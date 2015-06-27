@@ -219,8 +219,6 @@ public class WifiHandsetDeviceRelationMService {
     }
 
 
-
-
 	public WifiHandsetDeviceRelationMDTO getRelation(String wifiId, String handsetId){
 		return wifiHandsetDeviceRelationMDao.findById(WifiHandsetDeviceRelationMDTO.generateId(wifiId, handsetId));
 	}
