@@ -57,6 +57,11 @@ public class HandsetStorageFacadeService{
 		HandsetStorageService.getInstance().iteratorAll(notify);
 	}
 	
+	
+	public static void statisticsSet(long online,long total){
+		HandsetStatisticsService.getInstance().statisticsSet(online,total);
+	}
+	
 	public static int[] statistics(){
 		return HandsetStatisticsService.getInstance().statistics();
 	}

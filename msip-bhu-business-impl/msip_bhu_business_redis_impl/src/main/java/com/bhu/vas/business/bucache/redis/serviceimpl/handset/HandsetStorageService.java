@@ -148,7 +148,7 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		for(int i=0;i<hasPrimeValue;i++){
 			String key = generateKeyByHashValue(i);
 			Map<String, String> hashKeyAll = this.hgetall(key);
-			System.out.println(key);
+			//System.out.println(key);
 			if(!hashKeyAll.isEmpty())
 				notify.notifyComming(hashKeyAll);
 		}

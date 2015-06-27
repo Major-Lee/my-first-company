@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +47,13 @@ public class HandsetStatisticsService extends AbstractRelationHashCache {
 	}
 	public long online(boolean isOnline,int incr){
 		return this.hincrby(generateKey(), Field_Online, isOnline?incr:-incr);
+	}
+	
+	public void statisticsSet(long online,long total){
+		Map<String,String> map = new HashMap<String,String>();
+		map.put(Field_Online, String.valueOf(online));
+		map.put(Field_Total, String.valueOf(total));
+		this.hmset(generateKey(), map);
 	}
 	
 	public int[] statistics(){
