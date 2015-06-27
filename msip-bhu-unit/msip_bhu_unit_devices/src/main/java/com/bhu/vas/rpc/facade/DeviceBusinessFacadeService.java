@@ -267,6 +267,7 @@ public class DeviceBusinessFacadeService {
 		if(dtos == null || dtos.isEmpty()) return;
 		for(HandsetDeviceDTO dto:dtos){
 			dto.setLast_wifi_id(parserHeader.getMac().toLowerCase());
+			dto.setTs(System.currentTimeMillis());
 		}
 		HandsetDeviceDTO fristDto = dtos.get(0);
 		if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
@@ -431,21 +432,22 @@ public class DeviceBusinessFacadeService {
 		//1:更新移动设备的online状态为false
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
 		if(handset != null){
-			String old_Last_wifi_id = handset.getLast_wifi_id();
-			handset.setAction(HandsetDeviceDTO.Action_Offline);
-			handset.setLast_wifi_id(dto.getLast_wifi_id());
-			HandsetStorageFacadeService.handsetComming(handset);
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
-					lowercase_d_mac, handset.fetchData_rx_rate_double());
-			/*
-			 * 3:统计增量 移动设备的daily访问时长增量
-			 * 如果最后接入时间是今天才会记入daily访问时长
-			 */
-			if(DateTimeHelper.isSameDay(handset.getTs(), 
-					System.currentTimeMillis())){
-				deliverMessageService.sendHandsetDeviceOfflineActionMessage(old_Last_wifi_id, 
-						handset.getMac(), dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
-			}
+			dto.setDhcp_name(handset.getDhcp_name());
+			//String old_Last_wifi_id = handset.getLast_wifi_id();
+		}
+		//handset.setAction(HandsetDeviceDTO.Action_Offline);
+		//handset.setLast_wifi_id(dto.getLast_wifi_id());
+		HandsetStorageFacadeService.handsetComming(dto);
+		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
+				lowercase_d_mac, handset.fetchData_rx_rate_double());
+		/*
+		 * 3:统计增量 移动设备的daily访问时长增量
+		 * 如果最后接入时间是今天才会记入daily访问时长
+		 */
+		if(DateTimeHelper.isSameDay(handset.getTs(), 
+				System.currentTimeMillis())){
+			deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac, 
+					handset.getMac(), dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
 		}
 		/*HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_d_mac);
 		if(exist_handset_device_entity != null){
