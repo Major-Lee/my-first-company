@@ -328,7 +328,7 @@ public class DeviceBusinessFacadeService {
 			handset.setVapname(dto.getVapname());
 			handset.setRssi(dto.getRssi());
 			handset.setSnr(dto.getSnr());
-			HandsetStorageFacadeService.handsetComming(dto);
+			HandsetStorageFacadeService.handsetComming(handset);
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
 			//BeanUtils.copyProperties(dto, handset_device_entity);
@@ -432,6 +432,7 @@ public class DeviceBusinessFacadeService {
 		//1:更新移动设备的online状态为false
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
 		if(handset != null){
+			dto.setVapname(handset.getVapname());
 			dto.setDhcp_name(handset.getDhcp_name());
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
