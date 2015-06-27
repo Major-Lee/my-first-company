@@ -75,5 +75,4 @@ public class URouterHdVTO implements Serializable{
 	public void setGuest(boolean guest) {
 		this.guest = guest;
 	}
-	
 }
