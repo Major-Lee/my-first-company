@@ -5,16 +5,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
-import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -31,9 +27,6 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  */
 public class HandsetStatisticsLoader {
 	private static Logger logger = LoggerFactory.getLogger(HandsetStatisticsLoader.class);
-	
-	@Resource
-	private DeviceFacadeService deviceFacadeService;
 	
 	public void execute() {
 		try{
