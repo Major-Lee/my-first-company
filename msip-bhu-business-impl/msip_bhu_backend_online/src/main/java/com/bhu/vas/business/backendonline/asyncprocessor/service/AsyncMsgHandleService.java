@@ -819,13 +819,13 @@ public class AsyncMsgHandleService {
 					handset.setAction(HandsetDeviceDTO.Action_Online);
 					handset.setTs(System.currentTimeMillis());
 					handset.setLast_wifi_id(dto.getMac());
-					handset.setDhcp_name(terminal.getVapname());
+					//handset.setDhcp_name(terminal.getVapname());
 				}else{
 					/*entity.setVapname(terminal.getVapname());
 					entity.setData_tx_rate(terminal.getData_tx_rate());
 					entity.setData_rx_rate(terminal.getData_rx_rate());*/
 					
-					handset.setDhcp_name(terminal.getVapname());
+					//handset.setDhcp_name(terminal.getVapname());
 					handset.setData_tx_rate(terminal.getData_tx_rate());
 					handset.setData_rx_rate(terminal.getData_rx_rate());
 //					entity.setOnline(true);
