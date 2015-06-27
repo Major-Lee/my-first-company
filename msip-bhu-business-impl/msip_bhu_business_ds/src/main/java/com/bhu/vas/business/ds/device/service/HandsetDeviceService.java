@@ -1,4 +1,4 @@
-/*package com.bhu.vas.business.ds.device.service;
+package com.bhu.vas.business.ds.device.service;
 
 import java.util.List;
 
@@ -23,11 +23,11 @@ public class HandsetDeviceService extends AbstractCoreService<String,HandsetDevi
 		super.setEntityDao(handsetDeviceDao);
 	}
 	
-	*//**
+	/**
 	 * 查询指定wifiId下的在线的移动设备
 	 * @param wifiId
 	 * @return
-	 *//*
+	 */
 	public List<HandsetDevice> findModelByWifiIdAndOnline(String wifiId){
 		CommonCriteria mc = new CommonCriteria();
 		mc.createCriteria().andColumnEqualTo("online", true)
@@ -45,4 +45,3 @@ public class HandsetDeviceService extends AbstractCoreService<String,HandsetDevi
 		return super.countByModelCriteria(new ModelCriteria());
 	}
 }
-*/
