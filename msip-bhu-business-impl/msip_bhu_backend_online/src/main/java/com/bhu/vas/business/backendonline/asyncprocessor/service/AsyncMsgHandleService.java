@@ -537,7 +537,9 @@ public class AsyncMsgHandleService {
 						//entityNewRegisters.add(entity);
 					}else{
 						ds.add(new DeviceStatistics(dto.getMac(), new Date(handset.getTs())));
-						dtos.get(cursor).setDhcp_name(handset.getDhcp_name());
+						dto.setDhcp_name(handset.getDhcp_name());
+						dto.setData_tx_rate(handset.getData_tx_rate());
+						dto.setData_rx_rate(handset.getData_rx_rate());
 						/*BeanUtils.copyProperties(dto, entity, HandsetDeviceDTO.copyIgnoreProperties);
 						if(!StringUtils.isEmpty(dto.getDhcp_name())){
 							entity.setHostname(dto.getDhcp_name());
