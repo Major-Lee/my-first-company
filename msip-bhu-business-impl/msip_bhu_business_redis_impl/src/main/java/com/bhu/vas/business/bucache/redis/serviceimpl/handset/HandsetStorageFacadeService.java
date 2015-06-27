@@ -57,6 +57,10 @@ public class HandsetStorageFacadeService{
 		HandsetStorageService.getInstance().iteratorAll(notify);
 	}
 	
+	public static int[] statistics(){
+		return HandsetStatisticsService.getInstance().statistics();
+	}
+	
 	public static void main(String[] argc){
 		//HandsetStorageService.getInstance().clearOrResetAll();
 		HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){

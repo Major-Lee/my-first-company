@@ -15,11 +15,11 @@ import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.GeoMapDeviceVTO;
 import com.bhu.vas.api.vto.GeoMapVTO;
@@ -29,13 +29,13 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCountRegionStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
@@ -68,8 +68,8 @@ public class DeviceRestBusinessFacadeService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	/*@Resource
+	private HandsetDeviceService handsetDeviceService;*/
 	
 	@Resource
 	private WifiDeviceSearchService wifiDeviceSearchService;
@@ -333,6 +333,7 @@ public class DeviceRestBusinessFacadeService {
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
+	 * modified by Edmond Lee for handset storage
 	 */
 	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize){
 		List<HandsetDeviceVTO> vtos = null;
@@ -343,8 +344,19 @@ public class DeviceRestBusinessFacadeService {
 					fetchPresents(wifiId, (pageNo*pageSize)-pageSize, pageSize);
 			
 			List<String> hd_macs = BusinessModelBuilder.toElementsList(tuples);
+			
 			if(!hd_macs.isEmpty()){
 				vtos = new ArrayList<HandsetDeviceVTO>();
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
+				int cursor = 0;
+				HandsetDeviceVTO vto = null;
+				for(Tuple tuple : tuples){
+					boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+					vto = BusinessModelBuilder.toHandsetDeviceVTO(wifiId, tuple.getElement(), online, handsets.get(cursor));
+					vtos.add(vto);
+					cursor++;
+				}
+				/*vtos = new ArrayList<HandsetDeviceVTO>();
 				
 				List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				HandsetDeviceVTO vto = null;
@@ -354,7 +366,7 @@ public class DeviceRestBusinessFacadeService {
 					vto = BusinessModelBuilder.toHandsetDeviceVTO(wifiId, tuple.getElement(), online, hd_entitys.get(cursor));
 					vtos.add(vto);
 					cursor++;
-				}
+				}*/
 			}
 		}
 		

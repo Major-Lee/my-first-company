@@ -27,7 +27,6 @@ import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
@@ -54,11 +53,11 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiD
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
@@ -85,8 +84,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
-	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	/*@Resource
+	private HandsetDeviceService handsetDeviceService;*/
 	
 	@Resource
 	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
@@ -502,8 +501,85 @@ public class AsyncMsgHandleService {
 	 * 6:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
 	 * 7:统计增量 移动设备的daily启动次数增量(backend)
 	 * @param message
+	 * modified by Edmond Lee for handset storage
 	 */
 	public void handsetDeviceSyncHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
+		
+		HandsetDeviceSyncDTO sync_dto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
+		String wifiId = sync_dto.getMac();
+		if(!StringUtils.isEmpty(wifiId)){
+			//1:清除wifi设备对应handset在线列表redis
+			deviceFacadeService.allHandsetDoOfflines(sync_dto.getMac());
+			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(sync_dto.getMac());
+			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(sync_dto.getMac());
+			
+			List<HandsetDeviceDTO> dtos = sync_dto.getDtos();
+			if(dtos != null && !dtos.isEmpty()){
+				List<String> ids = new ArrayList<String>();
+				for(HandsetDeviceDTO dto : dtos){
+					ids.add(dto.getMac().toLowerCase());
+				}
+				//终端统计模型
+				List<DeviceStatistics> ds = new ArrayList<DeviceStatistics>();
+				
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(ids);
+				int cursor = 0;
+				for(HandsetDeviceDTO handset : handsets){
+					if(handset != null && handset.wasOnline()){
+						continue;
+					}
+					HandsetDeviceDTO dto = dtos.get(cursor);
+					if(handset == null){
+						ds.add(new DeviceStatistics(dto.getMac(), true));
+						//entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
+						//handset.setLast_wifi_id(wifiId);
+						//entityNewRegisters.add(entity);
+					}else{
+						ds.add(new DeviceStatistics(dto.getMac(), new Date(handset.getTs())));
+						/*BeanUtils.copyProperties(dto, entity, HandsetDeviceDTO.copyIgnoreProperties);
+						if(!StringUtils.isEmpty(dto.getDhcp_name())){
+							entity.setHostname(dto.getDhcp_name());
+						}
+						entity.setLast_login_at(new Date());
+						entity.setLast_wifi_id(wifiId);
+						entity.setOnline(true);
+						entityNewOnlines.add(entity);*/
+					}
+					String handsetId = dto.getMac().toLowerCase();
+					//1:wifi设备对应handset在线列表redis 重新写入
+					//WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handsetId, sync_dto.getTs());
+					//long rx_rate = StringUtils.isEmpty(entity.getData_rx_rate()) ? 0 : Long.parseLong(entity.getData_rx_rate());
+					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, handsetId, handset.fetchData_rx_rate_double());//entity.getData_rx_rate_double());
+					//3:移动设备连接wifi设备的接入记录(非流水)
+					int result_status = wifiHandsetDeviceRelationMService.addRelation(wifiId, handsetId, new Date(sync_dto.getTs()));
+					//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
+					if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert){
+						//5:wifi设备接入移动设备的接入数量增量
+						wifiHandsetDeviceLoginCountMService.incrCount(wifiId);
+					}
+					//4:移动设备连接wifi设备的流水log
+					BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(wifiId, handsetId, sync_dto.getTs());
+					cursor++;
+				}
+				/*//有新上线的设备(非新注册)
+				if(!entityNewOnlines.isEmpty()){
+					//2:移动设备基础信息更新 
+					handsetDeviceService.updateAll(entityNewOnlines);
+				}
+				//新上线的并且是新注册的设备列表
+				if(!entityNewRegisters.isEmpty()){
+					//2:移动设备基础信息更新
+					handsetDeviceService.insertAll(entityNewRegisters);
+				}*/
+				HandsetStorageFacadeService.handsetsComming(dtos);
+				//终端统计
+				deviceFacadeService.deviceStatisticsOnlines(ds, DeviceStatistics.Statis_HandsetDevice_Type);
+			}
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s] successful", message));
+	}
+/*	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
 		
 		HandsetDeviceSyncDTO sync_dto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
@@ -588,7 +664,7 @@ public class AsyncMsgHandleService {
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s] successful", message));
-	}
+	}*/
 	
 	/**
 	 * 修改设备配置信息
@@ -693,8 +769,87 @@ public class AsyncMsgHandleService {
 	 * 1:更新被管理的终端的上下行速率和ssid bssid
 	 * 2:更新被管理的终端的限速设置
 	 * @param message
+	 * modified by Edmond Lee for handset storage
 	 */
 	public void WifiDeviceTerminalNotify(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s]", message));
+		WifiDeviceTerminalNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceTerminalNotifyDTO.class);
+		
+		//获取设备的配置的dto
+		WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dto.getMac());
+		if(setting_entity == null) return;
+		WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
+		
+		List<WifiDeviceTerminalDTO> terminals = dto.getTerminals();
+		if(terminals != null && !terminals.isEmpty()){
+			List<String> hdIds = new ArrayList<String>();
+			for(WifiDeviceTerminalDTO terminal : terminals){
+				hdIds.add(terminal.getMac());
+			}
+
+			//1:更新被管理的终端的上下行速率和ssid bssid
+			int cursor = 0;
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hdIds);
+			//List<HandsetDevice> need_inserts = null;
+			//List<HandsetDevice> need_updates = null;
+			for(HandsetDeviceDTO handset : handsets){
+				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
+				//判断是否在黑名单中
+				if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
+					continue;
+				//匹配终端是否在限速列表中
+//				WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+//						setting_entity_dto, terminal.getMac());
+				
+				if(handset == null){
+					/*HandsetDevice hd_entity = new HandsetDevice();
+					hd_entity.setId(terminal.getMac());
+					hd_entity.setLast_login_at(new Date());
+					hd_entity.setLast_wifi_id(dto.getMac());
+					hd_entity.setVapname(terminal.getVapname());
+					hd_entity.setOnline(true);
+					if(need_inserts == null)
+						need_inserts = new ArrayList<HandsetDevice>();
+					need_inserts.add(hd_entity);*/
+					handset = new HandsetDeviceDTO();
+					handset.setMac(terminal.getMac());
+					handset.setAction(HandsetDeviceDTO.Action_Online);
+					handset.setTs(System.currentTimeMillis());
+					handset.setLast_wifi_id(dto.getMac());
+					handset.setDhcp_name(terminal.getVapname());
+				}else{
+					/*entity.setVapname(terminal.getVapname());
+					entity.setData_tx_rate(terminal.getData_tx_rate());
+					entity.setData_rx_rate(terminal.getData_rx_rate());*/
+					
+					handset.setDhcp_name(terminal.getVapname());
+					handset.setData_tx_rate(terminal.getData_tx_rate());
+					handset.setData_rx_rate(terminal.getData_rx_rate());
+//					entity.setOnline(true);
+					//匹配终端是否在限速列表中
+//					if(rc != null){
+//						entity.setData_tx_limit(rc.getTx());
+//						entity.setData_rx_limit(rc.getRx());
+//					}
+					/*if(need_updates == null)
+						need_updates = new ArrayList<HandsetDevice>();
+					need_updates.add(entity);*/
+				}
+				
+				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(dto.getMac(), 
+						terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+				cursor++;
+			}
+			HandsetStorageFacadeService.handsetsComming(handsets);
+			/*if(need_inserts != null)
+				handsetDeviceService.insertAll(need_inserts);
+			if(need_updates != null)
+				handsetDeviceService.updateAll(need_updates);*/
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s] successful", message));
+
+	}	
+/*	public void WifiDeviceTerminalNotify(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s]", message));
 		WifiDeviceTerminalNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceTerminalNotifyDTO.class);
 		
@@ -775,7 +930,7 @@ public class AsyncMsgHandleService {
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s] successful", message));
 
-	}
+	}*/
 	
 	
 	public void wifiCmdDownNotifyHandle(String message){

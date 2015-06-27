@@ -9,15 +9,12 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
-import com.bhu.vas.api.vto.*;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
@@ -32,20 +29,33 @@ import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
+import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
+import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
+import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
+import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.URouterWSHotVTO;
+import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
@@ -55,9 +65,10 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRec
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
+import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -84,8 +95,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
-	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	/*@Resource
+	private HandsetDeviceService handsetDeviceService;*/
 	
 //	@Resource
 //	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
@@ -144,6 +155,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param start
 	 * @param size
 	 * @return
+	 * modified by Edmond Lee for handset storage
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
 		try{
@@ -180,18 +192,18 @@ public class DeviceURouterRestBusinessFacadeService {
 				for(Tuple tuple : presents){
 					hd_macs.add(tuple.getElement());
 				}
-				List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
+				//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				//List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
-				if(!hd_entitys.isEmpty()){
+				if(!handsets.isEmpty()){
 					vtos = new ArrayList<URouterHdVTO>();
 					int cursor = 0;
-					HandsetDevice hd_entity = null;
+					HandsetDeviceDTO hd_entity = null;
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 					for(Tuple tuple : presents){
-						hd_entity = hd_entitys.get(cursor);
+						hd_entity = handsets.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
 						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, hd_entity, setting_dto);
-
 
 						WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 								wifiHandsetDeviceRelationMService.getRelation(wifiId, vto.getHd_mac());
@@ -329,6 +341,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param uid
 	 * @param wifiId
 	 * @return
+	 * modified by Edmond Lee for handset storage
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterBlockList(Integer uid, String wifiId, int start, int size){
 		try{
@@ -347,14 +360,15 @@ public class DeviceURouterRestBusinessFacadeService {
 					List<String> block_hd_macs = PageHelper.partialList(acl_dto.getMacs(), start, size);
 					
 //					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
-					List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
+					//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(block_hd_macs);
 					if(!block_hd_macs.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
 //						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 						WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
-							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, hd_entitys.get(cursor), setting_dto);
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, handsets.get(cursor), setting_dto);
 							vtos.add(vto);
 							cursor++;
 						}
@@ -651,6 +665,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param uid
 	 * @param macs
 	 * @return
+	 * 
+	 * modified by Edmond Lee for handset storage
 	 */
 	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
 		try{
@@ -662,13 +678,15 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			String[] macs_array = macs.split(StringHelper.COMMA_STRING_GAP);
 			vto_list = new ArrayList<URouterHdHostNameVTO>(macs_array.length);
-			List<HandsetDevice> entitys = handsetDeviceService.findByIds(ArrayHelper.toList(macs_array), true, true);
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(ArrayHelper.toList(macs_array));
+			//List<HandsetDevice> entitys = handsetDeviceService.findByIds(ArrayHelper.toList(macs_array), true, true);
 			int cursor = 0;
-			for(HandsetDevice entity : entitys){
+			//for(HandsetDevice entity : entitys){
+			for(HandsetDeviceDTO entity : handsets){
 				URouterHdHostNameVTO vto = new URouterHdHostNameVTO();
 				if(entity != null){
-					vto.setHd_mac(entity.getId());
-					vto.setHn(entity.getHostname());
+					vto.setHd_mac(entity.getMac());
+					vto.setHn(entity.getDhcp_name());
 				}else{
 					vto.setHd_mac(macs_array[cursor]);
 				}

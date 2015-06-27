@@ -1,6 +1,8 @@
 package com.bhu.vas.api.dto;
 
 import java.io.Serializable;
+
+import org.springframework.util.StringUtils;
 /**
  * 移动设备上下线请求DTO
  * @author tangzichao
@@ -60,6 +62,8 @@ public class HandsetDeviceDTO implements Serializable{
 	private String dhcp_name;
 	//终端连接的设备vapname
 	private String vapname;
+	
+	private String last_wifi_id;
 	//记录生成或更新时间
 	private long ts;
 	public String getAction() {
@@ -218,6 +222,14 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setVapname(String vapname) {
 		this.vapname = vapname;
 	}
+	
+	
+	public String getLast_wifi_id() {
+		return last_wifi_id;
+	}
+	public void setLast_wifi_id(String last_wifi_id) {
+		this.last_wifi_id = last_wifi_id;
+	}
 	public long getTs() {
 		return ts;
 	}
@@ -226,5 +238,12 @@ public class HandsetDeviceDTO implements Serializable{
 	}
 	public boolean wasOnline(){
 		return !Action_Offline.equals(action);
+	}
+	
+	public double fetchData_rx_rate_double(){
+		if(StringUtils.isEmpty(data_rx_rate)){
+			return 0;
+		}
+		return Double.parseDouble(data_rx_rate);
 	}
 }

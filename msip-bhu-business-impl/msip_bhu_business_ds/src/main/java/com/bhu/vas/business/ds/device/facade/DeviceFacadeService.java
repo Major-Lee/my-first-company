@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
@@ -23,7 +24,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationDS;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
@@ -34,9 +34,9 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -76,8 +76,8 @@ public class DeviceFacadeService {
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
-	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	/*@Resource
+	private HandsetDeviceService handsetDeviceService;*/
 	
 	@Resource
 	private UserDeviceService userDeviceService;
@@ -91,15 +91,24 @@ public class DeviceFacadeService {
 	/**
 	 * 指定wifiId进行终端全部下线处理
 	 * @param wifiId
+	 * modified by Edmond Lee for handset storage
 	 */
 	public void allHandsetDoOfflines(String wifiId){
-		List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
+		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
+		if(onlinePresents != null && !onlinePresents.isEmpty()){
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			for(HandsetDeviceDTO dto:handsets){
+				dto.setAction(HandsetDeviceDTO.Action_Offline);
+			}
+			HandsetStorageFacadeService.handsetsComming(handsets);
+		}
+		/*List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
 		if(!handset_devices_online_entitys.isEmpty()){
 			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
 				handset_devices_online_entity.setOnline(false);
 			}
 			handsetDeviceService.updateAll(handset_devices_online_entitys);
-		}
+		}*/
 		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
 	}
 	
@@ -269,13 +278,18 @@ public class DeviceFacadeService {
 	 * 5:总移动设备接入次数
 	 * 6:总移动设备访问时长
 	 * @return
+	 * modified by Edmond Lee for handset storage
 	 */
 	public Map<String,String> buildSystemStatisticsMap(){
 		Map<String,String> system_statistics_map = new HashMap<String,String>();
 		system_statistics_map.put(SystemStatisticsDTO.Field_Devices, String.valueOf(wifiDeviceService.count()));
-		system_statistics_map.put(SystemStatisticsDTO.Field_Handsets, String.valueOf(handsetDeviceService.count()));
+		//system_statistics_map.put(SystemStatisticsDTO.Field_Handsets, String.valueOf());//HandsetStorageFacadeService.countAll()));//String.valueOf(handsetDeviceService.count()));
 		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineDevices, String.valueOf(wifiDeviceService.countByOnline()));
-		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf(handsetDeviceService.countByOnline()));
+		//system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf());//handsetDeviceService.countByOnline()));
+		int[] statistics = HandsetStorageFacadeService.statistics();
+		system_statistics_map.put(SystemStatisticsDTO.Field_OnlineHandsets, String.valueOf(statistics[0]));
+		system_statistics_map.put(SystemStatisticsDTO.Field_Handsets, String.valueOf(statistics[1]));
+		
 		return system_statistics_map;
 	}
 	
@@ -549,10 +563,23 @@ public class DeviceFacadeService {
 	 * @param hd_mac
 	 * @param mac
 	 * @return
+	 * modified by Edmond Lee for handset storage
 	 */
 	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
+		
+		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(hd_mac);
+		if(handset != null){
+			String hostname = handset.getDhcp_name();
+			if(!StringUtils.isEmpty(hostname)){
+				if(hostname.toLowerCase().startsWith(PushMessageConstant.Android_Host_Name_Match)){
+					return PushMessageConstant.Android_Host_Name;
+				}
+				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
+			}
+		}
+		return null;
 		//如果没有别名 以终端主机名填充
-		HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
+		/*HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
@@ -562,7 +589,7 @@ public class DeviceFacadeService {
 				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
-		return null;
+		return null;*/
 	}
 	
 	/**
