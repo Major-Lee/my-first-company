@@ -20,7 +20,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devicegroup
+	    	t_wifi_device_group
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
