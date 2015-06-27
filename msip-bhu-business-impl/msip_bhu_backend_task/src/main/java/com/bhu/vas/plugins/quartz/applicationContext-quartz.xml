@@ -17,7 +17,6 @@
 				<ref bean="wifiDeviceOnlineCronTrigger" />
 				<!-- 每30分钟执行一次  -->
 				<ref bean="handsetStatisticsLoaderCronTrigger" />
-				
 				<!-- 每一个小时执行一次  -->
 				<ref bean="statisticsOnlineLoaderCronTrigger" />
 				<!-- 每一个小时执行一次  -->
