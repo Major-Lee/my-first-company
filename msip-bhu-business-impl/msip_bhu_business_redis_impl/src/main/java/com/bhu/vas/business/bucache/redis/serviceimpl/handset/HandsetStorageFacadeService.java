@@ -68,11 +68,15 @@ public class HandsetStorageFacadeService{
 	
 	public static void main(String[] argc){
 		//HandsetStorageService.getInstance().clearOrResetAll();
-		HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
+		/*HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
 			@Override
 			public void notifyComming(Map<String, String> t) {
 				System.out.println(t);
 			}
-		});
+		});*/
+		
+		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset("88:32:9b:32:41:10");
+		System.out.println(handset.getMac());
+		System.out.println(handset.getDhcp_name());
 	}
 }

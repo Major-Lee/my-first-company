@@ -540,7 +540,7 @@ public class RPCMessageParseHelper {
 //		for(WifiDeviceFlowDTO dto : dtos){
 //			System.out.println(dto.getName() + "-" + dto.getRx_bytes());
 //		}
-		/*BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
+		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
         String str;
         StringBuffer content = new StringBuffer();
         while ((str = in.readLine()) != null) 
@@ -552,8 +552,20 @@ public class RPCMessageParseHelper {
         System.out.println(content.toString());
         Document doc = parserMessage(content.toString());
         DeviceUsedStatisticsDTO dto = generateDTOFromQueryDeviceUsedStatus(doc);
+        long today_rx = Long.parseLong(dto.getToday().getRx_bytes());
+        long today_rx_total = 0;
+        for(HourUsedStatisticsDTO sdto:dto.getToday_detail()){
+        	today_rx_total+= Long.parseLong(sdto.getRx_bytes());
+        }
+        System.out.println(String.format("today_rx[%s] today_rx_total[%s]",today_rx,today_rx_total));
         
-        System.out.println(JsonHelper.getJSONString(dto));
+        long yesterday_rx = Long.parseLong(dto.getYesterday().getRx_bytes());
+        long yesterday_rx_total = 0;
+        for(HourUsedStatisticsDTO sdto:dto.getYesterday_detail()){
+        	yesterday_rx_total += Long.parseLong(sdto.getRx_bytes());
+        }
+        System.out.println(String.format("yesterday_rx[%s] yesterday_rx_total[%s]",yesterday_rx,yesterday_rx_total));
+        /*System.out.println(JsonHelper.getJSONString(dto));
         
         String json = JsonHelper.getJSONString(dto);
         
@@ -561,7 +573,7 @@ public class RPCMessageParseHelper {
         System.out.println(dto2);*/
         
         
-		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/wifitimer.xml")));
+		/*BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/wifitimer.xml")));
         String str;
         StringBuffer content = new StringBuffer();
         while ((str = in.readLine()) != null) 
@@ -571,7 +583,7 @@ public class RPCMessageParseHelper {
         in.close();
         Document doc = parserMessage(content.toString());
         QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
-        System.out.println(serialDto);
+        System.out.println(serialDto);*/
         //        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
 //		String status = WifiDeviceDownTask.State_Failed;
 //		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
