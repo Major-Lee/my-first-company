@@ -31,7 +31,7 @@ public class WifiStasnifferHelper implements Serializable{
 			String apple_count = communityCountByType.get(apple_scn);
 			if(!StringUtils.isEmpty(apple_count)){
 				 double apple_ratio = ArithHelper.div(Long.parseLong(apple_count),total,1);
-				 if(apple_ratio >= 0.5d){
+				 if(apple_ratio >= 0.3d){
 					 return Community_Higher;
 				 }
 			}
