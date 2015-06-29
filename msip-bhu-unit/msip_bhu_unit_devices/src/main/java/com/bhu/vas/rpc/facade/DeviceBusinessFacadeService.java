@@ -442,7 +442,7 @@ public class DeviceBusinessFacadeService {
 		//handset.setLast_wifi_id(dto.getLast_wifi_id());
 		HandsetStorageFacadeService.handsetComming(dto);
 		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
-				lowercase_d_mac, handset.fetchData_rx_rate_double());
+				lowercase_d_mac, dto.fetchData_rx_rate_double());
 		/*
 		 * 3:统计增量 移动设备的daily访问时长增量
 		 * 如果最后接入时间是今天才会记入daily访问时长
