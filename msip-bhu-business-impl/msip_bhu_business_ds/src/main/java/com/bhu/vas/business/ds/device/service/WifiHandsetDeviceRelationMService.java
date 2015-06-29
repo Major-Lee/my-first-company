@@ -162,7 +162,7 @@ public class WifiHandsetDeviceRelationMService {
             WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
             if (i == 0 ) {
                 wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
-                wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
+                wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
             }
             dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
             i++;
@@ -188,9 +188,8 @@ public class WifiHandsetDeviceRelationMService {
         for (String date : week) {
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =  map.get(date);
             if (i == 0) {
-                int size = wifiHandsetDeviceItemDetailMDTOList.size();
                 WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
-                        wifiHandsetDeviceItemDetailMDTOList.get(size - 1);
+                        wifiHandsetDeviceItemDetailMDTOList.get(0);
                 wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
                 wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
             }
