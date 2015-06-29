@@ -568,8 +568,10 @@ public class DeviceFacadeService {
 	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
 		
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(hd_mac);
+		System.out.println(String.format("queryPushHandsetDeviceHostname handset [%s] hd_mac [%s]", handset, hd_mac));
 		if(handset != null){
 			String hostname = handset.getDhcp_name();
+			System.out.println(String.format("queryPushHandsetDeviceHostname handset [%s] hostname [%s]", handset, hostname));
 			if(!StringUtils.isEmpty(hostname)){
 				if(hostname.toLowerCase().startsWith(PushMessageConstant.Android_Host_Name_Match)){
 					return PushMessageConstant.Android_Host_Name;
