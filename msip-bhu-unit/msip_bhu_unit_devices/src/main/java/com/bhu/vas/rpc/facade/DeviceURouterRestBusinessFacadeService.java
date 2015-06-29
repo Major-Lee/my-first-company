@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.vto.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -48,11 +49,13 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFaca
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
+import com.bhu.vas.business.ds.builder.WifiStasnifferHelper;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -863,6 +866,27 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			Map<String, Object> payload = PageHelper.partialAllList(dtos, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 设备的周边社区类型以及周边探测终端类型对应的数量数据
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public RpcResponseDTO<URouterWSCommunityVTO> urouterWSCommunity(Integer uid, String mac) {
+		try{
+			URouterWSCommunityVTO vto = new URouterWSCommunityVTO();
+			Map<String, String> communityCountByTypes = TerminalDeviceTypeCountHashService.getInstance().getAll(mac);
+			if(communityCountByTypes == null || communityCountByTypes.isEmpty()){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+			}
+			vto.setStatics(communityCountByTypes);
+			vto.setT(WifiStasnifferHelper.communityType(communityCountByTypes));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
