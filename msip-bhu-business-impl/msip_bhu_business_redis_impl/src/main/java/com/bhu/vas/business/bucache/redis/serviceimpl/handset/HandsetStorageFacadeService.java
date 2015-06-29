@@ -74,9 +74,15 @@ public class HandsetStorageFacadeService{
 				System.out.println(t);
 			}
 		});*/
-		
+		long countAll = HandsetStorageFacadeService.countAll();
+		System.out.println(countAll);
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset("88:32:9b:32:41:10");
 		System.out.println(handset.getMac());
 		System.out.println(handset.getDhcp_name());
+		
+		int[] statistics = HandsetStorageFacadeService.statistics();
+		
+		System.out.println(statistics[0]);
+		System.out.println(statistics[1]);
 	}
 }
