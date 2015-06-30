@@ -10,6 +10,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class URouterWSCommunityVTO implements Serializable{
+	//探测终端总数量
+	private long total;
 	//社区类型
 	private String ct;
 	//社区终端类型对应的探测数量
@@ -27,4 +29,11 @@ public class URouterWSCommunityVTO implements Serializable{
 	public void setHdts(List<URouterWSCommunityHDVTO> hdts) {
 		this.hdts = hdts;
 	}
+	public long getTotal() {
+		return total;
+	}
+	public void setTotal(long total) {
+		this.total = total;
+	}
+	
 }

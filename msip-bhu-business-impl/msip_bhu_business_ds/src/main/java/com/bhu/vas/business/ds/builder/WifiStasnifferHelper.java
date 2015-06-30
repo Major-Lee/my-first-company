@@ -74,6 +74,7 @@ public class WifiStasnifferHelper implements Serializable{
         	hdts.add(unknow_hdt_vto);
 	        
         	URouterWSCommunityVTO vto = new URouterWSCommunityVTO();
+        	vto.setTotal(total);
         	vto.setCt(Community_Higher);
         	vto.setHdts(hdts);
         	return vto;
