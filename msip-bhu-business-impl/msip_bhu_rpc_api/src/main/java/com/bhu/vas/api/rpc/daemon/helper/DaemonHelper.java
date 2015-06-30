@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.daemon.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -62,6 +63,12 @@ public class DaemonHelper {
 		//用户登录后 给其绑定的设备mac地址发送设备使用情况
 		if(needDeviceUsedQuery)
 			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac));//(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
+		//可能需要用户登录后根据其个人绑定的设备，下发配置开启wifi探测
+		/*if(needWiffsniffer){
+			//开启wiffsinffer
+			CMDBuilder.builderDeviceWifiSnifferSetting(mac,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
+		}*/
+		
 		//获取设备测速
 		//deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));

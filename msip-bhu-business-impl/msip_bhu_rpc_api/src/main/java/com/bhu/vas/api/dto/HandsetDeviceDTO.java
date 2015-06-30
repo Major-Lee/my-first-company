@@ -24,8 +24,7 @@ public class HandsetDeviceDTO implements Serializable{
 	private String phy_tx_rate;
 	//物理接收速率
 	private String phy_rx_rate;	
-	private String data_tx_rate;
-	private String data_rx_rate;
+
 	//废弃
 	private String phy_rate;
 	//AP对针对此设备的发射功率
@@ -62,7 +61,8 @@ public class HandsetDeviceDTO implements Serializable{
 	private String dhcp_name;
 	//终端连接的设备vapname
 	private String vapname;
-	
+	private String data_tx_rate;
+	private String data_rx_rate;
 	private String last_wifi_id;
 	//记录生成或更新时间
 	private long ts;
@@ -90,18 +90,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setPhy_rx_rate(String phy_rx_rate) {
 		this.phy_rx_rate = phy_rx_rate;
 	}
-	public String getData_tx_rate() {
-		return data_tx_rate;
-	}
-	public void setData_tx_rate(String data_tx_rate) {
-		this.data_tx_rate = data_tx_rate;
-	}
-	public String getData_rx_rate() {
-		return data_rx_rate;
-	}
-	public void setData_rx_rate(String data_rx_rate) {
-		this.data_rx_rate = data_rx_rate;
-	}
+
 	public String getPhy_rate() {
 		return phy_rate;
 	}
@@ -210,12 +199,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
-	public String getDhcp_name() {
-		return dhcp_name;
-	}
-	public void setDhcp_name(String dhcp_name) {
-		this.dhcp_name = dhcp_name;
-	}
+
 	public String getVapname() {
 		return vapname;
 	}
@@ -240,6 +224,24 @@ public class HandsetDeviceDTO implements Serializable{
 		return !Action_Offline.equals(action);
 	}
 	
+	public String getData_tx_rate() {
+		return data_tx_rate;
+	}
+	public void setData_tx_rate(String data_tx_rate) {
+		this.data_tx_rate = data_tx_rate;
+	}
+	public String getData_rx_rate() {
+		return data_rx_rate;
+	}
+	public void setData_rx_rate(String data_rx_rate) {
+		this.data_rx_rate = data_rx_rate;
+	}
+	public String getDhcp_name() {
+		return dhcp_name;
+	}
+	public void setDhcp_name(String dhcp_name) {
+		this.dhcp_name = dhcp_name;
+	}
 	public double fetchData_rx_rate_double(){
 		if(StringUtils.isEmpty(data_rx_rate)){
 			return 0;
