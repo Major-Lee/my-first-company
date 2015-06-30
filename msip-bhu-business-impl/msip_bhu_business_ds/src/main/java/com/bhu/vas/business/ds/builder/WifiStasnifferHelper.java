@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.vto.URouterWSCommunityHDVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 
@@ -42,15 +43,15 @@ public class WifiStasnifferHelper implements Serializable{
 			}else{
 				communityCountByTypes.remove(DevicesSet.Unknow.getScn());
 			}
+
 			//进行排序
 			List<Map.Entry<String, String>> communityCountByTypeList = new ArrayList<Map.Entry<String, String>>(
 					communityCountByTypes.entrySet());
 			
 			// 对HashMap中的 value desc 进行排序  
 	        Collections.sort(communityCountByTypeList, new Comparator<Map.Entry<String, String>>() {  
-	            public int compare(Map.Entry<String, String> o1,  
-	                    Map.Entry<String, String> o2) {  
-	                return o2.getValue().compareTo(o1.getValue());  
+	            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {  
+	                return Integer.parseInt(o2.getValue()) - Integer.parseInt(o1.getValue());  
 	            }
 	        });  
 	        
@@ -70,7 +71,7 @@ public class WifiStasnifferHelper implements Serializable{
         	long unknow_hd_tc = Long.parseLong(unknow_count);
         	unknow_hdt_vto.setHd_tc(unknow_hd_tc);
         	unknow_hdt_vto.setHd_tr(ArithHelper.percent(unknow_hd_tc, total, 0));
-        	hdts.add(hdts.size(), unknow_hdt_vto);
+        	hdts.add(unknow_hdt_vto);
 	        
         	URouterWSCommunityVTO vto = new URouterWSCommunityVTO();
         	vto.setCt(Community_Higher);
@@ -131,4 +132,9 @@ public class WifiStasnifferHelper implements Serializable{
 		}
 		return null;
 	}*/
+	
+	public static void main(String[] args){
+		Map<String, String> communityCountByTypes = TerminalDeviceTypeCountHashService.getInstance().getAll("84:82:f4:19:01:0c");
+		communityType(communityCountByTypes);
+	}
 }
