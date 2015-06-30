@@ -1,7 +1,7 @@
 package com.bhu.vas.api.vto;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 /**
  * urouter的周边探测的社区类型
@@ -11,20 +11,20 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class URouterWSCommunityVTO implements Serializable{
 	//社区类型
-	private String t;
+	private String ct;
 	//社区终端类型对应的探测数量
-	private Map<String,String> statics;
+	private List<URouterWSCommunityHDVTO> hdts;
 	
-	public String getT() {
-		return t;
+	public String getCt() {
+		return ct;
 	}
-	public void setT(String t) {
-		this.t = t;
+	public void setCt(String ct) {
+		this.ct = ct;
 	}
-	public Map<String, String> getStatics() {
-		return statics;
+	public List<URouterWSCommunityHDVTO> getHdts() {
+		return hdts;
 	}
-	public void setStatics(Map<String, String> statics) {
-		this.statics = statics;
+	public void setHdts(List<URouterWSCommunityHDVTO> hdts) {
+		this.hdts = hdts;
 	}
 }
