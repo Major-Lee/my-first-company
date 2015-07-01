@@ -13,7 +13,6 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.vto.URouterWSCommunityHDVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 
@@ -134,8 +133,8 @@ public class WifiStasnifferHelper implements Serializable{
 		return null;
 	}*/
 	
-	public static void main(String[] args){
-		Map<String, String> communityCountByTypes = TerminalDeviceTypeCountHashService.getInstance().getAll("84:82:f4:19:01:0c");
-		communityType(communityCountByTypes);
-	}
+//	public static void main(String[] args){
+//		Map<String, String> communityCountByTypes = TerminalDeviceTypeCountHashService.getInstance().getAll("84:82:f4:19:01:0c");
+//		communityType(communityCountByTypes);
+//	}
 }

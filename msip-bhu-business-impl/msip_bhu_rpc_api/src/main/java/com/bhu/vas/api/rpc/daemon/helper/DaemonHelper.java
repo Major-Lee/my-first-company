@@ -26,11 +26,12 @@ public class DaemonHelper {
 		}
 		//开启或关闭wiffsinffer
 		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
-		/*if(needWiffsniffer){
+		if(needWiffsniffer){
 			//开启wiffsinffer
-			//CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
-			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, ""));
-		}*/
+			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
+			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, ParamWifisinfferDTO.Start_Sta_Sniffer));
+			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
+		}
 		
 //		if(StringUtils.isNotEmpty(dhcpcStatusQuery_interface)){
 //			//如果是dhcpc模式 获取状态信息
