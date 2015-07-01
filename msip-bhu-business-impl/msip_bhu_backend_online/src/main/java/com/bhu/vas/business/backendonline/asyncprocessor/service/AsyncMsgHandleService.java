@@ -132,18 +132,32 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s]", message));
 		
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
+		boolean isRouter = deviceFacadeService.isURooterDevice(dto.getMac());
+		boolean needWiffsniffer = false;
+		if(isRouter){
+			//判断周边探测是否开启 如果开启 再次下发开启指令
+			UserSettingState settingState = userSettingStateService.getById(dto.getMac());
+			if(settingState != null){
+				UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
+				if(wifiSniffer != null){
+					needWiffsniffer = wifiSniffer.isOn();
+				}
+			}
+			//终端上线push
+			pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+		}
 		//3:wifi设备对应handset在线列表初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备
 		//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac(), dto.getLogin_ts());
 		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
-		boolean needWiffsniffer = false;
+/*		boolean needWiffsniffer = false;
 		UserSettingState settingState = userSettingStateService.getById(dto.getMac());
 		if(settingState != null){
 			UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
 			if(wifiSniffer != null){
 				needWiffsniffer = wifiSniffer.isOn();
 			}
-		}
+		}*/
 		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer);
 		
 		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
@@ -151,9 +165,9 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 				new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
 		//如果是urouter设备 才会发push
-		if(deviceFacadeService.isURooterDevice(dto.getMac())){
+/*		if(isRouter){
 			pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
-		}
+		}*/
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	
