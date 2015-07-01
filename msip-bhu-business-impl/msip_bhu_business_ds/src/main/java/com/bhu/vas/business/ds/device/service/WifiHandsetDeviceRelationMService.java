@@ -89,9 +89,11 @@ public class WifiHandsetDeviceRelationMService {
 
                 //旧版本数据，不存在记录
                 if (wifiHandsetDeviceItemDetailMTDTOMap == null || wifiHandsetDeviceItemDetailMTDTOMap.isEmpty()) {
-                    dataMap = initWifiHansetDeviceItems( week, last_login_at);
+                    dataMap = initWifiHansetDeviceItems(week, last_login_at);
                 } else {
-                    dataMap = updateOnlineWifiHandsetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at);
+                    dataMap = updateOnlineWifiHandsetDeviceItems(
+                            wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at,
+                            wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 }
 
 
@@ -147,11 +149,14 @@ public class WifiHandsetDeviceRelationMService {
      * @param last_login_at
      */
     private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> updateOnlineWifiHandsetDeviceItems(
-                Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map, List<String> week, Date last_login_at) {
+                Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
+                List<String> week, Date last_login_at, String check_last_login_at) {
 
         Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
                 = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
 
+        String check_date = DateTimeHelper.formatDate(
+                DateTimeHelper.fromDateStr(check_last_login_at),DateTimeHelper.FormatPattern5);
         int i = 0;
         for (String date : week) {
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList = map.get(date);
@@ -160,6 +165,12 @@ public class WifiHandsetDeviceRelationMService {
                 wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
             }
             WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
+
+            if (date.equals(check_date)) {
+                if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <=0) {
+                    wifiHandsetDeviceItemDetailMDTOList.remove(0);
+                }
+            }
             if (i == 0 ) {
                 wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
                 wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
@@ -168,8 +179,12 @@ public class WifiHandsetDeviceRelationMService {
             i++;
         }
 
+
+
         return dataMap;
     }
+
+
 
     /**
      * 更新七天的终端详情下线数据
