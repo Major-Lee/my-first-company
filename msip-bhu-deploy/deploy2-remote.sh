@@ -65,49 +65,47 @@ echo '准备发布业务组件到'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/spring*-4.1.2.RELEASE.jar 	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/lib/msip_*.jar  	$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_input_processor/classes/com/ 	$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar  	root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/ 	root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/lib/spring*-4.1.2.RELEASE.jar	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/classes/com/ 	$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/classes/com/ 	root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
 echo 'deploy msip_bhu_unit_daemon_processor successfully @'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_unit_devices to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/lib/spring*-4.1.2.RELEASE.jar  			$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_devices/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/lib/msip_*.jar  		$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_devices/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/classes/com/ 		$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_devices/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/lib/msip_*.jar  		root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_devices/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/classes/com/ 		root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_devices/classes/com/
 echo 'deploy msip_bhu_unit_devices successfully @'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_unit_vas to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_vas/lib/spring*-4.1.2.RELEASE.jar  		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_unit_vas/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_vas/lib/msip_*.jar  			$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_vas/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_vas/classes/com/ 			$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_vas/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/lib/msip_*.jar  			root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_vas/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/classes/com/ 			root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_unit_vas/classes/com/
 echo 'deploy msip_bhu_unit_vas successfully @'$Deploy2ComponentServer1
 echo '发布业务组件成功'$Deploy2ComponentServer1
-
-
 
 echo '准备发布其他服务到'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_backend_online to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/lib/spring*-4.1.2.RELEASE.jar  	$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/lib/msip_*.jar  	$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/classes/com/ 		$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_online/bin/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar  	root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_online/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/ 		root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_online/bin/com/
 echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_backend_task to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/lib/spring*-4.1.2.RELEASE.jar		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/lib/msip_*.jar		$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_task/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_task/classes/com/ 		$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_task/bin/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/msip_*.jar		root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_task/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/classes/com/ 		root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_dataimport to ...@'$Deploy2ComponentServer1
 #rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/lib/spring*-4.1.2.RELEASE.jar  		$DeployUser@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/lib/msip_*.jar  		$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_dataimport/classes/com/ 			$DeployUser@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_dataimport/bin/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar  		root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_dataimport/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/ 			root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2ComponentServer1
 echo '发布其他服务成功'$Deploy2ComponentServer1
 
