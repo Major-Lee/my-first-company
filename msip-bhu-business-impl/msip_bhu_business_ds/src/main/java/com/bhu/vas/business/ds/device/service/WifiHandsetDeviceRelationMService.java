@@ -260,7 +260,7 @@ public class WifiHandsetDeviceRelationMService {
             } else { //如果离线记录先上报
                 Date date = new Date();
                 dataMap = initWifiHansetDeviceItems(week, date);
-                update.set("last_login_at", date);
+                update.set("last_login_at", DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
                 update.set("total_rx_bytes", 0);
             }
 
