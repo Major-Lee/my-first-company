@@ -41,9 +41,12 @@
 	</appender>	
 
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
-		<appender-ref ref="stdout" />
 		<appender-ref ref="unitrequestfile" />
 	</logger>	
+	
+	<logger name="com.bhu.vas.rpc.facade" additivity="false" level="INFO">
+		<appender-ref ref="unitrequestfile" />
+	</logger>
 	
 	<logger name="com.bhu.vas.business.ds.warmup" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />

@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +71,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class DeviceBusinessFacadeService {
-	//private final Logger logger = LoggerFactory.getLogger(DeviceBusinessFacadeService.class);
+	private final Logger logger = LoggerFactory.getLogger(DeviceBusinessFacadeService.class);
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -924,15 +926,21 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		//任务callback
-		WifiDeviceDownTaskCompleted task_completed = doTaskCallback(taskid, status, response);
+		WifiDeviceDownTask task_with_paylaod = doTaskCallback(taskid, status, response);
+		//如果任务数据转移出现异常 而设备配置又修改成功 也需要更新设备配置数据 从taskdown表中提取任务payload
+		if(task_with_paylaod == null){
+			if(WifiDeviceDownTask.State_Done.equals(status)){
+				task_with_paylaod = taskFacadeService.findWifiDeviceDownTaskById(taskid);
+			}
+		}
 		//如果任务是成功完成的 进行新配置数据合并
-		if(task_completed != null && WifiDeviceDownTask.State_Done.equals(task_completed.getState())){
+		if(task_with_paylaod != null && WifiDeviceDownTask.State_Done.equals(status)){
 			WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 			if(entity != null){
 				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 				if(setting_dto != null){
 					//新配置数据合并
-					String payload = task_completed.getPayload();
+					String payload = task_with_paylaod.getPayload();
 					if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
 						String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
 						if(!StringUtils.isEmpty(cmdWithoutHeader)){
@@ -945,8 +953,8 @@ public class DeviceBusinessFacadeService {
 								entity.putInnerModel(setting_dto);
 								wifiDeviceSettingService.update(entity);
 								//修改配置成功的后续业务操作
-								this.taskModifyDeviceSettingCompletedDeliverMessage(task_completed.getUid(), 
-											wifiId, task_completed.getSubopt());
+								this.taskModifyDeviceSettingCompletedDeliverMessage(task_with_paylaod.getUid(), 
+											wifiId, task_with_paylaod.getSubopt());
 							}
 						}
 					}
@@ -1147,6 +1155,9 @@ public class DeviceBusinessFacadeService {
 				return taskFacadeService.taskExecuteCallback(taskid, status,response);
 			}catch(BusinessI18nCodeException bex){
 				bex.printStackTrace(System.out);
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+				logger.error("DeviceBusinessFacadeService doTaskCallback exception", ex);
 			}
 		}
 		return null;
