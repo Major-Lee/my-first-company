@@ -3,6 +3,28 @@ cd `dirname $0`
 Current_DIR=`pwd`
 echo $Current_DIR
 
+Deploy2ComponentServer1='123.56.121.220'
+Deploy2ComponentServer2='182.92.231.58'
+DeployUser=$1
+
+read -n1 -p "Do you want to deploy 2 $Deploy2ComponentServer1(Remote Production) [Y/N]?"
+case $REPLY in
+	Y | y) echo
+          echo "fine ,continue on .."
+          ;;
+	N | n) echo 
+          echo "OK, goodbye..."
+          exit
+          ;;
+    *) echo
+    	echo "only accept Y,y,N,n"
+    	exit
+    	;;           
+          #exit
+esac
+
+echo "starting deploy2=>"$Deploy2ComponentServer1
+sleep 5
 #Deploy2Server=$1
 #回到msip-bhu-deploy目录进入deploy目录，并且创建每日的预发布文件存储目录
 #cd msip-bhu-deploy
@@ -58,9 +80,7 @@ unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport
 unzip -qo msip_bhu_rest.war -d msip_bhu_rest
 echo '文件解压过程成功'
 
-Deploy2ComponentServer1='123.56.121.220'
-Deploy2ComponentServer2='182.92.231.58'
-DeployUser=$1
+
 echo '准备发布业务组件到'$Deploy2ComponentServer1
 
 echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2ComponentServer1
