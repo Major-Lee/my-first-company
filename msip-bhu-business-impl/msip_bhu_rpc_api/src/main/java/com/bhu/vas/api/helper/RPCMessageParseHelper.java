@@ -3,6 +3,7 @@ package com.bhu.vas.api.helper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -276,7 +277,7 @@ public class RPCMessageParseHelper {
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setYesterday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
 					if(dto.getYesterday() != null){
-						ScoreDTO analyse = ScoreHelper.analyse(Long.parseLong(dto.getYesterday().getRx_bytes()), Integer.parseInt(dto.getYesterday().getSta_max_time_num()));
+						ScoreDTO analyse = ScoreHelper.analyse(new BigInteger(dto.getYesterday().getRx_bytes()).longValue(), Integer.parseInt(dto.getYesterday().getSta_max_time_num()));
 						dto.getYesterday().setKo(analyse.getHint());
 						dto.getYesterday().setScore(analyse.getScore());
 					}
