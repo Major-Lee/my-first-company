@@ -261,7 +261,7 @@ public class RPCMessageParseHelper {
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setToday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
 					if(dto.getToday() != null){
-						ScoreDTO analyse = ScoreHelper.analyse(new BigInteger(dto.getToday().getRx_bytes()).longValue(), Integer.parseInt(dto.getToday().getSta_max_time_num()));
+						ScoreDTO analyse = ScoreHelper.analyse(convert(dto.getToday().getRx_bytes()), Integer.parseInt(dto.getToday().getSta_max_time_num()));
 						dto.getToday().setKo(analyse.getHint());
 						dto.getToday().setScore(analyse.getScore());
 					}
@@ -277,7 +277,7 @@ public class RPCMessageParseHelper {
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setYesterday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
 					if(dto.getYesterday() != null){
-						ScoreDTO analyse = ScoreHelper.analyse(new BigInteger(dto.getYesterday().getRx_bytes()).longValue(), Integer.parseInt(dto.getYesterday().getSta_max_time_num()));
+						ScoreDTO analyse = ScoreHelper.analyse(convert(dto.getYesterday().getRx_bytes()), Integer.parseInt(dto.getYesterday().getSta_max_time_num()));
 						dto.getYesterday().setKo(analyse.getHint());
 						dto.getYesterday().setScore(analyse.getScore());
 					}
@@ -293,6 +293,16 @@ public class RPCMessageParseHelper {
 		}finally{
 		}
 		return dto;
+	}
+	
+	private static long convert(String rx_bytes){
+		long ret = 0l;
+		try{
+			ret = Long.parseLong(rx_bytes);
+		}catch(NumberFormatException ex){
+			ret = Long.MAX_VALUE;
+		}
+		return ret;
 	}
 	/***
 	 * 获取实时速率的解析xml
@@ -540,6 +550,11 @@ public class RPCMessageParseHelper {
 //		for(WifiDeviceFlowDTO dto : dtos){
 //			System.out.println(dto.getName() + "-" + dto.getRx_bytes());
 //		}
+		long parseLong = convert("18446744072804816726");
+		
+		System.out.println(Long.MAX_VALUE);
+		System.out.println(new BigInteger("18446744072804816726").longValue());
+        System.out.println(new Date(1435807903055l));
 		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
         String str;
         StringBuffer content = new StringBuffer();
@@ -558,13 +573,13 @@ public class RPCMessageParseHelper {
         	today_rx_total+= Long.parseLong(sdto.getRx_bytes());
         }
         System.out.println(String.format("today_rx[%s] today_rx_total[%s]",today_rx,today_rx_total));
-        
+        /*
         long yesterday_rx = Long.parseLong(dto.getYesterday().getRx_bytes());
         long yesterday_rx_total = 0;
         for(HourUsedStatisticsDTO sdto:dto.getYesterday_detail()){
         	yesterday_rx_total += Long.parseLong(sdto.getRx_bytes());
         }
-        System.out.println(String.format("yesterday_rx[%s] yesterday_rx_total[%s]",yesterday_rx,yesterday_rx_total));
+        System.out.println(String.format("yesterday_rx[%s] yesterday_rx_total[%s]",yesterday_rx,yesterday_rx_total));*/
         /*System.out.println(JsonHelper.getJSONString(dto));
         
         String json = JsonHelper.getJSONString(dto);
@@ -601,6 +616,5 @@ public class RPCMessageParseHelper {
 		//generateDTOFromQueryDeviceUsedStatus
         
         
-        System.out.println(new Date(1435807903055l));
 	}
 }
