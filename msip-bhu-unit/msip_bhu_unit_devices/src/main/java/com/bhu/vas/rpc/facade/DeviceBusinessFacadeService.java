@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -521,28 +522,38 @@ public class DeviceBusinessFacadeService {
 	 * @param ctx
 	 * @param dto
 	 */
-	public void handsetDeviceSync(String ctx, String wifiId, List<HandsetDeviceDTO> dtos){
-		if(StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(ctx))
+	public void handsetDeviceSync(String ctx, String mac, List<HandsetDeviceDTO> dtos){
+		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		
-		deliverMessageService.sendHandsetDeviceSyncActionMessage(wifiId.toLowerCase(), dtos);
-//		//a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
-//		HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(dto.getMac());
-//		if(exist_handset_device_entity == null || !exist_handset_device_entity.isOnline()){
-//			this.handsetDeviceOnline(ctx, dto);
-//			return;
-//		}
-//		//b:如果移动设备目前在线
-//		if(exist_handset_device_entity.isOnline()){
-//			//1:移动设备基础信息更新
-//			HandsetDevice handset_device_entity = BusinessModelBuilder.handsetDeviceDtoToEntity(dto);
-//			handsetDeviceService.update(handset_device_entity);
-//			
-//			String wifiId = handset_device_entity.getBssid();
-//			//2:wifi设备对应handset在线列表redis更新
-//			WifiDeviceHandsetPresentSortedSetService.getInstance().addPresent(wifiId, handset_device_entity.getId(), 
-//					handset_device_entity.getLast_login_at().getTime());
-//		}
+		//deliverMessageService.sendHandsetDeviceSyncActionMessage(wifiId.toLowerCase(), dtos);
+		//1:清除wifi设备对应handset在线列表redis
+		deviceFacadeService.allHandsetDoOfflines(mac);
+		
+		if(dtos != null && !dtos.isEmpty()){
+			List<String> ids = new ArrayList<String>();
+			for(HandsetDeviceDTO dto : dtos){
+				ids.add(dto.getMac().toLowerCase());
+			}
+			
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(ids);
+			int cursor = 0;
+			for(HandsetDeviceDTO handset : handsets){
+				HandsetDeviceDTO dto = dtos.get(cursor);
+				if(handset != null){
+					dto.setDhcp_name(handset.getDhcp_name());
+					dto.setData_tx_rate(handset.getData_tx_rate());
+					dto.setData_rx_rate(handset.getData_rx_rate());
+				}
+				String handsetId = dto.getMac().toLowerCase();
+				//1:wifi设备对应handset在线列表redis 重新写入
+				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, handset.fetchData_rx_rate_double());
+				cursor++;
+			}
+			HandsetStorageFacadeService.handsetsComming(dtos);
+			//相关统计数据，业务日志，终端接入流水日志
+			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, dtos);
+		}
 	}
 	
 	
@@ -631,9 +642,45 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, int taskid){
-		List<WifiDeviceTerminalDTO> dtos = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
-		if(dtos != null && !dtos.isEmpty()){
-			deliverMessageService.sendQueryDeviceTerminalsActionMessage(wifiId, dtos);
+		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+		if(terminals != null && !terminals.isEmpty()){
+			//获取设备的配置的dto
+			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(wifiId);
+			if(setting_entity == null) return;
+			WifiDeviceSettingDTO setting_entity_dto = setting_entity.getInnerModel();
+			
+			if(terminals != null && !terminals.isEmpty()){
+				List<String> hdIds = new ArrayList<String>();
+				for(WifiDeviceTerminalDTO terminal : terminals){
+					hdIds.add(terminal.getMac());
+				}
+				//1:更新被管理的终端的上下行速率和ssid bssid
+				int cursor = 0;
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hdIds);
+				//List<HandsetDevice> need_inserts = null;
+				//List<HandsetDevice> need_updates = null;
+				for(HandsetDeviceDTO handset : handsets){
+					WifiDeviceTerminalDTO terminal = terminals.get(cursor);
+					//判断是否在黑名单中
+					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
+						continue;
+					if(handset == null){
+						handset = new HandsetDeviceDTO();
+						handset.setMac(terminal.getMac());
+						handset.setAction(HandsetDeviceDTO.Action_Online);
+						handset.setTs(System.currentTimeMillis());
+						handset.setLast_wifi_id(wifiId);
+					}else{
+						handset.setData_tx_rate(terminal.getData_tx_rate());
+						handset.setData_rx_rate(terminal.getData_rx_rate());
+					}
+					
+					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
+							terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+					cursor++;
+				}
+				HandsetStorageFacadeService.handsetsComming(handsets);
+			}
 		}
 	}
 	

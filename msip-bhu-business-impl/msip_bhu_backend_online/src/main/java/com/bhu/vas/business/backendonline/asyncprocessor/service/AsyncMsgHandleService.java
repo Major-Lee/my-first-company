@@ -14,13 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
-import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
@@ -36,7 +34,6 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
@@ -47,13 +44,11 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
@@ -517,16 +512,12 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 * modified by Edmond Lee for handset storage
 	 */
-	public void handsetDeviceSyncHandle(String message){
+/*	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
 		
 		HandsetDeviceSyncDTO sync_dto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
 		String wifiId = sync_dto.getMac();
 		if(!StringUtils.isEmpty(wifiId)){
-			//1:清除wifi设备对应handset在线列表redis
-			deviceFacadeService.allHandsetDoOfflines(sync_dto.getMac());
-			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(sync_dto.getMac());
-			//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(sync_dto.getMac());
 			
 			List<HandsetDeviceDTO> dtos = sync_dto.getDtos();
 			if(dtos != null && !dtos.isEmpty()){
@@ -554,14 +545,14 @@ public class AsyncMsgHandleService {
 						dto.setDhcp_name(handset.getDhcp_name());
 						dto.setData_tx_rate(handset.getData_tx_rate());
 						dto.setData_rx_rate(handset.getData_rx_rate());
-						/*BeanUtils.copyProperties(dto, entity, HandsetDeviceDTO.copyIgnoreProperties);
+						BeanUtils.copyProperties(dto, entity, HandsetDeviceDTO.copyIgnoreProperties);
 						if(!StringUtils.isEmpty(dto.getDhcp_name())){
 							entity.setHostname(dto.getDhcp_name());
 						}
 						entity.setLast_login_at(new Date());
 						entity.setLast_wifi_id(wifiId);
 						entity.setOnline(true);
-						entityNewOnlines.add(entity);*/
+						entityNewOnlines.add(entity);
 					}
 					String handsetId = dto.getMac().toLowerCase();
 					//1:wifi设备对应handset在线列表redis 重新写入
@@ -579,7 +570,7 @@ public class AsyncMsgHandleService {
 					BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(wifiId, handsetId, sync_dto.getTs());
 					cursor++;
 				}
-				/*//有新上线的设备(非新注册)
+				//有新上线的设备(非新注册)
 				if(!entityNewOnlines.isEmpty()){
 					//2:移动设备基础信息更新 
 					handsetDeviceService.updateAll(entityNewOnlines);
@@ -588,14 +579,14 @@ public class AsyncMsgHandleService {
 				if(!entityNewRegisters.isEmpty()){
 					//2:移动设备基础信息更新
 					handsetDeviceService.insertAll(entityNewRegisters);
-				}*/
+				}
 				HandsetStorageFacadeService.handsetsComming(dtos);
 				//终端统计
 				deviceFacadeService.deviceStatisticsOnlines(ds, DeviceStatistics.Statis_HandsetDevice_Type);
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s] successful", message));
-	}
+	}*/
 /*	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
 		
@@ -788,7 +779,7 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 * modified by Edmond Lee for handset storage
 	 */
-	public void WifiDeviceTerminalNotify(String message){
+/*	public void WifiDeviceTerminalNotify(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s]", message));
 		WifiDeviceTerminalNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceTerminalNotifyDTO.class);
 		
@@ -819,7 +810,7 @@ public class AsyncMsgHandleService {
 //						setting_entity_dto, terminal.getMac());
 				
 				if(handset == null){
-					/*HandsetDevice hd_entity = new HandsetDevice();
+					HandsetDevice hd_entity = new HandsetDevice();
 					hd_entity.setId(terminal.getMac());
 					hd_entity.setLast_login_at(new Date());
 					hd_entity.setLast_wifi_id(dto.getMac());
@@ -827,7 +818,7 @@ public class AsyncMsgHandleService {
 					hd_entity.setOnline(true);
 					if(need_inserts == null)
 						need_inserts = new ArrayList<HandsetDevice>();
-					need_inserts.add(hd_entity);*/
+					need_inserts.add(hd_entity);
 					handset = new HandsetDeviceDTO();
 					handset.setMac(terminal.getMac());
 					handset.setAction(HandsetDeviceDTO.Action_Online);
@@ -835,9 +826,9 @@ public class AsyncMsgHandleService {
 					handset.setLast_wifi_id(dto.getMac());
 					//handset.setDhcp_name(terminal.getVapname());
 				}else{
-					/*entity.setVapname(terminal.getVapname());
+					entity.setVapname(terminal.getVapname());
 					entity.setData_tx_rate(terminal.getData_tx_rate());
-					entity.setData_rx_rate(terminal.getData_rx_rate());*/
+					entity.setData_rx_rate(terminal.getData_rx_rate());
 					
 					//handset.setDhcp_name(terminal.getVapname());
 					handset.setData_tx_rate(terminal.getData_tx_rate());
@@ -848,9 +839,9 @@ public class AsyncMsgHandleService {
 //						entity.setData_tx_limit(rc.getTx());
 //						entity.setData_rx_limit(rc.getRx());
 //					}
-					/*if(need_updates == null)
+					if(need_updates == null)
 						need_updates = new ArrayList<HandsetDevice>();
-					need_updates.add(entity);*/
+					need_updates.add(entity);
 				}
 				
 				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(dto.getMac(), 
@@ -858,14 +849,14 @@ public class AsyncMsgHandleService {
 				cursor++;
 			}
 			HandsetStorageFacadeService.handsetsComming(handsets);
-			/*if(need_inserts != null)
+			if(need_inserts != null)
 				handsetDeviceService.insertAll(need_inserts);
 			if(need_updates != null)
-				handsetDeviceService.updateAll(need_updates);*/
+				handsetDeviceService.updateAll(need_updates);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s] successful", message));
 
-	}	
+	}	*/
 /*	public void WifiDeviceTerminalNotify(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor WifiDeviceTerminalNotify message[%s]", message));
 		WifiDeviceTerminalNotifyDTO dto = JsonHelper.getDTO(message, WifiDeviceTerminalNotifyDTO.class);
