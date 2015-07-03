@@ -261,7 +261,7 @@ public class RPCMessageParseHelper {
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setToday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
 					if(dto.getToday() != null){
-						ScoreDTO analyse = ScoreHelper.analyse(Long.parseLong(dto.getToday().getRx_bytes()), Integer.parseInt(dto.getToday().getSta_max_time_num()));
+						ScoreDTO analyse = ScoreHelper.analyse(new BigInteger(dto.getToday().getRx_bytes()).longValue(), Integer.parseInt(dto.getToday().getSta_max_time_num()));
 						dto.getToday().setKo(analyse.getHint());
 						dto.getToday().setScore(analyse.getScore());
 					}
