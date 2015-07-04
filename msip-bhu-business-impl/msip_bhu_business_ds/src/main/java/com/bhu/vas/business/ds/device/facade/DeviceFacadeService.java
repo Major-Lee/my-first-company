@@ -97,10 +97,15 @@ public class DeviceFacadeService {
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			List<HandsetDeviceDTO> do_offline_handsets = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDeviceDTO dto:handsets){
-				dto.setAction(HandsetDeviceDTO.Action_Offline);
+				if(dto != null){
+					dto.setAction(HandsetDeviceDTO.Action_Offline);
+					do_offline_handsets.add(dto);
+				}
+				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
-			HandsetStorageFacadeService.handsetsComming(handsets);
+			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
 		}
 		/*List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
 		if(!handset_devices_online_entitys.isEmpty()){
