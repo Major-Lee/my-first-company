@@ -8,7 +8,8 @@ package com.bhu.vas.api.vto;
  * @author tangzichao
  *
  */
-public class WifiSinfferSettingVTO{
+@SuppressWarnings("serial")
+public class WifiSinfferSettingVTO implements java.io.Serializable{
 	//Wifi Timer开关
 	private boolean on = false;
 	//最近12小时出现的终端数量
