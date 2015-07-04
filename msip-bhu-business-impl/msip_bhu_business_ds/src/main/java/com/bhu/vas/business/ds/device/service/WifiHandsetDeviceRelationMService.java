@@ -170,6 +170,11 @@ public class WifiHandsetDeviceRelationMService {
                 if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <=0) {
                     wifiHandsetDeviceItemDetailMDTOList.remove(0);
                 }
+                //忽略5分钟之内频繁上下线记录
+                if ( last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
+                        < 5 * 60 * 1000) {
+                    continue;
+                }
             }
             if (i == 0 ) {
                 wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
