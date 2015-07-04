@@ -52,6 +52,7 @@ import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.URouterWSHotVTO;
 import com.bhu.vas.api.vto.URouterWSRecentVTO;
+import com.bhu.vas.api.vto.WifiSinfferSettingVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
@@ -557,14 +558,26 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	protected void urouterPlugins4TerminalOnline(UserSettingState user_setting_entity,
 			Map<String,Object> ret){
+		//终端上线设置数据
 		UserTerminalOnlineSettingDTO uto_dto = user_setting_entity.getUserSetting(UserTerminalOnlineSettingDTO.
 				Setting_Key, UserTerminalOnlineSettingDTO.class);
+		//定时开关设置数据
 		UserWifiTimerSettingDTO uwt_dto = user_setting_entity.getUserSetting(UserWifiTimerSettingDTO.
 				Setting_Key, UserWifiTimerSettingDTO.class);
 		uwt_dto.setEnable(uwt_dto.wifiCurrentEnable());
+		//周边探测设置数据
+		WifiSinfferSettingVTO uws_vto = new WifiSinfferSettingVTO();
 		UserWifiSinfferSettingDTO uws_dto = user_setting_entity.getUserSetting(UserWifiSinfferSettingDTO.
 				Setting_Key, UserWifiSinfferSettingDTO.class);
-		
+		if(uws_dto != null){
+			uws_vto.setOn(uws_dto.isOn());
+			//获取最近12小时出现的终端数量
+			long current_ts = System.currentTimeMillis();
+			long hours12ago_ts = current_ts - (12 * 3600 * 1000l);
+			long recent12hours_count = TerminalRecentSortedSetService.getInstance().sizeByScore(user_setting_entity.getId(), 
+					hours12ago_ts, current_ts);
+			uws_vto.setRecent_c(recent12hours_count);
+		}
 		/*if(uto_dto == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		}*/
@@ -573,7 +586,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		if(uwt_dto != null)
 			ret.put(UserWifiTimerSettingDTO.Setting_Key, uwt_dto);
 		if(uws_dto != null)
-			ret.put(UserWifiSinfferSettingDTO.Setting_Key, uws_dto);
+			ret.put(UserWifiSinfferSettingDTO.Setting_Key, uws_vto);
 		
 	}
 	
