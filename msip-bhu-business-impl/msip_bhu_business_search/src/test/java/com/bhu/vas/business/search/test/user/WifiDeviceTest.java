@@ -132,7 +132,7 @@ public class WifiDeviceTest extends BaseTest{
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testSearchByKeywords() throws ESQueryValidateException{
 		String mac = "";//"84:82:f4:6f:00";
 		String orig_swver="";//"V1.2.5";
