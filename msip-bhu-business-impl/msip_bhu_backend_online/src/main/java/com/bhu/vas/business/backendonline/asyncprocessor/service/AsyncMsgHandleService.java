@@ -68,7 +68,6 @@ import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.ChanzorSMSHelper;
-import com.smartwork.msip.cores.helper.sms.WangjianSMSHelper;
 
 @Service
 public class AsyncMsgHandleService {
