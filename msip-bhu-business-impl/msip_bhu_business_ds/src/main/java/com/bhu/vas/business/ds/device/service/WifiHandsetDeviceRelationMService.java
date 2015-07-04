@@ -210,7 +210,8 @@ public class WifiHandsetDeviceRelationMService {
             if (i == 0) {
                 WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
                         wifiHandsetDeviceItemDetailMDTOList.get(0);
-                wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
+                wifiHandsetDeviceItemDetailMDTO.setOnline_time(
+                        wifiHandsetDeviceItemDetailMDTO.getOnline_time() + Long.parseLong(uptime));
                 wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
             }
             dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
