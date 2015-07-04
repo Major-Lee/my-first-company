@@ -552,7 +552,7 @@ public class DeviceBusinessFacadeService {
 			}
 			HandsetStorageFacadeService.handsetsComming(dtos);
 			//相关统计数据，业务日志，终端接入流水日志
-			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, dtos);
+			//deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, dtos);
 		}
 	}
 	
