@@ -166,11 +166,10 @@ public class WifiHandsetDeviceRelationMService {
                 WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
 
                 //删除非法下线记录
+                //1.先离线，会更新一条记录。
                 if (date.equals(check_date)) {
-                    if (wifiHandsetDeviceItemDetailMDTOList.size() > 1) {
-                        if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <= 0) {
-                            wifiHandsetDeviceItemDetailMDTOList.remove(0);
-                        }
+                    if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <= 0) {
+                        wifiHandsetDeviceItemDetailMDTOList.remove(0);
                     }
                 }
 
