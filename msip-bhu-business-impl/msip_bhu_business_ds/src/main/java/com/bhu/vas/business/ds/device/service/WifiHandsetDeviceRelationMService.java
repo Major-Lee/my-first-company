@@ -155,37 +155,41 @@ public class WifiHandsetDeviceRelationMService {
 
         String check_date = DateTimeHelper.formatDate(
                 DateTimeHelper.fromDateStr(check_last_login_at),DateTimeHelper.FormatPattern5);
+
         int i = 0;
         for (String date : week) {
-            System.out.println("updateOnlineWifiHandsetDeviceItems === " + date);
-            List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList = map.get(date);
+            try {
+                List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList = map.get(date);
 
-            if (wifiHandsetDeviceItemDetailMDTOList == null) {
-                wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
-            }
-            WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
-
-            if (date.equals(check_date)) {
-                if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <=0) {
-                    wifiHandsetDeviceItemDetailMDTOList.remove(0);
+                if (wifiHandsetDeviceItemDetailMDTOList == null) {
+                    wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
                 }
-            }
+                WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
 
-            if (i == 0 ) {
-                //删除最后一次非法离线，比如设备升级
-                if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <=0) {
-                    wifiHandsetDeviceItemDetailMDTOList.remove(0);
-                }
-                //忽略5分钟之内频繁上下线记录
-                if ( last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
-                        > 5 * 60 * 1000) {
-                    wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
-                    wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
+                //删除非法下线记录
+                if (date.equals(check_date)) {
+                    if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
+                        if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <= 0) {
+                            wifiHandsetDeviceItemDetailMDTOList.remove(0);
+                        }
+                    }
                 }
 
+                if (i == 0) {
+                    //忽略5分钟之内频繁上下线记录
+                    if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
+                        if (last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
+                                > 5 * 60 * 1000) {
+                            wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
+                            wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
+                        }
+                    }
+                }
+                dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
+                i++;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
-            i++;
         }
 
 
