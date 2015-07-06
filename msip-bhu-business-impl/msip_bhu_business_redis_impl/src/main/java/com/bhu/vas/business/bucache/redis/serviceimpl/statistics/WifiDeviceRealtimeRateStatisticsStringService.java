@@ -140,6 +140,11 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		super.expire(key, exprie_rate_waiting_seconds);
 	}
 	
+	public void removeRateWaiting(String mac){
+		String key = generateRateWaitingKey(mac);
+		super.del(key);
+	}
+	
 	public void addPeakRateWaiting(String mac){
 		String key = generatePeakRateWaitingKey(mac);
 		super.set(key, WaitingMark);
