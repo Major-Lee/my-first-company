@@ -167,7 +167,7 @@ public class WifiHandsetDeviceRelationMService {
 
                 //删除非法下线记录
                 if (date.equals(check_date)) {
-                    if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
+                    if (wifiHandsetDeviceItemDetailMDTOList.size() > 1) {
                         if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <= 0) {
                             wifiHandsetDeviceItemDetailMDTOList.remove(0);
                         }
