@@ -171,7 +171,12 @@ public class WifiHandsetDeviceRelationMService {
                     wifiHandsetDeviceItemDetailMDTOList.remove(0);
                 }
             }
+
             if (i == 0 ) {
+                //删除最后一次非法离线，比如设备升级
+                if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <=0) {
+                    wifiHandsetDeviceItemDetailMDTOList.remove(0);
+                }
                 //忽略5分钟之内频繁上下线记录
                 if ( last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
                         > 5 * 60 * 1000) {
