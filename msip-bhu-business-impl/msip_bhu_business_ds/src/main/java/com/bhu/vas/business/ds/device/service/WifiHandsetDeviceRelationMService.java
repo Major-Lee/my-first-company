@@ -166,8 +166,9 @@ public class WifiHandsetDeviceRelationMService {
                 WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
 
                 //删除非法下线记录
+                //如果服务器重启后，设备会先离线，此时更新一条记录。
                 if (date.equals(check_date)) {
-                    if (wifiHandsetDeviceItemDetailMDTOList.size() > 1) {
+                    if (wifiHandsetDeviceItemDetailMDTOList.size() > 0) {
                         if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <= 0) {
                             wifiHandsetDeviceItemDetailMDTOList.remove(0);
                         }
@@ -177,11 +178,12 @@ public class WifiHandsetDeviceRelationMService {
                 if (i == 0) {
                     //忽略5分钟之内频繁上下线记录
                     if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
-
                         if (last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
                                 > 5 * 60 * 1000) {
                             wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
                             wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
+                        } else {
+                            wifiHandsetDeviceItemDetailMDTOList.get(0).setLogout_at(0); //清空登出时间
                         }
                     } else {
                         //如果是第一条数据
