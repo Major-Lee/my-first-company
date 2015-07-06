@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.StatisticsFragmentMaxOnlineDeviceService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.StatisticsFragmentMaxOnlineHandsetService;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -27,23 +27,28 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class StatisticsOnlineLoader {
 	private static Logger logger = LoggerFactory.getLogger(StatisticsOnlineLoader.class);
 	
-	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	/*@Resource
+	private HandsetDeviceService handsetDeviceService;*/
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 
-	
+	/**
+	 * modified by Edmond Lee for handset storage
+	 */
 	public void execute() {
 		logger.info("StatisticsOnlineUserLoader starting...");
 		Date current = new Date();
+		/*ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("online", 1);
+		int countHandset = handsetDeviceService.countByModelCriteria(mc);*/
+		int[] statistics = HandsetStorageFacadeService.statistics();
+		StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(current, statistics[0]);
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("online", 1);
-		int countHandset = handsetDeviceService.countByModelCriteria(mc);
-		StatisticsFragmentMaxOnlineHandsetService.getInstance().fragmentAllSet(current, countHandset);
 		int countDevice = wifiDeviceService.countByModelCriteria(mc);
 		StatisticsFragmentMaxOnlineDeviceService.getInstance().fragmentAllSet(current, countDevice);
-		logger.info(String.format("StatisticsOnlineUserLoader ended, total handsetOnline[%s] deviceOnline[%s]!", countHandset,countDevice));
+		logger.info(String.format("StatisticsOnlineUserLoader ended, total handsetOnline[%s] deviceOnline[%s]!", statistics[0],countDevice));
 		
 	}
 	//TODO：TBD是否需要补齐？

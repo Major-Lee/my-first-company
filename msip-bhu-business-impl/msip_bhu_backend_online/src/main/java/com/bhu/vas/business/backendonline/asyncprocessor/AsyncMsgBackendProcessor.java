@@ -64,9 +64,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case HandsetDeviceOffline:
 							asyncMsgHandleService.handsetDeviceOfflineHandle(message);
 							break;
-						case HandsetDeviceSync:
-							asyncMsgHandleService.handsetDeviceSyncHandle(message);
-							break;
+//						case HandsetDeviceSync:
+//							asyncMsgHandleService.handsetDeviceSyncHandle(message);
+//							break;
 						case WifiDeviceLocation:
 							asyncMsgHandleService.wifiDeviceLocationHandle(message);
 							break;
@@ -79,9 +79,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceSettingChanged:
 							asyncMsgHandleService.wifiDeviceSettingChanged(message);
 							break;
-						case WifiDeviceTerminalNotify:
-							asyncMsgHandleService.WifiDeviceTerminalNotify(message);
-							break;
+//						case WifiDeviceTerminalNotify:
+//							asyncMsgHandleService.WifiDeviceTerminalNotify(message);
+//							break;
 						case WifiDeviceRealtimeRateFetch:
 							asyncMsgHandleService.wifiDeviceRealtimeRateFetch(message);
 							break;		

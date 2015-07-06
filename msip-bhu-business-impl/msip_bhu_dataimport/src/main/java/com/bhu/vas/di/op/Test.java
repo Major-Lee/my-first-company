@@ -4,6 +4,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,6 +59,11 @@ public class Test {
         for (Person person : persons) {
             System.out.println(person.getName());
         }
+
+        System.out.println(new Date());
+        System.out.println(new Date().getTime());
+        System.out.println(new Date(1435543431582L));
+
 
     }
 

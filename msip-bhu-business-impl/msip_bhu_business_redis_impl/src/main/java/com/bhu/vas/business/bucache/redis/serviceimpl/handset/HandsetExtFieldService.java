@@ -1,41 +1,37 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import redis.clients.jedis.JedisPool;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
-
 /**
- * 设备终端数量增量计数
- * 在线终端数量
+ * 设备终端数量的一些扩展 变动的字段
+ * dhcp_name
+ * Last_wifi_id
+ * Data_tx_rate
+ * Data_rx_rate
  * 所有终端数量
  * @author edmond
  *
  */
-public class HandsetStatisticsService extends AbstractRelationHashCache {
+public class HandsetExtFieldService extends AbstractRelationHashCache {
 	
 	private static class ServiceHolder{ 
-		private static HandsetStatisticsService instance =new HandsetStatisticsService(); 
+		private static HandsetExtFieldService instance =new HandsetExtFieldService(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static HandsetStatisticsService getInstance() { 
+	public static HandsetExtFieldService getInstance() { 
 		return ServiceHolder.instance; 
 	}
 	
-	private HandsetStatisticsService(){
+	private HandsetExtFieldService(){
 	}
 	
-	private static final String Field_Online = "O";
+/*	private static final String Field_Online = "O";
 	private static final String Field_Total = "T";
 	
 	private static String generateKey(){
@@ -70,7 +66,7 @@ public class HandsetStatisticsService extends AbstractRelationHashCache {
 		else
 			result[1] = 0;
 		return result;
-	}
+	}*/
 	
 	@Override
 	public String getRedisKey() {
@@ -79,7 +75,7 @@ public class HandsetStatisticsService extends AbstractRelationHashCache {
 	
 	@Override
 	public String getName() {
-		return HandsetStatisticsService.class.getName();
+		return HandsetExtFieldService.class.getName();
 	}
 	@Override
 	public JedisPool getRedisPool() {

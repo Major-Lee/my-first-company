@@ -4,9 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
-import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.vto.*;
+import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
+import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdDetailVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
+import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 
 
@@ -55,4 +63,6 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick);
 	
 	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size);
+
+	public RpcResponseDTO<URouterWSCommunityVTO> urouterWSCommunity(Integer uid, String mac);
 }

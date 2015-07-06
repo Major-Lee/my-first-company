@@ -146,6 +146,7 @@ public class BusinessModelBuilder {
 		//result.setLast_login_at(new Date());
 		result.setDhcp_name(hDevice.getHostname());
 		result.setVapname(hDevice.getVapname());
+		result.setLast_wifi_id(hDevice.getLast_wifi_id());
 		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		//handset_device_entity.setOnline(true);
 		return result;
@@ -253,6 +254,51 @@ public class BusinessModelBuilder {
 			vto.setRx_rate(hd_entity.getData_tx_rate());
 			if(!StringUtils.isEmpty(hd_entity.getVapname()))
 				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
+		}
+		return vto;
+	}
+	
+	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
+			WifiDeviceSettingDTO setting_dto){
+		URouterHdVTO vto = new URouterHdVTO();
+		vto.setHd_mac(hd_mac);
+		vto.setOnline(online);
+		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
+		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
+		WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+				setting_dto, hd_mac);
+		if(rc != null){
+			//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+			if(!StringUtils.isEmpty(rc.getRx()))
+				vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
+			if(!StringUtils.isEmpty(rc.getTx()))
+				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
+		}
+		
+		if(hd_entity != null){
+			if(StringUtils.isEmpty(vto.getN())){
+				vto.setN(hd_entity.getDhcp_name());
+			}
+			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
+			vto.setTx_rate(hd_entity.getData_rx_rate());
+			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
+			vto.setRx_rate(hd_entity.getData_tx_rate());
+			if(!StringUtils.isEmpty(hd_entity.getVapname()))
+				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
+		}
+		return vto;
+	}
+	
+	public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
+			HandsetDeviceDTO hd_entity){
+		HandsetDeviceVTO vto = new HandsetDeviceVTO();
+		vto.setWid(mac);
+		vto.setHid(hd_mac);
+		vto.setOl(online ? 1 : 0);
+		if(hd_entity != null){
+			if(mac.equals(hd_entity.getLast_wifi_id())){
+				vto.setTs(hd_entity.getTs());
+			}
 		}
 		return vto;
 	}

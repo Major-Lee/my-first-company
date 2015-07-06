@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -147,6 +148,26 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 				addOfflinePresent(wifiId, tuple.getElement(), (tuple.getScore() - OnlineBaseScore));
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param wifiId
+	 * @return
+	 * modified by Edmond Lee for handset storage
+	 */
+	public List<String> fetchAllOnlinePresents(String wifiId){
+		List<String> result = new ArrayList<String>();
+		int size = 100;
+		long count = presentOnlineSize(wifiId);
+		int page = PageHelper.getTotalPages((int)count, size);
+		for(int i=1;i<=page;i++){
+			Set<Tuple> tuple_result = fetchOnlinePresentWithScores(wifiId, PageHelper.getStartIndexOfPage(i, size), size);
+			for(Tuple tuple : tuple_result){
+				result.add(tuple.getElement());
+			}
+		}
+		return result;
 	}
 	
 //	public Set<String> fetchPresents(String wifiId){

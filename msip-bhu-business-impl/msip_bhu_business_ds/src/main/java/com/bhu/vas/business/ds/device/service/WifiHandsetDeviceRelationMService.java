@@ -73,41 +73,35 @@ public class WifiHandsetDeviceRelationMService {
 
 		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
                 wifiHandsetDeviceRelationMDao.findById(mdto.getId());
-
-
-        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
         List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
+
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
+                = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
 
         try {
             if (wifiHandsetDeviceRelationMDTO == null) {
-                wifiHandsetDeviceItemDetailMTDTOMap
-                        = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
-
-                initWifiHansetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at);
-
+                dataMap = initWifiHansetDeviceItems(week, last_login_at);
                 update.set("total_rx_bytes", 0);
             } else {
-
-                wifiHandsetDeviceItemDetailMTDTOMap  = wifiHandsetDeviceRelationMDTO.getItems();
+                Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap
+                        = wifiHandsetDeviceRelationMDTO.getItems();
 
                 //旧版本数据，不存在记录
                 if (wifiHandsetDeviceItemDetailMTDTOMap == null || wifiHandsetDeviceItemDetailMTDTOMap.isEmpty()) {
-                    wifiHandsetDeviceItemDetailMTDTOMap
-                            = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
-
-                    initWifiHansetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at);
-
+                    dataMap = initWifiHansetDeviceItems(week, last_login_at);
                 } else {
-                    updateWifiHandsetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at);
+                    dataMap = updateOnlineWifiHandsetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap,
+                            week, last_login_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 }
 
                 update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
             }
+
+            update.set("items", dataMap);
+
         }catch (Exception e) {
             
         }
-
-        update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
 
 		WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 		if(writeResult.isUpdateOfExisting()){
@@ -119,12 +113,15 @@ public class WifiHandsetDeviceRelationMService {
 
     /**
      * 初始化七天的终端详情
-     * @param map
      * @param week
      * @param last_login_at
      */
-    private void initWifiHansetDeviceItems(Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
-                                           List<String> week, Date last_login_at) {
+    private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> initWifiHansetDeviceItems(
+                List<String> week, Date last_login_at) {
+
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
+                = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
+
         int i = 0;
         for (String date : week) {
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList
@@ -134,40 +131,115 @@ public class WifiHandsetDeviceRelationMService {
                 wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
                 wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
             }
-            map.put(date, wifiHandsetDeviceItemDetailMDTOList);
+            dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
             i++;
         }
+
+        return dataMap;
     }
 
 
     /**
-     * 更新七天的终端详情数据
-     * @param map
+     * 更新七天的终端详情上线数据
+     * @param map    老数据
      * @param week
      * @param last_login_at
      */
-    private void updateWifiHandsetDeviceItems(Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
-                                             List<String> week, Date last_login_at) {
+    private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> updateOnlineWifiHandsetDeviceItems(
+                Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
+                List<String> week, Date last_login_at, String check_last_login_at) {
+
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
+                = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
+
+        String check_date = DateTimeHelper.formatDate(
+                DateTimeHelper.fromDateStr(check_last_login_at),DateTimeHelper.FormatPattern5);
+
         int i = 0;
         for (String date : week) {
-            List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList = map.get(date);
+            try {
+                List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList = map.get(date);
 
-            if (wifiHandsetDeviceItemDetailMDTOList == null) {
-                wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                if (wifiHandsetDeviceItemDetailMDTOList == null) {
+                    wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+                }
+                WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
+
+                //删除非法下线记录
+                if (date.equals(check_date)) {
+                    if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
+                        if (wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at() <= 0) {
+                            wifiHandsetDeviceItemDetailMDTOList.remove(0);
+                        }
+                    }
+                }
+
+                if (i == 0) {
+                    //忽略5分钟之内频繁上下线记录
+                    if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
+                        if (last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
+                                > 5 * 60 * 1000) {
+                            wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
+                            wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
+                        }
+                    }
+                }
+                dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
+                i++;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
-            if (i == 0 ) {
-                wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
-                wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
-            }
-            map.put(date, wifiHandsetDeviceItemDetailMDTOList);
-            i++;
         }
+
+
+
+        return dataMap;
     }
 
 
-    public void updateWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime,
-                                             String rx_bytes, long logout_at) {
+
+    /**
+     * 更新七天的终端详情下线数据
+     * @param map 老数据
+     * @param uptime
+     * @param logout_at
+     */
+    private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> updateOfflineWifiHandsetDeviceItems(
+                Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
+                List<String> week, String uptime, long logout_at) {
+
+        Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
+                = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
+
+        int i = 0;
+        for (String date : week) {
+            List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =  map.get(date);
+            if (i == 0) {
+                WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
+                        wifiHandsetDeviceItemDetailMDTOList.get(0);
+                wifiHandsetDeviceItemDetailMDTO.setOnline_time(
+                        wifiHandsetDeviceItemDetailMDTO.getOnline_time() + Long.parseLong(uptime));
+                wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
+            }
+            dataMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
+            i++;
+        }
+
+        return dataMap;
+
+    }
+
+
+    /**
+     * 终端离线更新记录
+     * @param wifiId
+     * @param handsetId
+     * @param uptime
+     * @param rx_bytes
+     * @param logout_at
+     */
+    public void offlineWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime,
+                                              String rx_bytes, long logout_at) {
         WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
 
         WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
@@ -186,33 +258,30 @@ public class WifiHandsetDeviceRelationMService {
 
         //离线的情况下，肯定有七天的在线记录
         try {
+
+            Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
+                    = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
+
             if (wifiHandsetDeviceRelationMDTO != null) {
+
                 wifiHandsetDeviceItemDetailMTDTOMap = wifiHandsetDeviceRelationMDTO.getItems();
 
-                int i = 0;
-                for (String date : week) {
-                    List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
-                            wifiHandsetDeviceItemDetailMTDTOMap.get(date);
-
-                    if (i == 0) {
-                        int size = wifiHandsetDeviceItemDetailMDTOList.size();
-                        WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
-                                wifiHandsetDeviceItemDetailMDTOList.get(size - 1);
-                        wifiHandsetDeviceItemDetailMDTO.setOnline_time(Long.parseLong(uptime));
-                        wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
-                    }
-                    wifiHandsetDeviceItemDetailMTDTOMap.put(date, wifiHandsetDeviceItemDetailMDTOList);
-                    i++;
-                }
-
+                dataMap = updateOfflineWifiHandsetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap, week, uptime,logout_at);
                 update.set("last_login_at", wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
+
+            } else { //如果离线记录先上报
+                Date date = new Date();
+                dataMap = initWifiHansetDeviceItems(week, date);
+                update.set("last_login_at", DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
+                update.set("total_rx_bytes", 0);
             }
+
+            update.set("items", dataMap);
+
         }catch (Exception e) {
 
         }
-
-        update.set("items", wifiHandsetDeviceItemDetailMTDTOMap);
 
         WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 

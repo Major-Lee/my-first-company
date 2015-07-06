@@ -12,8 +12,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class ParamCmdWifiTimerStartDTO{
-	public static final String Default_Timeslot = "02:00:00-23:00:00";
-	public static final String[] Default_Timeslot_Array = {"02:00:00","23:00:00"};
+	public static final String Default_Timeslot = "00:00:00-23:59:00";
+	public static final String[] Default_Timeslot_Array = {"00:00:00","23:59:00"};
 	private String enable;
 	private String timeslot = Default_Timeslot;
 	//开始时间 18:00:00

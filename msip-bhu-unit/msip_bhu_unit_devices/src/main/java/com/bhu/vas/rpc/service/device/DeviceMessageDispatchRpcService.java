@@ -278,7 +278,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				if(serial.length() == 10){
 					String opt = serial.substring(0, 3);
 					int taskid = Integer.parseInt(serial.substring(3, 10));
-					String mac = parserHeader.getMac();
+					String mac = parserHeader.getMac().toLowerCase();
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);

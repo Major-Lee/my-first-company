@@ -77,7 +77,10 @@ public class ParserHeader implements java.io.Serializable{
 		ParserHeader pheader = new ParserHeader();
 		pheader.setType(type);
 		if(StringUtils.isEmpty(header) || header.length() <34) return pheader;
-		pheader.setMac(StringHelper.formatMacAddress(header.substring(0, 12)));
+		String mac = StringHelper.formatMacAddress(header.substring(0, 12));
+		if(!StringUtils.isEmpty(mac)){
+			pheader.setMac(mac.toLowerCase());
+		}
 		pheader.setOpt(header.substring(12, 15));
 		pheader.setTaskid(Integer.parseInt(header.substring(15, 22)));
 		pheader.setMt(Integer.parseInt(header.substring(22, 26)));

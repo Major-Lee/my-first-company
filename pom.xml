@@ -23,9 +23,9 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
-        <!---->
+        <!--
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
-    
+        -->
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
         
         <!--
@@ -488,7 +488,7 @@
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>1.3.0</version>
+                <version>1.6.0</version>
             </dependency>
 
             <dependency>

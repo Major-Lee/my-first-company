@@ -15,16 +15,16 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  */
 public class HandsetStorageFacadeService{
 	
-	public static void handsetComming(HandsetDeviceDTO dto){
-		HandsetStorageService.getInstance().handsetComming(dto);
-		HandsetStatisticsService.getInstance().online(dto.wasOnline());
+	public static Long handsetComming(HandsetDeviceDTO dto){
+		//HandsetStatisticsService.getInstance().online(dto.wasOnline());
+		return HandsetStorageService.getInstance().handsetComming(dto);
 		//String mac = dto.getMac();
 		//this.hset(generateKey(mac), mac, JsonHelper.getJSONString(dto));
 	}
 	
-	public static void handsetsComming(List<HandsetDeviceDTO> dtos){
-		HandsetStorageService.getInstance().handsetsComming(dtos);
-		HandsetStatisticsService.getInstance().online(true, dtos.size());
+	public static List<Object> handsetsComming(List<HandsetDeviceDTO> dtos){
+		//HandsetStatisticsService.getInstance().online(true, dtos.size());
+		return HandsetStorageService.getInstance().handsetsComming(dtos);
 		//String[][] keyAndFields = generateKeyAndFieldsAndValues(dtos);
 		//this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
 	}
@@ -57,13 +57,32 @@ public class HandsetStorageFacadeService{
 		HandsetStorageService.getInstance().iteratorAll(notify);
 	}
 	
+	
+	public static void statisticsSet(long online,long total){
+		HandsetStatisticsService.getInstance().statisticsSet(online,total);
+	}
+	
+	public static int[] statistics(){
+		return HandsetStatisticsService.getInstance().statistics();
+	}
+	
 	public static void main(String[] argc){
 		//HandsetStorageService.getInstance().clearOrResetAll();
-		HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
+		/*HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
 			@Override
 			public void notifyComming(Map<String, String> t) {
 				System.out.println(t);
 			}
-		});
+		});*/
+		long countAll = HandsetStorageFacadeService.countAll();
+		System.out.println(countAll);
+		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset("88:32:9b:32:41:10");
+		System.out.println(handset.getMac());
+		System.out.println(handset.getDhcp_name());
+		
+		int[] statistics = HandsetStorageFacadeService.statistics();
+		
+		System.out.println(statistics[0]);
+		System.out.println(statistics[1]);
 	}
 }

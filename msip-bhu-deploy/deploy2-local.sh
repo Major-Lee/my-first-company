@@ -4,6 +4,37 @@ Current_DIR=`pwd`
 echo $Current_DIR
 
 Deploy2Server=$1
+
+##if read -t 5 -p "Confirm to deploy 2 $Deploy2Server(Local Test):(yes/no)"
+#then
+#  echo "hello $REPLY, welcome to come back here"
+#else
+#  echo "sorry , you are too slow "
+#  exit
+#fi
+
+read -n1 -p "Do you want to deploy 2 $Deploy2Server(Local Test) [Y/N]?"
+case $REPLY in
+	Y | y) echo
+          echo "fine ,continue on .."
+          ;;
+	N | n) echo 
+          echo "OK, goodbye..."
+          exit
+          ;;
+    *) echo
+    	echo "only accept Y,y,N,n"
+    	exit
+    	;;           
+          #exit
+esac
+#echo "starting"
+
+
+echo "starting deploy2=>"$Deploy2Server
+sleep 5
+
+
 #回到msip-bhu-deploy目录进入deploy目录，并且创建每日的预发布文件存储目录
 #cd msip-bhu-deploy
 if [ ! -d `deploy` ]; then

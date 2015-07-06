@@ -55,14 +55,14 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
-	public void handsetComming(HandsetDeviceDTO dto){
+	public Long handsetComming(HandsetDeviceDTO dto){
 		String mac = dto.getMac();
-		this.hset(generateKey(mac), mac, JsonHelper.getJSONString(dto));
+		return this.hset(generateKey(mac), mac, JsonHelper.getJSONString(dto));
 	}
 	
-	public void handsetsComming(List<HandsetDeviceDTO> dtos){
+	public List<Object> handsetsComming(List<HandsetDeviceDTO> dtos){
 		String[][] keyAndFields = generateKeyAndFieldsAndValues(dtos);
-		this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
+		return this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
 	}
 	
 	public HandsetDeviceDTO handset(String mac){
@@ -148,7 +148,7 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		for(int i=0;i<hasPrimeValue;i++){
 			String key = generateKeyByHashValue(i);
 			Map<String, String> hashKeyAll = this.hgetall(key);
-			System.out.println(key);
+			//System.out.println(key);
 			if(!hashKeyAll.isEmpty())
 				notify.notifyComming(hashKeyAll);
 		}
