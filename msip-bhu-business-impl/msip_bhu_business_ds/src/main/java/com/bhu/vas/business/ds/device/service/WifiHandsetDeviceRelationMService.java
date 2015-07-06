@@ -180,7 +180,7 @@ public class WifiHandsetDeviceRelationMService {
                     if (!wifiHandsetDeviceItemDetailMDTOList.isEmpty()) {
 
                         if (last_login_at.getTime() - wifiHandsetDeviceItemDetailMDTOList.get(0).getLogout_at()
-                                > 2 * 60 * 1000) {
+                                > 5 * 60 * 1000) {
                             wifiHandsetDeviceItemDetailMDTO.setLogin_at(last_login_at.getTime());
                             wifiHandsetDeviceItemDetailMDTOList.add(0, wifiHandsetDeviceItemDetailMDTO);
                         }
