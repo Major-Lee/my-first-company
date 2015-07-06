@@ -91,11 +91,9 @@ public class WifiHandsetDeviceRelationMService {
                 if (wifiHandsetDeviceItemDetailMTDTOMap == null || wifiHandsetDeviceItemDetailMTDTOMap.isEmpty()) {
                     dataMap = initWifiHansetDeviceItems(week, last_login_at);
                 } else {
-                    dataMap = updateOnlineWifiHandsetDeviceItems(
-                            wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at,
-                            wifiHandsetDeviceRelationMDTO.getLast_login_at());
+                    dataMap = updateOnlineWifiHandsetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap,
+                            week, last_login_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 }
-
 
                 update.set("total_rx_bytes", wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
             }
@@ -159,6 +157,7 @@ public class WifiHandsetDeviceRelationMService {
                 DateTimeHelper.fromDateStr(check_last_login_at),DateTimeHelper.FormatPattern5);
         int i = 0;
         for (String date : week) {
+            System.out.println("updateOnlineWifiHandsetDeviceItems === " + date);
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList = map.get(date);
 
             if (wifiHandsetDeviceItemDetailMDTOList == null) {
