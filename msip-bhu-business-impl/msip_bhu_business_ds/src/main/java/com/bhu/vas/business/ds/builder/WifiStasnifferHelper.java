@@ -19,6 +19,7 @@ import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 @SuppressWarnings("serial")
 public class WifiStasnifferHelper implements Serializable{
 	public static final String Community_Loser = "屌丝社区";
+	public static final String Community_Wenna = "温拿社区";
 	public static final String Community_Higher = "高端社区";
 	/**
 	 * 定位周边社区的类型
@@ -74,7 +75,7 @@ public class WifiStasnifferHelper implements Serializable{
 	        
         	URouterWSCommunityVTO vto = new URouterWSCommunityVTO();
         	vto.setTotal(total);
-        	vto.setCt(Community_Higher);
+        	vto.setCt(Community_Wenna);
         	vto.setHdts(hdts);
         	return vto;
 		}catch(Exception ex){
