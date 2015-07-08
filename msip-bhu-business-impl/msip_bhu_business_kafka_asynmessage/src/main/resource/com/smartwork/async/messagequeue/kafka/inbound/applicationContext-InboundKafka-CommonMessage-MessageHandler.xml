@@ -7,7 +7,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		">
 	<util:map id="messageHandlers" value-type="com.smartwork.async.messagequeue.kafka.parser.iface.IMessageHandler">  
-	    <entry key="CommonMessageQueue" value-ref="commonMessageHandler">  
+	    <entry key="${kafka.commonmessage.topic}" value-ref="commonMessageHandler">  
 	    </entry>
 	</util:map> 
 	<bean id="commonMessageHandler" class="com.smartwork.async.messagequeue.kafka.parser.impl.CommonMessageHandler"/>

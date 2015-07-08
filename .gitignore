@@ -22,3 +22,5 @@ db/*.sqlite3
 .idea
 *.iml
 **/.gitignore
+bhu-parent.ipr
+bhu-parent.iws

@@ -51,10 +51,10 @@
 
 	<int-kafka:producer-context id="kafkaProducerContext" producer-properties="producerProperties">
 		<int-kafka:producer-configurations>
-			<int-kafka:producer-configuration broker-list="${kafka.broker-list}"
+			<int-kafka:producer-configuration broker-list="${kafka.commonmessage.broker-list}"
 					key-class-type="java.lang.String"
 					value-class-type="com.smartwork.async.messagequeue.kafka.model.CommonMessage"
-					topic="CommonMessageQueue"
+					topic="${kafka.commonmessage.topic}"
 					value-encoder="kafkaSpecificEncoder"
 					key-encoder="kafkaReflectionEncoder"
 					compression-codec="default"
