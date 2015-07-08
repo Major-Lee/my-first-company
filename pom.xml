@@ -23,9 +23,9 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
-        <!--
+        <!---->
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
-        -->
+        
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
         
         <!--
@@ -40,6 +40,7 @@
         <module>msip-bhu-unit/msip_bhu_unit_vas</module>
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
+        <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
@@ -146,6 +147,12 @@
                 <artifactId>msip_bhu_business_asynmessage</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_kafka_asynmessage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_im_common</artifactId>
