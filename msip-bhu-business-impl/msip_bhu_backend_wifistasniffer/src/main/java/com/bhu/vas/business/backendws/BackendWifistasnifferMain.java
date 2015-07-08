@@ -6,7 +6,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class BackendWifistasnifferMain {
 	public static void main(String[] args) throws InterruptedException {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
-		/*String[] locations = {"classpath*:spring/appCtxBackend.xml"};
+		//String[] locations = {"classpath*:spring/appCtxBackend.xml"};
+		/*String[] locations = {
+				//"/com/bhu/vas/business/processor/testCtx.xml",
+				"classpath*:/spring/applicationContextCore-resource.xml",
+				"classpath*:/springws/inbound/applicationContext-InboundKafka-ws-String-AdapterParser.xml",
+				"classpath*:/springws/inbound/applicationContext-InboundKafka-ws-String-MessageHandler.xml"
+				//"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-String-MessageHandler.xml",
+				//"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-String-AdapterParser.xml"
+				};
 		ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
 		*/
 		
