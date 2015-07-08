@@ -1,6 +1,9 @@
 package com.bhu.vas.rpc;
 
-import com.smartwork.msip.cores.helper.HttpHelper;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpResponse;
@@ -12,12 +15,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeaderElementIterator;
 import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by bluesand on 4/15/15.

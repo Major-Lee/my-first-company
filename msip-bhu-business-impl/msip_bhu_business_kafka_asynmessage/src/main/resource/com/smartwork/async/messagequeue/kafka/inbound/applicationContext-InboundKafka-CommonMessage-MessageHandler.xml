@@ -6,7 +6,6 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		">
-
 	<util:map id="messageHandlers" value-type="com.smartwork.async.messagequeue.kafka.parser.iface.IMessageHandler">  
 	    <entry key="CommonMessageQueue" value-ref="commonMessageHandler">  
 	    </entry>

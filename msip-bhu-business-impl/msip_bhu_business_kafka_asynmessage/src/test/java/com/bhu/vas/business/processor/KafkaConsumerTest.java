@@ -8,8 +8,8 @@ public class KafkaConsumerTest {
 		String[] CONFIG = {
 			"/com/bhu/vas/business/processor/testCtx.xml",
 			"/spring/applicationContextCore-resource.xml",
-			"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-MessageHandler.xml",
-			"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafkaAdapterParser.xml"};
+			"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-String-MessageHandler.xml",
+			"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-String-AdapterParser.xml"};
 		/*String[] locations = {
 				  "classpath*:com/bhu/vas/business/processor/testCtx.xml",
 				  "classpath*:spring/applicationContextCore-resource.xml",

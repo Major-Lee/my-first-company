@@ -42,13 +42,14 @@
 			channel="inputFromKafka">
 		<int:poller fixed-delay="1" time-unit="MILLISECONDS"/>
 	</int-kafka:inbound-channel-adapter>
-
+	<!-- 
 	<bean id="kafkaReflectionDecoder" class="org.springframework.integration.kafka.serializer.avro.AvroReflectDatumBackedKafkaDecoder">
 		<constructor-arg type="java.lang.Class" value="java.lang.String"/>
 	</bean>
 	<bean id="kafkaSpecificDecoder" class="org.springframework.integration.kafka.serializer.avro.AvroSpecificDatumBackedKafkaDecoder">
 		<constructor-arg value="com.smartwork.async.messagequeue.kafka.model.CommonMessage" />
 	</bean>
+	 -->
 	<bean id="consumerProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="properties">
 			<props>
@@ -64,11 +65,11 @@
 			consumer-timeout="1000"
 			zookeeper-connect="zookeeperConnect" consumer-properties="consumerProperties">
 		<int-kafka:consumer-configurations>
-			<int-kafka:consumer-configuration group-id="default1"
+			<int-kafka:consumer-configuration group-id="${kafka.groupid}"
 					value-decoder="kafkaSpecificDecoder"
 					key-decoder="kafkaReflectionDecoder"
 					max-messages="5000">
-				<int-kafka:topic id="CommonMessageQueue" streams="4"/>
+				<int-kafka:topic id="${kafka.topic}" streams="${kafka.streams}"/>
 			</int-kafka:consumer-configuration>
 			<!-- 
 			<int-kafka:consumer-configuration group-id="default2"
