@@ -321,6 +321,13 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public String[] fetchRealtimeRate(String wifiId){
 		List<String> result = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getRate(wifiId);
+		String waiting = result.get(4);
+		//如果waiting没有标记 则发送指令查询
+		if(StringUtils.isEmpty(waiting)){
+			//调用异步消息下发实时速率指令
+			deliverMessageService.sendDeviceRealtimeRateFetchActionMessage(wifiId);
+		}
+		
 		//获取实时的上下行速率
 		String realtime_tx_rate = result.get(0);
 		String realtime_rx_rate = result.get(1);
@@ -328,12 +335,6 @@ public class DeviceURouterRestBusinessFacadeService {
 		//如果有实时速率数据 就直接返回
 		if(!StringUtils.isEmpty(realtime_tx_rate) && !StringUtils.isEmpty(realtime_rx_rate)){
 			return new String[]{realtime_tx_rate, realtime_rx_rate};
-		}
-		String waiting = result.get(4);
-		//如果waiting没有标记 则发送指令查询
-		if(StringUtils.isEmpty(waiting)){
-			//调用异步消息下发实时速率指令
-			deliverMessageService.sendDeviceRealtimeRateFetchActionMessage(wifiId);
 		}
 		
 		//返回last的速率数据

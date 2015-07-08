@@ -626,6 +626,11 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceRateNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, int taskid){
+		//如果设备实时速率报送完成 则直接清除waiting mark 以便于下发下次的设备速率查询指令
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().removeRateWaiting(wifiId);
+		}
+		
 		WifiDeviceRateDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceRate(doc);
 		if(dto != null){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addRate(wifiId, dto.getTx_rate(), dto.getRx_rate());

@@ -31,7 +31,7 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	private WifiDeviceRealtimeRateStatisticsStringService(){
 	}
 	
-	private static final int exprie_realtime_seconds = 30;//30秒
+	private static final int exprie_realtime_seconds = 5;//5秒
 	private static final int exprie_rate_waiting_seconds = 300;//300秒(跟上报时长一致 防止重复下发此类指令)
 	private static final int exprie_hdrate_waiting_seconds = 300;//300秒(跟上报时长一致 防止重复下发此类指令)
 	private static final int exprie_peak_waiting_seconds = 20;//20秒
@@ -138,6 +138,11 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		String key = generateRateWaitingKey(mac);
 		super.set(key, WaitingMark);
 		super.expire(key, exprie_rate_waiting_seconds);
+	}
+	
+	public void removeRateWaiting(String mac){
+		String key = generateRateWaitingKey(mac);
+		super.del(key);
 	}
 	
 	public void addPeakRateWaiting(String mac){
