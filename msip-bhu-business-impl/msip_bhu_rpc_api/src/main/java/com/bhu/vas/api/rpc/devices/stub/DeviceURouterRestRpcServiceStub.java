@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.vto.*;
+
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -20,6 +21,7 @@ import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -209,6 +211,9 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 		if(uid == null || StringUtils.isEmpty(hd_mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
+		if(!StringHelper.isValidMac(hd_mac))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+
 		return deviceURouterRestRpcService.urouterWSFocus(uid, hd_mac, focus);
 	}
 
@@ -216,6 +221,17 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick) {
 		if(uid == null || StringUtils.isEmpty(hd_mac)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		if(!StringHelper.isValidMac(hd_mac))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		if(!StringUtils.isEmpty(nick)){
+			int length = StringHelper.realStringCharlength(nick);
+			if(length > 12){
+				throw new RpcBusinessI18nCodeException(ResponseErrorCode.WIFISTASNIFFER_NICK_LENGTH_INVALID.code());
+			}
+			//WIFISTASNIFFER_NICK_LENGTH_INVALID
+		}
 		
 		return deviceURouterRestRpcService.urouterWSNick(uid, hd_mac, nick);
 	}
