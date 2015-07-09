@@ -158,21 +158,31 @@ public class VapModeDefined {
 	 *
 	 *进入目录style001 执行tar -czf style001.tar.gz *
 	 *tar -xvf style001.tar.gz
+	 *
+	 *http://192.168.66.7/vap/404/style001/index.html
 	 */
 	public enum HtmlInject404{
-		STYLE000("style000","00.00.01",RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
-		STYLE001("style001","00.00.03",RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style001.tar.gz")),
+		STYLE000("style000","00.00.01",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style000/index.html?bid=123")),
+		STYLE001("style001","00.00.03",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=124")),
+/*		STYLE000("style000","00.00.01",
+				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
+		STYLE001("style001","00.00.03",
+				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style001.tar.gz")),*/
 		;
 		private String style;
 		private String ver;
 		private String dynaurl;
-		private String packurl;
+		//private String packurl;
 		static Map<String, HtmlInject404> allInject404Types;
-		HtmlInject404(String style,String ver,String dynaurl,String packurl){
+		HtmlInject404(String style,String ver,String dynaurl/*,String packurl*/){
 			this.style = style;
 			this.ver = ver;
 			this.dynaurl = dynaurl;
-			this.packurl = packurl;
+			//this.packurl = packurl;
 		}
 		public String getStyle() {
 			return style;
@@ -187,12 +197,12 @@ public class VapModeDefined {
 			this.ver = ver;
 		}
 		
-		public String getPackurl() {
+		/*public String getPackurl() {
 			return packurl;
 		}
 		public void setPackurl(String packurl) {
 			this.packurl = packurl;
-		}
+		}*/
 		
 		public String getDynaurl() {
 			return dynaurl;

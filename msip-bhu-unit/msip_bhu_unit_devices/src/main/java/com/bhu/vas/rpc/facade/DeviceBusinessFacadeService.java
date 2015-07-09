@@ -1108,7 +1108,7 @@ public class DeviceBusinessFacadeService {
 //		//2:任务callback
 //		doTaskCallback(taskid, serialDto.getStatus(), response);
 //	}
-	public void taskTriggerHttp404Processor(String ctx, String response, String mac, int taskid){
+	/*public void taskTriggerHttp404Processor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				QuerySerialReturnDTO.class);
@@ -1116,32 +1116,16 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	public void taskNotifyTriggerHttp404Processor(String ctx, String response, String mac, int taskid){
-		/*Document doc = RPCMessageParseHelper.parserMessage(response);
-		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
-				QuerySerialReturnDTO.class);*/
-		//2:任务callback
-		//WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
-		//if(completed != null){
-		//发送配置Http404 修改指令
-		/*HtmlInject404 html404 = HtmlInject404.getNewVerVap(resultDto.getResource_ver(),HtmlInject404.STYLE000);
-		ParamVapHttp404DTO dto = new ParamVapHttp404DTO();
-		dto.setEnable("enable");
-		dto.setStyle(html404.getStyle());*/
 		try{
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			WifiDeviceDownTask newdownTask = taskFacadeService.systemTaskGenerate(0, mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_404.getNo(), downTask.getContext_var());
-/*			String payload = deviceFacadeService.generateDeviceSetting(mac, OperationDS.DS_Http_404.getNo(), JsonHelper.getJSONString(dto));
-			logger.info("payload===" + payload);
-			String cmdPayload = CMDBuilder.builderCMD4Opt(OperationCMD.ModifyDeviceSetting.getNo(), mac, 
-					CMDBuilder.device_http404_resourceupgrade_fragment.getNextSequence(),payload);*/
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, newdownTask.getId(), OperationCMD.ModifyDeviceSetting.getNo(), newdownTask.getPayload());
 		}catch(BusinessI18nCodeException ex){
 			ex.printStackTrace(System.out);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
-		//}
-	}
+	}*/
 	
 	public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
@@ -1150,27 +1134,10 @@ public class DeviceBusinessFacadeService {
 		taskNotifyTriggerHttpPortalProcessor(ctx,response,mac,taskid);
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
+	
 	public void taskNotifyTriggerHttpPortalProcessor(String ctx, String response, String mac, int taskid){
-		/*Document doc = RPCMessageParseHelper.parserMessage(response);
-		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
-				QuerySerialReturnDTO.class);*/
-		
-		//2:任务callback
-		//WifiDeviceDownTaskCompleted completed = doTaskCallback(taskid, resultDto.getStatus(), response);
-		//if(completed != null){
-			//发送配置Http404 修改指令
-			//HtmlPortal hp = HtmlPortal.getNewVerVap(resultDto.getResource_ver(),HtmlPortal.STYLE000);
-			//ParamVapHttpPortalDTO dto = new ParamVapHttpPortalDTO();
-			//WifiDeviceSettingVapHttpPortalDTO dto = new WifiDeviceSettingVapHttpPortalDTO();
-			//dto.setEnable("enable");
-			//dto.setStyle(hp.getStyle());
 		try{
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
-			//ParamVapHttpPortalDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamVapHttpPortalDTO.class);
-			/*String payload = deviceFacadeService.generateDeviceSetting(mac, OperationDS.DS_Http_Portal_Start.getNo(), downTask.getContext_var());//JsonHelper.getJSONString(dto));
-			logger.info("payload===" + payload);
-			String cmdPayload = CMDBuilder.builderCMD4Opt(OperationCMD.ModifyDeviceSetting.getNo(), mac, 
-					CMDBuilder.device_httpportal_resourceupgrade_fragment.getNextSequence(),payload);*/
 			WifiDeviceDownTask newdownTask = taskFacadeService.systemTaskGenerate(0, mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_Portal_Start.getNo(), downTask.getContext_var());
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, taskid, OperationCMD.ModifyDeviceSetting.getNo(), newdownTask.getPayload());
 		}catch(BusinessI18nCodeException ex){
@@ -1178,7 +1145,6 @@ public class DeviceBusinessFacadeService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
-		//}
 	}
 	public void taskCommonProcessor(String ctx, String response, String mac, int taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);

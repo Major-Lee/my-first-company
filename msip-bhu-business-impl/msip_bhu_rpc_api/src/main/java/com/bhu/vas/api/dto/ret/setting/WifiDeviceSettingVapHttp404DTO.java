@@ -69,7 +69,7 @@ public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
 	public static WifiDeviceSettingVapHttp404DTO fromParamVapAdDTO(ParamVapHttp404DTO dto){
 		WifiDeviceSettingVapHttp404DTO hdto = new WifiDeviceSettingVapHttp404DTO();
 		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(dto.getStyle());
-		hdto.setUrl(adv.getPackurl());//.setBhu_id(adv.getBid());
+		hdto.setUrl(adv.getDynaurl());//.setBhu_id(adv.getBid());
 		hdto.setEnable(dto.getEnable());
 		hdto.setVersion(adv.toIndentify());;
 		return hdto;

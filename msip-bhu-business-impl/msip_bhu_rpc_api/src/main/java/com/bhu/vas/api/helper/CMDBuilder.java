@@ -3,10 +3,8 @@ package com.bhu.vas.api.helper;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.VapModeDefined;
-import com.bhu.vas.api.dto.VapModeDefined.HtmlInject404;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -165,7 +163,7 @@ public class CMDBuilder {
 	 * @param taskid
 	 * @param extparams
 	 * @return
-	 */
+	 *//*
 	public static String builderCMD4Http404ResourceUpdate(String wifi_mac, int taskid,String extparams){
 		String opt = OperationCMD.TriggerHttp404ResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
@@ -175,8 +173,15 @@ public class CMDBuilder {
 		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(http404_dto.getStyle());
 		return String.format(OperationCMD.TriggerHttp404ResourceUpdate.getCmdtpl(),
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, adv.getPackurl(),adv.toIndentify(),builderCMDSerial(opt, taskid_format));
-	}
+	}*/
 	
+	/**
+	 * 生成HttpPortalResourceUpdate 指令
+	 * @param wifi_mac
+	 * @param taskid
+	 * @param extparams
+	 * @return
+	 */
 	public static String builderCMD4HttpPortalResourceUpdate(String wifi_mac, int taskid,String extparams){
 		String opt = OperationCMD.TriggerHttpPortalResourceUpdate.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
@@ -332,5 +337,6 @@ public class CMDBuilder {
 	/*public static void main(String[] argv){
 		String[] params = new String[]{};
 		String resultCmd = String.format("",params);
+		System.out.println(new Date(1436407520276l));
 	}*/
 }
