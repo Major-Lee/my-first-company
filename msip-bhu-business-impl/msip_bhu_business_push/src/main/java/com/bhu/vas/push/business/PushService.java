@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
+import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
@@ -143,6 +144,38 @@ public class PushService{
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("PushHandsetDeviceOnline exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
+	 * 终端探测出现push
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public boolean pushHandsetDeviceWSOnline(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+		boolean ret = false;
+		try{
+			HandsetDeviceWSOnlinePushDTO wspush_dto = (HandsetDeviceWSOnlinePushDTO)pushDto;
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), wspush_dto.getN() == null ? wspush_dto.getHd_mac() : wspush_dto.getN()));
+					pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getN() == null ? wspush_dto.getHd_mac() : wspush_dto.getN()));
+					pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
+					//发送push
+					ret = pushNotification(pushMsg);
+					if(ret){
+						logger.info("PushWifiDeviceReboot Successed " + pushMsg.toString());
+					}else{
+						logger.info("PushWifiDeviceReboot Failed " + pushMsg.toString());
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("pushWifiDeviceReboot exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}

@@ -1,12 +1,13 @@
 package com.bhu.vas.business.backendws;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 
 public class BackendWifistasnifferMain {
 	public static void main(String[] args) throws InterruptedException {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
-		//String[] locations = {"classpath*:spring/appCtxBackend.xml"};
+		String[] locations = {"classpath*:spring/appCtxBackend.xml"};
 		/*String[] locations = {
 				//"/com/bhu/vas/business/processor/testCtx.xml",
 				"classpath*:/spring/applicationContextCore-resource.xml",
@@ -14,11 +15,13 @@ public class BackendWifistasnifferMain {
 				"classpath*:/springws/inbound/applicationContext-InboundKafka-ws-String-MessageHandler.xml"
 				//"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-String-MessageHandler.xml",
 				//"/com/smartwork/async/messagequeue/kafka/inbound/applicationContext-InboundKafka-String-AdapterParser.xml"
-				};
+				};*/
+				
 		ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
-		*/
+		//ctx.start();
+		//ctx.getBean("kafkaInboundChannelAdapter");
 		
-		String[] CONFIG = {
+/*		String[] CONFIG = {
 				//"/com/bhu/vas/business/processor/testCtx.xml",
 				"/spring/applicationContextCore-resource.xml",
 				"/springws/inbound/applicationContext-InboundKafka-ws-String-AdapterParser.xml",
@@ -28,7 +31,7 @@ public class BackendWifistasnifferMain {
 				};
 			
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, BackendWifistasnifferMain.class);
-		ctx.start();
+		ctx.start();*/
 			//ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
 			//ctx.getBean(arg0);
 			//Thread.sleep(1000000000l);
