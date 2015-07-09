@@ -38,7 +38,7 @@
 
 	<int-kafka:inbound-channel-adapter id="kafkaInboundChannelAdapter"
 			kafka-consumer-context-ref="consumerContext"
-			auto-startup="false"
+			auto-startup="true"
 			channel="inputFromKafka">
 		<int:poller fixed-delay="1" time-unit="MILLISECONDS"/>
 	</int-kafka:inbound-channel-adapter>
