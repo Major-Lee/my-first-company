@@ -51,8 +51,8 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 				//if(d instanceof byte[]){
 				//System.out.println("			"+new String((byte[])d));//.substring(6));
 				//}
-				//this.doSingleMessage(new String((byte[])d));
-				businessWSCacheService.getQWSPushNotifyCacheByQ("1", "2");
+				this.doSingleMessage(new String((byte[])d));
+				//businessWSCacheService.getQWSPushNotifyCacheByQ("1", "2");
 			}
 		}
 	}
