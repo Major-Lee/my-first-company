@@ -40,6 +40,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 	
 	@Override
 	public void handler(String topic, Map<Integer, List<byte[]>> value) {
+		//logger.info("WSMessageHandler Thread " + Thread.currentThread().getName());
 		//System.out.println("	topic:"+topic);
 		Iterator<Entry<Integer, List<byte[]>>> iter = value.entrySet().iterator();
 		while(iter.hasNext()){
