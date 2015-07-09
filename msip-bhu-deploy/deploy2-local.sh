@@ -65,6 +65,8 @@ echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_task-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_task/target/msip_bhu_backend_task-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_dataimport-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
@@ -89,6 +91,9 @@ unzip -qo msip_bhu_backend_online/bin/msip_bhu_backend_online.jar -d msip_bhu_ba
 
 unzip -q msip_bhu_backend_task-bin.zip
 unzip -qo msip_bhu_backend_task/bin/msip_bhu_backend_task.jar -d msip_bhu_backend_task/classes/
+
+unzip -q msip_bhu_backend_wifistasniffer-bin.zip
+unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.jar -d msip_bhu_backend_wifistasniffer/classes/
 
 unzip -q msip_bhu_dataimport-bin.zip
 unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport/classes/
@@ -139,6 +144,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/spring*-4.1.2.R
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/msip_*.jar		root@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/classes/com/ 		root@$Deploy2Server:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2Server
+
+echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2Server
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*-4.1.2.RELEASE.jar    root@$Deploy2Server:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2Server:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2Server:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
+echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2Server
 
 echo 'deploy msip_bhu_dataimport to ...@'$Deploy2Server
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*-4.1.2.RELEASE.jar  		root@$Deploy2Server:/BHUData/apps/msip_bhu_dataimport/libs/

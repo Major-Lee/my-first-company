@@ -167,15 +167,15 @@ public class PushService{
 					//发送push
 					ret = pushNotification(pushMsg);
 					if(ret){
-						logger.info("PushWifiDeviceReboot Successed " + pushMsg.toString());
+						logger.info("PushHandsetDeviceWSOnline Successed " + pushMsg.toString());
 					}else{
-						logger.info("PushWifiDeviceReboot Failed " + pushMsg.toString());
+						logger.info("PushHandsetDeviceWSOnline Failed " + pushMsg.toString());
 					}
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			logger.error("pushWifiDeviceReboot exception " + ex.getMessage(), ex);
+			logger.error("PushHandsetDeviceWSOnline exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}

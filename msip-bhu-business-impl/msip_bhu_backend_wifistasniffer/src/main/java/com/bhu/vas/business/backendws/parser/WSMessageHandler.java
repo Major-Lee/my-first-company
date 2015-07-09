@@ -40,6 +40,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 	
 	@Override
 	public void handler(String topic, Map<Integer, List<byte[]>> value) {
+		//logger.info("WSMessageHandler Thread " + Thread.currentThread().getName());
 		//System.out.println("	topic:"+topic);
 		Iterator<Entry<Integer, List<byte[]>>> iter = value.entrySet().iterator();
 		while(iter.hasNext()){
@@ -52,6 +53,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 				//System.out.println("			"+new String((byte[])d));//.substring(6));
 				//}
 				this.doSingleMessage(new String((byte[])d));
+				//businessWSCacheService.getQWSPushNotifyCacheByQ("1", "2");
 			}
 		}
 	}

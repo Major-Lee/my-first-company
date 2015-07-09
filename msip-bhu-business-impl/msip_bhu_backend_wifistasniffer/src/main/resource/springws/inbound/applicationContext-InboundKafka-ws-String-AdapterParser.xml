@@ -74,7 +74,7 @@
 			</int-kafka:consumer-configuration>
 			 -->
 			<int-kafka:consumer-configuration group-id="${kafka.groupid}"
-					max-messages="5000">
+					max-messages="20">
 				<int-kafka:topic id="${kafka.topic}" streams="${kafka.streams}"/>
 			</int-kafka:consumer-configuration> 
 			<!-- 
