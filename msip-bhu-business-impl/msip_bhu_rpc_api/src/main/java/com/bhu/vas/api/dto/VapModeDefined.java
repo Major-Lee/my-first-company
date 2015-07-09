@@ -162,10 +162,10 @@ public class VapModeDefined {
 	 *http://192.168.66.7/vap/404/style001/index.html
 	 */
 	public enum HtmlInject404{
-		STYLE000("style000","00.00.01",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style000/index.html?bid=123")),
-		STYLE001("style001","00.00.03",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=124")),
+		STYLE000("style000","00.00.01","404,500",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style000/index.html?bid=10001")),
+		STYLE001("style001","00.00.03","40*,500",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=10002")),
 /*		STYLE000("style000","00.00.01",
 				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
@@ -175,14 +175,15 @@ public class VapModeDefined {
 		;
 		private String style;
 		private String ver;
+		private String codes;//在什么codes的情况下进行HtmlInject404，例如404，403，40*，50*等
 		private String dynaurl;
 		//private String packurl;
 		static Map<String, HtmlInject404> allInject404Types;
-		HtmlInject404(String style,String ver,String dynaurl/*,String packurl*/){
+		HtmlInject404(String style,String ver,String codes,String dynaurl/*,String packurl*/){
 			this.style = style;
 			this.ver = ver;
+			this.codes = codes;
 			this.dynaurl = dynaurl;
-			//this.packurl = packurl;
 		}
 		public String getStyle() {
 			return style;
@@ -197,6 +198,7 @@ public class VapModeDefined {
 			this.ver = ver;
 		}
 		
+		
 		/*public String getPackurl() {
 			return packurl;
 		}
@@ -204,6 +206,12 @@ public class VapModeDefined {
 			this.packurl = packurl;
 		}*/
 		
+		public String getCodes() {
+			return codes;
+		}
+		public void setCodes(String codes) {
+			this.codes = codes;
+		}
 		public String getDynaurl() {
 			return dynaurl;
 		}

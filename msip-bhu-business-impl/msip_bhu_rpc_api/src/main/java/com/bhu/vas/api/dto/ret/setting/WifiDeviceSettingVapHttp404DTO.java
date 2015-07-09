@@ -16,15 +16,17 @@ import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
 	private String enable;
 	private String url;
+	private String codes;// = "40*,50*";
 	private String version;
 	//private String style;
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[3];
+		Object[] properties = new Object[4];
 		properties[0] = enable;
 		properties[1] = url;
-		properties[2] = version;
+		properties[2] = codes;
+		properties[3] = version;
 		/*HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(style);
 		properties[1] = adv.getPackurl();
 		properties[2] = adv.toIndentify();*/
@@ -71,10 +73,20 @@ public class WifiDeviceSettingVapHttp404DTO implements DeviceSettingBuilderDTO{
 		HtmlInject404 adv = VapModeDefined.HtmlInject404.getByStyle(dto.getStyle());
 		hdto.setUrl(adv.getDynaurl());//.setBhu_id(adv.getBid());
 		hdto.setEnable(dto.getEnable());
+		hdto.setCodes(adv.getCodes());
 		hdto.setVersion(adv.toIndentify());;
 		return hdto;
 	}
 	
+
+	public String getCodes() {
+		return codes;
+	}
+
+	public void setCodes(String codes) {
+		this.codes = codes;
+	}
+
 	/*public String getUrl() {
 		return url;
 	}
