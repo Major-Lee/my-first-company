@@ -68,6 +68,7 @@ import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.ChanzorSMSHelper;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 
 @Service
 public class AsyncMsgHandleService {
@@ -1125,7 +1126,9 @@ public class AsyncMsgHandleService {
 					if(dto.getCountrycode() == PhoneHelper.Default_CountryCode_Int){
 						//logger.info("step 4 -1");
 						String smsg = String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha());
-						String response = ChanzorSMSHelper.postSendMsg(smsg, dto.getAcc());
+						String response = SmsSenderFactory.buildSender(
+								RuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, dto.getAcc());
+						//String response = ChanzorSMSHelper.postSendMsg(smsg, dto.getAcc());
 						//String response = WangjianSMSHelper.postSendMsg(smsg, new String[]{dto.getAcc()});
 						//logger.info("CaptchaCodeNotifyActHandler Guodu msg:"+message);
 						logger.info("sendCaptchaCodeNotifyHandle new Chanzor res:"+response+" msg:"+smsg);
