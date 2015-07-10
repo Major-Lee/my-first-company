@@ -160,12 +160,23 @@ public class VapModeDefined {
 	 *tar -xvf style001.tar.gz
 	 *
 	 *http://192.168.66.7/vap/404/style001/index.html
+	 *
+	 *404页面 内容系统实现思路
+	 *A、实现规则
+	 *	1、所有访问的404页面都是静态的，事先生成好的
+	 *  2、提供n中页面模板，对于每个客户可以同时选择多个模板，根据每个客户、每个模板生成独立的静态内容，每个客户的内容可能存在多个不同的静态内容
+	 *  3、静态内容的生成频次默认为30分钟重新生成，时间可以配置，也可以手动触发马上生成
+	 *B、生成规则
+	 *C、内容规则
+	 *	1、每套模板都存在静态的tpl文件，模板中的内容版块可以事先定义，不通的模板的内容版块数量可以不一致
 	 */
 	public enum HtmlInject404{
 		STYLE000("style000","00.00.01","404,500",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style000/index.html?bid=10001")),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10001")),
+				//RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style000/index.html?bid=10001")),
 		STYLE001("style001","00.00.03","40*,500",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=10002")),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
+				//RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=10002")),
 /*		STYLE000("style000","00.00.01",
 				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
