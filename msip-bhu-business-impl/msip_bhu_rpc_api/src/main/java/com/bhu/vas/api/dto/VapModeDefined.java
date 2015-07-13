@@ -413,7 +413,8 @@ public class VapModeDefined {
 	
 	public enum HtmlRedirect{
 		STYLE000("style000","00.00.01","http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com"),
-		STYLE001("style001","00.00.01","http://baidu.com,http://google.com.hk"),
+		STYLE001("style001","00.00.01","http://www.csdn.net,http://wap.sogou.com/web/sl?keyword=&bid=sogou-waps-34adeb8e32428240"),
+		STYLE002("style002","00.00.01","http://baidu.com,http://google.com.hk"),
 		;
 		private String style;
 		private String ver;
