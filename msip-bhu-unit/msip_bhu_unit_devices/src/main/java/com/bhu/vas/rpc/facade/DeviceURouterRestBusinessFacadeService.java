@@ -28,6 +28,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
+import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -914,10 +915,18 @@ public class DeviceURouterRestBusinessFacadeService {
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 			List<TerminalDetailDTO> dtos = new ArrayList<TerminalDetailDTO>();
+			
+			int index = 0;
 			for(String ret : rets){
 				if(!StringUtils.isEmpty(ret)){
-					dtos.add(JsonHelper.getDTO(ret, TerminalDetailDTO.class));
+					TerminalDetailDTO dto = JsonHelper.getDTO(ret, TerminalDetailDTO.class);
+					//设备报送周边探测有可能出现只有上线，无下线消息的情况 此处判断如果不是最新探测到的细节 其他细节均显示为离线
+					if(index > 0){
+						dto.setState(WifistasnifferItemRddto.State_Online);
+					}
+					dtos.add(dto);
 				}
+				index++;
 			}
 			Map<String, Object> payload = PageHelper.partialAllList(dtos, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
