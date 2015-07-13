@@ -1014,7 +1014,7 @@ public class AsyncMsgHandleService {
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		//DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
-		DaemonHelper.deviceSpeedQuery(dto.getMac(), daemonRpcService);
+		DaemonHelper.deviceSpeedQuery(dto.getMac(), dto.getType(), daemonRpcService);
 		//WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeakRateWaiting(dto.getMac());
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s] successful", message));
 	}

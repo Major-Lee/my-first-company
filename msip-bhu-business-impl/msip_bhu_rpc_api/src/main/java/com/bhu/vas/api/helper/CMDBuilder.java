@@ -77,11 +77,11 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.ModifyDeviceSetting.getNo(),String.format(SuffixTemplete,taskid), payload);
 	}
 	
-	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,int taskid){
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,int taskid, String download_url, String upload_url){
 		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
 		String taskid_format = String.format(SuffixTemplete,taskid);
 		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, download_url, upload_url, builderCMDSerial(opt, taskid_format));
 	}
 
 	public static String builderDeviceUpgrade(String wifi_mac, int taskid, String upgrade_begin, String upgrade_end, String url) {

@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 public class DaemonHelper {
 	public static void afterDeviceOnline(String mac, boolean needLocationQuery,boolean needWiffsniffer,
@@ -132,8 +135,26 @@ public class DaemonHelper {
 	//设备测速时间15秒
 //	public static final int DeviceSpeedQuery_MaxTestTime = 15;
 	
-	public static void deviceSpeedQuery(String mac, IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence());
+	public static void deviceSpeedQuery(String mac, int type, IDaemonRpcService daemonRpcService){
+		String download_url = StringHelper.EMPTY_STRING_GAP;
+		String upload_url = StringHelper.EMPTY_STRING_GAP;
+		switch(type){
+			case DeviceHelper.Device_Peak_Section_Type_OnlyDownload:
+				download_url = RuntimeConfiguration.Device_SpeedTest_Download_url;
+				break;
+			case DeviceHelper.Device_Peak_Section_Type_OnlyUpload:
+				upload_url = RuntimeConfiguration.Device_SpeedTest_Upload_url;
+				break;
+			case DeviceHelper.Device_Peak_Section_Type_All:
+				download_url = RuntimeConfiguration.Device_SpeedTest_Download_url;
+				upload_url = RuntimeConfiguration.Device_SpeedTest_Upload_url;
+				break;
+			default:
+				return;
+		}
+		
+		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()
+				, download_url, upload_url);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	

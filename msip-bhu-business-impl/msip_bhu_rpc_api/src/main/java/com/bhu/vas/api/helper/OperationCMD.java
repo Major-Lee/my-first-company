@@ -54,7 +54,7 @@ public enum OperationCMD {
 			
 	//QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"%s\" combine=\"1\" __notify=\"true\"  serial=\"%s\" url=\"http://vap.bhunetworks.com/speedtest/speedtest.tar.gz\"/></cmd>"),
 	
-	QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"netspeed_test\" download=\"http://vap.bhunetworks.com/speedtest/speedtest.tar.gz\" upload=\"\" __notify=\"enable\"  period=\"2\"  duration=\"10\" serial=\"%s\" /></cmd>"),
+	QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"netspeed_test\" download=\"%s\" upload=\"%s\" __notify=\"enable\"  period=\"2\"  duration=\"10\" serial=\"%s\" /></cmd>"),
 	
 	QueryDeviceRateNotify("106","查询设备实时速率","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"ifrate\" interface=\"%s\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	//params:mac opt taskid serverip
