@@ -24,9 +24,12 @@ import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.QueryWifiTimerSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
+import com.bhu.vas.api.dto.ret.WifiDevicePeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -606,14 +609,27 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceSpeedNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, int taskid){
-		String rate = serialDto.getRate();
+/*		String rate = serialDto.getRate();
 		if(StringUtils.isEmpty(rate) || "0".equals(rate)) return;
 		
-/*		String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
-		if(StringUtils.isEmpty(peak_rate) || rate.compareTo(peak_rate) > 0){
-			WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
-		}*/
-		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);*/
+		
+		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
+		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearPeakSections(wifiId);
+		}
+		
+		WifiDevicePeakSectionDTO dto = RPCMessageParseHelper.generateDTOFromQuerySpeedTest(doc);
+		if(dto != null){
+			WifiDeviceRxPeakSectionDTO rx_dto = dto.getRx_dto();
+			if(rx_dto != null){
+				WifiDeviceRealtimeRateStatisticsStringService.getInstance().appendRxPeakSection(wifiId, rx_dto);
+			}
+			WifiDeviceTxPeakSectionDTO tx_dto = dto.getTx_dto();
+			if(tx_dto != null){
+				WifiDeviceRealtimeRateStatisticsStringService.getInstance().appendTxPeakSection(wifiId, tx_dto);
+			}
+		}
 	}
 	
 	/**

@@ -16,6 +16,8 @@ import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -45,7 +47,7 @@ import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
@@ -144,7 +146,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			String[] ret = fetchRealtimeRate(wifiId);
 			vto.setTx_rate(ret[0]);
 			vto.setRx_rate(ret[1]);
-			//vto.setRate_peak(ret[2]);
+			//String peak_rate = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
+			//vto.setPeak_rate(peak_rate);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
@@ -294,20 +297,46 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 	
 	/**
-	 * 获取设备的网速测试
-	 * a:返回当前网速数据 并重新下发网速测试指令 
-	 * b:如果存在数据waiting 不重新下发指令
+	 * 调用设备的网速测试
+	 * 下发指令进行设备测速
 	 * @param uid
 	 * @param wifiId
-	 *
+	 * @param type 测速类型
 	 * @return
 	 */
-	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId){
+	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 		
-			URouterPeakRateVTO vto = new URouterPeakRateVTO();
-			vto.setRx_peak_rate(fetchPeakRate(wifiId));
+			deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId, type);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	/**
+	 * 获取设备测速分段数据
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			
+			URouterPeakSectionsVTO vto = new URouterPeakSectionsVTO();
+			Object[] rets = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeakSections(wifiId);
+			if(rets != null && rets.length == 2){
+				if(rets[0] != null){
+					vto.setRxs((List<WifiDeviceRxPeakSectionDTO>)rets[0]);
+				}
+				if(rets[1] != null){
+					vto.setTxs((List<WifiDeviceTxPeakSectionDTO>)rets[1]);
+				}
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
@@ -348,7 +377,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param wifiId
 	 * @return
 	 */
-	public String fetchPeakRate(String wifiId){
+/*	public String fetchPeakRate(String wifiId){
 		List<String> result = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeak(wifiId);
 		String peak_rate = result.get(0);
 		String peak_rate_waiting = result.get(1);
@@ -358,7 +387,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId);
 		}
 		return peak_rate;
-	}
+	}*/
 	
 	/**
 	 * 获取黑名单列表数据

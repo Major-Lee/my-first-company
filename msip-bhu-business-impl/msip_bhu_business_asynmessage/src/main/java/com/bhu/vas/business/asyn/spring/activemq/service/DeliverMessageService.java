@@ -170,9 +170,10 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendQueryDeviceSpeedFetchActionMessage(String wifiId){
+	public void sendQueryDeviceSpeedFetchActionMessage(String wifiId, int type){
 		WifiDeviceSpeedFetchDTO dto = new WifiDeviceSpeedFetchDTO();
 		dto.setMac(wifiId);
+		dto.setType(type);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

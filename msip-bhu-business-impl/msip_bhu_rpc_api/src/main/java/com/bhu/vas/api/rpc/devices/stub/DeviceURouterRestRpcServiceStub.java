@@ -3,8 +3,6 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.List;
 import java.util.Map;
 
-import com.bhu.vas.api.vto.*;
-
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -15,7 +13,7 @@ import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
@@ -68,11 +66,19 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 	
 	@Override
-	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId) {
+	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceURouterRestRpcService.urouterPeakRate(uid, wifiId);
+		return deviceURouterRestRpcService.urouterPeakSection(uid, wifiId, type);
+	}
+	
+	@Override
+	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId) {
+		if(uid == null || StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceURouterRestRpcService.urouterPeakSectionFetch(uid, wifiId);
 	}
 
 	@Override

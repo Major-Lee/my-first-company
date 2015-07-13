@@ -130,15 +130,10 @@ public class DaemonHelper {
 	}
 	
 	//设备测速时间15秒
-	public static final int DeviceSpeedQuery_MaxTestTime = 15;
+//	public static final int DeviceSpeedQuery_MaxTestTime = 15;
 	
 	public static void deviceSpeedQuery(String mac, IDaemonRpcService daemonRpcService){
-		deviceSpeedQuery(mac, DeviceSpeedQuery_MaxTestTime, daemonRpcService);
-	}
-	
-	public static void deviceSpeedQuery(String mac, int max_test_time, IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence(), 
-				max_test_time);
+		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence());
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	

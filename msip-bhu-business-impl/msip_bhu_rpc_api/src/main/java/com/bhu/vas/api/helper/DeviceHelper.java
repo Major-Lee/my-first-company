@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -39,6 +41,10 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class DeviceHelper {
+	
+	public static final int Device_Peak_Section_Type_OnlyDownload = 1;//设备只测速下行
+	public static final int Device_Peak_Section_Type_OnlyUpload = 2;//设备只测速上行
+	public static final int Device_Peak_Section_Type_All = 3;//设备上下行都进行测速
 	
 	/**
 	 * 获取可用的vap的names
@@ -379,8 +385,8 @@ public class DeviceHelper {
 	}
 	
 	//新版本设备定义
-	public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
-	
+	//public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
+	public static final String NewMinOrgiSwverVersion = "1.2.8";
 	/**
 	 * 根据设备的原始软件版本号 判断是否新版本设备
 	 * @param orig_swver
@@ -389,12 +395,21 @@ public class DeviceHelper {
 	public static boolean isNewOrigSwverDevice(String orig_swver){
 		if(StringUtils.isEmpty(orig_swver)) return false;
 		
-		for(String newOrigSwver : newOrigSwvers){
-			if(orig_swver.contains(newOrigSwver)){
-				return true;
-			}
-		}
-		return false;
+    	Pattern p = Pattern.compile("V(.*)(B|r)");  
+    	Matcher m = p.matcher(orig_swver);
+    	String version = null;
+    	while(m.find()){  
+    		version = m.group(1);  
+    	}
+    	if(StringUtils.isEmpty(version)) return false;
+    	int ret = StringHelper.compareVersion(orig_swver, NewMinOrgiSwverVersion);
+    	return ret >= 0 ? true : false;
+//		for(String newOrigSwver : newOrigSwvers){
+//			if(orig_swver.contains(newOrigSwver)){
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 	
 	/**

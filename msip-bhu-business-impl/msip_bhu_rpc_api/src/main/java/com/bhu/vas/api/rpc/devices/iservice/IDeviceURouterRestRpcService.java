@@ -10,7 +10,7 @@ import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakRateVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
@@ -27,7 +27,9 @@ public interface IDeviceURouterRestRpcService {
 	
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId);
 	
-	public RpcResponseDTO<URouterPeakRateVTO> urouterPeakRate(Integer uid, String wifiId);
+	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type);
+	
+	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId);
 	
 	public RpcResponseDTO<Map<String,Object>> urouterBlockList(Integer uid, String wifiId, int start, int size);
 	

@@ -128,21 +128,46 @@ public class URouterDeviceController extends BaseController{
 	}
 	
 	/**
-	 * 设备的网速测试数据查询
+	 * 设备的网速测试调用
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 * @param type 1为只测试下行速率 2为只测试上行速率 3 都测
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device_peak_section",method={RequestMethod.POST})
+	public void device_peak_section(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="1") int type) {
+		
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterPeakSection(uid, mac, type);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
+	/**
+	 * 获取设备测速的分段数据列表
 	 * @param request
 	 * @param response
 	 * @param uid
 	 * @param mac
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/device_peak_rate",method={RequestMethod.POST})
-	public void device_peak_rate(
+	@RequestMapping(value="/device_peak_section_fetch",method={RequestMethod.POST})
+	public void device_peak_section_fetch(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterPeakRateVTO> rpcResponse = deviceURouterRestRpcService.urouterPeakRate(uid, mac);
+		RpcResponseDTO<URouterPeakSectionsVTO> rpcResponse = deviceURouterRestRpcService.urouterPeakSectionFetch(uid, mac);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

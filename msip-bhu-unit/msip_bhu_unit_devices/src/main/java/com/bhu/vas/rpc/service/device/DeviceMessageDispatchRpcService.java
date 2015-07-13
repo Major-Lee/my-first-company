@@ -272,7 +272,8 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
-				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
+				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())
+				|| WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
 			String serial = serialDto.getSerial();
 			if(!StringUtils.isEmpty(serial)){
 				if(serial.length() == 10){
