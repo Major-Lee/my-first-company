@@ -161,8 +161,18 @@ public class PushService{
 			if(presentDto != null){
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
-					pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), wspush_dto.getN() == null ? wspush_dto.getHd_mac() : wspush_dto.getN()));
-					pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getN() == null ? wspush_dto.getHd_mac() : wspush_dto.getN()));
+					pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
+					String name = wspush_dto.getHd_mac();
+					if(!StringUtils.isEmpty(wspush_dto.getN())){
+						name = wspush_dto.getN();
+					}else{
+						//如果没有昵称 匹配mac短名称
+						String scn = MacDictParserFilterHelper.prefixMactch(wspush_dto.getHd_mac(),true,false);
+						if(!DevicesSet.Unknow.getScn().equals(scn)){
+							name = scn;
+						}
+					}
+					pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), name));
 					pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					//发送push
 					ret = pushNotification(pushMsg);
