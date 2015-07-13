@@ -93,7 +93,9 @@ public class BuilderMacOrganizationDataOp {
                     				if(org.contains("Jiangsu Datang")){
                     					macPrefix.setName("Datang");
                     				}
-                    				 
+                    				if(org.contains("Beijing Xiaomi")){
+                    					macPrefix.setName("Xiaomi");
+                    				} 
                     				if(org.contains("SHENZHEN MERCURY")){
                     					macPrefix.setName("Mercury");
                     				}

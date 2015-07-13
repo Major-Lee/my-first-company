@@ -44,7 +44,8 @@ public class DaemonHelper {
 //			payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
 //		}
 		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
-		payloads.add(CMDBuilder.builderCMD4Opt(OperationCMD.DeviceWifiTimerQuery.getNo(), mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
+		//wifi定时开关 移到用户登录后给其绑定设备下发
+		//payloads.add(CMDBuilder.builderCMD4Opt(OperationCMD.DeviceWifiTimerQuery.getNo(), mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
 		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}
 	
@@ -64,6 +65,8 @@ public class DaemonHelper {
 		//用户登录后 给其绑定的设备mac地址发送设备使用情况
 		if(needDeviceUsedQuery)
 			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac));//(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
+		
+		payloads.add(CMDBuilder.builderCMD4Opt(OperationCMD.DeviceWifiTimerQuery.getNo(), mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
 		//可能需要用户登录后根据其个人绑定的设备，下发配置开启wifi探测
 		/*if(needWiffsniffer){
 			//开启wiffsinffer
