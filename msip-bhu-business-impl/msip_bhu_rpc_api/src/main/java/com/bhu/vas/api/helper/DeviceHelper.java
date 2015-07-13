@@ -395,15 +395,20 @@ public class DeviceHelper {
 	public static boolean isNewOrigSwverDevice(String orig_swver){
 		if(StringUtils.isEmpty(orig_swver)) return false;
 		
-    	Pattern p = Pattern.compile("V(.*)(B|r)");  
-    	Matcher m = p.matcher(orig_swver);
-    	String version = null;
-    	while(m.find()){  
-    		version = m.group(1);  
-    	}
-    	if(StringUtils.isEmpty(version)) return false;
-    	int ret = StringHelper.compareVersion(orig_swver, NewMinOrgiSwverVersion);
-    	return ret >= 0 ? true : false;
+		try{
+	    	Pattern p = Pattern.compile("V(.*)(B|r)");  
+	    	Matcher m = p.matcher(orig_swver);
+	    	String version = null;
+	    	while(m.find()){  
+	    		version = m.group(1);  
+	    	}
+	    	if(StringUtils.isEmpty(version)) return false;
+	    	int ret = StringHelper.compareVersion(version, NewMinOrgiSwverVersion);
+	    	return ret >= 0 ? true : false;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+		return false;
 //		for(String newOrigSwver : newOrigSwvers){
 //			if(orig_swver.contains(newOrigSwver)){
 //				return true;
@@ -1215,6 +1220,9 @@ public class DeviceHelper {
 
 
 		System.out.println(item);
+		
+		
+		System.out.println(isNewOrigSwverDevice("AP104P06V1.2.12r2"));
 
 	}
 
