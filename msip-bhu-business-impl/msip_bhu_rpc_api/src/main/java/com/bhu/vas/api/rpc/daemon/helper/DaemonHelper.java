@@ -18,7 +18,7 @@ public class DaemonHelper {
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_query_taskid_fragment.getNextSequence()));
 		//获取设备测速
-		deviceSpeedQuery(mac, daemonRpcService);
+		//deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		if(needLocationQuery){
 			//获取地理位置
