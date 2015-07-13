@@ -922,7 +922,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					TerminalDetailDTO dto = JsonHelper.getDTO(ret, TerminalDetailDTO.class);
 					//设备报送周边探测有可能出现只有上线，无下线消息的情况 此处判断如果不是最新探测到的细节 其他细节均显示为离线
 					if(index > 0){
-						dto.setState(WifistasnifferItemRddto.State_Online);
+						dto.setState(WifistasnifferItemRddto.State_Offline);
 					}
 					dtos.add(dto);
 				}
