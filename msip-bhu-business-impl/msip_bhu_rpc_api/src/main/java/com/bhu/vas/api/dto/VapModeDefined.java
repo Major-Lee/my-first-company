@@ -9,6 +9,13 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class VapModeDefined {
+	
+	private static final String Vap_Supported_Work_Mode = "router-ap";
+	
+	public static boolean supported(String device_workmode){
+		return Vap_Supported_Work_Mode.equals(device_workmode);
+	}
+	
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
 	//private final static String url_prefix = "http://vap.bhunetworks.com/vap/";
 	//private final static String url_prefix = "http://192.168.66.7/vap/";

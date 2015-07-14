@@ -70,6 +70,8 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_SETTING_ACLMAC_MAX_MEMBER("711","wifidevice.setting.aclmac.maxmember"),
 	WIFIDEVICE_SETTING_RATECONTROL_MAX_MEMBER("712","wifidevice.setting.ratecontrol.maxmember"),
 	
+	WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED("730","wifidevice.vap.workmode.notsupported"),
+	
 	WIFIDEVICE_GROUP_NOTEXIST("750","wifidevice.group.notexist"),
 	WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY("751","wifidevice.group.current.devices.empty"),
 	WIFIDEVICE_GROUP_DEPENDENCY_DEVICES_EMPTY("752","wifidevice.group.dependency.devices.empty"),

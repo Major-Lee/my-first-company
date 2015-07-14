@@ -7,10 +7,12 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
@@ -215,11 +217,23 @@ public class TaskFacadeService {
 	public WifiDeviceDownTask apiTaskGenerate(int uid, String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid) throws Exception{
 		//如果是管理员用户 不进行用户所属设备的验证
+		WifiDevice wifiDevice = null;
 		if(RuntimeConfiguration.isConsoleUser(uid)){
-			deviceFacadeService.validateDevice(mac);
+			wifiDevice = deviceFacadeService.validateDevice(mac);
 		}else{
-			deviceFacadeService.validateUserDevice(uid, mac);
+			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
+		if(	OperationDS.DS_Http_404.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_Ad.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_Redirect.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_Portal_Start.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_Portal_Stop.getNo().equals(subopt) 
+				){
+			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
+			}
+		}
+		
 		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setUid(uid);
