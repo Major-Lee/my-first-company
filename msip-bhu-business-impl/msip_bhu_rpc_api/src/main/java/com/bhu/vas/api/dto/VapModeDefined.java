@@ -174,7 +174,7 @@ public class VapModeDefined {
 		STYLE000("style000","00.00.01","404,500",
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10001")),
 				//RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style000/index.html?bid=10001")),
-		STYLE001("style001","00.00.03","40*,500",
+		STYLE001("style001","00.00.03","40*,50*,10*",
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
 				//RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=10002")),
 /*		STYLE000("style000","00.00.01",
