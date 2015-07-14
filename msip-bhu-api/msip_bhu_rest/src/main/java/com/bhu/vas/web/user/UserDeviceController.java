@@ -36,19 +36,13 @@ public class UserDeviceController extends BaseController {
     @RequestMapping(value="/bind",method={RequestMethod.POST})
     public void bindDevice(HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
-                           @RequestParam(required = true, value = "uid") int uid,
-                           @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
+                           @RequestParam(required = true, value = "uid") int uid) throws Exception{
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
         }
-        if (!validateDeviceName(deviceName)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-            return;
 
-        }
-
-        RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid, deviceName);
+        RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid);
         if (userDeviceResult.getErrorCode() != null) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult.getErrorCode()));
             return;
