@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -531,7 +532,33 @@ public class DeviceFacadeService {
 		}
 		return null;
 	}
-	
+
+
+	/**
+	 * 获取urouter的ssid
+	 *
+	 * @param mac
+	 * @return
+	 */
+	public String getUrouterSSID(String mac) {
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if (entity != null) {
+			WifiDeviceSettingDTO wifiDeviceSettingDTO = entity.getInnerModel();
+			List<WifiDeviceSettingVapDTO> vaps = wifiDeviceSettingDTO.getVaps();
+			if(vaps == null || vaps.isEmpty()) {
+				return null;
+			}
+
+			for(WifiDeviceSettingVapDTO vap : vaps){
+				if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getEnable())
+						&& !WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getGuest_en())){
+					return vap.getSsid();
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * 查询终端名称
 	 * 1:根据设备配置查询是否存在别名
@@ -754,6 +781,8 @@ public class DeviceFacadeService {
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams, ds_dto);
 			case DS_Http_Portal_Stop:
 				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence, extparams, ds_dto);
+				
+				
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
 			case DS_VapPassword:
