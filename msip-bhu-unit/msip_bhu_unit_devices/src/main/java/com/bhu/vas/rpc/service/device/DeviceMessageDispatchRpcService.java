@@ -167,7 +167,6 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					case TurnOnDeviceDPINotify:
 						deviceBusinessFacadeService.taskCommonProcessor(ctx,payload,mac,taskid);
 						break;
-						
 					case QueryDeviceLocationNotify:
 						deviceBusinessFacadeService.taskQueryOldDeviceLocationNotifyProcessor(ctx,payload,mac,taskid);
 						break;
@@ -197,6 +196,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						break;
 					case DeviceWifiTimerQuery:
 						deviceBusinessFacadeService.taskWifiTimerQuery(ctx, payload, mac, taskid);
+						break;
+					case QueryDeviceSpeedNotify:
+						deviceBusinessFacadeService.taskQueryDeviceSpeed(ctx, payload, mac, taskid);
 						break;
 					/*case TriggerHttp404ResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
@@ -272,8 +274,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
-				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())
-				|| WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
+				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
 			String serial = serialDto.getSerial();
 			if(!StringUtils.isEmpty(serial)){
 				if(serial.length() == 10){

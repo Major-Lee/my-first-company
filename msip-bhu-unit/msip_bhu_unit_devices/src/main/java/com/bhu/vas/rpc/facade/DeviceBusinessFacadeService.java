@@ -614,11 +614,6 @@ public class DeviceBusinessFacadeService {
 		
 		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);*/
 		
-		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
-		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
-			WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearPeakSections(wifiId);
-		}
-		
 		WifiDevicePeakSectionDTO dto = RPCMessageParseHelper.generateDTOFromQuerySpeedTest(doc);
 		if(dto != null){
 			WifiDeviceRxPeakSectionDTO rx_dto = dto.getRx_dto();
@@ -968,6 +963,23 @@ public class DeviceBusinessFacadeService {
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
+	
+	/**
+	 * 设备测速指令回应
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQueryDeviceSpeed(String ctx, String response, String wifiId, int taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
+		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
+		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearPeakSections(wifiId);
+		}
+	}
+	
 	/**
 	 * 修改设备配置的响应处理
 	 * @param ctx
