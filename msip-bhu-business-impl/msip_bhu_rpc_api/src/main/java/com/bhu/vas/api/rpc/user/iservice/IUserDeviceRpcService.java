@@ -22,7 +22,7 @@ public interface IUserDeviceRpcService {
     int WIFI_DEVICE_STATUS_BINDED = 101;
     int WIFI_DEVICE_STATUS_UNBINDED = 102;
 
-    RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName);
+    RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid);
 
     RpcResponseDTO<Boolean> unBindDevice(String mac, int uid);
 

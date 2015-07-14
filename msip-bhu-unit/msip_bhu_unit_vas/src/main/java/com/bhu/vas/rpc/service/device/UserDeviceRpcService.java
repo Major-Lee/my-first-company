@@ -40,8 +40,8 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     private UserUnitFacadeService userUnitFacadeService;
 
     @Override
-    public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
-        logger.info(String.format("bindDevice with mac[%s] uid[%s] deviceName[%s]",mac, uid, deviceName));
+    public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid) {
+        logger.info(String.format("bindDevice with mac[%s] uid[%s]",mac, uid));
         if (userDeviceFacadeService.countBindDevices(uid) >= WIFI_DEVICE_BIND_LIMIT_NUM) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_OWNER_REACHLIMIT);
         }
@@ -61,7 +61,10 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         } else if (retStatus == WIFI_DEVICE_STATUS_BINDED){
            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
         }
-        RpcResponseDTO<UserDeviceDTO> result = userDeviceFacadeService.bindDevice(mac,uid,deviceName);
+        
+        String deviceName = deviceFacadeService.getUrouterSSID(mac);
+
+        RpcResponseDTO<UserDeviceDTO> result = userDeviceFacadeService.bindDevice(mac,uid,deviceName == null ? "":deviceName );
         return result;
     }
 
