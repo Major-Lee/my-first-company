@@ -69,6 +69,10 @@ public class WifiDeviceMobilePresentStringService extends AbstractRelationString
 		return super.get(generateKey(mac));
 	}
 	
+	public void destoryMobilePresent(String mac){
+		super.del(generateKey(mac));
+	}
+	
 	public void destoryMobilePresent(List<String> macs){
 		String[] keys = generateKeys(macs);
 		if(macs == null ||macs.isEmpty()) return;
