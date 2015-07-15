@@ -46,11 +46,14 @@ echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_unit_vas-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_vas/target/msip_bhu_unit_vas-bin.zip ./$CuDateDir
-
+echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_task-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_task/target/msip_bhu_backend_task-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_dataimport-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-bin.zip ./$CuDateDir
 
@@ -68,11 +71,17 @@ unzip -qo msip_bhu_unit_devices/bin/msip_bhu_unit_devices.jar -d msip_bhu_unit_d
 unzip -q msip_bhu_unit_vas-bin.zip
 unzip -qo msip_bhu_unit_vas/bin/msip_bhu_unit_vas.jar -d msip_bhu_unit_vas/classes/
 
+unzip -q msip_bhu_spark_task-bin.zip
+unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
+
 unzip -q msip_bhu_backend_online-bin.zip
 unzip -qo msip_bhu_backend_online/bin/msip_bhu_backend_online.jar -d msip_bhu_backend_online/classes/
 
 unzip -q msip_bhu_backend_task-bin.zip
 unzip -qo msip_bhu_backend_task/bin/msip_bhu_backend_task.jar -d msip_bhu_backend_task/classes/
+
+unzip -q msip_bhu_backend_wifistasniffer-bin.zip
+unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.jar -d msip_bhu_backend_wifistasniffer/classes/
 
 unzip -q msip_bhu_dataimport-bin.zip
 unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport/classes/
@@ -138,18 +147,18 @@ echo '准备发布业务组件到'$Deploy2ComponentServer2
 #echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ComponentServer2
 
 echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2ComponentServer2
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_daemon_processor/classes/com/ 	$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/classes/com/ 	$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
 echo 'deploy msip_bhu_unit_daemon_processor successfully @'$Deploy2ComponentServer2
 
 echo 'deploy msip_bhu_unit_devices to ...@'$Deploy2ComponentServer2
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/lib/msip_*.jar  		$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_devices/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_devices/classes/com/ 		$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_devices/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/lib/msip_*.jar  		$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_devices/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/classes/com/ 		$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_devices/classes/com/
 echo 'deploy msip_bhu_unit_devices successfully @'$Deploy2ComponentServer2
 
 echo 'deploy msip_bhu_unit_vas to ...@'$Deploy2ComponentServer2
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_vas/lib/msip_*.jar  			$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_vas/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_unit_vas/classes/com/ 			$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_vas/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/lib/msip_*.jar  			$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_vas/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/classes/com/ 			$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_unit_vas/classes/com/
 echo 'deploy msip_bhu_unit_vas successfully @'$Deploy2ComponentServer2
 echo '发布业务组件成功'$Deploy2ComponentServer2
 
@@ -157,9 +166,22 @@ echo '发布业务组件成功'$Deploy2ComponentServer2
 echo '准备发布其他服务到'$Deploy2ComponentServer2
 
 echo 'deploy msip_bhu_backend_online to ...@'$Deploy2ComponentServer2
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/lib/msip_*.jar  	$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 8611'  ./msip_bhu_backend_online/classes/com/ 		$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_online/bin/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar  	$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_online/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/ 		$DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_online/bin/com/
 echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServer2
+
+echo 'deploy msip_bhu_spark_task to ...@'$Deploy2ComponentServer2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/lib/msip_*.jar     $DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_spark_task/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/classes/com/     $DeployUser@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_spark_task/bin/com/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/bin/msip_bhu_spark_task.jar     root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/applications/
+echo 'deploy msip_bhu_spark_task successfully @'$Deploy2ComponentServer2
+
+echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2ComponentServer2
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*-4.1.2.RELEASE.jar    root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
+echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ComponentServer2
+
 echo '发布其他服务成功'$Deploy2ComponentServer2
 
 

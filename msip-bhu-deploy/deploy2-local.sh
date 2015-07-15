@@ -160,7 +160,7 @@ echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server
 echo 'deploy msip_bhu_spark_task to ...@'$Deploy2Server
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/lib/msip_*.jar  		root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/classes/com/ 		root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/bin/com/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/bin/msip_bhu_spark_task.jar  		root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/applications/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/bin/msip_bhu_spark_task.jar  		root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/applications/
 
 echo 'deploy msip_bhu_spark_task successfully @'$Deploy2Server
 echo '发布其他服务成功'
