@@ -41,7 +41,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiDevicesOnline(String ctx,List<String> macs) {
-		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOnline ctx[%s] macs[%s]",ctx,macs));
 		for(String mac:macs){
 			SessionManager.getInstance().addSession(mac, ctx);
@@ -54,7 +53,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiDeviceOnline(String ctx,String mac) {
-		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().addSession(mac, ctx);
 		//设备上行首先发送查询地理位置指令
@@ -65,7 +63,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiDeviceOffline(String ctx,String mac) {
-		//System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
 		if(sessionCtx != null && ctx.equals(sessionCtx.getCtx())){
@@ -78,7 +75,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
-		//System.out.println(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		logger.info(String.format("wifiDeviceCmdDown0 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		if(StringUtils.isEmpty(ctx)){
 			SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);

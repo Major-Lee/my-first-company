@@ -422,6 +422,7 @@ public class VapModeDefined {
 		STYLE000("style000","00.00.01","http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com"),
 		STYLE001("style001","00.00.01","http://www.csdn.net,http://wap.sogou.com/web/sl?keyword=&amp;bid=sogou-waps-34adeb8e32428240"),
 		STYLE002("style002","00.00.01","http://baidu.com,http://google.com.hk"),
+		STYLE003("style003","00.00.01","http://www.bhunetworks.com,http://www.csdn.net"),
 		;
 		private String style;
 		private String ver;

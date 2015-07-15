@@ -770,17 +770,25 @@ public class DeviceFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
 		
 		switch(ods){
-			case DS_Http_Ad:
-				return DeviceHelper.builderDSHttpAdOuter(config_sequence, extparams, ds_dto);
-			case DS_Http_Redirect:
-				return DeviceHelper.builderDSHttpRedirectOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_Ad_Start:
+				return DeviceHelper.builderDSHttpAdStartOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_Ad_Stop:
+				return DeviceHelper.builderDSHttpAdStopOuter(config_sequence, ds_dto);	
+			case DS_Http_Redirect_Start:
+				return DeviceHelper.builderDSHttpRedirectStartOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_Redirect_Stop:
+				return DeviceHelper.builderDSHttpRedirectStopOuter(config_sequence, ds_dto);
 				
-			case DS_Http_404:
-				return DeviceHelper.builderDSHttp404Outer(config_sequence, extparams, ds_dto);
+			case DS_Http_404_Start:
+				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams, ds_dto);
+			case DS_Http_404_Stop:
+				return DeviceHelper.builderDSHttp404StopOuter(config_sequence, ds_dto);
+
+				
 			case DS_Http_Portal_Start:
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams, ds_dto);
 			case DS_Http_Portal_Stop:
-				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence, ds_dto);
 				
 				
 			case DS_Power:

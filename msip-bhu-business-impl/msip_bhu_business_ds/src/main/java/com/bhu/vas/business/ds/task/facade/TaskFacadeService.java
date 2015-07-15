@@ -223,9 +223,12 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
-		if(	OperationDS.DS_Http_404.getNo().equals(subopt) 
-				|| OperationDS.DS_Http_Ad.getNo().equals(subopt) 
-				|| OperationDS.DS_Http_Redirect.getNo().equals(subopt) 
+		if(	OperationDS.DS_Http_404_Start.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_404_Stop.getNo().equals(subopt)
+				|| OperationDS.DS_Http_Ad_Start.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_Ad_Stop.getNo().equals(subopt)
+				|| OperationDS.DS_Http_Redirect_Start.getNo().equals(subopt) 
+				|| OperationDS.DS_Http_Redirect_Stop.getNo().equals(subopt)
 				|| OperationDS.DS_Http_Portal_Start.getNo().equals(subopt) 
 				|| OperationDS.DS_Http_Portal_Stop.getNo().equals(subopt) 
 				){

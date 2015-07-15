@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public enum OperationDS {
 	
-	DS_Http_Ad("01","修改广告配置"),
+	DS_Http_Ad_Start("01","开启广告注入"),
 	DS_Power("02","修改信号强度"),
 	DS_VapPassword("03","修改vap密码"),
 	DS_AclMacs("04","修改黑名单列表名单"),
@@ -20,10 +20,14 @@ public enum OperationDS {
 	DS_VapGuest("08","修改vap访客网络开关"),
 	DS_LinkMode("10","修改上网方式"),
 	
-	DS_Http_404("15","修改404错误页面"),
-	DS_Http_Redirect("16","修改http redirect"),
+	DS_Http_404_Start("15","开启404错误页面"),
+	DS_Http_Redirect_Start("16","开启http redirect"),
 	DS_Http_Portal_Start("17","开启http portal"),
+	
 	DS_Http_Portal_Stop("18","关闭http portal"),
+	DS_Http_Ad_Stop("19","关闭广告注入"),
+	DS_Http_404_Stop("20","关闭404错误页面"),
+	DS_Http_Redirect_Stop("21","关闭http redirect"),
 	;
 
 	

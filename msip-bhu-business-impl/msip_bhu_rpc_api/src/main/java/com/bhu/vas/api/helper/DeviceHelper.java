@@ -582,14 +582,17 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	
 	
-	public static final String DeviceSetting_HttpAdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_Start_HttpAdItem 	= "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_Stop_HttpAdItem 	= "<ITEM bhu_enable=\"disable\" />";
 	/*
 	<ITEM bhu_http404_enable="enable" bhu_http404_url="" bhu_http_redirect_enable="enable"
 		    bhu_http_redirect_rule="1,20:00:00,21:00:00,http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com ..."
 		 />*/
 	//public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"http://auth.wi2o.cn/404/\" bhu_http404_codes=\"404,502\"/>";
-	public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
-	public static final String DeviceSetting_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
+	public static final String DeviceSetting_Start_Http404Item 		= "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
+	public static final String DeviceSetting_Stop_Http404Item 		= "<ITEM bhu_http404_enable=\"disable\"/>";
+	public static final String DeviceSetting_Start_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
+	public static final String DeviceSetting_Stop_HttpRedirectItem 	= "<ITEM bhu_http_redirect_enable=\"disable\"/>";
 	//TODO:待完善
 	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	public static final String DeviceSetting_Start_HttpPortalItem =  	
@@ -776,34 +779,43 @@ public class DeviceHelper {
 	 * @param ds_dto
 	 * @return throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	 */
-	public static String builderDSHttpAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		//WifiDeviceSettingVapAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapAdDTO.class);
+	public static String builderDSHttpAdStartOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
 		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		//WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttpRedirectOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpAdStopOuter(String config_sequence, /*String extparams, */WifiDeviceSettingDTO ds_dto){
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpAdItem);
+	}
+	
+	public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		//WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
 		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttp404Outer(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpRedirectStopOuter(String config_sequence, /*String extparams, */WifiDeviceSettingDTO ds_dto){
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpRedirectItem);
+	}
+	
+	public static String builderDSHttp404StartOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		//WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
 		ParamVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
-	
+	public static String builderDSHttp404StopOuter(String config_sequence, /*String extparams, */WifiDeviceSettingDTO ds_dto){
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
+	}
 	
 	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
@@ -814,7 +826,7 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	
-	public static String builderDSStopHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSStopHttpPortalOuter(String config_sequence,/* String extparams, */WifiDeviceSettingDTO ds_dto){
 		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		//if(ad_dto == null)
