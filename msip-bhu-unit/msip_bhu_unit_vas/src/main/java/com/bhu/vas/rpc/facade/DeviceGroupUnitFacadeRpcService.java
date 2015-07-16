@@ -9,10 +9,13 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
+import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -203,7 +206,16 @@ public class DeviceGroupUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
 		}
 	}
-	
+
+	public RpcResponseDTO<DeviceGroupVTO> detail(int uid, int gid, int pageNo, int pageSize) {
+		WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
+		if(dgroup != null){
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup, pageNo, pageSize));
+		}else{
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
+		}
+	}
+
 	public RpcResponseDTO<Boolean> remove(Integer uid, String gids) {
 		/*List<Integer> gidList = new ArrayList<Integer>();
 		String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
@@ -239,10 +251,15 @@ public class DeviceGroupUnitFacadeRpcService{
 			wifiDeviceGroupService.update(dgroup);
 		}
 
+
+		//绑定设备
 		List<WifiDeviceGroupRelation> lists = new ArrayList<WifiDeviceGroupRelation>();
 
 		if (arrayresids.length > 0) {
 			for (String mac : arrayresids) {
+				if (!StringHelper.isValidMac(mac)) {
+
+				}
 				WifiDeviceGroupRelation wifiDeviceGroupRelation = new WifiDeviceGroupRelation();
 				wifiDeviceGroupRelation.setId(new WifiDeviceGroupRelationPK(gid, mac));
 				wifiDeviceGroupRelation.setCreated_at(new Date());
@@ -257,7 +274,9 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 	
 	public RpcResponseDTO<Boolean> ungrant(Integer uid, int gid, String wifi_ids) {
-		if(StringUtils.isEmpty(wifi_ids)) return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		if(StringUtils.isEmpty(wifi_ids)) {
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}
 		String[] arrayresids = wifi_ids.split(StringHelper.COMMA_STRING_GAP);
 		if(arrayresids.length > 0){
 			WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
@@ -295,7 +314,8 @@ public class DeviceGroupUnitFacadeRpcService{
 		vto.setChildren(dgroup.getChildren());
 		//dto.setHaschild(dgroup.isHaschild());
 		vto.setPath(dgroup.getPath());
-		vto.setDevices(dgroup.getInnerModels());
+//		vto.setDevices(dgroup.getInnerModels());
+
 
 
 		List<WifiDevice> entitys = wifiDeviceService.findByIds(dgroup.getInnerModels(), true, true);
@@ -334,6 +354,75 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		vto.setDetail_devices(vtos);
 
+		return vto;
+	}
+
+
+	private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup, int pageNo, int pageSize){
+		DeviceGroupVTO vto = new DeviceGroupVTO();
+		vto.setGid(dgroup.getId());
+		vto.setName(dgroup.getName());
+		vto.setPid(dgroup.getPid());
+		if(dgroup.getPid() == 0){
+			vto.setPname("根节点");
+		}else{
+			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
+			vto.setPname((parent_group != null) ? parent_group.getName() : null);
+		}
+		vto.setChildren(dgroup.getChildren());
+		vto.setPath(dgroup.getPath());
+
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("gid", dgroup.getId());
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+
+		List<WifiDeviceGroupRelationPK> ids = wifiDeviceGroupRelationService.findIdsByModelCriteria(mc);
+
+		List<String> deviceIds = new ArrayList<String>();
+		for (WifiDeviceGroupRelationPK pk : ids) {
+			deviceIds.add(pk.getMac());
+		}
+
+		List<WifiDevice> entitys = wifiDeviceService.findByIds(deviceIds, true, true);
+		List<WifiDeviceVTO> vtos = new ArrayList<WifiDeviceVTO>();
+		WifiDeviceVTO wifiDeviceVTO = null;
+		for(WifiDevice entity : entitys){
+			if(entity != null){
+				//todo(bluesand):此处以后会跟搜索结果合并？现在用于群组菜单业务。
+				wifiDeviceVTO = new WifiDeviceVTO();
+				wifiDeviceVTO.setWid(entity.getId());
+				wifiDeviceVTO.setOl(entity.isOnline()? 1: 0);
+				wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_model())
+						? entity.getOrig_model() : entity.getOem_model());
+				wifiDeviceVTO.setWm(entity.getWork_mode());
+				wifiDeviceVTO.setCfm(entity.getConfig_mode());
+				wifiDeviceVTO.setRts(entity.getLast_reged_at().getTime());
+				wifiDeviceVTO.setCts(entity.getCreated_at().getTime());
+				wifiDeviceVTO.setOvd(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_vendor())
+						? entity.getOrig_vendor() : entity.getOem_vendor());
+				wifiDeviceVTO.setOesv(entity.getOem_swver());
+				wifiDeviceVTO.setDof(org.apache.commons.lang.StringUtils.isEmpty(entity.getRx_bytes())
+						? 0 : Long.parseLong(entity.getRx_bytes()));
+				wifiDeviceVTO.setUof(org.apache.commons.lang.StringUtils.isEmpty(entity.getTx_bytes())
+						? 0 : Long.parseLong(entity.getTx_bytes()));
+				wifiDeviceVTO.setIpgen(entity.isIpgen());
+				//如果是离线 计算离线时间
+				if(wifiDeviceVTO.getOl() == 0){
+					long logout_ts = entity.getLast_logout_at().getTime();
+					wifiDeviceVTO.setOfts(logout_ts);
+					wifiDeviceVTO.setOftd(System.currentTimeMillis() - logout_ts);
+				}
+				vtos.add(wifiDeviceVTO);
+			}
+
+		}
+
+
+
+		vto.setDetail_devices(vtos);
+
+		vto.setDetails(new CommonPage<WifiDeviceVTO>(pageNo, pageSize,ids.size(), vtos));
 		return vto;
 	}
 
