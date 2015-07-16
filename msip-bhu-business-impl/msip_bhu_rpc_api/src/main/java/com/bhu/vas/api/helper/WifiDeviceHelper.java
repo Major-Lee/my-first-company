@@ -71,11 +71,18 @@ public class WifiDeviceHelper {
 		PersistenceAction action = new PersistenceAction();
 		action.setOperation(operation);
 		//action.setKey(opt.getNo().concat(StringHelper.MINUS_STRING_GAP).concat(subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS));
-		action.setKey(builderKey(opt.getNo(),subopt!=null?subopt.getNo():null));
+		action.setKey(builderPersistenceKey(opt.getNo(),subopt!=null?subopt.getNo():null));
 		return action;
 	}
 	
-	public static String builderKey(String opt,String subopt){
+	public static String builderPersistenceKey(String opt,String subopt){
 		return opt.concat(StringHelper.MINUS_STRING_GAP).concat(subopt!=null?subopt:OperationDS.Empty_OperationDS);
 	}
+	
+	
+	public static String[] parserPersistenceKey(String persistenceKey){
+		return persistenceKey.split(StringHelper.MINUS_STRING_GAP);
+	}
+	
+	
 }

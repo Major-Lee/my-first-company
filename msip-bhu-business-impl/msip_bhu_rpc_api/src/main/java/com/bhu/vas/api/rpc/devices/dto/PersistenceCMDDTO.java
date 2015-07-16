@@ -35,7 +35,7 @@ public class PersistenceCMDDTO {
 	}
 	
 	public String toKey(){
-		return WifiDeviceHelper.builderKey(opt, subopt);
+		return WifiDeviceHelper.builderPersistenceKey(opt, subopt);
 		//return opt.concat(subopt);
 	}
 }

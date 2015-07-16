@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -23,10 +25,15 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
+import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.IGenerateDeviceSetting;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.PersistenceAction;
+import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
@@ -39,6 +46,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStat
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -90,6 +98,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	@Resource
 	private UserMobileDeviceStateService userMobileDeviceStateService;
 	
+	@Resource
+	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	/**
 	 * 指定wifiId进行终端全部下线处理
 	 * @param wifiId
@@ -813,4 +823,53 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 	}
 
+	
+	/**
+	 * 对于设备配置的指令需要合并一起提交
+	 * @param mac
+	 * @return
+	 */
+	public List<String> fetchWifiDevicePersistenceCMD(String mac){
+		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
+		if(cmdState == null) return null;
+		
+		/*Set<String> keys = cmdState.keySet();
+		if(keys.isEmpty()) return null;*/
+		Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+		for(Entry<String, PersistenceCMDDTO> entry : entrySet){
+			PersistenceCMDDTO dto = entry.getValue();
+			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
+			if(opt_cmd == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
+			CMDBuilder.autoBuilderCMD4Opt(dto.getOpt(), dto.getSubopt(), mac, taskid, dto.getExtparams(), this);
+			/*switch(opt_cmd){
+				case ModifyDeviceSetting:
+					if(ods_cmd != null){
+						switch(ods_cmd){
+							case DS_Http_Ad_Start:
+								result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+								break;	
+							case DS_Http_404_Start:
+								result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+								break;	
+							case DS_Http_Redirect_Start:
+								result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+								break;	
+							default:
+								break;	
+						}
+					}
+					break;
+				case TurnOnDeviceDPINotify:
+					result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+					break;
+				default:
+					break;	
+			}*/
+		}
+		
+		return null;
+	}
 }
