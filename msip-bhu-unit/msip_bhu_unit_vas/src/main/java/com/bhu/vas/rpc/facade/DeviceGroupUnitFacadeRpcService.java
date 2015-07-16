@@ -265,7 +265,11 @@ public class DeviceGroupUnitFacadeRpcService{
 				wifiDeviceGroupRelation.setCreated_at(new Date());
 				lists.add(wifiDeviceGroupRelation);
 			}
-			wifiDeviceGroupRelationService.insertAll(lists);
+			try {
+				wifiDeviceGroupRelationService.insertAll(lists);
+			}catch (Exception e) {
+				logger.error(e);
+			}
 		}
 
 
