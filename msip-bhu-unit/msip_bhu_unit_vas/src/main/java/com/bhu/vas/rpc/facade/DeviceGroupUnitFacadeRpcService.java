@@ -355,7 +355,6 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 
 		vto.setDetail_devices(vtos);
-		//vto.setDetails(new CommonPage<WifiDeviceVTO>());
 		return vto;
 	}
 
@@ -422,7 +421,7 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		vto.setDetail_devices(vtos);
 
-		//vto.setDetails(new CommonPage<WifiDeviceVTO>(pageNo, pageSize,ids.size(), vtos));
+		vto.setDetails(new CommonPage<WifiDeviceVTO>(pageNo, pageSize,ids.size(), vtos));
 		return vto;
 	}
 
