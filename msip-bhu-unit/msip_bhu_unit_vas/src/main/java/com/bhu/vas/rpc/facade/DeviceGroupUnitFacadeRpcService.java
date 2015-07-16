@@ -9,13 +9,11 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -318,7 +316,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		vto.setChildren(dgroup.getChildren());
 		//dto.setHaschild(dgroup.isHaschild());
 		vto.setPath(dgroup.getPath());
-//		vto.setDevices(dgroup.getInnerModels());
+		vto.setDevices(dgroup.getInnerModels());
 
 
 
@@ -357,7 +355,6 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 
 		vto.setDetail_devices(vtos);
-
 		return vto;
 	}
 
@@ -421,8 +418,6 @@ public class DeviceGroupUnitFacadeRpcService{
 			}
 
 		}
-
-
 
 		vto.setDetail_devices(vtos);
 
