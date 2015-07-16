@@ -213,14 +213,6 @@ public class CMDBuilder {
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
 			switch(operationCMDFromNo){
-//				case DevHTMLInjectionNotify:
-//					//extparams 三个值 enable，adurl，adid
-//					String[] split = parserExtParams(extparams);
-//					if(split == null || split.length ==0)
-//						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,"true","null","null");
-//					else
-//						resultCmd = builderDevHTMLInjectionNotify(wifi_mac,taskid,split[0],split[1],split[2]);
-//					break;
 				case ModifyDeviceSetting:
 					if(extparams != null){
 						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, extparams);

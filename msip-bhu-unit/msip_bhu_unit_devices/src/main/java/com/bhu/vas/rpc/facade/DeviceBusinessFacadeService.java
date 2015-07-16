@@ -1101,7 +1101,7 @@ public class DeviceBusinessFacadeService {
 	 * @param subopt
 	 */
 	public void taskModifyDeviceSettingCompletedDeliverMessage(Integer uid, String mac, String subopt){
-		OperationDS ods = OperationDS.getOperationCMDFromNo(subopt);
+		OperationDS ods = OperationDS.getOperationDSFromNo(subopt);
 		if(ods != null){
 			switch(ods){
 				case DS_AclMacs:

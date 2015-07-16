@@ -758,7 +758,7 @@ public class DeviceFacadeService {
 			// || StringUtils.isEmpty(extparams))
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
-		OperationDS ods = OperationDS.getOperationCMDFromNo(ds_opt);
+		OperationDS ods = OperationDS.getOperationDSFromNo(ds_opt);
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
