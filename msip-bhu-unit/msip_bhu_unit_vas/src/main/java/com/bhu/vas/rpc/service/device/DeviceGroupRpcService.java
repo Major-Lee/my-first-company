@@ -37,6 +37,13 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		logger.info(String.format("detail uid:%s gid:%s",uid,gid));
 		return deviceGroupUnitFacadeRpcService.detail(uid, gid);
 	}
+
+	@Override
+	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, int gid, int pageNo, int pageSize) {
+		logger.info(String.format("detail uid:%s gid:%s pageNo:%s pageSize:%s",uid,gid,pageNo,pageSize));
+		return deviceGroupUnitFacadeRpcService.detail(uid, gid, pageNo, pageSize);
+	}
+
 	@Override
 	public RpcResponseDTO<Boolean> remove(Integer uid, String gids) {
 		logger.info(String.format("detail uid:%s gids:%s",uid,gids));
