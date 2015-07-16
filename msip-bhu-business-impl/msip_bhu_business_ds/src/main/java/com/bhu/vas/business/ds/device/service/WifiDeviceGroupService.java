@@ -22,6 +22,9 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 	
 	@Resource
 	SequenceService sequenceService;
+
+	@Resource
+	WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
 	
 	@Resource
 	@Override
@@ -160,9 +163,15 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 						parent_group.setChildren(0);
 						this.update(parent_group);
 					}*/
+
 				}else{//pid == 0 本身是根节点，被删除后，无需动作
 					;
 				}
+
+				//删除绑定的设备
+				ModelCriteria mc = new ModelCriteria();
+				mc.createCriteria().andColumnEqualTo("gid", resid);
+				wifiDeviceGroupRelationService.deleteByCommonCriteria(mc);
 				
 			}
 		}

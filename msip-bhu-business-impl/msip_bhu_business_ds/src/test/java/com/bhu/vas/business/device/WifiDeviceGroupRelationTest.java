@@ -28,6 +28,10 @@ public class WifiDeviceGroupRelationTest extends BaseTest {
         wifiDeviceGroupRelationService.insert(wifiDeviceGroupRelation);
     }
 
+    public void inserts() {
+        wifiDeviceGroupRelationService.insertAll();
+    }
+
 //    @Test
     public void delete() {
         wifiDeviceGroupRelationService.deleteById(new WifiDeviceGroupRelationPK(1, "62:68:75:f1:10:80"));

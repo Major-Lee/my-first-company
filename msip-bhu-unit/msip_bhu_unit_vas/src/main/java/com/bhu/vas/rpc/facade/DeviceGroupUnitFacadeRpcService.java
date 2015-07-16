@@ -1,13 +1,17 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,6 +32,9 @@ public class DeviceGroupUnitFacadeRpcService{
 	private final Logger logger = LoggerFactory.getLogger(DeviceGroupUnitFacadeRpcService.class);
 	@Resource
 	private WifiDeviceGroupService wifiDeviceGroupService;
+
+	@Resource
+	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -215,8 +222,12 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 	
 	public RpcResponseDTO<Boolean> grant(Integer uid, int gid, String wifi_ids) {
-		if(StringUtils.isEmpty(wifi_ids)) return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		if(StringUtils.isEmpty(wifi_ids)) {
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}
 		String[] arrayresids = wifi_ids.split(StringHelper.COMMA_STRING_GAP);
+
+
 		if(arrayresids.length > 0){
 			WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
 			if(dgroup == null)
@@ -227,6 +238,21 @@ public class DeviceGroupUnitFacadeRpcService{
 			}
 			wifiDeviceGroupService.update(dgroup);
 		}
+
+		List<WifiDeviceGroupRelation> lists = new ArrayList<WifiDeviceGroupRelation>();
+
+		if (arrayresids.length > 0) {
+			for (String mac : arrayresids) {
+				WifiDeviceGroupRelation wifiDeviceGroupRelation = new WifiDeviceGroupRelation();
+				wifiDeviceGroupRelation.setId(new WifiDeviceGroupRelationPK(gid, mac));
+				wifiDeviceGroupRelation.setCreated_at(new Date());
+				lists.add(wifiDeviceGroupRelation);
+			}
+			wifiDeviceGroupRelationService.insertAll(lists);
+		}
+
+
+
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
@@ -243,6 +269,15 @@ public class DeviceGroupUnitFacadeRpcService{
 			}
 			wifiDeviceGroupService.update(dgroup);
 		}
+
+		List<WifiDeviceGroupRelationPK> lists = new ArrayList<WifiDeviceGroupRelationPK>();
+		if (arrayresids.length > 0) {
+			for(String mac :arrayresids){
+				lists.add(new WifiDeviceGroupRelationPK(gid, mac));
+			}
+			wifiDeviceGroupRelationService.deleteByIds(lists);
+		}
+
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 
