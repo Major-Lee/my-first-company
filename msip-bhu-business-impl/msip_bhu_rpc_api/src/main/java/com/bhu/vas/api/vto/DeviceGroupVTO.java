@@ -18,7 +18,10 @@ public class DeviceGroupVTO implements java.io.Serializable{
 
 	private List<WifiDeviceVTO> detail_devices;
 
-	private TailPage<WifiDeviceVTO> details;
+
+	private List<String> devices;
+
+//	private TailPage<WifiDeviceVTO> details;
 
 	public int getGid() {
 		return gid;
@@ -76,11 +79,19 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.children = children;
 	}
 
-	public TailPage<WifiDeviceVTO> getDetails() {
-		return details;
+	public List<String> getDevices() {
+		return devices;
 	}
 
-	public void setDetails(TailPage<WifiDeviceVTO> details) {
-		this.details = details;
+	public void setDevices(List<String> devices) {
+		this.devices = devices;
 	}
+
+	//	public TailPage<WifiDeviceVTO> getDetails() {
+//		return details;
+//	}
+//
+//	public void setDetails(TailPage<WifiDeviceVTO> details) {
+//		this.details = details;
+//	}
 }
