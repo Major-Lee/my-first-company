@@ -1,5 +1,7 @@
 package com.bhu.vas.api.helper;
 
+import com.smartwork.msip.cores.helper.StringHelper;
+
 
 public class WifiDeviceHelper {
 	
@@ -24,33 +26,40 @@ public class WifiDeviceHelper {
 	 * @param subopt
 	 * @return
 	 */
-	public static Action needPersistenceAction(OperationCMD opt,OperationDS subopt){
-		Action result = null;
+	public static PersistenceAction needPersistenceAction(OperationCMD opt,OperationDS subopt){
+		PersistenceAction result = null;
 		if(opt == null) return result;
-		
 		switch(opt){
 			case ModifyDeviceSetting:
 				if(subopt == null) return result;
 				switch(subopt){
 					case DS_Http_Ad_Start:
-						break;
+						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						break;	
 					case DS_Http_404_Start:
-						break;
+						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						break;	
 					case DS_Http_Redirect_Start:
-						break;
+						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						break;	
 					case DS_Http_Ad_Stop:
+						result = builderPersistenceAction(opt,OperationDS.DS_Http_Ad_Start,PersistenceAction.Oper_Remove);
 						break;	
 					case DS_Http_404_Stop:
-						break;
+						result = builderPersistenceAction(opt,OperationDS.DS_Http_404_Start,PersistenceAction.Oper_Remove);
+						break;	
 					case DS_Http_Redirect_Stop:
+						result = builderPersistenceAction(opt,OperationDS.DS_Http_Redirect_Start,PersistenceAction.Oper_Remove);
 						break;	
 					default:
 						break;	
 				}
 				break;
 			case TurnOnDeviceDPINotify:
+				result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
 				break;
 			case TurnOffDeviceDPINotify:
+				result = builderPersistenceAction(OperationCMD.TurnOnDeviceDPINotify,subopt,PersistenceAction.Oper_Remove);
 				break;
 			default:
 				break;	
@@ -58,23 +67,15 @@ public class WifiDeviceHelper {
 		return result;
 	}
 	
+	public static PersistenceAction builderPersistenceAction(OperationCMD opt,OperationDS subopt,String operation){
+		PersistenceAction action = new PersistenceAction();
+		action.setOperation(operation);
+		//action.setKey(opt.getNo().concat(StringHelper.MINUS_STRING_GAP).concat(subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS));
+		action.setKey(builderKey(opt.getNo(),subopt!=null?subopt.getNo():null));
+		return action;
+	}
 	
-	public class Action{
-		public static final String Oper_Update = "update";
-		public static final String Oper_Remove = "remove";
-		private String operation;
-		private String key;
-		public String getOperation() {
-			return operation;
-		}
-		public void setOperation(String operation) {
-			this.operation = operation;
-		}
-		public String getKey() {
-			return key;
-		}
-		public void setKey(String key) {
-			this.key = key;
-		}
+	public static String builderKey(String opt,String subopt){
+		return opt.concat(StringHelper.MINUS_STRING_GAP).concat(subopt!=null?subopt:OperationDS.Empty_OperationDS);
 	}
 }

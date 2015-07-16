@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -36,6 +37,9 @@ public class TaskFacadeService {
 	
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
+	@Resource
+	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -216,6 +220,14 @@ public class TaskFacadeService {
 	
 	public WifiDeviceDownTask apiTaskGenerate(int uid, String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid) throws Exception{
+		
+		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
+		if(opt_cmd == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
+		
 		//如果是管理员用户 不进行用户所属设备的验证
 		WifiDevice wifiDevice = null;
 		if(RuntimeConfiguration.isConsoleUser(uid)){
@@ -223,20 +235,21 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
-		if(	OperationDS.DS_Http_404_Start.getNo().equals(subopt) 
-				|| OperationDS.DS_Http_404_Stop.getNo().equals(subopt)
-				|| OperationDS.DS_Http_Ad_Start.getNo().equals(subopt) 
-				|| OperationDS.DS_Http_Ad_Stop.getNo().equals(subopt)
-				|| OperationDS.DS_Http_Redirect_Start.getNo().equals(subopt) 
-				|| OperationDS.DS_Http_Redirect_Stop.getNo().equals(subopt)
-				|| OperationDS.DS_Http_Portal_Start.getNo().equals(subopt) 
-				|| OperationDS.DS_Http_Portal_Stop.getNo().equals(subopt) 
+		if(	OperationDS.DS_Http_404_Start == ods_cmd 
+				|| OperationDS.DS_Http_404_Stop == ods_cmd
+				|| OperationDS.DS_Http_Ad_Start == ods_cmd 
+				|| OperationDS.DS_Http_Ad_Stop == ods_cmd
+				|| OperationDS.DS_Http_Redirect_Start == ods_cmd
+				|| OperationDS.DS_Http_Redirect_Stop == ods_cmd
+				|| OperationDS.DS_Http_Portal_Start == ods_cmd
+				|| OperationDS.DS_Http_Portal_Stop == ods_cmd
 				){
 			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
 		}
-		
+		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
+		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setUid(uid);
@@ -249,20 +262,20 @@ public class TaskFacadeService {
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
 		this.taskComming(downTask);
-		if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
+		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 			/*if(OperationDS.DS_Http_404.getNo().equals(subopt)){
 				//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
 				downTask.setPayload(CMDBuilder.builderCMD4Http404ResourceUpdate(mac, downTask.getId(), extparams));
 			}else */
-			if(OperationDS.DS_Http_Portal_Start.getNo().equals(subopt)){
+			if(OperationDS.DS_Http_Portal_Start == ods_cmd){
 				//portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
 				downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
 			}else{
-				String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
-				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
+				//String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
+				downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
 			}
 		}else{
-			if(OperationCMD.DeviceWifiTimerStart.getNo().equals(opt)){//需要先增加到个人配置表中
+			if(OperationCMD.DeviceWifiTimerStart == opt_cmd){//需要先增加到个人配置表中
 				ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
 				UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
 				innerDTO.setOn(true);
@@ -270,13 +283,20 @@ public class TaskFacadeService {
 				innerDTO.setTimeslot(param_dto.getTimeslot());
 				userSettingStateService.updateUserSetting(mac, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 			}
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
+			downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(),extparams));
 		}
 		this.taskUpdate(downTask);
 		return downTask;
 	}
 	
 	public WifiDeviceDownTask systemTaskGenerate(int uid, String mac, String opt, String subopt, String extparams) throws Exception{
+		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
+		if(opt_cmd == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
+		
 		//如果是管理员用户 不进行用户所属设备的验证
 		if(RuntimeConfiguration.isConsoleUser(uid)){
 			deviceFacadeService.validateDevice(mac);
@@ -293,12 +313,13 @@ public class TaskFacadeService {
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
 		this.taskComming(downTask);
-		if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
+		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+		/*if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 			String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
 			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
 		}else{
 			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
-		}
+		}*/
 		this.taskUpdate(downTask);
 		return downTask;
 	}

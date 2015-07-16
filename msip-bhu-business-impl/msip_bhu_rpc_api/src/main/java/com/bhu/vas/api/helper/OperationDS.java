@@ -31,7 +31,7 @@ public enum OperationDS {
 	DS_Http_Redirect_Stop("21","关闭http redirect"),
 	;
 
-	
+	public static final String Empty_OperationDS = "00";
 	static Map<String, OperationDS> allOperationDSs;
 	/*public static int Opt_Length = 3;
 	public static int Taskid_Length = 7;*/

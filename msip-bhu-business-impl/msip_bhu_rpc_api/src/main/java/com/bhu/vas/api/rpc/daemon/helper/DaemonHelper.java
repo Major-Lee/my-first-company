@@ -69,7 +69,7 @@ public class DaemonHelper {
 		if(needDeviceUsedQuery)
 			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac));//(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		//查询用户绑定设备的定时开关状态
-		payloads.add(CMDBuilder.builderCMD4Opt(OperationCMD.DeviceWifiTimerQuery.getNo(), mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
+		payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.DeviceWifiTimerQuery/*.getNo()*/, mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
 		//可能需要用户登录后根据其个人绑定的设备，下发配置开启wifi探测
 		/*if(needWiffsniffer){
 			//开启wiffsinffer

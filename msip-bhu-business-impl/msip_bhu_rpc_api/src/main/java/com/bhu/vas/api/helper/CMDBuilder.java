@@ -208,7 +208,7 @@ public class CMDBuilder {
 //	}
 	
 	
-	public static String builderCMD4Opt(String opt/*, String subopt*/,String wifi_mac,int taskid,String extparams){
+	/*public static String builderCMD4Opt(String opt, String subopt,String wifi_mac,int taskid,String extparams){
 		String resultCmd = null;
 		OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(operationCMDFromNo != null){
@@ -237,6 +237,61 @@ public class CMDBuilder {
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
 					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
 					resultCmd = String.format(operationCMDFromNo.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));
+					break;
+			}
+		}
+		return resultCmd;
+	}*/
+	
+	
+	public static String autoBuilderCMD4Opt(OperationCMD opt,String wifi_mac,int taskid,String extparams){
+		return autoBuilderCMD4Opt(opt,null,wifi_mac,taskid,extparams,null);
+	}
+	
+	/**
+	 * 自动生成指令，用于设备上线后自动构造指令
+	 * @param opt
+	 * @param subopt
+	 * @param wifi_mac
+	 * @param taskid
+	 * @param extparams 构造指令的参数 可能是字符串 可能是jason参数
+	 * 			目前由于DeviceSetting需要构造sequence serial ,所以需要把extparams值为已经构造成payload
+	 * 			其余属性直接extparams为相关参数，可能是字符串 可能是jason参数
+	 * @return
+	 */
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,int taskid,String extparams,IGenerateDeviceSetting generateDeviceSetting){
+		String resultCmd = null;
+		//OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
+		if(opt != null){
+			switch(opt){
+				case ModifyDeviceSetting:
+					try{
+						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+					break;
+				case TurnOnDeviceDPINotify:
+					String dpiServerIp = extparams;
+					resultCmd = String.format(opt.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),dpiServerIp);
+					break;
+				case DeviceUpgrade:
+					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
+					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
+					break;
+				case DeviceWifiTimerStart:
+					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
+					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
+					resultCmd = String.format(opt.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),timeSlot[0],timeSlot[1]);
+					break;
+				default://extparams = null 不需要参数构建的cmd
+					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
+					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
+					resultCmd = String.format(opt.getCmdtpl(), 
 							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));
 					break;
 			}

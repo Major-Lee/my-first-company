@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +21,10 @@ import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.IGenerateDeviceSetting;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
@@ -56,7 +57,7 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
-public class DeviceFacadeService {
+public class DeviceFacadeService implements IGenerateDeviceSetting{
 	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
 	/**
 	 * 存在多种混合状态
@@ -753,12 +754,12 @@ public class DeviceFacadeService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public String generateDeviceSetting(String mac, String ds_opt, String extparams) throws Exception {
-		if(StringUtils.isEmpty(ds_opt))
+	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception {
+		/*if(StringUtils.isEmpty(ds_opt))
 			// || StringUtils.isEmpty(extparams))
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
-		OperationDS ods = OperationDS.getOperationDSFromNo(ds_opt);
+		OperationDS ods = OperationDS.getOperationDSFromNo(ds_opt);*/
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
