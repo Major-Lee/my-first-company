@@ -12,10 +12,10 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
@@ -30,7 +30,6 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.IGenerateDeviceSetting;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
-import com.bhu.vas.api.helper.PersistenceAction;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
@@ -512,7 +511,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 */
 	public void updateDeviceModeStatus(String mac, WifiDeviceSettingLinkModeDTO dto){
 		if(StringUtils.isEmpty(mac)) return;
-		if(dto != null && !StringUtils.isEmpty(dto)){
+		if(dto != null/* && !StringUtils.isEmpty(dto)*/){
 			WifiDeviceModeStatusService.getInstance().addPresent(mac, JsonHelper.getJSONString(dto));
 		}
 	}
@@ -833,40 +832,50 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null) return null;
 		Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+		List<String> payloads = new ArrayList<String>();
+		StringBuilder sb_setting_inner = new StringBuilder();
 		for(Entry<String, PersistenceCMDDTO> entry : entrySet){
 			PersistenceCMDDTO dto = entry.getValue();
 			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
-			if(opt_cmd == null){
-				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+				continue;
+				//throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 			OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
-			//CMDBuilder.autoBuilderCMD4Opt(dto.getOpt(), dto.getSubopt(), mac, taskid, dto.getExtparams(), this);
-			/*switch(opt_cmd){
-				case ModifyDeviceSetting:
-					if(ods_cmd != null){
-						switch(ods_cmd){
-							case DS_Http_Ad_Start:
-								result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
-								break;	
-							case DS_Http_404_Start:
-								result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
-								break;	
-							case DS_Http_Redirect_Start:
-								result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
-								break;	
-							default:
-								break;	
-						}
-					}
-					break;
-				case TurnOnDeviceDPINotify:
-					result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
-					break;
-				default:
-					break;	
-			}*/
+			
+			if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+				if(ods_cmd == null) continue;
+				switch(ods_cmd){
+					case DS_Http_Ad_Start:
+						sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
+						break;	
+					case DS_Http_404_Start:
+						sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
+						break;	
+					case DS_Http_Redirect_Start:
+						sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
+						break;	
+					default:
+						break;
+				}
+			}else{
+				payloads.add(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac,0, dto.getExtparams(), this));
+			}
 		}
 		
-		return null;
+		if(sb_setting_inner.length() > 0){
+			WifiDeviceSetting entity = validateDeviceSetting(mac);
+			WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+			
+			String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+			if(StringUtils.isEmpty(config_sequence))
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+			payloads.add(
+					CMDBuilder.builderDeviceSettingModify(
+							mac, 
+							CMDBuilder.auto_taskid_fragment.getNextSequence(), 
+							DeviceHelper.builderDSHttpVapSettinStartOuter(config_sequence,sb_setting_inner.toString())));
+		}
+		return payloads;
 	}
 }

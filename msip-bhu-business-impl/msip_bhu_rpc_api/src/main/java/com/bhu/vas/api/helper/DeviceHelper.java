@@ -593,6 +593,13 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Stop_Http404Item 		= "<ITEM bhu_http404_enable=\"disable\"/>";
 	public static final String DeviceSetting_Start_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
 	public static final String DeviceSetting_Stop_HttpRedirectItem 	= "<ITEM bhu_http_redirect_enable=\"disable\"/>";
+	
+	public static final String DeviceSetting_Start_VapItem_Begin_Fragment 		= "<ITEM ";
+	public static final String DeviceSetting_Start_HttpAdItem_Inner_Fragment 	= " bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" ";
+	public static final String DeviceSetting_Start_Http404Item_Inner_Fragment 	= " bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"%s\" ";
+	public static final String DeviceSetting_Start_HttpRedirectItem_Inner_Fragment = " bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\" ";
+	public static final String DeviceSetting_Start_VapItem_End_Fragment 	= " />";
+	
 	//TODO:待完善
 	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	public static final String DeviceSetting_Start_HttpPortalItem =  	
@@ -770,6 +777,43 @@ public class DeviceHelper {
 		WifiDeviceSettingAclDTO result = new WifiDeviceSettingAclDTO();
 		result.setName(WifiDeviceSettingDTO.Default_AclName);
 		return builderDeviceSettingItemWithDto(DeviceSetting_AclItem, result);
+	}
+	
+	
+	/*public static String autoBuilderDSOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
+		if(pad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		//WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+	}*/
+	
+	public static String builderDSHttpVapSettinStartOuter(String config_sequence, String innerPayload){
+		StringBuilder payload = new StringBuilder();
+		payload.append(DeviceSetting_Start_VapItem_Begin_Fragment).append(innerPayload).append(DeviceSetting_Start_VapItem_End_Fragment);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, payload.toString());
+	}
+	
+	public static String builderDSHttpAdStartFragmentOuter(String extparams){
+		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
+		if(pad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem_Inner_Fragment, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
+	}
+	public static String builderDSHttpRedirectStartFragmentOuter(String extparams){
+		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
+		if(pad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return  builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpRedirectItem_Inner_Fragment, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
+	}
+	
+	public static String builderDSHttp404StartFragmentOuter(String extparams){
+		//WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		ParamVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item_Inner_Fragment, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
 	}
 	
 	/**

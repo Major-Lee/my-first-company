@@ -816,7 +816,7 @@ public class DeviceBusinessFacadeService {
 			//dhcpc
 			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
 				if(!StringUtils.isEmpty(mode.getWan_interface())){
-					int taskid = CMDBuilder.device_dhcpc_status_fragment.getNextSequence();
+					int taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
 					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, taskid, 
 							OperationCMD.QueryDhcpcStatus.getNo(), cmdPayload);
@@ -999,7 +999,7 @@ public class DeviceBusinessFacadeService {
 			status = WifiDeviceDownTask.State_Failed;
 			//如果是配置序列号匹配错误 重新下发指令获取配置
 			if(dto.isConfigSequenceMatchError()){
-				int new_taskid = CMDBuilder.device_setting_query_taskid_fragment.getNextSequence();
+				int new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 				String cmdPayload = CMDBuilder.builderDeviceSettingQuery(wifiId, new_taskid);
 				deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, new_taskid, 
 						OperationCMD.QueryDeviceSetting.getNo(), cmdPayload);
