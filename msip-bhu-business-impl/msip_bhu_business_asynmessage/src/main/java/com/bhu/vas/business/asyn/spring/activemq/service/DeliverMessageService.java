@@ -66,6 +66,16 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
+	/*public void sendWifiCmdsCommingNotifyMessage(String mac,int taskid,String opt,List<String> payloads){
+		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
+		dto.setMac(mac);
+		dto.setTaskid(taskid);
+		dto.setOpt(opt);
+		dto.setPayload(payload);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}*/
+	
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
 			long last_login_at, boolean newWifi,boolean needLocationQuery){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
