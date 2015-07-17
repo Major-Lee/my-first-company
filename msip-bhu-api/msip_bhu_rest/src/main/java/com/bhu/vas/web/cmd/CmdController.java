@@ -135,7 +135,21 @@ public class CmdController extends BaseController{
 		}
 		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
 	}
-	
+
+	/**
+	 *
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param gid
+	 * @param dependency 支持子节点
+	 * @param mac
+	 * @param opt
+	 * @param subopt
+	 * @param extparams
+	 * @param channel
+	 * @param channel_taskid
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/generate4group",method={RequestMethod.POST})
 	public void cmdGenerate4Group(
