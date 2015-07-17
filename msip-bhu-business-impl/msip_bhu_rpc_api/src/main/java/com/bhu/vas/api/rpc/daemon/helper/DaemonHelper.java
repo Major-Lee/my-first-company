@@ -19,13 +19,13 @@ public class DaemonHelper {
 		//下发管理参数触发设备自动上报用户通知并同步终端
 		payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
 		//获取配置指令
-		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_query_taskid_fragment.getNextSequence()));
+		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 		//获取设备测速
 		//deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		if(needLocationQuery){
 			//获取地理位置
-			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
+			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 		}
 		//开启或关闭wiffsinffer
 		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
@@ -53,7 +53,7 @@ public class DaemonHelper {
 	}
 	
 	public static void locationStep1Query(String mac,IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.location_taskid_fragment.getNextSequence());
+		String cmd = CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence());
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 	}
 	
@@ -69,7 +69,7 @@ public class DaemonHelper {
 		if(needDeviceUsedQuery)
 			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac));//(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
 		//查询用户绑定设备的定时开关状态
-		payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.DeviceWifiTimerQuery/*.getNo()*/, mac, CMDBuilder.device_wifitimer_fragment.getNextSequence(), null));
+		payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.DeviceWifiTimerQuery/*.getNo()*/, mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), null));
 		//可能需要用户登录后根据其个人绑定的设备，下发配置开启wifi探测
 		/*if(needWiffsniffer){
 			//开启wiffsinffer
@@ -85,6 +85,10 @@ public class DaemonHelper {
 		//deviceRateQuery(mac, daemonRpcService);
 		if(!payloads.isEmpty())
 			daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
+	}
+	
+	public static void daemonCmdsDown(String mac,List<String> cmds,IDaemonRpcService daemonRpcService){
+		daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
 	}
 	
 	public static void daemonCmdDown(String mac,String cmd,IDaemonRpcService daemonRpcService){
@@ -111,13 +115,13 @@ public class DaemonHelper {
 	
 	public static void deviceRateQuery(String mac,String interface_name,int period, int duration, 
 			IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceRateNotifyQuery(mac, CMDBuilder.device_rate_taskid_fragment.getNextSequence(), 
+		String cmd = CMDBuilder.builderDeviceRateNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 
 				interface_name, period, duration);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
 	public static void deviceDhcpcStatusQuery(String mac, String interface_name, IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDhcpcStatusQuery(mac, CMDBuilder.device_dhcpc_status_fragment.getNextSequence(), 
+		String cmd = CMDBuilder.builderDhcpcStatusQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 
 				interface_name);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
@@ -127,7 +131,7 @@ public class DaemonHelper {
 	}
 	
 	public static void deviceTerminalsRateQuery(String mac,int period, int duration, IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.device_terminals_taskid_fragment.getNextSequence(), 
+		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 
 				period, duration);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
@@ -153,13 +157,13 @@ public class DaemonHelper {
 				return;
 		}
 		
-		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()
+		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()
 				, download_url, upload_url);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
 	public static void deviceSettingModify(String mac, String paylod, IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceSettingModify(mac, CMDBuilder.device_setting_modify_taskid_fragment.getNextSequence(),
+		String cmd = CMDBuilder.builderDeviceSettingModify(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(),
 				paylod);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}

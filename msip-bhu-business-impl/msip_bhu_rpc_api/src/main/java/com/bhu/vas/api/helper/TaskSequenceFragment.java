@@ -1,15 +1,18 @@
 package com.bhu.vas.api.helper;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.smartwork.msip.localunit.RandomData;
 
 public class TaskSequenceFragment {
 	private int start;
 	private int end;
-	private int current = 0;
-	
+	private AtomicInteger current;
+	//private int current = 0;
 	public TaskSequenceFragment(int start, int end) {
 		this.start = start;
 		this.end = end;
+		current = new AtomicInteger(RandomData.intNumber(start, end));
 	}
 	public int getStart() {
 		return start;
@@ -23,15 +26,22 @@ public class TaskSequenceFragment {
 	public void setEnd(int end) {
 		this.end = end;
 	}
-	public int getCurrent() {
+	/*public int getCurrent() {
 		return current;
 	}
 	public void setCurrent(int current) {
 		this.current = current;
-	}
+	}*/
 	
-	public synchronized int getNextSequence(){
-		if(current == 0){
+	public int getNextSequence(){
+		int result = current.incrementAndGet();
+		if(result >= end){
+			current.set(start);
+			return current.get();
+		}
+		return result;
+		/*if(current == 0){
+			current = RandomData.intNumber(start, end);
 			return RandomData.intNumber(start, end);
 		}else{
 			if(current >= end){
@@ -40,14 +50,15 @@ public class TaskSequenceFragment {
 				current++;
 			}
 			return current;
-		}
+		}*/
 	}
 	
 	public boolean wasInFragment(long taskid){
-		if(end != -1){
+		return ( taskid>=start && taskid <=end);
+		/*if(end != -1){
 			return ( taskid>=start && taskid <=end);
 		}else{//end =-1 代表无穷大
 			return taskid>=start;
-		}
+		}*/
 	}
 }

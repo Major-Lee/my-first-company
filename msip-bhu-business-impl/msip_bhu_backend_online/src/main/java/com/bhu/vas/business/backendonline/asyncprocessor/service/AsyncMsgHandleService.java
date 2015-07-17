@@ -170,16 +170,13 @@ public class AsyncMsgHandleService {
 	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,boolean needWiffsniffer){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
 		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, needWiffsniffer, daemonRpcService);
-		/*List<String> payloads = new ArrayList<String>();
-		//获取配置指令
-		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
-		//获取设备测速
-		payloads.add(CMDBuilder.builderDeviceSpeedQuery(mac, CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
-		//获取地理位置
-		//设备上行首先发送查询地理位置指令
-		payloads.add(CMDBuilder.builderDeviceLocationStep1Query(mac, CMDBuilder.location_taskid_fragment.getNextSequence()));
-		//WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
-		daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);*/
+		
+		
+		//设备持久指令分发
+		List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);
+		if(!persistencePayloads.isEmpty())
+			DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
+		System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
 	}
 	

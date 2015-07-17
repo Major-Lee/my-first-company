@@ -51,7 +51,7 @@ public class CMDBuilder {
 	public static String builderDeviceUsedStatusQuery(String wifi_mac){
 		//return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
 		//		StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, query_device_used_status.getNextSequence()));
-		return builderDeviceUsedStatusQuery(wifi_mac,query_device_used_status.getNextSequence());
+		return builderDeviceUsedStatusQuery(wifi_mac,auto_taskid_fragment.getNextSequence());
 	}
 	public static String builderDeviceUsedStatusQuery(String wifi_mac,int taskid){
 		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
@@ -254,7 +254,7 @@ public class CMDBuilder {
 	 * @param opt
 	 * @param subopt
 	 * @param wifi_mac
-	 * @param taskid
+	 * @param taskid 如果taskid==0 则自动生成任务id
 	 * @param extparams 构造指令的参数 可能是字符串 可能是jason参数
 	 * 			目前由于DeviceSetting需要构造sequence serial ,所以需要把extparams值为已经构造成payload
 	 * 			其余属性直接extparams为相关参数，可能是字符串 可能是jason参数
@@ -262,8 +262,12 @@ public class CMDBuilder {
 	 */
 	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,int taskid,String extparams,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
-		//OperationCMD operationCMDFromNo = OperationCMD.getOperationCMDFromNo(opt);
 		if(opt != null){
+			if(taskid == 0){
+				//System.out.println(auto_taskid_fragment);
+				taskid = auto_taskid_fragment.getNextSequence();
+				//System.out.println("~~~~~~~~~~~~:"+taskid);
+			}
 			switch(opt){
 				case ModifyDeviceSetting:
 					try{
@@ -276,7 +280,7 @@ public class CMDBuilder {
 				case TurnOnDeviceDPINotify:
 					String dpiServerIp = extparams;
 					resultCmd = String.format(opt.getCmdtpl(), 
-							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),dpiServerIp);
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),String.format(SuffixTemplete,taskid),dpiServerIp);
 					break;
 				case DeviceUpgrade:
 					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
@@ -286,13 +290,13 @@ public class CMDBuilder {
 					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
 					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
 					resultCmd = String.format(opt.getCmdtpl(), 
-							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid),timeSlot[0],timeSlot[1]);
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),String.format(SuffixTemplete,taskid),timeSlot[0],timeSlot[1]);
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
 					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
 					resultCmd = String.format(opt.getCmdtpl(), 
-							StringHelper.unformatMacAddress(wifi_mac),opt,String.format(SuffixTemplete,taskid));
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),String.format(SuffixTemplete,taskid));
 					break;
 			}
 		}
@@ -344,7 +348,7 @@ public class CMDBuilder {
 	
 	//任务号分段：
 	//对于查询wifi地理位置任务 区间段未1~2000
-	public static TaskSequenceFragment location_taskid_fragment = new TaskSequenceFragment(1,2000);
+	/*public static TaskSequenceFragment location_taskid_fragment = new TaskSequenceFragment(1,2000);
 	//对于查询查询cpu,内存利用率 区间段未2001~5000
 	public static TaskSequenceFragment timer_device_status_taskid_fragment = new TaskSequenceFragment(2001,5000);
 	//对于查询设备流量 区间段未5001~8000
@@ -364,17 +368,23 @@ public class CMDBuilder {
 	public static TaskSequenceFragment device_upgrade_fragment = new TaskSequenceFragment(45001,50000);
 	public static TaskSequenceFragment device_wifitimer_fragment = new TaskSequenceFragment(50001,55000);
 	public static TaskSequenceFragment query_device_used_status = new TaskSequenceFragment(55001,65000);
+
+	public static TaskSequenceFragment device_deviceDPI_turnon = new TaskSequenceFragment(65001,65000);
+	public static TaskSequenceFragment device_deviceDPI_turnoff = new TaskSequenceFragment(55001,65000);*/
+	
 	/*//对于设备 开启404
 	public static TaskSequenceFragment device_http404_resourceupgrade_fragment = new TaskSequenceFragment(50001,52000);
 	
 	//对于设备 开启portal
 	public static TaskSequenceFragment device_httpportal_resourceupgrade_fragment = new TaskSequenceFragment(52001,54000);*/
 	//获取dhcp模式下的状态信息
-	public static TaskSequenceFragment device_dhcpc_status_fragment = new TaskSequenceFragment(54001,56000);
+	//public static TaskSequenceFragment device_dhcpc_status_fragment = new TaskSequenceFragment(54001,56000);
+	
+	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(1,99999);
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
-	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,-1);
-	public static boolean wasLocationQueryTaskid(int taskid){
-		return location_taskid_fragment.wasInFragment(taskid);
+	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(100000,Integer.MAX_VALUE);
+	public static boolean wasAutoTaskid(int taskid){
+		return auto_taskid_fragment.wasInFragment(taskid);
 	}
 	
 	public static boolean wasNormalTaskid(int taskid){

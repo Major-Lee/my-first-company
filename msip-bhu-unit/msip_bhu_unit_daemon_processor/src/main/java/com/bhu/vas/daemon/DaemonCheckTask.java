@@ -39,8 +39,8 @@ public class DaemonCheckTask extends TimerTask{
 						
 						//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
 						//String.format(query_device_teminals_cmd_template, StringHelper.unformatMacAddress(wifi_mac)));//,String.format(String.format(SuffixTemplete, RandomData.intNumber(1005, 10000080)), RandomData.intNumber(1005, 10000080))));
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceStatusQuery(info.getMac(), CMDBuilder.timer_device_status_taskid_fragment.getNextSequence()));
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceFlowQuery(info.getMac(), CMDBuilder.timer_device_flow_taskid_fragment.getNextSequence()));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceFlowQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceLocationNotifyQuery(info.getMac(), CMDBuilder.location_taskid_fragment.getNextSequence()));
 						
 						//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.device_setting_taskid_fragment.getNextSequence()));
