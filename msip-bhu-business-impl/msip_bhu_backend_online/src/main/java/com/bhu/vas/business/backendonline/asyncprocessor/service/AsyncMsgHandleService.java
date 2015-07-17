@@ -174,9 +174,10 @@ public class AsyncMsgHandleService {
 		
 		//设备持久指令分发
 		List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);
-		if(persistencePayloads != null && !persistencePayloads.isEmpty())
+		if(persistencePayloads != null && !persistencePayloads.isEmpty()){
 			DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
-		System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+			System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+		}
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
 	}
 	
