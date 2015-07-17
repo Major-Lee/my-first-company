@@ -87,6 +87,10 @@ public class DaemonHelper {
 			daemonRpcService.wifiDeviceCmdsDown(null, mac, payloads);
 	}
 	
+	public static void daemonCmdsDown(String mac,List<String> cmds,IDaemonRpcService daemonRpcService){
+		daemonRpcService.wifiDeviceCmdsDown(null, mac, cmds);
+	}
+	
 	public static void daemonCmdDown(String mac,String cmd,IDaemonRpcService daemonRpcService){
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 	}
