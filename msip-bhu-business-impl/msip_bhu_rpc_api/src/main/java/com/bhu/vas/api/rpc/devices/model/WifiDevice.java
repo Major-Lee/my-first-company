@@ -67,6 +67,8 @@ public class WifiDevice extends BaseStringModel{
 	private String street;
 	//结构化地址 如北京市海淀区后八家路
 	private String formatted_address;
+	//网络运营商信息
+	private String carrier;
 	//百度geocoding create result id
 	private String bdid;
 	//通过ip得到的坐标和地址
@@ -378,6 +380,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setLast_logout_at(Date last_logout_at) {
 		this.last_logout_at = last_logout_at;
+	}
+
+	public String getCarrier() {
+		return carrier;
+	}
+
+	public void setCarrier(String carrier) {
+		this.carrier = carrier;
 	}
 	
 }

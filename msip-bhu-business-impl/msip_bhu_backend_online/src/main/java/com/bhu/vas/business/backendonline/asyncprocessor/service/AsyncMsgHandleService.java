@@ -67,6 +67,7 @@ import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
+import com.smartwork.msip.cores.helper.ip.IpLookup;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 
@@ -128,42 +129,40 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s]", message));
 		
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
-		boolean isRouter = deviceFacadeService.isURooterDevice(dto.getMac());
-		boolean needWiffsniffer = false;
-		if(isRouter){
-			//判断周边探测是否开启 如果开启 再次下发开启指令
-			UserSettingState settingState = userSettingStateService.getById(dto.getMac());
-			if(settingState != null){
-				UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
-				if(wifiSniffer != null){
-					needWiffsniffer = wifiSniffer.isOn();
+		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
+		if(wifiDevice != null){
+			boolean isRouter = deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+			boolean needWiffsniffer = false;
+			if(isRouter){
+				//判断周边探测是否开启 如果开启 再次下发开启指令
+				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
+				if(settingState != null){
+					UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
+					if(wifiSniffer != null){
+						needWiffsniffer = wifiSniffer.isOn();
+					}
+				}
+				//终端上线push
+				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+			}
+			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer);
+			
+			wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
+			//设备统计
+			deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
+					new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
+			//根据wan_ip获取设备的网络运营商信息
+			if(!StringUtils.isEmpty(wifiDevice.getWan_ip())){
+				String carrier = IpLookup.lookup_carrier(wifiDevice.getWan_ip());
+				if(!StringUtils.isEmpty(carrier) && !carrier.equals(wifiDevice.getCarrier())){
+					//可能会引起设备在线状态数据不正常 不过考虑到只有网络运营商发生变化才会更新 可以忽略不计
+					wifiDevice.setCarrier(carrier);
+					wifiDeviceService.update(wifiDevice);
 				}
 			}
-			//终端上线push
-			pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+			
 		}
-		//3:wifi设备对应handset在线列表初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备
-		//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
-		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearPresents(dto.getMac(), dto.getLogin_ts());
-		//WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(dto.getMac());
-/*		boolean needWiffsniffer = false;
-		UserSettingState settingState = userSettingStateService.getById(dto.getMac());
-		if(settingState != null){
-			UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
-			if(wifiSniffer != null){
-				needWiffsniffer = wifiSniffer.isOn();
-			}
-		}*/
-		afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer);
-		
-		wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
-		//设备统计
-		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
-				new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
-		//如果是urouter设备 才会发push
-/*		if(isRouter){
-			pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
-		}*/
+
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
 	

@@ -3,6 +3,7 @@ package com.bhu.vas.api.vto.config;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bhu.vas.api.vto.URouterInfoVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 
 @SuppressWarnings("serial")
@@ -27,6 +28,9 @@ public class URouterDeviceConfigVTO implements Serializable{
 	private List<URouterDeviceConfigMMVTO> mms;
 	//上网方式
 	private URouterModeVTO linkmode;
+	
+	//设备基本信息
+	private URouterInfoVTO info;
 	
 	public String getVap_name() {
 		return vap_name;
@@ -88,4 +92,11 @@ public class URouterDeviceConfigVTO implements Serializable{
 	public void setLinkmode(URouterModeVTO linkmode) {
 		this.linkmode = linkmode;
 	}
+	public URouterInfoVTO getInfo() {
+		return info;
+	}
+	public void setInfo(URouterInfoVTO info) {
+		this.info = info;
+	}
+	
 }

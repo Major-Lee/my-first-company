@@ -36,6 +36,7 @@
     <result property="district" column="district"/>
     <result property="street" column="street"/>
     <result property="formatted_address" column="formatted_address"/>
+    <result property="carrier" column="carrier"/>
     <result property="bdid" column="bdid"/>
     <result property="ipgen" column="ipgen"/>
     <result property="uptime" column="uptime"/>
@@ -83,6 +84,7 @@
 	    	district,
 	    	street,
 	    	formatted_address,
+	    	carrier,
 	    	bdid,
 	    	ipgen,
 	    	uptime,
@@ -124,6 +126,7 @@
 	    	district,
 	    	street,
 	    	formatted_address,
+	    	carrier,
 	    	bdid,
 	    	ipgen,
 	    	uptime,
@@ -166,6 +169,7 @@
 	    	#{district},
 	    	#{street},
 	    	#{formatted_address},
+	    	#{carrier},
 	    	#{bdid},
 	    	#{ipgen},
 	    	#{uptime},
@@ -206,6 +210,7 @@
 	    	district = #{district},
 	    	street = #{street},
 	    	formatted_address = #{formatted_address},
+	    	carrier = #{carrier},
 	    	bdid = #{bdid},
 	    	ipgen = #{ipgen},
 	    	uptime = #{uptime},

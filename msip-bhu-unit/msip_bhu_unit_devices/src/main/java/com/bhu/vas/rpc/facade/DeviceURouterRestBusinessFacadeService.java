@@ -47,6 +47,7 @@ import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
+import com.bhu.vas.api.vto.URouterInfoVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -658,7 +659,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac) {
 		try{
-			deviceFacadeService.validateUserDevice(uid, mac);
+			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, mac);
 			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
 			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 			
@@ -720,6 +721,13 @@ public class DeviceURouterRestBusinessFacadeService {
 				link_vto.setDns(mode_dto.getDns());
 				vto.setLinkmode(link_vto);
 			}
+			//设备基本信息
+			URouterInfoVTO info_vto = new URouterInfoVTO();
+			info_vto.setWan_ip(device_entity.getWan_ip());
+			info_vto.setAdr(device_entity.getFormatted_address());
+			info_vto.setCarrier(device_entity.getCarrier());
+			vto.setInfo(info_vto);
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
