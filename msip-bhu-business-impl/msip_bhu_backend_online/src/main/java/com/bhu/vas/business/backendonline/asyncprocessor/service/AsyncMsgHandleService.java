@@ -170,14 +170,17 @@ public class AsyncMsgHandleService {
 	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,boolean needWiffsniffer){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
 		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, needWiffsniffer, daemonRpcService);
-		
-		
 		//设备持久指令分发
-		List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);
-		if(persistencePayloads != null && !persistencePayloads.isEmpty()){
-			DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
-			System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+		try{
+			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);
+			if(persistencePayloads != null && !persistencePayloads.isEmpty()){
+				DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
+				System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 		}
+		
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
 	}
 	
