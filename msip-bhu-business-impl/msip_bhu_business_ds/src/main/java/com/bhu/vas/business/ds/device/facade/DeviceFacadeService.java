@@ -832,9 +832,6 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	public List<String> fetchWifiDevicePersistenceCMD(String mac){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null) return null;
-		
-		/*Set<String> keys = cmdState.keySet();
-		if(keys.isEmpty()) return null;*/
 		Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
 		for(Entry<String, PersistenceCMDDTO> entry : entrySet){
 			PersistenceCMDDTO dto = entry.getValue();
@@ -843,7 +840,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 			OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
-			CMDBuilder.autoBuilderCMD4Opt(dto.getOpt(), dto.getSubopt(), mac, taskid, dto.getExtparams(), this);
+			//CMDBuilder.autoBuilderCMD4Opt(dto.getOpt(), dto.getSubopt(), mac, taskid, dto.getExtparams(), this);
 			/*switch(opt_cmd){
 				case ModifyDeviceSetting:
 					if(ods_cmd != null){
