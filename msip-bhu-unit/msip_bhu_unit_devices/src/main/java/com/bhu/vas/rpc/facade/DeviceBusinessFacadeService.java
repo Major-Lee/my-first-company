@@ -800,6 +800,21 @@ public class DeviceBusinessFacadeService {
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		dto = refreshDeviceSetting(wifiId, dto);
 		updateDeviceModeStatusWithMode(wifiId, dto);
+		
+		//设备持久指令分发
+		try{
+			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(wifiId);
+			if(persistencePayloads != null && !persistencePayloads.isEmpty()){
+				for(String payload:persistencePayloads){
+					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, 0, 
+							null, payload);
+				}
+				//DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
+				System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 	
 	/**
