@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto;
 
-public class URouterInfoVTO {
+@SuppressWarnings("serial")
+public class URouterInfoVTO implements java.io.Serializable{
 	private String wan_ip;//wan ip
 	private String adr;//设备地址
 	private String carrier; //设备网络运营商信息
