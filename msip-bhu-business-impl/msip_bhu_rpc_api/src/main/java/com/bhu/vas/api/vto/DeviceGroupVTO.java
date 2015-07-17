@@ -1,6 +1,5 @@
 package com.bhu.vas.api.vto;
 
-import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class DeviceGroupVTO implements java.io.Serializable{
 
 	private List<String> devices;
 
-	private TailPage<WifiDeviceVTO> details;
+	private TailPage<WifiDeviceVTO> page_devices;
 
 	public int getGid() {
 		return gid;
@@ -86,11 +85,11 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.devices = devices;
 	}
 
-		public TailPage<WifiDeviceVTO> getDetails() {
-		return details;
+		public TailPage<WifiDeviceVTO> getPage_devices() {
+		return page_devices;
 	}
 
-	public void setDetails(TailPage<WifiDeviceVTO> details) {
-		this.details = details;
+	public void setPage_devices(TailPage<WifiDeviceVTO> page_devices) {
+		this.page_devices = page_devices;
 	}
 }
