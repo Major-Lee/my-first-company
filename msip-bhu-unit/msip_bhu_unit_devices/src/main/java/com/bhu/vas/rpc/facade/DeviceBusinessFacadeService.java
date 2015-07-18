@@ -437,13 +437,22 @@ public class DeviceBusinessFacadeService {
 		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新移动设备的online状态为false
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
-		if(handset != null){
+		if(handset == null) {
+			//TODO:是否需要补齐数据
+			return;
+		}
+		
+		/*if(handset != null){
 			dto.setVapname(handset.getVapname());
 			dto.setDhcp_name(handset.getDhcp_name());
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
 			//String old_Last_wifi_id = handset.getLast_wifi_id();
-		}
+		}*/
+		dto.setVapname(handset.getVapname());
+		dto.setDhcp_name(handset.getDhcp_name());
+		dto.setData_tx_rate(handset.getData_tx_rate());
+		dto.setData_rx_rate(handset.getData_rx_rate());
 		//handset.setAction(HandsetDeviceDTO.Action_Offline);
 		//handset.setLast_wifi_id(dto.getLast_wifi_id());
 		HandsetStorageFacadeService.handsetComming(dto);
@@ -1020,42 +1029,56 @@ public class DeviceBusinessFacadeService {
 						OperationCMD.QueryDeviceSetting.getNo(), cmdPayload);
 			}
 		}
-		//任务callback
-		WifiDeviceDownTask task_with_paylaod = doTaskCallback(taskid, status, response);
-		//如果任务数据转移出现异常 而设备配置又修改成功 也需要更新设备配置数据 从taskdown表中提取任务payload
-		if(task_with_paylaod == null){
-			if(WifiDeviceDownTask.State_Done.equals(status)){
-				task_with_paylaod = taskFacadeService.findWifiDeviceDownTaskById(taskid);
+		
+		if(CMDBuilder.wasNormalTaskid(taskid)){
+			//任务callback
+			WifiDeviceDownTask task_with_paylaod = doTaskCallback(taskid, status, response);
+			//如果任务数据转移出现异常 而设备配置又修改成功 也需要更新设备配置数据 从taskdown表中提取任务payload
+			if(task_with_paylaod == null){
+				if(WifiDeviceDownTask.State_Done.equals(status)){
+					task_with_paylaod = taskFacadeService.findWifiDeviceDownTaskById(taskid);
+				}
 			}
-		}
-		//如果任务是成功完成的 进行新配置数据合并
-		if(task_with_paylaod != null && WifiDeviceDownTask.State_Done.equals(status)){
-			WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
-			if(entity != null){
-				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
-				if(setting_dto != null){
-					//新配置数据合并
-					String payload = task_with_paylaod.getPayload();
-					if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
-						String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
-						if(!StringUtils.isEmpty(cmdWithoutHeader)){
-							WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
-									cmdWithoutHeader);
-							if(modify_setting_dto != null){
-								DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
+			//如果任务是成功完成的 进行新配置数据合并
+			if(task_with_paylaod != null && WifiDeviceDownTask.State_Done.equals(status)){
+				WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
+				if(entity != null){
+					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+					if(setting_dto != null){
+						//新配置数据合并
+						String payload = task_with_paylaod.getPayload();
+						if(!StringUtils.isEmpty(dto.getConfig_sequence()) && !StringUtils.isEmpty(payload)){
+							String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+							if(!StringUtils.isEmpty(cmdWithoutHeader)){
+								WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+										cmdWithoutHeader);
+								if(modify_setting_dto != null){
+									DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
 
-								setting_dto.setSequence(dto.getConfig_sequence());
-								entity.putInnerModel(setting_dto);
-								wifiDeviceSettingService.update(entity);
-								//修改配置成功的后续业务操作
-								this.taskModifyDeviceSettingCompletedDeliverMessage(task_with_paylaod.getUid(), 
-											wifiId, task_with_paylaod.getSubopt());
+									setting_dto.setSequence(dto.getConfig_sequence());
+									entity.putInnerModel(setting_dto);
+									wifiDeviceSettingService.update(entity);
+									//修改配置成功的后续业务操作
+									this.taskModifyDeviceSettingCompletedDeliverMessage(task_with_paylaod.getUid(), 
+												wifiId, task_with_paylaod.getSubopt());
+								}
 							}
 						}
 					}
 				}
 			}
+		}else{//特殊处理，自动下发的增值指令中会修改配置
+			if(WifiDeviceDownTask.State_Done.equals(status)){
+				if(StringUtils.isNotEmpty(dto.getConfig_sequence())){
+					WifiDeviceSetting entity = wifiDeviceSettingService.getOrCreateById(wifiId);
+					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+					setting_dto.setSequence(dto.getConfig_sequence());
+					entity.putInnerModel(setting_dto);
+					wifiDeviceSettingService.update(entity);
+				}
+			}
 		}
+
 /*		WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 		if(entity != null){
 			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
