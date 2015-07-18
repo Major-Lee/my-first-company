@@ -10,10 +10,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 public class VapModeDefined {
 	
-	private static final String Vap_Supported_Work_Mode = "router-ap";
+	private static final String Vap_Supported_Work_Mode1 = "router-ap";
+	private static final String Vap_Supported_Work_Mode2 = "wwan_router-ap";
 	
 	public static boolean supported(String device_workmode){
-		return Vap_Supported_Work_Mode.equals(device_workmode);
+		return Vap_Supported_Work_Mode1.equals(device_workmode) || Vap_Supported_Work_Mode2.equals(device_workmode);
 	}
 	
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
