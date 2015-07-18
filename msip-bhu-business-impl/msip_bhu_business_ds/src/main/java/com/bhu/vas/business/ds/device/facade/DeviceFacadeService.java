@@ -758,7 +758,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	/**
 	 * 生成设备配置的广告配置数据
 	 * @param mac
-	 * @param ds_opt 修改设备配置的ds_opt
+	 * @param ods 修改设备配置的ds_opt
 	 * @param extparams 修改配置具体的参数
 	 * @return
 	 * @throws Exception 
