@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -99,6 +100,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
+
+	@Resource
+	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 	/**
 	 * 指定wifiId进行终端全部下线处理
 	 * @param wifiId
@@ -128,7 +132,28 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			handsetDeviceService.updateAll(handset_devices_online_entitys);
 		}*/
 	}
-	
+
+
+	/**
+	 * 设备非法关机，断开长连接后通知所有终端离线，设备端上报的在线时长和终端流量统计为0.
+	 * @param wifiId
+	 */
+	public void wifiDeviceIllegalOffline(String wifiId) {
+		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
+		if(onlinePresents != null && !onlinePresents.isEmpty()){
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			for(HandsetDeviceDTO dto:handsets){
+				if(dto != null){
+					wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(wifiId, dto.getMac(),
+							"0", "0", System.currentTimeMillis());
+				}
+
+			}
+
+		}
+	}
+
+
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充
 	 * @param entity
