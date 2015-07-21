@@ -101,6 +101,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 
+	@Resource
+	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+
 
 	/**
 	 * 指定wifiId进行终端全部下线处理
@@ -116,6 +119,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				if(dto != null){
 					dto.setAction(HandsetDeviceDTO.Action_Offline);
 					do_offline_handsets.add(dto);
+
+
+					wifiHandsetDeviceRelationMService.wifiDeviceIllegalOffline(wifiId);
 				}
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
