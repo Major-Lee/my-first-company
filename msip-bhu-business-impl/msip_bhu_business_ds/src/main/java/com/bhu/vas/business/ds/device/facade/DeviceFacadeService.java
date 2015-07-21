@@ -117,6 +117,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
 			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
+			//清除设备在线终端列表
+			WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
 		}
 		/*List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
 		if(!handset_devices_online_entitys.isEmpty()){
@@ -125,7 +127,6 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 			handsetDeviceService.updateAll(handset_devices_online_entitys);
 		}*/
-		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
 	}
 	
 	/**
