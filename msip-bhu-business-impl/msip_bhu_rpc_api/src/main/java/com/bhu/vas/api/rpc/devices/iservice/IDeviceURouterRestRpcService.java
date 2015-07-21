@@ -27,7 +27,7 @@ public interface IDeviceURouterRestRpcService {
 	
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId);
 	
-	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type);
+	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration);
 	
 	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId);
 	

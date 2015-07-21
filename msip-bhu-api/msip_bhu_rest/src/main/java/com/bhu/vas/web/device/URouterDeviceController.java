@@ -134,6 +134,8 @@ public class URouterDeviceController extends BaseController{
 	 * @param uid
 	 * @param mac
 	 * @param type 1为只测试下行速率 2为只测试上行速率 3 都测
+	 * @param period 测速数据上报间隔 秒
+	 * @param duration 测速时长 秒
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/device_peak_section",method={RequestMethod.POST})
@@ -142,9 +144,11 @@ public class URouterDeviceController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="2", value = "pd") int period,
+			@RequestParam(required = false, defaultValue="10", value = "dr") int duration,
 			@RequestParam(required = false, defaultValue="1") int type) {
 		
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterPeakSection(uid, mac, type);
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterPeakSection(uid, mac, type, period, duration);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

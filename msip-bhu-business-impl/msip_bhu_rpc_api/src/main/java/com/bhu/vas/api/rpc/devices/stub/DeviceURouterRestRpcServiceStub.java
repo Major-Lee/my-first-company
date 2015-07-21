@@ -66,11 +66,11 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 	
 	@Override
-	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type) {
+	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceURouterRestRpcService.urouterPeakSection(uid, wifiId, type);
+		return deviceURouterRestRpcService.urouterPeakSection(uid, wifiId, type, period, duration);
 	}
 	
 	@Override
