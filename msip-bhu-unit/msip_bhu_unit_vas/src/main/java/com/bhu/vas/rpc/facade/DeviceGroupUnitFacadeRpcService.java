@@ -420,8 +420,8 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 
 		vto.setDetail_devices(vtos);
-
 		vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize, ids.size(), vtos));
+
 		return vto;
 	}
 
