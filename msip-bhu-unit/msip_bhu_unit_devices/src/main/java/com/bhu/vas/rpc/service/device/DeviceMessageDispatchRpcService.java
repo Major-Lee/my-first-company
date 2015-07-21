@@ -60,7 +60,6 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
-			
 			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
 					ctx, payload, parserHeader));
 			//logger.info("1");
