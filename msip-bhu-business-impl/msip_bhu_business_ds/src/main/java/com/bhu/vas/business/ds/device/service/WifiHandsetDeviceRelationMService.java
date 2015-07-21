@@ -309,18 +309,13 @@ public class WifiHandsetDeviceRelationMService {
 	 * 设备非法关机，断开长连接后通知所有终端离线，设备端上报的在线时长和终端流量统计为0.
 	 * @param wifiId
 	 */
-	public void wifiDeviceIllegalOffline(String wifiId) {
-		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
-		if(onlinePresents != null && !onlinePresents.isEmpty()){
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
-			for(HandsetDeviceDTO dto:handsets){
-				if(dto != null){
-					offlineWifiHandsetDeviceItems(wifiId, dto.getMac(),"0", "0", System.currentTimeMillis());
-				}
+	public void wifiDeviceIllegalOfflineAdapter(String wifiId, List<HandsetDeviceDTO> handsets) {
+        for(HandsetDeviceDTO dto:handsets){
+            if(dto != null){
+                offlineWifiHandsetDeviceItems(wifiId, dto.getMac(), "0", "0", System.currentTimeMillis());
+            }
+        }
 
-			}
-
-		}
 	}
 
 

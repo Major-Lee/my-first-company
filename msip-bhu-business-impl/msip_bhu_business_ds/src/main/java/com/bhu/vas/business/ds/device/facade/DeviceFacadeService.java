@@ -101,16 +101,14 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 
-	@Resource
-	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
-
-
 	/**
 	 * 指定wifiId进行终端全部下线处理
 	 * @param wifiId
 	 * modified by Edmond Lee for handset storage
+	 *
+	 * @return  在线设备
 	 */
-	public void allHandsetDoOfflines(String wifiId){
+	public List<HandsetDeviceDTO> allHandsetDoOfflines(String wifiId){
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
@@ -120,14 +118,13 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 					dto.setAction(HandsetDeviceDTO.Action_Offline);
 					do_offline_handsets.add(dto);
 
-
-					wifiHandsetDeviceRelationMService.wifiDeviceIllegalOffline(wifiId);
 				}
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
 			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
 			//清除设备在线终端列表
 			WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
+			return handsets;
 		}
 		/*List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
 		if(!handset_devices_online_entitys.isEmpty()){
@@ -136,6 +133,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 			handsetDeviceService.updateAll(handset_devices_online_entitys);
 		}*/
+		return null;
 	}
 
 

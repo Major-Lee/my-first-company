@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -396,7 +397,13 @@ public class AsyncMsgHandleService {
 		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
 		if(entity != null){
 			//3:wifi上的移动设备基础信息表的在线状态更新
-			deviceFacadeService.allHandsetDoOfflines(dto.getMac());
+			//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
+
+
+			//3:wifi上的移动设备基础信息表的在线状态更新,返回在线设备记录，继续更新终端离线状态
+			String wifiId = dto.getMac();
+			wifiHandsetDeviceRelationMService.wifiDeviceIllegalOfflineAdapter(wifiId,
+					deviceFacadeService.allHandsetDoOfflines(wifiId));
 
 			//5:统计增量 wifi设备的daily访问时长增量
 /*			if(dto.getLast_login_at() > 0){
