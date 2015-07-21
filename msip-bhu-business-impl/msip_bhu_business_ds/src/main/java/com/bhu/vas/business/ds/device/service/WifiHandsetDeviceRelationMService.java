@@ -4,7 +4,10 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -301,6 +304,24 @@ public class WifiHandsetDeviceRelationMService {
         WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
 
     }
+
+    /**
+	 * 设备非法关机，断开长连接后通知所有终端离线，设备端上报的在线时长和终端流量统计为0.
+	 * @param wifiId
+	 */
+	public void wifiDeviceIllegalOffline(String wifiId) {
+		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
+		if(onlinePresents != null && !onlinePresents.isEmpty()){
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			for(HandsetDeviceDTO dto:handsets){
+				if(dto != null){
+					offlineWifiHandsetDeviceItems(wifiId, dto.getMac(),"0", "0", System.currentTimeMillis());
+				}
+
+			}
+
+		}
+	}
 
 
 	public WifiHandsetDeviceRelationMDTO getRelation(String wifiId, String handsetId){
