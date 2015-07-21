@@ -552,14 +552,16 @@ public class DeviceBusinessFacadeService {
 			int cursor = 0;
 			for(HandsetDeviceDTO handset : handsets){
 				HandsetDeviceDTO dto = dtos.get(cursor);
+				double data_rx_rate = 0d;
 				if(handset != null){
 					dto.setDhcp_name(handset.getDhcp_name());
 					dto.setData_tx_rate(handset.getData_tx_rate());
 					dto.setData_rx_rate(handset.getData_rx_rate());
+					data_rx_rate = handset.fetchData_rx_rate_double();
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
-				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, handset.fetchData_rx_rate_double());
+				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
 				cursor++;
 			}
 			HandsetStorageFacadeService.handsetsComming(dtos);
