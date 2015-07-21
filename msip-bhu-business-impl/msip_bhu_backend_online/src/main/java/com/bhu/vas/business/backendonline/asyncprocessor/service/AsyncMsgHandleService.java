@@ -399,7 +399,7 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.allHandsetDoOfflines(dto.getMac());
 
 			//模拟通知在线终端下线
-			deviceFacadeService.wifiDeviceIllegalOffline(dto.getMac());
+			//deviceFacadeService.wifiDeviceIllegalOffline(dto.getMac());
 			
 			//5:统计增量 wifi设备的daily访问时长增量
 /*			if(dto.getLast_login_at() > 0){
