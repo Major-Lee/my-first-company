@@ -304,13 +304,15 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param uid
 	 * @param wifiId
 	 * @param type 测速类型
+	 * @param period 测速数据上报间隔
+	 * @param duration 测速时长
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type){
+	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 		
-			deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId, type);
+			deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId, type, period, duration);
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){

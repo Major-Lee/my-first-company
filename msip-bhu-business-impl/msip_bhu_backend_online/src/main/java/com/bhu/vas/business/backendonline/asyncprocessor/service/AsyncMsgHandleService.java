@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,7 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private BusinessCacheService businessCacheService;
+
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -395,8 +397,14 @@ public class AsyncMsgHandleService {
 		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
 		if(entity != null){
 			//3:wifi上的移动设备基础信息表的在线状态更新
-			deviceFacadeService.allHandsetDoOfflines(dto.getMac());
-			
+			//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
+
+
+			//3:wifi上的移动设备基础信息表的在线状态更新,返回在线设备记录，继续更新终端离线状态
+			String wifiId = dto.getMac();
+			wifiHandsetDeviceRelationMService.wifiDeviceIllegalOfflineAdapter(wifiId,
+					deviceFacadeService.allHandsetDoOfflines(wifiId));
+
 			//5:统计增量 wifi设备的daily访问时长增量
 /*			if(dto.getLast_login_at() > 0){
 				long uptime = dto.getTs() - dto.getLast_login_at();
@@ -414,7 +422,8 @@ public class AsyncMsgHandleService {
 					wifiDeviceService.update(entity);
 				}
 			}*/
-			
+
+
 			//7:清除已经下发给设备的未完成的任务状态
 			taskFacadeService.taskStateFailByDevice(dto.getMac());
 			
@@ -1015,7 +1024,7 @@ public class AsyncMsgHandleService {
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		//DaemonHelper.deviceRateQuery(dto.getMac(), daemonRpcService);
-		DaemonHelper.deviceSpeedQuery(dto.getMac(), dto.getType(), daemonRpcService);
+		DaemonHelper.deviceSpeedQuery(dto.getMac(), dto.getType(), dto.getPeriod(), dto.getDuration(), daemonRpcService);
 		//WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeakRateWaiting(dto.getMac());
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s] successful", message));
 	}

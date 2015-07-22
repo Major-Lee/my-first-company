@@ -136,10 +136,12 @@ public class DaemonHelper {
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
-	//设备测速时间15秒
-//	public static final int DeviceSpeedQuery_MaxTestTime = 15;
+//	//设备测速时间10秒
+//	public static final int DeviceSpeedQuery_Duration = 10;
+//	//设备测速数据上报间隔2秒
+//	public static final int DeviceSpeedQuery_Period = 2;
 	
-	public static void deviceSpeedQuery(String mac, int type, IDaemonRpcService daemonRpcService){
+	public static void deviceSpeedQuery(String mac, int type, int period, int duration, IDaemonRpcService daemonRpcService){
 		String download_url = StringHelper.EMPTY_STRING_GAP;
 		String upload_url = StringHelper.EMPTY_STRING_GAP;
 		switch(type){
@@ -158,7 +160,7 @@ public class DaemonHelper {
 		}
 		
 		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()
-				, download_url, upload_url);
+				,period, duration, download_url, upload_url);
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -99,12 +100,15 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
+
 	/**
 	 * 指定wifiId进行终端全部下线处理
 	 * @param wifiId
 	 * modified by Edmond Lee for handset storage
+	 *
+	 * @return  在线设备
 	 */
-	public void allHandsetDoOfflines(String wifiId){
+	public List<HandsetDeviceDTO> allHandsetDoOfflines(String wifiId){
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
@@ -113,10 +117,14 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				if(dto != null){
 					dto.setAction(HandsetDeviceDTO.Action_Offline);
 					do_offline_handsets.add(dto);
+
 				}
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
 			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
+			//清除设备在线终端列表
+			WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
+			return handsets;
 		}
 		/*List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
 		if(!handset_devices_online_entitys.isEmpty()){
@@ -125,9 +133,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 			handsetDeviceService.updateAll(handset_devices_online_entitys);
 		}*/
-		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOnlinePresents(wifiId);
+		return null;
 	}
-	
+
+
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充
 	 * @param entity
