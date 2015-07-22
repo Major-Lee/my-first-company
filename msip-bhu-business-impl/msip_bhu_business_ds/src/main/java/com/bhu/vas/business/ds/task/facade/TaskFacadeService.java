@@ -235,14 +235,10 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
-		if(	OperationDS.DS_Http_404_Start == ods_cmd 
-				|| OperationDS.DS_Http_404_Stop == ods_cmd
-				|| OperationDS.DS_Http_Ad_Start == ods_cmd 
-				|| OperationDS.DS_Http_Ad_Stop == ods_cmd
-				|| OperationDS.DS_Http_Redirect_Start == ods_cmd
-				|| OperationDS.DS_Http_Redirect_Stop == ods_cmd
-				|| OperationDS.DS_Http_Portal_Start == ods_cmd
-				|| OperationDS.DS_Http_Portal_Stop == ods_cmd
+		if(		OperationDS.DS_Http_404_Start == ods_cmd || OperationDS.DS_Http_404_Stop == ods_cmd
+				|| 	OperationDS.DS_Http_Ad_Start == ods_cmd || OperationDS.DS_Http_Ad_Stop == ods_cmd
+				|| OperationDS.DS_Http_Redirect_Start == ods_cmd || OperationDS.DS_Http_Redirect_Stop == ods_cmd
+				|| OperationDS.DS_Http_Portal_Start == ods_cmd || OperationDS.DS_Http_Portal_Stop == ods_cmd
 				){
 			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
@@ -250,6 +246,10 @@ public class TaskFacadeService {
 		}
 		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
 		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
+		
+		if(!wifiDevice.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}
 		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setUid(uid);
