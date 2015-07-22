@@ -225,6 +225,10 @@ public class UserUnitFacadeService {
 				if(errorCode != null){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
 				}
+			}else{
+				if(!RuntimeConfiguration.DefaultCaptchaCode.equals(captcha)){//和系统定义的缺省码进行匹配
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_CAPTCHA_DATA_NOTEXIST);
+				}
 			}
 		}
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
