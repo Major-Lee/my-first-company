@@ -25,6 +25,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -161,19 +162,24 @@ public class PushService{
 			if(presentDto != null){
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
-					pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
-					String name = wspush_dto.getHd_mac();
-					if(!StringUtils.isEmpty(wspush_dto.getN())){
-						name = wspush_dto.getN();
-					}else{
-						//如果没有昵称 匹配mac短名称
-						String scn = MacDictParserFilterHelper.prefixMactch(wspush_dto.getHd_mac(),true,false);
-						if(!DevicesSet.Unknow.getScn().equals(scn)){
-							name = scn;
+					if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
+						pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
+						String name = wspush_dto.getHd_mac();
+						if(!StringUtils.isEmpty(wspush_dto.getN())){
+							name = wspush_dto.getN();
+						}else{
+							//如果没有昵称 匹配mac短名称
+							String scn = MacDictParserFilterHelper.prefixMactch(wspush_dto.getHd_mac(),true,false);
+							if(!DevicesSet.Unknow.getScn().equals(scn)){
+								name = scn;
+							}
 						}
+						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), name));
+						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
+					}else{
+						pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
+						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getHd_mac()));
 					}
-					pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), name));
-					pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					//发送push
 					ret = pushNotification(pushMsg);
 					if(ret){
@@ -259,77 +265,75 @@ public class PushService{
 	 */
 	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto, 
 			HandsetDeviceOnlinePushDTO hd_push_dto){
-		//终端名称
-		//String hd_name = deviceFacadeService.queryPushHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
-		//设备名称
-//		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
-		//格式化连接时间
-//		String date_format = DateTimeHelper.getDateTime(new Date(hd_push_dto.getTs()), DateTimeHelper.DefalutFormatPattern);
-		//构造payload
-		String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
-		//如果终端有别名 则不显示终端厂商短名称
-		if(!StringUtils.isEmpty(aliasName)){
-			hd_push_dto.setN(aliasName);
-			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, 
-					aliasName));
-		}
-		//如果不存在终端别名 显示厂商短名称
-		else{
-			boolean exist_hostname = false;
-			boolean exist_scn = false;
-			String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
-			hd_push_dto.setN(hostname);
-			if(!StringUtils.isEmpty(hostname)){
-				exist_hostname = true;
+		if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
+			//构造payload
+			String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+			//如果终端有别名 则不显示终端厂商短名称
+			if(!StringUtils.isEmpty(aliasName)){
+				hd_push_dto.setN(aliasName);
+				pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, 
+						aliasName));
 			}
-			//根据设备mac匹配终端厂商
-			String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
-			logger.info(String.format("builderHandsetDeviceOnlinePushMsg scn [%s] hostname [%s]", scn, hostname));
-			if(!DevicesSet.Unknow.getScn().equals(scn)){
-				exist_scn = true;
-				//scn = "终端";
-			}
-			//如果主机名和短名称都存在 显示短名称+主机名
-			if(exist_hostname && exist_scn){
-				//如果短名称包含 手机 字样
-				if(scn.contains(PushMessageConstant.Android_Mobile_String)){
-					//主机名是安卓标记的显示为安卓os
-					if(PushMessageConstant.Android_Host_Name.equals(hostname)){
-						hostname = PushMessageConstant.Android_OS;
+			//如果不存在终端别名 显示厂商短名称
+			else{
+				boolean exist_hostname = false;
+				boolean exist_scn = false;
+				String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+				hd_push_dto.setN(hostname);
+				if(!StringUtils.isEmpty(hostname)){
+					exist_hostname = true;
+				}
+				//根据设备mac匹配终端厂商
+				String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
+				logger.info(String.format("builderHandsetDeviceOnlinePushMsg scn [%s] hostname [%s]", scn, hostname));
+				if(!DevicesSet.Unknow.getScn().equals(scn)){
+					exist_scn = true;
+					//scn = "终端";
+				}
+				//如果主机名和短名称都存在 显示短名称+主机名
+				if(exist_hostname && exist_scn){
+					//如果短名称包含 手机 字样
+					if(scn.contains(PushMessageConstant.Android_Mobile_String)){
+						//主机名是安卓标记的显示为安卓os
+						if(PushMessageConstant.Android_Host_Name.equals(hostname)){
+							hostname = PushMessageConstant.Android_OS;
+						}
+					}
+					//如果短名称不包含 手机 字样 短名称+主机名
+					else{
+						//主机名是安卓标记的显示为安卓终端
+						if(PushMessageConstant.Android_Host_Name.equals(hostname)){
+							hostname = PushMessageConstant.Android_Terminal;
+						}
 					}
 				}
-				//如果短名称不包含 手机 字样 短名称+主机名
-				else{
-					//主机名是安卓标记的显示为安卓终端
+				//如果只有主机名 只显示主机名
+				else if(exist_hostname){
 					if(PushMessageConstant.Android_Host_Name.equals(hostname)){
 						hostname = PushMessageConstant.Android_Terminal;
 					}
+					scn = StringHelper.EMPTY_STRING_GAP;
 				}
-			}
-			//如果只有主机名 只显示主机名
-			else if(exist_hostname){
-				if(PushMessageConstant.Android_Host_Name.equals(hostname)){
-					hostname = PushMessageConstant.Android_Terminal;
+				//如果只有短名称 显示短名称+未知终端
+				else if(exist_scn){
+					hostname = PushMessageConstant.Android_Unkown_Hostname;
 				}
-				scn = StringHelper.EMPTY_STRING_GAP;
+				//如果主机名和短名称都没有 显示 未知终端
+				else{
+					hostname = PushMessageConstant.Android_Unkown_Hostname;
+					scn = StringHelper.EMPTY_STRING_GAP;
+				}
+				pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hostname));
 			}
-			//如果只有短名称 显示短名称+未知终端
-			else if(exist_scn){
-				hostname = PushMessageConstant.Android_Unkown_Hostname;
-			}
-			//如果主机名和短名称都没有 显示 未知终端
-			else{
-				hostname = PushMessageConstant.Android_Unkown_Hostname;
-				scn = StringHelper.EMPTY_STRING_GAP;
-			}
-			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hostname));
+			
+			String payload = JsonHelper.getJSONString(hd_push_dto);
+			pushMsg.setPaylod(payload);
+			//构造title和text
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : ""));
+		}else{
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), StringHelper.EMPTY_STRING_GAP));
+			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
 		}
-		
-		String payload = JsonHelper.getJSONString(hd_push_dto);
-		pushMsg.setPaylod(payload);
-		//构造title和text
-		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : ""));
-		
 	}
 	
 	/**
