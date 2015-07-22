@@ -47,6 +47,8 @@ public class VapModeDefined {
 	public enum HtmlInjectAdv{
 		STYLE000("style000","00.00.01","1000000","http://auth.wi2o.cn/ad/ad.js"),
 		STYLE001("style001","00.00.01","1000001",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/001/js/ad.js")),
+		STYLE002("style002","00.00.01","1000002",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/002/js/ad.js")),
+		STYLE003("style003","00.00.01","1000003",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/003/js/ad.js")),
 		;
 		//private String index;
 		private String style;
