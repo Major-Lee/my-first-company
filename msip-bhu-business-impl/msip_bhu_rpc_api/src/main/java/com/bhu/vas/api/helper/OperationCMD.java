@@ -38,7 +38,7 @@ public enum OperationCMD {
 		
 	//1. 查询wifi地理位置 等待设备通知结果
 	QueryDeviceLocationNotify("102","查询设备地理位置notify","",
-			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\"  serial=\"%s\"/></cmd>"),
 			
 	QueryDeviceSetting("103","查询设备配置","",
 			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.net.ad,dev.mod.basic.wan,dev.sys.users,dev.sys.config,dev.net.mac_management\"/></query>"),
