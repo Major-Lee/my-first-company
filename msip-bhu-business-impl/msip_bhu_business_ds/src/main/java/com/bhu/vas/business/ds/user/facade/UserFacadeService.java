@@ -39,6 +39,7 @@ public class UserFacadeService {
 	public boolean clearUsersMarkByUid(int uid){
 		User byId = userService.getById(uid);
 		if(byId != null){
+			userService.deleteById(uid);
 			UniqueFacadeService.removeByMobileno(byId.getCountrycode(), byId.getMobileno());
 		}else{
 			return false;
@@ -62,7 +63,7 @@ public class UserFacadeService {
 	
 	public boolean clearUsersMarkByMobileno(int countrycode,String mobileno){
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,mobileno);
-		if(uid == null){
+		if(uid == null || uid.intValue() == 0){
 			return false;
 		}
 		return clearUsersMarkByUid(uid.intValue());
