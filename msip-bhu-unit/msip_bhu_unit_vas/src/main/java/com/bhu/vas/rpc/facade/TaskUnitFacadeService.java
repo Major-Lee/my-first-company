@@ -116,43 +116,7 @@ public class TaskUnitFacadeService {
 		logger.info("uid==" + uid + ",mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
 		try{
 			WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(uid, mac, opt, subopt, extparams, channel, channel_taskid);
-			/*//如果是管理员用户 不进行用户所属设备的验证
-			if(RuntimeConfiguration.isConsoleUser(uid)){
-				deviceFacadeService.validateDevice(mac);
-			}else{
-				deviceFacadeService.validateUserDevice(uid, mac);
-			}
-			
-			WifiDeviceDownTask downTask = new WifiDeviceDownTask();
-			downTask.setUid(uid);
-			downTask.setChannel(channel);
-			downTask.setChannel_taskid(channel_taskid);
-			
-			downTask.setContext_var(extparams);
-			//downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, taskid));
-			downTask.setSubopt(subopt);
-			downTask.setOpt(opt);
-			downTask.setMac(mac);
-			logger.info("taskComming ==start==");
-			taskFacadeService.taskComming(downTask);
-			if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
-				if(OperationDS.DS_Http_404.getNo().equals(subopt)){
-					//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
-					downTask.setPayload(CMDBuilder.builderCMD4Http404ResourceUpdate(mac, downTask.getId(), extparams));
-				}else if(OperationDS.DS_Http_Portal_Start.getNo().equals(subopt)){
-					//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
-					downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
-				}else{
-					String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
-					logger.info("payload===" + payload);
-					downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
-				}
-			}else{
-				downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
-			}*/
-
 			logger.info("taskComming ==end==");
-
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);
