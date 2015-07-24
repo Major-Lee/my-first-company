@@ -235,6 +235,7 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
+		//判定是否是增值指令
 		if(		OperationDS.DS_Http_404_Start == ods_cmd || OperationDS.DS_Http_404_Stop == ods_cmd
 				|| 	OperationDS.DS_Http_Ad_Start == ods_cmd || OperationDS.DS_Http_Ad_Stop == ods_cmd
 				|| OperationDS.DS_Http_Redirect_Start == ods_cmd || OperationDS.DS_Http_Redirect_Stop == ods_cmd

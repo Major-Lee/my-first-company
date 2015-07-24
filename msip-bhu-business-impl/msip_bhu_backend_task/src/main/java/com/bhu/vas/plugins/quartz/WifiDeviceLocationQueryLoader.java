@@ -16,6 +16,11 @@ import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
+/**
+ * 对于地理位置没有的设备触发设备的地理位置查询
+ * @author Edmond
+ *
+ */
 public class WifiDeviceLocationQueryLoader {
 	private static Logger logger = LoggerFactory.getLogger(WifiDeviceLocationQueryLoader.class);
 	

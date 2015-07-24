@@ -19,12 +19,15 @@
 				<ref bean="handsetStatisticsLoaderCronTrigger" />
 				<!-- 每一个小时执行一次  -->
 				<ref bean="statisticsOnlineLoaderCronTrigger" />
-				<!-- 每一个小时执行一次  -->
+				<!-- 每一个小时执行一次  
 				<ref bean="wifiDeviceLocationQueryLoaderCronTrigger" />
-				<!-- 每隔60分钟执行一次 -->
+				-->
+				<!-- 每隔60分钟执行一次 
 				<ref bean="wifiDeviceOnlineCmdDownLoaderCronTrigger" />		
-				<!-- 每隔3分钟执行一次 -->
+				-->
+				<!-- 每隔3分钟执行一次 
 				<ref bean="wifiDeviceLocationStep2QueryLoaderCronTrigger" />		
+				-->
 			</list>
 		</property>
 		<!-- Quartz配置 -->
