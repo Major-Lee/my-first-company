@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -763,6 +762,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	}
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
+	//修改设备配置的通用序列号
+	public static final String Common_Config_Sequence = "-1";
 	
 	/**
 	 * 生成设备配置的广告配置数据
@@ -784,9 +785,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		WifiDeviceSetting entity = validateDeviceSetting(mac);
 		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
 		
-		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
-		if(StringUtils.isEmpty(config_sequence))
-			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+//		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+//		if(StringUtils.isEmpty(config_sequence))
+//			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+		String config_sequence = Common_Config_Sequence;
 		
 		switch(ods){
 			case DS_Http_Ad_Start:
