@@ -443,7 +443,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	}
 	
 	public boolean isURooterDeviceWithOrigModel(String orig_model) {
-		return WIFI_DEVICE_ORIGIN_MODEL.equals(orig_model);
+		return WIFI_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
 	}
 
 	/**
