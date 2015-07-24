@@ -179,6 +179,7 @@ public class PushService{
 					}else{
 						pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
 						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getHd_mac()));
+						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					}
 					//发送push
 					ret = pushNotification(pushMsg);
@@ -333,6 +334,7 @@ public class PushService{
 		}else{
 			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), StringHelper.EMPTY_STRING_GAP));
 			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
+			pushMsg.setPaylod(JsonHelper.getJSONString(hd_push_dto));
 		}
 	}
 	
