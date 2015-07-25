@@ -80,33 +80,42 @@ public class DeviceGroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(save.getErrorCode()));
 	}
 	
+//	/**
+//	 * 群组详细信息
+//	 * @param request
+//	 * @param response
+//	 * @param uid
+//	 * @param gid
+//	 */
+//	@ResponseBody()
+//	@RequestMapping(value="/detail",method={RequestMethod.POST})
+//	public void detail(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true) Integer uid,
+//			@RequestParam(required = true) int gid,
+//			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+//			@RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+//		RpcResponseDTO<DeviceGroupVTO> detail = deviceGroupRpcService.detail(uid, gid);
+//		if(detail.getErrorCode() == null)
+//			SpringMVCHelper.renderJson(response, detail.getPayload());
+//		else
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(detail.getErrorCode()));
+//	}
+
+
 	/**
 	 * 群组详细信息
 	 * @param request
 	 * @param response
 	 * @param uid
 	 * @param gid
+	 * @param pageNo
+	 * @param pageSize
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/detail",method={RequestMethod.POST})
 	public void detail(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) int gid,
-			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-			@RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-		RpcResponseDTO<DeviceGroupVTO> detail = deviceGroupRpcService.detail(uid, gid);
-		if(detail.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, detail.getPayload());
-		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(detail.getErrorCode()));
-	}
-
-
-	@ResponseBody()
-	@RequestMapping(value="/detail_",method={RequestMethod.POST})
-	public void detail_t(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
