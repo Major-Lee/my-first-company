@@ -238,30 +238,19 @@ public class DeviceGroupUnitFacadeRpcService{
 		String[] arrayresids = wifi_ids.split(StringHelper.COMMA_STRING_GAP);
 
 
-		if(arrayresids.length > 0){
-			WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
-			if(dgroup == null)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
-			
-			for(String residstr:arrayresids){
-				dgroup.putInnerModel(residstr, true, true);
-			}
-			wifiDeviceGroupService.update(dgroup);
-		}
-
-
 		//绑定设备
 		List<WifiDeviceGroupRelation> lists = new ArrayList<WifiDeviceGroupRelation>();
 
 		if (arrayresids.length > 0) {
 			for (String mac : arrayresids) {
-				if (!StringHelper.isValidMac(mac)) {
+				if (StringHelper.isValidMac(mac)) {
+					WifiDeviceGroupRelation wifiDeviceGroupRelation = new WifiDeviceGroupRelation();
+					wifiDeviceGroupRelation.setId(new WifiDeviceGroupRelationPK(gid, mac));
+					wifiDeviceGroupRelation.setCreated_at(new Date());
+					lists.add(wifiDeviceGroupRelation);
+				} else {
 
 				}
-				WifiDeviceGroupRelation wifiDeviceGroupRelation = new WifiDeviceGroupRelation();
-				wifiDeviceGroupRelation.setId(new WifiDeviceGroupRelationPK(gid, mac));
-				wifiDeviceGroupRelation.setCreated_at(new Date());
-				lists.add(wifiDeviceGroupRelation);
 			}
 			try {
 				wifiDeviceGroupRelationService.insertAll(lists);
