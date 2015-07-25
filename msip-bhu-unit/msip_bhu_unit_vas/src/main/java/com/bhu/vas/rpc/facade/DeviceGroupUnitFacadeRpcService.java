@@ -316,7 +316,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		vto.setChildren(dgroup.getChildren());
 		//dto.setHaschild(dgroup.isHaschild());
 		vto.setPath(dgroup.getPath());
-		vto.setDevices(dgroup.getInnerModels());
+		//vto.setDevices(dgroup.getInnerModels());
 
 
 
@@ -419,7 +419,7 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		}
 
-		vto.setDetail_devices(vtos);
+		//vto.setDetail_devices(vtos);
 		vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize, ids.size(), vtos));
 
 		return vto;
