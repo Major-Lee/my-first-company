@@ -42,7 +42,7 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue="0") int pid,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-			@RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 		//RpcResponseDTO<List<DeviceGroupVTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
 		RpcResponseDTO<List<DeviceGroupVTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid, pageNo, pageSize);
 		if(birthTree.getErrorCode() == null)
@@ -101,7 +101,7 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) int gid,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-			@RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 		RpcResponseDTO<DeviceGroupVTO> detail = deviceGroupRpcService.detail(uid, gid, pageNo, pageSize);
 		if(detail.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, detail.getPayload());
