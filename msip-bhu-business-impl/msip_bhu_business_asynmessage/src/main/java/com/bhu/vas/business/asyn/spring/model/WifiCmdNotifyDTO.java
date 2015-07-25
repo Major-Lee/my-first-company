@@ -5,7 +5,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class WifiCmdNotifyDTO extends ActionDTO {
 	
-	private int taskid;
+	private long taskid;
 	private String opt;
 	private String payload;
 
@@ -14,11 +14,11 @@ public class WifiCmdNotifyDTO extends ActionDTO {
 		return ActionMessageType.WifiCmdDownNotify.getPrefix();
 	}
 
-	public int getTaskid() {
+	public long getTaskid() {
 		return taskid;
 	}
 
-	public void setTaskid(int taskid) {
+	public void setTaskid(long taskid) {
 		this.taskid = taskid;
 	}
 

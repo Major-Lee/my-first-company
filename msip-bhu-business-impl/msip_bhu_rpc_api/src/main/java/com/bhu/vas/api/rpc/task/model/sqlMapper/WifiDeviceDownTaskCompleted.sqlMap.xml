@@ -161,7 +161,7 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="int">
+	<delete id="deleteByPrimaryKey" parameterType="long">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
@@ -202,7 +202,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="int">
+	<select id="pkSelectByModelCriteria" resultType="long">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />

@@ -84,7 +84,7 @@ public interface IUserRpcService {
 			String channel_taskid);
 	
 	public void taskStatusFetch(
-			int taskid
+			long taskid
 			);
 	
 	public void taskStatusFetch4ThirdParties(

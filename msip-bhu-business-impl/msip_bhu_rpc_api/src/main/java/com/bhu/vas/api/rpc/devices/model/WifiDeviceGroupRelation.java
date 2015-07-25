@@ -1,14 +1,14 @@
 package com.bhu.vas.api.rpc.devices.model;
 
-import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
-import com.smartwork.msip.cores.orm.model.BasePKModel;
-
 import java.util.Date;
+
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
+import com.smartwork.msip.cores.orm.model.BasePKModel;
 
 /**
  * Created by bluesand on 7/16/15.
  */
+@SuppressWarnings("serial")
 public class WifiDeviceGroupRelation extends BasePKModel<WifiDeviceGroupRelationPK> {
 
     private Date created_at;
@@ -53,7 +53,7 @@ public class WifiDeviceGroupRelation extends BasePKModel<WifiDeviceGroupRelation
 
     @Override
     protected Class<WifiDeviceGroupRelationPK> getPKClass() {
-        return null;
+        return WifiDeviceGroupRelationPK.class;
     }
 
 

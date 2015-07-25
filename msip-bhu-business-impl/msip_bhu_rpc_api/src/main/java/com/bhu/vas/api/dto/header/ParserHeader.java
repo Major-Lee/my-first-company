@@ -29,7 +29,7 @@ public class ParserHeader implements java.io.Serializable{
 	//2字节的操作指令类型
 	private String opt;
 	//8字节任务id
-	private int taskid;
+	private long taskid;
 	//报文主类型
 	private int mt;
 	//子类型(8字节)
@@ -41,10 +41,10 @@ public class ParserHeader implements java.io.Serializable{
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-	public int getTaskid() {
+	public long getTaskid() {
 		return taskid;
 	}
-	public void setTaskid(int taskid) {
+	public void setTaskid(long taskid) {
 		this.taskid = taskid;
 	}
 	public int getMt() {
@@ -82,7 +82,7 @@ public class ParserHeader implements java.io.Serializable{
 			pheader.setMac(mac.toLowerCase());
 		}
 		pheader.setOpt(header.substring(12, 15));
-		pheader.setTaskid(Integer.parseInt(header.substring(15, 22)));
+		pheader.setTaskid(Long.parseLong(header.substring(15, 22)));
 		pheader.setMt(Integer.parseInt(header.substring(22, 26)));
 		pheader.setSt(Integer.parseInt(header.substring(26, 34)));
 		return pheader;

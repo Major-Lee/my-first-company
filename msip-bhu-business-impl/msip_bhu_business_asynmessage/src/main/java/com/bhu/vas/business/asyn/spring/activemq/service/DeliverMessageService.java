@@ -56,7 +56,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendWifiCmdCommingNotifyMessage(String mac,int taskid,String opt,String payload){
+	public void sendWifiCmdCommingNotifyMessage(String mac,long taskid,String opt,String payload){
 		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
 		dto.setMac(mac);
 		dto.setTaskid(taskid);

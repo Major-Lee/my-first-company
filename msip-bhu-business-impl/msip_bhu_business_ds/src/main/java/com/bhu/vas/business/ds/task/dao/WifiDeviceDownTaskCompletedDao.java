@@ -6,6 +6,6 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 @Repository
-public class WifiDeviceDownTaskCompletedDao extends AbstractCoreDao<Integer,WifiDeviceDownTaskCompleted>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
+public class WifiDeviceDownTaskCompletedDao extends AbstractCoreDao<Long,WifiDeviceDownTaskCompleted>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
 	
 }

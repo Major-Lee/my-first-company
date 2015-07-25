@@ -34,13 +34,13 @@ public class TaskServiceStub implements ITaskRpcService{
 	}
 
 	@Override
-	public void taskStatusFetch(int taskid) {
+	public void taskStatusFetch(long taskid) {
 		taskRpcService.taskStatusFetch(taskid);
 	}
 
 	@Override
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
-			String channel_taskid, Integer taskid) {
+			String channel_taskid, Long taskid) {
 		if(uid == null)
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		

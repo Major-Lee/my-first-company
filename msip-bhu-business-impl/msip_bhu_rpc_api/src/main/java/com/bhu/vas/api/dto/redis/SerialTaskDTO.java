@@ -5,14 +5,14 @@ public class SerialTaskDTO {
 	private static int can_execute = 5*60;//5分钟
 	private static int expire_sec = 2*60*60;//2小时
 	private String mac;
-	private int taskid;
+	private long taskid;
 	private String serialno;
 	//收到的时间 3分钟后执行发送
 	private long rects;
 	public SerialTaskDTO(){
 		
 	}
-	public SerialTaskDTO(String mac, int taskid, String serialno) {
+	public SerialTaskDTO(String mac, long taskid, String serialno) {
 		super();
 		this.mac = mac;
 		this.taskid = taskid;
@@ -25,10 +25,10 @@ public class SerialTaskDTO {
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-	public int getTaskid() {
+	public long getTaskid() {
 		return taskid;
 	}
-	public void setTaskid(int taskid) {
+	public void setTaskid(long taskid) {
 		this.taskid = taskid;
 	}
 	public String getSerialno() {

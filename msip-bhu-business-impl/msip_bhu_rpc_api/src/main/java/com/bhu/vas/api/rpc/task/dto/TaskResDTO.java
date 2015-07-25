@@ -2,15 +2,15 @@ package com.bhu.vas.api.rpc.task.dto;
 
 @SuppressWarnings("serial")
 public class TaskResDTO implements java.io.Serializable{
-	private int taskid;
+	private long taskid;
 	private String mac;
 	private String state;
 	private String channel;
 	private String channel_taskid;
-	public int getTaskid() {
+	public long getTaskid() {
 		return taskid;
 	}
-	public void setTaskid(int taskid) {
+	public void setTaskid(long taskid) {
 		this.taskid = taskid;
 	}
 	

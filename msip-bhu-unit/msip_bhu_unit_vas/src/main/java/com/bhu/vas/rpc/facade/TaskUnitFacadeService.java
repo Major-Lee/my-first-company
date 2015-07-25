@@ -145,7 +145,7 @@ public class TaskUnitFacadeService {
 	 * @param taskid
 	 * @return
 	 */
-	public RpcResponseDTO<TaskResDTO> taskStatus(Integer uid, String channel, String channel_taskid, Integer taskid){
+	public RpcResponseDTO<TaskResDTO> taskStatus(Integer uid, String channel, String channel_taskid, Long taskid){
 		logger.info("uid==" + uid + ",channel==" + channel + ",channel_taskid==" + channel_taskid + ",taskid=="+taskid);
 		try{
 			WifiDeviceDownTask task = null;

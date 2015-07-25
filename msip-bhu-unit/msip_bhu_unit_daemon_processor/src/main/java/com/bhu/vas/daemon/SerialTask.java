@@ -3,14 +3,14 @@ package com.bhu.vas.daemon;
 
 public class SerialTask {
 	private String mac;
-	private int taskid;
+	private long taskid;
 	private String serialno;
 	//收到的时间 3分钟后执行发送
 	private long rects;
 	public SerialTask(){
 		
 	}
-	public SerialTask(String mac, int taskid, String serialno) {
+	public SerialTask(String mac, long taskid, String serialno) {
 		super();
 		this.mac = mac;
 		this.taskid = taskid;
@@ -23,10 +23,10 @@ public class SerialTask {
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-	public int getTaskid() {
+	public long getTaskid() {
 		return taskid;
 	}
-	public void setTaskid(int taskid) {
+	public void setTaskid(long taskid) {
 		this.taskid = taskid;
 	}
 	public String getSerialno() {

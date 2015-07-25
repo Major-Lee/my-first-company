@@ -210,7 +210,7 @@ public class CmdController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid,
-			@RequestParam(required = false) Integer taskid) {
+			@RequestParam(required = false) Long taskid) {
 		
 		RpcResponseDTO<TaskResDTO> resp = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
 		

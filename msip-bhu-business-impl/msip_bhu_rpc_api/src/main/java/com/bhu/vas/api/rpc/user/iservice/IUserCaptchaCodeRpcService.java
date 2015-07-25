@@ -15,7 +15,7 @@ public interface IUserCaptchaCodeRpcService {
 			String channel_taskid);
 	
 	public void taskStatusFetch(
-			int taskid
+			long taskid
 			);
 	
 	public void taskStatusFetch4ThirdParties(

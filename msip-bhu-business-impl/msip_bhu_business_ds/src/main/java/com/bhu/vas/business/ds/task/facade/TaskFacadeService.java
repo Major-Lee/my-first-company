@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
@@ -48,7 +49,7 @@ public class TaskFacadeService {
 	 * @param taskid
 	 * @param status
 	 */
-	public WifiDeviceDownTaskCompleted taskExecuteCallback(int taskid,String state,String response){
+	public WifiDeviceDownTaskCompleted taskExecuteCallback(long taskid,String state,String response){
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
 		if(downtask == null) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_UNDEFINED);
@@ -71,7 +72,7 @@ public class TaskFacadeService {
 	
 	public void taskComming(WifiDeviceDownTask downtask){
 		//if(downtask == null || StringUtils.isEmpty(downtask.getMac())/* || StringUtils.isEmpty(downtask.getPayload())*/) return RpcResponseCodeConst.Task_Illegal;
-		if(downtask == null || StringUtils.isEmpty(downtask.getMac()))
+		if(downtask == null || StringUtils.isEmpty(downtask.getMac())  || StringUtils.isEmpty(downtask.getPayload()))
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_VALIDATE_ILEGAL);
 		
 		if(!WifiDeviceDownTask.Task_LOCAL_CHANNEL.equals(downtask.getChannel())){//如果不是本地taskid
@@ -106,12 +107,12 @@ public class TaskFacadeService {
 	}
 	
 	
-	public void taskUpdate(WifiDeviceDownTask downtask){
+	/*public void taskUpdate(WifiDeviceDownTask downtask){
 		//if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) return RpcResponseCodeConst.Task_Illegal;
 		if(downtask == null || StringUtils.isEmpty(downtask.getMac()) || StringUtils.isEmpty(downtask.getPayload())) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_VALIDATE_ILEGAL);
 		downtask = wifiDeviceDownTaskService.update(downtask);
-	}
+	}*/
 	
 	/**
 	 * 把设备的所有下发的未完成的任务全部设置成失败
@@ -120,9 +121,9 @@ public class TaskFacadeService {
 	public void taskStateFailByDevice(String mac){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("mac", mac);
-		List<Integer> taskids = wifiDeviceDownTaskService.findIdsByModelCriteria(mc);
+		List<Long> taskids = wifiDeviceDownTaskService.findIdsByModelCriteria(mc);
 		if(!taskids.isEmpty()){
-			for(Integer taskid : taskids){
+			for(Long taskid : taskids){
 				taskExecuteCallback(taskid, WifiDeviceDownTask.State_Failed, null);
 			}
 		}
@@ -167,7 +168,7 @@ public class TaskFacadeService {
 	 * @param taskid
 	 * @return
 	 */
-	public WifiDeviceDownTask queryTask(Integer taskid){
+	public WifiDeviceDownTask queryTask(Long taskid){
 		if(taskid != null){
 			//从已完成任务中获取
 			WifiDeviceDownTaskCompleted taskCompleted = wifiDeviceDownTaskCompletedService.getById(taskid);
@@ -184,7 +185,7 @@ public class TaskFacadeService {
 		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
 	}
 	
-	public WifiDeviceDownTask findWifiDeviceDownTaskById(Integer taskid){
+	public WifiDeviceDownTask findWifiDeviceDownTaskById(Long taskid){
 		if(taskid != null){
 			WifiDeviceDownTask pending_task = wifiDeviceDownTaskService.getById(taskid);
 			if(pending_task == null){
@@ -252,7 +253,10 @@ public class TaskFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
 		}
 		
+		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
+		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
+		downTask.setId(taskid);
 		downTask.setUid(uid);
 		downTask.setChannel(channel);
 		downTask.setChannel_taskid(channel_taskid);
@@ -262,7 +266,6 @@ public class TaskFacadeService {
 		downTask.setSubopt(subopt);
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
-		this.taskComming(downTask);
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 			/*if(OperationDS.DS_Http_404.getNo().equals(subopt)){
 				//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
@@ -286,7 +289,8 @@ public class TaskFacadeService {
 			}
 			downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(),extparams));
 		}
-		this.taskUpdate(downTask);
+		this.taskComming(downTask);
+		//this.taskUpdate(downTask);
 		return downTask;
 	}
 	
@@ -305,7 +309,9 @@ public class TaskFacadeService {
 			deviceFacadeService.validateUserDevice(uid, mac);
 		}
 		
+		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
+		downTask.setId(taskid);
 		downTask.setUid(uid);
 		downTask.setChannel(WifiDeviceDownTask.Task_LOCAL_CHANNEL);
 		downTask.setChannel_taskid(null);
@@ -313,7 +319,7 @@ public class TaskFacadeService {
 		downTask.setSubopt(subopt);
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
-		this.taskComming(downTask);
+		
 		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
 		/*if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
 			String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
@@ -321,7 +327,8 @@ public class TaskFacadeService {
 		}else{
 			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
 		}*/
-		this.taskUpdate(downTask);
+		this.taskComming(downTask);
+		//this.taskUpdate(downTask);
 		return downTask;
 	}
 }

@@ -67,6 +67,8 @@ public class BusinessKeyDefine {
 		//public static final String PermalinkCheck = "UPC";
 		//public static final String SnsTokenCheck = "USC";
 		public static final String UserSnsCheck  = "WUSC";
+		
+		public static final String Sequence = "SEQ";
 	}
 
 	public static class WifiStasniffer{

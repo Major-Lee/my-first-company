@@ -84,8 +84,6 @@ public enum OperationCMD {
 	;
 	
 	static Map<String, OperationCMD> allOperationCMDs;
-	/*public static int Opt_Length = 3;
-	public static int Taskid_Length = 7;*/
 	String no;
 	String desc;
 	String cmd;

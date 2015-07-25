@@ -1,29 +1,29 @@
 package com.bhu.vas.api.helper;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.smartwork.msip.localunit.RandomData;
 
 public class TaskSequenceFragment {
-	private int start;
-	private int end;
-	private AtomicInteger current;
+	private long start;
+	private long end;
+	private AtomicLong current;
 	//private int current = 0;
-	public TaskSequenceFragment(int start, int end) {
+	public TaskSequenceFragment(long start, long end) {
 		this.start = start;
 		this.end = end;
-		current = new AtomicInteger(RandomData.intNumber(start, end));
+		current = new AtomicLong(RandomData.longNumber(start, end));
 	}
-	public int getStart() {
+	public long getStart() {
 		return start;
 	}
-	public void setStart(int start) {
+	public void setStart(long start) {
 		this.start = start;
 	}
-	public int getEnd() {
+	public long getEnd() {
 		return end;
 	}
-	public void setEnd(int end) {
+	public void setEnd(long end) {
 		this.end = end;
 	}
 	/*public int getCurrent() {
@@ -33,8 +33,8 @@ public class TaskSequenceFragment {
 		this.current = current;
 	}*/
 	
-	public int getNextSequence(){
-		int result = current.incrementAndGet();
+	public long getNextSequence(){
+		long result = current.incrementAndGet();
 		if(result >= end){
 			current.set(start);
 			return current.get();

@@ -153,7 +153,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		String opt = parserHeader.getOpt();
 		if(!StringUtils.isEmpty(opt)){
 			String mac = parserHeader.getMac();
-			int taskid = parserHeader.getTaskid();
+			long taskid = parserHeader.getTaskid();
 			OperationCMD cmd = OperationCMD.getOperationCMDFromNo(opt);
 			if(cmd != null){
 				switch(cmd){
@@ -278,7 +278,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			if(!StringUtils.isEmpty(serial)){
 				if(serial.length() == 10){
 					String opt = serial.substring(0, 3);
-					int taskid = Integer.parseInt(serial.substring(3, 10));
+					long taskid = Long.parseLong(serial.substring(3, 10));
 					String mac = parserHeader.getMac().toLowerCase();
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){

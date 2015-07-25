@@ -583,7 +583,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceLocationS2(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDeviceLocationS2(String ctx, String response, String wifiId, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
@@ -604,7 +604,7 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceLocationNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
-			String wifiId, int taskid){
+			String wifiId, long taskid){
 		LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
 		if(locationDto != null && locationDto.validate()){
 			deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
@@ -619,7 +619,7 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceSpeedNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
-			String wifiId, int taskid){
+			String wifiId, long taskid){
 /*		String rate = serialDto.getRate();
 		if(StringUtils.isEmpty(rate) || "0".equals(rate)) return;
 		
@@ -647,7 +647,7 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceRateNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
-			String wifiId, int taskid){
+			String wifiId, long taskid){
 		//如果设备实时速率报送完成 则直接清除waiting mark 以便于下发下次的设备速率查询指令
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().removeRateWaiting(wifiId);
@@ -668,7 +668,7 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
-			String wifiId, int taskid){
+			String wifiId, long taskid){
 		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
 		if(terminals != null && !terminals.isEmpty()){
 			//获取设备的配置的dto
@@ -720,7 +720,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceStatus(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDeviceStatus(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceStatusDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, WifiDeviceStatusDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(dto.getStatus())){
 			//1:记录wifi设备的当前状态数据
@@ -749,7 +749,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceFlow(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDeviceFlow(String ctx, String response, String wifiId, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
@@ -791,7 +791,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void deviceSettingChanged(String ctx, String response, String wifiId, int taskid){
+	public void deviceSettingChanged(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		dto = refreshDeviceSetting(wifiId, dto);
 		updateDeviceModeStatusWithMode(wifiId, dto);
@@ -807,7 +807,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		dto = refreshDeviceSetting(wifiId, dto);
 		updateDeviceModeStatusWithMode(wifiId, dto);
@@ -842,7 +842,7 @@ public class DeviceBusinessFacadeService {
 			//dhcpc
 			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
 				if(!StringUtils.isEmpty(mode.getWan_interface())){
-					int taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+					long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
 					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, taskid, 
 							OperationCMD.QueryDhcpcStatus.getNo(), cmdPayload);
@@ -902,7 +902,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDhcpcStatus(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDhcpcStatus(String ctx, String response, String wifiId, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
@@ -915,7 +915,7 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
-	public void taskQueryDeviceUsedStatus(String ctx, String response, String mac, int taskid){
+	public void taskQueryDeviceUsedStatus(String ctx, String response, String mac, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus()) 
@@ -925,7 +925,7 @@ public class DeviceBusinessFacadeService {
 		}
 	}
 	
-	public void taskWifiTimerStart(String ctx, String response, String wifiId, int taskid){
+	public void taskWifiTimerStart(String ctx, String response, String wifiId, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
@@ -943,7 +943,7 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
-	public void taskWifiTimerStop(String ctx, String response, String wifiId, int taskid){
+	public void taskWifiTimerStop(String ctx, String response, String wifiId, long taskid){
 		//System.out.println("taskWifiTimerStop: ctx"+ctx+" response:"+response+" wifiid:"+wifiId+" taskid:"+taskid);
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
@@ -966,7 +966,7 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
-	public void taskWifiTimerQuery(String ctx, String response, String wifiId, int taskid){
+	public void taskWifiTimerQuery(String ctx, String response, String wifiId, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
@@ -997,7 +997,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskQueryDeviceSpeed(String ctx, String response, String wifiId, int taskid){
+	public void taskQueryDeviceSpeed(String ctx, String response, String wifiId, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
@@ -1013,7 +1013,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param taskid
 	 */
-	public void taskModifyDeviceSetting(String ctx, String response, String wifiId, int taskid){
+	public void taskModifyDeviceSetting(String ctx, String response, String wifiId, long taskid){
 		//解析返回的数据
 		ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(response, ModifyDeviceSettingDTO.class);
 		
@@ -1025,7 +1025,7 @@ public class DeviceBusinessFacadeService {
 			status = WifiDeviceDownTask.State_Failed;
 			//如果是配置序列号匹配错误 重新下发指令获取配置
 			if(dto.isConfigSequenceMatchError()){
-				int new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+				long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 				String cmdPayload = CMDBuilder.builderDeviceSettingQuery(wifiId, new_taskid);
 				deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, new_taskid, 
 						OperationCMD.QueryDeviceSetting.getNo(), cmdPayload);
@@ -1195,7 +1195,7 @@ public class DeviceBusinessFacadeService {
 		}
 	}*/
 	
-	public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, int taskid){
+	public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				QuerySerialReturnDTO.class);
@@ -1203,7 +1203,7 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
-	public void taskNotifyTriggerHttpPortalProcessor(String ctx, String response, String mac, int taskid){
+	public void taskNotifyTriggerHttpPortalProcessor(String ctx, String response, String mac, long taskid){
 		try{
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			WifiDeviceDownTask newdownTask = taskFacadeService.systemTaskGenerate(0, mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_Portal_Start.getNo(), downTask.getContext_var());
@@ -1214,7 +1214,7 @@ public class DeviceBusinessFacadeService {
 			ex.printStackTrace(System.out);
 		}
 	}
-	public void taskCommonProcessor(String ctx, String response, String mac, int taskid){
+	public void taskCommonProcessor(String ctx, String response, String mac, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				QuerySerialReturnDTO.class);
@@ -1234,7 +1234,7 @@ public class DeviceBusinessFacadeService {
 	 * 针对任务数据的状态修改和转移
 	 * @param serialDto
 	 */
-	public WifiDeviceDownTaskCompleted doTaskCallback(int taskid, String status,String response){
+	public WifiDeviceDownTaskCompleted doTaskCallback(long taskid, String status,String response){
 		if(StringUtils.isEmpty(status)) return null;
 		if(CMDBuilder.wasNormalTaskid(taskid)){//查看taskid是否是触发性任务id
 			try{
@@ -1256,7 +1256,7 @@ public class DeviceBusinessFacadeService {
 	 * @param mac
 	 * @param taskid
 	 */
-	public void taskQueryOldDeviceLocationNotifyProcessor(String ctx, String response, String mac, int taskid){
+	public void taskQueryOldDeviceLocationNotifyProcessor(String ctx, String response, String mac, long taskid){
 		System.out.println(String.format("taskQueryOldDeviceLocationNotifyProcessor mac[%s] taskid[%s]", mac,taskid));
 		try{
 			QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(response, QuerySerialReturnDTO.class);
