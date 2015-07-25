@@ -22,20 +22,15 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 	private DeviceGroupUnitFacadeRpcService deviceGroupUnitFacadeRpcService;
 	@Override
 	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid,
-			int pid) {
+			int pid, int pageNo, int pageSize) {
 		logger.info(String.format("birthTree uid:%s pid:%s",uid,pid));
-		return deviceGroupUnitFacadeRpcService.birthTree(uid, pid);
+		return deviceGroupUnitFacadeRpcService.birthTree(uid, pid, pageNo, pageSize);
 	}
 	@Override
 	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, int gid,
 			int pid, String name) {
 		logger.info(String.format("save uid:%s gid:%s pid:%s name:%s",uid,gid,pid,name));
 		return deviceGroupUnitFacadeRpcService.save(uid, gid, pid, name);
-	}
-	@Override
-	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, int gid) {
-		logger.info(String.format("detail uid:%s gid:%s",uid,gid));
-		return deviceGroupUnitFacadeRpcService.detail(uid, gid);
 	}
 
 	@Override

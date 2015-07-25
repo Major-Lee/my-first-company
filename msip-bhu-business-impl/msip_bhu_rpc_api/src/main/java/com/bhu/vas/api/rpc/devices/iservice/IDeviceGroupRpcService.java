@@ -11,12 +11,12 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IDeviceGroupRpcService {
 	
-	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid);
+//	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid);
+
+	RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid,int gid,int pid, String name);
 	
-	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, int gid);
-
 	RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, int gid, int pageNo, int pageSize);
 
 	public RpcResponseDTO<Boolean> remove(Integer uid, String gids);

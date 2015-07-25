@@ -46,12 +46,12 @@ public class DeviceGroupUnitFacadeRpcService{
 	 * @param pid
 	 * @return
 	 */
-	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid) {
+	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid, int pageNo, int pageSize) {
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-    	//mc.setPageNumber(1);
-    	//mc.setPageSize(400);
+    	mc.setPageNumber(1);
+    	mc.setPageSize(20);
     	List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
     	List<DeviceGroupVTO> result = new ArrayList<DeviceGroupVTO>();
     	for(WifiDeviceGroup group:groups){
@@ -316,7 +316,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		vto.setChildren(dgroup.getChildren());
 		//dto.setHaschild(dgroup.isHaschild());
 		vto.setPath(dgroup.getPath());
-		vto.setDevices(dgroup.getInnerModels());
+		//vto.setDevices(dgroup.getInnerModels());
 
 
 
@@ -419,7 +419,6 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		}
 
-		vto.setDetail_devices(vtos);
 		vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize, ids.size(), vtos));
 
 		return vto;
