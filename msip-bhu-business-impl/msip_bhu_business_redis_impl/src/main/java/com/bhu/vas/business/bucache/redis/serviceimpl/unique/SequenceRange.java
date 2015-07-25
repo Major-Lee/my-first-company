@@ -32,6 +32,6 @@ public class SequenceRange {
 	
 	
 	public boolean wasInRange(long current){
-		return current>=start && current<start;
+		return current>=start && current<end;
 	}
 }
