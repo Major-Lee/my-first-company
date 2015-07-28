@@ -133,14 +133,14 @@ public class DeviceURouterRestBusinessFacadeService {
 		try{
 			//WifiDevice device_entity = uRouterDeviceFacadeService.validateDevice(wifiId);
 			deviceFacadeService.validateUserDevice(uid, wifiId);
-			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
+			//WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
 
-			WifiDeviceSettingDTO dto = entity.getInnerModel();
+			//WifiDeviceSettingDTO dto = entity.getInnerModel();
 			URouterEnterVTO vto = new URouterEnterVTO();
-			String power = DeviceHelper.getURouterDevicePower(dto);
-			if(!StringUtils.isEmpty(power)){
-				vto.setPower(Integer.parseInt(power));
-			}
+//			String power = DeviceHelper.getURouterDevicePower(dto);
+//			if(!StringUtils.isEmpty(power)){
+//				vto.setPower(Integer.parseInt(power));
+//			}
 			vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
 			//vto.setWd_date_rx_rate(device_entity.getData_rx_rate());
 			//vto.setData_rx_rate_peak(device_entity.getData_rx_rate());

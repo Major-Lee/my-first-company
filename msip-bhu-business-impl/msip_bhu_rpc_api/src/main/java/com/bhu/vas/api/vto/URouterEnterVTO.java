@@ -16,7 +16,7 @@ public class URouterEnterVTO implements Serializable{
 	//设备实时下行速率
 	private String rx_rate;
 	//设备信号强度
-	private int power;
+	//private int power;
 	//在线终端数量
 	private long ohd_count;
 	
@@ -44,11 +44,11 @@ public class URouterEnterVTO implements Serializable{
 	public void setOhd_count(long ohd_count) {
 		this.ohd_count = ohd_count;
 	}
-	public void setPower(int power) {
-		this.power = power;
-	}
-	public int getPower() {
-		return power;
-	}
+//	public void setPower(int power) {
+//		this.power = power;
+//	}
+//	public int getPower() {
+//		return power;
+//	}
 	
 }
