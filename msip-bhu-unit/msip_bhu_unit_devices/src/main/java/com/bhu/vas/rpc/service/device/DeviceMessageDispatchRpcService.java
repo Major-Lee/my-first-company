@@ -278,7 +278,8 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			if(!StringUtils.isEmpty(serial)){
 				if(serial.length() == 10){
 					String opt = serial.substring(0, 3);
-					long taskid = Long.parseLong(serial.substring(3, 10));
+					//long taskid = Long.parseLong(serial.substring(3, 10));
+					long taskid = Long.parseLong(serial.substring(3, 13));
 					String mac = parserHeader.getMac().toLowerCase();
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){

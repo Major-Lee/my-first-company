@@ -31,8 +31,8 @@ public class SequenceService extends AbstractRelationHashCache {
 		//tableSequenceStart.put("com.bhu.vas.api.user.model.User", new SequenceRange(200000,Integer.MAX_VALUE,true));
 		//tableSequenceStart.put("com.bhu.vas.api.subject.model.Subject",new SequenceRange(10000,Integer.MAX_VALUE,true));
 		//4294967294
-		//tableSequenceStart.put("com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask",new SequenceRange(100000,4294967294l,true));
-		tableSequenceStart.put("com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask",new SequenceRange(100000,9999999,true));
+		tableSequenceStart.put("com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask",new SequenceRange(1000000,4294967294l,true));
+		//tableSequenceStart.put("com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask",new SequenceRange(100000,9999999,true));
 	}
 
 	public <T extends IRedisSequenceGenable> void onCreateSequenceKey(T model,

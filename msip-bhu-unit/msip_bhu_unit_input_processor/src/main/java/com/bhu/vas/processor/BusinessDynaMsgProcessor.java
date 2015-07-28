@@ -94,8 +94,8 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							headers.setMac(payload);
 							break;
 						case ParserHeader.Transfer_Prefix:
-							headers = ParserHeader.builder(message.substring(8, 42),type);
-							payload = message.substring(42);
+							headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length),type);
+							payload = message.substring(ParserHeader.Cmd_Header_Length);
 							break;
 						default:
 							throw new UnsupportedOperationException(

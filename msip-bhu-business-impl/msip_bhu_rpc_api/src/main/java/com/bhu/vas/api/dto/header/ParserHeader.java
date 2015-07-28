@@ -6,6 +6,10 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
 public class ParserHeader implements java.io.Serializable{
+	//指令头长度
+	public static final int Cmd_Header_Length = 45;
+
+	
 	public static final int Online_Prefix = 1;
 	public static final int Offline_Prefix = 2;
 	public static final int DeviceOffline_Prefix = 3;
@@ -76,6 +80,21 @@ public class ParserHeader implements java.io.Serializable{
 	public static ParserHeader builder(String header,int type){
 		ParserHeader pheader = new ParserHeader();
 		pheader.setType(type);
+		if(StringUtils.isEmpty(header) || header.length() <37) return pheader;
+		String mac = StringHelper.formatMacAddress(header.substring(0, 12));
+		if(!StringUtils.isEmpty(mac)){
+			pheader.setMac(mac.toLowerCase());
+		}
+		pheader.setOpt(header.substring(12, 15));
+		pheader.setTaskid(Long.parseLong(header.substring(15, 25)));
+		//pheader.setTaskid(Long.parseLong(header.substring(15, 22)));
+		pheader.setMt(Integer.parseInt(header.substring(25, 29)));
+		pheader.setSt(Integer.parseInt(header.substring(29, 37)));
+		return pheader;
+	}
+	/*public static ParserHeader builder(String header,int type){
+		ParserHeader pheader = new ParserHeader();
+		pheader.setType(type);
 		if(StringUtils.isEmpty(header) || header.length() <34) return pheader;
 		String mac = StringHelper.formatMacAddress(header.substring(0, 12));
 		if(!StringUtils.isEmpty(mac)){
@@ -86,12 +105,8 @@ public class ParserHeader implements java.io.Serializable{
 		pheader.setMt(Integer.parseInt(header.substring(22, 26)));
 		pheader.setSt(Integer.parseInt(header.substring(26, 34)));
 		return pheader;
-		/*String[] array = new String[4];
-		array[0] = msg.substring(0, 12);//12字节mac
-		array[1] = msg.substring(12, 22);//10字节任务id
-		array[2] = msg.substring(22, 26);//设备报文主类型(4字节)
-		array[3] = msg.substring(26, 34);//子类型(8字节)
-*/	}
+	}*/
+	
 	@Override
 	public String toString(){
 		StringBuffer sb = new StringBuffer();
