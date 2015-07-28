@@ -50,13 +50,14 @@ public class DeviceGroupUnitFacadeRpcService{
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-    	mc.setPageNumber(1);
-    	mc.setPageSize(20);
+    	mc.setPageNumber(pageNo);
+    	mc.setPageSize(pageSize);
     	List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
     	List<DeviceGroupVTO> result = new ArrayList<DeviceGroupVTO>();
     	for(WifiDeviceGroup group:groups){
     		result.add(fromWifiDeviceGroup(group));
     	}
+
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 	}
 	
@@ -364,10 +365,17 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("gid", dgroup.getId());
+
+
+		int total = wifiDeviceGroupRelationService.countByCommonCriteria(mc);
+
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
 
 		List<WifiDeviceGroupRelationPK> ids = wifiDeviceGroupRelationService.findIdsByModelCriteria(mc);
+
+
+
 
 		List<String> deviceIds = new ArrayList<String>();
 		for (WifiDeviceGroupRelationPK pk : ids) {
@@ -408,7 +416,7 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		}
 
-		vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize, ids.size(), vtos));
+		vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos));
 
 		return vto;
 	}
