@@ -16,10 +16,10 @@ import java.util.Map;
 public enum OperationCMD {
 	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制  下发管理参数触发设备自动上报用户通知并同步终端
 	ParamQueryTeminals("001","Param指令查询当前在线终端","param",
-			"00001001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>"),
+			"00001001%s0010000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>"),
 	//2. 设备终端探测开启关闭指令
 	ParamWifiSinffer("002","Param指令设备终端探测开启关闭","param",
-			"00001001002%s0000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
+			"00001001%s0020000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
 			
 	
 	//1. 查询cpu,内存利用率
