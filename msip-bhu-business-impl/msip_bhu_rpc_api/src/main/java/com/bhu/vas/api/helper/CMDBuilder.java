@@ -95,7 +95,7 @@ public class CMDBuilder {
 //		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
 //				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url, builderCMDSerial(opt, taskid_format));
 		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, 100080000);//builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderDhcpcStatusQuery(String wifi_mac,long taskid,String interface_name){

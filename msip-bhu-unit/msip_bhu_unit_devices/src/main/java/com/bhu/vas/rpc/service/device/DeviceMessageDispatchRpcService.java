@@ -294,9 +294,6 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
 					}
-					/*else if(OperationCMD.TriggerHttp404ResourceUpdate.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskNotifyTriggerHttp404Processor(ctx, payload, mac, taskid);
-					}*/
 					else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
 					}

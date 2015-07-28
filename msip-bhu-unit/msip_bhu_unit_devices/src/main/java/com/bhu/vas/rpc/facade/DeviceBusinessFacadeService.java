@@ -1214,6 +1214,7 @@ public class DeviceBusinessFacadeService {
 			ex.printStackTrace(System.out);
 		}
 	}
+	
 	public void taskCommonProcessor(String ctx, String response, String mac, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
