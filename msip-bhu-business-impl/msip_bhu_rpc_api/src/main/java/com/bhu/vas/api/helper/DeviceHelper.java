@@ -823,7 +823,7 @@ public class DeviceHelper {
 	 * @param ds_dto
 	 * @return throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	 */
-	public static String builderDSHttpAdStartOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpAdStartOuter(String config_sequence, String extparams){
 		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
 		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
@@ -832,11 +832,11 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttpAdStopOuter(String config_sequence, /*String extparams, */WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpAdStopOuter(String config_sequence){
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpAdItem);
 	}
 	
-	public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		//WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
 		if(pad_dto == null)
@@ -845,11 +845,11 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttpRedirectStopOuter(String config_sequence, /*String extparams, */WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpRedirectStopOuter(String config_sequence){
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpRedirectItem);
 	}
 	
-	public static String builderDSHttp404StartOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttp404StartOuter(String config_sequence, String extparams){
 		//WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
 		ParamVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
 		if(ad_dto == null)
@@ -857,11 +857,11 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
-	public static String builderDSHttp404StopOuter(String config_sequence, /*String extparams, */WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttp404StopOuter(String config_sequence){
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
 	}
 	
-	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams){
 		ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		if(ad_dto == null)
@@ -870,7 +870,7 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	
-	public static String builderDSStopHttpPortalOuter(String config_sequence,/* String extparams, */WifiDeviceSettingDTO ds_dto){
+	public static String builderDSStopHttpPortalOuter(String config_sequence){
 		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		//if(ad_dto == null)
@@ -1100,7 +1100,7 @@ public class DeviceHelper {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto)
+	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams)
 			throws Exception {
 		WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
 		if(user_dto == null || StringUtils.isEmpty(user_dto.getPassword())){
@@ -1124,7 +1124,7 @@ public class DeviceHelper {
 	 * @param extparams
 	 * @return
 	 */
-	public static String builderDSLinkModeOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto) throws Exception {
+	public static String builderDSLinkModeOuter(String config_sequence, String extparams) throws Exception {
 		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
 			WifiDeviceSettingLinkModeDTO linkModelDTO = JsonHelper.getDTO(extparams, WifiDeviceSettingLinkModeDTO.class);
 			if (linkModelDTO != null) {

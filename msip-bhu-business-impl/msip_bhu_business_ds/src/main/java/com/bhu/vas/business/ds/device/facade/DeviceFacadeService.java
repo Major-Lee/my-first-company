@@ -500,6 +500,14 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		return entity;
 	}
+	/**
+	 * 验证设备是否存在配置数据并且返回配置数据dto
+	 * @param mac
+	 * @return
+	 */
+	public WifiDeviceSettingDTO validateDeviceSettingAndGet(String mac){
+		return validateDeviceSetting(mac).getInnerModel();
+	}
 	
 	/**
 	 * 获取用户绑定的设备PKS
@@ -782,8 +790,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
-		WifiDeviceSetting entity = validateDeviceSetting(mac);
-		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+//		WifiDeviceSetting entity = validateDeviceSetting(mac);
+//		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
 		
 //		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
 //		if(StringUtils.isEmpty(config_sequence))
@@ -792,40 +800,40 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		
 		switch(ods){
 			case DS_Http_Ad_Start:
-				return DeviceHelper.builderDSHttpAdStartOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSHttpAdStartOuter(config_sequence, extparams);
 			case DS_Http_Ad_Stop:
-				return DeviceHelper.builderDSHttpAdStopOuter(config_sequence, ds_dto);	
+				return DeviceHelper.builderDSHttpAdStopOuter(config_sequence);	
 			case DS_Http_Redirect_Start:
-				return DeviceHelper.builderDSHttpRedirectStartOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSHttpRedirectStartOuter(config_sequence, extparams);
 			case DS_Http_Redirect_Stop:
-				return DeviceHelper.builderDSHttpRedirectStopOuter(config_sequence, ds_dto);
+				return DeviceHelper.builderDSHttpRedirectStopOuter(config_sequence);
 				
 			case DS_Http_404_Start:
-				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams);
 			case DS_Http_404_Stop:
-				return DeviceHelper.builderDSHttp404StopOuter(config_sequence, ds_dto);
+				return DeviceHelper.builderDSHttp404StopOuter(config_sequence);
 
 				
 			case DS_Http_Portal_Start:
-				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
-				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence, ds_dto);
+				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);
 				
 				
 			case DS_Power:
-				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_VapPassword:
-				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_AclMacs:
-				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_RateControl:
-				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_AdminPassword:
-				return DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams);
 			case DS_LinkMode:
-				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams);
 			case DS_MM:
-				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, ds_dto);
+				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
 			default:
