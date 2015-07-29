@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,11 +46,14 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 		//RpcResponseDTO<List<DeviceGroupVTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
-		RpcResponseDTO<List<DeviceGroupVTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid, pageNo, pageSize);
-		if(birthTree.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, birthTree.getPayload());
-		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(birthTree.getErrorCode()));
+		try {
+			TailPage<DeviceGroupVTO> birthTree = deviceGroupRpcService.birthTree(uid, pid, pageNo, pageSize);
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(birthTree));
+		} catch (Exception e) {
+			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+		}
+		
 	}
 	
 	

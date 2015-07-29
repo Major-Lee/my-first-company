@@ -6,12 +6,13 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.DeviceGroupDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.smartwork.msip.cores.orm.support.page.Page;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
 public interface IDeviceGroupRpcService {
 	
-	RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid, int pageNo, int pageSize);
+	TailPage<DeviceGroupVTO> birthTree(Integer uid, int pid, int pageNo, int pageSize);
 	
 	RpcResponseDTO<DeviceGroupVTO> save(Integer uid,int gid,int pid, String name);
 	

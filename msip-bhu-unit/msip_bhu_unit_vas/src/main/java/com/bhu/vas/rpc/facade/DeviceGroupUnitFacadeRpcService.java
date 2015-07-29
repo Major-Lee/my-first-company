@@ -14,6 +14,8 @@ import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.Page;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -46,21 +48,27 @@ public class DeviceGroupUnitFacadeRpcService{
 	 * @param pid
 	 * @return
 	 */
-	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid, int pageNo, int pageSize) {
+	public TailPage<DeviceGroupVTO> birthTree(Integer uid, int pid, int pageNo, int pageSize) {
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-    	mc.setPageNumber(pageNo);
-    	mc.setPageSize(pageSize);
-    	List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
+
+
+		int total = wifiDeviceGroupService.countByCommonCriteria(mc);
+
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+		List<WifiDeviceGroup> groups = wifiDeviceGroupService.findModelByModelCriteria(mc);
+
     	List<DeviceGroupVTO> result = new ArrayList<DeviceGroupVTO>();
     	for(WifiDeviceGroup group:groups){
-    		result.add(fromWifiDeviceGroup(group));
+    		result.add(fromWifiDeviceGroupBirthTree(group));
     	}
 
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+
+		return new CommonPage<DeviceGroupVTO>(pageNo, pageSize, total,result);
 	}
-	
+
 	
 	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, int gid,int pid, String name) {
 		//if(gid == null) gid = 0;
@@ -195,16 +203,9 @@ public class DeviceGroupUnitFacadeRpcService{
 			}*/
 		}
 		
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroupBirthTree(dgroup));
 	}
-	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, Integer gid) {
-		WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
-		if(dgroup != null){
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup));
-		}else{
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
-		}
-	}
+
 
 	public RpcResponseDTO<DeviceGroupVTO> detail(int uid, int gid, int pageNo, int pageSize) {
 		WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
@@ -292,7 +293,65 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 
-	private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup){
+//	private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup){
+//		DeviceGroupVTO vto = new DeviceGroupVTO();
+//		vto.setGid(dgroup.getId());
+//		vto.setName(dgroup.getName());
+//		vto.setPid(dgroup.getPid());
+//		if(dgroup.getPid() == 0){
+//			vto.setPname("根节点");
+//		}else{
+//			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
+//			vto.setPname((parent_group != null) ? parent_group.getName() : null);
+//		}
+//		vto.setChildren(dgroup.getChildren());
+//		//dto.setHaschild(dgroup.isHaschild());
+//		vto.setPath(dgroup.getPath());
+//		//vto.setDevices(dgroup.getInnerModels());
+//
+//
+//
+//		List<WifiDevice> entitys = wifiDeviceService.findByIds(dgroup.getInnerModels(), true, true);
+//		List<WifiDeviceVTO> vtos = new ArrayList<WifiDeviceVTO>();
+//		WifiDeviceVTO wifiDeviceVTO = null;
+//		for(WifiDevice entity : entitys){
+//			if(entity != null){
+//				//todo(bluesand):此处以后会跟搜索结果合并？现在用于群组菜单业务。
+//				wifiDeviceVTO = new WifiDeviceVTO();
+//				wifiDeviceVTO.setWid(entity.getId());
+//				wifiDeviceVTO.setOl(entity.isOnline()? 1: 0);
+//				wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_model())
+//						? entity.getOrig_model() : entity.getOem_model());
+//				wifiDeviceVTO.setWm(entity.getWork_mode());
+//				wifiDeviceVTO.setCfm(entity.getConfig_mode());
+//				wifiDeviceVTO.setRts(entity.getLast_reged_at().getTime());
+//				wifiDeviceVTO.setCts(entity.getCreated_at().getTime());
+//				wifiDeviceVTO.setOvd(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_vendor())
+//						? entity.getOrig_vendor() : entity.getOem_vendor());
+//				wifiDeviceVTO.setOesv(entity.getOem_swver());
+//				wifiDeviceVTO.setDof(org.apache.commons.lang.StringUtils.isEmpty(entity.getRx_bytes())
+//						? 0 : Long.parseLong(entity.getRx_bytes()));
+//				wifiDeviceVTO.setUof(org.apache.commons.lang.StringUtils.isEmpty(entity.getTx_bytes())
+//						? 0 : Long.parseLong(entity.getTx_bytes()));
+//				wifiDeviceVTO.setIpgen(entity.isIpgen());
+//				//如果是离线 计算离线时间
+//				if(wifiDeviceVTO.getOl() == 0){
+//					long logout_ts = entity.getLast_logout_at().getTime();
+//					wifiDeviceVTO.setOfts(logout_ts);
+//					wifiDeviceVTO.setOftd(System.currentTimeMillis() - logout_ts);
+//				}
+//				vtos.add(wifiDeviceVTO);
+//			}
+//
+//		}
+//
+//		vto.setDetail_devices(vtos);
+//		return vto;
+//	}
+
+
+
+	private DeviceGroupVTO fromWifiDeviceGroupBirthTree(WifiDeviceGroup dgroup) {
 		DeviceGroupVTO vto = new DeviceGroupVTO();
 		vto.setGid(dgroup.getId());
 		vto.setName(dgroup.getName());
@@ -304,48 +363,17 @@ public class DeviceGroupUnitFacadeRpcService{
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
 		vto.setChildren(dgroup.getChildren());
-		//dto.setHaschild(dgroup.isHaschild());
 		vto.setPath(dgroup.getPath());
-		//vto.setDevices(dgroup.getInnerModels());
 
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("gid", dgroup.getId());
 
+		int total = wifiDeviceGroupRelationService.countByCommonCriteria(mc);
 
-		List<WifiDevice> entitys = wifiDeviceService.findByIds(dgroup.getInnerModels(), true, true);
-		List<WifiDeviceVTO> vtos = new ArrayList<WifiDeviceVTO>();
-		WifiDeviceVTO wifiDeviceVTO = null;
-		for(WifiDevice entity : entitys){
-			if(entity != null){
-				//todo(bluesand):此处以后会跟搜索结果合并？现在用于群组菜单业务。
-				wifiDeviceVTO = new WifiDeviceVTO();
-				wifiDeviceVTO.setWid(entity.getId());
-				wifiDeviceVTO.setOl(entity.isOnline()? 1: 0);
-				wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_model())
-						? entity.getOrig_model() : entity.getOem_model());
-				wifiDeviceVTO.setWm(entity.getWork_mode());
-				wifiDeviceVTO.setCfm(entity.getConfig_mode());
-				wifiDeviceVTO.setRts(entity.getLast_reged_at().getTime());
-				wifiDeviceVTO.setCts(entity.getCreated_at().getTime());
-				wifiDeviceVTO.setOvd(org.apache.commons.lang.StringUtils.isEmpty(entity.getOem_vendor())
-						? entity.getOrig_vendor() : entity.getOem_vendor());
-				wifiDeviceVTO.setOesv(entity.getOem_swver());
-				wifiDeviceVTO.setDof(org.apache.commons.lang.StringUtils.isEmpty(entity.getRx_bytes())
-						? 0 : Long.parseLong(entity.getRx_bytes()));
-				wifiDeviceVTO.setUof(org.apache.commons.lang.StringUtils.isEmpty(entity.getTx_bytes())
-						? 0 : Long.parseLong(entity.getTx_bytes()));
-				wifiDeviceVTO.setIpgen(entity.isIpgen());
-				//如果是离线 计算离线时间
-				if(wifiDeviceVTO.getOl() == 0){
-					long logout_ts = entity.getLast_logout_at().getTime();
-					wifiDeviceVTO.setOfts(logout_ts);
-					wifiDeviceVTO.setOftd(System.currentTimeMillis() - logout_ts);
-				}
-				vtos.add(wifiDeviceVTO);
-			}
+		vto.setDevice_count(total);
 
-		}
-
-		vto.setDetail_devices(vtos);
 		return vto;
+
 	}
 
 
@@ -373,9 +401,6 @@ public class DeviceGroupUnitFacadeRpcService{
 		mc.setPageSize(pageSize);
 
 		List<WifiDeviceGroupRelationPK> ids = wifiDeviceGroupRelationService.findIdsByModelCriteria(mc);
-
-
-
 
 		List<String> deviceIds = new ArrayList<String>();
 		for (WifiDeviceGroupRelationPK pk : ids) {
