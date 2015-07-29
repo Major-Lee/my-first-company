@@ -148,7 +148,7 @@ public class AsyncMsgHandleService {
 			}
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer);
 			
-			wifiDeviceIndexIncrementService.wifiDeviceOnlineIndexIncrement(dto.getMac());
+			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
 			//设备统计
 			deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 					new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
@@ -427,7 +427,7 @@ public class AsyncMsgHandleService {
 			taskFacadeService.taskStateFailByDevice(dto.getMac());
 			
 			//6:增量索引
-			wifiDeviceIndexIncrementService.wifiDeviceOfflineIndexIncrement(dto.getMac());
+			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 
 		}
 		

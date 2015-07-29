@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @throws ESException 
 	 * @throws IOException 
 	 */
-	public void wifiDeviceOnlineIndexIncrement(String wifiId) throws Exception{
+/*	public void wifiDeviceOnlineIndexIncrement(String wifiId) throws Exception{
 		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s]", wifiId));
 		
 		WifiDevice entity = wifiDeviceService.getById(wifiId);
@@ -48,7 +49,7 @@ public class WifiDeviceIndexIncrementService {
 			wifiDeviceIndexService.createIndexComponent(indexDto);
 		}
 		logger.info(String.format("wifiDeviceOnlineIndexIncrement wifiId[%s] successful", wifiId));
-	}
+	}*/
 	/**
 	 * 当获取到wifi设备的坐标位置时候增量索引
 	 * @param wifiId
@@ -93,7 +94,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param wifiId
 	 * @throws Exception
 	 */
-	public void wifiDeviceOfflineIndexIncrement(String wifiId) throws Exception{
+/*	public void wifiDeviceOfflineIndexIncrement(String wifiId) throws Exception{
 		logger.info(String.format("wifiDeviceOfflineIndexIncrement wifiId[%s]", wifiId));
 		
 		WifiDevice entity = wifiDeviceService.getById(wifiId);
@@ -104,5 +105,30 @@ public class WifiDeviceIndexIncrementService {
 			wifiDeviceIndexService.createIndexComponent(indexDto);
 		}
 		logger.info(String.format("wifiDeviceOfflineIndexIncrement wifiId[%s] successful", wifiId));
+	}*/
+	
+	/**
+	 * 设备增量索引操作
+	 * @param wifiId
+	 * @param entity
+	 */
+	public void wifiDeviceIndexIncrement(WifiDevice entity) {
+		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s]", entity.getId(), entity.isOnline()));
+		try{
+			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity);
+			if(entity.isOnline()){
+				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+			}else{
+				indexDto.setCount(0);
+				indexDto.setOnline(WifiDeviceIndexDTO.offline_Status);
+			}
+			wifiDeviceIndexService.createIndexComponent(indexDto);
+		}catch(Exception ex){
+			//ex.printStackTrace();
+			logger.error(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] successful", 
+					entity.getId(), entity.isOnline()), ex);
+		}
+		
+		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] successful", entity.getId(), entity.isOnline()));
 	}
 }
