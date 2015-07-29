@@ -276,7 +276,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
 			String serial = serialDto.getSerial();
 			if(!StringUtils.isEmpty(serial)){
-				if(serial.length() == 10){
+				if(serial.length() == 13){
 					String opt = serial.substring(0, 3);
 					//long taskid = Long.parseLong(serial.substring(3, 10));
 					long taskid = Long.parseLong(serial.substring(3, 13));
