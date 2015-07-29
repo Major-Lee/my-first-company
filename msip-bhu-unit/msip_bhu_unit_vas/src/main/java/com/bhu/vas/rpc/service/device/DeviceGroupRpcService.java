@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.smartwork.msip.cores.orm.support.page.Page;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -21,7 +23,7 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 	@Resource
 	private DeviceGroupUnitFacadeRpcService deviceGroupUnitFacadeRpcService;
 	@Override
-	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid,
+	public TailPage<DeviceGroupVTO> birthTree(Integer uid,
 			int pid, int pageNo, int pageSize) {
 		logger.info(String.format("birthTree uid:%s pid:%s",uid,pid));
 		return deviceGroupUnitFacadeRpcService.birthTree(uid, pid, pageNo, pageSize);

@@ -14,6 +14,8 @@ import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.Page;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -46,7 +48,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	 * @param pid
 	 * @return
 	 */
-	public RpcResponseDTO<List<DeviceGroupVTO>> birthTree(Integer uid, int pid, int pageNo, int pageSize) {
+	public TailPage<DeviceGroupVTO> birthTree(Integer uid, int pid, int pageNo, int pageSize) {
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
@@ -63,11 +65,10 @@ public class DeviceGroupUnitFacadeRpcService{
     		result.add(fromWifiDeviceGroupBirthTree(group));
     	}
 
-		new CommonPage<DeviceGroupVTO>(pageNo, pageSize, total, result);
 
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		return new CommonPage<DeviceGroupVTO>(pageNo, pageSize, total,result);
 	}
-	
+
 	
 	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, int gid,int pid, String name) {
 		//if(gid == null) gid = 0;
