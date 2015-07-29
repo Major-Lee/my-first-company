@@ -7,15 +7,18 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class DeviceGroupVTO implements java.io.Serializable{
 	private int gid;
+
 	private int pid;
 	
 	private String name;
+
 	private String pname;
 	
 	private String path;
+
 	private int children;
 
-	private List<WifiDeviceVTO> detail_devices;
+	private int device_count;
 
 	private TailPage<WifiDeviceVTO> page_devices;
 
@@ -59,12 +62,12 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.path = path;
 	}
 
-	public List<WifiDeviceVTO> getDetail_devices() {
-		return detail_devices;
+	public int getDevice_count() {
+		return device_count;
 	}
 
-	public void setDetail_devices(List<WifiDeviceVTO> detail_devices) {
-		this.detail_devices = detail_devices;
+	public void setDevice_count(int device_count) {
+		this.device_count = device_count;
 	}
 
 	public int getChildren() {
