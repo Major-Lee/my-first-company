@@ -1230,6 +1230,25 @@ public class DeviceBusinessFacadeService {
 		//2:任务callback
 		doTaskCallback(taskid, resultDto.getStatus(), response);
 	}
+
+	/**
+	 * 如果设备升级失败，或者操作命令不支持处理。
+	 *
+	 * @param ctx
+	 * @param response
+	 * @param mac
+	 * @param taskid
+	 */
+	public void taskDeviceUpgrade(String ctx, String response, String mac ,long taskid) {
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc,
+				QuerySerialReturnDTO.class);
+		if (resultDto.getStatus().equals("none") || resultDto.getStatus().equals("error")) {
+			doTaskCallback(taskid, resultDto.getStatus(), response);
+		}
+	}
+
+
 	/**
 	 * 处理任务数据相应的callback函数 
 	 * 针对任务数据的状态修改和转移

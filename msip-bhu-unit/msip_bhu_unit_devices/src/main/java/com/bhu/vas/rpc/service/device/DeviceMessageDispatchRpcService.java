@@ -204,7 +204,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						break;	*/
 					case TriggerHttpPortalResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-						break;	
+						break;
+					case DeviceUpgrade:
+						deviceBusinessFacadeService.taskDeviceUpgrade(ctx, payload, mac, taskid);
+						break;
 					default:
 						messageDispatchUnsupport(ctx, payload, parserHeader);
 						break;
