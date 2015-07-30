@@ -149,8 +149,9 @@ public class AsyncMsgHandleService {
 				try{
 					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_model(),"AP106P06V1.2.15Build8057");
 					if(ret == -1) forceFirmwareUpdate = true;
+					System.out.println("~~~~~~~~~~~~:forceFirmwareUpdate"+forceFirmwareUpdate);
 				}catch(Exception ex){
-					
+					ex.printStackTrace(System.out);
 				}
 				
 			}
