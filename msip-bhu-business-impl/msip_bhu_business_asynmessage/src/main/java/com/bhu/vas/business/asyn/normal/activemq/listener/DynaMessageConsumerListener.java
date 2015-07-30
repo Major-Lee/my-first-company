@@ -17,6 +17,7 @@ public class DynaMessageConsumerListener implements MessageListener{
 	private String queue_name;
 	//private ConsumerContextInfo contextInfo;
 	//private ExecutorService exec = Executors.newFixedThreadPool(30);
+	private static final String Recv_Template = "ctx[%s] %s";
 	public DynaMessageConsumerListener(String queue_name,String cminfo){//ConsumerContextInfo contextInfo){///*String name,String key,*/MsgDispatcherServer server){//,ActiveMQConnectionManager manager){
 		this.queue_name = queue_name;
 		this.cminfo = cminfo;
@@ -25,7 +26,7 @@ public class DynaMessageConsumerListener implements MessageListener{
 	public void onMessage(final Message m) {
 		try {
 			String message = ((TextMessage)m).getText();
-			logger.info(message);
+			logger.info(String.format(Recv_Template, cminfo,message));
 			BusinessStatisticsLogger.doActionDynaQueueMessageLog(message);
 			QueueMsgObserverManager.DynaMsgCommingObserver.notifyMsgComming(cminfo, message);
 		} catch (JMSException e) {
