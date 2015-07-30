@@ -1243,7 +1243,8 @@ public class DeviceBusinessFacadeService {
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc,
 				QuerySerialReturnDTO.class);
-		if (resultDto.getStatus().equals("none") || resultDto.getStatus().equals("error")) {
+		if (resultDto.getStatus().equals(WifiDeviceDownTask.State_None) ||
+				resultDto.getStatus().equals(WifiDeviceDownTask.State_Error)) {
 			doTaskCallback(taskid, resultDto.getStatus(), response);
 		}
 	}

@@ -11,14 +11,19 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
 public class WifiDeviceDownTask extends BaseLongModel implements IRedisSequenceGenable{
 	public static final String State_Pending = "pending";//待处理状态
 	public static final String State_Timeout = "timeout";//任务超时
-	
+
+	//设备使用
 	public static final String State_Done = "done";//完成
 	public static final String State_Doing = "doing";//正在做
 	public static final String State_None = "none";//没有这个任务
 	public static final String State_Next = "next";//周期性上报的任务
-	
+	public static final String State_Error = "error"; //任务失败
+
+	//服务器使用
 	public static final String State_Failed = "failed";//任务失败
 	public static final String State_Completed = "Completed";//任务已经完成
+
+
 	
 	public static final String Task_LOCAL_CHANNEL = "VAS";
 	
