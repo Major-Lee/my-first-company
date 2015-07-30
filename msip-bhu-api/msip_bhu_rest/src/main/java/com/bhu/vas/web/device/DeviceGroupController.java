@@ -50,6 +50,7 @@ public class DeviceGroupController extends BaseController{
 			TailPage<DeviceGroupVTO> birthTree = deviceGroupRpcService.birthTree(uid, pid, pageNo, pageSize);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(birthTree));
 		} catch (Exception e) {
+			e.printStackTrace();
 			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 
 		}
