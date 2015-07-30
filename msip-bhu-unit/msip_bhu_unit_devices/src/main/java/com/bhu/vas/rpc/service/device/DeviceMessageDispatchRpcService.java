@@ -204,7 +204,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						break;	*/
 					case TriggerHttpPortalResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-						break;	
+						break;
+					case DeviceUpgrade:
+						deviceBusinessFacadeService.taskDeviceUpgrade(ctx, payload, mac, taskid);
+						break;
 					default:
 						messageDispatchUnsupport(ctx, payload, parserHeader);
 						break;
@@ -272,15 +275,19 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	public void taskNotifyResponse(String ctx, String payload, ParserHeader parserHeader){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
-				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
-			String serial = serialDto.getSerial();
-			if(!StringUtils.isEmpty(serial)){
-				if(serial.length() == 13){
-					String opt = serial.substring(0, 3);
-					//long taskid = Long.parseLong(serial.substring(3, 10));
-					long taskid = Long.parseLong(serial.substring(3, 13));
-					String mac = parserHeader.getMac().toLowerCase();
+		long taskid = 0l; 
+
+		String serial = serialDto.getSerial();
+		if(!StringUtils.isEmpty(serial)){
+			//AP106P06V1.2.15Build8057以后版本的设备以13位作为serial
+			if(serial.length() == 13){
+				String opt = serial.substring(0, 3);
+				//long taskid = Long.parseLong(serial.substring(3, 10));
+				taskid = Long.parseLong(serial.substring(3, 13));
+				String mac = parserHeader.getMac().toLowerCase();
+				
+				if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
+						|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
@@ -297,11 +304,19 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
 					}
-					//2:任务callback
-					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
+				}
+			}
+			//兼容AP106P06V1.2.15Build8057版本以前的设备 升级发送的serial为10位 处理方式 截取第一位后面的内容作为任务id
+			else{
+				String serial_substring = serial.substring(1);
+				if(!StringUtils.isEmpty(serial)){
+					taskid = Long.parseLong(serial_substring);
 				}
 			}
 		}	
+		
+		//2:任务callback
+		deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
 	}
 	
 	public void messageDispatchUnsupport(String ctx, String payload, ParserHeader parserHeader){
