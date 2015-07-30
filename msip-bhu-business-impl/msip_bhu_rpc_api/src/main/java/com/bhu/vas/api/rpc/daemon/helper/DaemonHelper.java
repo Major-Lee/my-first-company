@@ -16,7 +16,9 @@ public class DaemonHelper {
 			IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
 		if(forceFirmwareUpdate){//强制更新
-			CMDBuilder.builderDeviceUpgrade(mac,CMDBuilder.auto_taskid_fragment.getNextSequence(),"","","http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8057");
+			payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
+			String payload = CMDBuilder.builderDeviceUpgrade(mac,CMDBuilder.auto_taskid_fragment.getNextSequence(),"","","http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8057");
+			payloads.add(payload);
 		}
 		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
 		//下发管理参数触发设备自动上报用户通知并同步终端
