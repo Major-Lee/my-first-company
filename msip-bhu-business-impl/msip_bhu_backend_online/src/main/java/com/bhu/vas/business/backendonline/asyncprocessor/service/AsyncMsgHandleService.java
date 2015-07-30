@@ -134,6 +134,7 @@ public class AsyncMsgHandleService {
 		if(wifiDevice != null){
 			boolean isRouter = deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
 			boolean needWiffsniffer = false;
+			boolean forceFirmwareUpdate = false;
 			if(isRouter){
 				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
@@ -145,8 +146,15 @@ public class AsyncMsgHandleService {
 				}
 				//终端上线push
 				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+				try{
+					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_model(),"AP106P06V1.2.15Build8057");
+					if(ret == -1) forceFirmwareUpdate = true;
+				}catch(Exception ex){
+					
+				}
+				
 			}
-			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer);
+			afterDeviceOnlineThenCmdDown(dto.getMac(),forceFirmwareUpdate,dto.isNeedLocationQuery(),needWiffsniffer);
 			
 			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
 			//设备统计
@@ -168,9 +176,9 @@ public class AsyncMsgHandleService {
 	}
 	
 	//下发获取配置，获取设备测速，地理位置
-	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,boolean needWiffsniffer){
+	public void afterDeviceOnlineThenCmdDown(String mac,boolean forceFirmwareUpdate,boolean needLocationQuery,boolean needWiffsniffer){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
-		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, needWiffsniffer, daemonRpcService);
+		DaemonHelper.afterDeviceOnline(mac,forceFirmwareUpdate, needLocationQuery, needWiffsniffer, daemonRpcService);
 		/*//设备持久指令分发
 		try{
 			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);

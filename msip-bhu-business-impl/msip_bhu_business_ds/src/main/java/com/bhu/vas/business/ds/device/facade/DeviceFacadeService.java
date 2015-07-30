@@ -77,7 +77,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	public final static int WIFI_DEVICE_STATUS_NOT_ONLINE = 99;
 	public final static int WIFI_DEVICE_STATUS_ONLINE = 100;
 
-	private final static String WIFI_DEVICE_ORIGIN_MODEL = "Urouter";
+	private final static String WIFI_DEVICE_ORIGIN_MODEL = "uRouter";
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
