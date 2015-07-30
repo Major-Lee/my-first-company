@@ -12,9 +12,12 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class DaemonHelper {
-	public static void afterDeviceOnline(String mac, boolean needLocationQuery,boolean needWiffsniffer,
+	public static void afterDeviceOnline(String mac,boolean forceFirmwareUpdate, boolean needLocationQuery,boolean needWiffsniffer,
 			IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
+		if(forceFirmwareUpdate){//强制更新
+			CMDBuilder.builderDeviceUpgrade(mac,CMDBuilder.auto_taskid_fragment.getNextSequence(),"","","http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8057");
+		}
 		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
 		//下发管理参数触发设备自动上报用户通知并同步终端
 		payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));

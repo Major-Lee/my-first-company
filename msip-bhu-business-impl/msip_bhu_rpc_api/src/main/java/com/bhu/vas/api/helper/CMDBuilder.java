@@ -38,13 +38,18 @@ public class CMDBuilder {
 	//任务id format为七位，前面补零
 	//public static final String SuffixTemplete_Taskid = "%07d";
 	private static final String SuffixTemplete_Taskid = "%010d";
+	private static final String SuffixTemplete_Firmware_Taskid = "%08d";
 	//指令头长度
 	//public static final int Cmd_Header_Length = 42;
 	
 	public static String builderTaskidFormat(long taskid){
 		return String.format(SuffixTemplete_Taskid, taskid);
 	}
-	
+	public static String builderFirmwareUpdateSerialno(long taskid){
+		StringBuilder sb = new StringBuilder();
+		sb.append('1').append(String.format(SuffixTemplete_Firmware_Taskid, taskid));
+		return sb.toString();
+	}
 	public static String builderDeviceOnlineTeminalQuery(String wifi_mac){
 		return String.format(OperationCMD.ParamQueryTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));
 	}
@@ -92,10 +97,12 @@ public class CMDBuilder {
 	public static String builderDeviceUpgrade(String wifi_mac, long taskid, String upgrade_begin, String upgrade_end, String url) {
 		String opt = OperationCMD.DeviceUpgrade.getNo();
 		String taskid_format = builderTaskidFormat(taskid);
+		String searilno = builderFirmwareUpdateSerialno(taskid);
 //		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
 //				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url, builderCMDSerial(opt, taskid_format));
+		
 		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, 100080000);//builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, searilno);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderDhcpcStatusQuery(String wifi_mac,long taskid,String interface_name){
