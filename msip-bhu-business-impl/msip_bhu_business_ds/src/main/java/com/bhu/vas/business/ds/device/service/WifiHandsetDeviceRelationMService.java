@@ -310,9 +310,11 @@ public class WifiHandsetDeviceRelationMService {
 	 * @param wifiId
 	 */
 	public void wifiDeviceIllegalOfflineAdapter(String wifiId, List<HandsetDeviceDTO> handsets) {
-        for(HandsetDeviceDTO dto:handsets){
-            if(dto != null){
-                offlineWifiHandsetDeviceItems(wifiId, dto.getMac(), "0", "0", System.currentTimeMillis());
+        if ( handsets != null) {
+            for(HandsetDeviceDTO dto:handsets){
+                if(dto != null){
+                    offlineWifiHandsetDeviceItems(wifiId, dto.getMac(), "0", "0", System.currentTimeMillis());
+                }
             }
         }
 

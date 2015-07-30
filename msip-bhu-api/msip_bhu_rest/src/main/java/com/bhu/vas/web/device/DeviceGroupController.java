@@ -53,7 +53,7 @@ public class DeviceGroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 
 		}
-		
+
 	}
 	
 	
