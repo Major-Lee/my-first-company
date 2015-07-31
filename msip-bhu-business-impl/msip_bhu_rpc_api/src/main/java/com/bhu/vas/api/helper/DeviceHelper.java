@@ -366,7 +366,7 @@ public class DeviceHelper {
 	 * @param device_entity
 	 * @return
 	 */
-	public static String getCurrentDeviceUptime(WifiDevice device_entity){
+/*	public static String getCurrentDeviceUptime(WifiDevice device_entity){
 		String uptime = null;
 		if(device_entity != null) {
 			//如果设备在线 
@@ -382,7 +382,7 @@ public class DeviceHelper {
 			uptime = "0";
 		
 		return uptime;
-	}
+	}*/
 	
 	//新版本设备定义
 	//public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
