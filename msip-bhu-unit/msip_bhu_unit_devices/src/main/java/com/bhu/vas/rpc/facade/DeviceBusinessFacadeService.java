@@ -1026,6 +1026,7 @@ public class DeviceBusinessFacadeService {
 						(Long.parseLong(uptime[0]) * 3600 - Long.parseLong(uptime[1]) * 60 - Long.parseLong(uptime[2]) * 1000);
 				WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 				wifiDevice.setLast_start_at(String.valueOf(last_start_at));
+				wifiDeviceService.update(wifiDevice);
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
 			}
