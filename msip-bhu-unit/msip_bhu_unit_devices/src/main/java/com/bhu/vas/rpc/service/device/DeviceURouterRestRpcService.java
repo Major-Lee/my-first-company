@@ -128,20 +128,20 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	
 	@Override
 	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
-		logger.info(String.format("DeviceURouterRestRPC urouterPeakRate invoke uid [%s] mac [%s] ", 
+		logger.info(String.format("DeviceURouterRestRPC urouterPeakSection invoke uid [%s] mac [%s] ", 
 				uid, wifiId));
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterPeakSection(uid, wifiId.toLowerCase(), type, period, duration);
 		}
 		catch(RpcBusinessI18nCodeException ex){
-			logger.info(String.format("DeviceMessageRPC urouterPeakRate failed uid [%s] mac [%s]",
+			logger.info(String.format("DeviceMessageRPC urouterPeakSection failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
 		}
 		catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceURouterRestRPC urouterPeakRate exception uid [%s] mac [%s] exmsg[%s]",
+			logger.error(String.format("DeviceURouterRestRPC urouterPeakSection exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
@@ -149,20 +149,20 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	
 	@Override
 	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId) {
-		logger.info(String.format("DeviceURouterRestRPC urouterPeakRate invoke uid [%s] mac [%s] ", 
+		logger.info(String.format("DeviceURouterRestRPC urouterPeakSectionFetch invoke uid [%s] mac [%s] ", 
 				uid, wifiId));
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterPeakSectionFetch(uid, wifiId.toLowerCase());
 		}
 		catch(RpcBusinessI18nCodeException ex){
-			logger.info(String.format("DeviceMessageRPC urouterPeakRate failed uid [%s] mac [%s]",
+			logger.info(String.format("DeviceMessageRPC urouterPeakSectionFetch failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
 		}
 		catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceURouterRestRPC urouterPeakRate exception uid [%s] mac [%s] exmsg[%s]",
+			logger.error(String.format("DeviceURouterRestRPC urouterPeakSectionFetch exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
