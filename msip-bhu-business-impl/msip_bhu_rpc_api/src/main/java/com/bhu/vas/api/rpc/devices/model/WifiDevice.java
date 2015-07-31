@@ -75,6 +75,8 @@ public class WifiDevice extends BaseStringModel{
 	private boolean ipgen = false;
 	//设备运行时长
 	private String uptime;
+	//最后一次设备启动时间戳
+	private String last_start_at;
 	//最后一次登录时间
 	private Date last_reged_at;
 	//最后一次登出时间
@@ -372,6 +374,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setUptime(String uptime) {
 		this.uptime = uptime;
+	}
+
+	public String getLast_start_at() {
+		return last_start_at;
+	}
+
+	public void setLast_start_at(String last_start_at) {
+		this.last_start_at = last_start_at;
 	}
 
 	public Date getLast_logout_at() {

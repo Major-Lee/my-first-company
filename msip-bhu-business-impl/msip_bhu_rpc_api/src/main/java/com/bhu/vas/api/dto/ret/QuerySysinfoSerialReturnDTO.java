@@ -17,7 +17,7 @@ package com.bhu.vas.api.dto.ret;
  */
 @SuppressWarnings("serial")
 public class QuerySysinfoSerialReturnDTO extends QuerySerialReturnDTO{
-	//当前设备运行时长  18:15:58
+	//当前设备运行时长  返回的格式时间戳[小时:分钟:秒]18:15:58 累加的
 	private String uptime;
 
 	public String getUptime() {

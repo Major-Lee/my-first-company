@@ -779,7 +779,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		//2:任务callback
-		doTaskCallback(taskid, serialDto.getStatus(),response);
+		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
 	/**
@@ -953,7 +953,7 @@ public class DeviceBusinessFacadeService {
 			//WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			//去除app设置到数据库中
 			UserSettingState setting = userSettingStateService.getById(wifiId);
-			UserWifiTimerSettingDTO timerStarSetting = setting.getUserSetting( UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
+			UserWifiTimerSettingDTO timerStarSetting = setting.getUserSetting(UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
 			if(timerStarSetting == null){
 				timerStarSetting = new UserWifiTimerSettingDTO();
 				timerStarSetting.setTimeslot(ParamCmdWifiTimerStartDTO.Default_Timeslot);
@@ -1019,7 +1019,18 @@ public class DeviceBusinessFacadeService {
 		QuerySysinfoSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySysinfoSerialReturnDTO.class);
 		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
-			//TODO：
+			//uptime
+			try {
+				String[] uptime = serialDto.getUptime().split(":");
+				long last_start_at = System.currentTimeMillis() -
+						(Long.parseLong(uptime[0]) * 3600 - Long.parseLong(uptime[1]) * 60 - Long.parseLong(uptime[2]) * 1000);
+				WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
+				wifiDevice.setLast_start_at(String.valueOf(last_start_at));
+			} catch (Exception e) {
+				e.printStackTrace(System.out);
+			}
+
+
 		}
 	}
 	

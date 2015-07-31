@@ -40,6 +40,7 @@
     <result property="bdid" column="bdid"/>
     <result property="ipgen" column="ipgen"/>
     <result property="uptime" column="uptime"/>
+	<result property="last_start_at" column="last_start_at"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="last_logout_at" column="last_logout_at"/>
     <result property="created_at" column="created_at"/>
@@ -88,6 +89,7 @@
 	    	bdid,
 	    	ipgen,
 	    	uptime,
+	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
 	    	created_at,
@@ -130,6 +132,7 @@
 	    	bdid,
 	    	ipgen,
 	    	uptime,
+	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
 	    	created_at,
@@ -173,6 +176,7 @@
 	    	#{bdid},
 	    	#{ipgen},
 	    	#{uptime},
+	    	#{last_start_at},
 	    	#{last_reged_at},
 	    	#{last_logout_at},
 	    	#{created_at},
@@ -214,6 +218,7 @@
 	    	bdid = #{bdid},
 	    	ipgen = #{ipgen},
 	    	uptime = #{uptime},
+	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},
 	    	updated_at = #{updated_at}
