@@ -141,6 +141,16 @@ public class DaemonHelper {
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
+	/**
+	 * 获取设备的系统信息
+	 * @param mac
+	 * @param daemonRpcService
+	 */
+	public static void deviceSysinfoQuery(String mac, IDaemonRpcService daemonRpcService){
+		String cmd = CMDBuilder.builderSysinfoQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence());
+		daemonCmdDown(mac, cmd, daemonRpcService);
+	}
+	
 //	//设备测速时间10秒
 //	public static final int DeviceSpeedQuery_Duration = 10;
 //	//设备测速数据上报间隔2秒

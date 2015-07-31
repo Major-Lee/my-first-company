@@ -65,6 +65,7 @@ public enum OperationCMD {
 	QueryDhcpcStatus("109","查询dhcp模式下的状态信息(ip,网关,dns,子网掩码)","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"dhcpcstatus\" interface=\"%s\" /></cmd>"),
 	QueryDeviceUsedStatus("110","查询设备使用情况","data_stats","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"data_stats\"/></cmd>"),
 	
+	QueryDeviceSysinfo("111","查询设备系统信息","sysinfo","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysinfo\"/></cmd>"),
 	//TriggerHttp404ResourceUpdate("118","触发设备更新http404资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"http404\" url=\"%s\" resource_ver=\"%s\" serial=\"%s\" __notify=\"true\"/></cmd>"),
 	TriggerHttpPortalResourceUpdate("119","触发设备更新portal资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"portal\" url=\"%s\" resource_ver=\"%s\"serial=\"%s\" __notify=\"true\"/></cmd>"),
 	

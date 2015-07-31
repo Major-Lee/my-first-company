@@ -111,6 +111,12 @@ public class CMDBuilder {
 				builderTaskidFormat(taskid), interface_name);
 	}
 	
+	public static String builderSysinfoQuery(String wifi_mac,long taskid){
+		return String.format(OperationCMD.QueryDeviceSysinfo.getCmdtpl(),//query_device_flow_cmd_template, 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSysinfo.getNo(),
+				builderTaskidFormat(taskid));
+	}
+	
 	/**
 	 * 查询设备实时速率指令
 	 * @param wifi_mac
