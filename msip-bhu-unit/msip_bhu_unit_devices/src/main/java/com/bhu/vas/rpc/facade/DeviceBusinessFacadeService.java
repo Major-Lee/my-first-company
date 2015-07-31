@@ -22,6 +22,7 @@ import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.dto.ret.QuerySysinfoSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.QueryWifiTimerSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDevicePeakSectionDTO;
@@ -1003,6 +1004,22 @@ public class DeviceBusinessFacadeService {
 		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
 		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
 			WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearPeakSections(wifiId);
+		}
+	}
+	
+	/**
+	 * 设备系统信息指令回应
+	 * @param ctx
+	 * @param response
+	 * @param wifiId
+	 * @param taskid
+	 */
+	public void taskQuerySysinfoSpeed(String ctx, String response, String wifiId, long taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		QuerySysinfoSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySysinfoSerialReturnDTO.class);
+		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
+		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
+			//TODO：
 		}
 	}
 	

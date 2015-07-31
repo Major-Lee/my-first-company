@@ -208,6 +208,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					case DeviceUpgrade:
 						deviceBusinessFacadeService.taskDeviceUpgrade(ctx, payload, mac, taskid);
 						break;
+					case QueryDeviceSysinfo:
+						deviceBusinessFacadeService.taskQuerySysinfoSpeed(ctx, payload, mac, taskid);
+						break;
 					default:
 						messageDispatchUnsupport(ctx, payload, parserHeader);
 						break;
