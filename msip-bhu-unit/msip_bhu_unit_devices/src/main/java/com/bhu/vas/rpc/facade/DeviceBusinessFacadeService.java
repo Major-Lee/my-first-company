@@ -1245,7 +1245,7 @@ public class DeviceBusinessFacadeService {
 				QuerySerialReturnDTO.class);
 		if (resultDto.getStatus().equals(WifiDeviceDownTask.State_None) ||
 				resultDto.getStatus().equals(WifiDeviceDownTask.State_Error)) {
-			doTaskCallback(taskid, resultDto.getStatus(), response);
+			doTaskCallback(taskid, WifiDeviceDownTask.State_Failed, response);
 		}
 	}
 
