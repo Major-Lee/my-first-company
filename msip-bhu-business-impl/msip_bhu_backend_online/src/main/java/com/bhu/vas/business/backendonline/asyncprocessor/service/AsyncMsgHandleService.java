@@ -147,7 +147,7 @@ public class AsyncMsgHandleService {
 				//终端上线push
 				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				try{
-					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8057");
+					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8064");
 					if(ret == -1) forceFirmwareUpdate = true;
 					System.out.println("~~~~~~~~~~~~:forceFirmwareUpdate"+forceFirmwareUpdate);
 				}catch(Exception ex){
