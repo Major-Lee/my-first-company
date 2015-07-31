@@ -1024,7 +1024,7 @@ public class DeviceBusinessFacadeService {
 			try {
 				String[] uptime = serialDto.getUptime().split(":");
 				long last_start_at = System.currentTimeMillis() -
-						(Long.parseLong(uptime[0]) * 3600 - Long.parseLong(uptime[1]) * 60 - Long.parseLong(uptime[2]) * 1000);
+						(Long.parseLong(uptime[0]) * 3600 + Long.parseLong(uptime[1]) * 60 + Long.parseLong(uptime[2]) * 1000);
 				wifiDevice.setLast_start_at(String.valueOf(last_start_at));
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
