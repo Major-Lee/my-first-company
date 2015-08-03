@@ -21,6 +21,12 @@ public class IndexDTOBuilder {
 		indexDto.setConfigmodel(entity.getConfig_mode());
 		indexDto.setOrigswver(entity.getOrig_swver());
 		indexDto.setNvd(DeviceHelper.isNewOrigSwverDevice(entity.getOrig_swver()) ? 1 : 0);
+		if(entity.isOnline()){
+			indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+		}else{
+			indexDto.setCount(0);
+			indexDto.setOnline(WifiDeviceIndexDTO.offline_Status);
+		}
 //		indexDto.setCount(1);
 //		indexDto.setOnline(1);
 		indexDto.setGroupids(groupids);

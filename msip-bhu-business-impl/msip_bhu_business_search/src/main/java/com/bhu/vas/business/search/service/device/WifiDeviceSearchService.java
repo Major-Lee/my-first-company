@@ -8,7 +8,6 @@ import org.elasticsearch.common.geo.GeoHashUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.ExistsFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -246,10 +245,16 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 				}
 			}
 			if(!StringUtils.isEmpty(groupids)){
-				boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_groups, groupids));
+				String[] groupids_array = groupids.split(StringHelper.WHITESPACE_STRING_GAP);
+				for(String groupid : groupids_array){
+					boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_groups, groupid));
+				}
 			}
 			if(!StringUtils.isEmpty(groupids_excepts)){
-				boolfilter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_groups, groupids_excepts));
+				String[] groupids_array = groupids_excepts.split(StringHelper.WHITESPACE_STRING_GAP);
+				for(String groupid : groupids_array){
+					boolfilter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_groups, groupid));
+				}
 			}
 			filter = boolfilter;
 		}else{

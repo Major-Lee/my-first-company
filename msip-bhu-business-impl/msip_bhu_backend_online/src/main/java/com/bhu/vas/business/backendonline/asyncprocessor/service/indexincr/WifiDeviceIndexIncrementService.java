@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
@@ -130,12 +129,12 @@ public class WifiDeviceIndexIncrementService {
 		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s]", entity.getId(), entity.isOnline()));
 		try{
 			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
-			if(entity.isOnline()){
-				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
-			}else{
-				indexDto.setCount(0);
-				indexDto.setOnline(WifiDeviceIndexDTO.offline_Status);
-			}
+//			if(entity.isOnline()){
+//				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+//			}else{
+//				indexDto.setCount(0);
+//				indexDto.setOnline(WifiDeviceIndexDTO.offline_Status);
+//			}
 			wifiDeviceIndexService.createIndexComponent(indexDto);
 		}catch(Exception ex){
 			//ex.printStackTrace();
@@ -144,5 +143,28 @@ public class WifiDeviceIndexIncrementService {
 		}
 		
 		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] successful", entity.getId(), entity.isOnline()));
+	}
+	
+	public void wifiDeviceIndexBlukIncrement(List<WifiDevice> entitys, List<List<Integer>> groupids_list){
+		if(entitys == null || entitys.isEmpty()) return;
+		if(groupids_list == null || groupids_list.isEmpty()) return;
+		
+		logger.info(String.format("wifiDeviceIndexBlukIncrement wifiId[%s] online[%s]", entitys.size(), groupids_list.size()));
+		try{
+			List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
+			int cursor = 0;
+			for(WifiDevice entity : entitys){
+				indexDtos.add(IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids_list.get(cursor)));
+				cursor++;
+			}
+			wifiDeviceIndexService.createIndexComponents(indexDtos);
+		}catch(Exception ex){
+			//ex.printStackTrace();
+			logger.error(String.format("wifiDeviceIndexBlukIncrement wifiId[%s] online[%s] exception", 
+					entitys.size(), groupids_list.size()), ex);
+		}
+		
+		logger.info(String.format("wifiDeviceIndexBlukIncrement wifiId[%s] online[%s] successful", entitys.size(), groupids_list.size()));
+
 	}
 }
