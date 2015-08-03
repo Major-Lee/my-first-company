@@ -125,7 +125,7 @@ public class WifiDeviceIndexIncrementService {
 			wifiDeviceIndexService.createIndexComponent(indexDto);
 		}catch(Exception ex){
 			//ex.printStackTrace();
-			logger.error(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] successful", 
+			logger.error(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] exception", 
 					entity.getId(), entity.isOnline()), ex);
 		}
 		

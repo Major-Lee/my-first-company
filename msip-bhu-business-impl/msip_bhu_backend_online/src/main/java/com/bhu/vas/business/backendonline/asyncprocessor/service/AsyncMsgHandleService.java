@@ -144,7 +144,7 @@ public class AsyncMsgHandleService {
 						needWiffsniffer = wifiSniffer.isOn();
 					}
 				}
-				//终端上线push
+				//设备上线push
 				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				try{
 					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8064");
@@ -487,6 +487,8 @@ public class AsyncMsgHandleService {
 					pushDto.setNewed(true);
 				boolean push_successed = pushService.push(pushDto);
 				if(push_successed){
+					logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle push mac[%s] hd_mac[%s] result[%s] ", 
+							dto.getWifiId(), dto.getMac(), push_successed));
 					businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
 				}
 			}else{

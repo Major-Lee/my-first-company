@@ -234,7 +234,7 @@ public class GexinPushService{
 			return false;
 		}
 		Map<String, Object> response = ret.getResponse();
-		System.out.println(response.toString());
+		logger.info(response.toString());
 		Object resultObj = response.get("result");
 		if(resultObj == null){
 			logger.info("Gexin Response result empty");
