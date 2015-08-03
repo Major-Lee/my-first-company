@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.statistics.dto.*;
 import com.bhu.vas.api.vto.*;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,6 +77,8 @@ public class ConsoleController extends BaseController {
      * @param newVersionDevice 新老版本设备
      * @param request
      * @param response
+     * @param groupids 所属分组ids 空格分隔
+     * @param groupids_excepts 排除所属分组ids 空格分隔
      * @param pageNo
      * @param pageSize
      */
@@ -96,11 +99,14 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false, value = "nvd") Boolean newVersionDevice,
             @RequestParam(required = false, value = "region") String region,
             @RequestParam(required = false, value = "excepts") String excepts,
+            @RequestParam(required = false, value = "gids") String groupids,
+            @RequestParam(required = false, value = "gids_excepts") String groupids_excepts,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
 
         TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, orig_swver,
-                adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, excepts, pageNo, pageSize);
+                adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, excepts, 
+                groupids, groupids_excepts, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
     }
 

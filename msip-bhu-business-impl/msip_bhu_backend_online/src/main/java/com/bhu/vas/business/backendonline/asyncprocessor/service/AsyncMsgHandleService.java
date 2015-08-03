@@ -787,7 +787,7 @@ public class AsyncMsgHandleService {
 			}
 			wifiDeviceService.update(entity);
 			//3:增量索引
-			wifiDeviceIndexIncrementService.wifiDeviceLocationIndexIncrement(entity);
+			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
 	}

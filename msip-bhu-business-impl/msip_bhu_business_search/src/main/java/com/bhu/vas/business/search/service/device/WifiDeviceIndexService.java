@@ -53,6 +53,7 @@ public class WifiDeviceIndexService extends IndexService<WifiDeviceMapableCompon
 		component.setWorkmodel(indexDto.getWorkmodel());
 		component.setDevicetype(indexDto.getDevicetype());
 		component.setAddress(indexDto.getAddress());
+		component.setGroups(indexDto.getGroups());
 		component.setI_update_at(DateTimeHelper.getDateTime());
 		return component;
 		

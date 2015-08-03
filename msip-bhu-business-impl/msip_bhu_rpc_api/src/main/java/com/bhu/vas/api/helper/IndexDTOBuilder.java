@@ -1,11 +1,13 @@
 package com.bhu.vas.api.helper;
 
+import java.util.List;
+
 import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 
 public class IndexDTOBuilder {
 	
-	public static WifiDeviceIndexDTO builderWifiDeviceIndexDTO(WifiDevice entity){
+	public static WifiDeviceIndexDTO builderWifiDeviceIndexDTO(WifiDevice entity, List<Integer> groupids){
 		WifiDeviceIndexDTO indexDto = new WifiDeviceIndexDTO();
 		indexDto.setWifiId(entity.getId());
 		indexDto.setCountry(entity.getCountry());
@@ -21,6 +23,7 @@ public class IndexDTOBuilder {
 		indexDto.setNvd(DeviceHelper.isNewOrigSwverDevice(entity.getOrig_swver()) ? 1 : 0);
 //		indexDto.setCount(1);
 //		indexDto.setOnline(1);
+		indexDto.setGroupids(groupids);
 		indexDto.setLat(entity.getLat());
 		indexDto.setLon(entity.getLon());
 		//System.out.println(entity.getId() + "-" +entity.getCreated_at());
