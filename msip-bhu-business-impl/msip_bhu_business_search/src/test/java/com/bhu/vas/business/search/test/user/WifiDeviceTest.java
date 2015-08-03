@@ -143,7 +143,7 @@ public class WifiDeviceTest extends BaseTest{
 		String region="";
 		String excepts = "";//"北京市,广东省,浙江省,上海市";
 		String groupids = "";
-		String groupids_excepts = "1 308 383";
+		String groupids_excepts = "";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeywords(mac, orig_swver,
 				adr, work_mode, config_mode, devicetype, null, true, region, excepts, groupids, groupids_excepts, 0, 10);
 		System.out.println(result.getTotal());
