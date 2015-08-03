@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,5 +26,19 @@ public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGrou
     }
 
 
+    /**
+     * 获取设备所在的所有设备组
+     * @param mac
+     * @return
+     */
+    public List<Integer> getDeviceGroupIds(String mac) {
+        List<WifiDeviceGroupRelationPK> pks = this.findIds("mac", mac);
+
+        List<Integer> groupIds = new ArrayList<>();
+        for (WifiDeviceGroupRelationPK pk : pks) {
+            groupIds.add(pk.getGid());
+        }
+        return groupIds;
+    }
 
 }
