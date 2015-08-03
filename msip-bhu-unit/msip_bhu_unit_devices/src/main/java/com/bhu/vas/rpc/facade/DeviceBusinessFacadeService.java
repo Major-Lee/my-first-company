@@ -1020,16 +1020,17 @@ public class DeviceBusinessFacadeService {
 		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			//uptime
+			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 			try {
 				String[] uptime = serialDto.getUptime().split(":");
 				long last_start_at = System.currentTimeMillis() -
-						(Long.parseLong(uptime[0]) * 3600 - Long.parseLong(uptime[1]) * 60 - Long.parseLong(uptime[2]) * 1000);
-				WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
+						(Long.parseLong(uptime[0]) * 3600 + Long.parseLong(uptime[1]) * 60 + Long.parseLong(uptime[2]) * 1000);
 				wifiDevice.setLast_start_at(String.valueOf(last_start_at));
-				wifiDeviceService.update(wifiDevice);
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
+				wifiDevice.setLast_start_at(String.valueOf(System.currentTimeMillis()));
 			}
+			wifiDeviceService.update(wifiDevice);
 
 
 		}

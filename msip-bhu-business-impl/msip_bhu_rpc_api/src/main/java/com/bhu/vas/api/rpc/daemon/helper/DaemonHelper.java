@@ -16,8 +16,9 @@ public class DaemonHelper {
 			IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
 		if(forceFirmwareUpdate){//强制更新
-			payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
-			String payload = CMDBuilder.builderDeviceUpgrade(mac,CMDBuilder.auto_taskid_fragment.getNextSequence(),"","","http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8057");
+			String payload = CMDBuilder.builderDeviceUpgrade(mac,
+					CMDBuilder.auto_taskid_fragment.getNextSequence(),"","",
+					"http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8064");
 			payloads.add(payload);
 		}
 		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));

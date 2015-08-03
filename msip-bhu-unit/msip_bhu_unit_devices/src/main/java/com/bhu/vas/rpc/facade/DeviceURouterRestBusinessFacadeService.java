@@ -460,7 +460,15 @@ public class DeviceURouterRestBusinessFacadeService {
 			vto.setOem_swver(device_entity.getOem_swver());
 			vto.setOem_hdver(device_entity.getOem_hdver());
 			vto.setOl(device_entity.isOnline());
-			vto.setUptime(device_entity.getLast_start_at()); //last_start_at -> uptime
+
+			String last_start_at = device_entity.getLast_start_at();
+			long currentTime = System.currentTimeMillis();
+			long uptime = 0;
+			if (last_start_at != null) {
+				uptime = currentTime - Long.parseLong(last_start_at);
+			}
+			
+			vto.setUptime(String.valueOf(uptime)); //last_start_at -> uptime
 			vto.setWan_ip(device_entity.getWan_ip());
 			vto.setIp(device_entity.getIp());
 			//vto.setMode(DeviceHelper.getDeviceMode(setting_dto));
