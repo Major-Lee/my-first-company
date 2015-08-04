@@ -436,12 +436,12 @@ public class DeviceHelper {
 		if(orig_swver2_versions == null) return 1;
 		//判断大版本号
 		int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
-		System.out.println("top ret " + top_ret);
+		//System.out.println("top ret " + top_ret);
 		if(top_ret != 0) return top_ret;
 		
 		//判断小版本号
 		int bottom_ret = StringHelper.compareVersion(orig_swver1_versions[1], orig_swver2_versions[1]);
-		System.out.println("bottom ret " + bottom_ret);
+		//System.out.println("bottom ret " + bottom_ret);
 		return bottom_ret;
 	}
 	

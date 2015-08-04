@@ -1,16 +1,17 @@
 package com.bhu.vas.business.ds.device.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceGroupRelationDao;
 import com.smartwork.msip.cores.orm.service.EntityService;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by bluesand on 7/16/15.
@@ -39,6 +40,22 @@ public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGrou
             groupIds.add(pk.getGid());
         }
         return groupIds;
+    }
+
+    /**
+     * 获取群组下所有设备mac地址
+     *
+     * @param gid
+     * @return
+     */
+    public List<String> getDeviceIdsByGroupId(int gid) {
+        List<WifiDeviceGroupRelationPK> pks = this.findIds("gid", gid);
+
+        List<String> deviceIds = new ArrayList<>();
+        for (WifiDeviceGroupRelationPK pk : pks) {
+            deviceIds.add(pk.getMac());
+        }
+        return deviceIds;
     }
 
 }

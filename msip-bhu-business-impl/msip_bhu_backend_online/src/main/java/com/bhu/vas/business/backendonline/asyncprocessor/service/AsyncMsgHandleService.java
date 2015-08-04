@@ -27,6 +27,7 @@ import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
@@ -54,6 +55,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerServi
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
@@ -97,6 +99,10 @@ public class AsyncMsgHandleService {
 	private TaskFacadeService taskFacadeService;
 	
 	@Resource
+	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
+
+	
+	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 	
 //	@Resource
@@ -134,7 +140,8 @@ public class AsyncMsgHandleService {
 		if(wifiDevice != null){
 			boolean isRouter = deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
 			boolean needWiffsniffer = false;
-			boolean forceFirmwareUpdate = false;
+			List<String> payloads = new ArrayList<String>();
+			//boolean forceFirmwareUpdate = false;
 			if(isRouter){
 				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
@@ -146,16 +153,20 @@ public class AsyncMsgHandleService {
 				}
 				//设备上线push
 				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
-				try{
+				/*try{
 					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8064");
 					if(ret == -1) forceFirmwareUpdate = true;
 					System.out.println("~~~~~~~~~~~~:forceFirmwareUpdate"+forceFirmwareUpdate);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
+				}*/
+				//ss
+				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
+				if(upgrade != null){
+					payloads.add(upgrade.getUpgradeurl());
 				}
-				
 			}
-			afterDeviceOnlineThenCmdDown(dto.getMac(),forceFirmwareUpdate,dto.isNeedLocationQuery(),needWiffsniffer);
+			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer,payloads);
 			
 			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
 			//设备统计
@@ -177,9 +188,9 @@ public class AsyncMsgHandleService {
 	}
 	
 	//下发获取配置，获取设备测速，地理位置
-	public void afterDeviceOnlineThenCmdDown(String mac,boolean forceFirmwareUpdate,boolean needLocationQuery,boolean needWiffsniffer){
+	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,boolean needWiffsniffer,List<String> payloads){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
-		DaemonHelper.afterDeviceOnline(mac,forceFirmwareUpdate, needLocationQuery, needWiffsniffer, daemonRpcService);
+		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, needWiffsniffer,payloads, daemonRpcService);
 		/*//设备持久指令分发
 		try{
 			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);

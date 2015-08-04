@@ -2,47 +2,52 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup">
-  <resultMap id="modelResult" type="wifiDeviceGroup">
+<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder">
+
+  <resultMap id="modelResult" type="wifiDeviceVersionBuilder">
     <id property="id" column="id"/>
-    <result property="pid" column="pid"/>
-    <result property="path" column="path"/>
-    <result property="name" column="name"/>
-    <result property="children" column="children"/>
-    
-    <result property="creator" column="creator"/>
-    <result property="updator" column="updator"/>
-    
+    <result property="d_firmware_name" column="d_firmware_name"/>
+    <result property="d_versions" column="d_versions"/>
+    <result property="d_builderno" column="d_builderno"/>
+    <result property="firmware_upgrade_url" column="firmware_upgrade_url"/>
+    <result property="force_device_update" column="force_device_update"/>
+    <result property="force_app_update" column="force_app_update"/>
+    <result property="app_min_version" column="app_min_version"/>
+    <result property="app_max_version" column="app_max_version"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
-  </resultMap>
+  </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_device_group
+	    	t_wifi_device_versions_build
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	pid,
-	    	path,
-	    	name,
-	    	children,
-	    	creator,
-	    	updator,
+	    	d_firmware_name,
+	    	d_versions,
+	    	d_builderno,
+	    	firmware_upgrade_url,
+	    	force_device_update,
+	    	force_app_update,
+	    	app_min_version,
+	    	app_max_version,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	pid,
-	    	path,
-	    	name,
-	    	children,
-	    	creator,
-	    	updator,
+	    	d_firmware_name,
+	    	d_versions,
+	    	d_builderno,
+	    	firmware_upgrade_url,
+	    	force_device_update,
+	    	force_app_update,
+	    	app_min_version,
+	    	app_max_version,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -50,24 +55,27 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{pid},
-	    	#{path},
-	    	#{name},
-	    	#{children},
-	    	#{creator},
-	    	#{updator},
+	    	#{d_firmware_name},
+	    	#{d_versions},
+	    	#{d_builderno},
+	    	#{firmware_upgrade_url},
+	    	#{force_device_update},
+	    	#{force_app_update},
+	    	#{app_min_version},
+	    	#{app_max_version},
 	    	#{created_at},
 	    	#{updated_at}
-	</sql>
+	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	pid = #{pid},
-	    	path = #{path},
-	    	name = #{name},
-	    	children = #{children},
-	    	creator = #{creator},
-	    	updator = #{updator},
-	    	created_at = #{created_at},
+	    	d_firmware_name = #{d_firmware_name},
+	    	d_versions = #{d_versions},
+	    	d_builderno = #{d_builderno},
+	    	firmware_upgrade_url = #{firmware_upgrade_url},
+	    	force_device_update = #{force_device_update},
+	    	force_app_update = #{force_app_update},
+	    	app_min_version = #{app_min_version},
+	    	app_max_version = #{app_max_version},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -118,11 +126,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiDeviceGroup">
+	<delete id="delete" parameterType="wifiDeviceVersionBuilder">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -131,11 +139,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="wifiDeviceGroup">
+	<insert id="insert" parameterType="wifiDeviceVersionBuilder">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="wifiDeviceGroup">
+	<update id="update" parameterType="wifiDeviceVersionBuilder">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -159,10 +167,10 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="int">
+	<select id="pkSelectByModelCriteria" resultType="string">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
-	      	<include refid="model_CRITERIA_SQL_GenCondition" />
+	     	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">
 				order by ${orderByClause}
 	    	</if>
@@ -170,7 +178,6 @@
 				limit #{limit} OFFSET #{start}
 			</if>
 	    </if>  
-	    	
 	</select>
 	
 	<select id="countByModelCriteria" resultType="int">
@@ -186,4 +193,8 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	
+	<select id="executeSql" parameterType="String" resultType="int">  
+    	${value} 
+	</select> 
 </mapper>
