@@ -8,7 +8,6 @@ import org.elasticsearch.common.geo.GeoHashUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.ExistsFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -66,6 +65,9 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		
 		Object online = sourceMap.get(WifiDeviceMapableComponent.M_online);
 		if(online != null) dto.setOnline(Integer.parseInt(online.toString()));
+		
+		Object groups = sourceMap.get(WifiDeviceMapableComponent.M_groups);
+		if(groups != null) dto.setGroups(groups.toString());
 		
 		Object registerat = sourceMap.get(WifiDeviceMapableComponent.M_register_at);
 		if(registerat != null) dto.setRegister_at(Long.parseLong(registerat.toString()));
@@ -191,6 +193,8 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 * @param newVersionDevice null 标识全部 true为新版本设备 大于1.2.7的设备 false为老版本 小于等于1.2.7
 	 * @param region 地区
 	 * @param excepts 排除地区
+	 * @param groupids 所属群组ids 空格分隔
+	 * @param groupids_excepts 排序所属群组ids 空格分隔
 	 * @param start
 	 * @param size
 	 * @return
@@ -198,11 +202,11 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 */
 	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
 			String work_mode, String config_mode, String devicetype, Boolean online, Boolean newVersionDevice,
-			String region, String excepts, int start, int size) throws ESQueryValidateException {
+			String region, String excepts, String groupids, String groupids_excepts, int start, int size) throws ESQueryValidateException {
 
 		FilterBuilder filter = null;
 		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
-				devicetype, region, excepts) || online != null || newVersionDevice != null){
+				devicetype, region, excepts, groupids, groupids_excepts) || online != null || newVersionDevice != null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(!StringUtils.isEmpty(mac)){
 				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
@@ -238,6 +242,18 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 				String[] except_array = excepts.split(StringHelper.COMMA_STRING_GAP);
 				for(String except : except_array){
 					boolfilter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_address, except));
+				}
+			}
+			if(!StringUtils.isEmpty(groupids)){
+				String[] groupids_array = groupids.split(StringHelper.WHITESPACE_STRING_GAP);
+				for(String groupid : groupids_array){
+					boolfilter.must(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_groups, groupid));
+				}
+			}
+			if(!StringUtils.isEmpty(groupids_excepts)){
+				String[] groupids_array = groupids_excepts.split(StringHelper.WHITESPACE_STRING_GAP);
+				for(String groupid : groupids_array){
+					boolfilter.mustNot(FilterBuilders.termFilter(WifiDeviceMapableComponent.M_groups, groupid));
 				}
 			}
 			filter = boolfilter;

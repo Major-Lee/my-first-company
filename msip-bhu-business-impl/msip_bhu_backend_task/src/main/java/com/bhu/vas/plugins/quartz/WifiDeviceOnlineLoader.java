@@ -14,6 +14,7 @@ import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
@@ -41,6 +42,9 @@ public class WifiDeviceOnlineLoader {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
 	
 	public void init(){
 		bulk_success = 0;
@@ -94,7 +98,8 @@ public class WifiDeviceOnlineLoader {
 				String wifi_mac = device.getId();
 				//long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
 				long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifi_mac);
-				indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
+				List<Integer> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
+				indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device, groupids);
 				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 				indexDto.setCount((int)count);
 				indexDtos.add(indexDto);

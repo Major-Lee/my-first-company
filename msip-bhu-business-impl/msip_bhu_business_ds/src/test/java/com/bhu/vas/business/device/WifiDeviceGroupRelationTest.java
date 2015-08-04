@@ -40,4 +40,9 @@ public class WifiDeviceGroupRelationTest extends BaseTest {
         List<WifiDeviceGroupRelation> list = wifiDeviceGroupRelationService.findModelByModelCriteria(mc);
         System.out.println(list);
     }
+
+    @Test
+    public void getDeviceGroupIds() {
+        System.out.println(wifiDeviceGroupRelationService.getDeviceGroupIds("62:68:75:00:10:80"));
+    }
 }

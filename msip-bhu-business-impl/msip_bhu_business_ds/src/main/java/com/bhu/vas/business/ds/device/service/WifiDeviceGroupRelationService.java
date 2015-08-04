@@ -1,5 +1,8 @@
 package com.bhu.vas.business.ds.device.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -24,5 +27,19 @@ public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGrou
     }
 
 
+    /**
+     * 获取设备所在的所有设备组
+     * @param mac
+     * @return
+     */
+    public List<Integer> getDeviceGroupIds(String mac) {
+        List<WifiDeviceGroupRelationPK> pks = this.findIds("mac", mac);
+
+        List<Integer> groupIds = new ArrayList<>();
+        for (WifiDeviceGroupRelationPK pk : pks) {
+            groupIds.add(pk.getGid());
+        }
+        return groupIds;
+    }
 
 }

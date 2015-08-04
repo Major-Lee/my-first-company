@@ -26,6 +26,7 @@ public enum ActionMessageType {
 	
 	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),
 	WifiDeviceAsyncCMDGen("给设备组下发指令","wdgcmd","WA"),
+	WifiDeviceGroupCreateIndex("设备群组添加设备时建立搜索索引", "wdgci", "WI"),
 	
 	USERREGISTERED("用户注册成功","registered","UR"),//用户注册成功
 	USERSIGNEDON("用户登陆","signedon","US"),//用户登陆成功动作

@@ -24,6 +24,7 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	public static final String M_configmodel = "configmodel";//工作模式
 	public static final String M_devicetype = "devicetype";//设备类型
 	public static final String M_online = "online";//wifi设备是否在线
+	public static final String M_groups = "groups";//wifi设备是否在线
 	public static final String M_nvd = "nvd";//是否是新版本设备
 	public static final String M_count = "count";//wifi设备上的移动设备在线数量
 	public static final String M_register_at = "register_at";//wifi设备的注册时间
@@ -38,6 +39,7 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	private StringMapableField configmodel;
 	private StringMapableField devicetype;
 	private IntegerMapableField online;
+	private StringMapableField groups;
 	private IntegerMapableField nvd;
 	private IntegerMapableField count;
 	private LongMapableField register_at;
@@ -54,6 +56,8 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 		configmodel = new StringMapableField(M_configmodel, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		devicetype = new StringMapableField(M_devicetype, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		online = new IntegerMapableField(M_online, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
+		groups = new StringMapableField(M_groups, IMapableFieldType.Store_YES, 
+				IMapableFieldType.Index_Analyzed, AnalyzerSupport.LOWERCASE_WHITESPACE_ANALYZER);
 		nvd = new IntegerMapableField(M_nvd, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
 		count = new IntegerMapableField(M_count, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
 		register_at = new LongMapableField(M_register_at, LongMapableField.TYPE_STORED_NOT_ANALYZED);
@@ -88,6 +92,10 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 		return online;
 	}
 	
+	public StringMapableField getGroups() {
+		return groups;
+	}
+
 	public IntegerMapableField getNvd() {
 		return nvd;
 	}

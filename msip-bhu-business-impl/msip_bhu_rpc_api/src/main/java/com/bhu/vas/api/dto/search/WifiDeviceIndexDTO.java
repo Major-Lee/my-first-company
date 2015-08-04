@@ -1,6 +1,7 @@
 package com.bhu.vas.api.dto.search;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.util.StringUtils;
@@ -39,6 +40,8 @@ public class WifiDeviceIndexDTO {
 	private String devicetype;
 	//wifi设备是否在线
 	private int online;
+	//设备所属群组ids
+	private List<Integer> groupids;
 	//设备是否为新版本设备
 	private int nvd;
 	//接入的移动设备数量
@@ -157,6 +160,23 @@ public class WifiDeviceIndexDTO {
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public List<Integer> getGroupids() {
+		return groupids;
+	}
+	public void setGroupids(List<Integer> groupids) {
+		this.groupids = groupids;
+	}
+	public String getGroups(){
+		if(groupids != null && !groupids.isEmpty()){
+			StringBuffer groups = new StringBuffer();
+			for(Integer groupid : groupids){
+				if(groups.length() > 0) groups.append(StringHelper.WHITESPACE_STRING_GAP);
+				groups.append(String.valueOf(groupid));
+			}
+			return groups.toString();
+		}
+		return null;
 	}
 	public int getNvd() {
 		return nvd;

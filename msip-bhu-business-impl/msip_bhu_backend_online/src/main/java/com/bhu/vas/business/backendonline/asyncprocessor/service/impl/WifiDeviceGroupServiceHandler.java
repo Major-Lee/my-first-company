@@ -7,6 +7,10 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +44,11 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
+
+	@Resource
+	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+
+
 	@Override
 	public void process(String message) {
 		logger.info(String.format("WifiDeviceGroupServiceHandler process message[%s]", message));
@@ -103,4 +112,42 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("WifiDeviceGroupServiceHandler process message[%s] successful", message));
 	}
 
+
+	@Override
+	public void createDeviceGroupIndex(String message) {
+
+		logger.info(String.format("WifiDeviceGroupServiceHandler createDeviceGroupIndex message[%s]", message));
+		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
+		String wifiIdsStr = dto.getWifiIds();
+		String gidsStr = dto.getGroupIds();
+
+		List<String> wifiIds = new ArrayList<>();
+		String[] wifiIdArray = wifiIdsStr.split(StringHelper.COMMA_STRING_GAP);
+		for (String wifiId : wifiIdArray) {
+			wifiIds.add(wifiId);
+		}
+		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
+
+
+		List<List<Integer>> groupIdList = new ArrayList<List<Integer>>();
+
+		String[] groupidArray = gidsStr.split(StringHelper.COMMA_STRING_GAP);
+
+		for (String singleGroupIds : groupidArray) {
+			List<Integer> groupIds = new ArrayList<Integer>();
+			String[] groupids_array = singleGroupIds.split(StringHelper.WHITESPACE_STRING_GAP);
+			for(String gid : groupids_array){
+				try {
+					groupIds.add(Integer.parseInt(gid));
+				} catch (Exception e) {
+					e.printStackTrace(System.out);
+					logger.error("createDeviceGroupIndex invoke exception : " + e.getMessage(), e);
+				}
+			}
+			groupIdList.add(groupIds);
+		}
+
+		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);
+
+	}
 }

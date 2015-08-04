@@ -19,6 +19,8 @@ public class WifiDeviceSearchDTO implements Serializable{
 	private String devicetype;
 	//wifi设备是否在线
 	private int online;
+	//设备所在分组ids
+	private String groups;
 	//接入的移动设备数量
 	private int count;
 	//wifi设备的注册时间
@@ -81,6 +83,12 @@ public class WifiDeviceSearchDTO implements Serializable{
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public String getGroups() {
+		return groups;
+	}
+	public void setGroups(String groups) {
+		this.groups = groups;
 	}
 	public int getCount() {
 		return count;

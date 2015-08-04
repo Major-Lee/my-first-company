@@ -18,6 +18,7 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	private String configmodel;
 	private String devicetype;
 	private int online;
+	private String groups;
 	private int nvd;
 	private int count;
 	private long register_at;
@@ -76,6 +77,12 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public String getGroups() {
+		return groups;
+	}
+	public void setGroups(String groups) {
+		this.groups = groups;
 	}
 	public int getNvd() {
 		return nvd;

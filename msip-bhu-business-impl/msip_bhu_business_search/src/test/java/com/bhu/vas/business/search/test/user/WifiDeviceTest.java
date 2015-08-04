@@ -140,14 +140,16 @@ public class WifiDeviceTest extends BaseTest{
 		String work_mode=""; 
 		String config_mode="";//"basic"; 
 		String devicetype="";
-		String region="北京市";
+		String region="";
 		String excepts = "";//"北京市,广东省,浙江省,上海市";
+		String groupids = "";
+		String groupids_excepts = "";
 		QueryResponse<List<WifiDeviceSearchDTO>> result = wifiDeviceSearchService.searchByKeywords(mac, orig_swver,
-				adr, work_mode, config_mode, devicetype, null, false, region, excepts, 0, 10);
+				adr, work_mode, config_mode, devicetype, null, true, region, excepts, groupids, groupids_excepts, 0, 10);
 		System.out.println(result.getTotal());
 		for(WifiDeviceSearchDTO dto : result.getResult()){
 			System.out.println("id:"+dto.getId() + "="+dto.getAddress()+"="+dto.getLat()+"="+dto.getOrigswver()
-					+"="+dto.getConfigmodel()+"="+dto.getWorkmodel());
+					+"="+dto.getConfigmodel()+"="+dto.getWorkmodel() + "="+dto.getGroups());
 		}
 	}
 	

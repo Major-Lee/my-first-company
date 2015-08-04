@@ -166,6 +166,8 @@ public class DeviceRestBusinessFacadeService {
 	 * @param config_mode 配置模式
 	 * @param region 地区
 	 * @param excepts 排除地区
+	 * @param groupids 所属群组ids 空格分隔
+	 * @param groupids_excepts 排序所属群组ids 空格分隔
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
@@ -173,12 +175,12 @@ public class DeviceRestBusinessFacadeService {
 	 */
 	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac,String orig_swver, String adr, String work_mode,
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
-			String region, String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
+			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
 		List<WifiDeviceVTO> vtos = null;
 		
 		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, 
 				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
-				region, excepts, (pageNo*pageSize)-pageSize, pageSize);
+				region, excepts, groupids, groupids_excepts, (pageNo*pageSize)-pageSize, pageSize);
 		
 		int total = search_result.getTotal();
 		if(total == 0){
