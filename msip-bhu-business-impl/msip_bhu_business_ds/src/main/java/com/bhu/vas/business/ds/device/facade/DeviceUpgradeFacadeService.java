@@ -5,9 +5,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
@@ -31,21 +29,22 @@ public class DeviceUpgradeFacadeService {
     private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
 	
 	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){
+		UpgradeDTO resultDto = null;
 		boolean isFirstGray = false;
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver())){
-			return null;
+			return new UpgradeDTO(isFirstGray,false);
 		}
 		WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
-		if(versionb == null) return null;
+		if(versionb == null) return new UpgradeDTO(isFirstGray,false);
 		int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
 		if(versionb.isForce_device_update() && ret == -1){
-			UpgradeDTO resultDto = new UpgradeDTO(isFirstGray,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
+			resultDto = new UpgradeDTO(isFirstGray,true,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
 			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
-			return resultDto;
 		}else{
+			resultDto = new UpgradeDTO(isFirstGray,false,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
 			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,"null"));
-			return null;
 		}
+		return resultDto;
 		/*
     	boolean forceDeviceUpdate = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(isFirstGray, wifiDevice.getOrig_swver());
     	if(forceDeviceUpdate){

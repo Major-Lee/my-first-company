@@ -162,7 +162,7 @@ public class AsyncMsgHandleService {
 				}*/
 				//ss
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
-				if(upgrade != null){
+				if(upgrade.isForceUpgrade()){
 					payloads.add(upgrade.getUpgradeurl());
 				}
 			}

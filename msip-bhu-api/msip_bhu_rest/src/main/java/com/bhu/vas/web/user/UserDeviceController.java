@@ -138,7 +138,7 @@ public class UserDeviceController extends BaseController {
 
     
     @ResponseBody()
-    @RequestMapping(value="/check_update",method={RequestMethod.POST})
+    @RequestMapping(value="/check_upgrade",method={RequestMethod.POST})
     public void check_update(HttpServletResponse response,
                                @RequestParam(required = true, value = "uid") int uid,
                                @RequestParam(required = true) String mac,
@@ -157,7 +157,7 @@ public class UserDeviceController extends BaseController {
     }
     
     @ResponseBody()
-    @RequestMapping(value="/force_update",method={RequestMethod.POST})
+    @RequestMapping(value="/force_upgrade",method={RequestMethod.POST})
     public void force_update(HttpServletResponse response,
                                @RequestParam(required = true, value = "uid") int uid,
                                @RequestParam(required = true) String mac
