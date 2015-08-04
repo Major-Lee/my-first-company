@@ -10,6 +10,8 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +40,9 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private WifiDeviceGroupService wifiDeviceGroupService;
+
+	@Resource
+	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
@@ -52,22 +57,22 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 	@Override
 	public void process(String message) {
 		logger.info(String.format("WifiDeviceGroupServiceHandler process message[%s]", message));
-		Set<String> totalDevices = null;
+		List<String> totalDevices = null;
 		WifiDeviceGroup dgroup = null;
 		List<String> onlineDevices = null;
 		try{
 			WifiDeviceAsynCmdGenerateDTO dto = JsonHelper.getDTO(message, WifiDeviceAsynCmdGenerateDTO.class);
-			totalDevices = new HashSet<String>();
+			totalDevices = new ArrayList<String>();
 			if(StringUtils.isNotEmpty(dto.getMac())) totalDevices.add(dto.getMac());
 			if(dto.getGid() > 0){
 				dgroup = wifiDeviceGroupService.getById(dto.getGid());
 				if(dgroup != null){
 					if(!dto.isDependency()){
-						totalDevices.addAll(dgroup.getInnerModels());
+						totalDevices = wifiDeviceGroupRelationService.getDeviceIdsByGroupId(dto.getGid());
 					}else{
 						List<WifiDeviceGroup> allByPath = wifiDeviceGroupService.fetchAllByPath(dgroup.getPath(), true);
 						for(WifiDeviceGroup _dgroup:allByPath){
-							totalDevices.addAll(_dgroup.getInnerModels());
+							totalDevices.addAll(wifiDeviceGroupRelationService.getDeviceIdsByGroupId(_dgroup.getId()));
 						}
 					}
 				}
@@ -77,7 +82,7 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 				return;
 			}
 			//只给在线的设备发送指令
-			onlineDevices = wifiDeviceService.filterOnlineIdsWith(new ArrayList<String>(totalDevices), true);
+			onlineDevices = wifiDeviceService.filterOnlineIdsWith(totalDevices, true);
 			if(onlineDevices.isEmpty()){
 				logger.info(String.format("WifiDeviceGroupServiceHandler onlineDevices empty!"));
 				return;

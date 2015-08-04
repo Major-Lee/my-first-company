@@ -42,4 +42,20 @@ public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGrou
         return groupIds;
     }
 
+    /**
+     * 获取群组下所有设备mac地址
+     *
+     * @param gid
+     * @return
+     */
+    public List<String> getDeviceIdsByGroupId(int gid) {
+        List<WifiDeviceGroupRelationPK> pks = this.findIds("gid", gid);
+
+        List<String> deviceIds = new ArrayList<>();
+        for (WifiDeviceGroupRelationPK pk : pks) {
+            deviceIds.add(pk.getMac());
+        }
+        return deviceIds;
+    }
+
 }

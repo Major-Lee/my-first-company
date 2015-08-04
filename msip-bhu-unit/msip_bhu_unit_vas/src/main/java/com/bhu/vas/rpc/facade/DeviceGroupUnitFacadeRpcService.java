@@ -57,8 +57,6 @@ public class DeviceGroupUnitFacadeRpcService{
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-
-
 		int total = wifiDeviceGroupService.countByCommonCriteria(mc);
 
 		mc.setPageNumber(pageNo);
@@ -93,9 +91,7 @@ public class DeviceGroupUnitFacadeRpcService{
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
 				}
 
-
-				List<String> groups = pgroup.getWifiIds();
-				if (groups != null && groups.size() > 0) {
+				if (countDevicesByGroupId(pid) > 0) {
 					//父节点上有数据，无法添加
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_EXIST_CHILDREN);
 				}
@@ -123,8 +119,7 @@ public class DeviceGroupUnitFacadeRpcService{
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
 				}
 
-				List<String> groups = pgroup.getWifiIds();
-				if (groups != null && groups.size() > 0) {
+				if (countDevicesByGroupId(pid) > 0) {
 					//父节点上有数据，无法添加
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_EXIST_CHILDREN);
 				}
@@ -243,8 +238,6 @@ public class DeviceGroupUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
 		String[] arrayresids = wifi_ids.split(StringHelper.COMMA_STRING_GAP);
-
-
 		//绑定设备
 		List<WifiDeviceGroupRelation> lists = new ArrayList<WifiDeviceGroupRelation>();
 
@@ -280,16 +273,6 @@ public class DeviceGroupUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
 		String[] arrayresids = wifi_ids.split(StringHelper.COMMA_STRING_GAP);
-		/*if(arrayresids.length > 0){
-			WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
-			if(dgroup == null)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
-			
-			for(String residstr:arrayresids){
-				dgroup.removeInnerModel(residstr);//.putInnerModel(residstr, true, true);
-			}
-			wifiDeviceGroupService.update(dgroup);
-		}*/
 
 		List<WifiDeviceGroupRelationPK> lists = new ArrayList<WifiDeviceGroupRelationPK>();
 		if (arrayresids.length > 0) {
@@ -459,10 +442,9 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 
 	
-	/*public static void main(String[] argv){
-		String path = "15/18/21/";
-		String oldpath = "15/18/";
-		String newpath = "11/12/13/";
-		System.out.println(StringUtils.replace(path, oldpath, newpath));
-	}*/
+	private int countDevicesByGroupId(int gid) {
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", gid);
+		return  wifiDeviceGroupRelationService.countByCommonCriteria(mc);
+	}
 }
