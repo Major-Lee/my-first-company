@@ -221,18 +221,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 
 	public RpcResponseDTO<Boolean> remove(Integer uid, String gids) {
-		/*List<Integer> gidList = new ArrayList<Integer>();
-		String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
-		for(String residstr:arrayresids){
-			Integer resid = new Integer(residstr);
-			gidList.add(resid);
-		}
-		if(!gidList.isEmpty()){
-			wifiDeviceGroupService.deleteByIds(gidList);
-			//TODO:
-			//判定每个gid的parentid是否为hanchild
-			//还需要删除gid所有的子节点
-		}*/
+
 		wifiDeviceGroupFacadeService.cleanUpByIds(uid,gids);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}

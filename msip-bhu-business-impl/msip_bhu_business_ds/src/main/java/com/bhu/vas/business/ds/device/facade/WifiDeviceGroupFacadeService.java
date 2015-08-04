@@ -1,6 +1,9 @@
 package com.bhu.vas.business.ds.device.facade;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -17,6 +20,8 @@ import javax.annotation.Resource;
 @Service
 public class WifiDeviceGroupFacadeService {
 
+    private final static int GRAY_GROUP_ID = 100;
+
     @Resource
     WifiDeviceGroupService wifiDeviceGroupService;
 
@@ -28,10 +33,15 @@ public class WifiDeviceGroupFacadeService {
      * @param uid
      * @param gids
      */
-    public void cleanUpByIds(Integer uid,String gids){
+    public void cleanUpByIds(Integer uid, String gids){
         String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
-        for(String residstr:arrayresids){
+        for(String residstr : arrayresids){
             Integer resid = new Integer(residstr);
+
+            if (isInGrayGroup(resid)){
+                continue; //灰度群组不删除
+            }
+
             WifiDeviceGroup group = wifiDeviceGroupService.getById(resid);
             if(group != null){
                 //int gid = group.getId().intValue();
@@ -69,5 +79,45 @@ public class WifiDeviceGroupFacadeService {
 
             }
         }
+    }
+
+
+    /**
+     * 是否是灰度测试群组
+     *
+     * @param gid
+     * @return
+     */
+    public boolean isInGrayGroup(int gid) {
+        if (gid == GRAY_GROUP_ID) {
+            return true;
+        }
+        WifiDeviceGroup wifiDeviceGroup = wifiDeviceGroupService.getById(gid);
+        if (wifiDeviceGroup != null) {
+            String path =  wifiDeviceGroup.getPath();
+            String[] pids = path.split("/");
+            for (String pid : pids) {
+                if (String.valueOf(GRAY_GROUP_ID).equals(pid)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否设备在灰度测试组里面
+     *
+     * @param mac
+     * @return
+     */
+    public boolean isDeviceInGrayGroup(String mac) {
+        WifiDeviceGroupRelationPK wifiDeviceGroupRelationPK = new WifiDeviceGroupRelationPK();
+        wifiDeviceGroupRelationPK.setMac(mac);
+        wifiDeviceGroupRelationPK.setGid(GRAY_GROUP_ID);
+        WifiDeviceGroupRelation wifiDeviceGroupRelation  =
+                wifiDeviceGroupRelationService.getById(wifiDeviceGroupRelationPK);
+
+        return wifiDeviceGroupRelation != null ;
     }
 }
