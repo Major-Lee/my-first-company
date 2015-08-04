@@ -153,7 +153,7 @@ public class AsyncMsgHandleService {
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}*/
-				ss
+				//ss
 			}
 			afterDeviceOnlineThenCmdDown(dto.getMac(),forceFirmwareUpdate,dto.isNeedLocationQuery(),needWiffsniffer);
 			
