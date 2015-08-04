@@ -172,6 +172,7 @@ public class BusinessModelBuilder {
 			vto.setAdr(searchDto.getAddress());
 			vto.setDt(searchDto.getDevicetype());
 			vto.setOsv(searchDto.getOrigswver());
+			vto.setGids(searchDto.getGroups());
 		}
 		if(entity != null){
 			vto.setOm(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());

@@ -24,7 +24,7 @@ public class WifiDeviceVTO implements Serializable{
 	private boolean ipgen;
 	private long oftd;//离线时长
 	private long ofts;//离线时间
-	
+	private String gids;//所属群组ids
 	public String getWid() {
 		return wid;
 	}
@@ -132,6 +132,12 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setOftd(long oftd) {
 		this.oftd = oftd;
+	}
+	public String getGids() {
+		return gids;
+	}
+	public void setGids(String gids) {
+		this.gids = gids;
 	}
 	
 }
