@@ -83,7 +83,6 @@ public enum OperationCMD {
 
 	DeviceUpgrade("153", "设备升级","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"firmware_upgrade\" download_timeout=\"1800\" url=\"%s\" upgrade_begin=\"%s\" upgrade_end=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	;
-	
 	static Map<String, OperationCMD> allOperationCMDs;
 	String no;
 	String desc;
