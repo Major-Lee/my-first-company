@@ -32,7 +32,7 @@
 	    	creator,
 	    	updator,
 	    	created_at,
-	    	updated_at,
+	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
@@ -44,7 +44,7 @@
 	    	creator,
 	    	updator,
 	    	created_at,
-	    	updated_at,
+	    	updated_at
 	    ]]>
 	</sql>   
 	
@@ -57,7 +57,7 @@
 	    	#{creator},
 	    	#{updator},
 	    	#{created_at},
-	    	#{updated_at},
+	    	#{updated_at}
 	</sql>
 	
 	<sql id="modelUpdateValues">
@@ -68,7 +68,7 @@
 	    	creator = #{creator},
 	    	updator = #{updator},
 	    	created_at = #{created_at},
-	    	updated_at = #{updated_at},
+	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
