@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
@@ -13,6 +12,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
@@ -20,8 +20,8 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceVersionBuilderService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -47,7 +47,7 @@ public class UserDeviceFacadeService {
 	private WifiDeviceService wifiDeviceService;
 
 	@Resource
-    private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
+	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
     //TODO：重复插入异常
     //1、首先得判定UserDevicePK(mac, uid) 是否存在
     //2、存在返回错误，不存在进行insert
@@ -158,11 +158,17 @@ public class UserDeviceFacadeService {
         	}
         	//发送异步Device升级指令，指定立刻升级
         	{
-	        	boolean isFirstGray = false;
+	        	/*boolean isFirstGray = false;
 	        	long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        	String firmwareUpdateUrl = wifiDeviceVersionBuilderService.deviceVersionUpdateURL(isFirstGray);
 	        	if(StringUtils.isNotEmpty(firmwareUpdateUrl)){
 	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, firmwareUpdateUrl);
+	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+	        	}*/
+        		UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
+	        	if(upgrade != null){
+	        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
 	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
 	        	}
         	}
@@ -183,7 +189,14 @@ public class UserDeviceFacadeService {
         	if(!wifiDevice.isOnline()){
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
         	}
-        	boolean isFirstGray = false;
+        	
+        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
+        	if(upgrade != null){
+        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, "02:00:00", "04:00:00", upgrade.getUpgradeurl());
+        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+        	}
+        	/*boolean isFirstGray = false;
         	boolean forceDeviceUpdate = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(isFirstGray, wifiDevice.getOrig_swver());
         	if(forceDeviceUpdate){
         		//发送异步Device升级指令，指定早上4点升级 
@@ -193,15 +206,14 @@ public class UserDeviceFacadeService {
 	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, "02:00:00", "04:00:00", firmwareUpdateUrl);
 	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
 	        	}
-        		//deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, taskid, opt, payload);
         	}
-        	boolean forceAppUpdate = wifiDeviceVersionBuilderService.appVersionUpdateCheck(appver);
+        	boolean forceAppUpdate = wifiDeviceVersionBuilderService.appVersionUpdateCheck(appver);*/
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
         	retDTO.setOnline(wifiDevice.isOnline());
-        	retDTO.setForceDeviceUpdate(forceDeviceUpdate);
-        	retDTO.setForceAppUpdate(forceAppUpdate);
+        	retDTO.setForceDeviceUpdate(upgrade != null);
+        	retDTO.setForceAppUpdate(false);
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
         }
     }

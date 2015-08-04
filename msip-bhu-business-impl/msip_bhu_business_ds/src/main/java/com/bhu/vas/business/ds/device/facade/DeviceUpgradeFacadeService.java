@@ -30,17 +30,22 @@ public class DeviceUpgradeFacadeService {
 	@Resource
     private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
 	
-	public UpgradeDTO checkDeviceUpdate(String mac,WifiDevice wifiDevice){
+	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){
 		boolean isFirstGray = false;
-		/*WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
-		if(versionb == null || StringUtils.isEmpty(wifiDevice.getOrig_swver())) return false;
-		int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
-		if(versionb.isForce_device_update() && ret == -1 ){
-			return true;
-		}else{
-			return false;
+		if(StringUtils.isEmpty(wifiDevice.getOrig_swver())){
+			return null;
 		}
-		
+		WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
+		if(versionb == null) return null;
+		int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
+		if(versionb.isForce_device_update() && ret == -1){
+			UpgradeDTO resultDto = new UpgradeDTO(isFirstGray,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
+			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
+			return resultDto;
+		}else{
+			return null;
+		}
+		/*
     	boolean forceDeviceUpdate = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(isFirstGray, wifiDevice.getOrig_swver());
     	if(forceDeviceUpdate){
     		//发送异步Device升级指令，指定早上4点升级 
@@ -52,7 +57,6 @@ public class DeviceUpgradeFacadeService {
         	}
     		//deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, taskid, opt, payload);
     	}*/
-		return null;
 	}
 	
 }

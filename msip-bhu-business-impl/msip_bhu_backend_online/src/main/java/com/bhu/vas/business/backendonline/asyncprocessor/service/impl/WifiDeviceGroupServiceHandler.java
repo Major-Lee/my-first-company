@@ -1,18 +1,10 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
-import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +12,20 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 @Service
