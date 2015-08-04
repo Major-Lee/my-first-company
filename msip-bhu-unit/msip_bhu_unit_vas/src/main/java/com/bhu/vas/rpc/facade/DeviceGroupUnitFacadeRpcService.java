@@ -13,6 +13,7 @@ import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
+import com.bhu.vas.business.ds.device.facade.WifiDeviceGroupFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -46,6 +47,9 @@ public class DeviceGroupUnitFacadeRpcService{
 
 	@Resource
 	private DeliverMessageService deliverMessageService;
+
+	@Resource
+	private WifiDeviceGroupFacadeService wifiDeviceGroupFacadeService;
 
 	/**
 	 * 通过pid取得pid=pid的节点
@@ -229,7 +233,7 @@ public class DeviceGroupUnitFacadeRpcService{
 			//判定每个gid的parentid是否为hanchild
 			//还需要删除gid所有的子节点
 		}*/
-		wifiDeviceGroupService.cleanUpByIds(uid,gids);
+		wifiDeviceGroupFacadeService.cleanUpByIds(uid,gids);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	

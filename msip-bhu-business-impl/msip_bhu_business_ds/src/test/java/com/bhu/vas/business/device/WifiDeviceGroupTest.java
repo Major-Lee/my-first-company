@@ -12,10 +12,10 @@ public class WifiDeviceGroupTest extends BaseTest{
 	@Resource
 	WifiDeviceGroupService wifiDeviceGroupService;
 	
-	@Test
-	public void testCleanUpByIds(){
-		wifiDeviceGroupService.cleanUpByIds(3, "70,71");
-	}
+//	@Test
+//	public void testCleanUpByIds(){
+//		wifiDeviceGroupService.cleanUpByIds(3, "70,71");
+//	}
 
 
 
