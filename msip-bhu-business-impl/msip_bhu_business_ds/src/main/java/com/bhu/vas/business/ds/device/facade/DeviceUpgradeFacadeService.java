@@ -43,6 +43,7 @@ public class DeviceUpgradeFacadeService {
 			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
 			return resultDto;
 		}else{
+			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,"null"));
 			return null;
 		}
 		/*
