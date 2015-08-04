@@ -6,6 +6,8 @@ import java.io.Serializable;
 public class WifistasnifferItemRddto implements Serializable{
 	public static final int State_Online = 0;
 	public static final int State_Offline = 1;
+	//周边探测的终端离线的timeout时间 针对终端探测下线消息没有上报的情况
+	public static final long State_Offline_TimeoutMs = 24 * 3600 * 1000l;
 	
 	//终端探测状态
 	private int state;

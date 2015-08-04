@@ -924,6 +924,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
 		try{
+			
 			long count = TerminalDetailRecentSortedSetService.getInstance().terminalDetailRecentSize(mac, hd_mac);
 			if(count == 0){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
@@ -941,6 +942,12 @@ public class DeviceURouterRestBusinessFacadeService {
 					//设备报送周边探测有可能出现只有上线，无下线消息的情况 此处判断如果不是最新探测到的细节 其他细节均显示为离线
 					if(index > 0){
 						dto.setState(WifistasnifferItemRddto.State_Offline);
+					}else{
+						//针对最新一条数据的无下线消息情况 此处终端探测的上线时间 超过timeout时间 则认为是离线
+						long life_time = System.currentTimeMillis() - dto.getSnifftime();
+						if(WifistasnifferItemRddto.State_Offline_TimeoutMs - life_time <= 0){
+							dto.setState(WifistasnifferItemRddto.State_Offline);
+						}
 					}
 					dtos.add(dto);
 				}
