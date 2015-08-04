@@ -448,7 +448,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	
 	private int countDevicesByGroupId(int gid) {
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", gid);
+		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("gid", gid);
 		return  wifiDeviceGroupRelationService.countByCommonCriteria(mc);
 	}
 }
