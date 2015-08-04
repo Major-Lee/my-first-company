@@ -15,8 +15,7 @@
     
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
-    <result property="extension_content" column="extension_content"/>
-  </resultMap>  
+  </resultMap>
   
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -34,7 +33,6 @@
 	    	updator,
 	    	created_at,
 	    	updated_at,
-	    	extension_content
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
@@ -47,7 +45,6 @@
 	    	updator,
 	    	created_at,
 	    	updated_at,
-	    	extension_content
 	    ]]>
 	</sql>   
 	
@@ -61,8 +58,7 @@
 	    	#{updator},
 	    	#{created_at},
 	    	#{updated_at},
-	    	#{extension_content}
-	</sql> 
+	</sql>
 	
 	<sql id="modelUpdateValues">
 	    	pid = #{pid},
@@ -73,7 +69,6 @@
 	    	updator = #{updator},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at},
-	    	extension_content = #{extension_content}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
