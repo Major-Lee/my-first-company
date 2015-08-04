@@ -1,15 +1,14 @@
 package com.bhu.vas.business.ds.device.service;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceGroupRelationDao;
 import com.smartwork.msip.cores.orm.service.EntityService;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * Created by bluesand on 7/16/15.

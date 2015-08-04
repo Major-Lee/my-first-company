@@ -1,18 +1,16 @@
 package com.bhu.vas.api.rpc.devices.model;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
-import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
+import com.smartwork.msip.cores.orm.model.BaseIntModel;
 /*
  * wifi设备的组
  */
 @SuppressWarnings("serial")
-public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISequenceGenable{
+public class WifiDeviceGroup extends BaseIntModel implements ISequenceGenable{
 	private int pid;
 	private String path;//树状结构path
 	private String name;
@@ -78,9 +76,9 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 		super.preInsert();
 	}
 	
-	public List<String> getWifiIds() {
+	/*public List<String> getWifiIds() {
         return this.getInnerModels();//.getInnerModels();//this.get(Authorities, new LinkedHashMap<Integer, String>(), true);
-    }
+    }*/
 	
 	//static final String Authorities = "Authorities";
 	
@@ -113,18 +111,18 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
     		return sb.toString();
     	}
     }*/
-    public void setResources(Collection<String> set) {
+    /*public void setResources(Collection<String> set) {
     	this.replaceInnerModels(set);
         //this.put(Authorities, map);
-    }
+    }*/
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	@Override
+	/*@Override
 	public Class<String> getJsonParserModel() {
 		return String.class;
-	}
+	}*/
 	@Override
 	public void setSequenceKey(Integer key) {
 		this.setId(key);
@@ -144,10 +142,10 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 		if(this.getId() == null) this.setId(new Integer(0));
 		return this.getId().hashCode();
 	}
-	@Override
+	/*@Override
 	public int limitSize() {
 		return 100;
-	}
+	}*/
 	public int getChildren() {
 		return children;
 	}

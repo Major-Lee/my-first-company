@@ -271,7 +271,7 @@ public class DeviceGroupUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
 		String[] arrayresids = wifi_ids.split(StringHelper.COMMA_STRING_GAP);
-		if(arrayresids.length > 0){
+		/*if(arrayresids.length > 0){
 			WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
 			if(dgroup == null)
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST);
@@ -280,7 +280,7 @@ public class DeviceGroupUnitFacadeRpcService{
 				dgroup.removeInnerModel(residstr);//.putInnerModel(residstr, true, true);
 			}
 			wifiDeviceGroupService.update(dgroup);
-		}
+		}*/
 
 		List<WifiDeviceGroupRelationPK> lists = new ArrayList<WifiDeviceGroupRelationPK>();
 		if (arrayresids.length > 0) {

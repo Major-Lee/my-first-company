@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 
@@ -36,7 +37,6 @@ public interface IUserDeviceRpcService {
 
     boolean modifyDeviceName(String mac, int uid, String deviceName);
 
-
-
-
+    RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate( int uid,String mac,String appver);
+    RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac);
 }

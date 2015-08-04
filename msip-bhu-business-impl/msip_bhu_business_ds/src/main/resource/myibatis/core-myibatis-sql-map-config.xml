@@ -42,7 +42,8 @@
 		<typeAlias alias="handsetDevice" 				type="com.bhu.vas.api.rpc.devices.model.HandsetDevice"/>
 		<typeAlias alias="wifiDeviceSetting" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
 		
-		<typeAlias alias="wifiDevicePersistenceCMDState" 			type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
+		<typeAlias alias="wifiDevicePersistenceCMDState" 	type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
+		<typeAlias alias="wifiDeviceVersionBuilder" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder"/>
 		
 		<typeAlias alias="wifiDeviceDownTaskCompleted" 	type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
 		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
@@ -52,7 +53,7 @@
 		<typeAlias alias="wifiHandsetDeviceMarkPK" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK"/>
 		  -->
 		<typeAlias alias="userMobileDeviceState" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState"/>
-		<typeAlias alias="userMobileDevice" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
+		<typeAlias alias="userMobileDevice" 			type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
 		
 		<typeAlias alias="dictMacPrefix" 		type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix"/>
 	</typeAliases>
@@ -88,6 +89,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceAlarm.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml"/>
 		<!--
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiHandsetDeviceMark.sqlMap.xml"/>
 		-->
