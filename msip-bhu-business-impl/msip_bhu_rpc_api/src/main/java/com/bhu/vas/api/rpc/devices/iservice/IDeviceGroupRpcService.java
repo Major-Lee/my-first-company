@@ -20,8 +20,8 @@ public interface IDeviceGroupRpcService {
 
 	RpcResponseDTO<Boolean> remove(Integer uid, String gids);
 	
-	RpcResponseDTO<Boolean> grant(Integer uid, int gid,String wifi_ids);
+	RpcResponseDTO<Boolean> grant(Integer uid, int gid,String wifi_ids, String group_ids);
 	
-	RpcResponseDTO<Boolean> ungrant(Integer uid, int gid,String wifi_ids);
+	RpcResponseDTO<Boolean> ungrant(Integer uid, int gid,String wifi_ids, String group_ids);
 	
 }

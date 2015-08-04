@@ -9,28 +9,7 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
-import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
-import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
-import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
-import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiHDRateFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.*;
 
 
 public class DeliverMessageService {
@@ -294,5 +273,13 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//deliverMessageQueueProducer.send(message);
+	}
+
+	public void sendDeviceGroupCreateIndexMessage(String wifiIds, String groupIds) {
+		WifiDeviceGroupAsynCreateIndexDTO dto = new WifiDeviceGroupAsynCreateIndexDTO();
+		dto.setWifiIds(wifiIds);
+		dto.setGroupIds(groupIds);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }

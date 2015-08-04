@@ -11,6 +11,8 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -41,7 +43,10 @@ public class DeviceGroupUnitFacadeRpcService{
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
-	
+
+	@Resource
+	private DeliverMessageService deliverMessageService;
+
 	/**
 	 * 通过pid取得pid=pid的节点
 	 * @param uid
@@ -233,7 +238,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
-	public RpcResponseDTO<Boolean> grant(Integer uid, int gid, String wifi_ids) {
+	public RpcResponseDTO<Boolean> grant(Integer uid, int gid, String wifi_ids, String group_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
@@ -257,8 +262,12 @@ public class DeviceGroupUnitFacadeRpcService{
 			try {
 				wifiDeviceGroupRelationService.insertAll(lists);
 			}catch (Exception e) {
-				logger.error(e);
+				logger.error("DeviceGroupUnitFacadeRpcService grant %s",e);
 			}
+
+			//批量建立索引
+			deliverMessageService.sendDeviceGroupCreateIndexMessage(wifi_ids, group_ids);
+
 		}
 
 
@@ -266,7 +275,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
-	public RpcResponseDTO<Boolean> ungrant(Integer uid, int gid, String wifi_ids) {
+	public RpcResponseDTO<Boolean> ungrant(Integer uid, int gid, String wifi_ids, String group_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
@@ -289,6 +298,9 @@ public class DeviceGroupUnitFacadeRpcService{
 			}
 			wifiDeviceGroupRelationService.deleteByIds(lists);
 		}
+
+		//批量建立索引
+		deliverMessageService.sendDeviceGroupCreateIndexMessage(wifi_ids, group_ids);
 
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
