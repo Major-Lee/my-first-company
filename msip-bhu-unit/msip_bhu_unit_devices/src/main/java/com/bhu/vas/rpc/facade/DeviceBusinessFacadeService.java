@@ -40,6 +40,7 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
@@ -962,7 +963,7 @@ public class DeviceBusinessFacadeService {
 			UserWifiTimerSettingDTO timerStarSetting = setting.getUserSetting(UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
 			if(timerStarSetting == null){
 				timerStarSetting = new UserWifiTimerSettingDTO();
-				timerStarSetting.setTimeslot(ParamCmdWifiTimerStartDTO.Default_Timeslot);
+				timerStarSetting.setTimeslot(WifiDeviceHelper.WifiTimer_Default_Timeslot);
 			}
 			timerStarSetting.setOn(false);
 			timerStarSetting.setDs(true);
@@ -990,7 +991,7 @@ public class DeviceBusinessFacadeService {
 			if(serialDto.hasRule()){
 				innerDTO.setTimeslot(serialDto.getStart().concat("-").concat(serialDto.getEnd()));
 			}else{
-				innerDTO.setTimeslot(ParamCmdWifiTimerStartDTO.Default_Timeslot);
+				innerDTO.setTimeslot(WifiDeviceHelper.WifiTimer_Default_Timeslot);
 			}
 			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 		}

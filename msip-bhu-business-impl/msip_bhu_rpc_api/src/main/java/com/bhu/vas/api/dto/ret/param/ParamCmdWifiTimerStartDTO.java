@@ -2,6 +2,7 @@ package com.bhu.vas.api.dto.ret.param;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 
@@ -12,10 +13,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class ParamCmdWifiTimerStartDTO{
-	public static final String Default_Timeslot = "00:00:00-24:00:00";
-	public static final String[] Default_Timeslot_Array = {"00:00:00","24:00:00"};
 	private String enable;
-	private String timeslot = Default_Timeslot;
+	private String timeslot = WifiDeviceHelper.WifiTimer_Default_Timeslot;
 	//开始时间 18:00:00
 	//private String start_time;
 	//结束时间 05:00:00
@@ -56,11 +55,11 @@ public class ParamCmdWifiTimerStartDTO{
 
 	public static String[] fetchSlot(String _timeslot){
 		if(StringUtils.isEmpty(_timeslot)){
-			return Default_Timeslot_Array;
+			return WifiDeviceHelper.WifiTimer_Default_Timeslot_Array;
 		}
 		String[] array = _timeslot.split(StringHelper.MINUS_STRING_GAP);
 		if(array.length == 2) return array;
-		return Default_Timeslot_Array;
+		return WifiDeviceHelper.WifiTimer_Default_Timeslot_Array;
 	}
 	
 	//{"enable":"enable","timeslot":"02:00:00-23:00:00"}

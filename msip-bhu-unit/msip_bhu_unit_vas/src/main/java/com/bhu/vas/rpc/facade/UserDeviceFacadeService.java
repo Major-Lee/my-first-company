@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -193,7 +194,10 @@ public class UserDeviceFacadeService {
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
         	if(upgrade.isForceUpgrade()){
         		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, "02:00:00", "04:00:00", upgrade.getUpgradeurl());
+        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
+        				WifiDeviceHelper.Upgrade_Default_BeginTime, 
+        				WifiDeviceHelper.Upgrade_Default_EndTime, 
+        				upgrade.getUpgradeurl());
         		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
         	}
         	/*boolean isFirstGray = false;

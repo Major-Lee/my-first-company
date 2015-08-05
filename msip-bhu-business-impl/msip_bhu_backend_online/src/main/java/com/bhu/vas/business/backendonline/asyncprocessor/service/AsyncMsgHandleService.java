@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -165,7 +166,10 @@ public class AsyncMsgHandleService {
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
 				if(upgrade.isForceUpgrade()){
 					long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-		        	String cmdPayload = CMDBuilder.builderDeviceUpgrade(dto.getMac(), new_taskid, "02:00:00", "04:00:00", upgrade.getUpgradeurl());
+		        	String cmdPayload = CMDBuilder.builderDeviceUpgrade(dto.getMac(), new_taskid, 
+		        			WifiDeviceHelper.Upgrade_Default_BeginTime, 
+	        				WifiDeviceHelper.Upgrade_Default_EndTime, 
+	        				upgrade.getUpgradeurl());
 					payloads.add(cmdPayload);
 				}
 			}

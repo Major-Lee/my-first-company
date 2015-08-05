@@ -4,6 +4,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class WifiDeviceHelper {
+	public static final String WifiTimer_Default_Timeslot = "00:00:00-24:00:00";
+	public static final String[] WifiTimer_Default_Timeslot_Array = {"00:00:00","24:00:00"};
+
+	public static final String Upgrade_Default_BeginTime = "02:00:00";
+	public static final String Upgrade_Default_EndTime = "04:00:00";
 	
 	public static boolean isLocationCMDSupported(){
 		return false;
