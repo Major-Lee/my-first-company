@@ -38,11 +38,10 @@ public class DeviceUpgradeFacadeService {
 		int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
 		if(versionb.isForce_device_update() && ret == -1){
 			resultDto = new UpgradeDTO(isFirstGray,true,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
-			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
 		}else{
 			resultDto = new UpgradeDTO(isFirstGray,false,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
-			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,"null"));
 		}
+		System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
 		return resultDto;
 		/*
     	boolean forceDeviceUpdate = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(isFirstGray, wifiDevice.getOrig_swver());
