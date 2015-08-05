@@ -1,5 +1,6 @@
 package com.bhu.vas.di.op;
 
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 import java.util.ArrayList;
@@ -13,6 +14,31 @@ import java.util.List;
 public class Test {
 
     public static void main(String[] args){
+
+
+        List<WifiDeviceGroupRelationPK> ids = new ArrayList<WifiDeviceGroupRelationPK>();
+        WifiDeviceGroupRelationPK pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(1000);
+        pk.setMac("mac");
+        ids.add(pk);
+
+        pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(1001);
+        pk.setMac("mac");
+        ids.add(pk);
+
+        pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(1002);
+        pk.setMac("mac");
+        ids.add(pk);
+
+        pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(1003);
+        pk.setMac("mac");
+        ids.add(pk);
+
+        System.out.println(ids);
+
 
 //            List<String> week = new ArrayList<String>();
 //            Calendar calendar = Calendar.getInstance();
