@@ -164,7 +164,7 @@ public class AsyncMsgHandleService {
 				}*/
 				//ss
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
-				if(upgrade.isForceUpgrade()){
+				if(upgrade.isForceDeviceUpgrade()){
 					long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 		        	String cmdPayload = CMDBuilder.builderDeviceUpgrade(dto.getMac(), new_taskid, 
 		        			WifiDeviceHelper.Upgrade_Default_BeginTime, 

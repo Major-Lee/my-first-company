@@ -2,16 +2,17 @@ package com.bhu.vas.api.rpc.user.dto;
 
 public class UpgradeDTO {
 	private boolean gray;
-	private boolean forceUpgrade;
+	private boolean forceDeviceUpgrade;
+	
 	private String name;
 	private String upgradeurl;
-	public UpgradeDTO(boolean gray,boolean forceUpgrade) {
+	public UpgradeDTO(boolean gray,boolean forceDeviceUpgrade) {
 		this.gray = gray;
-		this.forceUpgrade = forceUpgrade;
+		this.forceDeviceUpgrade = forceDeviceUpgrade;
 	}
-	public UpgradeDTO(boolean gray,boolean forceUpgrade, String name, String upgradeurl) {
+	public UpgradeDTO(boolean gray,boolean forceDeviceUpgrade, String name, String upgradeurl) {
 		this.gray = gray;
-		this.forceUpgrade = forceUpgrade;
+		this.forceDeviceUpgrade = forceDeviceUpgrade;
 		this.name = name;
 		this.upgradeurl = upgradeurl;
 	}
@@ -34,14 +35,14 @@ public class UpgradeDTO {
 		this.gray = gray;
 	}
 
-	public boolean isForceUpgrade() {
-		return forceUpgrade;
+	public boolean isForceDeviceUpgrade() {
+		return forceDeviceUpgrade;
 	}
-	public void setForceUpgrade(boolean forceUpgrade) {
-		this.forceUpgrade = forceUpgrade;
+	public void setForceDeviceUpgrade(boolean forceDeviceUpgrade) {
+		this.forceDeviceUpgrade = forceDeviceUpgrade;
 	}
 	public String toString(){
-		return String.format("gray[%s] forceUpgrade[%s] name[%s] upgradeurl[%s]", gray,forceUpgrade,name,upgradeurl);
+		return String.format("gray[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s]", gray,forceDeviceUpgrade,name,upgradeurl);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/

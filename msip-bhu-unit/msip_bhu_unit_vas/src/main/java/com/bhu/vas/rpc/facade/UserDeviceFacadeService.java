@@ -167,7 +167,7 @@ public class UserDeviceFacadeService {
 	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
 	        	}*/
         		UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
-	        	if(upgrade.isForceUpgrade()){
+	        	if(upgrade.isForceDeviceUpgrade()){
 	        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
 	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
@@ -192,7 +192,7 @@ public class UserDeviceFacadeService {
         	}
         	
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
-        	if(upgrade.isForceUpgrade()){
+        	if(upgrade.isForceDeviceUpgrade()){
         		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
         		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
         				WifiDeviceHelper.Upgrade_Default_BeginTime, 
@@ -217,7 +217,7 @@ public class UserDeviceFacadeService {
         	retDTO.setUid(uid);
         	retDTO.setOnline(wifiDevice.isOnline());
         	retDTO.setGray(upgrade.isGray());
-        	retDTO.setForceDeviceUpdate(upgrade.isForceUpgrade());
+        	retDTO.setForceDeviceUpdate(upgrade.isForceDeviceUpgrade());
         	retDTO.setForceAppUpdate(false);
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
         }

@@ -27,7 +27,7 @@ public class DeviceUpgradeFacadeService {
 	@Resource
     private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
 	
-	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){
+	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){//,String appVer){
 		UpgradeDTO resultDto = null;
 		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver())){
