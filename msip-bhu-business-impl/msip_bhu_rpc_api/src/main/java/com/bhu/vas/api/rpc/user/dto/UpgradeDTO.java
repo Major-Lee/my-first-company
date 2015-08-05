@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.user.dto;
 public class UpgradeDTO {
 	private boolean gray;
 	private boolean forceDeviceUpgrade;
-	
+	private boolean forceAppUpgrade;
 	private String name;
 	private String upgradeurl;
 	public UpgradeDTO(boolean gray,boolean forceDeviceUpgrade) {
@@ -41,8 +41,16 @@ public class UpgradeDTO {
 	public void setForceDeviceUpgrade(boolean forceDeviceUpgrade) {
 		this.forceDeviceUpgrade = forceDeviceUpgrade;
 	}
+	
+	public boolean isForceAppUpgrade() {
+		return forceAppUpgrade;
+	}
+	public void setForceAppUpgrade(boolean forceAppUpgrade) {
+		this.forceAppUpgrade = forceAppUpgrade;
+	}
 	public String toString(){
-		return String.format("gray[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s]", gray,forceDeviceUpgrade,name,upgradeurl);
+		return String.format("gray[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceDeviceUpgrade[%s]", 
+				gray,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/

@@ -178,6 +178,11 @@ public class UserDeviceFacadeService {
     }
     
     public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid, String mac, String appver){
+    	User user = userService.getById(uid);
+    	if(user == null){
+    		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+    	}
+    	String handset_device = user.getLastlogindevice();
     	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
     	UserDevice userDevice = userDeviceService.getById(userDevicePK);
         if (userDevice == null) {
@@ -191,7 +196,7 @@ public class UserDeviceFacadeService {
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
         	}
         	
-        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
+        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,handset_device,appver);
         	if(upgrade.isForceDeviceUpgrade()){
         		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
         		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
@@ -218,7 +223,7 @@ public class UserDeviceFacadeService {
         	retDTO.setOnline(wifiDevice.isOnline());
         	retDTO.setGray(upgrade.isGray());
         	retDTO.setForceDeviceUpdate(upgrade.isForceDeviceUpgrade());
-        	retDTO.setForceAppUpdate(false);
+        	retDTO.setForceAppUpdate(upgrade.is);
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
         }
     }
