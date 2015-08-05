@@ -3,10 +3,10 @@ package com.bhu.vas.api.rpc.daemon.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -43,7 +43,7 @@ public class DaemonHelper {
 		if(needWiffsniffer){
 			//开启wiffsinffer
 			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
-			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, ParamWifisinfferDTO.Start_Sta_Sniffer));
+			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
 			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
 		}
 		

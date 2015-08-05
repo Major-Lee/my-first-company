@@ -18,7 +18,6 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
-import com.bhu.vas.api.dto.ret.param.ParamWifisinfferDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -32,6 +31,7 @@ import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -563,7 +563,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deliverMessageService.sendWifiCmdCommingNotifyMessage(
 					wifiId,0,OperationCMD.ParamWifiSinffer.getNo(),
 					CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,
-							on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer));
+							on?WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer:WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
