@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Created by bluesand on 6/26/15.
  */
+@SuppressWarnings("serial")
 public class URouterHdDetailVTO implements Serializable {
     //终端mac
     private String hd_mac;

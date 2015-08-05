@@ -1,7 +1,6 @@
 package com.bhu.vas.api.vto;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * urouter的终端vto

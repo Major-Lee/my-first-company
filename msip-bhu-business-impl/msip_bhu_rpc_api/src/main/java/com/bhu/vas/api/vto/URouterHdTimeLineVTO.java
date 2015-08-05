@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by bluesand on 6/25/15.
  */
+@SuppressWarnings("serial")
 public class URouterHdTimeLineVTO implements Serializable {
 
     private String date;
