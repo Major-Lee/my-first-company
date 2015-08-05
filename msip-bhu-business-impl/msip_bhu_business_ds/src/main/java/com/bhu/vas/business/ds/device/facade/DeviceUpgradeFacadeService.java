@@ -9,7 +9,6 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionBuilderService;
@@ -23,14 +22,14 @@ public class DeviceUpgradeFacadeService {
 	private WifiDeviceGroupService wifiDeviceGroupService;
 
 	@Resource
-	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
+	private WifiDeviceGroupFacadeService wifiDeviceGroupFacadeService;
 	
 	@Resource
     private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
 	
 	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){
 		UpgradeDTO resultDto = null;
-		boolean isFirstGray = false;
+		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver())){
 			return new UpgradeDTO(isFirstGray,false);
 		}
