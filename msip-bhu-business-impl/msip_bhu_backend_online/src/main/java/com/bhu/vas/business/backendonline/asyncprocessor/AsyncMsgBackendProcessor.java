@@ -117,6 +117,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case WifiDeviceGroupCreateIndex:
 							wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
