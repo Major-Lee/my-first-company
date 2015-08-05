@@ -2,6 +2,8 @@ package com.bhu.vas.business.ds.device.facade;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import org.springframework.stereotype.Service;
 
 
@@ -10,6 +12,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -135,19 +139,33 @@ public class WifiDeviceGroupFacadeService {
      */
     public boolean isDeviceInGrayGroup(String mac) {
 
-        List<Integer> groupIds = wifiDeviceGroupRelationService.getDeviceGroupIds(mac);
+        List<WifiDeviceGroupRelationPK> ids = new ArrayList<WifiDeviceGroupRelationPK>();
+        WifiDeviceGroupRelationPK  pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(GRAY_GROUP_ID_PARENT);
+        pk.setMac(mac);
+        ids.add(pk);
 
-//        return groupIds.contains(GRAY_GROUP_ID_PARENT) || groupIds.contains(GRAY_GROUP_ID_ONE)  ||
-//                groupIds.contains(GRAY_GROUP_ID_TWO) || groupIds.contains(GRAY_GROUP_ID_THREE);
+        pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(GRAY_GROUP_ID_ONE);
+        pk.setMac(mac);
+        ids.add(pk);
 
-        for (Integer gid : groupIds) {
-            if (gid <= GRAY_GROUP_ID_PARENT) {
-                return true;
-            }
-        }
-        return false;
+        pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(GRAY_GROUP_ID_TWO);
+        pk.setMac(mac);
+        ids.add(pk);
 
+        pk = new WifiDeviceGroupRelationPK();
+        pk.setGid(GRAY_GROUP_ID_THREE);
+        pk.setMac(mac);
+        ids.add(pk);
 
+        List<WifiDeviceGroupRelation> wifiDeviceGroupRelations = wifiDeviceGroupRelationService.findByIds(ids);
+
+        return  !(wifiDeviceGroupRelations == null || wifiDeviceGroupRelations.isEmpty());
 
     }
+
+
+
 }
