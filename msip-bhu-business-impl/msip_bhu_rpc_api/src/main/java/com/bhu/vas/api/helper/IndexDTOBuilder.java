@@ -7,7 +7,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 
 public class IndexDTOBuilder {
 	
-	public static WifiDeviceIndexDTO builderWifiDeviceIndexDTO(WifiDevice entity, List<Integer> groupids){
+	public static WifiDeviceIndexDTO builderWifiDeviceIndexDTO(WifiDevice entity, List<Long> groupids){
 		WifiDeviceIndexDTO indexDto = new WifiDeviceIndexDTO();
 		indexDto.setWifiId(entity.getId());
 		indexDto.setCountry(entity.getCountry());

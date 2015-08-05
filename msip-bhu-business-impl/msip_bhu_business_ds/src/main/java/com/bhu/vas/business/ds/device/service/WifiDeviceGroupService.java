@@ -8,20 +8,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceGroupDao;
-import com.bhu.vas.business.ds.sequence.service.SequenceService;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.localunit.RandomData;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
-public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDeviceGroup, WifiDeviceGroupDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class WifiDeviceGroupService extends AbstractCoreService<Long,WifiDeviceGroup, WifiDeviceGroupDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
-	@Resource
-	SequenceService sequenceService;
+	//@Resource
+	//SequenceService sequenceService;
 
 	@Resource
 	@Override
@@ -47,7 +46,9 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 	@Override
 	public WifiDeviceGroup insert(WifiDeviceGroup entity) {
 		if(entity.getId() == null)
-			sequenceService.onCreateSequenceKey(entity, false);
+			SequenceService.getInstance().onCreateSequenceKey(entity, false);
+		//if(entity.getId() == null)
+		//	sequenceService.onCreateSequenceKey(entity, false);
 		entity.setPath(generateRelativePath(entity));
 		entity.setChildren(0);
 		//entity.setHaschild(false);

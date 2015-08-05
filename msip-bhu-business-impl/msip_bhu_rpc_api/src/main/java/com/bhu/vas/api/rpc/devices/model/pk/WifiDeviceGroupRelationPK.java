@@ -1,15 +1,16 @@
 package com.bhu.vas.api.rpc.devices.model.pk;
 
-import com.smartwork.msip.cores.helper.StringHelper;
-
 import java.io.Serializable;
+
+import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * Created by bluesand on 7/16/15.
  */
+@SuppressWarnings("serial")
 public class WifiDeviceGroupRelationPK implements Serializable {
 
-    private int gid;
+    private long gid;
 
     private String mac;
 
@@ -17,16 +18,16 @@ public class WifiDeviceGroupRelationPK implements Serializable {
 
     }
 
-    public WifiDeviceGroupRelationPK(int gid, String mac) {
+    public WifiDeviceGroupRelationPK(long gid, String mac) {
         this.gid = gid;
         this.mac = mac;
     }
 
-    public int getGid() {
+    public long getGid() {
         return gid;
     }
 
-    public void setGid(int gid) {
+    public void setGid(long gid) {
         this.gid = gid;
     }
 

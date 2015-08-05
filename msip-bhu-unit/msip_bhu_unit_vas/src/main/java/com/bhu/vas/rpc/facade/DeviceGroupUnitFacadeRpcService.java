@@ -6,19 +6,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
-import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
-import com.bhu.vas.api.vto.DeviceGroupVTO;
-import com.bhu.vas.api.vto.WifiDeviceVTO;
-import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.asyn.spring.builder.DeliverMessage;
-import com.bhu.vas.business.ds.device.facade.WifiDeviceGroupFacadeService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.smartwork.msip.cores.orm.support.page.CommonPage;
-import com.smartwork.msip.cores.orm.support.page.Page;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,10 +13,21 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
+import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.ds.device.facade.WifiDeviceGroupFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -57,7 +55,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	 * @param pid
 	 * @return
 	 */
-	public TailPage<DeviceGroupVTO> birthTree(Integer uid, int pid, int pageNo, int pageSize) {
+	public TailPage<DeviceGroupVTO> birthTree(Integer uid, long pid, int pageNo, int pageSize) {
 		//if(pid == null) pid = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
@@ -77,7 +75,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 
 	
-	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, int gid,int pid, String name) {
+	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, long gid,long pid, String name) {
 		//if(gid == null) gid = 0;
 		//if(pid == null) pid = 0;
 		WifiDeviceGroup dgroup= null;
@@ -129,7 +127,7 @@ public class DeviceGroupUnitFacadeRpcService{
 				}
 			}
 
-			int oldPid = dgroup.getPid();
+			long oldPid = dgroup.getPid();
 			String oldPath = dgroup.getPath();
 			if(oldPid != pid){
 				//pid变化了 所有此gid的子节点全部迁移，并重新生成relationpath
@@ -211,7 +209,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 
 
-	public RpcResponseDTO<DeviceGroupVTO> detail(int uid, int gid, int pageNo, int pageSize) {
+	public RpcResponseDTO<DeviceGroupVTO> detail(int uid, long gid, int pageNo, int pageSize) {
 		WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
 		if(dgroup != null){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fromWifiDeviceGroup(dgroup, pageNo, pageSize));
@@ -226,7 +224,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
-	public RpcResponseDTO<Boolean> grant(Integer uid, int gid, String wifi_ids, String group_ids) {
+	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids, String group_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
@@ -261,7 +259,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
-	public RpcResponseDTO<Boolean> ungrant(Integer uid, int gid, String wifi_ids, String group_ids) {
+	public RpcResponseDTO<Boolean> ungrant(Integer uid, long gid, String wifi_ids, String group_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
@@ -435,7 +433,7 @@ public class DeviceGroupUnitFacadeRpcService{
 	}
 
 	
-	private int countDevicesByGroupId(int gid) {
+	private int countDevicesByGroupId(long gid) {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("gid", gid);
 		return  wifiDeviceGroupRelationService.countByCommonCriteria(mc);

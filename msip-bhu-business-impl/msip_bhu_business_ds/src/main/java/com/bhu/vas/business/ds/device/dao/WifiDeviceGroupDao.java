@@ -6,6 +6,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 @Repository
-public class WifiDeviceGroupDao extends AbstractCoreDao<Integer,WifiDeviceGroup>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
+public class WifiDeviceGroupDao extends AbstractCoreDao<Long,WifiDeviceGroup>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
 	
 }

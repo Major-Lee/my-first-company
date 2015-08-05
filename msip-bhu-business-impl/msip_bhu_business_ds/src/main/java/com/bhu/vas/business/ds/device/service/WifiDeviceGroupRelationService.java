@@ -32,10 +32,10 @@ public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGrou
      * @param mac
      * @return
      */
-    public List<Integer> getDeviceGroupIds(String mac) {
+    public List<Long> getDeviceGroupIds(String mac) {
         List<WifiDeviceGroupRelationPK> pks = this.findIds("mac", mac);
 
-        List<Integer> groupIds = new ArrayList<>();
+        List<Long> groupIds = new ArrayList<Long>();
         for (WifiDeviceGroupRelationPK pk : pks) {
             groupIds.add(pk.getGid());
         }
@@ -48,7 +48,7 @@ public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGrou
      * @param gid
      * @return
      */
-    public List<String> getDeviceIdsByGroupId(int gid) {
+    public List<String> getDeviceIdsByGroupId(long gid) {
         List<WifiDeviceGroupRelationPK> pks = this.findIds("gid", gid);
 
         List<String> deviceIds = new ArrayList<>();

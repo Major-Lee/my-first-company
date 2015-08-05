@@ -2,13 +2,11 @@ package com.bhu.vas.api.vto;
 
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
-import java.util.List;
-
 @SuppressWarnings("serial")
 public class DeviceGroupVTO implements java.io.Serializable{
-	private int gid;
+	private long gid;
 
-	private int pid;
+	private long pid;
 	
 	private String name;
 
@@ -22,19 +20,19 @@ public class DeviceGroupVTO implements java.io.Serializable{
 
 	private TailPage<WifiDeviceVTO> page_devices;
 
-	public int getGid() {
+	public long getGid() {
 		return gid;
 	}
 
-	public void setGid(int gid) {
+	public void setGid(long gid) {
 		this.gid = gid;
 	}
 
-	public int getPid() {
+	public long getPid() {
 		return pid;
 	}
 
-	public void setPid(int pid) {
+	public void setPid(long pid) {
 		this.pid = pid;
 	}
 

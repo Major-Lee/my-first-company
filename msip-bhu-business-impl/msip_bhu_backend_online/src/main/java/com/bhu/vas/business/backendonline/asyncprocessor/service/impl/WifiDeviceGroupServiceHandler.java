@@ -131,16 +131,16 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
 
 
-		List<List<Integer>> groupIdList = new ArrayList<List<Integer>>();
+		List<List<Long>> groupIdList = new ArrayList<List<Long>>();
 
 		String[] groupidArray = gidsStr.split(StringHelper.COMMA_STRING_GAP);
 
 		for (String singleGroupIds : groupidArray) {
-			List<Integer> groupIds = new ArrayList<Integer>();
+			List<Long> groupIds = new ArrayList<Long>();
 			String[] groupids_array = singleGroupIds.split(StringHelper.WHITESPACE_STRING_GAP);
 			for(String gid : groupids_array){
 				try {
-					groupIds.add(Integer.parseInt(gid));
+					groupIds.add(Long.parseLong(gid));
 				} catch (Exception e) {
 					e.printStackTrace(System.out);
 					logger.error("createDeviceGroupIndex invoke exception : " + e.getMessage(), e);

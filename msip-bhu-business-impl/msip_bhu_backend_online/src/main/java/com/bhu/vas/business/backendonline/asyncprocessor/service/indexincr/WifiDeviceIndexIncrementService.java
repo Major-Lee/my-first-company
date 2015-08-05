@@ -81,7 +81,7 @@ public class WifiDeviceIndexIncrementService {
 		
 		List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
 		for(WifiDevice entity : entitys){
-			List<Integer> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(entity.getId());
+			List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(entity.getId());
 			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
 			indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 			indexDtos.add(indexDto);
@@ -116,7 +116,7 @@ public class WifiDeviceIndexIncrementService {
 	 */
 	public void wifiDeviceIndexIncrement(WifiDevice entity) {
 		try{
-			List<Integer> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(entity.getId());
+			List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(entity.getId());
 			wifiDeviceIndexIncrement(entity, groupids);
 		}catch(Exception ex){
 			logger.error(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] exception", 
@@ -125,7 +125,7 @@ public class WifiDeviceIndexIncrementService {
 	}
 	
 	
-	public void wifiDeviceIndexIncrement(WifiDevice entity, List<Integer> groupids) {
+	public void wifiDeviceIndexIncrement(WifiDevice entity, List<Long> groupids) {
 		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s]", entity.getId(), entity.isOnline()));
 		try{
 			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
@@ -145,7 +145,7 @@ public class WifiDeviceIndexIncrementService {
 		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] successful", entity.getId(), entity.isOnline()));
 	}
 	
-	public void wifiDeviceIndexBlukIncrement(List<WifiDevice> entitys, List<List<Integer>> groupids_list){
+	public void wifiDeviceIndexBlukIncrement(List<WifiDevice> entitys, List<List<Long>> groupids_list){
 		if(entitys == null || entitys.isEmpty()) return;
 		if(groupids_list == null || groupids_list.isEmpty()) return;
 		

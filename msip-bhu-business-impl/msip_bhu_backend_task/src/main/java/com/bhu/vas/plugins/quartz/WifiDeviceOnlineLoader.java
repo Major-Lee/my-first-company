@@ -98,7 +98,7 @@ public class WifiDeviceOnlineLoader {
 				String wifi_mac = device.getId();
 				//long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
 				long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifi_mac);
-				List<Integer> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
+				List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
 				indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device, groupids);
 				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 				indexDto.setCount((int)count);

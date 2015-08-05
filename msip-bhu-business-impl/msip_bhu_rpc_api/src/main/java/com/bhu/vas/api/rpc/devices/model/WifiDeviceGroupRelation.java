@@ -23,18 +23,18 @@ public class WifiDeviceGroupRelation extends BasePKModel<WifiDeviceGroupRelation
 
 
 
-    public int getGid() {
+    public long getGid() {
         if (this.getId() == null) {
             return 0;
         }
         return this.getId().getGid();
     }
 
-    public void setGid(int uid) {
+    public void setGid(int gid) {
         if (this.getId() == null) {
             this.setId(new WifiDeviceGroupRelationPK());
         }
-        this.getId().setGid(uid);
+        this.getId().setGid(gid);
     }
 
     public String getMac() {

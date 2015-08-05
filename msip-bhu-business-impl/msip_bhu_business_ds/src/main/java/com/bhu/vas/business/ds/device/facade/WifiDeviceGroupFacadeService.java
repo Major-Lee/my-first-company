@@ -46,7 +46,7 @@ public class WifiDeviceGroupFacadeService {
     public void cleanUpByIds(Integer uid, String gids){
         String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
         for(String residstr : arrayresids){
-            Integer resid = new Integer(residstr);
+            Long resid = new Long(residstr);
 
             if (isInGrayGroup(resid)){
                 continue; //灰度群组不删除
@@ -55,7 +55,7 @@ public class WifiDeviceGroupFacadeService {
             WifiDeviceGroup group = wifiDeviceGroupService.getById(resid);
             if(group != null){
                 //int gid = group.getId().intValue();
-                int pid = group.getPid();
+                long pid = group.getPid();
                 wifiDeviceGroupService.removeAllByPath(group.getPath(), true);
                 //removeAllByPathStepByStep(group.getPath(),true);
                 //判定每个gid的parentid是否为hanchild
@@ -98,7 +98,7 @@ public class WifiDeviceGroupFacadeService {
      * @param gid
      * @return
      */
-    public boolean isInGrayGroup(int gid) {
+    public boolean isInGrayGroup(long gid) {
 //        if (gid == GRAY_GROUP_ID_PARENT || gid == GRAY_GROUP_ID_ONE || gid == GRAY_GROUP_ID_TWO || gid == GRAY_GROUP_ID_THREE) {
 //            return true;
 //        }
