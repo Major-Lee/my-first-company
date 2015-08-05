@@ -1,6 +1,9 @@
 package com.bhu.vas.business.ds.device.facade;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
@@ -8,9 +11,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * Created by bluesand on 8/4/15.

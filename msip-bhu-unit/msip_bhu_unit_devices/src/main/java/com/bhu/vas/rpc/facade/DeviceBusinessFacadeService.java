@@ -122,6 +122,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		//wifi设备是否是新设备
 		boolean newWifi = false;
+		boolean ipChanged = false;
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
 		
@@ -138,17 +139,22 @@ public class DeviceBusinessFacadeService {
 			wifi_device_entity.setLast_logout_at(new Date());
 			wifiDeviceService.insert(wifi_device_entity);
 			newWifi = true;
+			ipChanged = true;
 		}else{
+			String oldWanIp = wifi_device_entity.getWan_ip();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(new Date());
 			wifi_device_entity.setOnline(true);
 			wifiDeviceService.update(wifi_device_entity);
+			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
+				ipChanged = true;
+			}
 		}
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
-		if(StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
+		if(ipChanged || StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
 			needLocationQuery = true;
 		}
 		/*
