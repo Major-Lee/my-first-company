@@ -4,13 +4,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
-import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import java.util.List;
 
 /**
  * Created by bluesand on 8/4/15.
@@ -20,7 +20,13 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 @Service
 public class WifiDeviceGroupFacadeService {
 
-    private final static int GRAY_GROUP_ID = 100;
+    /**
+     * 定义<=10000的群组都为灰度群组
+     */
+    private final static Integer GRAY_GROUP_ID_PARENT = 10000;
+    private final static Integer GRAY_GROUP_ID_ONE = 9999;
+    private final static Integer GRAY_GROUP_ID_TWO = 9998;
+    private final static Integer GRAY_GROUP_ID_THREE = 9997;
 
     @Resource
     WifiDeviceGroupService wifiDeviceGroupService;
@@ -89,7 +95,23 @@ public class WifiDeviceGroupFacadeService {
      * @return
      */
     public boolean isInGrayGroup(int gid) {
-        if (gid == GRAY_GROUP_ID) {
+//        if (gid == GRAY_GROUP_ID_PARENT || gid == GRAY_GROUP_ID_ONE || gid == GRAY_GROUP_ID_TWO || gid == GRAY_GROUP_ID_THREE) {
+//            return true;
+//        }
+//        WifiDeviceGroup wifiDeviceGroup = wifiDeviceGroupService.getById(gid);
+//        if (wifiDeviceGroup != null) {
+//            String path =  wifiDeviceGroup.getPath();
+//            String[] pids = path.split("/");
+//            for (String pid : pids) {
+//                if (String.valueOf(GRAY_GROUP_ID_PARENT).equals(pid) || String.valueOf(GRAY_GROUP_ID_ONE).equals(pid) ||
+//                String.valueOf(GRAY_GROUP_ID_TWO).equals(pid) || String.valueOf(GRAY_GROUP_ID_THREE).equals(pid)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+
+        if (gid <= GRAY_GROUP_ID_PARENT) {
             return true;
         }
         WifiDeviceGroup wifiDeviceGroup = wifiDeviceGroupService.getById(gid);
@@ -97,7 +119,7 @@ public class WifiDeviceGroupFacadeService {
             String path =  wifiDeviceGroup.getPath();
             String[] pids = path.split("/");
             for (String pid : pids) {
-                if (String.valueOf(GRAY_GROUP_ID).equals(pid)) {
+                if (Integer.parseInt(pid) <= GRAY_GROUP_ID_PARENT) {
                     return true;
                 }
             }
@@ -112,12 +134,20 @@ public class WifiDeviceGroupFacadeService {
      * @return
      */
     public boolean isDeviceInGrayGroup(String mac) {
-        WifiDeviceGroupRelationPK wifiDeviceGroupRelationPK = new WifiDeviceGroupRelationPK();
-        wifiDeviceGroupRelationPK.setMac(mac);
-        wifiDeviceGroupRelationPK.setGid(GRAY_GROUP_ID);
-        WifiDeviceGroupRelation wifiDeviceGroupRelation  =
-                wifiDeviceGroupRelationService.getById(wifiDeviceGroupRelationPK);
 
-        return wifiDeviceGroupRelation != null ;
+        List<Integer> groupIds = wifiDeviceGroupRelationService.getDeviceGroupIds(mac);
+
+//        return groupIds.contains(GRAY_GROUP_ID_PARENT) || groupIds.contains(GRAY_GROUP_ID_ONE)  ||
+//                groupIds.contains(GRAY_GROUP_ID_TWO) || groupIds.contains(GRAY_GROUP_ID_THREE);
+
+        for (Integer gid : groupIds) {
+            if (gid <= GRAY_GROUP_ID_PARENT) {
+                return true;
+            }
+        }
+        return false;
+
+
+
     }
 }
