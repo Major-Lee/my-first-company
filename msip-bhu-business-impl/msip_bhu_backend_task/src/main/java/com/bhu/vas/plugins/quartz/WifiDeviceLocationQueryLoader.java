@@ -42,7 +42,7 @@ public class WifiDeviceLocationQueryLoader {
 		while(it.hasNext()){
 			List<WifiDevice> entitys = it.next();
 			for(WifiDevice device:entitys){
-				if(device.getOem_model().toLowerCase().equalsIgnoreCase("urouter")){
+				if(device.getOrig_model().toLowerCase().equalsIgnoreCase("urouter")){
 					DaemonHelper.locationStep1Query(device.getId(), daemonRpcService);
 				}
 				/*if(StringUtils.isEmpty(device.getLat()) || StringUtils.isEmpty(device.getLon())){
