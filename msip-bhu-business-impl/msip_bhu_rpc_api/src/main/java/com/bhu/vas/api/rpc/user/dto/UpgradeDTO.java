@@ -6,6 +6,8 @@ public class UpgradeDTO {
 	private boolean forceAppUpgrade;
 	private String name;
 	private String upgradeurl;
+	
+    private String currentAVB;
 	public UpgradeDTO(boolean gray,boolean forceDeviceUpgrade) {
 		this.gray = gray;
 		this.forceDeviceUpgrade = forceDeviceUpgrade;
@@ -48,11 +50,20 @@ public class UpgradeDTO {
 	public void setForceAppUpgrade(boolean forceAppUpgrade) {
 		this.forceAppUpgrade = forceAppUpgrade;
 	}
+	
+	public String getCurrentAVB() {
+		return currentAVB;
+	}
+	public void setCurrentAVB(String currentAVB) {
+		this.currentAVB = currentAVB;
+	}
 	public String toString(){
-		return String.format("gray[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceDeviceUpgrade[%s]", 
-				gray,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade);
+		return String.format("gray[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] currentAVB[%s]", 
+				gray,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,currentAVB);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/
 	}
+	
+	
 }

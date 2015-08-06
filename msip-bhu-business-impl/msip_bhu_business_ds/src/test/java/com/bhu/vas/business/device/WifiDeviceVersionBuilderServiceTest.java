@@ -10,8 +10,11 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
+import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionBuilderService;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.localunit.BaseTest;
@@ -35,6 +38,13 @@ public class WifiDeviceVersionBuilderServiceTest extends BaseTest{
 	int batch_create_size = 100;
 	@Resource
 	WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
+	
+	@Resource
+	DeviceUpgradeFacadeService deviceUpgradeFacadeService;
+	
+	@Resource
+	WifiDeviceService wifiDeviceService;
+	
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	private static Set<Integer> key_gen = new HashSet<Integer>();
 	@BeforeClass
@@ -59,32 +69,44 @@ public class WifiDeviceVersionBuilderServiceTest extends BaseTest{
     //@Test
     public void test001BatchInit(){
     	WifiDeviceVersionBuilder builder_gray = new WifiDeviceVersionBuilder();
-		builder_gray.setId(WifiDeviceVersionBuilder.VersionBuilder_FirstGray);
+		builder_gray.setId(WifiDeviceVersionBuilder.VersionBuilder_Normal);
 		builder_gray.setD_firmware_name("AP106P06V1.2.15Build8064");
 		builder_gray.setD_versions("V1.2.15");
 		builder_gray.setD_builderno("8064");
 		builder_gray.setFirmware_upgrade_url("http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8064");
 		builder_gray.setForce_device_update(true);
-		builder_gray.setForce_app_update(false);
-		builder_gray.setApp_min_version("1.0.8.3");
-		builder_gray.setApp_min_version("1.3.8.3");
+		builder_gray.setForce_ios_app_update(false);
+		builder_gray.setMin_ios_version("1.0.8.3");
+		builder_gray.setForce_adr_app_update(false);
+		builder_gray.setMin_adr_version("1.3.8.3");
 		wifiDeviceVersionBuilderService.insert(builder_gray);
 		
 		WifiDeviceVersionBuilder builder_normal = new WifiDeviceVersionBuilder();
-		builder_normal.setId(WifiDeviceVersionBuilder.VersionBuilder_Normal);
-		builder_normal.setD_firmware_name("AP106P06V1.2.15Build8038");
+		builder_normal.setId(WifiDeviceVersionBuilder.VersionBuilder_FirstGray);
+		builder_normal.setD_firmware_name("AP106P06V1.2.15Build8084");
 		builder_normal.setD_versions("V1.2.15");
-		builder_normal.setD_builderno("8038");
-		builder_normal.setFirmware_upgrade_url("http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8038");
+		builder_normal.setD_builderno("8084");
+		builder_normal.setFirmware_upgrade_url("http://7xk1fm.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8084");
 		builder_normal.setForce_device_update(true);
-		builder_normal.setForce_app_update(false);
-		builder_normal.setApp_min_version("1.0.8.3");
-		builder_normal.setApp_min_version("1.3.8.3");
+		builder_normal.setForce_ios_app_update(false);
+		builder_normal.setMin_ios_version("1.0.8.3");
+		builder_normal.setForce_adr_app_update(false);
+		builder_normal.setMin_adr_version("1.3.8.3");
 		wifiDeviceVersionBuilderService.insert(builder_normal);
     }
+    
+    //public void test
+    
     @Test
     public void test005DeviceVersionCheck(){
-    	boolean ret1 = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(true,"AP106P06V1.2.15Build8038");
+    	String mac = "84:82:f4:19:01:0c";
+    	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+    	//UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
+    	//System.out.println(mac+"   "+checkDeviceUpgrade);
+    	UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,"R","1.3.8.4");
+    	
+    	checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,"O","1.0.8.2");
+    	/*boolean ret1 = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(true,"AP106P06V1.2.15Build8038");
     	if(ret1 ){
 			System.out.println("AP106P06V1.2.15Build8038 device need force Updated" );
 		}else{
@@ -95,7 +117,7 @@ public class WifiDeviceVersionBuilderServiceTest extends BaseTest{
 			System.out.println("AP106P06V1.2.15Build8038 device need force Updated" );
 		}else{
 			System.out.println("AP106P06V1.2.15Build8038 device no need force Updated" );
-		}
+		}*/
     }
     
     //@Test

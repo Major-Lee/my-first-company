@@ -13,7 +13,11 @@ public class UserDeviceCheckUpdateDTO implements Serializable {
     //wifi设备是否在线
     private boolean online;
     private boolean forceDeviceUpdate;
+    //currentDeviceVersionBuilder//
+    private String currentDVB;
     private boolean forceAppUpdate;
+    //currentAppVersionBuilder
+    private String currentAVB;
     
     public String getMac() {
         return mac;
@@ -62,6 +66,22 @@ public class UserDeviceCheckUpdateDTO implements Serializable {
 
 	public void setGray(boolean gray) {
 		this.gray = gray;
+	}
+
+	public String getCurrentDVB() {
+		return currentDVB;
+	}
+
+	public void setCurrentDVB(String currentDVB) {
+		this.currentDVB = currentDVB;
+	}
+
+	public String getCurrentAVB() {
+		return currentAVB;
+	}
+
+	public void setCurrentAVB(String currentAVB) {
+		this.currentAVB = currentAVB;
 	}
     
 }

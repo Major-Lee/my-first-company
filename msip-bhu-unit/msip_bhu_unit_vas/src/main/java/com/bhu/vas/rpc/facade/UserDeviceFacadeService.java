@@ -223,7 +223,7 @@ public class UserDeviceFacadeService {
         	retDTO.setOnline(wifiDevice.isOnline());
         	retDTO.setGray(upgrade.isGray());
         	retDTO.setForceDeviceUpdate(upgrade.isForceDeviceUpgrade());
-        	retDTO.setForceAppUpdate(upgrade.is);
+        	retDTO.setForceAppUpdate(upgrade.isForceAppUpgrade());
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
         }
     }
