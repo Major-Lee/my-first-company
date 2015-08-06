@@ -39,6 +39,17 @@ public class TerminalLastTimeStringService extends AbstractRelationStringCache{
 		return sb.toString();
 	}
 	
+	private static String[] generateMarkPrefixKeys(String mac, String... hd_macs){
+		if(hd_macs == null || hd_macs.length == 0) return null;
+		String[] keys = new String[hd_macs.length];
+		int cursor = 0;
+		for(String hd_mac : hd_macs){
+			keys[cursor] = generateMarkPrefixKey(mac, hd_mac);
+			cursor++;
+		}
+		return keys;
+	}
+	
 	public void set(String mac, String hd_mac, long snifftime){
 		super.set(generateMarkPrefixKey(mac, hd_mac), String.valueOf(snifftime));
 	}
@@ -52,6 +63,10 @@ public class TerminalLastTimeStringService extends AbstractRelationStringCache{
 			keys[i] = generateMarkPrefixKey(mac, hd_macs[i]);
 		}
 		return super.mget(keys);
+	}
+	
+	public void dels(String mac, String... hd_macs){
+		super.del(generateMarkPrefixKeys(mac, hd_macs));
 	}
 	
 	@Override

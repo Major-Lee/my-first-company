@@ -17,7 +17,7 @@ public interface IDeviceRestRpcService {
 	//public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize);
 	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, String region, String excepts, 
 			int pageNo, int pageSize);
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac,
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac, String sn,
 			String orig_swver, String adr, String work_mode,
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize);

@@ -51,14 +51,14 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 	
 	@Override
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac,
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac, String sn, 
 			String orig_swver, String adr, String work_mode,
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceRestRpcService.fetchWDevicesByKeywords(mac, orig_swver, adr,work_mode, config_mode, 
+		return deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver, adr,work_mode, config_mode, 
 				devicetype, online, newVersionDevice, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 	}
 	

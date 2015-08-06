@@ -160,6 +160,7 @@ public class DeviceRestBusinessFacadeService {
 	 * 根据多个条件来进行搜索wifi设备数据
 	 * 以当前在线和当前在线移动设备数量排序
 	 * @param mac 
+	 * @param sn
 	 * @param orig_swver 软件版本号
 	 * @param adr 位置参数
 	 * @param work_mode 工作模式
@@ -173,12 +174,12 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac,String orig_swver, String adr, String work_mode,
+	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac, String sn, String orig_swver, String adr, String work_mode,
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
 		List<WifiDeviceVTO> vtos = null;
 		
-		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, 
+		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, sn,
 				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
 				region, excepts, groupids, groupids_excepts, (pageNo*pageSize)-pageSize, pageSize);
 		

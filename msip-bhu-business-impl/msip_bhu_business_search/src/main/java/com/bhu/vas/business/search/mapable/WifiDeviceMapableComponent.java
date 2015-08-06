@@ -16,6 +16,7 @@ import com.smartwork.msip.es.mapping.field.type.IMapableFieldType;
 public class WifiDeviceMapableComponent extends MapableComponent{
 	
 	public static final String M_id = "id";//wifi id
+	public static final String M_sn = "sn";//wifi sn
 	public static final String M_ghash = "ghash";//地理位置的geohash
 	public static final String M_address = "address";//地理位置的详细地址
 	public static final String M_show_address = "showaddress";//地理位置的详细地址
@@ -31,6 +32,7 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	public static final String M_i_update_at = "i_update_at";//索引记录的更新时间
 	
 	private StringMapableField id;
+	private StringMapableField sn;
 	private GeoPointsMapableField ghash;
 	private StringMapableField address;
 	private StringMapableField showaddress;
@@ -47,6 +49,7 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 
 	public WifiDeviceMapableComponent(){
 		id = new StringMapableField(M_id, StringMapableField.TYPE_STORED_NOT_ANALYZED);
+		sn = new StringMapableField(M_sn, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		ghash = new GeoPointsMapableField(M_ghash);
 		address = new StringMapableField(M_address, IMapableFieldType.Store_YES, 
 				IMapableFieldType.Index_Analyzed, AnalyzerSupport.EDGENGRAM_WHITESPACE_ANALYZER);
@@ -66,6 +69,10 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 
 	public StringMapableField getId() {
 		return id;
+	}
+
+	public StringMapableField getSn() {
+		return sn;
 	}
 
 	public GeoPointsMapableField getGhash() {

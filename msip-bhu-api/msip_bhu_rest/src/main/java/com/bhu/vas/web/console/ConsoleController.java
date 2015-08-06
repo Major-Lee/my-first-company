@@ -90,6 +90,7 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false) int uid,
             //@RequestParam(required = false, value = "q") String keyword,
             @RequestParam(required = false) String mac,
+            @RequestParam(required = false) String sn,
             @RequestParam(required = false) String orig_swver,
             @RequestParam(required = false) String adr,
             @RequestParam(required = false) String work_mode,
@@ -104,7 +105,7 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
 
-        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, orig_swver,
+        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,
                 adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, excepts, 
                 groupids, groupids_excepts, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));

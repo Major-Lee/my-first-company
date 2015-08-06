@@ -45,6 +45,10 @@ public class TerminalDeviceTypeCountHashService extends AbstractRelationHashCach
 		return super.hgetall(generateMarkPrefixKey(mac));
 	}
 	
+	public void del(String mac){
+		super.del(generateMarkPrefixKey(mac));
+	}
+	
 	@Override
 	public String getRedisKey() {
 		// TODO Auto-generated method stub
