@@ -463,6 +463,10 @@ public class DeviceBusinessFacadeService {
 		dto.setData_rx_rate(handset.getData_rx_rate());
 		//handset.setAction(HandsetDeviceDTO.Action_Offline);
 		//handset.setLast_wifi_id(dto.getLast_wifi_id());
+
+		dto.setRx_bytes("0");
+		dto.setTx_bytes("0");
+
 		HandsetStorageFacadeService.handsetComming(dto);
 		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
 				lowercase_d_mac, dto.fetchData_rx_rate_double());
@@ -708,6 +712,11 @@ public class DeviceBusinessFacadeService {
 					}else{
 						handset.setData_tx_rate(terminal.getData_tx_rate());
 						handset.setData_rx_rate(terminal.getData_rx_rate());
+
+						//修改终端的流量
+						handset.setRx_bytes(terminal.getRx_bytes());
+						handset.setTx_bytes(terminal.getTx_bytes());
+
 					}
 					
 					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 

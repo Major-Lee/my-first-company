@@ -288,6 +288,9 @@ public class BusinessModelBuilder {
 			vto.setRx_rate(hd_entity.getData_tx_rate());
 			if(!StringUtils.isEmpty(hd_entity.getVapname()))
 				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
+
+			vto.setRx_bytes(hd_entity.getTx_bytes());
+			vto.setTx_bytes(hd_entity.getRx_bytes());
 		}
 		return vto;
 	}
