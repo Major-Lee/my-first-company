@@ -33,7 +33,7 @@ public class DaemonHelper {
 		//获取设备测速
 		//deviceSpeedQuery(mac, daemonRpcService);
 		//payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
-		if(true){//needLocationQuery
+		if(needLocationQuery){//
 			//获取地理位置
 			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 		}
