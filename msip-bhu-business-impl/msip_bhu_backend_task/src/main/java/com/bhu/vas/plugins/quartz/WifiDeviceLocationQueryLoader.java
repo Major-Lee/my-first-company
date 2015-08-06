@@ -42,7 +42,10 @@ public class WifiDeviceLocationQueryLoader {
 		while(it.hasNext()){
 			List<WifiDevice> entitys = it.next();
 			for(WifiDevice device:entitys){
-				if(StringUtils.isEmpty(device.getLat()) || StringUtils.isEmpty(device.getLon())){
+				if(device.getOem_model().toLowerCase().equalsIgnoreCase("urouter")){
+					DaemonHelper.locationStep1Query(device.getId(), daemonRpcService);
+				}
+				/*if(StringUtils.isEmpty(device.getLat()) || StringUtils.isEmpty(device.getLon())){
 					//if('1.2.12','1.2.11','1.2.10'){
 					if(device.getOrig_swver().indexOf("1.2.12") >=0 
 							|| device.getOrig_swver().indexOf("1.2.11")>=0
@@ -50,7 +53,7 @@ public class WifiDeviceLocationQueryLoader {
 						DaemonHelper.locationStep1Query(device.getId(), daemonRpcService);
 						count++;
 					}
-				}
+				}*/
 			}
 		}
 		logger.info("WifiDeviceLocationQueryLoader end:"+count);
