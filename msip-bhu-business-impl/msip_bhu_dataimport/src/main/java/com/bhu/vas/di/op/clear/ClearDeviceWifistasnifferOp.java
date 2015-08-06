@@ -2,8 +2,6 @@ package com.bhu.vas.di.op.clear;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.elasticsearch.ElasticsearchException;
@@ -77,6 +75,8 @@ public class ClearDeviceWifistasnifferOp {
 			TerminalHotSortedSetService.getInstance().del(mac);
 			//删除社区类型数据
 			TerminalDeviceTypeCountHashService.getInstance().del(mac);
+			
+			start = start + size;
 		}while(count == size);
 		
 		//删除recent探测数据
