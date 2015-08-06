@@ -11,9 +11,10 @@
     <result property="d_builderno" column="d_builderno"/>
     <result property="firmware_upgrade_url" column="firmware_upgrade_url"/>
     <result property="force_device_update" column="force_device_update"/>
-    <result property="force_app_update" column="force_app_update"/>
-    <result property="app_min_version" column="app_min_version"/>
-    <result property="app_max_version" column="app_max_version"/>
+    <result property="force_ios_app_update" column="force_ios_app_update"/>
+    <result property="min_ios_version" column="min_ios_version"/>
+    <result property="force_adr_app_update" column="force_adr_app_update"/>
+    <result property="min_adr_version" column="min_adr_version"/>    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -31,9 +32,10 @@
 	    	d_builderno,
 	    	firmware_upgrade_url,
 	    	force_device_update,
-	    	force_app_update,
-	    	app_min_version,
-	    	app_max_version,
+	    	force_ios_app_update,
+	    	min_ios_version,
+	    	force_adr_app_update,
+	    	min_adr_version,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -45,9 +47,10 @@
 	    	d_builderno,
 	    	firmware_upgrade_url,
 	    	force_device_update,
-	    	force_app_update,
-	    	app_min_version,
-	    	app_max_version,
+	    	force_ios_app_update,
+	    	min_ios_version,
+	    	force_adr_app_update,
+	    	min_adr_version,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -60,9 +63,10 @@
 	    	#{d_builderno},
 	    	#{firmware_upgrade_url},
 	    	#{force_device_update},
-	    	#{force_app_update},
-	    	#{app_min_version},
-	    	#{app_max_version},
+	    	#{force_ios_app_update},
+	    	#{min_ios_version},
+	    	#{force_adr_app_update},
+	    	#{min_adr_version},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -73,9 +77,10 @@
 	    	d_builderno = #{d_builderno},
 	    	firmware_upgrade_url = #{firmware_upgrade_url},
 	    	force_device_update = #{force_device_update},
-	    	force_app_update = #{force_app_update},
-	    	app_min_version = #{app_min_version},
-	    	app_max_version = #{app_max_version},
+	    	force_ios_app_update = #{force_ios_app_update},
+	    	min_ios_version = #{min_ios_version},
+	    	force_adr_app_update = #{force_adr_app_update},
+	    	min_adr_version = #{min_adr_version},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

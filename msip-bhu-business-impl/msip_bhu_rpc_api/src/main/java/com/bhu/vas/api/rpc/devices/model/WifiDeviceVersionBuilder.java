@@ -24,12 +24,13 @@ public class WifiDeviceVersionBuilder extends BaseStringModel{
 	//针对设备版本比对，force_device_update=true，则如果小于d_firmware_name，必定下发升级指令
 	private boolean force_device_update = false;
 	
-	//针对app的版本号，如果在app_version 在(app_min_version,app_max_version)区间内,并且force_app_update=true 则提示app更新
-	private boolean force_app_update = false;
-	private String app_min_version;
-	private String app_max_version;
-
-
+	//针对ios app的版本号，如果在app_version 在小于min_ios_version,并且force_app_update=true 则提示ios app更新
+	private boolean force_ios_app_update = false;
+	private String min_ios_version;
+	//针对adr app的版本号，如果在app_version 在小于min_adr_version,并且force_app_update=true 则提示adr app更新
+	private boolean force_adr_app_update = false;
+	private String min_adr_version;
+	
 	private Date created_at;
 	
 	@Override
@@ -79,28 +80,37 @@ public class WifiDeviceVersionBuilder extends BaseStringModel{
 		this.force_device_update = force_device_update;
 	}
 
-	public boolean isForce_app_update() {
-		return force_app_update;
+
+	public boolean isForce_ios_app_update() {
+		return force_ios_app_update;
 	}
 
-	public void setForce_app_update(boolean force_app_update) {
-		this.force_app_update = force_app_update;
+	public void setForce_ios_app_update(boolean force_ios_app_update) {
+		this.force_ios_app_update = force_ios_app_update;
 	}
 
-	public String getApp_min_version() {
-		return app_min_version;
+	public String getMin_ios_version() {
+		return min_ios_version;
 	}
 
-	public void setApp_min_version(String app_min_version) {
-		this.app_min_version = app_min_version;
+	public void setMin_ios_version(String min_ios_version) {
+		this.min_ios_version = min_ios_version;
 	}
 
-	public String getApp_max_version() {
-		return app_max_version;
+	public boolean isForce_adr_app_update() {
+		return force_adr_app_update;
 	}
 
-	public void setApp_max_version(String app_max_version) {
-		this.app_max_version = app_max_version;
+	public void setForce_adr_app_update(boolean force_adr_app_update) {
+		this.force_adr_app_update = force_adr_app_update;
+	}
+
+	public String getMin_adr_version() {
+		return min_adr_version;
+	}
+
+	public void setMin_adr_version(String min_adr_version) {
+		this.min_adr_version = min_adr_version;
 	}
 
 	public Date getCreated_at() {
