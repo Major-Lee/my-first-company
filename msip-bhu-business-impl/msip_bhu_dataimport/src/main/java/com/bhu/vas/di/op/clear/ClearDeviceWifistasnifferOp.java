@@ -13,6 +13,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDev
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.es.exception.ESException;
 /**
  * 清除设备的周边探测记录
@@ -20,22 +21,37 @@ import com.smartwork.msip.es.exception.ESException;
  *
  */
 public class ClearDeviceWifistasnifferOp {
-	public static List<String> device_macs = new ArrayList<String>();
-	
-	static{
-		device_macs.add("62:68:75:f1:10:80");
-	}
+//	public static List<String> device_macs = new ArrayList<String>();
+//	
+//	static{
+//		device_macs.add("62:68:75:f1:10:80");
+//	}
 	
 	public static void main(String[] argv) throws ElasticsearchException, ESException, IOException, ParseException{
+		if(argv == null || argv.length != 1){
+			System.out.println("缺少参数");
+			return;
+		}
 		
-		for(String mac : device_macs){
-			try{
-				System.out.println("开始清除 " + mac + " 周边探测数据");
-				doClearRedis(mac);
-				System.out.println("成功清除 " + mac + " 周边探测数据");
-			}catch(Exception ex){
-				System.out.println("异常清除 " + mac + " 周边探测数据");
-				ex.printStackTrace();
+		String[] mac_array = null;
+		try{
+			String macs = argv[0];
+			mac_array = macs.split(StringHelper.COMMA_STRING_GAP);
+		}catch(Exception ex){
+			System.out.println("参数错误");
+			ex.printStackTrace();
+		}
+		
+		if(mac_array != null){
+			for(String mac : mac_array){
+				try{
+					System.out.println("开始清除 " + mac + " 周边探测数据");
+					doClearRedis(mac);
+					System.out.println("成功清除 " + mac + " 周边探测数据");
+				}catch(Exception ex){
+					System.out.println("异常清除 " + mac + " 周边探测数据");
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
