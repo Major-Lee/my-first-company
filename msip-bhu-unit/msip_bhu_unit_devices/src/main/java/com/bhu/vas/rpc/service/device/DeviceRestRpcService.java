@@ -92,7 +92,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac,
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac, String sn, 
 			String orig_swver, String adr, String work_mode,
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
@@ -101,7 +101,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 				adr, work_mode, config_mode, devicetype, region, excepts, pageNo, pageSize));
 		
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, orig_swver, adr, work_mode, config_mode,
+			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver, adr, work_mode, config_mode,
 					devicetype, online, newVersionDevice, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

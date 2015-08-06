@@ -5,6 +5,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class WifiDeviceVTO implements Serializable{
 	private String wid;//wifi id
+	private String sn;//wifi sn
 	private int ol;//online wifi设备是否在线 1表示在线 0标识离线
 	private String adr;//所在地域的格式化地址
 	private String om;//oem设备型号
@@ -30,6 +31,12 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setWid(String wid) {
 		this.wid = wid;
+	}
+	public String getSn() {
+		return sn;
+	}
+	public void setSn(String sn) {
+		this.sn = sn;
 	}
 	public long getUof() {
 		return uof;

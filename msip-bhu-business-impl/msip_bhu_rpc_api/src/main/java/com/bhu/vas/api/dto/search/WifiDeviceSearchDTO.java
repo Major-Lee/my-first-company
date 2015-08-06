@@ -7,6 +7,8 @@ import java.io.Serializable;
 public class WifiDeviceSearchDTO implements Serializable{
 	//wifi设备mac
 	private String id;
+	//设备sn
+	private String sn;
 	//规格化地址信息
 	private String address;
 	//工作模式
@@ -35,6 +37,12 @@ public class WifiDeviceSearchDTO implements Serializable{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getSn() {
+		return sn;
+	}
+	public void setSn(String sn) {
+		this.sn = sn;
 	}
 	public String getAddress() {
 		return address;

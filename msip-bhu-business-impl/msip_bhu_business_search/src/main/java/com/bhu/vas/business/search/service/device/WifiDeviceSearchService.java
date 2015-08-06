@@ -45,6 +45,9 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 		WifiDeviceSearchDTO dto = new WifiDeviceSearchDTO();
 		dto.setId(sourceMap.get(WifiDeviceMapableComponent.M_id).toString());
 		
+		Object sn = sourceMap.get(WifiDeviceMapableComponent.M_sn);
+		if(sn != null) dto.setSn(sn.toString());
+		
 		Object show_address = sourceMap.get(WifiDeviceMapableComponent.M_show_address);
 		if(show_address != null) dto.setAddress(show_address.toString());
 		
@@ -185,6 +188,7 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	/**
 	 * 根据多个条件来进行搜索
 	 * @param mac 
+	 * @param sn
 	 * @param orig_swver 软件版本号
 	 * @param adr 位置参数
 	 * @param work_mode 工作模式
@@ -200,16 +204,19 @@ public class WifiDeviceSearchService extends SearchService<WifiDeviceSearchDTO>{
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String orig_swver, String adr, 
+	public QueryResponse<List<WifiDeviceSearchDTO>> searchByKeywords(String mac, String sn, String orig_swver, String adr, 
 			String work_mode, String config_mode, String devicetype, Boolean online, Boolean newVersionDevice,
 			String region, String excepts, String groupids, String groupids_excepts, int start, int size) throws ESQueryValidateException {
 
 		FilterBuilder filter = null;
-		if(StringHelper.hasLeastOneNotEmpty(mac, orig_swver, adr, work_mode, config_mode, 
+		if(StringHelper.hasLeastOneNotEmpty(mac, sn, orig_swver, adr, work_mode, config_mode, 
 				devicetype, region, excepts, groupids, groupids_excepts) || online != null || newVersionDevice != null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(!StringUtils.isEmpty(mac)){
 				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_id, mac.toLowerCase()));
+			}
+			if(!StringUtils.isEmpty(sn)){
+				boolfilter.must(FilterBuilders.prefixFilter(WifiDeviceMapableComponent.M_sn, sn));
 			}
 			if(!StringUtils.isEmpty(orig_swver)){
 //				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.fuzzyQuery(

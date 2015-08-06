@@ -185,6 +185,7 @@ public class BusinessModelBuilder {
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
 			vto.setIpgen(entity.isIpgen());
+			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
 				long logout_ts = entity.getLast_logout_at().getTime();
@@ -218,6 +219,7 @@ public class BusinessModelBuilder {
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
 			vto.setIpgen(entity.isIpgen());
+			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
 				long logout_ts = entity.getLast_logout_at().getTime();
