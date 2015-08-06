@@ -406,7 +406,7 @@ public class DeviceHelper {
 	    	int ret = StringHelper.compareVersion(version, NewMinOrgiSwverVersion);
 	    	return ret >= 0 ? true : false;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+			//ex.printStackTrace(System.out);
 		}
 		return false;
 //		for(String newOrigSwver : newOrigSwvers){

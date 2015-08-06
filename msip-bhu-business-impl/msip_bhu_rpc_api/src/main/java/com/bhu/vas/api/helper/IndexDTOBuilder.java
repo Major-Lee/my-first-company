@@ -29,6 +29,7 @@ public class IndexDTOBuilder {
 		}
 //		indexDto.setCount(1);
 //		indexDto.setOnline(1);
+		indexDto.setSn(entity.getSn());
 		indexDto.setGroupids(groupids);
 		indexDto.setLat(entity.getLat());
 		indexDto.setLon(entity.getLon());

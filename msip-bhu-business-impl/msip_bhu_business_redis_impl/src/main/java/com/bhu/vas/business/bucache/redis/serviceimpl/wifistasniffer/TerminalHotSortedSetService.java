@@ -59,6 +59,9 @@ public class TerminalHotSortedSetService extends AbstractRelationSortedSetCache{
 		return super.zrevrangeWithScores(generateKey(mac), start, (start+size-1));
 	}
 
+	public void del(String mac){
+		super.del(generateKey(mac));
+	}
 	
 	@Override
 	public String getRedisKey() {

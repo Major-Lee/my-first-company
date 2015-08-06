@@ -73,6 +73,11 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 		return super.zrevrangeWithScores(generateKey(mac), start, (start+size-1));
 	}
 	
+	public Set<String> fetchTerminalRecent(String mac,int start,int size){
+		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
+		return super.zrevrange(generateKey(mac), start, (start+size-1));
+	}
+	
 	public Set<Tuple> fetchTerminalRecentByScoreWithScores(String mac,double min, double max, int start,int size){
 		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
 		return super.zrevrangeByScoreWithScores(generateKey(mac), min, max, start, size);
@@ -80,6 +85,10 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 
 	public long sizeByScore(String mac,double min, double max){
 		return super.zcount(generateKey(mac), min, max);
+	}
+	
+	public void del(String mac){
+		super.del(generateKey(mac));
 	}
 	
 	@Override

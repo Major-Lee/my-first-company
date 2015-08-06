@@ -14,6 +14,8 @@ public class WifiDeviceIndexDTO {
 	public static final int offline_Status = 0;
 	//wifi设备mac
 	private String wifiId;
+	//SN名称
+	private String sn;
 	//经度
 	private String lat;
 	//纬度
@@ -195,5 +197,11 @@ public class WifiDeviceIndexDTO {
 	}
 	public void setRegister_at(long register_at) {
 		this.register_at = register_at;
+	}
+	public String getSn() {
+		return sn;
+	}
+	public void setSn(String sn) {
+		this.sn = sn;
 	}
 }
