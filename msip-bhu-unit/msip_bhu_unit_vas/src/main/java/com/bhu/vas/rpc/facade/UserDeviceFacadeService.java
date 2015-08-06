@@ -224,6 +224,8 @@ public class UserDeviceFacadeService {
         	retDTO.setGray(upgrade.isGray());
         	retDTO.setForceDeviceUpdate(upgrade.isForceDeviceUpgrade());
         	retDTO.setForceAppUpdate(upgrade.isForceAppUpgrade());
+        	retDTO.setCurrentDVB(upgrade.getCurrentDVB());
+        	retDTO.setCurrentAVB(upgrade.getCurrentAVB());
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
         }
     }

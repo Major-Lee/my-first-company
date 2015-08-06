@@ -6,7 +6,7 @@ public class UpgradeDTO {
 	private boolean forceAppUpgrade;
 	private String name;
 	private String upgradeurl;
-	
+	private String currentDVB;
     private String currentAVB;
 	public UpgradeDTO(boolean gray,boolean forceDeviceUpgrade) {
 		this.gray = gray;
@@ -58,12 +58,17 @@ public class UpgradeDTO {
 		this.currentAVB = currentAVB;
 	}
 	public String toString(){
-		return String.format("gray[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] currentAVB[%s]", 
-				gray,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,currentAVB);
+		return String.format("gray[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] currentAVB[%s]", 
+				gray,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,currentAVB);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/
 	}
-	
+	public String getCurrentDVB() {
+		return currentDVB;
+	}
+	public void setCurrentDVB(String currentDVB) {
+		this.currentDVB = currentDVB;
+	}
 	
 }

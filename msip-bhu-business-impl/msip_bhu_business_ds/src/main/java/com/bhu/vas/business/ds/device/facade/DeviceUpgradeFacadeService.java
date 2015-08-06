@@ -47,6 +47,7 @@ public class DeviceUpgradeFacadeService {
 			}else{
 				resultDto = new UpgradeDTO(isFirstGray,false,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
 			}
+			resultDto.setCurrentDVB(wifiDevice.getOrig_swver());
 			resultDto.setCurrentAVB(appVer);
 			DeviceEnum handsetDevice = DeviceEnum.getBySName(handset_device);
 			if(DeviceEnum.isHandsetDevice(handsetDevice)){

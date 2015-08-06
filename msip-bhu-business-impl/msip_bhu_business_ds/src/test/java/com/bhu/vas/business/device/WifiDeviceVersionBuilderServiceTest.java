@@ -99,13 +99,15 @@ public class WifiDeviceVersionBuilderServiceTest extends BaseTest{
     
     @Test
     public void test005DeviceVersionCheck(){
-    	String mac = "84:82:f4:19:01:0c";
-    	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+    	String mac1 = "84:82:f4:19:01:0c";
+    	WifiDevice wifiDevice1 = wifiDeviceService.getById(mac1);
     	//UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
     	//System.out.println(mac+"   "+checkDeviceUpgrade);
-    	UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,"R","1.3.8.4");
+    	UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac1, wifiDevice1,"R","1.3.8.4");
     	
-    	checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,"O","1.0.8.2");
+    	String mac2 = "62:68:75:ff:10:80";
+    	WifiDevice wifiDevice2 = wifiDeviceService.getById(mac2);
+    	checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac2, wifiDevice2,"O","1.0.8.2");
     	/*boolean ret1 = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(true,"AP106P06V1.2.15Build8038");
     	if(ret1 ){
 			System.out.println("AP106P06V1.2.15Build8038 device need force Updated" );
