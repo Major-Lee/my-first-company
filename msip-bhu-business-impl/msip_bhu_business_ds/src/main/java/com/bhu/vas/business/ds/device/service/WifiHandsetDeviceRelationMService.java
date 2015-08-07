@@ -241,16 +241,18 @@ public class WifiHandsetDeviceRelationMService {
         int j = (int)spaceTime / (24 * 3600 * 1000);
 
         if (j > 0) {
-            List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =  map.get(week.get(0));
-            WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
-                    wifiHandsetDeviceItemDetailMDTOList.get(0);
+            List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
+                    wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+            WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
+
             wifiHandsetDeviceItemDetailMDTO.setOnline_time(
                     wifiHandsetDeviceItemDetailMDTO.getOnline_time() + Long.parseLong(uptime));
             wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
+            wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
             dataMap.put(week.get(0), wifiHandsetDeviceItemDetailMDTOList);
 
             //终端连续在线的时间分割补齐时间
-            for (int i = 1; i<= j; i++) {
+            for (int i = 1; i <= j; i++) {
                 String weekDate = week.get(i);
                 long logout = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() + (24 * 3600 - 1) * 1000;
                 List<WifiHandsetDeviceItemDetailMDTO> tempList =  map.get(week.get(j));
@@ -261,8 +263,8 @@ public class WifiHandsetDeviceRelationMService {
             }
 
             //未超过7天的数据
-            for (int i = 7-j ; i < 7; i++) {
-                String weekDate = week.get(i);
+            for (; j < 7; j++) {
+                String weekDate = week.get(j);
                 List<WifiHandsetDeviceItemDetailMDTO> tempList =  map.get(weekDate);
                 dataMap.put(week.get(j), tempList);
             }
