@@ -246,7 +246,13 @@ public class DeviceURouterRestBusinessFacadeService {
 					wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
 
 			if (wifiHandsetDeviceRelationMDTO != null) {
-				vto.setTotal_rx_bytes(String.valueOf(wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes()));
+				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
+
+				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
+				if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
+					total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getRx_bytes());
+				}
+				vto.setTotal_rx_bytes(String.valueOf(total_rx_bytes));
 
 				Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
 						wifiHandsetDeviceRelationMDTO.getItems();

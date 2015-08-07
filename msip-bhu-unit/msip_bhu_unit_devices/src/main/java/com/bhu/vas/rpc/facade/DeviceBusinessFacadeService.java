@@ -464,11 +464,8 @@ public class DeviceBusinessFacadeService {
 		//handset.setAction(HandsetDeviceDTO.Action_Offline);
 		//handset.setLast_wifi_id(dto.getLast_wifi_id());
 
-		dto.setRx_bytes("0");
-		dto.setTx_bytes("0");
-
 		HandsetStorageFacadeService.handsetComming(dto);
-		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
+		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac,
 				lowercase_d_mac, dto.fetchData_rx_rate_double());
 		/*
 		 * 3:统计增量 移动设备的daily访问时长增量

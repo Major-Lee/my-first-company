@@ -220,17 +220,15 @@ public class WifiHandsetDeviceRelationMService {
      * 更新七天的终端详情下线数据
      * @param map
      * @param week
-     * @param uptime
      * @param logout_at
      * @return
      */
     public Map<String, List<WifiHandsetDeviceItemDetailMDTO>> updateOfflineWifiHandsetDeviceItems(
                 Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
-                List<String> week, String uptime, long logout_at, String lastLogoutAt) {
+                List<String> week, long logout_at, String lastLogoutAt) {
 
         Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
                 = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
-
 
         Date last_logout_at = DateTimeHelper.parseDate(lastLogoutAt, DateTimeHelper.longDateFormat);
 
@@ -245,8 +243,6 @@ public class WifiHandsetDeviceRelationMService {
                     map.get(week.get(0));
             WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
                     wifiHandsetDeviceItemDetailMDTOList.get(0);
-            wifiHandsetDeviceItemDetailMDTO.setOnline_time(
-                    wifiHandsetDeviceItemDetailMDTO.getOnline_time() + Long.parseLong(uptime));
             wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
             dataMap.put(week.get(0), wifiHandsetDeviceItemDetailMDTOList);
         }
@@ -255,9 +251,6 @@ public class WifiHandsetDeviceRelationMService {
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
                     wifiHandsetDeviceItemDetailMDTOList = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
             WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO = new WifiHandsetDeviceItemDetailMDTO();
-
-            wifiHandsetDeviceItemDetailMDTO.setOnline_time(
-                    wifiHandsetDeviceItemDetailMDTO.getOnline_time() + Long.parseLong(uptime));
             wifiHandsetDeviceItemDetailMDTO.setLogout_at(logout_at);
             wifiHandsetDeviceItemDetailMDTOList.add(wifiHandsetDeviceItemDetailMDTO);
             dataMap.put(week.get(0), wifiHandsetDeviceItemDetailMDTOList);
@@ -268,7 +261,6 @@ public class WifiHandsetDeviceRelationMService {
                 long logout = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() + (24 * 3600 - 1) * 1000;
                 List<WifiHandsetDeviceItemDetailMDTO> tempList =  map.get(week.get(j));
                 WifiHandsetDeviceItemDetailMDTO dto =  tempList.get(0);
-                dto.setOnline_time(dto.getOnline_time() + Long.parseLong(uptime));
                 dto.setLogout_at(logout);
                 dataMap.put(week.get(j), tempList);
             }
@@ -322,7 +314,7 @@ public class WifiHandsetDeviceRelationMService {
                 wifiHandsetDeviceItemDetailMTDTOMap = wifiHandsetDeviceRelationMDTO.getItems();
 
                 dataMap = updateOfflineWifiHandsetDeviceItems(
-                        wifiHandsetDeviceItemDetailMTDTOMap, week, uptime, logout_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
+                        wifiHandsetDeviceItemDetailMTDTOMap, week,logout_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 update.set(M_LAST_LOGIN_AT, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
 
