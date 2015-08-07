@@ -224,7 +224,7 @@ public class WifiHandsetDeviceRelationMService {
      * @param logout_at
      * @return
      */
-    private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> updateOfflineWifiHandsetDeviceItems(
+    public Map<String, List<WifiHandsetDeviceItemDetailMDTO>> updateOfflineWifiHandsetDeviceItems(
                 Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map,
                 List<String> week, String uptime, long logout_at, String lastLogoutAt) {
 
@@ -238,7 +238,7 @@ public class WifiHandsetDeviceRelationMService {
 
 
         //获取终端连续在线的时间段j天
-        int j = (int)spaceTime % (24 * 3600 * 1000);
+        int j = (int)spaceTime / (24 * 3600 * 1000);
 
         if (j > 0) {
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =  map.get(week.get(0));
@@ -252,7 +252,7 @@ public class WifiHandsetDeviceRelationMService {
             //终端连续在线的时间分割补齐时间
             for (int i = 1; i<= j; i++) {
                 String weekDate = week.get(i);
-                long logout = DateTimeHelper.parseDate(weekDate, DateTimeHelper.longDateFormat).getTime() + (24 * 3600 - 1) * 1000;
+                long logout = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() + (24 * 3600 - 1) * 1000;
                 List<WifiHandsetDeviceItemDetailMDTO> tempList =  map.get(week.get(j));
                 WifiHandsetDeviceItemDetailMDTO dto =  tempList.get(0);
                 dto.setOnline_time(dto.getOnline_time() + Long.parseLong(uptime));
