@@ -242,7 +242,7 @@ public class WifiHandsetDeviceRelationMService {
 
         if (j == 0) {
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
-                    map.get(0);
+                    map.get(week.get(0));
             WifiHandsetDeviceItemDetailMDTO wifiHandsetDeviceItemDetailMDTO =
                     wifiHandsetDeviceItemDetailMDTOList.get(0);
             wifiHandsetDeviceItemDetailMDTO.setOnline_time(
