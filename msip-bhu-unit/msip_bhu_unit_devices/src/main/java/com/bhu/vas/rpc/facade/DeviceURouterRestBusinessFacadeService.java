@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -96,7 +98,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class DeviceURouterRestBusinessFacadeService {
-	//private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
+	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -248,9 +250,13 @@ public class DeviceURouterRestBusinessFacadeService {
 			if (wifiHandsetDeviceRelationMDTO != null) {
 				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
 				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
+
+				logger.info("handsetDeviceDTO:===" + handsetDeviceDTO);
 				if (handsetDeviceDTO != null) {
 					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
+						logger.info("handsetDeviceDTO:===online" + handsetDeviceDTO.wasOnline());
 						if (handsetDeviceDTO.getRx_bytes() != null ) {
+							logger.info("handsetDeviceDTO:===rx_bytes" + handsetDeviceDTO.getRx_bytes());
 							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getRx_bytes());
 						}
 					}
