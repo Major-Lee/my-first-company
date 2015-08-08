@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -96,7 +98,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class DeviceURouterRestBusinessFacadeService {
-	//private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
+	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -246,7 +248,18 @@ public class DeviceURouterRestBusinessFacadeService {
 					wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
 
 			if (wifiHandsetDeviceRelationMDTO != null) {
-				vto.setTotal_rx_bytes(String.valueOf(wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes()));
+				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
+				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
+
+				if (handsetDeviceDTO != null) {
+					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
+						if (handsetDeviceDTO.getRx_bytes() != null ) {
+							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getRx_bytes());
+						}
+					}
+				}
+
+				vto.setTotal_rx_bytes(String.valueOf(total_rx_bytes));
 
 				Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
 						wifiHandsetDeviceRelationMDTO.getItems();

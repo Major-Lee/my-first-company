@@ -21,6 +21,10 @@ public class URouterHdVTO implements Serializable{
 	private String rx_limit;
 	//终端的上行限速 bps
 	private String tx_limit;
+	//终端的下行流量
+	private String rx_bytes;
+	//终端的上行流量
+	private String tx_bytes;
 	//是否在线
 	private boolean online;
 	//是否是访客网络的
@@ -62,6 +66,23 @@ public class URouterHdVTO implements Serializable{
 	public void setTx_limit(String tx_limit) {
 		this.tx_limit = tx_limit;
 	}
+
+	public String getRx_bytes() {
+		return rx_bytes;
+	}
+
+	public void setRx_bytes(String rx_bytes) {
+		this.rx_bytes = rx_bytes;
+	}
+
+	public String getTx_bytes() {
+		return tx_bytes;
+	}
+
+	public void setTx_bytes(String tx_bytes) {
+		this.tx_bytes = tx_bytes;
+	}
+
 	public boolean isOnline() {
 		return online;
 	}

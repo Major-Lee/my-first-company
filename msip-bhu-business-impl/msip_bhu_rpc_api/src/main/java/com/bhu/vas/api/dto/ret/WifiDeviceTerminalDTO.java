@@ -25,6 +25,11 @@ public class WifiDeviceTerminalDTO implements Serializable{
 	private String data_tx_rate;
 	//下行速率
 	private String data_rx_rate;
+
+	//上传流量
+	private String tx_bytes;
+	//下载流量
+	private String rx_bytes;
 	
 	private String mode;
 	
@@ -50,6 +55,23 @@ public class WifiDeviceTerminalDTO implements Serializable{
 	public void setData_rx_rate(String data_rx_rate) {
 		this.data_rx_rate = data_rx_rate;
 	}
+
+	public String getTx_bytes() {
+		return tx_bytes;
+	}
+
+	public void setTx_bytes(String tx_bytes) {
+		this.tx_bytes = tx_bytes;
+	}
+
+	public String getRx_bytes() {
+		return rx_bytes;
+	}
+
+	public void setRx_bytes(String rx_bytes) {
+		this.rx_bytes = rx_bytes;
+	}
+
 	public String getMode() {
 		return mode;
 	}
