@@ -94,16 +94,18 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 
 	@Override
 	public boolean wifiDeviceCmdsDown(String ctx, String mac, List<String> cmds) {
-		logger.info(String.format("wifiDeviceCmdsDown0 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+		//logger.info(String.format("wifiDeviceCmdsDown0 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 		if(StringUtils.isEmpty(ctx)){
 			SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
-				logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+				logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,mac,cmds));
 			}else{
-				logger.info(String.format("wifiDeviceCmdsDown2 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+				logger.info(String.format("wifiDeviceCmdsDown2 ctx[%s] mac[%s] cmds[%s] ctx not existed",ctx,mac,cmds));
 				return false;
 			}
+		}else{
+			logger.info(String.format("wifiDeviceCmdsDown with ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 		}
 		for(String cmd:cmds){
 			activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);

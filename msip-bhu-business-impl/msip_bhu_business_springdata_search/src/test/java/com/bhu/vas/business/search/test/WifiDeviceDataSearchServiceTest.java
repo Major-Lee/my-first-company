@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.index.query.FilterBuilders;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -102,9 +104,16 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     } 
     @Test
    	public void test009SearchGeoInRectangle(){
-    	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByAddressMatchEach("北京市 海淀区 荷清路",0,10);//findByRegisteratGreaterThan(1438169971000l,0,5);
-       	System.out.println("test007SearchByAddress");
-       	for(WifiDeviceDocument doc:searchByKeywords){
+    	
+		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
+			.withFilter(
+					FilterBuilders.geoBoundingBoxFilter("geopoint")
+					.topLeft(0, -1)
+					.bottomRight(150, 1));
+		//When
+		List<WifiDeviceDocument> geoAuthorsForGeoCriteria = wifiDeviceDataSearchService.getElasticsearchTemplate().queryForList(queryBuilder.build(), WifiDeviceDocument.class);
+       	System.out.println("test009SearchGeoInRectangle");
+       	for(WifiDeviceDocument doc:geoAuthorsForGeoCriteria){
     		System.out.println(doc.getAddress());
     	}
     }

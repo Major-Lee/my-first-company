@@ -233,7 +233,9 @@ public class WifiDeviceDataSearchService {
         System.out.println(geoAuthorsForGeoCriteria.getContent().size());*/
     }
 	
-	
+	public ElasticsearchTemplate getElasticsearchTemplate(){
+		return elasticsearchTemplate;
+	}
 	
 	public WifiDeviceDocumentRepository getRepository(){
 		return wifiDeviceDocumentRepository;
