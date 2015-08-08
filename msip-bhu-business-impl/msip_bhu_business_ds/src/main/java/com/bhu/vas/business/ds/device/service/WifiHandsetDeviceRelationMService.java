@@ -241,8 +241,6 @@ public class WifiHandsetDeviceRelationMService {
             j = 6;
         }
 
-
-
         if (j == 0) { //当天下线的记录处理
             List<WifiHandsetDeviceItemDetailMDTO> wifiHandsetDeviceItemDetailMDTOList =
                     map.get(week.get(0));
@@ -284,13 +282,13 @@ public class WifiHandsetDeviceRelationMService {
                 }
                 dataMap.put(week.get(i), tempList);
             }
-            //未超过7天的,复制原来数据
-            for (; j < 6; j++) {
-                String weekDate = week.get(j);
-                List<WifiHandsetDeviceItemDetailMDTO> tempList =  map.get(weekDate);
-                dataMap.put(week.get(j), tempList);
-            }
+        }
 
+        //未超过7天的,复制原来数据
+        for (; j < 6; j++) {
+            String weekDate = week.get(j);
+            List<WifiHandsetDeviceItemDetailMDTO> tempList =  map.get(weekDate);
+            dataMap.put(week.get(j), tempList);
         }
 
         return dataMap;
