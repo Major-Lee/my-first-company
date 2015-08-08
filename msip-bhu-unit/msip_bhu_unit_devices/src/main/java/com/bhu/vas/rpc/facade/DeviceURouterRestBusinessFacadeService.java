@@ -251,12 +251,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
 				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
 
-				logger.info("handsetDeviceDTO:===" + handsetDeviceDTO);
 				if (handsetDeviceDTO != null) {
 					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
-						logger.info("handsetDeviceDTO:===online" + handsetDeviceDTO.wasOnline());
 						if (handsetDeviceDTO.getRx_bytes() != null ) {
-							logger.info("handsetDeviceDTO:===rx_bytes" + handsetDeviceDTO.getRx_bytes());
 							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getRx_bytes());
 						}
 					}
