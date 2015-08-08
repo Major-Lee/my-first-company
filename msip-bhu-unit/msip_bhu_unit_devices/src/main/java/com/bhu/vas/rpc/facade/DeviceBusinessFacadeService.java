@@ -711,9 +711,10 @@ public class DeviceBusinessFacadeService {
 						handset.setData_rx_rate(terminal.getData_rx_rate());
 					}
 					//修改终端的流量
+					logger.info("terminal"+terminal.getMac() + terminal.getRx_bytes() + terminal.getTx_bytes());
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
-
+					logger.info("handset"+ handset.getMac()+handset.getRx_bytes() + handset.getTx_bytes());
 					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
 							terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 					cursor++;
