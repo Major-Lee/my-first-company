@@ -197,26 +197,14 @@ public class UserDeviceFacadeService {
         	}
         	
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,handset_device,appver);
-        	/*if(upgrade.isForceDeviceUpgrade()){
+        	if(upgrade.isForceDeviceUpgrade()){
         		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
         		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
         				WifiDeviceHelper.Upgrade_Default_BeginTime, 
         				WifiDeviceHelper.Upgrade_Default_EndTime, 
         				upgrade.getUpgradeurl());
         		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-        	}*/
-        	/*boolean isFirstGray = false;
-        	boolean forceDeviceUpdate = wifiDeviceVersionBuilderService.deviceVersionUpdateCheck(isFirstGray, wifiDevice.getOrig_swver());
-        	if(forceDeviceUpdate){
-        		//发送异步Device升级指令，指定早上4点升级 
-	        	long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-	        	String firmwareUpdateUrl = wifiDeviceVersionBuilderService.deviceVersionUpdateURL(isFirstGray);
-	        	if(StringUtils.isNotEmpty(firmwareUpdateUrl)){
-	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, "02:00:00", "04:00:00", firmwareUpdateUrl);
-	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-	        	}
         	}
-        	boolean forceAppUpdate = wifiDeviceVersionBuilderService.appVersionUpdateCheck(appver);*/
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
