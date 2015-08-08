@@ -87,6 +87,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     } 
     
+     
+    
     
     @Test
    	public void test008SearchGeoInRectangle(){
@@ -98,6 +100,16 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     		System.out.println(doc.getAddress());
     	}
     } 
+    @Test
+   	public void test009SearchGeoInRectangle(){
+    	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByAddressMatchEach("北京市 海淀区 荷清路",0,10);//findByRegisteratGreaterThan(1438169971000l,0,5);
+       	System.out.println("test007SearchByAddress");
+       	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
+    }
+    
+    
     
     @Test
  	public void test000BatchEmptyDocument(){
