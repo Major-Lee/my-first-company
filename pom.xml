@@ -27,6 +27,7 @@
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
         
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
+        <module>msip-bhu-business-impl/msip_bhu_business_springdata_search</module>
         
         <!--
         <module>msip-bhu-cm-control/msip_im_common</module>
@@ -60,6 +61,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <smartwork.version>3.0-SNAPSHOT</smartwork.version>
+        <junit.version>4.11</junit.version>
         <spring.version>4.1.2.RELEASE</spring.version>
         <spring-data.version>1.3.0.RELEASE</spring-data.version>
         <mybatis.version>3.2.8</mybatis.version>
@@ -331,7 +333,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${junit.version}</version>
             </dependency>
 
             <dependency>
@@ -691,7 +693,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 

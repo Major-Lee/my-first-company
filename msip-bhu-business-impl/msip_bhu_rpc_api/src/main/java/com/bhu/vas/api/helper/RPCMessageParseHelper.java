@@ -572,6 +572,8 @@ public class RPCMessageParseHelper {
 						dto.setMac(element.attributeValue("mac"));
 						dto.setData_tx_rate(element.attributeValue("data_tx_rate"));
 						dto.setData_rx_rate(element.attributeValue("data_rx_rate"));
+						dto.setRx_bytes(element.attributeValue("rx_bytes"));
+						dto.setTx_bytes(element.attributeValue("tx_bytes"));
 						dtos.add(dto);
 					}
 				}

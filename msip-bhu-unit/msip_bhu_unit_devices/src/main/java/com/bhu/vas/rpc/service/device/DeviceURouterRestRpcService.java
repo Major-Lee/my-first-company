@@ -99,8 +99,8 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		}
 		catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail exception uid [%s] wifi_mac [%s] hd_mac [%s]",
-					uid, wifiId, hd_mac));
+			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail exception uid [%s] wifi_mac [%s] hd_mac [%s] exmsg[%s]",
+					uid, wifiId, hd_mac, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}

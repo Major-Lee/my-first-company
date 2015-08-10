@@ -2,6 +2,7 @@ package com.bhu.vas.di.op;
 
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import org.elasticsearch.common.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,28 +17,37 @@ public class Test {
     public static void main(String[] args){
 
 
-        List<WifiDeviceGroupRelationPK> ids = new ArrayList<WifiDeviceGroupRelationPK>();
-        WifiDeviceGroupRelationPK pk = new WifiDeviceGroupRelationPK();
-        pk.setGid(1000);
-        pk.setMac("mac");
-        ids.add(pk);
+        String dateStr = "2015-08-06 19:01:35";
+        Date date = DateTimeHelper.parseDate(dateStr,DateTimeHelper.shortDateFormat);
+        System.out.println(date.getTime());
+        System.out.println(DateTimeHelper.formatDate(date, DateTimeHelper.longDateFormat));
 
-        pk = new WifiDeviceGroupRelationPK();
-        pk.setGid(1001);
-        pk.setMac("mac");
-        ids.add(pk);
+        if (new Date().getTime() - date.getTime() > 24 * 3600) {
+            System.out.println("1234");
+        }
 
-        pk = new WifiDeviceGroupRelationPK();
-        pk.setGid(1002);
-        pk.setMac("mac");
-        ids.add(pk);
-
-        pk = new WifiDeviceGroupRelationPK();
-        pk.setGid(1003);
-        pk.setMac("mac");
-        ids.add(pk);
-
-        System.out.println(ids);
+//        List<WifiDeviceGroupRelationPK> ids = new ArrayList<WifiDeviceGroupRelationPK>();
+//        WifiDeviceGroupRelationPK pk = new WifiDeviceGroupRelationPK();
+//        pk.setGid(1000);
+//        pk.setMac("mac");
+//        ids.add(pk);
+//
+//        pk = new WifiDeviceGroupRelationPK();
+//        pk.setGid(1001);
+//        pk.setMac("mac");
+//        ids.add(pk);
+//
+//        pk = new WifiDeviceGroupRelationPK();
+//        pk.setGid(1002);
+//        pk.setMac("mac");
+//        ids.add(pk);
+//
+//        pk = new WifiDeviceGroupRelationPK();
+//        pk.setGid(1003);
+//        pk.setMac("mac");
+//        ids.add(pk);
+//
+//        System.out.println(ids);
 
 
 //            List<String> week = new ArrayList<String>();

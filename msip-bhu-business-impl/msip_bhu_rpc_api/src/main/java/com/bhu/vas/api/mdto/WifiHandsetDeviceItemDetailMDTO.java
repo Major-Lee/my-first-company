@@ -11,8 +11,6 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     private long logout_at;
 
-    private long online_time;
-
     public long getLogin_at() {
         return login_at;
     }
@@ -29,11 +27,4 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
         this.logout_at = logout_at;
     }
 
-    public long getOnline_time() {
-        return online_time;
-    }
-
-    public void setOnline_time(long online_time) {
-        this.online_time = online_time;
-    }
 }

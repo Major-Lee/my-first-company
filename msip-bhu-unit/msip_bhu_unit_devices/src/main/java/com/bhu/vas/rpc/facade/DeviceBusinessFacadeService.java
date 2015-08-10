@@ -463,8 +463,9 @@ public class DeviceBusinessFacadeService {
 		dto.setData_rx_rate(handset.getData_rx_rate());
 		//handset.setAction(HandsetDeviceDTO.Action_Offline);
 		//handset.setLast_wifi_id(dto.getLast_wifi_id());
+
 		HandsetStorageFacadeService.handsetComming(dto);
-		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, 
+		WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac,
 				lowercase_d_mac, dto.fetchData_rx_rate_double());
 		/*
 		 * 3:统计增量 移动设备的daily访问时长增量
@@ -709,7 +710,11 @@ public class DeviceBusinessFacadeService {
 						handset.setData_tx_rate(terminal.getData_tx_rate());
 						handset.setData_rx_rate(terminal.getData_rx_rate());
 					}
-					
+					//修改终端的流量
+					logger.info("terminal"+terminal.getMac() + terminal.getRx_bytes() + terminal.getTx_bytes());
+					handset.setRx_bytes(terminal.getRx_bytes());
+					handset.setTx_bytes(terminal.getTx_bytes());
+					logger.info("handset"+ handset.getMac()+handset.getRx_bytes() + handset.getTx_bytes());
 					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
 							terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 					cursor++;
