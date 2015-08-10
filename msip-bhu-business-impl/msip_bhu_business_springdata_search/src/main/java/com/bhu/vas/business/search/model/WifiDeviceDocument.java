@@ -54,7 +54,7 @@ public class WifiDeviceDocument {
 
 	
 	/**
-	 * 建立索引的时候 数组为 经度 维度
+	 * 建立索引的时候 数组为 经度 纬度
 	 * 
 	 */
 	@GeoPointField
