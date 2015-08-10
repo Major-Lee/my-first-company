@@ -2,9 +2,12 @@ package com.bhu.vas.business.search.service;
 
 import static org.elasticsearch.index.query.FilterBuilders.geoBoundingBoxFilter;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
@@ -182,14 +185,15 @@ public class WifiDeviceDataSearchService {
 	 */
 	
 	/**
-	 * 
+	 * 建立索引的时候 数组为 经度lon 纬度lat
+	 * 查询索引的时候 数组为 纬度lat 经度lon 
 	 * @param topLeft lat,lon
 	 * @param bottomRight lat,lon
 	 * @param page
 	 * @param pagesize
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchGeoInRectangle(double[] topLeft,double[] bottomRight,int page,int pagesize) {
+	public Page<WifiDeviceDocument> searchGeoInBoundingBox(double[] topLeft,double[] bottomRight,int page,int pagesize) {
     	//使用ES原生filter方式
     	SearchQuery searchGeoQuery = new NativeSearchQueryBuilder()
     			.withFilter(FilterBuilders.geoBoundingBoxFilter("geopoint")
@@ -232,6 +236,30 @@ public class WifiDeviceDataSearchService {
         //assertThat(documents.getNumberOfElements(), is(equalTo(1)));
         System.out.println(geoAuthorsForGeoCriteria.getContent().size());*/
     }
+	
+	
+	public Page<WifiDeviceDocument> searchGeoInRangeBox(double[] geopoint,String distance,int page,int pagesize) {
+		/*CriteriaQuery geoLocationCriteriaQuery = new CriteriaQuery(
+				new Criteria("geopoint").within(new GeoPoint(geopoint[0], geopoint[1]), "0.5km"))
+				.setPageable(new PageRequest(page,pagesize));*/
+		//使用es原生方式进行查询
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+        		.withQuery(QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(), 
+        				FilterBuilders.geoDistanceFilter("geopoint")
+                .distance(distance)//"0.5km")
+                .point(geopoint[0], geopoint[1])))
+                .withPageable(new PageRequest(page,pagesize))
+                .withSort(SortBuilders.geoDistanceSort("geopoint")
+                		.point(geopoint[0], geopoint[1]).unit(DistanceUnit.METERS).order(SortOrder.ASC))
+                .build();
+        //return wifiDeviceDocumentRepository.search(searchQuery);
+		
+		//when
+		/*List<WifiDeviceDocument> geoAuthorsForGeoCriteria = elasticsearchTemplate.queryForList(geoLocationCriteriaQuery, 
+				WifiDeviceDocument.class);*/
+        
+        return wifiDeviceDocumentRepository.search(searchQuery);
+	}
 	
 	public ElasticsearchTemplate getElasticsearchTemplate(){
 		return elasticsearchTemplate;

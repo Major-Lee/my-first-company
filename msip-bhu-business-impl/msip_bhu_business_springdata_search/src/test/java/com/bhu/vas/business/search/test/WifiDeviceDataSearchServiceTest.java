@@ -95,7 +95,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     @Test
    	public void test008SearchGeoInRectangle(){
     	Page<WifiDeviceDocument> searchByKeywords = 
-    			wifiDeviceDataSearchService.searchGeoInRectangle(new double[]{0,0}, new double[]{150,50}, 0, 10);
+    			wifiDeviceDataSearchService.searchGeoInBoundingBox(new double[]{40.06104160344549,116.27770453955074}, new double[]{40.04100280909214,116.31143600012203}, 0, 10);
     			//wifiDeviceDataSearchService.searchGeoInRectangle(new double[]{38.052107,110.295214}, new double[]{45.052107,119.295214}, 0, 10);
        	System.out.println("test008SearchGeoInRectangle");
        	for(WifiDeviceDocument doc:searchByKeywords){
@@ -104,12 +104,11 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     } 
     @Test
    	public void test009SearchGeoInRectangle(){
-    	
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
 			.withFilter(
 					FilterBuilders.geoBoundingBoxFilter("geopoint")
-					.topLeft(0, -1)
-					.bottomRight(150, 1));
+					.topLeft(40.06104160344549,116.27770453955074)
+					.bottomRight(40.04100280909214,116.31143600012203));
 		//When
 		List<WifiDeviceDocument> geoAuthorsForGeoCriteria = wifiDeviceDataSearchService.getElasticsearchTemplate().queryForList(queryBuilder.build(), WifiDeviceDocument.class);
        	System.out.println("test009SearchGeoInRectangle");
@@ -118,6 +117,27 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
+    @Test
+   	public void test010SearchGeoInRangeBox(){
+		/*NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
+			.withFilter(
+					FilterBuilders.geoBoundingBoxFilter("geopoint")
+					.topLeft(40.06104160344549,116.27770453955074)
+					.bottomRight(40.04100280909214,116.31143600012203));
+		//When
+		List<WifiDeviceDocument> geoAuthorsForGeoCriteria = wifiDeviceDataSearchService.getElasticsearchTemplate().queryForList(queryBuilder.build(), WifiDeviceDocument.class);
+       	System.out.println("test009SearchGeoInRectangle");
+       	for(WifiDeviceDocument doc:geoAuthorsForGeoCriteria){
+    		System.out.println(doc.getAddress());
+    	}*/
+    	Page<WifiDeviceDocument> searchByKeywords = 
+    			wifiDeviceDataSearchService.searchGeoInRangeBox(new double[]{40.052107,116.29521399999999},"10km", 0, 10);
+    			//wifiDeviceDataSearchService.searchGeoInRectangle(new double[]{38.052107,110.295214}, new double[]{45.052107,119.295214}, 0, 10);
+       	System.out.println("test010SearchGeoInRangeBox");
+       	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
+    }
     
     
     @Test
@@ -131,11 +151,11 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		WifiDeviceDocument doc1 = new WifiDeviceDocument();
 		doc1.setId("62:68:75:10:11:80");
 		doc1.setSn("BN009BC100053AA");
-		doc1.setAddress("北京市海淀区荷清路");
+		doc1.setAddress("中国北京市海淀区上地西路6号");
 		doc1.setCount(1);
 		doc1.setOnline(false);
 		//doc1.setGeopoint(new double[]{116.345451, 40.016870});
-		doc1.setGeopoint(new double[]{40.016870,116.345451});
+		doc1.setGeopoint(new double[]{116.29770308996578,40.05151569815288});
 		doc1.setConfigmodel("basic");
 		doc1.setWorkmodel("router-ap");
 		doc1.setOrigswver("AP106P06V1.2.15Build7631");
@@ -147,11 +167,11 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		WifiDeviceDocument doc2 = new WifiDeviceDocument();
 		doc2.setId("84:82:f4:23:06:8c");
 		doc2.setSn("BN207DE100048AA");
-		doc2.setAddress("北京市朝阳区北四环东路辅路");
+		doc2.setAddress("中国北京市海淀区开拓路1号");
 		doc2.setCount(2);
 		doc2.setOnline(true);
 		//doc2.setGeopoint(new double[]{116.416750, 39.996959});
-		doc2.setGeopoint(new double[]{39.996959,116.416750});
+		doc2.setGeopoint(new double[]{116.30431205297847,40.0446825046788});
 		doc2.setConfigmodel("basic");
 		doc2.setWorkmodel("router-ap");
 		doc2.setOrigswver("AP106P06V1.2.15Build8084");
@@ -163,11 +183,11 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		WifiDeviceDocument doc3 = new WifiDeviceDocument();
 		doc3.setId("84:82:f4:23:06:a4");
 		doc3.setSn("BN207DE100054AA");
-		doc3.setAddress("北京市海淀区软件园三号路");
+		doc3.setAddress("中国北京市海淀区软件园三号路");
 		doc3.setCount(3);
 		doc3.setOnline(true);
 		//doc3.setGeopoint(new double[]{116.295214, 40.052107});
-		doc3.setGeopoint(new double[]{ 40.052107,116.295214});
+		doc3.setGeopoint(new double[]{ 116.295214,40.052107});
 		doc3.setConfigmodel("basic");
 		doc3.setWorkmodel("router-ap");
 		doc3.setOrigswver("AP106P06V1.2.15Build8064");
@@ -184,7 +204,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc4.setCount(4);
 		doc4.setOnline(true);
 		//doc4.setGeopoint(new double[]{115.850464, 28.668567});
-		doc4.setGeopoint(new double[]{28.668567,115.850464});
+		doc4.setGeopoint(new double[]{115.850464,28.668567});
 		doc4.setConfigmodel("basic");
 		doc4.setWorkmodel("router-ap");
 		doc4.setOrigswver("AP106P06V1.2.15Build8084");
@@ -200,7 +220,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc5.setCount(5);
 		doc5.setOnline(true);
 		//doc5.setGeopoint(new double[]{116.377757, 39.882544});
-		doc5.setGeopoint(new double[]{39.882544,116.377757});
+		doc5.setGeopoint(new double[]{116.377757,39.882544});
 		doc5.setConfigmodel("basic");
 		doc5.setWorkmodel("router-ap");
 		doc5.setOrigswver("AP106P06V1.2.15Build8064");

@@ -52,8 +52,13 @@ public class WifiDeviceDocument {
 	)
 	private String devicetype;//设备类型
 
+	
+	/**
+	 * 建立索引的时候 数组为 经度 维度
+	 * 
+	 */
 	@GeoPointField
-	private double[] geopoint;//lat,lon 
+	private double[] geopoint;//lon,lat,
 	
 	@Field(
 			type = FieldType.String,
