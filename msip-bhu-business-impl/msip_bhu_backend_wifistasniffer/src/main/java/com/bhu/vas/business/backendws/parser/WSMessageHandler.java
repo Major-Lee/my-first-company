@@ -94,6 +94,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 			
 			List<WifistasnifferItemRddto> items = dto.getItems();
 			for(WifistasnifferItemRddto item_dto : items){
+				item_dto.setSnifftime(item_dto.getSnifftime() * 1000l);//上报的是秒 转换成毫秒
 				if(item_dto.isOnline()){
 					wifistasnifferOnlines.add(item_dto);
 				}else{
