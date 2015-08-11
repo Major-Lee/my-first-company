@@ -100,8 +100,8 @@ public class WifiHandsetDeviceRelationMService {
 
 
         try {
-            List<WifiHandsetDeviceItemLogMDTO> logs
-                    = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
+            List<WifiHandsetDeviceItemLogMDTO> logs = null;
+
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(last_login_at.getTime());
             log.setType(M_LOGS_TYPE_LOGIN);
@@ -112,6 +112,10 @@ public class WifiHandsetDeviceRelationMService {
             if (wifiHandsetDeviceRelationMDTO == null) {
                 dataMap = initWifiHansetDeviceItems(week, last_login_at);
                 update.set(M_TOTAL_RX_BYTES, 0);
+
+                logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
+
+
             } else {
                 Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap
                         = wifiHandsetDeviceRelationMDTO.getItems();
@@ -125,9 +129,12 @@ public class WifiHandsetDeviceRelationMService {
                 }
 
                 update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
+
+                logs = wifiHandsetDeviceRelationMDTO.getLogs();
             }
 
-
+            logs.add(log);
+            update.set(M_LOGS, logs);
             update.set(M_ITEMS, dataMap);
 
 
@@ -338,14 +345,11 @@ public class WifiHandsetDeviceRelationMService {
 
         try {
 
-            List<WifiHandsetDeviceItemLogMDTO> logs
-                    = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
+            List<WifiHandsetDeviceItemLogMDTO> logs = null;
+
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(logout_at);
-            log.setType(M_LOGS_TYPE_LOGIN);
-            logs.add(log);
-            update.set(M_LOGS,logs);
-
+            log.setType(M_LOGS_TYPE_LOGOUT);
 
             Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap =
                     new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
@@ -354,6 +358,8 @@ public class WifiHandsetDeviceRelationMService {
             if (wifiHandsetDeviceRelationMDTO != null) {
 
                 wifiHandsetDeviceItemDetailMTDTOMap = wifiHandsetDeviceRelationMDTO.getItems();
+
+                logs = wifiHandsetDeviceRelationMDTO.getLogs();
 
                 dataMap = updateOfflineWifiHandsetDeviceItems(
                         wifiHandsetDeviceItemDetailMTDTOMap, week,logout_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
@@ -365,9 +371,12 @@ public class WifiHandsetDeviceRelationMService {
                 dataMap = initWifiHansetDeviceItems(week, date);
                 update.set(M_LAST_LOGIN_AT, DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
                 update.set(M_TOTAL_RX_BYTES, 0);
+                logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
             }
 
-            update.set("items", dataMap);
+            logs.add(log);
+            update.set(M_LOGS,logs);
+            update.set(M_ITEMS, dataMap);
 
         }catch (Exception e) {
 
