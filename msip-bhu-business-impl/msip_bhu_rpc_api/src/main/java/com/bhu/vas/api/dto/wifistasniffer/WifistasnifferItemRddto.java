@@ -99,8 +99,7 @@ public class WifistasnifferItemRddto implements Serializable{
 	public boolean equals(Object obj) {
 		if(obj == null) return false;
 		WifistasnifferItemRddto dto = (WifistasnifferItemRddto)obj;
-		if(dto.getMac().equals(this.getMac()) && dto.getD_mac().equals(this.getD_mac())
-				&& dto.getSnifftime() == this.getSnifftime()){
+		if(dto.getMac().equals(this.getMac()) && dto.getSnifftime() == this.getSnifftime()){
 			return true;
 		}
 		return false;
