@@ -27,5 +27,7 @@ public class VapCmdBenchmarkOp{
 		daemonRpcService = (IDaemonRpcService)ctx.getBean("daemonRpcService");
 		
 		daemonRpcService.wifiDevicesSimulateCmdTimer();
+		
+		System.exit(1);
 	}
 }
