@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
@@ -69,6 +70,9 @@ public class WifiHandsetDeviceRelationMService {
     private static final String M_LAST_LOGIN_AT = "last_login_at";
     private static final String M_TOTAL_RX_BYTES = "total_rx_bytes";
     private static final String M_ITEMS = "items";
+    private static final String M_LOGS = "logs";
+    private static final String M_LOGS_TYPE_LOGIN = "login";
+    private static final String M_LOGS_TYPE_LOGOUT = "logout";
 
 	
 	public int addRelation(String wifiId, String handsetId, Date last_login_at){
@@ -92,7 +96,17 @@ public class WifiHandsetDeviceRelationMService {
         Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap
                 = new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
 
+
+
+
         try {
+            List<WifiHandsetDeviceItemLogMDTO> logs
+                    = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
+            WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
+            log.setTs(last_login_at.getTime());
+            log.setType(M_LOGS_TYPE_LOGIN);
+            logs.add(log);
+            update.set(M_LOGS, log);
 
             //无记录，第一次生成
             if (wifiHandsetDeviceRelationMDTO == null) {
@@ -113,7 +127,9 @@ public class WifiHandsetDeviceRelationMService {
                 update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
             }
 
+
             update.set(M_ITEMS, dataMap);
+
 
         }catch (Exception e) {
             
@@ -321,6 +337,15 @@ public class WifiHandsetDeviceRelationMService {
         update.set(M_HANDSETID, handsetId);
 
         try {
+
+            List<WifiHandsetDeviceItemLogMDTO> logs
+                    = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
+            WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
+            log.setTs(logout_at);
+            log.setType(M_LOGS_TYPE_LOGIN);
+            logs.add(log);
+            update.set(M_LOGS,log);
+
 
             Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap =
                     new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
