@@ -106,7 +106,7 @@ public class WifiHandsetDeviceRelationMService {
             log.setTs(last_login_at.getTime());
             log.setType(M_LOGS_TYPE_LOGIN);
             logs.add(log);
-            update.set(M_LOGS, log);
+            update.set(M_LOGS, logs);
 
             //无记录，第一次生成
             if (wifiHandsetDeviceRelationMDTO == null) {
@@ -344,7 +344,7 @@ public class WifiHandsetDeviceRelationMService {
             log.setTs(logout_at);
             log.setType(M_LOGS_TYPE_LOGIN);
             logs.add(log);
-            update.set(M_LOGS,log);
+            update.set(M_LOGS,logs);
 
 
             Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap =
