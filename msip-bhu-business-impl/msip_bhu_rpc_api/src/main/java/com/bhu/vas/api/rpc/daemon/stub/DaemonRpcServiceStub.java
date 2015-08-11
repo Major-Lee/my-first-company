@@ -77,6 +77,11 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		return daemonRpcService.wifiDevicesOnlineTimer();
 	}
 
+	@Override
+	public boolean wifiDevicesSimulateCmdTimer() {
+		return daemonRpcService.wifiDevicesSimulateCmdTimer();
+	}
+
 	/*public boolean wifiDevicesLocationQuerySerialTimer(){
 		return daemonRpcService.wifiDevicesLocationQuerySerialTimer();
 	}*/

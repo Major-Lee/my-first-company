@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
 import com.bhu.vas.daemon.DaemonCheckTask;
+import com.bhu.vas.daemon.DaemonSimulateCmdTask;
 import com.bhu.vas.daemon.SessionInfo;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
@@ -149,6 +150,13 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	public boolean wifiDevicesOnlineTimer() {
 		logger.info("wifiDevicesOnlineTimer notify");
 		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 5*1000);
+		return true;
+	}
+	
+	@Override
+	public boolean wifiDevicesSimulateCmdTimer() {
+		logger.info("wifiDevicesSimulateCmdTimer notify");
+		TaskEngine.getInstance().schedule(new DaemonSimulateCmdTask(), 0l);
 		return true;
 	}
 
