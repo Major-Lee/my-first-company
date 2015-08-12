@@ -275,7 +275,8 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
 
-				vto.setLogs(getLogs(logs));
+				getLogs(uRouterHdTimeLineVTOList, logs);
+				
 				vto.setTimeline(uRouterHdTimeLineVTOList);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
@@ -286,21 +287,15 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 
 
-	private List<URouterHdTimeLineVTO> getLogs(List<WifiHandsetDeviceItemLogMDTO> logs) {
+	private List<URouterHdTimeLineVTO> getLogs(List<URouterHdTimeLineVTO> vtos, List<WifiHandsetDeviceItemLogMDTO> logs) {
 		long currentTime = System.currentTimeMillis();
 		String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 		long sevenDayBeforeNow = currentZeroTime - 7 * 24 * 3600 * 1000;
 
-		List<URouterHdTimeLineVTO> vtos = new ArrayList<URouterHdTimeLineVTO>();
 		List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
 
-		for(String key : week) { //初始化七天数据
-			URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
-			uRouterHdTimeLineVTO.setDate(key);
-			uRouterHdTimeLineVTO.setDetail(new ArrayList<WifiHandsetDeviceItemDetailMDTO>());
-			vtos.add(uRouterHdTimeLineVTO);
-		}
+
 
 		if (logs != null) {
 			WifiHandsetDeviceItemDetailMDTO dto = null;
