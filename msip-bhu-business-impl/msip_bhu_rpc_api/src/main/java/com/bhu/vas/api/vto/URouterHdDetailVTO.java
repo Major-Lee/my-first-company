@@ -15,6 +15,8 @@ public class URouterHdDetailVTO implements Serializable {
 
     private List<URouterHdTimeLineVTO> timeline;
 
+    private List<URouterHdTimeLineVTO> logs;
+
     public String getHd_mac() {
         return hd_mac;
     }
@@ -37,5 +39,13 @@ public class URouterHdDetailVTO implements Serializable {
 
     public void setTimeline(List<URouterHdTimeLineVTO> timeline) {
         this.timeline = timeline;
+    }
+
+    public List<URouterHdTimeLineVTO> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<URouterHdTimeLineVTO> logs) {
+        this.logs = logs;
     }
 }

@@ -1,14 +1,11 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
+import com.smartwork.msip.cores.helper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -81,10 +78,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.smartwork.msip.cores.helper.ArithHelper;
-import com.smartwork.msip.cores.helper.ArrayHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -99,6 +92,10 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 @Service
 public class DeviceURouterRestBusinessFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
+
+	private static final long IGNORE_LOGIN_TIME_SPACE = 15 * 60 * 1000L;
+
+	private static final long Day_time_Million_Second = 24 * 3600 * 1000L;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -276,6 +273,9 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 
+				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
+
+				vto.setLogs(getLogs(logs));
 				vto.setTimeline(uRouterHdTimeLineVTOList);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
@@ -285,6 +285,166 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 
+
+	private List<URouterHdTimeLineVTO> getLogs(List<WifiHandsetDeviceItemLogMDTO> logs) {
+		long currentTime = System.currentTimeMillis();
+		String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
+		long currentZeroTime = getDateZeroTime(new Date()).getTime();
+		long sevenDayBeforeNow = currentZeroTime - 7 * 24 * 3600 * 1000;
+
+		List<URouterHdTimeLineVTO> vtos = new ArrayList<URouterHdTimeLineVTO>();
+		List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
+
+		for(String key : week) { //初始化七天数据
+			URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+			uRouterHdTimeLineVTO.setDate(key);
+			uRouterHdTimeLineVTO.setDetail(new ArrayList<WifiHandsetDeviceItemDetailMDTO>());
+			vtos.add(uRouterHdTimeLineVTO);
+		}
+
+		if (logs != null) {
+			WifiHandsetDeviceItemDetailMDTO dto = null;
+			List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
+			String last_type = null;
+			long last_ts = 0;
+			for (WifiHandsetDeviceItemLogMDTO log : logs) {
+				long ts = log.getTs();
+				String type = log.getType();
+
+				if (last_type == null) { //最新一条记录
+
+					//处理分割记录
+					filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
+
+
+				} else { //第二条数据开始
+
+					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
+						//忽略记录
+					}
+					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
+
+						if (last_ts - ts > 15 * 3600 * 1000) {
+
+							//处理分割记录
+							filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
+
+						} else { //忽略15分钟记录
+
+							//filterDay(last_ts, currentTime, type, week, vtos, dto, mdtos);
+
+						}
+
+					}
+					if (type.equals("login") && last_type.equals("login")) {
+						//忽略记录
+					}
+
+					if (type.equals("login") && last_type.equals("logout")) {
+
+						filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
+					}
+
+				}
+
+				last_type = type;
+				last_ts = ts;
+
+			}
+
+		}
+
+		return vtos;
+	}
+
+
+	private void filterDay(long ts, long currentTime, String type, List<String> week, List<URouterHdTimeLineVTO> vtos,
+						   WifiHandsetDeviceItemDetailMDTO dto, List<WifiHandsetDeviceItemDetailMDTO> mdtos) {
+
+		//如果当前在线，当前时间与上一次登录时间相隔数天
+		String tsZeroStr = DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.shortDateFormat);
+
+		long ts_zero_at =  DateTimeHelper.getDateLongTime(tsZeroStr, DateTimeHelper.shortDateFormat);
+
+		long spaceTime = currentTime - ts_zero_at;
+		//获取终端连续在线的时间段j天
+		int j = (int)spaceTime / (24 * 3600 * 1000);
+		if (j >= 6) {
+			j = 6;
+		}
+
+		if (j == 0) { //当天记录
+			URouterHdTimeLineVTO vto = vtos.get(0); //更新logs
+			if (type.equals("login")) {
+				dto.setLogin_at(ts);
+				dto.setLogout_at(0);
+				mdtos.add(dto);
+			}
+			if (type.equals("logout")) {
+				dto.setLogin_at(ts);
+			}
+
+			vto.setLogs(mdtos);
+
+		}
+
+		if (j > 0) {
+			//有隔天记录的拆分第一条记录 >>>
+			long login_at_zero = DateTimeHelper.parseDate(week.get(0), DateTimeHelper.shortDateFormat).getTime();
+			//当天记录
+			if (type.equals("login")) { //隔天仍在线
+				dto.setLogout_at(0);
+			}
+
+			if (type.equals("logout")) { //隔天已登出
+				dto.setLogout_at(ts); //登出
+			}
+			dto.setLogin_at(login_at_zero); //补齐零点登入
+			mdtos.add(dto);
+			//有隔天记录的拆分第一条记录 <<<
+
+			//隔天记录的其他记录 >>>
+			for (int i=1 ; i< j + 1 ; i++) {
+				URouterHdTimeLineVTO vto = vtos.get(i);
+				String weekDate = vto.getDate();
+				mdtos = vto.getLogs();
+				long zeroTime = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() -
+						(i-1) * (24 * 3600 * 1000);
+				long logout = zeroTime + (24 * 3600 - 1) * 1000; //补齐登出时间
+
+				if (type.equals("login") || type.equals("logout")) {
+					dto = new WifiHandsetDeviceItemDetailMDTO();
+					dto.setLogout_at(logout);
+					dto.setLogin_at(zeroTime);
+					mdtos.add(dto);
+				}
+
+				if (i == j) {
+					dto = new WifiHandsetDeviceItemDetailMDTO();
+					dto.setLogin_at(logout);
+					dto.setLogin_at(ts);
+					mdtos.add(dto);
+				}
+			}
+			//隔天记录的其他记录 <<<
+
+		}
+	}
+
+
+	private Date getDateZeroTime(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
+		int second = cal.get(Calendar.SECOND);
+		//时分秒（毫秒数）
+		long millisecond = hour*60*60*1000 + minute*60*1000 + second*1000;
+		//凌晨00:00:00
+		cal.setTimeInMillis(cal.getTimeInMillis()-millisecond);
+
+		return cal.getTime();
+	}
 
 	
 	/**

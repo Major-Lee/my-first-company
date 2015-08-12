@@ -7,8 +7,6 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -105,8 +103,8 @@ public class WifiHandsetDeviceRelationMService {
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(last_login_at.getTime());
             log.setType(M_LOGS_TYPE_LOGIN);
-            logs.add(log);
-            update.set(M_LOGS, logs);
+
+
 
             //无记录，第一次生成
             if (wifiHandsetDeviceRelationMDTO == null) {
@@ -133,7 +131,7 @@ public class WifiHandsetDeviceRelationMService {
                 logs = wifiHandsetDeviceRelationMDTO.getLogs();
             }
 
-            logs.add(log);
+            logs.add(0,log);
             update.set(M_LOGS, logs);
             update.set(M_ITEMS, dataMap);
 
@@ -374,7 +372,7 @@ public class WifiHandsetDeviceRelationMService {
                 logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
             }
 
-            logs.add(log);
+            logs.add(0, log);
             update.set(M_LOGS,logs);
             update.set(M_ITEMS, dataMap);
 

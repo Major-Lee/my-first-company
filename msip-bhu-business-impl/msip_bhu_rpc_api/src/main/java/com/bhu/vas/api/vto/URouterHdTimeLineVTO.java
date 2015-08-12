@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +15,8 @@ public class URouterHdTimeLineVTO implements Serializable {
     private String date;
 
     private List<WifiHandsetDeviceItemDetailMDTO> detail;
+
+    private List<WifiHandsetDeviceItemDetailMDTO> logs;
 
 
     public String getDate() {
@@ -30,5 +33,13 @@ public class URouterHdTimeLineVTO implements Serializable {
 
     public void setDetail(List<WifiHandsetDeviceItemDetailMDTO> detail) {
         this.detail = detail;
+    }
+
+    public List<WifiHandsetDeviceItemDetailMDTO> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<WifiHandsetDeviceItemDetailMDTO> logs) {
+        this.logs = logs;
     }
 }
