@@ -307,10 +307,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (last_type == null) { //最新一条记录
 
 					dto = new WifiHandsetDeviceItemDetailMDTO();
-					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 
 					//处理分割记录
-					filterDay(ts, currentTime, type, week, vtos, dto, mdtos, true);
+					filterDay(ts, currentTime, type, week, vtos, true);
 
 
 				} else { //第二条数据开始
@@ -325,12 +324,10 @@ public class DeviceURouterRestBusinessFacadeService {
 						if (last_ts - ts > 15 * 3600 * 1000) {
 
 							//处理分割记录
-							filterDay(ts, currentTime, type, week, vtos, dto, mdtos, false);
+							filterDay(ts, currentTime, type, week, vtos, false);
 
 						} else { //忽略15分钟记录
-
 							//filterDay(last_ts, currentTime, type, week, vtos, dto, mdtos);
-
 						}
 
 					}
@@ -340,7 +337,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 					if (type.equals("login") && last_type.equals("logout")) {
 
-						filterDay(ts, currentTime, type, week, vtos, dto, mdtos, false);
+						filterDay(ts, currentTime, type, week, vtos, false);
 					}
 
 				}
@@ -357,7 +354,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 
 	private void filterDay(long ts, long currentTime, String type, List<String> week, List<URouterHdTimeLineVTO> vtos,
-						   WifiHandsetDeviceItemDetailMDTO dto, List<WifiHandsetDeviceItemDetailMDTO> mdtos, boolean first) {
+						   boolean first) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
 		String tsZeroStr = DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.shortDateFormat);
@@ -374,7 +371,19 @@ public class DeviceURouterRestBusinessFacadeService {
 		logger.info("jjjjj====" + j);
 
 		if (j == 0) { //当天记录
-			URouterHdTimeLineVTO vto = vtos.get(vtos.size()-1); //更新logs
+			URouterHdTimeLineVTO vto = vtos.get(0); //更新logs
+			List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs();
+			if (mdtos == null) {
+				mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+			}
+
+			WifiHandsetDeviceItemDetailMDTO dto = null;
+			if (mdtos.isEmpty()) {
+				dto = new WifiHandsetDeviceItemDetailMDTO();
+			} else {
+				dto = mdtos.get(mdtos.size() - 1);
+			}
+
 			if (type.equals("login")) {
 				dto.setLogin_at(ts);
 				if (first) {
@@ -392,7 +401,19 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		if (j > 0) {
 			//有隔天记录的拆分第一条记录 >>>
-			long login_at_zero = DateTimeHelper.parseDate(week.get(0), DateTimeHelper.shortDateFormat).getTime();
+			URouterHdTimeLineVTO vto = vtos.get(0); //更新logs
+			List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs();
+			if (mdtos == null) {
+				mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+			}
+
+			WifiHandsetDeviceItemDetailMDTO dto = null;
+			if (mdtos.isEmpty()) {
+				dto = new WifiHandsetDeviceItemDetailMDTO();
+			} else {
+				dto = mdtos.get(mdtos.size() - 1);
+			}
+			long login_at_zero = DateTimeHelper.parseDate(vto.getDate(), DateTimeHelper.shortDateFormat).getTime();
 			//当天记录
 			if (type.equals("login")) { //隔天仍在线
 				dto.setLogout_at(0);
@@ -407,9 +428,12 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			//隔天记录的其他记录 >>>
 			for (int i=1 ; i< j + 1 ; i++) {
-				URouterHdTimeLineVTO vto = vtos.get(i);
-				String weekDate = vto.getDate();
-				mdtos = vto.getLogs();
+				URouterHdTimeLineVTO currentVto = vtos.get(i);
+				String weekDate = currentVto.getDate();
+				List<WifiHandsetDeviceItemDetailMDTO> currentMdtos = currentVto.getLogs();
+				if (currentMdtos == null) {
+					currentMdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+				}
 				long zeroTime = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() -
 						(i-1) * (24 * 3600 * 1000);
 				long logout = zeroTime + (24 * 3600 - 1) * 1000; //补齐登出时间
@@ -418,14 +442,14 @@ public class DeviceURouterRestBusinessFacadeService {
 					dto = new WifiHandsetDeviceItemDetailMDTO();
 					dto.setLogout_at(logout);
 					dto.setLogin_at(zeroTime);
-					mdtos.add(dto);
+					currentMdtos.add(dto);
 				}
 
 				if (i == j) {
 					dto = new WifiHandsetDeviceItemDetailMDTO();
 					dto.setLogin_at(logout);
 					dto.setLogin_at(ts);
-					mdtos.add(dto);
+					currentMdtos.add(dto);
 				}
 			}
 			//隔天记录的其他记录 <<<
