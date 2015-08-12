@@ -276,7 +276,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
 
 				getLogs(uRouterHdTimeLineVTOList, logs);
-				
+
 				vto.setTimeline(uRouterHdTimeLineVTOList);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
@@ -379,7 +379,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				mdtos.add(dto);
 			}
 			if (type.equals("logout")) {
-				dto.setLogin_at(ts);
+				dto.setLogout_at(ts);
 			}
 
 			vto.setLogs(mdtos);
