@@ -314,13 +314,12 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				} else { //第二条数据开始
 
-					logger.info("getLogs:=== type"+type + ",last_type" + last_type);
+					logger.info("type["+type + "],last_type[" + last_type+"],ts[" + ts + "]");
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
 					}
 					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
-
-						logger.info("spacetime===" + (last_ts - ts));
+						logger.info("spacetime[" + (last_ts -ts) + "]");
 						if (last_ts - ts > 15 * 3600 * 1000) {
 
 							//处理分割记录
@@ -368,7 +367,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			j = 6;
 		}
 
-		logger.info("jjjjj====" + j);
+		logger.info("j====" + j);
 
 		if (j == 0) { //当天记录
 			URouterHdTimeLineVTO vto = vtos.get(0); //更新logs
@@ -394,6 +393,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			if (type.equals("logout")) {
 				dto.setLogout_at(ts);
 			}
+
+			logger.info("[mdtos]" + mdtos);
 
 			vto.setLogs(mdtos);
 
