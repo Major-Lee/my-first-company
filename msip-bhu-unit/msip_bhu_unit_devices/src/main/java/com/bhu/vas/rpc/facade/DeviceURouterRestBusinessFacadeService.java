@@ -313,6 +313,9 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				if (last_type == null) { //最新一条记录
 
+					dto = new WifiHandsetDeviceItemDetailMDTO();
+					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+
 					//处理分割记录
 					filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
 
