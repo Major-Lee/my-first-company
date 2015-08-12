@@ -295,8 +295,6 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
 
-
-
 		if (logs != null) {
 			WifiHandsetDeviceItemDetailMDTO dto = null;
 			List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
@@ -312,20 +310,22 @@ public class DeviceURouterRestBusinessFacadeService {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 
 					//处理分割记录
-					filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
+					filterDay(ts, currentTime, type, week, vtos, dto, mdtos, true);
 
 
 				} else { //第二条数据开始
 
+					logger.info("getLogs:=== type"+type + ",last_type" + last_type);
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
 					}
 					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
 
+						logger.info("spacetime===" + (last_ts - ts));
 						if (last_ts - ts > 15 * 3600 * 1000) {
 
 							//处理分割记录
-							filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
+							filterDay(ts, currentTime, type, week, vtos, dto, mdtos, false);
 
 						} else { //忽略15分钟记录
 
@@ -340,7 +340,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 					if (type.equals("login") && last_type.equals("logout")) {
 
-						filterDay(ts, currentTime, type, week, vtos, dto, mdtos);
+						filterDay(ts, currentTime, type, week, vtos, dto, mdtos, false);
 					}
 
 				}
@@ -357,7 +357,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 
 	private void filterDay(long ts, long currentTime, String type, List<String> week, List<URouterHdTimeLineVTO> vtos,
-						   WifiHandsetDeviceItemDetailMDTO dto, List<WifiHandsetDeviceItemDetailMDTO> mdtos) {
+						   WifiHandsetDeviceItemDetailMDTO dto, List<WifiHandsetDeviceItemDetailMDTO> mdtos, boolean first) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
 		String tsZeroStr = DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.shortDateFormat);
@@ -371,11 +371,15 @@ public class DeviceURouterRestBusinessFacadeService {
 			j = 6;
 		}
 
+		logger.info("jjjjj====" + j);
+
 		if (j == 0) { //当天记录
-			URouterHdTimeLineVTO vto = vtos.get(0); //更新logs
+			URouterHdTimeLineVTO vto = vtos.get(vtos.size()-1); //更新logs
 			if (type.equals("login")) {
 				dto.setLogin_at(ts);
-				dto.setLogout_at(0);
+				if (first) {
+					dto.setLogout_at(0);
+				}
 				mdtos.add(dto);
 			}
 			if (type.equals("logout")) {
