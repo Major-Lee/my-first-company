@@ -663,10 +663,10 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapModule_VapItem_Header_Fragment 	= "00001001%s0000000000000000100000012%s%s%s";
 	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
 	public static final String DeviceSetting_VapModule_VapItem_End_Fragment 	= "</bhu_module>";
-	public static final String DeviceSetting_VapModule_Start_Http404Item 		= "<module type=\"http404\" enable=\"%s\" url=\"%s\" codes=\"%s\" ver=\"%s\"/>";
-	public static final String DeviceSetting_VapModule_Stop_Http404Item 		= "<module type=\"http404\" enable=\"disable\"/>";
-	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<module type=\"redirect\" enable=\"%s\" rule=\"%s\" ver=\"%s\"/>";
-	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<module type=\"redirect\" enable=\"disable\"/>";
+	public static final String DeviceSetting_VapModule_Start_Http404Item 		= "<http404><ITEM enable=\"%s\" url=\"%s\" codes=\"%s\" ver=\"%s\"/></http404>";
+	public static final String DeviceSetting_VapModule_Stop_Http404Item 		= "<http404><ITEM enable=\"disable\"/></http404>";
+	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<redirect><ITEM enable=\"%s\" rule=\"%s\" ver=\"%s\" /></redirect>";
+	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<redirect><ITEM enable=\"disable\"/></redirect>";
 	
 	public static final String VapModule_Setting_MsgType = "00000003";
 	public static final String VapModule_Query_MsgType = "00000004";
