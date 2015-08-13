@@ -176,7 +176,7 @@ public class GexinPushService{
 			    "payload", "locKey", "locArgs", "launchImage","ContentAvailable");*/
 		        
 		        SingleMessage message = new SingleMessage();
-	            message.setOffline(false); //用户当前不在线时，是否离线存储，可选，默认不存储
+	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
 		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
