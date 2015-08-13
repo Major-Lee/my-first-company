@@ -31,6 +31,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceStatusDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -827,14 +828,24 @@ public class DeviceBusinessFacadeService {
 		
 		//设备持久指令分发
 		try{
-			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(wifiId);
-			if(persistencePayloads != null && !persistencePayloads.isEmpty()){
-				for(String payload:persistencePayloads){
-					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, 0, 
-							null, payload);
+			
+			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
+			if(wifiDevice != null){
+				List<String> persistencePayloads = null;
+				if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(wifiId,true);
+				}else{
+					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(wifiId);
 				}
-				//DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
-				System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+				if(persistencePayloads != null && !persistencePayloads.isEmpty()){
+					/*for(String payload:persistencePayloads){
+						deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, 0, 
+								null, payload);
+					}*/
+					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, persistencePayloads);
+					//DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
+					System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
@@ -857,8 +868,8 @@ public class DeviceBusinessFacadeService {
 				if(!StringUtils.isEmpty(mode.getWan_interface())){
 					long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
-					deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, taskid, 
-							OperationCMD.QueryDhcpcStatus.getNo(), cmdPayload);
+					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId/*, taskid, 
+							OperationCMD.QueryDhcpcStatus.getNo()*/, cmdPayload);
 				}
 			}else{
 				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getMode());
@@ -1003,6 +1014,35 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, serialDto.getStatus(), response);
 	}
 	
+	
+	public void processVapModuleResponse(String ctx,String mac, WifiDeviceVapReturnDTO vapDTO,long taskid){
+		if(vapDTO != null){
+			if(vapDTO.getRegister() != null){
+				//module 版本信息，判定是否需要升级
+				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+				if(wifiDevice != null){
+					if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){
+						wifiDevice.setOrig_vap_module(vapDTO.getRegister().getVersion());
+						wifiDeviceService.update(wifiDevice);
+					}
+				}
+			}
+			
+			if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){
+				//比对本地内容，看是否需要重新下发增值指令，以服务器内容为基准，所以直接生成指令下发，此部分操作设备在登录后查询配置响应的时候会做相关操作，所以这里就不做了
+				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceOnlyVapModuleCMD(mac);
+				if(persistencePayloads != null && !persistencePayloads.isEmpty()){
+					/*for(String payload:persistencePayloads){
+						deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, 0, 
+								null, payload);
+					}*/
+					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, persistencePayloads);
+					System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+persistencePayloads.size());
+				}
+			}
+		}
+	}
+	
 	/**
 	 * 设备测速指令回应
 	 * @param ctx
@@ -1069,8 +1109,8 @@ public class DeviceBusinessFacadeService {
 			if(dto.isConfigSequenceMatchError()){
 				long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 				String cmdPayload = CMDBuilder.builderDeviceSettingQuery(wifiId, new_taskid);
-				deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, new_taskid, 
-						OperationCMD.QueryDeviceSetting.getNo(), cmdPayload);
+				deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId/*, new_taskid, 
+						OperationCMD.QueryDeviceSetting.getNo()*/, cmdPayload);
 			}
 		}
 		
@@ -1249,7 +1289,7 @@ public class DeviceBusinessFacadeService {
 		try{
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			WifiDeviceDownTask newdownTask = taskFacadeService.systemTaskGenerate(0, mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_Portal_Start.getNo(), downTask.getContext_var());
-			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, taskid, OperationCMD.ModifyDeviceSetting.getNo(), newdownTask.getPayload());
+			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*taskid, OperationCMD.ModifyDeviceSetting.getNo(),*/ newdownTask.getPayload());
 		}catch(BusinessI18nCodeException ex){
 			ex.printStackTrace(System.out);
 		}catch(Exception ex){

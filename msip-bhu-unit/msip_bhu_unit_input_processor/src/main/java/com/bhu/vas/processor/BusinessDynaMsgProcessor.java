@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -95,7 +96,15 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							break;
 						case ParserHeader.Transfer_Prefix:
 							headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length),type);
-							payload = message.substring(ParserHeader.Cmd_Header_Length);
+							if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == ParserHeader.Transfer_stype_12){
+								//新版本增值模块上报的指令
+								String vap_header = message.substring(ParserHeader.Cmd_Header_Length,ParserHeader.Cmd_Vap_Header_Length);
+								headers.append(vap_header);
+								payload = message.substring(ParserHeader.Cmd_Vap_Header_Length);
+								System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]",ctx, headers,payload);
+							}else{
+								payload = message.substring(ParserHeader.Cmd_Header_Length);
+							}
 							break;
 						default:
 							throw new UnsupportedOperationException(

@@ -6,12 +6,18 @@ import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  *  上端下发消息：
@@ -264,7 +270,7 @@ public class CMDBuilder {
 	
 	
 	public static String autoBuilderCMD4Opt(OperationCMD opt,String wifi_mac,long taskid,String extparams){
-		return autoBuilderCMD4Opt(opt,null,wifi_mac,taskid,extparams,null);
+		return autoBuilderCMD4Opt(opt,null,wifi_mac,taskid,extparams,null,null);
 	}
 	
 	/**
@@ -278,21 +284,24 @@ public class CMDBuilder {
 	 * 			其余属性直接extparams为相关参数，可能是字符串 可能是jason参数
 	 * @return
 	 */
-	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams,IGenerateDeviceSetting generateDeviceSetting){
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams,String orig_swver,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
 		if(opt != null){
 			if(taskid == 0){
-				//System.out.println(auto_taskid_fragment);
 				taskid = auto_taskid_fragment.getNextSequence();
-				//System.out.println("~~~~~~~~~~~~:"+taskid);
 			}
 			switch(opt){
 				case ModifyDeviceSetting:
-					try{
-						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
-						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
-					}catch(Exception ex){
-						ex.printStackTrace(System.out);
+					//新版本增值模块指令构造 目前支持 增值指令 404 redirect
+					if(WifiDeviceHelper.isVapModuleCmdSupported(opt,subopt) && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
+						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{ subopt},wifi_mac,taskid,new String[]{extparams});
+					}else{
+						try{
+							String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
+							resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
+						}catch(Exception ex){
+							ex.printStackTrace(System.out);
+						}
 					}
 					break;
 				case TurnOnDeviceDPINotify:
@@ -319,6 +328,39 @@ public class CMDBuilder {
 			}
 		}
 		return resultCmd;
+	}
+	
+	public static String autoBuilderVapCMD4Opt(OperationCMD opt,OperationDS[] subopts,String wifi_mac,long taskid,String[] extparams){
+		if(subopts == null || subopts.length==0) return null;
+		StringBuilder resultCmd = new StringBuilder(
+				String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, wifi_mac,DeviceHelper.VapModule_Setting_MsgType,OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid)));
+		int index = 0;
+		for(OperationDS subopt:subopts){
+			switch(subopt){
+				case DS_Http_Redirect_Start:
+					ParamVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams[index], ParamVapHttp404DTO.class);
+					if(http404_dto == null)
+						throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(http404_dto).builderProperties()));
+					break;
+				case DS_Http_Redirect_Stop:
+					resultCmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_HttpRedirectItem);
+					break;
+				case DS_Http_404_Start:
+					ParamVapHttpRedirectDTO redirect_dto = JsonHelper.getDTO(extparams[index], ParamVapHttpRedirectDTO.class);
+					if(redirect_dto == null)
+						throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(redirect_dto).builderProperties()));
+					break;
+				case DS_Http_404_Stop:
+					resultCmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_Http404Item);
+					break;
+				default:
+					break;
+			}
+			index++;
+		}
+		return resultCmd.toString();
 	}
 	
 	private static String[] genParserParams(String wifi_mac,String opt,long taskid,String extparams){

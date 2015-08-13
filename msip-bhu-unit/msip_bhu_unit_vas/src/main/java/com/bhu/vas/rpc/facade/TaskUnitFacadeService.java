@@ -125,7 +125,7 @@ public class TaskUnitFacadeService {
 			dto.setTaskid(downTask.getId());
 			
 			//发送异步消息到Queue
-			deliverMessageService.sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
+			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac,/*downTask.getId(),opt,*/downTask.getPayload());
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
 			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);

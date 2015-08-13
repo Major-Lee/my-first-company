@@ -1,6 +1,9 @@
 package com.bhu.vas.api.helper;
 
+import org.springframework.util.StringUtils;
+
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.VersionHelper;
 
 
 public class WifiDeviceHelper {
@@ -17,6 +20,38 @@ public class WifiDeviceHelper {
 	
 	public static boolean isLocationCMDSupported(){
 		return false;
+	}
+	
+	
+	
+	private static final String VapModuleVersion = "1.3.0";
+	/**
+	 * 新版本的设备支持运营组件，此组件支持新的增值指令：404 redirect
+	 * @param deviceVersionBuild
+	 * @return
+	 */
+	public static boolean isVapModuleSupported(String deviceVersionBuild){
+		if(StringUtils.isEmpty(deviceVersionBuild)) return false;
+		String[] orig_swver1_versions = DeviceHelper.parseDeviceSwverVersion(deviceVersionBuild);
+		if(orig_swver1_versions == null) return false;
+		try{
+			int ret = VersionHelper.compareVersion(orig_swver1_versions[0], VapModuleVersion);
+			return (ret >= 0);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return false;
+		}
+	}
+	
+	public static boolean isVapModuleCmdSupported(OperationCMD opt, OperationDS subopt){
+		if(OperationCMD.ModifyDeviceSetting == opt){
+			if(subopt == null) return false;
+			return (OperationDS.DS_Http_404_Start == subopt || OperationDS.DS_Http_404_Stop == subopt
+					|| OperationDS.DS_Http_Redirect_Start == subopt || OperationDS.DS_Http_Redirect_Stop == subopt);
+		}else{
+			return false;
+		}
+		
 	}
 	
 	/**

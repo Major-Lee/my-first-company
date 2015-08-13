@@ -24,7 +24,8 @@ public enum ActionMessageType {
 	
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
-	WifiCmdDownNotify("wifi指令下发","wcdn","WD"),
+	//WifiCmdDownNotify("wifi单指令下发","wcdn","WD"),
+	WifiCmdsDownNotify("wifi多指令下发","wcsdn","SM"),
 	WifiDeviceAsyncCMDGen("给设备组下发指令","wdgcmd","WA"),
 	WifiDeviceGroupCreateIndex("设备群组添加设备时建立搜索索引", "wdgci", "WI"),
 	

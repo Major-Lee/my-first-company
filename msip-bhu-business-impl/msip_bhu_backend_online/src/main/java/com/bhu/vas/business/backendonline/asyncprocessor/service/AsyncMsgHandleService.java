@@ -41,7 +41,7 @@ import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
@@ -978,15 +978,20 @@ public class AsyncMsgHandleService {
 
 	}*/
 	
-	
-	public void wifiCmdDownNotifyHandle(String message){
+	/*public void wifiCmdDownNotifyHandle(String message){
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s]", message));
 		WifiCmdNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdNotifyDTO.class);
 		DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
+	}*/
+	public void wifiCmdsDownNotifyHandle(String message){
+		logger.info(String.format("wifiCmdsDownNotifyHandle message[%s]", message));
+		WifiCmdsNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdsNotifyDTO.class);
+		DaemonHelper.daemonCmdsDown(dto.getMac(), dto.getPayloads(), daemonRpcService);
+		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
-	
 	/**
 	 * 修改黑名单列表内容的后续操作
 	 * 黑名单列表里的终端需要删除urouter 终端redis

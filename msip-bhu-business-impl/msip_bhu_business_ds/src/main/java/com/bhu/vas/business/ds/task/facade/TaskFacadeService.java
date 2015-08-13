@@ -271,13 +271,30 @@ public class TaskFacadeService {
 				//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
 				downTask.setPayload(CMDBuilder.builderCMD4Http404ResourceUpdate(mac, downTask.getId(), extparams));
 			}else */
-			if(OperationDS.DS_Http_Portal_Start == ods_cmd){
+			switch(ods_cmd){
+				case DS_Http_Portal_Start:
+					downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
+					break;
+				/*case DS_Http_404_Start:
+				case DS_Http_404_Stop:
+				case DS_Http_Redirect_Start:
+				case DS_Http_Redirect_Stop:
+					if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+						
+					}else{
+						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+					}
+					break;*/
+				default:
+					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,wifiDevice.getOrig_swver(),deviceFacadeService));
+					break;
+			}
+			/*if(OperationDS.DS_Http_Portal_Start == ods_cmd){
 				//portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
 				downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
 			}else{
-				//String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
 				downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
-			}
+			}*/
 		}else{
 			if(OperationCMD.DeviceWifiTimerStart == opt_cmd){//需要先增加到个人配置表中
 				ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
@@ -302,13 +319,13 @@ public class TaskFacadeService {
 		
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
 		
+		WifiDevice wifiDevice = null;
 		//如果是管理员用户 不进行用户所属设备的验证
 		if(RuntimeConfiguration.isConsoleUser(uid)){
-			deviceFacadeService.validateDevice(mac);
+			wifiDevice = deviceFacadeService.validateDevice(mac);
 		}else{
-			deviceFacadeService.validateUserDevice(uid, mac);
+			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
-		
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setId(taskid);
@@ -320,13 +337,7 @@ public class TaskFacadeService {
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
 		
-		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
-		/*if(OperationCMD.ModifyDeviceSetting.getNo().equals(opt)){
-			String payload = deviceFacadeService.generateDeviceSetting(mac, subopt, extparams);
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),payload));
-		}else{
-			downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, downTask.getId(),extparams));
-		}*/
+		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,wifiDevice.getOrig_swver(),deviceFacadeService));
 		this.taskComming(downTask);
 		//this.taskUpdate(downTask);
 		return downTask;

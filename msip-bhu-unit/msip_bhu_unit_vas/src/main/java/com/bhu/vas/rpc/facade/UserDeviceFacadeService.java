@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -170,7 +169,7 @@ public class UserDeviceFacadeService {
 	        	if(upgrade.isForceDeviceUpgrade()){
 	        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
-	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
 	        	}
         	}
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -203,7 +202,7 @@ public class UserDeviceFacadeService {
         				WifiDeviceHelper.Upgrade_Default_BeginTime, 
         				WifiDeviceHelper.Upgrade_Default_EndTime, 
         				upgrade.getUpgradeurl());
-        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
         	}
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);

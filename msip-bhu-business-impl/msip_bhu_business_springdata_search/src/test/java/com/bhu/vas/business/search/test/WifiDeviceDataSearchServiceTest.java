@@ -136,6 +136,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
        	System.out.println("test010SearchGeoInRangeBox");
        	for(WifiDeviceDocument doc:searchByKeywords){
     		System.out.println(doc.getAddress());
+    		System.out.println(doc.getGeopoint()[0]+" ----- "+doc.getGeopoint()[1]);
     	}
     }
     

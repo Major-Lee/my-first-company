@@ -1,13 +1,12 @@
 package com.bhu.vas.rpc.facade;
 
+import org.springframework.stereotype.Service;
+
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.VapModeHashService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by bluesand on 5/26/15.

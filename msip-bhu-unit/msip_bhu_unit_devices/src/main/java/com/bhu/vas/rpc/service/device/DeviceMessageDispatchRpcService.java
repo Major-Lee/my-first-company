@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
@@ -134,6 +135,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 11://3.4.20 notify命令执行结果通知消息
 					taskNotifyResponse(ctx, payload, parserHeader);
 					break;
+				case ParserHeader.Transfer_stype_12://增值指令
+					deviceVapModuleResponse(ctx, payload, parserHeader);
+					//taskNotifyResponse(ctx, payload, parserHeader);
+					break;	
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
@@ -327,6 +332,24 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		//throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 	}
 
+	
+	public void deviceVapModuleResponse(String ctx, String payload, ParserHeader parserHeader){
+		System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]", ctx,parserHeader,payload);
+		long taskid = parserHeader.getTaskid();
+		String mac = parserHeader.getMac().toLowerCase();
+		switch(parserHeader.getVaptype()){
+			case ParserHeader.Vap_Module_Register_D2S:
+			case ParserHeader.Vap_Module_VapQuery_D2S:
+				Document doc = RPCMessageParseHelper.parserMessage(payload);
+				WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
+				deviceBusinessFacadeService.processVapModuleResponse(ctx,mac, vapDTO,taskid);
+				break;
+			default:
+				messageDispatchUnsupport(ctx, payload, parserHeader);
+				break;
+		}
+	}
+	
 	/**
 	 * CM与控制层的连接断开以后 会分批次批量发送在此CM上的wifi设备在线信息
 	 */

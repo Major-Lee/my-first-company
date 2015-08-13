@@ -32,7 +32,6 @@ import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -573,8 +572,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			uto_dto.setOn(on);
 			user_setting_entity.putUserSetting(uto_dto);
 			userSettingStateService.update(user_setting_entity);
-			deliverMessageService.sendWifiCmdCommingNotifyMessage(
-					wifiId,0,OperationCMD.ParamWifiSinffer.getNo(),
+			deliverMessageService.sendWifiCmdsCommingNotifyMessage(
+					wifiId,/*0,OperationCMD.ParamWifiSinffer.getNo(),*/
 					CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,
 							on?WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer:WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
@@ -589,8 +588,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			DeviceUsedStatisticsDTO dto = BusinessMarkerService.getInstance().deviceUsedStatisticsGet(wifiId);
 			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId);
 			if(needNewRequestAndMarker){
-				deliverMessageService.sendWifiCmdCommingNotifyMessage(
-						wifiId,0,OperationCMD.QueryDeviceUsedStatus.getNo(),
+				deliverMessageService.sendWifiCmdsCommingNotifyMessage(
+						wifiId,/*0,OperationCMD.QueryDeviceUsedStatus.getNo(),*/
 						CMDBuilder.builderDeviceUsedStatusQuery(wifiId));
 			}
 			if(dto == null){

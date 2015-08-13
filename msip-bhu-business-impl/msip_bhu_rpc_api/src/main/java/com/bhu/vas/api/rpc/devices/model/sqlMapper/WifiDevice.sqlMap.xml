@@ -11,6 +11,8 @@
     <result property="orig_model" column="orig_model"/>
     <result property="orig_hdver" column="orig_hdver"/>
     <result property="orig_swver" column="orig_swver"/>
+    <result property="orig_vap_module" column="orig_vap_module"/>
+    
     <result property="oem_vendor" column="oem_vendor"/>
     <result property="oem_model" column="oem_model"/>
     <result property="oem_hdver" column="oem_hdver"/>
@@ -60,6 +62,7 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
+	    	orig_vap_module,
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -103,6 +106,7 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
+	    	orig_vap_module
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -147,6 +151,7 @@
 	    	#{orig_model},
 	    	#{orig_hdver},
 	    	#{orig_swver},
+	    	#{orig_vap_module},
 	    	#{oem_vendor},
 	    	#{oem_model},
 	    	#{oem_hdver},
@@ -189,6 +194,7 @@
 	    	orig_model = #{orig_model},
 	    	orig_hdver = #{orig_hdver},
 	    	orig_swver = #{orig_swver},
+	    	orig_vap_module = #{orig_vap_module},
 	    	oem_vendor = #{oem_vendor},
 	    	oem_model = #{oem_model},
 	    	oem_hdver = #{oem_hdver},

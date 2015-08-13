@@ -30,6 +30,7 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.IGenerateDeviceSetting;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
@@ -782,20 +783,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @throws Exception 
 	 */
 	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception {
-		/*if(StringUtils.isEmpty(ds_opt))
-			// || StringUtils.isEmpty(extparams))
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
-		OperationDS ods = OperationDS.getOperationDSFromNo(ds_opt);*/
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
-//		WifiDeviceSetting entity = validateDeviceSetting(mac);
-//		WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
-		
-//		String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
-//		if(StringUtils.isEmpty(config_sequence))
-//			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
 		String config_sequence = Common_Config_Sequence;
 		
 		switch(ods){
@@ -812,13 +801,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams);
 			case DS_Http_404_Stop:
 				return DeviceHelper.builderDSHttp404StopOuter(config_sequence);
-
-				
 			case DS_Http_Portal_Start:
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
 				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);
-				
 				
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
@@ -840,61 +826,197 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
+	
+	public List<String> fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(String mac,boolean ignoreVapModule){
+		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
+		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
+		List<String> payloads = null;
+		List<OperationDS> vap_module_ds = null;
+		List<String> vap_module_ds_extparams = null;
+		WifiDevice wifiDevice = null;
+		try{
+			payloads = new ArrayList<>();
+			wifiDevice = wifiDeviceService.getById(mac);
+			Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+			StringBuilder sb_setting_inner = new StringBuilder();
+			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
+				PersistenceCMDDTO dto = entry.getValue();
+				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
+				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+					continue;
+				}
+				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
+				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+					if(ods_cmd == null) continue;
+					if(WifiDeviceHelper.isVapModuleCmdSupported(opt_cmd,ods_cmd) && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
+						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
+						vap_module_ds.add(ods_cmd);
+						vap_module_ds_extparams.add(dto.getExtparams());
+					}else{
+						switch(ods_cmd){
+							case DS_Http_Ad_Start:
+								sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
+								break;	
+							/*case DS_Http_404_Start:
+								sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
+								break;	
+							case DS_Http_Redirect_Start:
+								sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
+								break;*/	
+							default:
+								break;
+						}
+					}
+				}else{
+					payloads.add(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac,0, dto.getExtparams(),wifiDevice.getOrig_swver(), this));
+				}
+			}
+			
+			if(sb_setting_inner.length() > 0){
+				WifiDeviceSetting entity = validateDeviceSetting(mac);
+				WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+				String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+				if(StringUtils.isEmpty(config_sequence))
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+				payloads.add(
+						CMDBuilder.builderDeviceSettingModify(
+								mac, 
+								CMDBuilder.auto_taskid_fragment.getNextSequence(), 
+								DeviceHelper.builderDSHttpVapSettinStartOuter(config_sequence,sb_setting_inner.toString())));
+			}
+			if(ignoreVapModule){
+				if(vap_module_ds != null && !vap_module_ds.isEmpty()){
+					payloads.add(CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
+							CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0])));
+				}
+			}
+			return payloads;
+		}finally{
+			if(vap_module_ds != null){
+				vap_module_ds.clear();
+				vap_module_ds = null;
+			}
+			
+			if(vap_module_ds_extparams != null){
+				vap_module_ds_extparams.clear();
+				vap_module_ds_extparams = null;
+			}
+		}
 
+	}
 	
 	/**
-	 * 对于设备配置的指令需要合并一起提交
+	 * 获取vapmodule模块的指令 只有新版本的需要，只有404和redirect
+	 * 
 	 * @param mac
 	 * @return
 	 */
-	public List<String> fetchWifiDevicePersistenceCMD(String mac){
+	public List<String> fetchWifiDevicePersistenceOnlyVapModuleCMD(String mac){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
-		if(cmdState == null) return null;
-		Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
-		List<String> payloads = new ArrayList<String>();
-		StringBuilder sb_setting_inner = new StringBuilder();
-		for(Entry<String, PersistenceCMDDTO> entry : entrySet){
-			PersistenceCMDDTO dto = entry.getValue();
-			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
-			if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
-				continue;
-				//throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-			}
-			OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
-			
-			if(OperationCMD.ModifyDeviceSetting == opt_cmd){
-				if(ods_cmd == null) continue;
-				switch(ods_cmd){
-					case DS_Http_Ad_Start:
-						sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
-						break;	
-					case DS_Http_404_Start:
-						sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
-						break;	
-					case DS_Http_Redirect_Start:
-						sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
-						break;	
-					default:
-						break;
+		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
+		List<String> payloads = null;
+		List<OperationDS> vap_module_ds = null;
+		List<String> vap_module_ds_extparams = null;
+		//WifiDevice wifiDevice = null;
+		try{
+			payloads = new ArrayList<>();
+			//wifiDevice = wifiDeviceService.getById(mac);
+			Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
+				PersistenceCMDDTO dto = entry.getValue();
+				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
+				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+					continue;
 				}
-			}else{
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac,0, dto.getExtparams(), this));
+				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
+				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+					if(ods_cmd == null) continue;
+					if(WifiDeviceHelper.isVapModuleCmdSupported(opt_cmd,ods_cmd)/* && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())*/){
+						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
+						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
+						vap_module_ds.add(ods_cmd);
+						vap_module_ds_extparams.add(dto.getExtparams());
+					}
+				}
+			}
+			if(vap_module_ds != null && !vap_module_ds.isEmpty()){
+				payloads.add(CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
+						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0])));
+			}
+			return payloads;
+		}finally{
+			if(vap_module_ds != null){
+				vap_module_ds.clear();
+				vap_module_ds = null;
+			}
+			
+			if(vap_module_ds_extparams != null){
+				vap_module_ds_extparams.clear();
+				vap_module_ds_extparams = null;
 			}
 		}
-		
-		if(sb_setting_inner.length() > 0){
-			WifiDeviceSetting entity = validateDeviceSetting(mac);
-			WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+	}
+	
+	/**
+	 * 对于设备配置的指令需要合并一起提交
+	 * 针对vapmodule指定以前的设备
+	 * @param mac
+	 * @return
+	 */
+	public List<String> fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(String mac){
+		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
+		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
+		List<String> payloads = null;
+		//WifiDevice wifiDevice = null;
+		try{
+			payloads = new ArrayList<>();
+			//wifiDevice = wifiDeviceService.getById(mac);
+			Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+			StringBuilder sb_setting_inner = new StringBuilder();
+			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
+				PersistenceCMDDTO dto = entry.getValue();
+				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
+				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+					continue;
+				}
+				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
+				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+					if(ods_cmd == null) continue;
+					switch(ods_cmd){
+						case DS_Http_Ad_Start:
+							sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
+							break;	
+						case DS_Http_404_Start:
+							sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
+							break;	
+						case DS_Http_Redirect_Start:
+							sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
+							break;	
+						default:
+							break;
+					}
+					//}
+				}else{
+					payloads.add(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac,0, dto.getExtparams(),null, this));
+				}
+			}
+			if(sb_setting_inner.length() > 0){
+				WifiDeviceSetting entity = validateDeviceSetting(mac);
+				WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+				String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+				if(StringUtils.isEmpty(config_sequence))
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+				payloads.add(
+						CMDBuilder.builderDeviceSettingModify(
+								mac, 
+								CMDBuilder.auto_taskid_fragment.getNextSequence(), 
+								DeviceHelper.builderDSHttpVapSettinStartOuter(config_sequence,sb_setting_inner.toString())));
+			}
 			
-			String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
-			if(StringUtils.isEmpty(config_sequence))
-				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
-			payloads.add(
-					CMDBuilder.builderDeviceSettingModify(
-							mac, 
-							CMDBuilder.auto_taskid_fragment.getNextSequence(), 
-							DeviceHelper.builderDSHttpVapSettinStartOuter(config_sequence,sb_setting_inner.toString())));
+			return payloads;
+		}finally{
 		}
-		return payloads;
+
 	}
 }

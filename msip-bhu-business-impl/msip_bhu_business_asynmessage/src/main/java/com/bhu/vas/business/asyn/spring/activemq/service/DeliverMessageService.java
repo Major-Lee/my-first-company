@@ -1,5 +1,6 @@
 package com.bhu.vas.business.asyn.spring.activemq.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -35,7 +36,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendWifiCmdCommingNotifyMessage(String mac,long taskid,String opt,String payload){
+	/*public void sendWifiCmdCommingNotifyMessage(String mac,long taskid,String opt,String payload){
 		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
 		dto.setMac(mac);
 		dto.setTaskid(taskid);
@@ -43,8 +44,18 @@ public class DeliverMessageService {
 		dto.setPayload(payload);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
+	}*/
 	
+	public void sendWifiCmdsCommingNotifyMessage(String mac,String... payloads){
+		sendWifiCmdsCommingNotifyMessage(mac,Arrays.asList(payloads));
+	}
+	public void sendWifiCmdsCommingNotifyMessage(String mac,/*long taskid,String opt,*/List<String> payloads){
+		WifiCmdsNotifyDTO dto = new WifiCmdsNotifyDTO();
+		dto.setMac(mac);
+		dto.setPayloads(payloads);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 	/*public void sendWifiCmdsCommingNotifyMessage(String mac,int taskid,String opt,List<String> payloads){
 		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
 		dto.setMac(mac);

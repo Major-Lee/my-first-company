@@ -18,6 +18,8 @@ public class WifiDevice extends BaseStringModel{
 	private String orig_hdver;
 	//原始软件版本号
 	private String orig_swver;
+	//原始软件vapmodule版本号
+	private String orig_vap_module;
 	//oem厂商
 	private String oem_vendor;
 	//oem后设备型号
@@ -398,6 +400,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setCarrier(String carrier) {
 		this.carrier = carrier;
+	}
+
+	public String getOrig_vap_module() {
+		return orig_vap_module;
+	}
+
+	public void setOrig_vap_module(String orig_vap_module) {
+		this.orig_vap_module = orig_vap_module;
 	}
 	
 }
