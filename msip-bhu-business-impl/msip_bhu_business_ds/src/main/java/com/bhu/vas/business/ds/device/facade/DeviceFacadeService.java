@@ -887,8 +887,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 			if(!ignoreVapModule){
 				if(vap_module_ds != null && !vap_module_ds.isEmpty()){
-					payloads.add(CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
-							CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0])));
+					String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
+							CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));
+					if(StringUtils.isNotEmpty(cmd))
+						payloads.add(cmd);
 				}
 			}
 			return payloads;
@@ -941,8 +943,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				}
 			}
 			if(vap_module_ds != null && !vap_module_ds.isEmpty()){
-				payloads.add(CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
-						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0])));
+				String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
+						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));
+				if(StringUtils.isNotEmpty(cmd))
+					payloads.add(cmd);
 			}
 			return payloads;
 		}finally{
