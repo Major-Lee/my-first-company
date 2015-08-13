@@ -338,19 +338,19 @@ public class CMDBuilder {
 		for(OperationDS subopt:subopts){
 			switch(subopt){
 				case DS_Http_Redirect_Start:
-					ParamVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams[index], ParamVapHttp404DTO.class);
-					if(http404_dto == null)
+					ParamVapHttpRedirectDTO redirect_dto = JsonHelper.getDTO(extparams[index], ParamVapHttpRedirectDTO.class);
+					if(redirect_dto == null)
 						throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(http404_dto).builderProperties()));
+					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(redirect_dto).builderProperties()));
 					break;
 				case DS_Http_Redirect_Stop:
 					resultCmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_HttpRedirectItem);
 					break;
 				case DS_Http_404_Start:
-					ParamVapHttpRedirectDTO redirect_dto = JsonHelper.getDTO(extparams[index], ParamVapHttpRedirectDTO.class);
-					if(redirect_dto == null)
+					ParamVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams[index], ParamVapHttp404DTO.class);
+					if(http404_dto == null)
 						throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(redirect_dto).builderProperties()));
+					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(http404_dto).builderProperties()));
 					break;
 				case DS_Http_404_Stop:
 					resultCmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_Http404Item);
