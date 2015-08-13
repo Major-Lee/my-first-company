@@ -30,10 +30,12 @@ public class ParserHeader implements java.io.Serializable{
 	/********************** transfer message start ************************/
 	//D2S Device->Server  S2D Server->Device
 	public static final int Vap_Module_Register_D2S = 1;
-	public static final int Vap_Module_VapQuery_D2S = 4;
+	public static final int Vap_Module_VapSetting_D2S = 4;
+	public static final int Vap_Module_VapQuery_D2S = 6;
+	
 	public static final int Vap_Module_Upgrade_S2D = 2;
-	public static final int Vap_Module_VapCmd_S2D = 3;
-	public static final int Vap_Module_VapQuery_S2D = 4;
+	public static final int Vap_Module_VapSetting_S2D = 3;
+	public static final int Vap_Module_VapQuery_S2D = 5;
 	
 	//消息类型(8字节)
 	private int type;

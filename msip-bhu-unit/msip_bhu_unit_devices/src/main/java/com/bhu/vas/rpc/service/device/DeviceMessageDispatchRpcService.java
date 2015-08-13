@@ -344,6 +344,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
 				deviceBusinessFacadeService.processVapModuleResponse(ctx,mac, vapDTO,taskid);
 				break;
+			case ParserHeader.Vap_Module_VapSetting_D2S:
+				deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+				break;
 			default:
 				messageDispatchUnsupport(ctx, payload, parserHeader);
 				break;
