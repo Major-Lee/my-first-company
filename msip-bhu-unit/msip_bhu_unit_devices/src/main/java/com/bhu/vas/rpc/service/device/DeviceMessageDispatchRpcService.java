@@ -345,7 +345,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				deviceBusinessFacadeService.processVapModuleResponse(ctx,mac, vapDTO,taskid);
 				break;
 			case ParserHeader.Vap_Module_VapSetting_D2S:
-				deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+				deviceBusinessFacadeService.taskModuleProcessor(ctx, payload, mac, taskid);
 				break;
 			default:
 				messageDispatchUnsupport(ctx, payload, parserHeader);

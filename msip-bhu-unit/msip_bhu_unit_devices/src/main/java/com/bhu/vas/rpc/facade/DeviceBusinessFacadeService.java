@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.ModuleReturnDTO;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
 import com.bhu.vas.api.dto.ret.QuerySysinfoSerialReturnDTO;
 import com.bhu.vas.api.dto.ret.QueryWifiTimerSerialReturnDTO;
@@ -1313,6 +1314,14 @@ public class DeviceBusinessFacadeService {
 		doTaskCallback(taskid, resultDto.getStatus(), response);
 	}
 
+	public void taskModuleProcessor(String ctx, String response, String mac, long taskid){
+		Document doc = RPCMessageParseHelper.parserMessage(response);
+		ModuleReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
+				ModuleReturnDTO.class);
+		//2:任务callback
+		doTaskCallback(taskid, resultDto.getResult(), response);
+	}
+	
 	/**
 	 * 如果设备升级失败，或者操作命令不支持处理。
 	 *

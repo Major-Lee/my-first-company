@@ -144,7 +144,7 @@ public class ParserHeader implements java.io.Serializable{
 		sb.append("opt=").append(opt).append(StringHelper.COMMA_STRING_GAP);
 		sb.append("taskid=").append(taskid).append(StringHelper.COMMA_STRING_GAP);
 		sb.append("mt=").append(mt).append(StringHelper.COMMA_STRING_GAP);
-		sb.append("st=").append(st);
+		sb.append("st=").append(st).append(StringHelper.COMMA_STRING_GAP);
 		sb.append("vaptype=").append(vaptype);
 		return sb.toString();
 	}
