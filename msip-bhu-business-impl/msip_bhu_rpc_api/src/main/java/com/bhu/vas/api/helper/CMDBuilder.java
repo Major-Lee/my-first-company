@@ -361,7 +361,7 @@ public class CMDBuilder {
 		}
 		if(innercmd.length()>0){
 			StringBuilder resultCmd = new StringBuilder(
-					String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, wifi_mac,DeviceHelper.VapModule_Setting_MsgType,OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid)));
+					String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, StringHelper.unformatMacAddress(wifi_mac),DeviceHelper.VapModule_Setting_MsgType,OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid)));
 			resultCmd.append(DeviceHelper.DeviceSetting_VapModule_VapItem_Begin_Fragment);
 			resultCmd.append(innercmd.toString());
 			resultCmd.append(DeviceHelper.DeviceSetting_VapModule_VapItem_End_Fragment);
