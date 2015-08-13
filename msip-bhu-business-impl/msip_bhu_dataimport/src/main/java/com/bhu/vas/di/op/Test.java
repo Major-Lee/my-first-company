@@ -17,6 +17,23 @@ public class Test {
 
     public static void main(String[] args){
 
+        long ts= 1439383257097L;
+        long currentTime = System.currentTimeMillis();
+        String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
+        long currentZeroTime = getDateZeroTime(new Date()).getTime();
+        System.out.println(DateTimeHelper.formatDate(new Date(currentZeroTime), DateTimeHelper.longDateFormat));
+        System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
+        long space = currentZeroTime - ts;
+        System.out.println(currentZeroTime - ts);
+        int  offset = (int)(space/(24 * 3600 * 1000));
+        if (space < 0) {
+            offset = -1;
+        }
+        if (offset > 5) {
+            offset = 5;
+        }
+
+        System.out.println(offset);
 
 //        String dateStr = "2015-08-06 19:01:35";
 //        Date date = DateTimeHelper.parseDate(dateStr,DateTimeHelper.shortDateFormat);
@@ -118,6 +135,19 @@ public class Test {
 
     }
 
+    private static Date getDateZeroTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+        //时分秒（毫秒数）
+        long millisecond = hour*60*60*1000 + minute*60*1000 + second*1000;
+        //凌晨00:00:00
+        cal.setTimeInMillis(cal.getTimeInMillis()-millisecond);
+
+        return cal.getTime();
+    }
 }
 
 class Person {
