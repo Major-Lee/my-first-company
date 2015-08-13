@@ -885,7 +885,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), 
 								DeviceHelper.builderDSHttpVapSettinStartOuter(config_sequence,sb_setting_inner.toString())));
 			}
-			if(ignoreVapModule){
+			if(!ignoreVapModule){
 				if(vap_module_ds != null && !vap_module_ds.isEmpty()){
 					payloads.add(CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
 							CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0])));
