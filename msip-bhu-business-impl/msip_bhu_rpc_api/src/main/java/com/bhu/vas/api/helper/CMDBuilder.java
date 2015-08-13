@@ -332,8 +332,7 @@ public class CMDBuilder {
 	
 	public static String autoBuilderVapCMD4Opt(OperationCMD opt,OperationDS[] subopts,String wifi_mac,long taskid,String[] extparams){
 		if(subopts == null || subopts.length==0) return null;
-		StringBuilder resultCmd = new StringBuilder(
-				String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, wifi_mac,DeviceHelper.VapModule_Setting_MsgType,OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid)));
+		StringBuilder innercmd = new StringBuilder();
 		int index = 0;
 		for(OperationDS subopt:subopts){
 			switch(subopt){
@@ -341,26 +340,34 @@ public class CMDBuilder {
 					ParamVapHttpRedirectDTO redirect_dto = JsonHelper.getDTO(extparams[index], ParamVapHttpRedirectDTO.class);
 					if(redirect_dto == null)
 						throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(redirect_dto).builderProperties()));
+					innercmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(redirect_dto).builderProperties()));
 					break;
 				case DS_Http_Redirect_Stop:
-					resultCmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_HttpRedirectItem);
+					innercmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_HttpRedirectItem);
 					break;
 				case DS_Http_404_Start:
 					ParamVapHttp404DTO http404_dto = JsonHelper.getDTO(extparams[index], ParamVapHttp404DTO.class);
 					if(http404_dto == null)
 						throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-					resultCmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(http404_dto).builderProperties()));
+					innercmd.append(String.format(DeviceHelper.DeviceSetting_VapModule_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(http404_dto).builderProperties()));
 					break;
 				case DS_Http_404_Stop:
-					resultCmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_Http404Item);
+					innercmd.append(DeviceHelper.DeviceSetting_VapModule_Stop_Http404Item);
 					break;
 				default:
 					break;
 			}
 			index++;
 		}
-		return resultCmd.toString();
+		if(innercmd.length()>0){
+			StringBuilder resultCmd = new StringBuilder(
+					String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, wifi_mac,DeviceHelper.VapModule_Setting_MsgType,OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid)));
+			resultCmd.append(DeviceHelper.DeviceSetting_VapModule_VapItem_Begin_Fragment);
+			resultCmd.append(innercmd.toString());
+			resultCmd.append(DeviceHelper.DeviceSetting_VapModule_VapItem_End_Fragment);
+			return resultCmd.toString();
+		}
+		return null;
 	}
 	
 	private static String[] genParserParams(String wifi_mac,String opt,long taskid,String extparams){
