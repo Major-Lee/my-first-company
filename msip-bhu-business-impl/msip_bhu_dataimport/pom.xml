@@ -30,6 +30,17 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.github.sgroschupf</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>  
+        
         <dependency>
             <groupId>nl.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>

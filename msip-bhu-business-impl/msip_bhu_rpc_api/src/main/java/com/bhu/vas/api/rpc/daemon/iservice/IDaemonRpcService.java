@@ -14,5 +14,6 @@ public interface IDaemonRpcService {
 	public boolean wifiDeviceCmdsDown(String ctx,String mac,List<String> cmds );
 	//public boolean wifiDeviceSerialTaskComming(String ctx,String payload, ParserHeader parserHeader);//String mac,QuerySerialReturnDTO dto);
 	public boolean wifiDevicesOnlineTimer();
+	public boolean wifiDevicesSimulateCmdTimer();
 	//public boolean wifiDevicesLocationQuerySerialTimer();
 }

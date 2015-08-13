@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.device.mdto;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -32,6 +33,8 @@ public class WifiHandsetDeviceRelationMDTO{
 	private long total_rx_bytes;
 
 	private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> items;
+
+	private List<WifiHandsetDeviceItemLogMDTO> logs;
 
 	public WifiHandsetDeviceRelationMDTO(){
 		
@@ -81,6 +84,14 @@ public class WifiHandsetDeviceRelationMDTO{
 
 	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMDTO>> items) {
 		this.items = items;
+	}
+
+	public List<WifiHandsetDeviceItemLogMDTO> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(List<WifiHandsetDeviceItemLogMDTO> logs) {
+		this.logs = logs;
 	}
 
 	public long getTotal_rx_bytes() {

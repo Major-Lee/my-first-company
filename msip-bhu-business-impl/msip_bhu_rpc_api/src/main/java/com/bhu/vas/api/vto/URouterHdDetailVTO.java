@@ -38,4 +38,5 @@ public class URouterHdDetailVTO implements Serializable {
     public void setTimeline(List<URouterHdTimeLineVTO> timeline) {
         this.timeline = timeline;
     }
+
 }

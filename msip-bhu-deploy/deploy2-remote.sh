@@ -5,6 +5,7 @@ echo $Current_DIR
 
 Deploy2ComponentServer1='123.56.121.220'
 Deploy2ComponentServer2='182.92.231.58'
+Deploy2ComponentServer3='123.56.137.28'
 DeployUser=$1
 
 read -n1 -p "Do you want to deploy 2 $Deploy2ComponentServer1(Remote Production) [Y/N]?"
@@ -176,14 +177,23 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/classes/com/     $Dep
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/bin/msip_bhu_spark_task.jar     root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/applications/
 echo 'deploy msip_bhu_spark_task successfully @'$Deploy2ComponentServer2
 
-echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2ComponentServer2
+#echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2ComponentServer2
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*-4.1.2.RELEASE.jar    root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
-echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ComponentServer2
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ComponentServer2:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
+#echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ComponentServer2
 
 echo '发布其他服务成功'$Deploy2ComponentServer2
 
+echo '准备发布其他服务到'$Deploy2ComponentServer3
+
+echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2ComponentServer3
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*-4.1.2.RELEASE.jar    root@$Deploy2ComponentServer1:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2ComponentServer3:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ComponentServer3:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
+echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ComponentServer3
+
+echo '发布其他服务成功'$Deploy2ComponentServer3
 
 
 echo 'deploy msip_bhu_rest to ...@'182.92.229.26

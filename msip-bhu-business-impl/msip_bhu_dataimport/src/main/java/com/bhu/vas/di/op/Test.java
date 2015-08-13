@@ -1,5 +1,6 @@
 package com.bhu.vas.di.op;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import org.elasticsearch.common.joda.time.DateTime;
@@ -17,14 +18,28 @@ public class Test {
     public static void main(String[] args){
 
 
-        String dateStr = "2015-08-06 19:01:35";
-        Date date = DateTimeHelper.parseDate(dateStr,DateTimeHelper.shortDateFormat);
-        System.out.println(date.getTime());
-        System.out.println(DateTimeHelper.formatDate(date, DateTimeHelper.longDateFormat));
+//        String dateStr = "2015-08-06 19:01:35";
+//        Date date = DateTimeHelper.parseDate(dateStr,DateTimeHelper.shortDateFormat);
+//        System.out.println(date.getTime());
+//        System.out.println(DateTimeHelper.formatDate(date, DateTimeHelper.longDateFormat));
+//
+//        if (new Date().getTime() - date.getTime() > 24 * 3600) {
+//            System.out.println("1234");
+//        }
 
-        if (new Date().getTime() - date.getTime() > 24 * 3600) {
-            System.out.println("1234");
-        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+        //时分秒（毫秒数）
+        long millisecond = hour*60*60*1000 + minute*60*1000 + second*1000;
+        //凌晨00:00:00
+        cal.setTimeInMillis(cal.getTimeInMillis()-millisecond);
+
+        System.out.println(cal.getTime().getTime());
+
+
 
 //        List<WifiDeviceGroupRelationPK> ids = new ArrayList<WifiDeviceGroupRelationPK>();
 //        WifiDeviceGroupRelationPK pk = new WifiDeviceGroupRelationPK();
@@ -82,23 +97,23 @@ public class Test {
 //        System.out.println(timeline.isEmpty());
 
 
-        List<Person> persons = new ArrayList<Person>();
-
-        persons.add(new Person("baidu"));
-
-        persons.add(new Person("google"));
-
-        persons.add(new Person("bing"));
-
-        persons.get(2).setName("360");
-
-        for (Person person : persons) {
-            System.out.println(person.getName());
-        }
-
-        System.out.println(new Date());
-        System.out.println(new Date().getTime());
-        System.out.println(new Date(1435543431582L));
+//        List<Person> persons = new ArrayList<Person>();
+//
+//        persons.add(new Person("baidu"));
+//
+//        persons.add(new Person("google"));
+//
+//        persons.add(new Person("bing"));
+//
+//        persons.get(2).setName("360");
+//
+//        for (Person person : persons) {
+//            System.out.println(person.getName());
+//        }
+//
+//        System.out.println(new Date());
+//        System.out.println(new Date().getTime());
+//        System.out.println(new Date(1435543431582L));
 
 
     }
