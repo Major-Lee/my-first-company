@@ -462,7 +462,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					//如果j >1 的时候 offset >= 0
 					for (int i = 1; i< j - offset + 1 ; i++) {
 						// >>> j == 1
-						URouterHdTimeLineVTO vto_ = vtos.get(offset + i - 1);
+						URouterHdTimeLineVTO vto_ = vtos.get(i - 1);
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getDetail();
 						WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size() - 1);

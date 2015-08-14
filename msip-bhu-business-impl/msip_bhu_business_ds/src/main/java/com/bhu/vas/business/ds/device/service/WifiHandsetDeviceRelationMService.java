@@ -362,6 +362,9 @@ public class WifiHandsetDeviceRelationMService {
                 wifiHandsetDeviceItemDetailMTDTOMap = wifiHandsetDeviceRelationMDTO.getItems();
 
                 logs = wifiHandsetDeviceRelationMDTO.getLogs();
+                if (logs == null) {
+                    logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
+                }
 
                 dataMap = updateOfflineWifiHandsetDeviceItems(
                         wifiHandsetDeviceItemDetailMTDTOMap, week,logout_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
