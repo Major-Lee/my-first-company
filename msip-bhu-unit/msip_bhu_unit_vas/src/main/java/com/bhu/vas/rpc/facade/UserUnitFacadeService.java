@@ -260,7 +260,7 @@ public class UserUnitFacadeService {
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 			}
-			deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,remoteIp);
+			deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,remoteIp);
 		}else{//登录
 			reg = false;
 			user = this.userService.getById(uid);

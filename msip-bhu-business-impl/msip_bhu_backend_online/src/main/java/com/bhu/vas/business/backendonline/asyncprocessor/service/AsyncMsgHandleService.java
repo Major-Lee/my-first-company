@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -40,6 +41,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
+import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
@@ -1113,15 +1115,6 @@ public class AsyncMsgHandleService {
 				//macs.add(UserDevicePk.getMac());
 				afterUserSignedonThenCmdDown(userDevicePk.getMac());
 			}
-//			List<WifiDeviceSetting> entitys = wifiDeviceSettingService.findByIds(macs);
-//			for(WifiDeviceSetting entity : entitys){
-//				WifiDeviceSettingDTO entity_dto = entity.getInnerModel();
-//				List<String> vapnames = null;
-//				if(entity_dto != null){
-//					vapnames = DeviceHelper.builderSettingVapNames(entity_dto.getVaps());
-//				}
-//				afterUserSignedonThenCmdDown(entity.getId(), vapnames);
-//			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));
 	}
@@ -1133,9 +1126,14 @@ public class AsyncMsgHandleService {
 	 */
 	public void userRegister(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s]", message));
-//		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
-//		userSettingStateService.initUserSettingState(dto.getUid());
-		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s] successful", message));
+		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
+		int addret = ExchangeBBSHelper.userAdd2BBS(dto.getMobileno());
+		if(addret == 1){
+			logger.info("AnsyncMsgBackendProcessor userRegister2BBS successful");
+		}else{
+			logger.info("AnsyncMsgBackendProcessor userRegister2BBS error:"+addret);
+		}
+		
 	}
 	
 	//设备实时速率, 设备终端列表

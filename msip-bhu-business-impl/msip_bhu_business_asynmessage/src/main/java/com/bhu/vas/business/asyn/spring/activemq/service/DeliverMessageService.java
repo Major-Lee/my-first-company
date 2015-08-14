@@ -239,9 +239,10 @@ public class DeliverMessageService {
 	}
 	
 
-	public void sendUserRegisteredActionMessage(Integer uid,String channel,String device,String remoteip){
+	public void sendUserRegisteredActionMessage(Integer uid,String mobileno,String channel,String device,String remoteip){
 		UserRegisteredDTO dto = new UserRegisteredDTO();
 		dto.setUid(uid);
+		dto.setMobileno(mobileno);
 		dto.setChannel(channel);
 		//dto.setInviteuid(inviteuid);
 		//dto.setInvitetoken(invitetoken);

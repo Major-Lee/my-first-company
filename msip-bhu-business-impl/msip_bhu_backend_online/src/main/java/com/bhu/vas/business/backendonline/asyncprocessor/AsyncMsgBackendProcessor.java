@@ -107,7 +107,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							asyncMsgHandleService.userSignedon(message);
 							break;
 						case USERREGISTERED:
-							asyncMsgHandleService.userSignedon(message);
+							asyncMsgHandleService.userRegister(message);
 							break;
 						case USERDEVICEREGISTER:
 							asyncMsgHandleService.userDeviceRegister(message);
