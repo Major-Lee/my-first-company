@@ -460,7 +460,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (type.equals("login") && last_type.equals("logout")) { ////隔天仍在线
 
 					//如果j >1 的时候 offset >= 0
-					for (int i = 1; i< j - offset + 1 ; i++) {
+					for (int i = 1; i< j + 1 ; i++) {
 						// >>> j == 1
 						URouterHdTimeLineVTO vto_ = vtos.get(i - 1);
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
@@ -474,10 +474,19 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
 						dto.setLogin_at(ts);
-						if ( i == j- offset + 1) {
+
+						if (offset + 1 + i < 6)  {
+							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
+							mdtos.add(dto);
+							break;
+						}
+
+						if ( i + 1 == j) {
 							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
 						}
 						mdtos.add(dto);
+
+
 						// <<< j == 1
 					}
 
