@@ -237,6 +237,9 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setOnline(boolean online) {
 		this.online = online;
+		if(!online){
+			this.module_online = false;
+		}
 	}
 	
 	public String getRx_bytes() {

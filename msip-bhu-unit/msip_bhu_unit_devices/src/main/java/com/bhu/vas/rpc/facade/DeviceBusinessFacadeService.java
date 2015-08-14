@@ -1025,6 +1025,7 @@ public class DeviceBusinessFacadeService {
 				if(wifiDevice != null){
 					if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){//不同则覆盖
 						wifiDevice.setOrig_vap_module(vapDTO.getRegister().getVersion());
+						wifiDevice.setModule_online(true);
 						wifiDeviceService.update(wifiDevice);
 					}
 				}
