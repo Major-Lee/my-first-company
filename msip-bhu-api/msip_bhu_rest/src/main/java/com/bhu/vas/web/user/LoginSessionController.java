@@ -69,6 +69,7 @@ public class LoginSessionController extends BaseController{
 		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userCreateOrLogin(countrycode, acc, from_device, remoteIp, captcha);
 		if(rpcResult.getErrorCode() == null){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+			//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
