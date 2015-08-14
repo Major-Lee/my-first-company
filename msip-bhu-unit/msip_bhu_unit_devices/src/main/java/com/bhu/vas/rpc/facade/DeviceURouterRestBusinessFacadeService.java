@@ -299,8 +299,6 @@ public class DeviceURouterRestBusinessFacadeService {
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 		long sevenDayBeforeNow = currentZeroTime - 7 * 24 * 3600 * 1000;
 
-		List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
-
 		if (logs != null) {
 			WifiHandsetDeviceItemDetailMDTO dto = null;
 			List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
@@ -325,26 +323,22 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				if (last_type == null) { //最新一条记录
 					//处理分割记录
-					filterDay(ts, currentTime, type, week, vtos, offset, true);
+					filterDay(ts, currentTime, type,last_type, vtos, offset, true);
 
 				} else { //第二条数据开始
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
 					}
 					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
-						if (last_ts - ts > 15 * 3600 * 1000) {
-							//处理分割记录
-							filterDay(ts, last_ts, type, week, vtos, offset, false);
-						} else { //忽略15分钟记录
-							//filterDay(last_ts, currentTime, type, week, vtos, dto, mdtos);
-						}
+//
+						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
 					}
 					if (type.equals("login") && last_type.equals("login")) {
 						//忽略记录
 					}
 					if (type.equals("login") && last_type.equals("logout")) {
 
-						filterDay(ts, last_ts, type, week, vtos, offset, false);
+						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
 					}
 				}
 
@@ -361,18 +355,22 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	/**
 	 *
-	 * 1. 正常流程读取所有的上显现流水，解析数据。
+	 * 解析终端登入登出日志，每条日志只有时间戳和类型(login/logout)
+	 * 1.正常流程 login -> logout -> login -> logout -> ...
+	 * 2.出现跨天的情况
+	 * 3.15分钟之内的登入登出合并
 	 *
 	 *
-	 * @param ts
-	 * @param last_ts
-	 * @param type
-	 * @param week
-	 * @param vtos
-	 * @param offset
-	 * @param first
+	 *
+	 * @param ts     时间戳
+	 * @param last_ts 上一次
+	 * @param type   登入还是登出
+	 * @param last_type 上一次
+	 * @param vtos   结果
+	 * @param offset 记录是七天的第几天
+	 * @param first last_type == null 时候
 	 */
-	private void filterDay(long ts, long last_ts, String type, List<String> week, List<URouterHdTimeLineVTO> vtos,
+	private void filterDay(long ts, long last_ts, String type, String last_type, List<URouterHdTimeLineVTO> vtos,
 						   int offset, boolean first) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
@@ -403,8 +401,9 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
-				if (type.equals("login")) {
-					if (first) {
+//				if (type.equals("login") && last_type.equals("logout")) { //正常流程
+				if (type.equals("login")) { //正常流程
+					if (first) { // last_type == null
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogin_at(ts);
 						dto.setLogout_at(0);
@@ -415,10 +414,23 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 
-				if (type.equals("logout")) {
-					dto = new WifiHandsetDeviceItemDetailMDTO();
-					dto.setLogout_at(ts);
-					mdtos.add(dto);
+				if (type.equals("logout") ) { //正常流程
+
+					if (first) { //last_type == null
+						dto = new WifiHandsetDeviceItemDetailMDTO();
+						dto.setLogout_at(ts);
+						mdtos.add(dto);
+					} else {
+						if (last_ts - ts < 15 * 60 * 1000) { //小于15分钟的记录
+							//忽略操作
+							logger.info("ignore 15 min" + (ts - last_ts));
+						} else {
+							dto = new WifiHandsetDeviceItemDetailMDTO();
+							dto.setLogout_at(ts);
+							mdtos.add(dto);
+						}
+					}
+
 				}
 				logger.info("[mdtos]" + mdtos.size());
 				vto.setLogs(mdtos);
@@ -429,58 +441,73 @@ public class DeviceURouterRestBusinessFacadeService {
 				//有隔天记录的拆分第一条记录 >>>
 				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
 				logger.info("date===date[" + vto.getDate() + "]");
-				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs(); //肯定不会为空
+				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs(); //
 				if (mdtos == null) {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 				}
-
 				WifiHandsetDeviceItemDetailMDTO dto = null;
-				if (mdtos.isEmpty()) {
+
+				if (type.equals("logout") && last_type.equals("login")) { //如果上一次正常退出
 					dto = new WifiHandsetDeviceItemDetailMDTO();
-				} else {
-					dto = mdtos.get(mdtos.size() - 1); //肯定有值
-				}
-				long login_at_zero = DateTimeHelper.parseDate(vto.getDate(), DateTimeHelper.shortDateFormat).getTime();
-				//当天记录
-				if (type.equals("login")) { //隔天仍在线
-					dto.setLogin_at(ts);
+					dto.setLogout_at(ts);
+					mdtos.add(dto);
 				}
 
-				if (type.equals("logout")) { //隔天已登出
-					dto.setLogout_at(ts); //登出
+
+				//隔天记录
+				//补齐上一天的最后一条login记录为00:00:00，当天的第一条记录11:59:59
+				if (type.equals("login") && last_type.equals("logout")) { ////隔天仍在线
+
+					for ( int i= 1; i < j - (6 - (offset + 1)) ; i++) {
+
+					}
+					// >>> j == 1
+					URouterHdTimeLineVTO vto_ = vtos.get(offset);
+					List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
+					WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size() - 1);
+					long login_at_zero = DateTimeHelper.parseDate(vto_.getDate(), DateTimeHelper.shortDateFormat).getTime();
+					dto_.setLogin_at(login_at_zero); //补齐零点登入
+					// <<<
+
+					// >>>
+					dto = new WifiHandsetDeviceItemDetailMDTO();
+					dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
+					mdtos.add(dto);
+					// <<< j == 1
+					
+
+					//隔天记录的其他记录 >>>
+					for (int i = 1; i < j + 1; i++) {
+						URouterHdTimeLineVTO currentVto = vtos.get(i);
+						String weekDate = currentVto.getDate();
+						List<WifiHandsetDeviceItemDetailMDTO> currentMdtos = currentVto.getLogs();
+						if (currentMdtos == null) {
+							currentMdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+						}
+						long zeroTime = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() -
+								(i - 1) * (24 * 3600 * 1000);
+						long logout = zeroTime + (24 * 3600 - 1) * 1000; //补齐登出时间
+
+						if (type.equals("login") || type.equals("logout")) {
+							dto = new WifiHandsetDeviceItemDetailMDTO();
+							dto.setLogout_at(logout);
+							dto.setLogin_at(zeroTime);
+							currentMdtos.add(dto);
+						}
+
+						if (i == j) {
+							dto = new WifiHandsetDeviceItemDetailMDTO();
+							dto.setLogin_at(logout);
+							dto.setLogin_at(ts);
+							currentMdtos.add(dto);
+						}
+					}
+					//隔天记录的其他记录 <<<
 				}
-				dto.setLogin_at(login_at_zero); //补齐零点登入
-				//mdtos.add(dto);
+
+				vto.setLogs(mdtos);
+
 				//有隔天记录的拆分第一条记录 <<<
-
-				//隔天记录的其他记录 >>>
-				for (int i = 1; i < j + 1; i++) {
-					URouterHdTimeLineVTO currentVto = vtos.get(i);
-					String weekDate = currentVto.getDate();
-					List<WifiHandsetDeviceItemDetailMDTO> currentMdtos = currentVto.getLogs();
-					if (currentMdtos == null) {
-						currentMdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
-					}
-					long zeroTime = DateTimeHelper.parseDate(weekDate, DateTimeHelper.shortDateFormat).getTime() -
-							(i - 1) * (24 * 3600 * 1000);
-					long logout = zeroTime + (24 * 3600 - 1) * 1000; //补齐登出时间
-
-					if (type.equals("login") || type.equals("logout")) {
-						dto = new WifiHandsetDeviceItemDetailMDTO();
-						dto.setLogout_at(logout);
-						dto.setLogin_at(zeroTime);
-						currentMdtos.add(dto);
-					}
-
-					if (i == j) {
-						dto = new WifiHandsetDeviceItemDetailMDTO();
-						dto.setLogin_at(logout);
-						dto.setLogin_at(ts);
-						currentMdtos.add(dto);
-					}
-				}
-				//隔天记录的其他记录 <<<
-
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -792,7 +819,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deliverMessageService.sendWifiCmdsCommingNotifyMessage(
 					wifiId,/*0,OperationCMD.ParamWifiSinffer.getNo(),*/
 					CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,
-							on?WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer:WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
+							on ? WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer:WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
