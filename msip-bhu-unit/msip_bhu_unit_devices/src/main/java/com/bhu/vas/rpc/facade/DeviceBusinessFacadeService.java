@@ -1019,26 +1019,28 @@ public class DeviceBusinessFacadeService {
 	public void processVapModuleResponse(String ctx,String mac, WifiDeviceVapReturnDTO vapDTO,long taskid){
 		if(vapDTO != null){
 			if(vapDTO.getRegister() != null){
+				List<String> cmdPayloads = new ArrayList<>();
 				//module 版本信息，判定是否需要升级
 				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 				if(wifiDevice != null){
-					if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){
+					if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){//不同则覆盖
 						wifiDevice.setOrig_vap_module(vapDTO.getRegister().getVersion());
 						wifiDeviceService.update(wifiDevice);
 					}
 				}
-			}
-			
-			if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){
-				//比对本地内容，看是否需要重新下发增值指令，以服务器内容为基准，所以直接生成指令下发，此部分操作设备在登录后查询配置响应的时候会做相关操作，所以这里就不做了
-				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceOnlyVapModuleCMD(mac);
-				if(persistencePayloads != null && !persistencePayloads.isEmpty()){
-					/*for(String payload:persistencePayloads){
-						deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, 0, 
-								null, payload);
-					}*/
-					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, persistencePayloads);
-					System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+persistencePayloads.size());
+				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));
+				if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){
+					//比对本地内容，看是否需要重新下发增值指令，以服务器内容为基准，所以直接生成指令下发，此部分操作设备在登录后查询配置响应的时候会做相关操作，所以这里就不做了
+					List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceOnlyVapModuleCMD(mac);
+					if(persistencePayloads != null && !persistencePayloads.isEmpty()){
+						cmdPayloads.addAll(persistencePayloads);
+						/*deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, persistencePayloads);
+						System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+persistencePayloads.size());*/
+					}
+				}
+				if(!cmdPayloads.isEmpty()){
+					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayloads);
+					System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+cmdPayloads.size());
 				}
 			}
 		}

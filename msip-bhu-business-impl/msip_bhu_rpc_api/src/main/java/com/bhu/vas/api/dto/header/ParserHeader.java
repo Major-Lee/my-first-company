@@ -28,15 +28,16 @@ public class ParserHeader implements java.io.Serializable{
 //	public static final int Transfer_mtype_0_DeviceOnilneRep = 2;//3.4.3	设备上线回应
 	
 	/********************** transfer message start ************************/
-	//D2S Device->Server  S2D Server->Device
-	public static final int Vap_Module_Register_D2S = 1;
-	public static final int Vap_Module_VapSetting_D2S = 4;
-	public static final int Vap_Module_VapQuery_D2S = 6;
+	//D2S Device->Server  S2D Server->Device REQ request RES response
+	public static final int Vap_Module_Register_REQ_D2S = 1;
+	public static final int Vap_Module_VapSetting_RES_D2S = 4;
+	public static final int Vap_Module_VapQuery_RES_D2S = 6;
 	
-	public static final int Vap_Module_Upgrade_S2D = 2;
-	public static final int Vap_Module_VapSetting_S2D = 3;
-	public static final int Vap_Module_VapQuery_S2D = 5;
-	
+	public static final int Vap_Module_Upgrade_REQ_S2D = 2;
+	public static final int Vap_Module_VapSetting_REQ_S2D = 3;
+	public static final int Vap_Module_VapQuery_REQ_S2D = 5;
+	 //运营模块登录响应
+	public static final int Vap_Module_Register_RES_S2D = 7;
 	//消息类型(8字节)
 	private int type;
 	//12字节mac

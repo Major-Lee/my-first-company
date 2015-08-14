@@ -45,6 +45,7 @@ public class WifiDevice extends BaseStringModel{
 	private String work_mode;
 	//wifi设备是否在线
 	private boolean online;
+	private boolean module_online;
 	//下行流量
 	private String rx_bytes;
 	//上行流量
@@ -408,6 +409,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setOrig_vap_module(String orig_vap_module) {
 		this.orig_vap_module = orig_vap_module;
+	}
+
+	public boolean isModule_online() {
+		return module_online;
+	}
+
+	public void setModule_online(boolean module_online) {
+		this.module_online = module_online;
 	}
 	
 }

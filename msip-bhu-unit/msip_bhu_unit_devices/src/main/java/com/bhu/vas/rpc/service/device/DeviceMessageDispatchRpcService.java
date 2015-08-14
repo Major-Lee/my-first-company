@@ -338,13 +338,13 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		long taskid = parserHeader.getTaskid();
 		String mac = parserHeader.getMac().toLowerCase();
 		switch(parserHeader.getVaptype()){
-			case ParserHeader.Vap_Module_Register_D2S:
-			case ParserHeader.Vap_Module_VapQuery_D2S:
+			case ParserHeader.Vap_Module_Register_REQ_D2S:
+			case ParserHeader.Vap_Module_VapQuery_RES_D2S:
 				Document doc = RPCMessageParseHelper.parserMessage(payload);
 				WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
 				deviceBusinessFacadeService.processVapModuleResponse(ctx,mac, vapDTO,taskid);
 				break;
-			case ParserHeader.Vap_Module_VapSetting_D2S:
+			case ParserHeader.Vap_Module_VapSetting_RES_D2S:
 				deviceBusinessFacadeService.taskModuleProcessor(ctx, payload, mac, taskid);
 				break;
 			default:

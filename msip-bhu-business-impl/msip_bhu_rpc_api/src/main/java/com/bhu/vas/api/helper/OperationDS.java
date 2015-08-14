@@ -24,7 +24,6 @@ public enum OperationDS {
 	DS_Http_404_Start("15","开启404错误页面"),
 	DS_Http_Redirect_Start("16","开启http redirect"),
 	DS_Http_Portal_Start("17","开启http portal"),
-	
 	DS_Http_Portal_Stop("18","关闭http portal"),
 	DS_Http_Ad_Stop("19","关闭广告注入"),
 	DS_Http_404_Stop("20","关闭404错误页面"),

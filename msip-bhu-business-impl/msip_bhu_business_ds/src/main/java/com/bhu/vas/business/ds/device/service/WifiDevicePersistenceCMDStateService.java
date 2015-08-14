@@ -25,7 +25,6 @@ public class WifiDevicePersistenceCMDStateService extends AbstractCoreService<St
 	}
 
 	public void filterPersistenceCMD(String mac, OperationCMD opt, OperationDS subopt, String extparams){
-		System.out.println(String.format("filterPersistenceCMD mac:%s opt:%s subopt:%s extparams:%s", mac,opt,subopt,extparams));
 		
 		PersistenceAction action = WifiDeviceHelper.needPersistenceAction(opt, subopt);
 		if(action != null){

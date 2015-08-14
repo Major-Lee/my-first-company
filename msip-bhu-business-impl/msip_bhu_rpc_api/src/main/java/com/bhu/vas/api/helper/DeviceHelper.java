@@ -668,8 +668,8 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<redirect><ITEM enable=\"%s\" rule=\"%s\" ver=\"%s\" /></redirect>";
 	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<redirect><ITEM enable=\"disable\"/></redirect>";
 	
-	public static final String VapModule_Setting_MsgType = "00000003";
-	public static final String VapModule_Query_MsgType = "00000004";
+	/*public static final String VapModule_Setting_MsgType = "00000003";
+	public static final String VapModule_Query_MsgType = "00000004";*/
 	
 	//TODO:待完善
 	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";

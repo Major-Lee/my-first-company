@@ -45,8 +45,12 @@ public class CMDBuilder {
 	//public static final String SuffixTemplete_Taskid = "%07d";
 	private static final String SuffixTemplete_Taskid = "%010d";
 	private static final String SuffixTemplete_Firmware_Taskid = "%08d";
+	private static final String SuffixTemplete_8_len = "%08d";
 	//指令头长度
 	//public static final int Cmd_Header_Length = 42;
+	public static String builder8LenFormat(long type){
+		return String.format(SuffixTemplete_8_len, type);
+	}
 	
 	public static String builderTaskidFormat(long taskid){
 		return String.format(SuffixTemplete_Taskid, taskid);
@@ -361,13 +365,18 @@ public class CMDBuilder {
 		}
 		if(innercmd.length()>0){
 			StringBuilder resultCmd = new StringBuilder(
-					String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, StringHelper.unformatMacAddress(wifi_mac),DeviceHelper.VapModule_Setting_MsgType,OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid)));
+					String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_VapSetting_REQ_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid)));
 			resultCmd.append(DeviceHelper.DeviceSetting_VapModule_VapItem_Begin_Fragment);
 			resultCmd.append(innercmd.toString());
 			resultCmd.append(DeviceHelper.DeviceSetting_VapModule_VapItem_End_Fragment);
 			return resultCmd.toString();
 		}
 		return null;
+	}
+	
+	public static String builderVapModuleRegisterResponse(String wifi_mac){
+		return String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, 
+				StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_Register_RES_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()));
 	}
 	
 	private static String[] genParserParams(String wifi_mac,String opt,long taskid,String extparams){

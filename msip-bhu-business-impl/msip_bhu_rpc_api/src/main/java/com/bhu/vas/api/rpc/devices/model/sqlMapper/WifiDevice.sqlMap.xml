@@ -26,6 +26,9 @@
     <result property="config_mode" column="config_mode"/>
     <result property="work_mode" column="work_mode"/>
     <result property="online" column="online"/>
+    <result property="module_online" column="module_online"/>
+    
+    
     <result property="rx_bytes" column="rx_bytes"/>
     <result property="tx_bytes" column="tx_bytes"/>
     <result property="data_rx_rate" column="data_rx_rate"/>
@@ -76,6 +79,7 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
+	    	module_online,
 	    	rx_bytes,
 	    	tx_bytes,
 	    	data_rx_rate,
@@ -120,6 +124,7 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
+	    	module_online,
 	    	rx_bytes,
 	    	tx_bytes,
 	    	data_rx_rate,
@@ -165,6 +170,7 @@
 	    	#{config_mode},
 	    	#{work_mode},
 	    	#{online},
+	    	#{module_online},
 	    	#{rx_bytes},
 	    	#{tx_bytes},
 	    	#{data_rx_rate},
@@ -208,6 +214,7 @@
 	    	config_mode = #{config_mode},
 	    	work_mode = #{work_mode},
 	    	online = #{online},
+	    	module_online = #{module_online},
 	    	rx_bytes = #{rx_bytes},
 	    	tx_bytes = #{tx_bytes},
 	    	data_rx_rate = #{data_rx_rate},
