@@ -129,6 +129,10 @@ public class WifiHandsetDeviceRelationMService {
                 update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
 
                 logs = wifiHandsetDeviceRelationMDTO.getLogs();
+
+                if (logs == null ) {
+                    logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>(); //老数据可能为null
+                }
             }
 
             logs.add(0,log);
