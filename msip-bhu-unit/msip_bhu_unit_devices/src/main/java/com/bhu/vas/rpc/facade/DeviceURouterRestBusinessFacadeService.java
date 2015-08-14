@@ -475,7 +475,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
 						dto.setLogin_at(ts);
 
-						if (offset + 1 + i < 6)  {
+						if (offset + 1 + i >= 6)  {
 							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
 							mdtos.add(dto);
 							break;
