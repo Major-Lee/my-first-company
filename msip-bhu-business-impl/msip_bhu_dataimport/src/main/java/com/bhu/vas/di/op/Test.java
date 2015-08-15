@@ -18,7 +18,7 @@ public class Test {
 
     public static void main(String[] args){
 
-        long ts= 1439395000000L;
+        long ts= 1439046000000L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
         System.out.println(DateTimeExtHelper.getSevenDateOfWeek());
 //        long currentTime = System.currentTimeMillis();
@@ -39,7 +39,7 @@ public class Test {
 //        System.out.println(offset);
 
 
-        System.out.println(DateTimeHelper.parseDate("2015-08-13 23:00:00", DateTimeHelper.longDateFormat).getTime());
+        System.out.println(DateTimeHelper.parseDate("2015-08-08 23:00:00", DateTimeHelper.longDateFormat).getTime());
 
 //        String dateStr = "2015-08-06 19:01:35";
 //        Date date = DateTimeHelper.parseDate(dateStr,DateTimeHelper.shortDateFormat);
