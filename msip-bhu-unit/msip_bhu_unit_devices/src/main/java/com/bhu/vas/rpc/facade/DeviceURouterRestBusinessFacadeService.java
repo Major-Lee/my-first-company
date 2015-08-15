@@ -272,17 +272,6 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 
-				if (map != null) {
-					//集合中只有七天的在线记录
-					for (String key : map.keySet()) {
-						URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
-						uRouterHdTimeLineVTO.setDate(key);
-						uRouterHdTimeLineVTO.setDetail(map.get(key));
-						uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
-					}
-				}
-
-
 				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
 
 				getLogs(uRouterHdTimeLineVTOList, logs);
@@ -308,7 +297,6 @@ public class DeviceURouterRestBusinessFacadeService {
 		String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
 
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
-		long sevenDayBeforeNow = currentZeroTime - 7 * 24 * 3600 * 1000;
 
 		if (logs != null) {
 			WifiHandsetDeviceItemDetailMDTO dto = null;
@@ -397,13 +385,12 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 
 		logger.info("j====" + j);
-
 		try {
 
 			if (j == 0) { //当天记录
 				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
 				logger.info("date===date[" + vto.getDate() + "]");
-				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs();
+				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
 				logger.info("mdtos===mdtos[" + mdtos + "]");
 				if (mdtos == null) {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
@@ -441,10 +428,8 @@ public class DeviceURouterRestBusinessFacadeService {
 							mdtos.add(dto);
 						}
 					}
-
 				}
 				logger.info("[mdtos]" + mdtos.size());
-				vto.setLogs(mdtos);
 				vto.setDetail(mdtos);
 
 			}
@@ -476,7 +461,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (type.equals("login") && last_type.equals("logout")) { ////隔天仍在线
 
 					//如果j >1 的时候 offset >= 0
-					for (int i = 1; i< j + 2 ; i++) {
+					for (int i = 1; i< j + 1 ; i++) {
 						// >>> j == 1
 
 						logger.info("iiiii===" + i);
@@ -508,7 +493,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							break;
 						}
 
-						if ( i + 2 == j) {
+						if ( i + 1 == j) {
 							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
 						}
 						mdtos.add(dto);
