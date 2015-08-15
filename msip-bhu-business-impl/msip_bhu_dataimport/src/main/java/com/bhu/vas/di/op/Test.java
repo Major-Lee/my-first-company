@@ -2,6 +2,7 @@ package com.bhu.vas.di.op;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
+import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import org.elasticsearch.common.joda.time.DateTime;
 
@@ -19,6 +20,7 @@ public class Test {
 
         long ts= 1439395000000L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
+        System.out.println(DateTimeExtHelper.getSevenDateOfWeek());
 //        long currentTime = System.currentTimeMillis();
 //        String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
 //        long currentZeroTime = getDateZeroTime(new Date()).getTime();

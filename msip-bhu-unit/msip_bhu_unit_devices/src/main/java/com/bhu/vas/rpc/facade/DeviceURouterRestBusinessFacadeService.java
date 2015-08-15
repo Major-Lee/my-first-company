@@ -272,6 +272,17 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 
+				if (map != null) {
+					//集合中只有七天的在线记录
+					for (String key : map.keySet()) {
+						URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+						uRouterHdTimeLineVTO.setDate(key);
+						uRouterHdTimeLineVTO.setDetail(map.get(key));
+						uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
+					}
+				}
+
+
 				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
 
 				getLogs(uRouterHdTimeLineVTOList, logs);
@@ -465,11 +476,11 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (type.equals("login") && last_type.equals("logout")) { ////隔天仍在线
 
 					//如果j >1 的时候 offset >= 0
-					for (int i = 1; i< j + 1 ; i++) {
+					for (int i = 1; i< j + 2 ; i++) {
 						// >>> j == 1
 
 						logger.info("iiiii===" + i);
-						URouterHdTimeLineVTO vto_ = vtos.get(offset - (j - i - 1));
+						URouterHdTimeLineVTO vto_ = vtos.get(offset - (j - i ));
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getDetail();
 
@@ -497,7 +508,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							break;
 						}
 
-						if ( i + 1 == j) {
+						if ( i + 2 == j) {
 							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
 						}
 						mdtos.add(dto);
