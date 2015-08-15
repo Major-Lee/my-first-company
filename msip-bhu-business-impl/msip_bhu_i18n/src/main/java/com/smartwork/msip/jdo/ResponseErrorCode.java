@@ -71,6 +71,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_SETTING_RATECONTROL_MAX_MEMBER("712","wifidevice.setting.ratecontrol.maxmember"),
 	
 	WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED("730","wifidevice.vap.workmode.notsupported"),
+	WIFIDEVICE_VAP_VERSIONBUILD_NOT_SUPPORTED("731","wifidevice.vap.versionbuild.notsupported"),
 	
 	WIFIDEVICE_GROUP_NOTEXIST("750","wifidevice.group.notexist"),
 	WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY("751","wifidevice.group.current.devices.empty"),

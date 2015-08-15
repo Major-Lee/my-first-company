@@ -12,6 +12,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
@@ -227,6 +228,9 @@ public class TaskFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 		
+		
+		
+		
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
 		
 		//如果是管理员用户 不进行用户所属设备的验证
@@ -235,6 +239,12 @@ public class TaskFacadeService {
 			wifiDevice = deviceFacadeService.validateDevice(mac);
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
+		}
+		
+		if(OperationCMD.DeviceModuleUpgrade == opt_cmd){//判定设备版本是否兼容
+			if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_VERSIONBUILD_NOT_SUPPORTED);
+			}
 		}
 		//判定是否是增值指令
 		if(		OperationDS.DS_Http_404_Start == ods_cmd || OperationDS.DS_Http_404_Stop == ods_cmd
@@ -246,6 +256,9 @@ public class TaskFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
 		}
+		
+		
+		
 		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
 		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
