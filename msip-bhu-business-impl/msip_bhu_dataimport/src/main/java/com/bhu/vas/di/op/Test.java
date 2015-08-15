@@ -17,7 +17,7 @@ public class Test {
 
     public static void main(String[] args){
 
-        long ts= 1439492600000L;
+        long ts= 1439395000000L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
 //        long currentTime = System.currentTimeMillis();
 //        String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);

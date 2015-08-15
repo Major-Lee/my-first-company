@@ -439,19 +439,24 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 
 			if (j > 0) {
-				//有隔天记录的拆分第一条记录 >>>
-				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
-				logger.info("date===date[" + vto.getDate() + "]");
-				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs(); //
-				if (mdtos == null) {
-					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
-				}
+
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
 				if (type.equals("logout") && last_type.equals("login")) { //如果上一次正常退出
+
+					//有隔天记录的拆分第一条记录 >>>
+					URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
+					logger.info("date===date[" + vto.getDate() + "]");
+//					List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs(); //
+					List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
+					if (mdtos == null) {
+						mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+					}
+
 					dto = new WifiHandsetDeviceItemDetailMDTO();
 					dto.setLogout_at(ts);
 					mdtos.add(dto);
+					vto.setDetail(mdtos);
 				}
 
 
@@ -462,20 +467,31 @@ public class DeviceURouterRestBusinessFacadeService {
 					//如果j >1 的时候 offset >= 0
 					for (int i = 1; i< j + 1 ; i++) {
 						// >>> j == 1
+
+						logger.info("iiiii===" + i);
 						URouterHdTimeLineVTO vto_ = vtos.get(i - 1);
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getDetail();
+
+						logger.info("mdtos_" + mdtos_);
+
+						if (mdtos_ == null) {
+							mdtos_ = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+						}
 						WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size() - 1);
 						long login_at_zero = DateTimeHelper.parseDate(vto_.getDate(), DateTimeHelper.shortDateFormat).getTime();
 						dto_.setLogin_at(login_at_zero); //补齐零点登入
+						vto_.setDetail(mdtos_);
 						// <<<
 
 						// >>>
+						URouterHdTimeLineVTO vto = vtos.get(i);
+						List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
+
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
-						dto.setLogin_at(ts);
 
-						if (offset + 1 + i >= 6)  {
+						if (offset + 1 + i == 6)  {
 							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
 							mdtos.add(dto);
 							break;
@@ -485,15 +501,14 @@ public class DeviceURouterRestBusinessFacadeService {
 							dto.setLogin_at(login_at_zero - 1);  //如果最后一次的话添加一个登录时间
 						}
 						mdtos.add(dto);
-
-
+						vto.setDetail(mdtos);
 						// <<< j == 1
 					}
 
 				}
 
-				vto.setLogs(mdtos);
-				vto.setDetail(mdtos);
+				//vto.setLogs(mdtos);
+
 				//有隔天记录的拆分第一条记录 <<<
 			}
 		}catch(Exception e) {
