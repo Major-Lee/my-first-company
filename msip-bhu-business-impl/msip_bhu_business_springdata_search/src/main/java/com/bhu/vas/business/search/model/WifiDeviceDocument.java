@@ -7,7 +7,16 @@ import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
-@Document(indexName = "wifi_device_index3", type = "wifiDevice", shards = 5, replicas = 1)
+import com.bhu.vas.business.search.BusinessIndexDefine;
+
+@Document(	indexName = BusinessIndexDefine.WifiDevice.IndexName, 
+			type = BusinessIndexDefine.WifiDevice.Type, 
+			shards = BusinessIndexDefine.WifiDevice.Shards, 
+			replicas = BusinessIndexDefine.WifiDevice.replicas)
+/*@Document(	indexName = "wifi_device_index9", 
+type = "myWifiDevice", 
+shards = 5, 
+replicas = 1)*/
 public class WifiDeviceDocument {
 	@Id
 	@Field(
@@ -104,14 +113,14 @@ public class WifiDeviceDocument {
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private long registerat;//wifi设备的注册时间
+	private long registeredat;//wifi设备的注册时间
 	
 	@Field(
 			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String updateat;//索引记录的更新时间
+	private String updatedat;//索引记录的更新时间
 	
 	/*@Field(
 			type = FieldType.Date,
@@ -217,20 +226,21 @@ public class WifiDeviceDocument {
 		this.count = count;
 	}
 
-	public long getRegisterat() {
-		return registerat;
+	public long getRegisteredat() {
+		return registeredat;
 	}
 
-	public void setRegisterat(long registerat) {
-		this.registerat = registerat;
+	public void setRegisteredat(long registeredat) {
+		this.registeredat = registeredat;
 	}
 
-	public String getUpdateat() {
-		return updateat;
+	public String getUpdatedat() {
+		return updatedat;
 	}
 
-	public void setUpdateat(String updateat) {
-		this.updateat = updateat;
+	public void setUpdatedat(String updatedat) {
+		this.updatedat = updatedat;
 	}
+
 
 }

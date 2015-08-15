@@ -14,8 +14,8 @@ public interface WifiDeviceDocumentRepository  extends ElasticsearchRepository<W
 	Page<WifiDeviceDocument> findByOnlineFalse(Pageable pageable);
 	Page<WifiDeviceDocument> findByOnlineTrue(Pageable pageable);
 	Page<WifiDeviceDocument> findByGroups(String group,Pageable pageable);
-	Page<WifiDeviceDocument> findByRegisteratGreaterThanOrderByRegisteratDesc(long registerat,Pageable pageable);
-	Page<WifiDeviceDocument> findByRegisteratGreaterThanOrderByRegisteratAsc(long registerat,Pageable pageable);
+	Page<WifiDeviceDocument> findByRegisteredatGreaterThanOrderByRegisteredatDesc(long registeredat,Pageable pageable);
+	Page<WifiDeviceDocument> findByRegisteredatGreaterThanOrderByRegisteredatAsc(long registeredat,Pageable pageable);
 	Page<WifiDeviceDocument> findByAddress(String address,Pageable pageable);
 	Long countByAddress(String address);
 	int countByOnlineTrue();

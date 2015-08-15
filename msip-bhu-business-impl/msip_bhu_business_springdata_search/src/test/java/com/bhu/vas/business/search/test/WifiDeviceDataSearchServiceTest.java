@@ -59,17 +59,25 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     
     @Test
    	public void test004SearchGroup(){
-       	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("1 2",new PageRequest(0,2));
-       	System.out.println(searchByKeywords.getTotalElements());
-       	System.out.println(searchByKeywords.getContent().size());
+       	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("1 2",new PageRequest(0,5));
+       	System.out.println("test004SearchGroup1");
+       	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
+       	
+       	searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("2",new PageRequest(0,5));
+       	System.out.println("test004SearchGroup2");
+       	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
     }
     
     @Test
    	public void test005RegisteratGreaterThen(){
-       	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.findByRegisteratGreaterThan(1438169971000l,0,5);
+       	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.findByRegisteredatGreaterThan(1438169971000l,0,5);
        	System.out.println("test005RegisteratGreaterThen");
        	for(WifiDeviceDocument doc:searchByKeywords){
-    		System.out.println(doc.getRegisterat());
+    		System.out.println(doc.getRegisteredat());
     	}
     }
     
@@ -140,6 +148,45 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
+    @Test
+    public void test011Refresh(){
+    	System.out.println("test011Refresh0");
+    	System.out.println("before refresh false:"+wifiDeviceDataSearchService.getSetting());
+    	//wifiDeviceDataSearchService.refresh(false);
+    	wifiDeviceDataSearchService.disableRefreshInterval("wifi_device_index3");
+    	System.out.println("after refresh false:"+wifiDeviceDataSearchService.getSetting());
+		WifiDeviceDocument doc5 = new WifiDeviceDocument();
+		doc5.setId("84:82:f4:23:09:c9");
+		doc5.setSn("BN207DE100063BB");
+		doc5.setAddress("北京市西城区里仁街31号院-41号楼");
+		doc5.setCount(5);
+		doc5.setOnline(true);
+		//doc5.setGeopoint(new double[]{116.377757, 39.882544});
+		doc5.setGeopoint(new double[]{116.377757,39.882544});
+		doc5.setConfigmodel("basic");
+		doc5.setWorkmodel("router-ap");
+		doc5.setOrigswver("AP106P06V1.2.15Build8064");
+		doc5.setDevicetype("H106");
+		doc5.setGroups("1 2 5");
+		doc5.setRegisteredat(DateTimeHelper.getDateDaysAgo(6).getTime());
+		doc5.setUpdatedat(DateTimeHelper.getDateTime());
+		wifiDeviceDataSearchService.getRepository().save(doc5);
+		
+		Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("5",new PageRequest(0,5));
+       	System.out.println("test011Refresh1");
+       	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
+       	System.out.println("after refresh true:"+wifiDeviceDataSearchService.getSetting());
+       	//wifiDeviceDataSearchService.refresh(true);
+       	wifiDeviceDataSearchService.openRefreshInterval("wifi_device_index3", "1s");
+       	System.out.println("after refresh true:"+wifiDeviceDataSearchService.getSetting());
+       	searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("5",new PageRequest(0,5));
+       	System.out.println("test011Refresh2");
+       	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
+    }
     
     @Test
  	public void test000BatchEmptyDocument(){
@@ -148,6 +195,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     
     @Test
 	public void test001BatchCreateDocument(){
+    	wifiDeviceDataSearchService.refresh(false);
+    	
 		List<WifiDeviceDocument> docs = new ArrayList<>();
 		WifiDeviceDocument doc1 = new WifiDeviceDocument();
 		doc1.setId("62:68:75:10:11:80");
@@ -162,8 +211,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc1.setOrigswver("AP106P06V1.2.15Build7631");
 		doc1.setDevicetype("H106");
 		doc1.setGroups("2 3");
-		doc1.setRegisterat(DateTimeHelper.getDateDaysAgo(10).getTime());
-		doc1.setUpdateat(DateTimeHelper.getDateTime());
+		doc1.setRegisteredat(DateTimeHelper.getDateDaysAgo(10).getTime());
+		doc1.setUpdatedat(DateTimeHelper.getDateTime());
 		
 		WifiDeviceDocument doc2 = new WifiDeviceDocument();
 		doc2.setId("84:82:f4:23:06:8c");
@@ -178,8 +227,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc2.setOrigswver("AP106P06V1.2.15Build8084");
 		doc2.setDevicetype("H106");
 		doc2.setGroups("1 3");
-		doc2.setRegisterat(DateTimeHelper.getDateDaysAgo(9).getTime());
-		doc2.setUpdateat(DateTimeHelper.getDateTime());
+		doc2.setRegisteredat(DateTimeHelper.getDateDaysAgo(9).getTime());
+		doc2.setUpdatedat(DateTimeHelper.getDateTime());
 		
 		WifiDeviceDocument doc3 = new WifiDeviceDocument();
 		doc3.setId("84:82:f4:23:06:a4");
@@ -194,8 +243,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc3.setOrigswver("AP106P06V1.2.15Build8064");
 		doc3.setDevicetype("H106");
 		doc3.setGroups("1 2 3");
-		doc3.setRegisterat(DateTimeHelper.getDateDaysAgo(8).getTime());
-		doc3.setUpdateat(DateTimeHelper.getDateTime());
+		doc3.setRegisteredat(DateTimeHelper.getDateDaysAgo(8).getTime());
+		doc3.setUpdatedat(DateTimeHelper.getDateTime());
 		
 		
 		WifiDeviceDocument doc4 = new WifiDeviceDocument();
@@ -210,9 +259,9 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc4.setWorkmodel("router-ap");
 		doc4.setOrigswver("AP106P06V1.2.15Build8084");
 		doc4.setDevicetype("H106");
-		doc4.setGroups("1 3");
-		doc4.setRegisterat(DateTimeHelper.getDateDaysAgo(7).getTime());
-		doc4.setUpdateat(DateTimeHelper.getDateTime());
+		doc4.setGroups("1 3 20");
+		doc4.setRegisteredat(DateTimeHelper.getDateDaysAgo(7).getTime());
+		doc4.setUpdatedat(DateTimeHelper.getDateTime());
 		
 		WifiDeviceDocument doc5 = new WifiDeviceDocument();
 		doc5.setId("84:82:f4:23:06:c8");
@@ -227,8 +276,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc5.setOrigswver("AP106P06V1.2.15Build8064");
 		doc5.setDevicetype("H106");
 		doc5.setGroups("1 2");
-		doc5.setRegisterat(DateTimeHelper.getDateDaysAgo(6).getTime());
-		doc5.setUpdateat(DateTimeHelper.getDateTime());
+		doc5.setRegisteredat(DateTimeHelper.getDateDaysAgo(6).getTime());
+		doc5.setUpdatedat(DateTimeHelper.getDateTime());
 		
 		docs.add(doc1);
 		docs.add(doc2);
@@ -236,5 +285,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		docs.add(doc4);
 		docs.add(doc5);
 		wifiDeviceDataSearchService.getRepository().save(docs);
+		
+		wifiDeviceDataSearchService.refresh(true);
 	}
 }

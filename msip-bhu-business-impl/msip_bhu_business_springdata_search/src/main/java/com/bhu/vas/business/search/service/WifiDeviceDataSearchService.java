@@ -13,7 +13,6 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,10 @@ import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 @Service
-public class WifiDeviceDataSearchService {
+public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiDeviceDocument>{
     @Resource
     private WifiDeviceDocumentRepository wifiDeviceDocumentRepository;
 
-    @Resource
-	private ElasticsearchTemplate elasticsearchTemplate;
-    
 	/**
 	 * 搜索注册时间大于此时间的数据
 	 * @param register_at
@@ -38,10 +34,10 @@ public class WifiDeviceDataSearchService {
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public Page<WifiDeviceDocument> findByRegisteratGreaterThan(
-			long registerat,
+	public Page<WifiDeviceDocument> findByRegisteredatGreaterThan(
+			long registeredat,
 			int pageno, int pagesize){
-		return wifiDeviceDocumentRepository.findByRegisteratGreaterThanOrderByRegisteratDesc(registerat, new PageRequest(pageno,pagesize));
+		return wifiDeviceDocumentRepository.findByRegisteredatGreaterThanOrderByRegisteredatDesc(registeredat, new PageRequest(pageno,pagesize));
 	}
 	
 	/**
@@ -245,17 +241,17 @@ public class WifiDeviceDataSearchService {
                 		.point(geopoint[0], geopoint[1]).unit(DistanceUnit.METERS).order(SortOrder.ASC))
                 .build();
         //return wifiDeviceDocumentRepository.search(searchQuery);
-		
+        //elasticsearchTemplate.refresh(clazz, waitForOperation);
 		//when
 		/*List<WifiDeviceDocument> geoAuthorsForGeoCriteria = elasticsearchTemplate.queryForList(geoLocationCriteriaQuery, 
 				WifiDeviceDocument.class);*/
-        
         return wifiDeviceDocumentRepository.search(searchQuery);
 	}
 	
+	/*@Override
 	public ElasticsearchTemplate getElasticsearchTemplate(){
 		return elasticsearchTemplate;
-	}
+	}*/
 	
 	public WifiDeviceDocumentRepository getRepository(){
 		return wifiDeviceDocumentRepository;
