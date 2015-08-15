@@ -496,7 +496,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						// <<<
 
 						// >>>
-						URouterHdTimeLineVTO vto = vtos.get(i);
+						URouterHdTimeLineVTO vto = vtos.get(offset - (j - i ) + 1);
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
 
 						dto = new WifiHandsetDeviceItemDetailMDTO();
