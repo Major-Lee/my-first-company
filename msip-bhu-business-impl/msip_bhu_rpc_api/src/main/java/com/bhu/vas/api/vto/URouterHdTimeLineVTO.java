@@ -16,9 +16,6 @@ public class URouterHdTimeLineVTO implements Serializable {
 
     private List<WifiHandsetDeviceItemDetailMDTO> detail;
 
-    private List<WifiHandsetDeviceItemDetailMDTO> logs;
-
-
     public String getDate() {
         return date;
     }
@@ -35,11 +32,4 @@ public class URouterHdTimeLineVTO implements Serializable {
         this.detail = detail;
     }
 
-    public List<WifiHandsetDeviceItemDetailMDTO> getLogs() {
-        return logs;
-    }
-
-    public void setLogs(List<WifiHandsetDeviceItemDetailMDTO> logs) {
-        this.logs = logs;
-    }
 }
