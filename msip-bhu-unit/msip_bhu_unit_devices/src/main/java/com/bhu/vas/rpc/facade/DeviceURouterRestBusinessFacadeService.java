@@ -469,7 +469,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						// >>> j == 1
 
 						logger.info("iiiii===" + i);
-						URouterHdTimeLineVTO vto_ = vtos.get(i - 1);
+						URouterHdTimeLineVTO vto_ = vtos.get(offset - (j - i - 1));
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getDetail();
 
