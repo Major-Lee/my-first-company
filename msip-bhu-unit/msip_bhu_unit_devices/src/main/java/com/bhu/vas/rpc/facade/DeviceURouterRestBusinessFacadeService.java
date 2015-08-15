@@ -421,7 +421,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					} else {
 						if (last_ts - ts < 15 * 60 * 1000) { //小于15分钟的记录
 							//忽略操作
-							logger.info("ignore 15 min" + (ts - last_ts));
+//							logger.info("ignore 15 min" + (ts - last_ts));
 						} else {
 							dto = new WifiHandsetDeviceItemDetailMDTO();
 							dto.setLogout_at(ts);
