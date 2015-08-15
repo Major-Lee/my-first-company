@@ -389,13 +389,13 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			if (j == 0) { //当天记录
 				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
-				logger.info("date===date[" + vto.getDate() + "]");
+//				logger.info("date===date[" + vto.getDate() + "]");
 				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
-				logger.info("mdtos===mdtos[" + mdtos + "]");
+//				logger.info("mdtos===mdtos[" + mdtos + "]");
 				if (mdtos == null) {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 				}
-				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
+//				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
@@ -429,7 +429,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						}
 					}
 				}
-				logger.info("[mdtos]" + mdtos.size());
+//				logger.info("[mdtos]" + mdtos.size());
 				vto.setDetail(mdtos);
 
 			}
@@ -442,7 +442,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 					//有隔天记录的拆分第一条记录 >>>
 					URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
-					logger.info("date===date[" + vto.getDate() + "]");
+//					logger.info("date===date[" + vto.getDate() + "]");
 //					List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getLogs(); //
 					List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
 					if (mdtos == null) {
@@ -469,7 +469,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getDetail();
 
-						logger.info("mdtos_" + mdtos_);
+//						logger.info("mdtos_" + mdtos_);
 
 						if (mdtos_ == null) {
 							mdtos_ = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
@@ -487,10 +487,10 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
 
-						logger.info("set ts ==" + ts + ",i===" + i);
-						if (i == j + 1) {
+//						logger.info("set ts ==" + ts + ",i===" + i);
+						if (i == j) {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
-							logger.info("set login_ ts ==" + ts);
+//							logger.info("set login_ ts ==" + ts);
 						}
 						if (offset + 1 + i == 6)  {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
