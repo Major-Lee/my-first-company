@@ -657,8 +657,6 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Start_HttpRedirectItem_Inner_Fragment = " bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\" ";
 	public static final String DeviceSetting_Start_VapItem_End_Fragment 	= " />";
 	
-	
-	
 	//mac type opt taskid
 	public static final String DeviceSetting_VapModule_VapItem_Header_Fragment 	= "00001001%s0000000000000000100000012%s%s%s";
 	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
@@ -667,7 +665,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapModule_Stop_Http404Item 		= "<http404><ITEM enable=\"disable\"/></http404>";
 	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<redirect><ITEM enable=\"%s\" rule=\"%s\" ver=\"%s\" /></redirect>";
 	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<redirect><ITEM enable=\"disable\"/></redirect>";
-	
+	public static final String DeviceSetting_VapModule_Upgrade = "<upgrade><ITEM url = “” retry_count=”” retry_interval=”” /></upgrade>";
 	/*public static final String VapModule_Setting_MsgType = "00000003";
 	public static final String VapModule_Query_MsgType = "00000004";*/
 	

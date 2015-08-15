@@ -9,6 +9,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
@@ -317,6 +318,10 @@ public class CMDBuilder {
 					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
 					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
 					break;
+				case DeviceModuleUpgrade:
+					WifiDeviceModuleUpgradeDTO moduleupgradeDto = JsonHelper.getDTO(extparams, WifiDeviceModuleUpgradeDTO.class);
+					resultCmd = builderVapModuleUpgrade(wifi_mac, taskid,moduleupgradeDto.getUrlprefix(),moduleupgradeDto.getRetry_count(), moduleupgradeDto.getRetry_interval());
+					break;
 				case DeviceWifiTimerStart:
 					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
 					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
@@ -378,6 +383,20 @@ public class CMDBuilder {
 		return String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, 
 				StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_Register_RES_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()));
 	}
+	
+	public static String builderVapModuleUpgrade(String wifi_mac, long taskid, String urlprefix, int retry_count, int retry_interval) {
+		String taskid_format = builderTaskidFormat(taskid);
+		
+		return String.format(OperationCMD.DeviceModuleUpgrade.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), 
+				builder8LenFormat(ParserHeader.Vap_Module_Upgrade_REQ_S2D), 
+				OperationCMD.DeviceModuleUpgrade.getNo(),
+				taskid_format,//builderTaskidFormat(auto_taskid_fragment.getNextSequence()), 
+				urlprefix,
+				retry_count, 
+				retry_interval);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
+	}
+	
 	
 	private static String[] genParserParams(String wifi_mac,String opt,long taskid,String extparams){
 		String[] params = new String[3];

@@ -241,7 +241,6 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
                 		.point(geopoint[0], geopoint[1]).unit(DistanceUnit.METERS).order(SortOrder.ASC))
                 .build();
         //return wifiDeviceDocumentRepository.search(searchQuery);
-        //elasticsearchTemplate.refresh(clazz, waitForOperation);
 		//when
 		/*List<WifiDeviceDocument> geoAuthorsForGeoCriteria = elasticsearchTemplate.queryForList(geoLocationCriteriaQuery, 
 				WifiDeviceDocument.class);*/
