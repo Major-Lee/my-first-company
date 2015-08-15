@@ -487,8 +487,10 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
 
+						logger.info("set ts ==" + ts + ",i===" + i);
 						if (i == j + 1) {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
+							logger.info("set login_ ts ==" + ts);
 						}
 						if (offset + 1 + i == 6)  {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
