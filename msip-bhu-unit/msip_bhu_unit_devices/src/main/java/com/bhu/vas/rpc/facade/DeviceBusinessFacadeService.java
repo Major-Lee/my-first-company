@@ -808,7 +808,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void deviceSettingChanged(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
-		dto = refreshDeviceSetting(wifiId, dto);
+		refreshDeviceSetting(wifiId, dto);
 		//设备配置变成后的指令分发
 		List<String> afterChangePayloads = null;
 		//如果是dhcp模式 则下发指令查询dhcp相关数据
@@ -832,7 +832,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
-		dto = refreshDeviceSetting(wifiId, dto);
+		refreshDeviceSetting(wifiId, dto);
 		try{
 			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 			if(wifiDevice != null){
@@ -907,6 +907,10 @@ public class DeviceBusinessFacadeService {
 		return null;
 	}
 	
+	//获取配置数据正常
+	public static final int RefreashDeviceSetting_Normal = 0;
+	//获取配置数据序列号比当前小 认为是恢复出厂
+	public static final int RefreashDeviceSetting_RestoreFactory = 1;
 	/**
 	 * 全量更新设备配置数据
 	 * 1：更新配置数据
@@ -917,7 +921,7 @@ public class DeviceBusinessFacadeService {
 	 * @param changed 是否是配置变更
 	 * @return
 	 */
-	public WifiDeviceSettingDTO refreshDeviceSetting(String mac, WifiDeviceSettingDTO dto){
+	public int refreshDeviceSetting(String mac, WifiDeviceSettingDTO dto){
 		//System.out.println("#####################taskQueryDeviceSetting:"+dto.getRadios().get(0).getPower());
 /*		boolean init_default_acl = false;
 		//只有URouter的设备才需进行此操作
@@ -928,6 +932,7 @@ public class DeviceBusinessFacadeService {
 				init_default_acl = true;
 			}
 		}*/
+		int state = RefreashDeviceSetting_Normal;
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity == null){
@@ -936,6 +941,16 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.insert(entity);
 		}else{
+			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+			if(currentDto != null){
+				String current_sequence = currentDto.getSequence();
+				if(!StringUtils.isEmpty(current_sequence)){
+					//如果获取的设备配置序列号小于当前序列号 认为是设备恢复出厂
+					if(Integer.parseInt(dto.getSequence()) < Integer.parseInt(current_sequence)){
+						state = RefreashDeviceSetting_RestoreFactory;
+					}
+				}
+			}
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
@@ -945,7 +960,7 @@ public class DeviceBusinessFacadeService {
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
 		}*/
 		//deliverMessageService.sendDeviceSettingChangedActionMessage(mac, init_default_acl);
-		return dto;
+		return state;
 	}
 	
 	/**
