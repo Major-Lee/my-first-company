@@ -18,7 +18,7 @@ public class Test {
 
     public static void main(String[] args){
 
-        long ts= 1439046000000L;
+        long ts= 1439740410360L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
         System.out.println(DateTimeExtHelper.getSevenDateOfWeek());
 //        long currentTime = System.currentTimeMillis();

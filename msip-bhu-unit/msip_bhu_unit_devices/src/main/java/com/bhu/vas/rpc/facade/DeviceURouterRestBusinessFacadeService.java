@@ -257,19 +257,16 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				vto.setTotal_rx_bytes(String.valueOf(total_rx_bytes));
 
-				Map<String, List<WifiHandsetDeviceItemDetailMDTO>> map =
-						wifiHandsetDeviceRelationMDTO.getItems();
+				List<String> weeks = DateTimeExtHelper.getSevenDateOfWeek();
 
 				List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
 
-				if (map != null) {
-					//集合中只有七天的在线记录
-					for (String key : map.keySet()) {
-						URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
-						uRouterHdTimeLineVTO.setDate(key);
-						uRouterHdTimeLineVTO.setDetail(map.get(key));
-						uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
-					}
+
+				//集合中只有七天的在线记录
+				for (String key : weeks) {
+					URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+					uRouterHdTimeLineVTO.setDate(key);
+					uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 				}
 
 				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
