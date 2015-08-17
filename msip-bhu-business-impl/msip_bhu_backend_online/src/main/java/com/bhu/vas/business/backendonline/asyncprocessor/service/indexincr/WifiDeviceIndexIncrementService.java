@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
 import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
@@ -83,6 +84,7 @@ public class WifiDeviceIndexIncrementService {
 		for(WifiDevice entity : entitys){
 			List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(entity.getId());
 			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
+			indexDto.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
 			indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 			indexDtos.add(indexDto);
 		}
@@ -129,6 +131,9 @@ public class WifiDeviceIndexIncrementService {
 		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s]", entity.getId(), entity.isOnline()));
 		try{
 			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
+			if(entity.isOnline()){
+				indexDto.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
+			}
 //			if(entity.isOnline()){
 //				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 //			}else{
@@ -154,7 +159,11 @@ public class WifiDeviceIndexIncrementService {
 			List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
 			int cursor = 0;
 			for(WifiDevice entity : entitys){
-				indexDtos.add(IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids_list.get(cursor)));
+				WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids_list.get(cursor));
+				if(entity.isOnline()){
+					indexDto.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
+				}
+				indexDtos.add(indexDto);
 				cursor++;
 			}
 			wifiDeviceIndexService.createIndexComponents(indexDtos);
