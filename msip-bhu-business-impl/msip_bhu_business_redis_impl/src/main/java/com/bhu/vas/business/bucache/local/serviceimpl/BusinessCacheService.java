@@ -66,7 +66,7 @@ public class BusinessCacheService {
 	public void storeQTerminalPushNotifyCacheResult(String mac, String hd_mac){
 		String key = generateQTerminalPushNotifyCachePrefixKeyBy(mac, hd_mac);
 		//this.entityCache.remove(key);
-		this.entityCache.put(key, true ,5*60);//5分钟
+		this.entityCache.put(key, true ,15*60);//15分钟
 	}
 	
 	public boolean getQTerminalPushNotifyCacheByQ(String mac, String hd_mac){
