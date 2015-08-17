@@ -326,11 +326,11 @@ public class WifiHandsetDeviceRelationMService {
      * @param wifiId
      * @param handsetId
      * @param uptime
-     * @param rx_bytes
+     * @param tx_bytes
      * @param logout_at
      */
     public void offlineWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime,
-                                              String rx_bytes, long logout_at) {
+                                              String tx_bytes, long logout_at) {
         WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
 
         WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
@@ -369,7 +369,7 @@ public class WifiHandsetDeviceRelationMService {
                 dataMap = updateOfflineWifiHandsetDeviceItems(
                         wifiHandsetDeviceItemDetailMTDTOMap, week,logout_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 update.set(M_LAST_LOGIN_AT, wifiHandsetDeviceRelationMDTO.getLast_login_at());
-                update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(rx_bytes));
+                update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(tx_bytes));
 
             } else { //如果离线记录先上报
                 Date date = new Date();

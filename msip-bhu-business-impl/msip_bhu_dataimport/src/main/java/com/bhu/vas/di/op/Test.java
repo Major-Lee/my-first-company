@@ -18,7 +18,7 @@ public class Test {
 
     public static void main(String[] args){
 
-        long ts= 1439637254920L;
+        long ts= 1439784003203L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
         System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
         System.out.println(getDateZeroTime(new Date()).getTime());
