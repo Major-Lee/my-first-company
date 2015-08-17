@@ -2,15 +2,12 @@ package com.bhu.vas.di.op.clear;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Set;
 
 import org.elasticsearch.ElasticsearchException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.es.exception.ESException;
 /**
@@ -40,11 +37,15 @@ public class ClearDeviceWifistasnifferOp {
 			ex.printStackTrace();
 		}
 		
+		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+		DeviceFacadeService deviceFacadeService = (DeviceFacadeService)ctx.getBean("deviceFacadeService");
+		
 		if(mac_array != null){
 			for(String mac : mac_array){
 				try{
 					System.out.println("开始清除 " + mac + " 周边探测数据");
-					doClearRedis(mac);
+					//doClearRedis(mac);
+					deviceFacadeService.clearWifistasnifferData(mac);
 					System.out.println("成功清除 " + mac + " 周边探测数据");
 				}catch(Exception ex){
 					System.out.println("异常清除 " + mac + " 周边探测数据");
@@ -54,7 +55,7 @@ public class ClearDeviceWifistasnifferOp {
 		}
 	}
 	
-	public static void doClearRedis(String mac){
+/*	public static void doClearRedis(String mac){
 		int start = 0;
 		int size = 100;
 		int count = 0;
@@ -81,6 +82,5 @@ public class ClearDeviceWifistasnifferOp {
 		
 		//删除recent探测数据
 		TerminalRecentSortedSetService.getInstance().del(mac);
-		
-	}
+	}*/
 }

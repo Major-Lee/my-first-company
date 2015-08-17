@@ -138,7 +138,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return false;
 	}
 	
-	public void clearOnlinePresents(String wifiId){
+	/**
+	 * 把设备的在线终端变成离线状态
+	 * @param wifiId
+	 */
+	public void changeOnlinePresentsToOffline(String wifiId){
 		int size = 50;
 		long count = presentOnlineSize(wifiId);
 		int page = PageHelper.getTotalPages((int)count, size);
@@ -149,6 +153,15 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 			}
 		}
 	}
+	
+	/**
+	 * 移除设备的离线终端记录
+	 * @param wifiId
+	 */
+	public long clearOfflinePresents(String wifiId){
+		return super.zremrangeByScore(generateKey(wifiId), 0, (OnlineBaseScore-1));
+	}
+	
 	
 	/**
 	 * 
@@ -170,6 +183,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return result;
 	}
 	
+
 //	public Set<String> fetchPresents(String wifiId){
 //		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
 //		//return super.zrevrangeWithScores(generateKey(wifiId), 0, 10);

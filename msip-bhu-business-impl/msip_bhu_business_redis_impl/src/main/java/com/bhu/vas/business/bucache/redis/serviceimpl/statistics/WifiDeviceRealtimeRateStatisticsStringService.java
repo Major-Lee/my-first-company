@@ -257,9 +257,9 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 * 清除设备测速下行分段数据
 	 * @param mac
 	 */
-	public void clearRxPeakSection(String mac){
-		super.del(generatePeakSectionKey(mac, Type_Rx_Rate));
-	}
+//	public void clearRxPeakSection(String mac){
+//		super.del(generatePeakSectionKey(mac, Type_Rx_Rate));
+//	}
 	
 	/**
 	 * 追加设备测速上行分段数据
@@ -389,6 +389,21 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	public List<String> getRate(String mac){
 		String[] keys = generateRateKeys(mac);
 		return super.mget(keys);
+	}
+	
+	public void clearAll(String mac){
+		String[] keys = new String[8];
+		//清除设备测速的分段数据
+		keys[0] = generatePeakSectionKey(mac, Type_Rx_Rate);
+		keys[1] = generatePeakSectionKey(mac, Type_Tx_Rate);
+		//清除设备实时速率的数据
+		keys[2] = generateRealtimeKey(mac, Type_Tx_Rate);
+		keys[3] = generateRealtimeKey(mac, Type_Rx_Rate);
+		keys[4] = generateLastKey(mac, Type_Tx_Rate);
+		keys[5] = generateLastKey(mac, Type_Rx_Rate);
+		keys[6] = generateRateWaitingKey(mac);
+		keys[7] = generateHDRateWaitingKey(mac);
+		super.del(keys);
 	}
 	
 	@Override
