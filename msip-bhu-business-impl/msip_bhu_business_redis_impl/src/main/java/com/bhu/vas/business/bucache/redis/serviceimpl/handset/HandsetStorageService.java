@@ -207,48 +207,52 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	}
 	
 	public static void main(String[] argv){
-		List<String> macs = new ArrayList<String>();
-		macs.add("aa");
-		macs.add("ab");
-		macs.add("ac");
-		macs.add("ad");
-		macs.add("ae");
-		List<HandsetDeviceDTO> handsets = HandsetStorageService.getInstance().handsets(macs);
-		System.out.println(handsets.size());
-		
-		List<HandsetDeviceDTO> now = new ArrayList<HandsetDeviceDTO>();
-		
-		for(String mac:macs){
-			HandsetDeviceDTO dto = new HandsetDeviceDTO();
-			dto.setMac(mac);
-			now.add(dto);
-		}
-		
-		HandsetStorageService.getInstance().handsetsComming(now);
-		
-		handsets = HandsetStorageService.getInstance().handsets(macs);
-		System.out.println(handsets.size());
-		
-		HandsetDeviceDTO dto1 = new HandsetDeviceDTO();
-		dto1.setMac("gogog");
-		
-		HandsetStorageService.getInstance().handsetComming(dto1);
-		
-		HandsetDeviceDTO handset = HandsetStorageService.getInstance().handset("gogog");
-		System.out.println(handset.getMac());
-		//HandsetStorageService.getInstance().clearOrResetAll();
-		
-		System.out.println(HandsetStorageService.getInstance().countAll());
-		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx002");
-		//String[][] result = WifiDevicePresentCtxService.getInstance().generateKeyAndFields(argg);
-		//System.out.println(result.length);
-		
-		/*WifiDevicePresentCtxService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
-			@Override
-			public void notifyComming(Map<String, String> t) {
-				System.out.println(t);
-			}
-		});*/
-		//WifiDevicePresentCtxService.getInstance().clearOrResetAll();
+
+		System.out.println(HandsetStorageService.generateKey("20:68:9d:93:93:bd"));
+
+
+//		List<String> macs = new ArrayList<String>();
+//		macs.add("aa");
+//		macs.add("ab");
+//		macs.add("ac");
+//		macs.add("ad");
+//		macs.add("ae");
+//		List<HandsetDeviceDTO> handsets = HandsetStorageService.getInstance().handsets(macs);
+//		System.out.println(handsets.size());
+//
+//		List<HandsetDeviceDTO> now = new ArrayList<HandsetDeviceDTO>();
+//
+//		for(String mac:macs){
+//			HandsetDeviceDTO dto = new HandsetDeviceDTO();
+//			dto.setMac(mac);
+//			now.add(dto);
+//		}
+//
+//		HandsetStorageService.getInstance().handsetsComming(now);
+//
+//		handsets = HandsetStorageService.getInstance().handsets(macs);
+//		System.out.println(handsets.size());
+//
+//		HandsetDeviceDTO dto1 = new HandsetDeviceDTO();
+//		dto1.setMac("gogog");
+//
+//		HandsetStorageService.getInstance().handsetComming(dto1);
+//
+//		HandsetDeviceDTO handset = HandsetStorageService.getInstance().handset("gogog");
+//		System.out.println(handset.getMac());
+//		//HandsetStorageService.getInstance().clearOrResetAll();
+//
+//		System.out.println(HandsetStorageService.getInstance().countAll());
+//		//WifiDevicePresentCtxService.getInstance().addPresents(argg, "ctx002");
+//		//String[][] result = WifiDevicePresentCtxService.getInstance().generateKeyAndFields(argg);
+//		//System.out.println(result.length);
+//
+//		/*WifiDevicePresentCtxService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
+//			@Override
+//			public void notifyComming(Map<String, String> t) {
+//				System.out.println(t);
+//			}
+//		});*/
+//		//WifiDevicePresentCtxService.getInstance().clearOrResetAll();
 	}
 }

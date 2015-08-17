@@ -94,7 +94,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	private static final long IGNORE_LOGIN_TIME_SPACE = 15 * 60 * 1000L;
 
-	private static final long Day_time_Million_Second = 24 * 3600 * 1000L;
+	private static final long DAY_TIME_MILLION_SECOND = 24 * 3600 * 1000L;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -249,8 +249,8 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				if (handsetDeviceDTO != null) {
 					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
-						if (handsetDeviceDTO.getRx_bytes() != null ) {
-							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getRx_bytes());
+						if (handsetDeviceDTO.getTx_bytes() != null ) {
+							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getTx_bytes());
 						}
 					}
 				}
@@ -314,10 +314,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
-				logger.info("offset==" + offset +  ", ts =" + ts + ",currentTimeZeor[" + currentTimeZero +"],currentZeroTime" + currentZeroTime);
-				logger.info("type["+type + "],last_type[" + last_type+"],ts[" + ts + "]");
-				logger.info("spacetime[" + (last_ts -ts) + "]");
-
+//				logger.info("offset==" + offset +  ", ts =" + ts + ",currentTimeZeor[" + currentTimeZero +"],currentZeroTime" + currentZeroTime);
+//				logger.info("type["+type + "],last_type[" + last_type+"],ts[" + ts + "]");
+//				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
 					//处理分割记录
@@ -388,13 +387,13 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			if (j == 0) { //当天记录
 				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
-				logger.info("date===date[" + vto.getDate() + "]");
+//				logger.info("date===date[" + vto.getDate() + "]");
 				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
-				logger.info("mdtos===mdtos[" + mdtos + "]");
+//				logger.info("mdtos===mdtos[" + mdtos + "]");
 				if (mdtos == null) {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 				}
-				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
+//				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
