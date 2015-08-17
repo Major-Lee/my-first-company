@@ -419,6 +419,9 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s]", message));
 		
 		WifiDeviceOfflineDTO dto = JsonHelper.getDTO(message, WifiDeviceOfflineDTO.class);
+		//清除设备查询的实时速率的mark waiting标记 以便可以再次下发查询速率指令
+		WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearWaiting(dto.getMac());
+		
 		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
 		if(entity != null){
 			//3:wifi上的移动设备基础信息表的在线状态更新

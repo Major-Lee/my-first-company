@@ -171,6 +171,11 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 		super.expire(key, exprie_hdrate_waiting_seconds);
 	}
 	
+	public void removeHDRateWaiting(String mac){
+		String key = generateHDRateWaitingKey(mac);
+		super.del(key);
+	}
+	
 	/**
 	 * 判断设备速率上报指令是否在有效期内
 	 * @param mac
@@ -187,6 +192,19 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 */
 	public boolean isHDRateWaiting(String mac){
 		return super.exists(generateHDRateWaitingKey(mac));
+	}
+	
+	/**
+	 * 清除设备的实时速率 终端实时速率waiting标记
+	 * 以便可以继续下发指令
+	 * @param mac
+	 */
+	public void clearWaiting(String mac){
+		String[] keys = new String[2];
+		keys[0] = generateRateWaitingKey(mac);
+		keys[1] = generateHDRateWaitingKey(mac);
+		
+		super.del(keys);
 	}
 	
 	/**
