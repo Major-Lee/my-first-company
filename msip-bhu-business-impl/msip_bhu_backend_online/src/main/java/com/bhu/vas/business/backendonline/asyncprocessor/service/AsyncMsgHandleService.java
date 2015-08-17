@@ -736,18 +736,20 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingChanged message[%s]", message));
 		
 		WifiDeviceSettingChangedDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingChangedDTO.class);
+		//分发指令
+		this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
 		//如果是urouter设备 才会发push
 		if(deviceFacadeService.isURooterDevice(dto.getMac())){
 			pushService.push(new WifiDeviceSettingChangedPushDTO(dto.getMac()));
 			
-			//如果需要初始化设备的黑名单配置 按照urouter约定来进行
+			/*//如果需要初始化设备的黑名单配置 按照urouter约定来进行
 			if(dto.isInit_default_acl()){
 				WifiDeviceSetting entity = wifiDeviceSettingService.getById(dto.getMac());
 				if(entity != null){
 					String modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(entity.getInnerModel());
 					DaemonHelper.deviceSettingModify(dto.getMac(), modify_urouter_acl, daemonRpcService);
 				}
-			}
+			}*/
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingChanged message[%s] successful", message));
@@ -987,9 +989,16 @@ public class AsyncMsgHandleService {
 	public void wifiCmdsDownNotifyHandle(String message){
 		logger.info(String.format("wifiCmdsDownNotifyHandle message[%s]", message));
 		WifiCmdsNotifyDTO dto = JsonHelper.getDTO(message, WifiCmdsNotifyDTO.class);
-		DaemonHelper.daemonCmdsDown(dto.getMac(), dto.getPayloads(), daemonRpcService);
+		this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
 		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
 		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
+	}
+	
+	public void wifiCmdsDownNotify(String mac, List<String> payloads){
+		if(StringUtils.isEmpty(mac)) return;
+		if(payloads == null || payloads.isEmpty()) return;
+
+		DaemonHelper.daemonCmdsDown(mac, payloads, daemonRpcService);
 	}
 	/**
 	 * 修改黑名单列表内容的后续操作

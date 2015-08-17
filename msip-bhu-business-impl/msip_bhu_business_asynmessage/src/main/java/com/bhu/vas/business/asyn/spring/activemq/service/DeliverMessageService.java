@@ -228,10 +228,10 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendDeviceSettingChangedActionMessage(String mac, boolean init_default_acl){
+	public void sendDeviceSettingChangedActionMessage(String mac, List<String> payloads){
 		WifiDeviceSettingChangedDTO dto = new WifiDeviceSettingChangedDTO();
 		dto.setMac(mac);
-		dto.setInit_default_acl(init_default_acl);
+		dto.setPayloads(payloads);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

@@ -809,7 +809,15 @@ public class DeviceBusinessFacadeService {
 	public void deviceSettingChanged(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		dto = refreshDeviceSetting(wifiId, dto);
-		updateDeviceModeStatusWithMode(wifiId, dto);
+		//设备配置变成后的指令分发
+		List<String> afterChangePayloads = null;
+		//如果是dhcp模式 则下发指令查询dhcp相关数据
+		String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
+		if(!StringUtils.isEmpty(queryDHCPStatus)){
+			if(afterChangePayloads == null) afterChangePayloads = new ArrayList<String>();
+			afterChangePayloads.add(queryDHCPStatus);
+		}
+		deliverMessageService.sendDeviceSettingChangedActionMessage(wifiId, afterChangePayloads);
 	}
 	/**
 	 * 获取设备配置
@@ -825,27 +833,47 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		dto = refreshDeviceSetting(wifiId, dto);
-		updateDeviceModeStatusWithMode(wifiId, dto);
-		
-		//设备持久指令分发
 		try{
-			
 			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 			if(wifiDevice != null){
+				//获取设备配置之后的指令分发
+				List<String> afterQueryPayloads = null;
+				//只有URouter的设备才需进行此操作
+				if(deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model())){
+					//验证URouter设备配置是否符合约定
+					if(!DeviceHelper.validateURouterBlackList(dto)){
+						if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
+						String modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
+						afterQueryPayloads.add(CMDBuilder.builderDeviceSettingModify(wifiId, 
+								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
+					}
+				}
+				//如果是dhcp模式 则下发指令查询dhcp相关数据
+				String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
+				if(!StringUtils.isEmpty(queryDHCPStatus)){
+					if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
+					afterQueryPayloads.add(queryDHCPStatus);
+				}
+		
+				//设备持久指令分发
 				List<String> persistencePayloads = null;
 				if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(wifiId,true);
 				}else{
 					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(wifiId);
 				}
-				if(persistencePayloads != null && !persistencePayloads.isEmpty()){
-					/*for(String payload:persistencePayloads){
-						deliverMessageService.sendWifiCmdCommingNotifyMessage(wifiId, 0, 
-								null, payload);
-					}*/
-					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, persistencePayloads);
+				
+				
+				if((persistencePayloads != null && !persistencePayloads.isEmpty()) ||
+						(afterQueryPayloads != null && !afterQueryPayloads.isEmpty())){
+
+					List<String> cmdPaylaods = new ArrayList<String>();
+					if(persistencePayloads != null) cmdPaylaods.addAll(persistencePayloads);
+					if(afterQueryPayloads != null) cmdPaylaods.addAll(afterQueryPayloads);
+					
+					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, cmdPaylaods);
 					//DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
-					System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+					//System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
 				}
 			}
 		}catch(Exception ex){
@@ -860,7 +888,7 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 * @param dto
 	 */
-	public void updateDeviceModeStatusWithMode(String wifiId, WifiDeviceSettingDTO dto){
+	public String updateDeviceModeStatusWithMode(String wifiId, WifiDeviceSettingDTO dto){
 		//根据设备的mode更新status数据
 		WifiDeviceSettingLinkModeDTO mode = dto.getMode();
 		if(mode != null){
@@ -868,14 +896,15 @@ public class DeviceBusinessFacadeService {
 			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
 				if(!StringUtils.isEmpty(mode.getWan_interface())){
 					long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-					String cmdPayload = CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
-					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId/*, taskid, 
-							OperationCMD.QueryDhcpcStatus.getNo()*/, cmdPayload);
+					return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
+//					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId/*, taskid, 
+//							OperationCMD.QueryDhcpcStatus.getNo()*/, cmdPayload);
 				}
 			}else{
 				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getMode());
 			}
 		}
+		return null;
 	}
 	
 	/**
@@ -890,7 +919,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public WifiDeviceSettingDTO refreshDeviceSetting(String mac, WifiDeviceSettingDTO dto){
 		//System.out.println("#####################taskQueryDeviceSetting:"+dto.getRadios().get(0).getPower());
-		boolean init_default_acl = false;
+/*		boolean init_default_acl = false;
 		//只有URouter的设备才需进行此操作
 		if(deviceFacadeService.isURooterDevice(mac)){
 			//验证URouter设备配置是否符合约定
@@ -898,7 +927,7 @@ public class DeviceBusinessFacadeService {
 				//modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 				init_default_acl = true;
 			}
-		}
+		}*/
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity == null){
@@ -915,7 +944,7 @@ public class DeviceBusinessFacadeService {
 /*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
 		}*/
-		deliverMessageService.sendDeviceSettingChangedActionMessage(mac, init_default_acl);
+		//deliverMessageService.sendDeviceSettingChangedActionMessage(mac, init_default_acl);
 		return dto;
 	}
 	
