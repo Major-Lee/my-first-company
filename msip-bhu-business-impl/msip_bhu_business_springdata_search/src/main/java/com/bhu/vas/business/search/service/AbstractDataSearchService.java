@@ -1,26 +1,17 @@
 package com.bhu.vas.business.search.service;
 
-import java.util.Map;
-
 import javax.annotation.Resource;
 
-import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
-import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.collect.ImmutableOpenMap;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 import com.smartwork.msip.cores.helper.ReflectionHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 public abstract class AbstractDataSearchService<MODEL> {
     @Resource
 	private ElasticsearchTemplate elasticsearchTemplate;
     
-	@Resource
-	private Client client;
+/*	@Resource
+	private Client client;*/
 	
 	protected Class<MODEL> entityClass;
 
@@ -39,23 +30,23 @@ public abstract class AbstractDataSearchService<MODEL> {
 		getElasticsearchTemplate().refresh(entityClass, waitForOperation);
 	}
 	
-	public Map getSetting(){
+/*	public Map getSetting(){
 		return getElasticsearchTemplate().getSetting(entityClass);
 	}
 	
-	/**
+	*//**
 	 * A time setting controlling how often the refresh operation will be executed. 
 	 * Defaults to 1s. Can be set to -1 in order to disable it.
 	 * @param time 1s
-	 */
+	 *//*
 	public boolean openRefreshInterval(String indexname, String time){
 		return updateIndexSettings(indexname, ImmutableSettings.settingsBuilder().put("index.refresh_interval", time).build());
 	}
-	/**
+	*//**
 	 * 禁止索引库执行刷新数据操作
 	 * @param indexname 
 	 * @return 返回当前刷新频率
-	 */
+	 *//*
 	public String disableRefreshInterval(String indexname){
 		//String nowIndexRefreshInterval = ImmutableSettings.settingsBuilder().get(ESConstants.Settings.IndexRefreshInterval.getName());
 		GetSettingsResponse getSettingsResponse = client.admin().indices().prepareGetSettings(indexname).get();
@@ -71,29 +62,29 @@ public abstract class AbstractDataSearchService<MODEL> {
 	
 	
 	
-	/**
+	*//**
 	 * 获取索引库的settings
 	 * @param indexname
 	 * @return
-	 */
+	 *//*
 	public ImmutableOpenMap<String, Settings> getIndexSettings(String indexname){
 		GetSettingsResponse response = client.admin().indices().prepareGetSettings(indexname).get();
 		return response.getIndexToSettings();
 	}
 	
-	/**
+	*//**
 	 * 更新索引的settings
 	 * @param indexname
 	 * @param settings
 	 * @return
-	 */
+	 *//*
 	public boolean updateIndexSettings(String indexname, Settings settings){
 		UpdateSettingsResponse response = client.admin().indices().prepareUpdateSettings(indexname).setSettings(settings).execute().actionGet();
 		if(response != null){
 			return response.isAcknowledged();
 		}
 		return false;
-	}
+	}*/
 	
 	
 /*	*//**

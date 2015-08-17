@@ -82,7 +82,7 @@ public enum OperationCMD {
 	DeviceDelayReboot("152","设备延迟重启","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"delayreboot\" delay=\"5\"/></cmd>"),
 
 	DeviceUpgrade("153", "设备升级","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"firmware_upgrade\" download_timeout=\"1800\" url=\"%s\" upgrade_begin=\"%s\" upgrade_end=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
-	DeviceModuleUpgrade("154", "设备module升级针对新版本1.3.0以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
+	DeviceModuleUpgrade("154", "设备module升级(针对新版本1.3.0)以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
 	;
 	static Map<String, OperationCMD> allOperationCMDs;
 	String no;

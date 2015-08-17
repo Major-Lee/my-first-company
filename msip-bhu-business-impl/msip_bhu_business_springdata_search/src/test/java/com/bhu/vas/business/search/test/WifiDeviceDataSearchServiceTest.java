@@ -148,7 +148,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+   /* @Test
     public void test011Refresh(){
     	System.out.println("test011Refresh0");
     	System.out.println("before refresh false:"+wifiDeviceDataSearchService.getSetting());
@@ -186,7 +186,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
        	for(WifiDeviceDocument doc:searchByKeywords){
     		System.out.println(doc.getAddress());
     	}
-    }
+    }*/
     
     @Test
  	public void test000BatchEmptyDocument(){
