@@ -266,6 +266,8 @@ public class DeviceURouterRestBusinessFacadeService {
 				for (String key : weeks) {
 					URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
 					uRouterHdTimeLineVTO.setDate(key);
+					List<WifiHandsetDeviceItemDetailMDTO> mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+					uRouterHdTimeLineVTO.setDetail(mdtos);
 					uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
 				}
 
@@ -386,13 +388,13 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			if (j == 0) { //当天记录
 				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
-//				logger.info("date===date[" + vto.getDate() + "]");
+				logger.info("date===date[" + vto.getDate() + "]");
 				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
-//				logger.info("mdtos===mdtos[" + mdtos + "]");
+				logger.info("mdtos===mdtos[" + mdtos + "]");
 				if (mdtos == null) {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 				}
-//				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
+				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 

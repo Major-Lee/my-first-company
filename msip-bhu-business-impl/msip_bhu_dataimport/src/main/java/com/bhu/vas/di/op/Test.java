@@ -18,25 +18,29 @@ public class Test {
 
     public static void main(String[] args){
 
-        long ts= 1439740410360L;
+        long ts= 1439637254920L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
-        System.out.println(DateTimeExtHelper.getSevenDateOfWeek());
+        System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
+        System.out.println(getDateZeroTime(new Date()).getTime());
+
+        System.out.println((int)(1439740800779L - 1439783798513L) / (24 * 3600 * 1000));
+//        System.out.println(DateTimeExtHelper.getSevenDateOfWeek());
 //        long currentTime = System.currentTimeMillis();
 //        String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
 //        long currentZeroTime = getDateZeroTime(new Date()).getTime();
 //        System.out.println(DateTimeHelper.formatDate(new Date(currentZeroTime), DateTimeHelper.longDateFormat));
 //        System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
-//        long space = currentZeroTime - ts;
-//        System.out.println(currentZeroTime - ts);
-//        int  offset = (int)(space/(24 * 3600 * 1000));
-//        if (space < 0) {
-//            offset = -1;
-//        }
-//        if (offset > 5) {
-//            offset = 5;
-//        }
-//
-//        System.out.println(offset);
+        long space = 1439740800779L - 1439783798513L;
+        System.out.println(1439740800779L - 1439783798513L);
+        int  offset = (int)(space/(24 * 3600 * 1000));
+        if (space < 0) {
+            offset = -1;
+        }
+        if (offset > 5) {
+            offset = 5;
+        }
+
+        System.out.println(offset);
 
 
         System.out.println(DateTimeHelper.parseDate("2015-08-08 23:00:00", DateTimeHelper.longDateFormat).getTime());
