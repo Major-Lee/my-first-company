@@ -1,13 +1,11 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -93,9 +91,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.fetchStatisticsGeneral();
 	}
 
-	@Override
+	/*@Override
 	public Collection<GeoMapVTO> fetchGeoMap() {
 		return deviceRestRpcService.fetchGeoMap();
-	}
+	}*/
 
 }

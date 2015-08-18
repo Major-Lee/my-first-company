@@ -1,15 +1,10 @@
 package com.bhu.vas.di.op.clear;
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import org.elasticsearch.ElasticsearchException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.es.exception.ESException;
 /**
  * 清除设备的周边探测记录
  * @author lawliet
@@ -22,7 +17,7 @@ public class ClearDeviceWifistasnifferOp {
 //		device_macs.add("62:68:75:f1:10:80");
 //	}
 	
-	public static void main(String[] argv) throws ElasticsearchException, ESException, IOException, ParseException{
+	public static void main(String[] argv){
 		if(argv == null || argv.length != 1){
 			System.out.println("缺少参数");
 			return;

@@ -66,12 +66,57 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	public Page<WifiDeviceDocument> searchByAddressMatchEach(String address,int pageno, int pagesize){
 	    	BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 	    	queryBuilder.must(QueryBuilders.queryStringQuery(address).field("address"));
-	    	//queryBuilder.must(QueryBuilders.queryStringQuery("1").field("groups"));
 	        SearchQuery searchQuery = new NativeSearchQueryBuilder()
 	                .withQuery(queryBuilder)
 	                .withPageable(new PageRequest(pageno,pagesize))
 	                .build();
 	        return wifiDeviceDocumentRepository.search(searchQuery);
+	}
+	
+	/**
+	 * region表示 需要包含的地域名称
+	 * region_excepts表示 需要不包含的地域名称 逗号分割
+	 * 根据keyword进行分词来搜索地理位置
+	 * @param keyword 可以是 mac 或 地理名称
+	 * @param region 北京市
+	 * @param region_excepts 广东省,上海市
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws ESQueryValidateException
+	 */
+	public Page<WifiDeviceDocument> searchByKeyword(String keyword, String region,String region_excepts, int pageno, int pagesize){
+		FilterBuilder filter;//QueryBuilders.boolQuery();
+		if(StringHelper.hasLeastOneNotEmpty(keyword, region, region_excepts)){
+			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
+			if(StringUtils.isNotEmpty(keyword))	
+				boolfilter.must(FilterBuilders.orFilter(
+						FilterBuilders.prefixFilter("id", keyword.toLowerCase()),
+						FilterBuilders.termFilter("address", keyword.toLowerCase())
+						));
+			if(!StringUtils.isEmpty(region)){
+				//String standardRegion = IndexableResolver.standardString(region);
+				boolfilter.must(FilterBuilders.termFilter("address", region));
+			}
+			
+			if(!StringUtils.isEmpty(region_excepts)){
+				//String standardRegion = IndexableResolver.standardString(excepts);
+				String[] except_array = region_excepts.split(StringHelper.COMMA_STRING_GAP);
+				for(String except : except_array){
+					boolfilter.mustNot(FilterBuilders.termFilter("address", except));
+				}
+			}
+			filter = boolfilter;
+		}else{
+			filter = FilterBuilders.matchAllFilter();
+		}
+		SearchQuery searchQuery = new NativeSearchQueryBuilder().withFilter(filter)
+				.withPageable(new PageRequest(pageno,pagesize))
+				.withSort(SortBuilders.fieldSort("online").order(SortOrder.DESC))
+				.withSort(SortBuilders.fieldSort("count").order(SortOrder.DESC))
+				.build();
+		return wifiDeviceDocumentRepository.search(searchQuery);
+		
 	}
 	
 	/**

@@ -86,6 +86,15 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
        	Long count = wifiDeviceDataSearchService.countByAddressMatchAll("北京市 海淀区 荷清路");//findByRegisteratGreaterThan(1438169971000l,0,5);
        	System.out.println("test005CountByAddress");
        	System.out.println(count);
+       	
+       	count = wifiDeviceDataSearchService.countByAddressMatchAll("北京市");//findByRegisteratGreaterThan(1438169971000l,0,5);
+       	System.out.println("test005CountByAddress");
+       	System.out.println(count);
+       	
+       	count = wifiDeviceDataSearchService.countByAddressMatchAll(null);//findByRegisteratGreaterThan(1438169971000l,0,5);
+       	System.out.println("test005CountByAddress");
+       	System.out.println(count);
+       	
     }
     
     @Test

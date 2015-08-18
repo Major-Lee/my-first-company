@@ -7,11 +7,12 @@ import com.smartwork.msip.localunit.RandomData;
 public class ScoreHelper {
 	//流量区间
 	public enum FlowScope{
-		FlowLevel1(0,5,20),
-		FlowLevel2(5,20,30),
-		FlowLevel3(20,30,40),
-		FlowLevel4(30,45,50),
-		FlowLevel5(45,-1,60),
+		FlowLevel1(0,128,20),
+		FlowLevel2(128,512,30),
+		FlowLevel3(512,1024,40),
+		FlowLevel4(1024,5120,50),
+		FlowLevel5(5120,10240,55),
+		FlowLevel6(10240,-1,60),
 		;
 		long start;
 		long end;
@@ -53,10 +54,10 @@ public class ScoreHelper {
 	//连接数区间
 	public enum StaScope{
 		StaLevel1(0,5,10),
-		StaLevel2(5,20,20),
-		StaLevel3(20,30,30),
-		StaLevel4(30,45,35),
-		StaLevel5(45,-1,40),
+		StaLevel2(5,10,20),
+		StaLevel3(10,20,30),
+		StaLevel4(20,30,35),
+		StaLevel5(30,-1,40),
 		;
 		int start;
 		int end;
