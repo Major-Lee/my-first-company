@@ -24,11 +24,13 @@
         <dependency>
             <groupId>com.smartwork</groupId>
             <artifactId>msip_fsstorerule</artifactId>
-        </dependency>        
+        </dependency>
+        <!--         
 		<dependency>
 			<groupId>com.smartwork</groupId>
 			<artifactId>msip_core_cachedext</artifactId>
 		</dependency>
+		 -->
         <dependency>
             <groupId>com.smartwork</groupId>
             <artifactId>msip_core_plugins_wordfilter</artifactId>
