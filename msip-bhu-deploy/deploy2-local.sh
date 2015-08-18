@@ -34,13 +34,14 @@ esac
 echo "starting deploy2=>"$Deploy2Server
 sleep 5
 
-
 #回到msip-bhu-deploy目录进入deploy目录，并且创建每日的预发布文件存储目录
 #cd msip-bhu-deploy
-if [ ! -d `deploy` ]; then
-	mkdir `deploy`
+deploy=${Current_DIR}"/deploy"
+echo $currentdeploy
+if [ ! -d "$deploy" ]; then
+	mkdir "$deploy"
 fi
-cd deploy
+cd "$deploy"
 
 CuDateDir=`date +%Y%m%d%H`
 

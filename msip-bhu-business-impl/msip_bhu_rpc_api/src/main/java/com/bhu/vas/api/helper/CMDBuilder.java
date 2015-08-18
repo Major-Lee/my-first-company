@@ -298,7 +298,7 @@ public class CMDBuilder {
 			switch(opt){
 				case ModifyDeviceSetting:
 					//新版本增值模块指令构造 目前支持 增值指令 404 redirect
-					if(WifiDeviceHelper.isVapModuleCmdSupported(opt,subopt) && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
+					if(WifiDeviceHelper.isCmdVapModuleSupported(opt,subopt) && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
 						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{ subopt},wifi_mac,taskid,new String[]{extparams});
 					}else{
 						try{

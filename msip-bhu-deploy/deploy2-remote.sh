@@ -29,7 +29,12 @@ sleep 5
 #Deploy2Server=$1
 #回到msip-bhu-deploy目录进入deploy目录，并且创建每日的预发布文件存储目录
 #cd msip-bhu-deploy
-cd deploy
+deploy=${Current_DIR}"/deploy"
+echo $currentdeploy
+if [ ! -d "$deploy" ]; then
+  mkdir "$deploy"
+fi
+cd "$deploy"
 CuDateDir=`date +%Y%m%d%H`
 
 if [ ! -d $CuDateDir ]; then

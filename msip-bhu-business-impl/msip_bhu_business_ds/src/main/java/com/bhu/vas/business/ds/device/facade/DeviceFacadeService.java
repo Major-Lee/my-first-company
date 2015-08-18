@@ -858,7 +858,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
 				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 					if(ods_cmd == null) continue;
-					if(WifiDeviceHelper.isVapModuleCmdSupported(opt_cmd,ods_cmd) && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+					if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd) && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
 						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
 						vap_module_ds.add(ods_cmd);
@@ -944,7 +944,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
 				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 					if(ods_cmd == null) continue;
-					if(WifiDeviceHelper.isVapModuleCmdSupported(opt_cmd,ods_cmd)/* && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())*/){
+					if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd)/* && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())*/){
 						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
 						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
 						vap_module_ds.add(ods_cmd);
