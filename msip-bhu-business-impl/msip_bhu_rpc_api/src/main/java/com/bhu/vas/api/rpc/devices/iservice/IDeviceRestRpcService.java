@@ -1,10 +1,8 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
-import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;

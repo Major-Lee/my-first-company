@@ -120,8 +120,8 @@ public class DeviceRestBusinessFacadeService {
 	public TailPage<WifiDeviceVTO> fetchWDeviceByKeyword(String keyword, String region,
 			String region_excepts, int pageNo, int pageSize){
 		List<WifiDeviceVTO> vtos = null;
-		
-		Page<WifiDeviceDocument> searchResult = wifiDeviceDataSearchService.searchByKeyword(keyword, region, region_excepts, pageNo, pageNo);
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		Page<WifiDeviceDocument> searchResult = wifiDeviceDataSearchService.searchByKeyword(keyword, region, region_excepts, searchPageNo, pageNo);
 		
 		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeyword(keyword, 
 				region, excepts, (pageNo*pageSize)-pageSize, pageSize);*/
@@ -177,8 +177,8 @@ public class DeviceRestBusinessFacadeService {
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
 			String region, String region_excepts, String groupids, String groupids_excepts, int pageNo, int pageSize){
 		List<WifiDeviceVTO> vtos = null;
-		
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByKeywords(mac, sn, orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, region_excepts, groupids, groupids_excepts, pageNo, pageSize);
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByKeywords(mac, sn, orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, region_excepts, groupids, groupids_excepts, searchPageNo, pageSize);
 		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, sn,
 				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
 				region, excepts, groupids, groupids_excepts, (pageNo*pageSize)-pageSize, pageSize);*/
@@ -299,7 +299,8 @@ public class DeviceRestBusinessFacadeService {
 		List<WifiDeviceVTO> vtos = null;
 		
 		long minRegisterAt = System.currentTimeMillis() - (30 * 3600 * 24 * 1000l);
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.findByRegisteredatGreaterThan(minRegisterAt,pageNo,pageSize);
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.findByRegisteredatGreaterThan(minRegisterAt,searchPageNo,pageSize);
 		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchGtByRegisterAt(minRegisterAt, 
 				(pageNo*pageSize)-pageSize, pageSize);*/
 		
