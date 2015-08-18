@@ -382,8 +382,7 @@ public class RPCMessageParseHelper {
 					dto.getYesterday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
 				}
 			}
-			//dto.setScore(score);
-			//dto.setKo(ko);
+			dto.analyseMaxFlow();
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());

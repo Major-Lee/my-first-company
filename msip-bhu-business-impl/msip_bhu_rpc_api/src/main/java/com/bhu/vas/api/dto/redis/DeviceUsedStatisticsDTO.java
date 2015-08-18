@@ -52,16 +52,38 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 	public void setTs(long ts) {
 		this.ts = ts;
 	}
-	/*public String getKo() {
-		return ko;
+	
+	public void analyseMaxFlow(){
+		if(today_detail!=null && !today_detail.isEmpty()){
+			HourUsedStatisticsDTO dto = fetchMaxFlowStatisticsDTO(today_detail);
+			if(dto != null){
+				if(this.getToday() != null){
+					this.getToday().setFlow_max_time_num(dto.getRx_bytes());
+					this.getToday().setFlow_max_time(String.valueOf(Integer.parseInt(dto.getTime())*3600));
+				}
+			}
+		}
+		if(yesterday_detail!=null && !yesterday_detail.isEmpty()){
+			HourUsedStatisticsDTO dto = fetchMaxFlowStatisticsDTO(yesterday_detail);
+			if(dto != null){
+				if(this.getYesterday() != null){
+					this.getYesterday().setFlow_max_time_num(dto.getRx_bytes());
+					this.getYesterday().setFlow_max_time(String.valueOf(Integer.parseInt(dto.getTime())*3600));
+				}
+			}
+		}
+		
 	}
-	public void setKo(String ko) {
-		this.ko = ko;
+	
+	private static HourUsedStatisticsDTO fetchMaxFlowStatisticsDTO(List<HourUsedStatisticsDTO> details){
+		long currentMaxFlow = 0l;
+		HourUsedStatisticsDTO result_dto = null;
+		for(HourUsedStatisticsDTO dto:details){
+			long now = Long.parseLong(dto.getRx_bytes());
+			if(now > currentMaxFlow){
+				result_dto = dto;
+			}
+		}
+		return result_dto;
 	}
-	public String getScore() {
-		return score;
-	}
-	public void setScore(String score) {
-		this.score = score;
-	}*/
 }
