@@ -81,6 +81,7 @@ public class DeviceUsedStatisticsDTO implements Serializable{
 		for(HourUsedStatisticsDTO dto:details){
 			long now = Long.parseLong(dto.getRx_bytes());
 			if(now > currentMaxFlow){
+				currentMaxFlow = now;
 				result_dto = dto;
 			}
 		}
