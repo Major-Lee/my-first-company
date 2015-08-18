@@ -39,11 +39,12 @@
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_asynmessage</artifactId>
         </dependency>
-        
+        <!-- 
         <dependency>
             <groupId>com.smartwork</groupId>
             <artifactId>msip_core_lucene_es</artifactId>
         </dependency>
+         -->
         
        <dependency>
             <groupId>com.alibaba</groupId>
