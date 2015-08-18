@@ -9,12 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
-import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 /**
  * wifi设备增量索引service
  * @author tangzichao
@@ -24,8 +24,10 @@ import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
 public class WifiDeviceIndexIncrementService {
 	private final Logger logger = LoggerFactory.getLogger(WifiDeviceIndexIncrementService.class);
 	
+	//@Resource
+	//private WifiDeviceIndexService wifiDeviceIndexService;
 	@Resource
-	private WifiDeviceIndexService wifiDeviceIndexService;
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -78,16 +80,20 @@ public class WifiDeviceIndexIncrementService {
 	 */
 	public void cmupWithWifiDeviceOnlinesIndexIncrement(List<WifiDevice> entitys) throws Exception{
 		logger.info(String.format("wifiDeviceOnlinesIndexIncrement size[%s]", entitys.size()));
-		
-		List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
+		List<WifiDeviceDocument> docs = new ArrayList<>();
+		WifiDeviceDocument doc = null;
+		//List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
 		for(WifiDevice entity : entitys){
 			List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(entity.getId());
-			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
-			indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
-			indexDtos.add(indexDto);
+			doc = WifiDeviceDocumentHelper.fromWifiDevice(entity, groupids);
+			doc.setOnline(Boolean.TRUE);
+			docs.add(doc);
+			//WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
+			//indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+			//indexDtos.add(indexDto);
 		}
-		wifiDeviceIndexService.createIndexComponents(indexDtos);
-		
+		//wifiDeviceIndexService.createIndexComponents(indexDtos);
+		wifiDeviceDataSearchService.getRepository().save(docs);
 		logger.info(String.format("wifiDeviceOnlinesIndexIncrement size[%s] successful", entitys.size()));
 	}
 	
@@ -128,14 +134,10 @@ public class WifiDeviceIndexIncrementService {
 	public void wifiDeviceIndexIncrement(WifiDevice entity, List<Long> groupids) {
 		logger.info(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s]", entity.getId(), entity.isOnline()));
 		try{
-			WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
-//			if(entity.isOnline()){
-//				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
-//			}else{
-//				indexDto.setCount(0);
-//				indexDto.setOnline(WifiDeviceIndexDTO.offline_Status);
-//			}
-			wifiDeviceIndexService.createIndexComponent(indexDto);
+			WifiDeviceDocument doc = WifiDeviceDocumentHelper.fromWifiDevice(entity, groupids);
+			wifiDeviceDataSearchService.getRepository().save(doc);
+			//WifiDeviceIndexDTO indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids);
+			//wifiDeviceIndexService.createIndexComponent(indexDto);
 		}catch(Exception ex){
 			//ex.printStackTrace();
 			logger.error(String.format("wifiDeviceIndexIncrement wifiId[%s] online[%s] exception", 
@@ -150,14 +152,25 @@ public class WifiDeviceIndexIncrementService {
 		if(groupids_list == null || groupids_list.isEmpty()) return;
 		
 		logger.info(String.format("wifiDeviceIndexBlukIncrement wifiId[%s] online[%s]", entitys.size(), groupids_list.size()));
+		List<WifiDeviceDocument> docs = new ArrayList<>();
+		WifiDeviceDocument doc = null;
 		try{
-			List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
+			//List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
+			int cursor = 0;
+			for(WifiDevice entity : entitys){
+				doc = WifiDeviceDocumentHelper.fromWifiDevice(entity, groupids_list.get(cursor));
+				docs.add(doc);
+				cursor++;
+			}
+			//wifiDeviceIndexService.createIndexComponents(indexDtos);
+			wifiDeviceDataSearchService.getRepository().save(docs);
+			/*List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
 			int cursor = 0;
 			for(WifiDevice entity : entitys){
 				indexDtos.add(IndexDTOBuilder.builderWifiDeviceIndexDTO(entity, groupids_list.get(cursor)));
 				cursor++;
 			}
-			wifiDeviceIndexService.createIndexComponents(indexDtos);
+			wifiDeviceIndexService.createIndexComponents(indexDtos);*/
 		}catch(Exception ex){
 			//ex.printStackTrace();
 			logger.error(String.format("wifiDeviceIndexBlukIncrement wifiId[%s] online[%s] exception", 

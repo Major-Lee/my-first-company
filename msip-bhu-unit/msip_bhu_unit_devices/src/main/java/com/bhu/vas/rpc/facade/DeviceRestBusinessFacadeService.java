@@ -1,15 +1,13 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,10 +17,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
-import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.vto.GeoMapDeviceVTO;
-import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -38,17 +33,16 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
-import com.bhu.vas.business.search.service.device.WifiDeviceSearchService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
-import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.es.exception.ESQueryValidateException;
-import com.smartwork.msip.es.request.QueryResponse;
 
 /**
  * device Rest RPC组件的业务service
@@ -71,8 +65,10 @@ public class DeviceRestBusinessFacadeService {
 	/*@Resource
 	private HandsetDeviceService handsetDeviceService;*/
 	
+	/*@Resource
+	private WifiDeviceSearchService wifiDeviceSearchService;*/
 	@Resource
-	private WifiDeviceSearchService wifiDeviceSearchService;
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	@Resource
 	private BusinessDeviceCacheService businessDeviceCacheService;
@@ -122,32 +118,35 @@ public class DeviceRestBusinessFacadeService {
 	 * @throws ESQueryValidateException 
 	 */
 	public TailPage<WifiDeviceVTO> fetchWDeviceByKeyword(String keyword, String region,
-			String excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
+			String region_excepts, int pageNo, int pageSize){
 		List<WifiDeviceVTO> vtos = null;
 		
-		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeyword(keyword, 
-				region, excepts, (pageNo*pageSize)-pageSize, pageSize);
+		Page<WifiDeviceDocument> searchResult = wifiDeviceDataSearchService.searchByKeyword(keyword, region, region_excepts, pageNo, pageNo);
 		
-		int total = search_result.getTotal();
+		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeyword(keyword, 
+				region, excepts, (pageNo*pageSize)-pageSize, pageSize);*/
+		
+		int total = (int)searchResult.getTotalElements();//.getTotal();
 		if(total == 0){
 			vtos = Collections.emptyList();
 		}
-		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
+		List<WifiDeviceDocument> searchDtos = searchResult.getContent();//search_result.getResult();
 		if(searchDtos.isEmpty()) {
 			vtos = Collections.emptyList();
 		}else{
 			List<String> wifiIds = new ArrayList<String>();
-			for(WifiDeviceSearchDTO searchDto : searchDtos){
+			for(WifiDeviceDocument searchDto : searchDtos){
 				wifiIds.add(searchDto.getId());
 			}
 			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
 			vtos = new ArrayList<WifiDeviceVTO>();
 			WifiDeviceVTO vto = null;
-			WifiDeviceSearchDTO searchDto = null;
+			WifiDeviceDocument searchDto = null;
 			int cursor = 0;
-			for(WifiDevice entity : entitys){
+			for(WifiDevice wifiDevice : entitys){
 				searchDto = searchDtos.get(cursor);
-				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
+				vto = WifiDeviceDocumentHelper.toWifiDeviceVTO(searchDto, wifiDevice);
+				//vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
 				vtos.add(vto);
 				cursor++;
 			}
@@ -176,36 +175,39 @@ public class DeviceRestBusinessFacadeService {
 	 */
 	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac, String sn, String orig_swver, String adr, String work_mode,
 			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
-			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize)  throws ESQueryValidateException{
+			String region, String region_excepts, String groupids, String groupids_excepts, int pageNo, int pageSize){
 		List<WifiDeviceVTO> vtos = null;
 		
-		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, sn,
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByKeywords(mac, sn, orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, region_excepts, groupids, groupids_excepts, pageNo, pageSize);
+		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, sn,
 				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
-				region, excepts, groupids, groupids_excepts, (pageNo*pageSize)-pageSize, pageSize);
+				region, excepts, groupids, groupids_excepts, (pageNo*pageSize)-pageSize, pageSize);*/
 		
-		int total = search_result.getTotal();
+		int total = (int)search_result.getTotalElements();//.getTotal();
 		if(total == 0){
 			vtos = Collections.emptyList();
 		}
-		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
+		List<WifiDeviceDocument> searchDtos = search_result.getContent();//.getResult();
 		if(searchDtos.isEmpty()) {
 			vtos = Collections.emptyList();
 		}else{
 			List<String> wifiIds = new ArrayList<String>();
-			for(WifiDeviceSearchDTO searchDto : searchDtos){
+			for(WifiDeviceDocument searchDto : searchDtos){
 				wifiIds.add(searchDto.getId());
 			}
 			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
 			vtos = new ArrayList<WifiDeviceVTO>();
 			WifiDeviceVTO vto = null;
-			WifiDeviceSearchDTO searchDto = null;
+			WifiDeviceDocument searchDto = null;
 			int cursor = 0;
-			for(WifiDevice entity : entitys){
+			for(WifiDevice wifiDevice : entitys){
 				searchDto = searchDtos.get(cursor);
-				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
+				vto = WifiDeviceDocumentHelper.toWifiDeviceVTO(searchDto, wifiDevice);
+				//vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
 				vtos.add(vto);
 				cursor++;
 			}
+			
 		}
 		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
 		
@@ -244,7 +246,7 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 * @throws ESQueryValidateException 
 	 */
-	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions) throws ESQueryValidateException{
+	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions){// throws ESQueryValidateException{
 		if(StringUtils.isEmpty(regions)) return null;
 		
 		String regionCountJson = WifiDeviceCountRegionStatisticsStringService.getInstance().getWifiDeviceCountRegion();
@@ -252,7 +254,7 @@ public class DeviceRestBusinessFacadeService {
 		if(StringUtils.isEmpty(regionCountJson)){
 			//如果缓存失效 则从搜索引擎直接获取 (如果以后地域非常多,获取数据会相对耗时,可以放在定时程序去更新缓存)
 			//获取总共的wifi设备数量
-			long total_count = wifiDeviceSearchService.countByKeyword(null);
+			long total_count = wifiDeviceDataSearchService.countByAddressMatchAll(null);//wifiDeviceSearchService.countByKeyword(null);
 			long total_region_count = 0;
 			dtos = new ArrayList<RegionCountDTO>();
 			String[] regions_array = regions.split(StringHelper.COMMA_STRING_GAP);
@@ -261,7 +263,7 @@ public class DeviceRestBusinessFacadeService {
 				//地域的wifi设备数量
 				long region_count = 0;
 				if(total_count > 0){
-					region_count = wifiDeviceSearchService.countByKeyword(region);
+					region_count = wifiDeviceDataSearchService.countByAddressMatchAll(region);//wifiDeviceSearchService.countByKeyword(region);
 				}
 				region_dto.setR(region);
 				region_dto.setV(region_count);
@@ -293,24 +295,40 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize) 
-			throws ESQueryValidateException{
+	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize){//throws ESQueryValidateException{
 		List<WifiDeviceVTO> vtos = null;
 		
 		long minRegisterAt = System.currentTimeMillis() - (30 * 3600 * 24 * 1000l);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.findByRegisteredatGreaterThan(minRegisterAt,pageNo,pageSize);
+		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchGtByRegisterAt(minRegisterAt, 
+				(pageNo*pageSize)-pageSize, pageSize);*/
 		
-		QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchGtByRegisterAt(minRegisterAt, 
-				(pageNo*pageSize)-pageSize, pageSize);
-		
-		int total = search_result.getTotal();
+		int total = (int)search_result.getTotalElements();//.getTotal();
 		if(total == 0){
 			vtos = Collections.emptyList();
 		}
-		List<WifiDeviceSearchDTO> searchDtos = search_result.getResult();
+		List<WifiDeviceDocument> searchDtos = search_result.getContent();//.getResult();
 		if(searchDtos.isEmpty()) {
 			vtos = Collections.emptyList();
 		}else{
+			
 			List<String> wifiIds = new ArrayList<String>();
+			for(WifiDeviceDocument searchDto : searchDtos){
+				wifiIds.add(searchDto.getId());
+			}
+			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
+			vtos = new ArrayList<WifiDeviceVTO>();
+			WifiDeviceVTO vto = null;
+			WifiDeviceDocument searchDto = null;
+			int cursor = 0;
+			for(WifiDevice wifiDevice : entitys){
+				searchDto = searchDtos.get(cursor);
+				vto = WifiDeviceDocumentHelper.toWifiDeviceVTO(searchDto, wifiDevice);
+				//vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
+				vtos.add(vto);
+				cursor++;
+			}
+			/*List<String> wifiIds = new ArrayList<String>();
 			for(WifiDeviceSearchDTO searchDto : searchDtos){
 				wifiIds.add(searchDto.getId());
 			}
@@ -325,7 +343,7 @@ public class DeviceRestBusinessFacadeService {
 				vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
 				vtos.add(vto);
 				cursor++;
-			}
+			}*/
 		}
 		return new CommonPage<WifiDeviceVTO>(pageNo, pageSize, total, vtos);
 	}
@@ -379,8 +397,8 @@ public class DeviceRestBusinessFacadeService {
 		return new CommonPage<HandsetDeviceVTO>(pageNo, pageSize, (int)total, vtos);
 	}
 	
-	public static final int GeoMap_Fetch_Count = 500;
-	public Collection<GeoMapVTO> fetchGeoMap() throws ESQueryValidateException{
+/*	public static final int GeoMap_Fetch_Count = 500;
+	public Collection<GeoMapVTO> fetchGeoMap(){// throws ESQueryValidateException{
 		Collection<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();
 		if(vtos == null){
 			QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchExistAddress(0, GeoMap_Fetch_Count);
@@ -441,5 +459,5 @@ public class DeviceRestBusinessFacadeService {
 			}
 		}
 		return vtos;
-	}
+	}*/
 }

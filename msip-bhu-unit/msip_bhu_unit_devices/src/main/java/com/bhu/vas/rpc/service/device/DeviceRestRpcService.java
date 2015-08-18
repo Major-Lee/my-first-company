@@ -166,7 +166,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}
 	}
 	
-	@Override
+	/*@Override
 	public Collection<GeoMapVTO> fetchGeoMap(){
 		logger.info("DeviceRestRPC fetchGeoMap invoke");
 		try{
@@ -176,5 +176,5 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			logger.error(String.format("DeviceRestRPC fetchGeoMap exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
-	}
+	}*/
 }

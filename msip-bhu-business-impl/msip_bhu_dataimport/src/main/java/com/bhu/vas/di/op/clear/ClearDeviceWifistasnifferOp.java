@@ -1,10 +1,6 @@
 package com.bhu.vas.di.op.clear;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.Set;
-
-import org.elasticsearch.ElasticsearchException;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
@@ -12,7 +8,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHot
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.es.exception.ESException;
 /**
  * 清除设备的周边探测记录
  * @author lawliet
@@ -25,7 +20,7 @@ public class ClearDeviceWifistasnifferOp {
 //		device_macs.add("62:68:75:f1:10:80");
 //	}
 	
-	public static void main(String[] argv) throws ElasticsearchException, ESException, IOException, ParseException{
+	public static void main(String[] argv){
 		if(argv == null || argv.length != 1){
 			System.out.println("缺少参数");
 			return;

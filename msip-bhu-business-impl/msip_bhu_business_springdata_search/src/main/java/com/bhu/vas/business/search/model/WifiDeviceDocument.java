@@ -12,7 +12,9 @@ import com.bhu.vas.business.search.BusinessIndexDefine;
 @Document(	indexName = BusinessIndexDefine.WifiDevice.IndexName, 
 			type = BusinessIndexDefine.WifiDevice.Type, 
 			shards = BusinessIndexDefine.WifiDevice.Shards, 
-			replicas = BusinessIndexDefine.WifiDevice.replicas)
+			replicas = BusinessIndexDefine.WifiDevice.replicas,
+			refreshInterval = BusinessIndexDefine.WifiDevice.refreshInterval
+		)
 /*@Document(	indexName = "wifi_device_index9", 
 type = "myWifiDevice", 
 shards = 5, 

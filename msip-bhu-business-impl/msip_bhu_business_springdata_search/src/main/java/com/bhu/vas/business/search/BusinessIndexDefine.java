@@ -7,7 +7,7 @@ public interface BusinessIndexDefine {
 		public static final String Type 		= "wifiDevice";
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
-		
+		public static final String refreshInterval = "-1";
 		interface Field{
 			public static final String ID 		= "id";
 			public static final String SN 		= "sn";

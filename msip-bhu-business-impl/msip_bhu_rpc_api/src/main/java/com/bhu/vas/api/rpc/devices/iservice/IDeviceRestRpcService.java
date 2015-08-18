@@ -25,5 +25,5 @@ public interface IDeviceRestRpcService {
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions);
 	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize);
 	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize);
-	public Collection<GeoMapVTO> fetchGeoMap();
+	//public Collection<GeoMapVTO> fetchGeoMap();
 }

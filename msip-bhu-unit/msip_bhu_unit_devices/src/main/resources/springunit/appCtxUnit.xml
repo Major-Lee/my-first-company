@@ -22,5 +22,7 @@
 	<import resource="classpath*:springunit/applicationContextRpcUnitProvider.xml"/> 
 	
 	<import resource="classpath*:com/bhu/vas/business/ds/warmup/applicationContext-bhu-warmup-service.xml"/> 
+	<!-- 
 	<import resource="classpath*:com/bhu/vas/business/search/warmup/applicationContext-bhu-warmup-index-service.xml"/>
+	 -->
 </beans>
