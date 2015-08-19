@@ -3,7 +3,6 @@ package com.bhu.vas.api.helper;
 import org.apache.commons.lang.StringUtils;
 
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.VersionHelper;
 
 
 public class WifiDeviceHelper {
@@ -22,14 +21,18 @@ public class WifiDeviceHelper {
 		return false;
 	}
 	
-	private static final String VapModuleVersion = "1.3.0";
+	/*public static boolean isVapModuleSupported(String moduleBuild){
+		return StringUtils.isNotEmpty(moduleBuild);
+	}*/
+	
+	//private static final String VapModuleVersion = "1.3.0";
 	
 	/**
 	 * 新版本的设备支持运营组件，此组件支持新的增值指令：404 redirect
 	 * @param deviceVersionBuild
 	 * @return
 	 */
-	public static boolean isVapModuleSupported(String deviceVersionBuild){
+	/*public static boolean isVapModuleSupported(String deviceVersionBuild){
 		if(StringUtils.isEmpty(deviceVersionBuild)) return false;
 		String[] orig_swver1_versions = DeviceHelper.parseDeviceSwverVersion(deviceVersionBuild);
 		if(orig_swver1_versions == null) return false;
@@ -40,7 +43,7 @@ public class WifiDeviceHelper {
 			ex.printStackTrace(System.out);
 			return false;
 		}
-	}
+	}*/
 
 	/*public static boolean isVapModuleSupported(WifiDevice wifiDevice){
 		if(StringUtils.isEmpty(deviceVersionBuild)) return false;
@@ -55,7 +58,11 @@ public class WifiDeviceHelper {
 		}
 	}*/
 	
-	public static boolean isVapModuleOnline(boolean online,boolean vapmoduleonline){
+	public static boolean isDeviceVapModuleSupported(String moduleBuild){
+		return StringUtils.isNotEmpty(moduleBuild);
+	}
+	
+	public static boolean isDeviceVapModuleOnline(boolean online,boolean vapmoduleonline){
 		return (online && vapmoduleonline);
 	}
 	

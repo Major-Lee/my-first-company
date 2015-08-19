@@ -275,7 +275,7 @@ public class CMDBuilder {
 	
 	
 	public static String autoBuilderCMD4Opt(OperationCMD opt,String wifi_mac,long taskid,String extparams){
-		return autoBuilderCMD4Opt(opt,null,wifi_mac,taskid,extparams,null,null);
+		return autoBuilderCMD4Opt(opt,null,wifi_mac,taskid,extparams,null);
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public class CMDBuilder {
 	 * 			其余属性直接extparams为相关参数，可能是字符串 可能是jason参数
 	 * @return
 	 */
-	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams,String orig_swver,IGenerateDeviceSetting generateDeviceSetting){
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams/*,String orig_swver*/,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
 		if(opt != null){
 			if(taskid == 0){
@@ -298,8 +298,8 @@ public class CMDBuilder {
 			switch(opt){
 				case ModifyDeviceSetting:
 					//新版本增值模块指令构造 目前支持 增值指令 404 redirect
-					if(WifiDeviceHelper.isCmdVapModuleSupported(opt,subopt) && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
-						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{ subopt},wifi_mac,taskid,new String[]{extparams});
+					if(WifiDeviceHelper.isCmdVapModuleSupported(opt,subopt)){// && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
+						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{subopt},wifi_mac,taskid,new String[]{extparams});
 					}else{
 						try{
 							String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);

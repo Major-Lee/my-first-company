@@ -854,15 +854,14 @@ public class DeviceBusinessFacadeService {
 					if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
 					afterQueryPayloads.add(queryDHCPStatus);
 				}
-		
 				//设备持久指令分发
-				List<String> persistencePayloads = null;
+				/*List<String> persistencePayloads = null;
 				if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(wifiId,true);
 				}else{
 					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(wifiId);
-				}
-				
+				}*/
+				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
 				
 				if((persistencePayloads != null && !persistencePayloads.isEmpty()) ||
 						(afterQueryPayloads != null && !afterQueryPayloads.isEmpty())){
@@ -1076,7 +1075,7 @@ public class DeviceBusinessFacadeService {
 				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));
 				if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){
 					//比对本地内容，看是否需要重新下发增值指令，以服务器内容为基准，所以直接生成指令下发，此部分操作设备在登录后查询配置响应的时候会做相关操作，所以这里就不做了
-					List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceOnlyVapModuleCMD(mac);
+					List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceVapModuleCMD(mac);
 					if(persistencePayloads != null && !persistencePayloads.isEmpty()){
 						cmdPayloads.addAll(persistencePayloads);
 						/*deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, persistencePayloads);

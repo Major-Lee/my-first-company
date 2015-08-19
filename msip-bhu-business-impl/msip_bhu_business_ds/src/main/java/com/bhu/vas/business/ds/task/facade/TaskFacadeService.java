@@ -263,8 +263,14 @@ public class TaskFacadeService {
 
 
 		if(OperationCMD.DeviceModuleUpgrade == opt_cmd){//判定设备版本是否兼容
-			if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+			/*if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_VERSIONBUILD_NOT_SUPPORTED);
+			}*/
+			if(!WifiDeviceHelper.isDeviceVapModuleSupported(wifiDevice.getOrig_vap_module())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED);
+			}
+			if(!WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
 			}
 		}
 		//判定是否是增值指令
@@ -278,13 +284,16 @@ public class TaskFacadeService {
 			}
 		}
 		
-		
-		
 		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
 		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
 		if(!wifiDevice.isOnline()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}
+		
+		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
+		if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd) && WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
 		}
 		
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
@@ -320,7 +329,7 @@ public class TaskFacadeService {
 					}
 					break;*/
 				default:
-					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,wifiDevice.getOrig_swver(),deviceFacadeService));
+					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
 					break;
 			}
 			/*if(OperationDS.DS_Http_Portal_Start == ods_cmd){
@@ -353,12 +362,12 @@ public class TaskFacadeService {
 		
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
 		
-		WifiDevice wifiDevice = null;
+		//WifiDevice wifiDevice = null;
 		//如果是管理员用户 不进行用户所属设备的验证
 		if(RuntimeConfiguration.isConsoleUser(uid)){
-			wifiDevice = deviceFacadeService.validateDevice(mac);
+			deviceFacadeService.validateDevice(mac);
 		}else{
-			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
+			deviceFacadeService.validateUserDevice(uid, mac);
 		}
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
@@ -371,7 +380,7 @@ public class TaskFacadeService {
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
 		
-		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,wifiDevice.getOrig_swver(),deviceFacadeService));
+		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
 		this.taskComming(downTask);
 		//this.taskUpdate(downTask);
 		return downTask;

@@ -837,7 +837,116 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 	}
 	
-	public List<String> fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(String mac,boolean ignoreVapModule){
+	/**
+	 * 获取持久化指令中的vapmodule支持的增值指令
+	 * 只有404和redirect
+	 * @param mac
+	 * @return
+	 */
+	public List<String> fetchWifiDevicePersistenceVapModuleCMD(String mac){
+		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
+		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
+		List<String> payloads = null;
+		List<OperationDS> vap_module_ds = null;
+		List<String> vap_module_ds_extparams = null;
+		try{
+			payloads = new ArrayList<>();
+			Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
+				PersistenceCMDDTO dto = entry.getValue();
+				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
+				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+					continue;
+				}
+				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
+				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+					if(ods_cmd == null) continue;
+					if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd)){// && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
+						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
+						vap_module_ds.add(ods_cmd);
+						vap_module_ds_extparams.add(dto.getExtparams());
+					}
+				}
+			}
+			if(vap_module_ds != null && !vap_module_ds.isEmpty()){
+				String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
+						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));
+				if(StringUtils.isNotEmpty(cmd))
+					payloads.add(cmd);
+			}
+			return payloads;
+		}finally{
+			if(vap_module_ds != null){
+				vap_module_ds.clear();
+				vap_module_ds = null;
+			}
+			if(vap_module_ds_extparams != null){
+				vap_module_ds_extparams.clear();
+				vap_module_ds_extparams = null;
+			}
+		}
+	}
+	
+	/**
+	 * 获取持久化指令中除vapmodule支持的增值指令的其他指令
+	 * @param mac
+	 * @return
+	 */
+	public List<String> fetchWifiDevicePersistenceExceptVapModuleCMD(String mac){
+		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
+		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
+		List<String> payloads = null;
+		try{
+			payloads = new ArrayList<>();
+			Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
+			StringBuilder sb_setting_inner = new StringBuilder();
+			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
+				PersistenceCMDDTO dto = entry.getValue();
+				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
+				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+					continue;
+				}
+				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
+				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+					if(ods_cmd == null) continue;
+					switch(ods_cmd){
+						case DS_Http_Ad_Start:
+							sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
+							break;	
+						/*case DS_Http_404_Start:
+							sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
+							break;	
+						case DS_Http_Redirect_Start:
+							sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
+							break;*/	
+						default:
+							break;
+					}
+					//}
+				}else{
+					payloads.add(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac,0, dto.getExtparams(), this));
+				}
+			}
+			if(sb_setting_inner.length() > 0){
+				WifiDeviceSetting entity = validateDeviceSetting(mac);
+				WifiDeviceSettingDTO ds_dto = entity.getInnerModel();
+				String config_sequence = DeviceHelper.getConfigSequence(ds_dto);
+				if(StringUtils.isEmpty(config_sequence))
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST);
+				payloads.add(
+						CMDBuilder.builderDeviceSettingModify(
+								mac, 
+								CMDBuilder.auto_taskid_fragment.getNextSequence(), 
+								DeviceHelper.builderDSHttpVapSettinStartOuter(config_sequence,sb_setting_inner.toString())));
+			}
+			return payloads;
+		}finally{
+		}
+	}
+	
+	
+/*	public List<String> fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(String mac,boolean ignoreVapModule){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
 		List<String> payloads = null;
@@ -868,12 +977,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 							case DS_Http_Ad_Start:
 								sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
 								break;	
-							/*case DS_Http_404_Start:
+							case DS_Http_404_Start:
 								sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
 								break;	
 							case DS_Http_Redirect_Start:
 								sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
-								break;*/	
+								break;	
 							default:
 								break;
 						}
@@ -918,12 +1027,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 
 	}
 	
-	/**
+	*//**
 	 * 获取vapmodule模块的指令 只有新版本的需要，只有404和redirect
 	 * 
 	 * @param mac
 	 * @return
-	 */
+	 *//*
 	public List<String> fetchWifiDevicePersistenceOnlyVapModuleCMD(String mac){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
@@ -933,7 +1042,6 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//WifiDevice wifiDevice = null;
 		try{
 			payloads = new ArrayList<>();
-			//wifiDevice = wifiDeviceService.getById(mac);
 			Set<Entry<String, PersistenceCMDDTO>> entrySet = cmdState.getExtension().entrySet();
 			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
 				PersistenceCMDDTO dto = entry.getValue();
@@ -944,7 +1052,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
 				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 					if(ods_cmd == null) continue;
-					if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd)/* && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())*/){
+					if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd) && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
 						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
 						vap_module_ds.add(ods_cmd);
@@ -972,12 +1080,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 	}
 	
-	/**
+	*//**
 	 * 对于设备配置的指令需要合并一起提交
 	 * 针对vapmodule指定以前的设备
 	 * @param mac
 	 * @return
-	 */
+	 *//*
 	public List<String> fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(String mac){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
@@ -1032,7 +1140,11 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}finally{
 		}
 
-	}
+	}*/
+	
+	
+	
+	
 	
 	/**********************************     清除设备数据业务 start   *****************************************/
 	
