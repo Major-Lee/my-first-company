@@ -741,7 +741,14 @@ public class AsyncMsgHandleService {
 		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
 			//只有urouter设备才会执行
 			if(deviceFacadeService.isURooterDevice(dto.getMac())){
-				deviceFacadeService.deviceRestoreFactory(dto.getMac());
+				try{
+					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
+					deviceFacadeService.deviceRestoreFactory(dto.getMac());
+					logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
+				}catch(Exception ex){
+					//ex.printStackTrace();
+					logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
+				}
 			}
 		}
 		
