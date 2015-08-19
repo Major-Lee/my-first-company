@@ -44,6 +44,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -1169,7 +1170,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		clearRealtimeSpeedData(mac);
 		//6:终端列表清除离线终端数据
 		clearTerminalOfflineListData(mac);
-		//TODO:7 8
+		//TODO:7流量统计数据清除
+		clearDeviceUsedStatisticsData(mac);
+		//TODO:8终端详情数据清除
 	}
 	
 	
@@ -1181,6 +1184,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOfflinePresents(mac);
 	}
 	
+	public void clearDeviceUsedStatisticsData(String mac){
+		BusinessMarkerService.getInstance().deviceUsedStatisticsClear(mac);
+	}
 	/**
 	 * 初始化设备的用户设置
 	 * 1:定时开关
