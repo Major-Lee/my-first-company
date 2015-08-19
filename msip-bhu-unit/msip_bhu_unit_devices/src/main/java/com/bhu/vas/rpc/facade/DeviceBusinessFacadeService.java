@@ -832,7 +832,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
-		refreshDeviceSetting(wifiId, dto);
+		int refresh_status = refreshDeviceSetting(wifiId, dto);
 		try{
 			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 			if(wifiDevice != null){
@@ -861,19 +861,21 @@ public class DeviceBusinessFacadeService {
 				}else{
 					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(wifiId);
 				}*/
+				List<String> cmdPaylaods = null;
 				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
 				
 				if((persistencePayloads != null && !persistencePayloads.isEmpty()) ||
 						(afterQueryPayloads != null && !afterQueryPayloads.isEmpty())){
 
-					List<String> cmdPaylaods = new ArrayList<String>();
+					cmdPaylaods = new ArrayList<String>();
 					if(persistencePayloads != null) cmdPaylaods.addAll(persistencePayloads);
 					if(afterQueryPayloads != null) cmdPaylaods.addAll(afterQueryPayloads);
 					
-					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, cmdPaylaods);
+					//deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, cmdPaylaods);
 					//DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
 					//System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
 				}
+				deliverMessageService.sendDeviceSettingQueryActionMessage(wifiId, refresh_status, cmdPaylaods);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
@@ -906,10 +908,7 @@ public class DeviceBusinessFacadeService {
 		return null;
 	}
 	
-	//获取配置数据正常
-	public static final int RefreashDeviceSetting_Normal = 0;
-	//获取配置数据序列号比当前小 认为是恢复出厂
-	public static final int RefreashDeviceSetting_RestoreFactory = 1;
+
 	/**
 	 * 全量更新设备配置数据
 	 * 1：更新配置数据
@@ -931,7 +930,7 @@ public class DeviceBusinessFacadeService {
 				init_default_acl = true;
 			}
 		}*/
-		int state = RefreashDeviceSetting_Normal;
+		int state = DeviceHelper.RefreashDeviceSetting_Normal;
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity == null){
@@ -946,7 +945,7 @@ public class DeviceBusinessFacadeService {
 				if(!StringUtils.isEmpty(current_sequence)){
 					//如果获取的设备配置序列号小于当前序列号 认为是设备恢复出厂
 					if(Integer.parseInt(dto.getSequence()) < Integer.parseInt(current_sequence)){
-						state = RefreashDeviceSetting_RestoreFactory;
+						state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
 					}
 				}
 			}
