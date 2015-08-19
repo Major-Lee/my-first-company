@@ -46,7 +46,6 @@ public class TaskFacadeService {
 	/**
 	 * 任务执行callback通知
 	 * @param taskid
-	 * @param status
 	 */
 	public WifiDeviceDownTaskCompleted taskExecuteCallback(long taskid,String state,String response){
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
@@ -243,7 +242,7 @@ public class TaskFacadeService {
 
 				String url = dto.getUrl();
 				if (url != null) {
-					String deviceVersion = url.substring(url.lastIndexOf("/"));
+					String deviceVersion = url.substring(url.lastIndexOf("/") + 1);
 					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(), deviceVersion);
 					if (ret >= 0) {
 						// 设备版本高于需要升级的版本，不升级
@@ -381,8 +380,40 @@ public class TaskFacadeService {
 		downTask.setMac(mac);
 		
 		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
+/*=======
+		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac, downTask.getId(), extparams, wifiDevice.getOrig_swver(), deviceFacadeService));
+>>>>>>> bacd3bab901df86e48761ff076d84a2471f98f3f*/
 		this.taskComming(downTask);
 		//this.taskUpdate(downTask);
 		return downTask;
 	}
+
+//	public static void main(String[] args){
+//
+//
+//			String extparams = "{\"url\":\"http://7xl3iu.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8119\",\"upgrade_begin\":\"\",\"upgrade_end\":\"\",\"ctrl_version\":true}";
+//
+//			WifiDeviceUpgradeDTO dto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
+//			if (dto.isCtrl_version()) { //需要考虑高版本强制升级 true:考虑升级 false:默认都升级
+//
+//				String url = dto.getUrl();
+//				if (url != null) {
+//					String deviceVersion = url.substring(url.lastIndexOf("/")+1);
+//					int ret = DeviceHelper.compareDeviceVersions("AP106P06V1.2.15Build8119", deviceVersion);
+//					if (ret >= 0) {
+//						// 设备版本高于需要升级的版本，不升级
+//						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);
+//					} else {
+//						//升级
+//					}
+//
+//				} else  {
+//					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+//				}
+//
+//			} else {
+//				//升级
+//			}
+//		}
+
 }
