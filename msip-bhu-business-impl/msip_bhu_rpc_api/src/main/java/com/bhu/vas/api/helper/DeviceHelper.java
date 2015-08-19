@@ -46,6 +46,11 @@ public class DeviceHelper {
 	public static final int Device_Peak_Section_Type_OnlyUpload = 2;//设备只测速上行
 	public static final int Device_Peak_Section_Type_All = 3;//设备上下行都进行测速
 	
+	//获取配置数据正常
+	public static final int RefreashDeviceSetting_Normal = 0;
+	//获取配置数据序列号比当前小 认为是恢复出厂
+	public static final int RefreashDeviceSetting_RestoreFactory = 1;
+	
 	/**
 	 * 获取可用的vap的names
 	 * @param vaps

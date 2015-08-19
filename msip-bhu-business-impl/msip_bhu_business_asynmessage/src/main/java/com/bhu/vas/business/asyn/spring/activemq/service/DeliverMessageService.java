@@ -228,6 +228,17 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
+	public void sendDeviceSettingQueryActionMessage(String mac, int refresh_status, List<String> payloads){
+		WifiDeviceSettingQueryDTO dto = new WifiDeviceSettingQueryDTO();
+		dto.setMac(mac);
+		dto.setRefresh_status(refresh_status);
+		dto.setPayloads(payloads);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
 	public void sendDeviceSettingChangedActionMessage(String mac, List<String> payloads){
 		WifiDeviceSettingChangedDTO dto = new WifiDeviceSettingChangedDTO();
 		dto.setMac(mac);

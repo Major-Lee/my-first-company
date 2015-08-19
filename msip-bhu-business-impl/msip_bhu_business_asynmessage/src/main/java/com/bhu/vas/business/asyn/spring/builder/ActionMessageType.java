@@ -13,6 +13,7 @@ public enum ActionMessageType {
 	WifiDeviceLocation("wifi设备位置回报","wdlocation","WL"),
 	WifiDeviceSettingModify("wifi设备配置下发指令修改","wdsmodify","WM"),
 	WifiDeviceSettingChanged("wifi设备配置变更","wdschanged","WC"),
+	WifiDeviceSettingQuery("wifi设备配置查询","wdschanged","WQ"),
 	WifiDeviceTerminalNotify("获取终端列表响应","vapterminal","VT"),
 	WifiDeviceRealtimeRateFetch("下发设备实时速率","wdrealtime","WR"),
 	WifiDeviceHDRateFetch("下发终端实时速率","wdrealtime","WH"),

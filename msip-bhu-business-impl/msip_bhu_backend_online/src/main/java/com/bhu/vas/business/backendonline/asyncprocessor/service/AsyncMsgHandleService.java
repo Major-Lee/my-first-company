@@ -45,6 +45,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
@@ -729,6 +730,23 @@ public class AsyncMsgHandleService {
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingModify message[%s] successful", message));
 	}*/
+	
+	public void wifiDeviceSettingQuery(String message) throws Exception{
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s]", message));
+		
+		WifiDeviceSettingQueryDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingQueryDTO.class);
+		//分发指令
+		this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
+		//配置状态如果为恢复出厂 则清空设备的相关业务数据
+		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
+			//只有urouter设备才会执行
+			if(deviceFacadeService.isURooterDevice(dto.getMac())){
+				deviceFacadeService.deviceRestoreFactory(dto.getMac());
+			}
+		}
+		
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
+	}
 	
 	/**
 	 * 配置变更或者获取设备配置的后续处理
