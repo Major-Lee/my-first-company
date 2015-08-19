@@ -291,7 +291,7 @@ public class TaskFacadeService {
 		}
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
-		if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd) && WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
+		if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd) && !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
 		}
 		
