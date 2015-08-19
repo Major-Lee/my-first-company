@@ -81,7 +81,11 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_GROUP_EXIST_CHILDREN("755", "wifidevice.group.devices.exist.children"),
 	WIFIDEVICE_GROUP_NOTEXIST_PARENT("766", "wifidevice.group.devices.notexist.parent"),
 
+	WIFIDEVICE_VERSION_TOO_HIGH("770", "wifidevice.version.too.high"),
+
 	WIFISTASNIFFER_NICK_LENGTH_INVALID("781", "wifistasniffer.nick.length.invalid"),
+
+
 	
 	//WIFIDEVICE_GROUP_REMOVE_NOTEXIST("711","wifidevice.group.notexist"),
 //	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),

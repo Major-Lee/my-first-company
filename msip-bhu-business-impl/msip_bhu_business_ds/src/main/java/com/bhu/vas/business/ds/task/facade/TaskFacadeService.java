@@ -4,15 +4,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.bhu.vas.api.helper.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
-import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
@@ -227,10 +225,7 @@ public class TaskFacadeService {
 		if(opt_cmd == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
-		
-		
-		
-		
+
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
 		
 		//如果是管理员用户 不进行用户所属设备的验证
@@ -240,7 +235,33 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
-		
+
+		//如果设备升级的话，高版本的考虑不升级
+		if (OperationCMD.DeviceUpgrade == opt_cmd) {
+			WifiDeviceUpgradeDTO dto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
+			if (dto.isCtrl_version()) { //需要考虑高版本强制升级 true:考虑升级 false:默认都升级
+
+				String url = dto.getUrl();
+				if (url != null) {
+					String deviceVersion = url.substring(url.lastIndexOf("/"));
+					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(), deviceVersion);
+					if (ret >= 0) {
+						// 设备版本高于需要升级的版本，不升级
+						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);
+					} else {
+						//升级
+					}
+
+				} else  {
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+				}
+
+			} else {
+				//升级
+			}
+		}
+
+
 		if(OperationCMD.DeviceModuleUpgrade == opt_cmd){//判定设备版本是否兼容
 			if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_VERSIONBUILD_NOT_SUPPORTED);
