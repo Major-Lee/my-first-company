@@ -62,15 +62,15 @@ public class WifiHandsetDeviceRelationMService {
     //15分钟之内的登入登出合并
     private static final long IGNORE_LOGIN_TIME_SPACE = 15 * 60 * 1000L;
 
-    private static final String M_ID = "_id";
-    private static final String M_WIFIID = "wifiId";
-    private static final String M_HANDSETID = "handsetId";
-    private static final String M_LAST_LOGIN_AT = "last_login_at";
-    private static final String M_TOTAL_RX_BYTES = "total_rx_bytes";
-    private static final String M_ITEMS = "items";
-    private static final String M_LOGS = "logs";
-    private static final String M_LOGS_TYPE_LOGIN = "login";
-    private static final String M_LOGS_TYPE_LOGOUT = "logout";
+//    private static final String M_ID = "_id";
+//    private static final String M_WIFIID = "wifiId";
+//    private static final String M_HANDSETID = "handsetId";
+//    private static final String M_LAST_LOGIN_AT = "last_login_at";
+//    private static final String M_TOTAL_RX_BYTES = "total_rx_bytes";
+//    private static final String M_ITEMS = "items";
+//    private static final String M_LOGS = "logs";
+//    private static final String M_LOGS_TYPE_LOGIN = "login";
+//    private static final String M_LOGS_TYPE_LOGOUT = "logout";
 
 	
 	public int addRelation(String wifiId, String handsetId, Date last_login_at){
@@ -80,11 +80,11 @@ public class WifiHandsetDeviceRelationMService {
 		WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
 		mdto.setLast_login_at(DateTimeHelper.formatDate(last_login_at, DateTimeHelper.FormatPattern1));
 		
-		Query query = new Query(Criteria.where(M_ID).is(mdto.getId()));
+		Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_ID).is(mdto.getId()));
 		Update update = new Update();
-		update.set(M_WIFIID, wifiId);
-		update.set(M_HANDSETID, handsetId);
-		update.set(M_LAST_LOGIN_AT, mdto.getLast_login_at());
+		update.set(WifiHandsetDeviceRelationMDao.M_WIFIID, wifiId);
+		update.set(WifiHandsetDeviceRelationMDao.M_HANDSETID, handsetId);
+		update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, mdto.getLast_login_at());
 
 
 		WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
@@ -102,14 +102,14 @@ public class WifiHandsetDeviceRelationMService {
 
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(last_login_at.getTime());
-            log.setType(M_LOGS_TYPE_LOGIN);
+            log.setType(WifiHandsetDeviceRelationMDao.M_LOGS_TYPE_LOGIN);
 
 
 
             //无记录，第一次生成
             if (wifiHandsetDeviceRelationMDTO == null) {
                 dataMap = initWifiHansetDeviceItems(week, last_login_at);
-                update.set(M_TOTAL_RX_BYTES, 0);
+                update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
 
                 logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
 
@@ -126,7 +126,7 @@ public class WifiHandsetDeviceRelationMService {
                     dataMap = updateOnlineWifiHandsetDeviceItems(wifiHandsetDeviceItemDetailMTDTOMap, week, last_login_at);
                 }
 
-                update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
+                update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes());
 
                 logs = wifiHandsetDeviceRelationMDTO.getLogs();
 
@@ -136,8 +136,8 @@ public class WifiHandsetDeviceRelationMService {
             }
 
             logs.add(0,log);
-            update.set(M_LOGS, logs);
-            update.set(M_ITEMS, dataMap);
+            update.set(WifiHandsetDeviceRelationMDao.M_LOGS, logs);
+            update.set(WifiHandsetDeviceRelationMDao.M_ITEMS, dataMap);
 
 
         }catch (Exception e) {
@@ -340,10 +340,10 @@ public class WifiHandsetDeviceRelationMService {
         Map<String, List<WifiHandsetDeviceItemDetailMDTO>> wifiHandsetDeviceItemDetailMTDTOMap = null;
         List<String> week = DateTimeExtHelper.getSevenDateOfWeek();
 
-        Query query = new Query(Criteria.where(M_ID).is(mdto.getId()));
+        Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_ID).is(mdto.getId()));
         Update update = new Update();
-        update.set(M_WIFIID, wifiId);
-        update.set(M_HANDSETID, handsetId);
+        update.set(WifiHandsetDeviceRelationMDao.M_WIFIID, wifiId);
+        update.set(WifiHandsetDeviceRelationMDao.M_HANDSETID, handsetId);
 
         try {
 
@@ -351,7 +351,7 @@ public class WifiHandsetDeviceRelationMService {
 
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(logout_at);
-            log.setType(M_LOGS_TYPE_LOGOUT);
+            log.setType(WifiHandsetDeviceRelationMDao.M_LOGS_TYPE_LOGOUT);
 
             Map<String, List<WifiHandsetDeviceItemDetailMDTO>> dataMap =
                     new LinkedHashMap<String, List<WifiHandsetDeviceItemDetailMDTO>>();
@@ -368,20 +368,20 @@ public class WifiHandsetDeviceRelationMService {
 
                 dataMap = updateOfflineWifiHandsetDeviceItems(
                         wifiHandsetDeviceItemDetailMTDTOMap, week,logout_at, wifiHandsetDeviceRelationMDTO.getLast_login_at());
-                update.set(M_LAST_LOGIN_AT, wifiHandsetDeviceRelationMDTO.getLast_login_at());
-                update.set(M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(tx_bytes));
+                update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, wifiHandsetDeviceRelationMDTO.getLast_login_at());
+                update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(tx_bytes));
 
             } else { //如果离线记录先上报
                 Date date = new Date();
                 dataMap = initWifiHansetDeviceItems(week, date);
-                update.set(M_LAST_LOGIN_AT, DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
-                update.set(M_TOTAL_RX_BYTES, 0);
+                update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
+                update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
                 logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
             }
 
             logs.add(0, log);
-            update.set(M_LOGS,logs);
-            update.set(M_ITEMS, dataMap);
+            update.set(WifiHandsetDeviceRelationMDao.M_LOGS,logs);
+            update.set(WifiHandsetDeviceRelationMDao.M_ITEMS, dataMap);
 
         }catch (Exception e) {
 
@@ -416,14 +416,14 @@ public class WifiHandsetDeviceRelationMService {
 	}
 	
 	public Pagination<WifiHandsetDeviceRelationMDTO> findRelationsByWifiId(String wifiId, int pageNo, int pageSize){
-		Query query = new Query(Criteria.where(M_WIFIID).is(wifiId));
-		query.with(new Sort(Direction.DESC,M_LAST_LOGIN_AT));
+		Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_WIFIID).is(wifiId));
+		query.with(new Sort(Direction.DESC,WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT));
 		return wifiHandsetDeviceRelationMDao.findPagination(pageNo, pageSize, query);
 	}
 	
 	public Pagination<WifiHandsetDeviceRelationMDTO> findRelationsByHandsetId(String handsetId, int pageNo, int pageSize){
-		Query query = new Query(Criteria.where(M_HANDSETID).is(handsetId));
-		query.with(new Sort(Direction.DESC,M_LAST_LOGIN_AT));
+		Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_HANDSETID).is(handsetId));
+		query.with(new Sort(Direction.DESC,WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT));
 		return wifiHandsetDeviceRelationMDao.findPagination(pageNo, pageSize, query);
 	}
 

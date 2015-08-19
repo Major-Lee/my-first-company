@@ -11,10 +11,15 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
+import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
@@ -111,6 +116,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private UserSettingStateService userSettingStateService;
+
+	@Resource
+	private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 
 	/**
 	 * 指定wifiId进行终端全部下线处理
@@ -1173,6 +1181,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//TODO:7流量统计数据清除
 		clearDeviceUsedStatisticsData(mac);
 		//TODO:8终端详情数据清除
+		clearDeviceHandsetData(mac);
 	}
 	
 	
@@ -1187,6 +1196,17 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	public void clearDeviceUsedStatisticsData(String mac){
 		BusinessMarkerService.getInstance().deviceUsedStatisticsClear(mac);
 	}
+
+	public void clearDeviceHandsetData(String mac) {
+
+		Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_WIFIID).is(mac));
+		Update update = new Update();
+		update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
+		update.set(WifiHandsetDeviceRelationMDao.M_LOGS, new ArrayList<WifiHandsetDeviceItemLogMDTO>());
+		wifiHandsetDeviceRelationMDao.updateMulti(query, update);
+
+	}
+
 	/**
 	 * 初始化设备的用户设置
 	 * 1:定时开关
