@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -89,6 +91,14 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public StatisticsGeneralVTO fetchStatisticsGeneral(){
 		return deviceRestRpcService.fetchStatisticsGeneral();
+	}
+
+	@Override
+	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId) {
+		if(StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceRestRpcService.fetchDevicePersistenceDetailCMD(wifiId);
 	}
 
 	/*@Override

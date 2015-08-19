@@ -2,7 +2,8 @@ package com.bhu.vas.api.rpc.devices.dto;
 
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
-public class PersistenceCMDDTO {
+@SuppressWarnings("serial")
+public class PersistenceCMDDTO implements java.io.Serializable{
 	private String opt;
 	private String subopt;
 	private String extparams;
@@ -36,6 +37,5 @@ public class PersistenceCMDDTO {
 	
 	public String toKey(){
 		return WifiDeviceHelper.builderPersistenceKey(opt, subopt);
-		//return opt.concat(subopt);
 	}
 }

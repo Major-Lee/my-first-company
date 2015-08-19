@@ -15,6 +15,7 @@ import com.bhu.vas.api.vto.*;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -389,4 +391,23 @@ public class ConsoleController extends BaseController {
         }
     }
 
+    
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_persinstence_cmd", method = {RequestMethod.POST})
+    public void fetch_persinstence_cmd(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false) String mac) {
+        if (StringUtils.isEmpty(mac)) {
+        	throw new BusinessException(ResponseStatus.Forbidden, ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+        }
+        RpcResponseDTO<List<PersistenceCMDDetailDTO>> resp = deviceRestRpcService.fetchDevicePersistenceDetailCMD(mac);//.fetchUserUrlStatistics(date);
+
+		if(!resp.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+    }
 }

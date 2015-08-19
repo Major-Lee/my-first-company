@@ -17,6 +17,9 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -31,6 +34,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCount
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -43,6 +47,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 /**
  * device Rest RPC组件的业务service
@@ -72,6 +77,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private BusinessDeviceCacheService businessDeviceCacheService;
+	
+	@Resource
+	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
@@ -397,6 +405,16 @@ public class DeviceRestBusinessFacadeService {
 		
 		return new CommonPage<HandsetDeviceVTO>(pageNo, pageSize, (int)total, vtos);
 	}
+	
+	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId){
+		try{
+			List<PersistenceCMDDetailDTO> detailCMDs = wifiDevicePersistenceCMDStateService.fetchDevicePersistenceDetailCMD(wifiId);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(detailCMDs);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
 	
 /*	public static final int GeoMap_Fetch_Count = 500;
 	public Collection<GeoMapVTO> fetchGeoMap(){// throws ESQueryValidateException{
