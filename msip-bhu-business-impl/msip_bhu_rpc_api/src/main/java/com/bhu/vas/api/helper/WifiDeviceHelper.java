@@ -41,7 +41,7 @@ public class WifiDeviceHelper {
 			return false;
 		}
 	}
-	
+
 	/*public static boolean isVapModuleSupported(WifiDevice wifiDevice){
 		if(StringUtils.isEmpty(deviceVersionBuild)) return false;
 		String[] orig_swver1_versions = DeviceHelper.parseDeviceSwverVersion(deviceVersionBuild);

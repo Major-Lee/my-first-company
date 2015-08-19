@@ -13,6 +13,8 @@ public class WifiDeviceUpgradeDTO implements Serializable {
 
     private String url;
 
+    private boolean ctrl_version;
+
     public String getUpgrade_begin() {
         return upgrade_begin;
     }
@@ -35,5 +37,13 @@ public class WifiDeviceUpgradeDTO implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isCtrl_version() {
+        return ctrl_version;
+    }
+
+    public void setCtrl_version(boolean ctrl_version) {
+        this.ctrl_version = ctrl_version;
     }
 }
