@@ -74,7 +74,9 @@ public class BusinessMarkerService extends AbstractRelationHashCache{
 	public void deviceUsedStatisticsSet(String mac,DeviceUsedStatisticsDTO dto){
 		this.hset(generateMarkPrefixKey(DeviceUsedStatusDTOPrefixKey,mac), mac, JsonHelper.getJSONString(dto));
 	}
-	
+	public void deviceUsedStatisticsClear(String mac){
+		this.hdel(generateMarkPrefixKey(DeviceUsedStatusDTOPrefixKey,mac), mac);
+	}
 	public DeviceUsedStatisticsDTO deviceUsedStatisticsGet(String mac){
 		String value = this.hget(generateMarkPrefixKey(DeviceUsedStatusDTOPrefixKey,mac), mac);
 		if(StringUtils.isNotEmpty(value)){
