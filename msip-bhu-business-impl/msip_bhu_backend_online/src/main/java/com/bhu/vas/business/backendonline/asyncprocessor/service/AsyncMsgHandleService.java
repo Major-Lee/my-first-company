@@ -48,6 +48,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -96,6 +97,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private BackendBusinessService backendBusinessService;
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
@@ -743,7 +747,7 @@ public class AsyncMsgHandleService {
 			if(deviceFacadeService.isURooterDevice(dto.getMac())){
 				try{
 					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
-					deviceFacadeService.deviceRestoreFactory(dto.getMac());
+					backendBusinessService.deviceRestoreFactory(dto.getMac());
 					logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
 				}catch(Exception ex){
 					//ex.printStackTrace();
