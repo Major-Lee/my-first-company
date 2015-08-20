@@ -728,16 +728,31 @@ public class RPCMessageParseHelper {
 							    "</redirect>"+
 							"</bhu_module>"+
 						"</register>";*/
-        String text1 = 
+        /*String text1 = 
 				"<bhu_module>"+
 				    "<http404>"+
 				        "<ITEM enable=\"enable\" codes=\"404,50*\" url=\"vap.bhunetworks.com/urlwrite\" ver=\"style001-00.00.03\" />"+
 				    "</http404>"+
-				    /*"<redirect>"+
+				    "<redirect>"+
 				        //"<ITEM enable=\"enable\" rule=\"**(TBD)\" ver=\"style001-00.00.03\" />"+
 				        "<ITEM enable=\"disable\" />"+
-				    "</redirect>"+*/
-				"</bhu_module>";
+				    "</redirect>"+
+				"</bhu_module>";*/
+        //Document doc = RPCMessageParseHelper.parserMessage(payload);
+		//WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
+        
+        String text1 = "<register><login>"+
+        					"<ITEM version=\"H108V1.2.10M8281\" />"+
+        						"</login>"+
+        				"<bhu_module>"+
+        					"<http404>"+
+					                "<ITEM enable=\"disable\" ver=\"style001-00.00.03\" codes=\"40*,50*,10*\" url=\"http://vap.bhunetworks.com/vap/rw404?bid=10002\" />"+
+					        "</http404>"+
+					        "<redirect>"+
+					                "<ITEM enable=\"enable\" ver=\"style000-00.00.01\" rule=\"100,11:00:00,23:00:00,http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com\" />"+
+					        "</redirect>"+
+					"</bhu_module>"+
+					"</register>";
         Document doc1= RPCMessageParseHelper.parserMessage(text1);
         
         WifiDeviceVapReturnDTO generateVapDTOFromMessage = generateVapDTOFromMessage(doc1);

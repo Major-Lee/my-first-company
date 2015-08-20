@@ -1065,11 +1065,11 @@ public class DeviceBusinessFacadeService {
 				//module 版本信息，判定是否需要升级
 				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 				if(wifiDevice != null){
-					if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){//不同则覆盖
-						wifiDevice.setOrig_vap_module(vapDTO.getRegister().getVersion());
-						wifiDevice.setModule_online(true);
-						wifiDeviceService.update(wifiDevice);
-					}
+					//if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){//不同则覆盖
+					wifiDevice.setOrig_vap_module(vapDTO.getRegister().getVersion());
+					wifiDevice.setModule_online(true);
+					wifiDeviceService.update(wifiDevice);
+					//}
 				}
 				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));
 				if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){
