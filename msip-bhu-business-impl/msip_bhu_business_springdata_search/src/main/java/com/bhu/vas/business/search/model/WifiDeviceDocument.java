@@ -47,6 +47,14 @@ public class WifiDeviceDocument {
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String origvapmodule;//原始软件增值模块版本号
+
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String workmodel;//工作模式
 	
 	@Field(
@@ -86,6 +94,13 @@ public class WifiDeviceDocument {
 			store = true
 	)
 	private Boolean online;//wifi设备是否在线
+	
+	@Field(
+			type = FieldType.Boolean,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private Boolean moduleonline;//wifi设备增值模块是否在线
 	
 	@Field(
 			type = FieldType.String,
@@ -244,5 +259,20 @@ public class WifiDeviceDocument {
 		this.updatedat = updatedat;
 	}
 
+	public Boolean getModuleonline() {
+		return moduleonline;
+	}
+
+	public void setModuleonline(Boolean moduleonline) {
+		this.moduleonline = moduleonline;
+	}
+
+	public String getOrigvapmodule() {
+		return origvapmodule;
+	}
+
+	public void setOrigvapmodule(String origvapmodule) {
+		this.origvapmodule = origvapmodule;
+	}
 
 }
