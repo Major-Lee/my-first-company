@@ -116,17 +116,17 @@ public class BackendBusinessService {
 				count = 0;
 			}else{
 				count = recent_set.size();
+				
+				String[] recent_array = recent_set.toArray(new String[]{});
+				//删除最后一次探测上线时间数据
+				TerminalLastTimeStringService.getInstance().dels(mac, recent_array);
+				//删除终端探测细节数据
+				TerminalDetailRecentSortedSetService.getInstance().dels(mac, recent_array);
+				//删除终端探测隔壁老王数据
+				TerminalHotSortedSetService.getInstance().del(mac);
+				//删除社区类型数据
+				TerminalDeviceTypeCountHashService.getInstance().del(mac);
 			}
-			String[] recent_array = recent_set.toArray(new String[]{});
-			//删除最后一次探测上线时间数据
-			TerminalLastTimeStringService.getInstance().dels(mac, recent_array);
-			//删除终端探测细节数据
-			TerminalDetailRecentSortedSetService.getInstance().dels(mac, recent_array);
-			//删除终端探测隔壁老王数据
-			TerminalHotSortedSetService.getInstance().del(mac);
-			//删除社区类型数据
-			TerminalDeviceTypeCountHashService.getInstance().del(mac);
-			
 			start = start + size;
 		}while(count == size);
 		

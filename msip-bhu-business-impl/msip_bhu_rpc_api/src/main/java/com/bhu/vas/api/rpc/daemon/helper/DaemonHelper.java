@@ -6,13 +6,12 @@ import java.util.List;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class DaemonHelper {
-	public static void afterDeviceOnline(String mac,boolean needLocationQuery,boolean needWiffsniffer,List<String> payloads,
+	public static void afterDeviceOnline(String mac,boolean needLocationQuery,List<String> payloads,
 			IDaemonRpcService daemonRpcService){
 		if(payloads == null) payloads = new ArrayList<String>(); 
 		/*//List<String> payloads = new ArrayList<String>();
@@ -39,12 +38,12 @@ public class DaemonHelper {
 		}
 		//开启或关闭wiffsinffer
 		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
-		if(needWiffsniffer){
+/*		if(needWiffsniffer){
 			//开启wiffsinffer
 			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
 			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
 			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
-		}
+		}*/
 		
 //		if(StringUtils.isNotEmpty(dhcpcStatusQuery_interface)){
 //			//如果是dhcpc模式 获取状态信息
