@@ -58,6 +58,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceOffline:
 							asyncMsgHandleService.wifiDeviceOfflineHandle(message);
 							break;
+						case WifiDeviceModuleOnline:
+							asyncMsgHandleService.wifiDeviceModuleOnlineHandle(message);
+							break;
 						case HandsetDeviceOnline:
 							asyncMsgHandleService.handsetDeviceOnlineHandle(message);
 							break;

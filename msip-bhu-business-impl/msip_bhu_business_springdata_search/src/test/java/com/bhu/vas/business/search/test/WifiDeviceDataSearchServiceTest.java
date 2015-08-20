@@ -41,7 +41,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     
     @Test
 	public void test002SearchDocument(){
-    	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByKeywords(null, null, null, "北京市", null, null, null, 
+    	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByKeywords(null, null, null, null, "北京市", null,null, null, null, 
     			null, null, null, null, null, null, 0, 4);
     	System.out.println(searchByKeywords.getTotalElements());
     	System.out.println(searchByKeywords.getContent().size());
@@ -199,12 +199,12 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     
     @Test
  	public void test000BatchEmptyDocument(){
-    	wifiDeviceDataSearchService.getRepository().deleteAll();
+    	//wifiDeviceDataSearchService.getRepository().deleteAll();
  	}
     
     @Test
 	public void test001BatchCreateDocument(){
-    	wifiDeviceDataSearchService.refresh(false);
+    	//wifiDeviceDataSearchService.refresh(false);
     	
 		List<WifiDeviceDocument> docs = new ArrayList<>();
 		WifiDeviceDocument doc1 = new WifiDeviceDocument();
@@ -295,6 +295,6 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		docs.add(doc5);
 		wifiDeviceDataSearchService.getRepository().save(docs);
 		
-		wifiDeviceDataSearchService.refresh(true);
+		//wifiDeviceDataSearchService.refresh(true);
 	}
 }

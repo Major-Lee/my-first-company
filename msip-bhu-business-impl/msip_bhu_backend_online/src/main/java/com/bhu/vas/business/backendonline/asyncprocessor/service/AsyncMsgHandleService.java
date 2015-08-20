@@ -44,6 +44,7 @@ import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
@@ -198,6 +199,17 @@ public class AsyncMsgHandleService {
 		}
 
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
+	}
+	
+	
+	public void wifiDeviceModuleOnlineHandle(String message) throws Exception{
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s]", message));
+		WifiDeviceModuleOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceModuleOnlineDTO.class);
+		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
+		if(wifiDevice != null){
+			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
+		}
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s] successful", message));
 	}
 	
 	//下发获取配置，获取设备测速，地理位置

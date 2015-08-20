@@ -94,11 +94,13 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false) String mac,
             @RequestParam(required = false) String sn,
             @RequestParam(required = false) String orig_swver,
+            @RequestParam(required = false) String origvapmodule,
             @RequestParam(required = false) String adr,
             @RequestParam(required = false) String work_mode,
             @RequestParam(required = false) String config_mode,
             @RequestParam(required = false) String devicetype,
             @RequestParam(required = false) Boolean online,
+            @RequestParam(required = false) Boolean moduleonline,
             @RequestParam(required = false, value = "nvd") Boolean newVersionDevice,
             @RequestParam(required = false, value = "region") String region,
             @RequestParam(required = false, value = "excepts") String excepts,
@@ -107,8 +109,8 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
 
-        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,
-                adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, excepts, 
+        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,origvapmodule,
+                adr, work_mode, config_mode, devicetype, online,moduleonline, newVersionDevice, region, excepts, 
                 groupids, groupids_excepts, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
     }

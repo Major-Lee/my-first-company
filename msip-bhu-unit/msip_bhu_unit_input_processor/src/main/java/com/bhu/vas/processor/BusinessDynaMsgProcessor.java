@@ -64,7 +64,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
 		hits = new int[hash_prime];
-		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 5*60*1000,5*60*1000);
+		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();

@@ -7,6 +7,8 @@ public enum ActionMessageType {
 	
 	WifiDeviceOnline("Wifi设备上线","wdonline","WN"),
 	WifiDeviceOffline("Wifi设备下线","wdoffline","WF"),
+	WifiDeviceModuleOnline("Wifi设备模块组件上线","wdmonline","MO"),
+	
 	HandsetDeviceOnline("Handset设备上线","hdonline","HN"),
 	HandsetDeviceOffline("Handset设备上线","hdoffline","HF"),
 	HandsetDeviceSync("Handset设备sync","hdsync","HS"),

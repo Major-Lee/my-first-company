@@ -181,12 +181,27 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(String mac, String sn, String orig_swver, String adr, String work_mode,
-			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
-			String region, String region_excepts, String groupids, String groupids_excepts, int pageNo, int pageSize){
+	public TailPage<WifiDeviceVTO> fetchWDeviceByKeywords(
+			String mac, 
+			String sn, 
+			String orig_swver, 
+			String origvapmodule,
+			String adr, 
+			String work_mode,
+			String config_mode, 
+			String devicetype, 
+			Boolean online, 
+			Boolean moduleonline,
+			Boolean newVersionDevice, 
+			String region, String region_excepts, String groupids, String groupids_excepts,
+			int pageNo, int pageSize){
 		List<WifiDeviceVTO> vtos = null;
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByKeywords(mac, sn, orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, region_excepts, groupids, groupids_excepts, searchPageNo, pageSize);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByKeywords(
+				mac, sn, orig_swver,origvapmodule, 
+				adr, work_mode, config_mode, devicetype, 
+				online,moduleonline, newVersionDevice, 
+				region, region_excepts, groupids, groupids_excepts, searchPageNo, pageSize);
 		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, sn,
 				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
 				region, excepts, groupids, groupids_excepts, (pageNo*pageSize)-pageSize, pageSize);*/

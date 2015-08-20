@@ -66,6 +66,13 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}*/
 	
+	public void sendWifiDeviceModuleOnlineMessage(String wifiId){
+		WifiDeviceModuleOnlineDTO dto = new WifiDeviceModuleOnlineDTO();
+		dto.setMac(wifiId);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
 			long last_login_at, boolean newWifi,boolean needLocationQuery){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();

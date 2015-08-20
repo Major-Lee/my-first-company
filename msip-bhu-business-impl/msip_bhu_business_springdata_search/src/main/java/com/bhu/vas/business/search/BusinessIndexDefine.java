@@ -12,12 +12,14 @@ public interface BusinessIndexDefine {
 			public static final String ID 		= "id";
 			public static final String SN 		= "sn";
 			public static final String ORIGSWVER 		= "origswver";
+			public static final String ORIGVAPMODULE 		= "origvapmodule";
 			public static final String WORKMODEL 		= "workmodel";
 			public static final String CONFIGMODEL 		= "configmodel";
 			public static final String DEVICETYPE 		= "devicetype";
 			public static final String GEOPOINT 		= "geopoint";
 			public static final String ADDRESS 		= "address";
 			public static final String ONLINE 		= "online";
+			public static final String MODULEONLINE 		= "moduleonline";
 			public static final String GROUPS 		= "groups";
 			public static final String NVD 		= "nvd";
 			

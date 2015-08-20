@@ -7,9 +7,11 @@ public class WifiDeviceVTO implements Serializable{
 	private String wid;//wifi id
 	private String sn;//wifi sn
 	private int ol;//online wifi设备是否在线 1表示在线 0标识离线
+	private int mol;// module online wifi设备的增值模块是否在线1表示在线 0标识离线
 	private String adr;//所在地域的格式化地址
 	private String om;//oem设备型号
 	private String osv;//原始软件版本号
+	private String osm;//原始软件增值模块版本号
 	private String oesv;//oem后软件版本号
 	private String ovd;//oem厂商
 	private String cfm;//config model
@@ -145,6 +147,18 @@ public class WifiDeviceVTO implements Serializable{
 	}
 	public void setGids(String gids) {
 		this.gids = gids;
+	}
+	public int getMol() {
+		return mol;
+	}
+	public void setMol(int mol) {
+		this.mol = mol;
+	}
+	public String getOsm() {
+		return osm;
+	}
+	public void setOsm(String osm) {
+		this.osm = osm;
 	}
 	
 }

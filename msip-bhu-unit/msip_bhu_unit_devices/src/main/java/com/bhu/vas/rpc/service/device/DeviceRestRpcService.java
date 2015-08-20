@@ -92,17 +92,26 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac, String sn, 
-			String orig_swver, String adr, String work_mode,
-			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(
+			String mac, 
+			String sn, 
+			String orig_swver, 
+			String origvapmodule,
+			String adr, 
+			String work_mode,
+			String config_mode, 
+			String devicetype, 
+			Boolean online, 
+			Boolean moduleonline,
+			Boolean newVersionDevice, 
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"
 				+ " work_mode [%s] config_mode [%s] devicetype [%s] region [%s] excepts [%s] pageNo [%s] pageSize [%s]", mac, orig_swver, 
 				adr, work_mode, config_mode, devicetype, region, excepts, pageNo, pageSize));
 		
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver, adr, work_mode, config_mode,
-					devicetype, online, newVersionDevice, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
+			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode,
+					devicetype, online, moduleonline, newVersionDevice, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"

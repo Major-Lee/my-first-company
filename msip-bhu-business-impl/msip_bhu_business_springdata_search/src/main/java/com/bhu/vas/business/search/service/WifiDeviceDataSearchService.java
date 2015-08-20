@@ -144,18 +144,20 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			String mac, 
 			String sn, 
 			String orig_swver, 
+			String origvapmodule,
 			String adr, 
 			String work_mode, 
 			String config_mode, 
 			String devicetype, 
 			Boolean online, 
+			Boolean moduleonline,
 			Boolean newVersionDevice,
 			String region, String region_excepts, 
 			String groupids, String groupids_excepts, 
 			int pageno, int pagesize){
 		FilterBuilder filter;//QueryBuilders.boolQuery();
-		if(StringHelper.hasLeastOneNotEmpty(mac, sn, orig_swver, adr, work_mode, config_mode, 
-				devicetype, region, region_excepts, groupids, groupids_excepts) || online != null || newVersionDevice != null){
+		if(StringHelper.hasLeastOneNotEmpty(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode, 
+				devicetype, region, region_excepts, groupids, groupids_excepts) || online != null || moduleonline != null || newVersionDevice != null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(StringUtils.isNotEmpty(mac))	
 				boolfilter.must(FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.ID, mac.toLowerCase()));//QueryBuilders.queryStringQuery("中国 南城").field("address"));
@@ -163,6 +165,9 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 				boolfilter.must(FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.SN, sn));
 			if(StringUtils.isNotEmpty(orig_swver))
 				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(BusinessIndexDefine.WifiDevice.Field.ORIGSWVER, "*"+orig_swver+"*")));
+			if(StringUtils.isNotEmpty(origvapmodule))
+				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE, "*"+origvapmodule+"*")));
+			
 			if(StringUtils.isNotEmpty(adr)){
 				//boolfilter.must(FilterBuilders.termFilter("address", adr));
 				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, adr));
@@ -179,6 +184,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			if(online != null){
 				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ONLINE, online ? 1 : 0));
 			}
+			
+			if(moduleonline != null){
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.MODULEONLINE, moduleonline ? 1 : 0));
+			}
+			
 			if(newVersionDevice != null){
 				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
 			}

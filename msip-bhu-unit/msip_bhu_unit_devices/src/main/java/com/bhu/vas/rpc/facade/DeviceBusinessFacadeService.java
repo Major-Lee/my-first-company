@@ -1085,6 +1085,7 @@ public class DeviceBusinessFacadeService {
 					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayloads);
 					System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+cmdPayloads.size());
 				}
+				deliverMessageService.sendWifiDeviceModuleOnlineMessage(mac);
 			}
 		}
 	}

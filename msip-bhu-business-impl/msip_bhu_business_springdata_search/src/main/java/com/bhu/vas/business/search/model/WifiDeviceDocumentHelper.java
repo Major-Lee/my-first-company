@@ -19,9 +19,11 @@ public class WifiDeviceDocumentHelper {
 		doc1.setSn(wifiDevice.getSn());
 		doc1.setAddress(wifiDevice.getFormatted_address());
 		doc1.setOnline(wifiDevice.isOnline()?Boolean.TRUE:Boolean.FALSE);
+		doc1.setModuleonline(wifiDevice.isModule_online()?Boolean.TRUE:Boolean.FALSE);
 		doc1.setConfigmodel(wifiDevice.getConfig_mode());
 		doc1.setWorkmodel(wifiDevice.getWork_mode());
 		doc1.setOrigswver(wifiDevice.getOrig_swver());
+		doc1.setOrigvapmodule(wifiDevice.getOrig_vap_module());
 		doc1.setDevicetype(wifiDevice.getHdtype());
 		doc1.setNvd(DeviceHelper.isNewOrigSwverDevice(wifiDevice.getOrig_swver()) ? 1 : 0);
 		if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
@@ -40,10 +42,12 @@ public class WifiDeviceDocumentHelper {
 		if(doc != null){
 			vto.setWid(doc.getId());
 			vto.setOl(doc.getOnline()?1:0);
+			vto.setMol(doc.getModuleonline()?1:0);
 			vto.setCohc(doc.getCount());
 			vto.setAdr(doc.getAddress());
 			vto.setDt(doc.getDevicetype());
 			vto.setOsv(doc.getOrigswver());
+			vto.setOsm(doc.getOrigvapmodule());
 			vto.setGids(doc.getGroups());
 		}
 		if(wifiDevice != null){
