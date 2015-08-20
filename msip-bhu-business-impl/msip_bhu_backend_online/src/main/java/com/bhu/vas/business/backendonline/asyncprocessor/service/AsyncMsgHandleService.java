@@ -22,8 +22,10 @@ import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
+import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.ExchangeBBSHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -145,18 +147,18 @@ public class AsyncMsgHandleService {
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
 			boolean isRouter = deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
-			boolean needWiffsniffer = false;
+			//boolean needWiffsniffer = false;
 			List<String> payloads = new ArrayList<String>();
 			//boolean forceFirmwareUpdate = false;
 			if(isRouter){
-				//判断周边探测是否开启 如果开启 再次下发开启指令
+/*				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
 				if(settingState != null){
 					UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
 					if(wifiSniffer != null){
 						needWiffsniffer = wifiSniffer.isOn();
 					}
-				}
+				}*/
 				//设备上线push
 				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				/*try{
@@ -177,7 +179,7 @@ public class AsyncMsgHandleService {
 					payloads.add(cmdPayload);
 				}*/
 			}
-			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),needWiffsniffer,payloads);
+			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
 			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
 			//设备统计
@@ -199,9 +201,9 @@ public class AsyncMsgHandleService {
 	}
 	
 	//下发获取配置，获取设备测速，地理位置
-	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,boolean needWiffsniffer,List<String> payloads){
+	public void afterDeviceOnlineThenCmdDown(String mac,boolean needLocationQuery,List<String> payloads){
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown[%s]", mac));
-		DaemonHelper.afterDeviceOnline(mac, needLocationQuery, needWiffsniffer,payloads, daemonRpcService);
+		DaemonHelper.afterDeviceOnline(mac, needLocationQuery,payloads, daemonRpcService);
 		/*//设备持久指令分发
 		try{
 			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);
@@ -739,8 +741,6 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s]", message));
 		
 		WifiDeviceSettingQueryDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingQueryDTO.class);
-		//分发指令
-		this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
 		//配置状态如果为恢复出厂 则清空设备的相关业务数据
 		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
 			//只有urouter设备才会执行
@@ -755,6 +755,20 @@ public class AsyncMsgHandleService {
 				}
 			}
 		}
+		List<String> cmdPayloads = dto.getPayloads();
+		if(DeviceHelper.RefreashDeviceSetting_Normal == dto.getRefresh_status()){
+			//判断周边探测是否开启 如果开启 再次下发开启指令
+			UserSettingState settingState = userSettingStateService.getById(dto.getMac());
+			if(settingState != null){
+				UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
+				if(wifiSniffer != null && wifiSniffer.isOn()){
+					if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
+					cmdPayloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(dto.getMac(), WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
+				}
+			}
+		}
+		//分发指令
+		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
 	}
