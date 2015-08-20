@@ -17,6 +17,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.SortBuilderHelper;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -65,7 +67,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 */
 	public Page<WifiDeviceDocument> searchByAddressMatchEach(String address,int pageno, int pagesize){
 	    	BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-	    	queryBuilder.must(QueryBuilders.queryStringQuery(address).field("address"));
+	    	queryBuilder.must(QueryBuilders.queryStringQuery(address).field(BusinessIndexDefine.WifiDevice.Field.ADDRESS));
 	        SearchQuery searchQuery = new NativeSearchQueryBuilder()
 	                .withQuery(queryBuilder)
 	                .withPageable(new PageRequest(pageno,pagesize))
@@ -91,19 +93,19 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(StringUtils.isNotEmpty(keyword))	
 				boolfilter.must(FilterBuilders.orFilter(
-						FilterBuilders.prefixFilter("id", keyword.toLowerCase()),
-						FilterBuilders.termFilter("address", keyword.toLowerCase())
+						FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.ID, keyword.toLowerCase()),
+						FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, keyword.toLowerCase())
 						));
 			if(!StringUtils.isEmpty(region)){
 				//String standardRegion = IndexableResolver.standardString(region);
-				boolfilter.must(FilterBuilders.termFilter("address", region));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, region));
 			}
 			
 			if(!StringUtils.isEmpty(region_excepts)){
 				//String standardRegion = IndexableResolver.standardString(excepts);
 				String[] except_array = region_excepts.split(StringHelper.COMMA_STRING_GAP);
 				for(String except : except_array){
-					boolfilter.mustNot(FilterBuilders.termFilter("address", except));
+					boolfilter.mustNot(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, except));
 				}
 			}
 			filter = boolfilter;
@@ -112,8 +114,8 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 		}
 		SearchQuery searchQuery = new NativeSearchQueryBuilder().withFilter(filter)
 				.withPageable(new PageRequest(pageno,pagesize))
-				.withSort(SortBuilders.fieldSort("online").order(SortOrder.DESC))
-				.withSort(SortBuilders.fieldSort("count").order(SortOrder.DESC))
+				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.ONLINE).order(SortOrder.DESC))
+				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.COUNT).order(SortOrder.DESC))
 				.build();
 		return wifiDeviceDocumentRepository.search(searchQuery);
 		
@@ -156,49 +158,49 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 				devicetype, region, region_excepts, groupids, groupids_excepts) || online != null || newVersionDevice != null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(StringUtils.isNotEmpty(mac))	
-				boolfilter.must(FilterBuilders.prefixFilter("id", mac.toLowerCase()));//QueryBuilders.queryStringQuery("中国 南城").field("address"));
+				boolfilter.must(FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.ID, mac.toLowerCase()));//QueryBuilders.queryStringQuery("中国 南城").field("address"));
 			if(StringUtils.isNotEmpty(sn))
-				boolfilter.must(FilterBuilders.prefixFilter("sn", sn));
+				boolfilter.must(FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.SN, sn));
 			if(StringUtils.isNotEmpty(orig_swver))
-				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.wildcardQuery("origswver", "*"+orig_swver+"*")));
+				boolfilter.must(FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(BusinessIndexDefine.WifiDevice.Field.ORIGSWVER, "*"+orig_swver+"*")));
 			if(StringUtils.isNotEmpty(adr)){
 				//boolfilter.must(FilterBuilders.termFilter("address", adr));
-				boolfilter.must(FilterBuilders.termFilter("address", adr));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, adr));
 			}
 			if(StringUtils.isNotEmpty(work_mode)){
-				boolfilter.must(FilterBuilders.termFilter("workmodel", work_mode));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.WORKMODEL, work_mode));
 			}
 			if(StringUtils.isNotEmpty(config_mode)){
-				boolfilter.must(FilterBuilders.termFilter("configmodel", config_mode));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.CONFIGMODEL, config_mode));
 			}
 			if(StringUtils.isNotEmpty(devicetype)){
-				boolfilter.must(FilterBuilders.prefixFilter("devicetype", devicetype));
+				boolfilter.must(FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.DEVICETYPE, devicetype));
 			}
 			if(online != null){
-				boolfilter.must(FilterBuilders.termFilter("online", online ? 1 : 0));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ONLINE, online ? 1 : 0));
 			}
 			if(newVersionDevice != null){
-				boolfilter.must(FilterBuilders.termFilter("nvd", newVersionDevice ? 1 : 0));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
 			}
 			if(StringUtils.isNotEmpty(region)){
-				boolfilter.must(FilterBuilders.termFilter("address", region));
+				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, region));
 			}
 			if(StringUtils.isNotEmpty(region_excepts)){
 				String[] except_array = region_excepts.split(StringHelper.COMMA_STRING_GAP);
 				for(String except : except_array){
-					boolfilter.mustNot(FilterBuilders.termFilter("address", except));
+					boolfilter.mustNot(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, except));
 				}
 			}
 			if(StringUtils.isNotEmpty(groupids)){
 				String[] groupids_array = groupids.split(StringHelper.WHITESPACE_STRING_GAP);
 				for(String groupid : groupids_array){
-					boolfilter.must(FilterBuilders.termFilter("groups", groupid));
+					boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.GROUPS, groupid));
 				}
 			}
 			if(StringUtils.isNotEmpty(groupids_excepts)){
 				String[] groupids_array = groupids_excepts.split(StringHelper.WHITESPACE_STRING_GAP);
 				for(String groupid : groupids_array){
-					boolfilter.mustNot(FilterBuilders.termFilter("groups", groupid));
+					boolfilter.mustNot(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.GROUPS, groupid));
 				}
 			}
 			filter = boolfilter;
@@ -207,8 +209,8 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 		}
 		SearchQuery searchQuery = new NativeSearchQueryBuilder().withFilter(filter)
 				.withPageable(new PageRequest(pageno,pagesize))
-				.withSort(SortBuilders.fieldSort("online").order(SortOrder.DESC))
-				.withSort(SortBuilders.fieldSort("count").order(SortOrder.DESC))
+				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.ONLINE).order(SortOrder.DESC))
+				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.COUNT).order(SortOrder.DESC))
 				.build();
 		return wifiDeviceDocumentRepository.search(searchQuery);
 	}
@@ -229,7 +231,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	public Page<WifiDeviceDocument> searchGeoInBoundingBox(double[] topLeft,double[] bottomRight,int page,int pagesize) {
     	//使用ES原生filter方式
     	SearchQuery searchGeoQuery = new NativeSearchQueryBuilder()
-    			.withFilter(FilterBuilders.geoBoundingBoxFilter("geopoint")
+    			.withFilter(FilterBuilders.geoBoundingBoxFilter(BusinessIndexDefine.WifiDevice.Field.GEOPOINT)
     							.topLeft(topLeft[0], topLeft[1])
     							.bottomRight(bottomRight[0], bottomRight[1]))
         		.withPageable(new PageRequest(page,pagesize))
@@ -278,11 +280,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 		//使用es原生方式进行查询
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
         		.withQuery(QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(), 
-        				FilterBuilders.geoDistanceFilter("geopoint")
+        				FilterBuilders.geoDistanceFilter(BusinessIndexDefine.WifiDevice.Field.GEOPOINT)
                 .distance(distance)//"0.5km")
                 .point(geopoint[0], geopoint[1])))
                 .withPageable(new PageRequest(page,pagesize))
-                .withSort(SortBuilders.geoDistanceSort("geopoint")
+                .withSort(SortBuilders.geoDistanceSort(BusinessIndexDefine.WifiDevice.Field.GEOPOINT)
                 		.point(geopoint[0], geopoint[1]).unit(DistanceUnit.METERS).order(SortOrder.ASC))
                 .build();
         //return wifiDeviceDocumentRepository.search(searchQuery);
