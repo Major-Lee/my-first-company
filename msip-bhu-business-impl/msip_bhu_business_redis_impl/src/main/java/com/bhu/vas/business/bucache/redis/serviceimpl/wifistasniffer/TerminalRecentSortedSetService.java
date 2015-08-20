@@ -106,8 +106,8 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.WIFISTASNIFFER);
 	}
 	
-//	public static void main(String[] args){
-//		String mac = "84:82:f4:19:01:0c";
+	public static void main(String[] args){
+		String mac = "84:82:f4:23:06:68";
 //		long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, 0, System.currentTimeMillis());
 //		System.out.println(count);
 //		Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
@@ -124,6 +124,20 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 //		System.out.println(vto_list.size());
 //		Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, 0, 5);
 //		System.out.println(payload);
-//	}
+		
+//		int start = 0;
+//		int size = 100;
+//		int count = 0;
+//		//遍历获取recent探测数据
+//		do{
+//			Set<String> recent_set = TerminalRecentSortedSetService.getInstance().fetchTerminalRecent(mac, start, size);
+//			if(recent_set == null || recent_set.isEmpty()){
+//				count = 0;
+//			}else{
+//				count = recent_set.size();
+//			}
+//			start = start + size;
+//		}while(count == size);
+	}
 	
 }
