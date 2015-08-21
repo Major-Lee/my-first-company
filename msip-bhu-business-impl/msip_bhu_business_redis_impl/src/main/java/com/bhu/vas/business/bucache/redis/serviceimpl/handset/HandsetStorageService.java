@@ -209,7 +209,7 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	public static void main(String[] argv){
 
 		System.out.println(HandsetStorageService.generateKey("20:68:9d:93:93:bd"));
-		System.out.println(HandsetStorageService.generateKey("a4:5e:60:bb:86:7d"));
+		System.out.println(HandsetStorageService.generateKey("cc:af:78:29:f1:3f"));
 
 
 //		List<String> macs = new ArrayList<String>();

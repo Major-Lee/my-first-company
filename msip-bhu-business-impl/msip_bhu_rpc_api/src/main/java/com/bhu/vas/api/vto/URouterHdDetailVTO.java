@@ -8,12 +8,21 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class URouterHdDetailVTO implements Serializable {
+    private String mac;
     //终端mac
     private String hd_mac;
     //下行字节累加
     private String total_rx_bytes;
 
     private List<URouterHdTimeLineVTO> timeline;
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public String getHd_mac() {
         return hd_mac;

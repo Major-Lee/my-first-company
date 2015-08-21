@@ -239,6 +239,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		URouterHdDetailVTO vto = new URouterHdDetailVTO();
 		vto.setHd_mac(mac);
+		vto.setMac(wifiId);
 		try {
 			WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 					wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
