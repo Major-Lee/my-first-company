@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.bhu.vas.api.helper.*;
+import com.smartwork.msip.jdo.ResponseError;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -234,6 +237,72 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
+
+		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {
+			if (OperationDS.DS_VapPassword.getNo().equals(subopt)) {
+				WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO =
+						JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
+
+				if (wifiDeviceSettingVapDTO == null) {
+					//非法格式
+					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+				} else {
+					String ssid = wifiDeviceSettingVapDTO.getSsid();
+					if (ssid == null) {
+						//非法格式
+						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+					}
+					if (ssid.getBytes("utf-8").length < 1 || ssid.getBytes("utf-8").length > 32 ) {
+						//非法长度
+						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL);
+					}
+
+					String auth = wifiDeviceSettingVapDTO.getAuth();
+					//TODO(bluesand):此处auth：  WPA/WPA2-PSK / open
+
+					if (!"WPA/WPA2-PSK".equals(auth) && !"open".equals(auth)) {
+						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+					} else {
+						if ("WPA/WPA2-PSK".equals(auth)) {
+							String auth_key = wifiDeviceSettingVapDTO.getAuth_key();
+							if (auth_key == null) {
+								throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+							}
+							if(auth_key.getBytes("utf-8").length < 8  || auth_key.getBytes("utf-8").length > 32) {
+								//非法长度
+								throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL);
+							}
+						}
+						if ("open".equals(auth)) {
+							//nothing
+						}
+					}
+				}
+
+			}
+			if (OperationDS.DS_AdminPassword.getNo().equals(subopt)) {
+				WifiDeviceSettingUserDTO wifiDeviceSettingUserDTO =
+						JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
+				if (wifiDeviceSettingUserDTO == null) {
+					//非法格式
+					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+				} else {
+					String password = wifiDeviceSettingUserDTO.getPassword();
+					if (password == null) {
+						//密码为空
+						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+					}
+					if(password.getBytes("utf-8").length < 4  || password.getBytes("utf-8").length > 31) {
+						//非法长度
+						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL);
+					}
+				}
+			}
+		}
+
+
+
+
 
 		//如果设备升级的话，高版本的考虑不升级
 		if (OperationCMD.DeviceUpgrade == opt_cmd) {
