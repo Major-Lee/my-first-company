@@ -48,6 +48,14 @@ public class DeviceUpgradeFacadeService {
 	@Resource
     private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
 	
+	
+	public UpgradeDTO fetchForceDeviceUpgrade(String mac){
+		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
+		WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
+		if(versionb == null) return new UpgradeDTO(isFirstGray,false);
+		return new UpgradeDTO(isFirstGray,true,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
+	}
+	
 	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){
 		UpgradeDTO resultDto = null;
 		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);

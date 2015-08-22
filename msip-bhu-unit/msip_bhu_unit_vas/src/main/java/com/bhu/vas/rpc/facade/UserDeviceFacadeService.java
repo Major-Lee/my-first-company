@@ -158,14 +158,9 @@ public class UserDeviceFacadeService {
         	}
         	//发送异步Device升级指令，指定立刻升级
         	{
-	        	/*boolean isFirstGray = false;
-	        	long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-	        	String firmwareUpdateUrl = wifiDeviceVersionBuilderService.deviceVersionUpdateURL(isFirstGray);
-	        	if(StringUtils.isNotEmpty(firmwareUpdateUrl)){
-	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, firmwareUpdateUrl);
-	        		deliverMessageService.sendWifiCmdCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-	        	}*/
-        		UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
+        		//boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
+        		UpgradeDTO upgrade = deviceUpgradeFacadeService.fetchForceDeviceUpgrade(mac);
+        		//UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
 	        	if(upgrade.isForceDeviceUpgrade()){
 	        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
