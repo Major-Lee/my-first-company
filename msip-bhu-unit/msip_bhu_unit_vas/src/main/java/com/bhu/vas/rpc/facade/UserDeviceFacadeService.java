@@ -195,7 +195,7 @@ public class UserDeviceFacadeService {
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
         	}
         	
-        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice,handset_device,appver);
+        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
         	if(upgrade.isForceDeviceUpgrade()){
         		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
         		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,

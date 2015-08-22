@@ -4,6 +4,26 @@ import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
+
+/**
+ * 前置条件 当前设备版本如果低于服务端指定的设备最新版本，则会自动进行升级，当然不是实时的
+ * 支持规则
+ * 1、服务端判定设备更新规则
+ * 		根据需要升级的版本号以及设备本身的版本号进行判定
+ * 2、客户端版本号判定设备更新规则
+ * 		根据客户端的版本号参数A 服务端指定的客户端最小版本号B，设备当前的版本C 服务端指定的设备最新版本D  进行判定
+ * 		如果 A > B
+ * 				如C < D 则 设备必须升级，客户端不升级
+ * 				否则  设备不升级，客户端不升级
+ * 		如果 A < B
+ * 				如C < D 则 设备不升级，客户端不升级
+ * 				否则  设备必须升级，客户端不升级
+ * 		如果 A = B
+ * 				如C < D 设备必须升级 客户端不升级
+ * 				否则 设备不升级，客户端不升级
+ * @author Edmond
+ *
+ */
 @SuppressWarnings("serial")
 public class WifiDeviceVersionBuilder extends BaseStringModel{
 	
