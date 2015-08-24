@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
+import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
+import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
@@ -38,6 +40,7 @@ import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
@@ -1197,6 +1200,40 @@ public class AsyncMsgHandleService {
 			logger.info("AnsyncMsgBackendProcessor userRegister2BBS successful");
 		}else{
 			logger.info("AnsyncMsgBackendProcessor userRegister2BBS error:"+addret);
+		}
+		
+	}
+	
+	/**
+	 * 用户bbs登录 通过发送push消息通知app
+	 * 安卓设备推送静默发送
+	 * ios设备推送通知发送
+	 * @param message
+	 */
+	public void userBBSsignedon(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userBBSsignedon message[%s]", message));
+		UserBBSsignedonDTO dto = JsonHelper.getDTO(message, UserBBSsignedonDTO.class);
+		UserBBSsignedonPushDTO push_dto = new UserBBSsignedonPushDTO();
+		push_dto.setUid(dto.getUid());
+		push_dto.setCountrycode(dto.getCountrycode());
+		push_dto.setAcc(dto.getAcc());
+		push_dto.setSecretkey(dto.getSecretkey());
+		
+		DeviceMobilePresentDTO mobile_present_dto = new DeviceMobilePresentDTO();
+		BeanUtils.copyProperties(dto, mobile_present_dto);
+		
+		boolean push_successed = pushService.pushUserBBSsignedon(push_dto, mobile_present_dto);
+		logger.info(String.format("AnsyncMsgBackendProcessor userBBSsignedon push uid[%s] acc[%s] sk[%s] result[%s]", 
+				dto.getUid(), dto.getAcc(), dto.getSecretkey(), push_successed));
+		
+		if(!push_successed){
+			//如果发送push失败 调用bbs接口通知状态
+			int addret = 1;//ExchangeBBSHelper.userAdd2BBS(dto.getMobileno());
+			if(addret == 1){
+				logger.info("AnsyncMsgBackendProcessor userSignedon2BBS successful");
+			}else{
+				logger.info("AnsyncMsgBackendProcessor userSignedon2BBS error:"+addret);
+			}
 		}
 		
 	}

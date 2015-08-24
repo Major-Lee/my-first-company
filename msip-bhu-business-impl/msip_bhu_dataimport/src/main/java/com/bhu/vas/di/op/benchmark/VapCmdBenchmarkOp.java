@@ -30,8 +30,13 @@ public class VapCmdBenchmarkOp{
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/op/benchmark/vapCmdBenchmarkCtx.xml");
 		daemonRpcService = (IDaemonRpcService)ctx.getBean("daemonRpcService");
 		
-//		daemonRpcService.wifiDevicesSimulateCmdTimer();
-		String[] macs = new String[]{"42:43:44:42:41:42","42:43:44:42:41:43","42:43:44:42:41:44","42:43:44:42:41:45","42:43:44:42:41:46"};
+		
+		while(true){
+			daemonRpcService.wifiDevicesSimulateCmdTimer();
+			Thread.sleep(60000);
+		}
+		//daemonRpcService.wifiDevicesSimulateCmdTimer();
+/*		String[] macs = new String[]{"42:43:44:42:41:42","42:43:44:42:41:43","42:43:44:42:41:44","42:43:44:42:41:45","42:43:44:42:41:46"};
 		for(String mac : macs){
 			ArrayList<String> payloads = new ArrayList<String>();
 			//获取配置指令
@@ -68,10 +73,10 @@ public class VapCmdBenchmarkOp{
 //			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 			
 			DaemonHelper.daemonCmdsDown(mac, payloads, daemonRpcService);
-		}
+		}*/
 //		String mac = "42:43:44:42:41:42";
 
 		
-		System.exit(1);
+		//System.exit(1);
 	}
 }

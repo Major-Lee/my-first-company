@@ -12,6 +12,7 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
+import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
@@ -198,6 +199,36 @@ public class PushService{
 	}
 	
 	/**
+	 * 发送用户bbs登录消息
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public boolean pushUserBBSsignedon(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+		boolean ret = false;
+		try{
+			UserBBSsignedonPushDTO bbs_push_dto = (UserBBSsignedonPushDTO)pushDto;
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					pushMsg.setPaylod(JsonHelper.getJSONString(bbs_push_dto));
+					//发送push
+					ret = pushAndroidTransmissionAndIosNotification(pushMsg);
+					if(ret){
+						logger.info("PushUserBBSsignedon Successed " + pushMsg.toString());
+					}else{
+						logger.info("PushUserBBSsignedon Failed " + pushMsg.toString());
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("PushUserBBSsignedon exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
 	 * 用户通过指令重启设备成功push
 	 * @param pushDto
 	 */
@@ -362,6 +393,20 @@ public class PushService{
 			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
 		}else{
 			return GexinPushService.getInstance().pushNotification(pushMsg);
+		}
+	}
+	
+	/**
+	 * 安卓发送透传消息
+	 * ios发送通知消息
+	 * @param pushMsg
+	 * @return
+	 */
+	protected boolean pushAndroidTransmissionAndIosNotification(PushMsg pushMsg){
+		if(DeviceEnum.isIos(pushMsg.getD())){
+			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
+		}else{
+			return GexinPushService.getInstance().pushTransmission(pushMsg);
 		}
 	}
 	

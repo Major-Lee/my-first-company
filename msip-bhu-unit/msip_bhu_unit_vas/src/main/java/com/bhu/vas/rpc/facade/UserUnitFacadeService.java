@@ -6,27 +6,32 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -45,6 +50,8 @@ public class UserUnitFacadeService {
 	private UserDeviceService userDeviceService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	@Resource
+	private UserMobileDeviceService userMobileDeviceService;
 
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
 		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
@@ -338,5 +345,31 @@ public class UserUnitFacadeService {
 			}
 		}
 		return bindDevicesDTO;
+	}
+	
+	/**
+	 * 用户bbs登录 通过发送push消息通知app
+	 * 安卓设备推送静默发送
+	 * ios设备推送通知发送
+	 * @param countrycode
+	 * @param acc
+	 * @param secretkey
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey) {
+		//step 2.生产环境下的手机号验证码验证
+		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+		if(uid == null || uid.intValue() == 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		
+		UserMobileDevice entity = userMobileDeviceService.getById(uid);
+		if(entity == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_TOKEN_NOT_EXIST);
+		}
+
+		deliverMessageService.sendUserBBSsignedonMessage(uid, entity.getDt(), entity.getD(), countrycode, acc, secretkey);
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 }

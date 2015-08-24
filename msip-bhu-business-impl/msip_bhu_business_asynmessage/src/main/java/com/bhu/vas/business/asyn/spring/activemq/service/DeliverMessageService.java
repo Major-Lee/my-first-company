@@ -312,4 +312,16 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	
+	public void sendUserBBSsignedonMessage(Integer uid, String dt, String d, int countrycode, String acc, String secretkey) {
+		UserBBSsignedonDTO dto = new UserBBSsignedonDTO();
+		dto.setUid(uid);
+		dto.setDt(dt);
+		dto.setD(d);
+		dto.setCountrycode(countrycode);
+		dto.setAcc(acc);
+		dto.setSecretkey(secretkey);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 }

@@ -127,6 +127,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceGroupCreateIndex:
 							wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
 							break;
+						case USERBBSSIGNEDON:
+							asyncMsgHandleService.userBBSsignedon(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
