@@ -159,7 +159,7 @@ public class ScoreHelper {
 				break;
 			}
 		}
-		int score = matched_flow.getScore()+matched_sta.getScore()+RandomData.intNumber(0, 5);
+		int score = matched_flow.getScore()+matched_sta.getScore()+RandomData.intNumber(0, 3);
 		if(score >=100){
 			score = 100- RandomData.intNumber(0, 3);
 		}
