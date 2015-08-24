@@ -131,6 +131,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @param config_mode 配置模式
 	 * @param online null表示全部 true为在线 
 	 * @param newVersionDevice null 标识全部 true为新版本设备 大于1.2.7的设备 false为老版本 小于等于1.2.7
+	 * @param canOperateable   null 标识全部 true为可运营设备 存在的origvapmodule设备 false为不存在
 	 * @param region 地区
 	 * @param excepts 排除地区
 	 * @param groupids 所属群组ids 空格分隔
@@ -152,12 +153,13 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			Boolean online, 
 			Boolean moduleonline,
 			Boolean newVersionDevice,
+			Boolean canOperateable,
 			String region, String region_excepts, 
 			String groupids, String groupids_excepts, 
 			int pageno, int pagesize){
 		FilterBuilder filter;//QueryBuilders.boolQuery();
 		if(StringHelper.hasLeastOneNotEmpty(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode, 
-				devicetype, region, region_excepts, groupids, groupids_excepts) || online != null || moduleonline != null || newVersionDevice != null){
+				devicetype, region, region_excepts, groupids, groupids_excepts) || online != null || moduleonline != null || newVersionDevice != null || canOperateable !=null){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
 			if(StringUtils.isNotEmpty(mac))	
 				boolfilter.must(FilterBuilders.prefixFilter(BusinessIndexDefine.WifiDevice.Field.ID, mac.toLowerCase()));//QueryBuilders.queryStringQuery("中国 南城").field("address"));
@@ -192,6 +194,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			if(newVersionDevice != null){
 				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
 			}
+			
+			if(canOperateable != null){
+				boolfilter.must(FilterBuilders.existsFilter(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE));//.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
+			}
+			
 			if(StringUtils.isNotEmpty(region)){
 				boolfilter.must(FilterBuilders.termFilter(BusinessIndexDefine.WifiDevice.Field.ADDRESS, region));
 			}

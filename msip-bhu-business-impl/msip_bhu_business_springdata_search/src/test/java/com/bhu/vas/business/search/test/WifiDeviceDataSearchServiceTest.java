@@ -43,8 +43,17 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     
     @Test
 	public void test002SearchDocument(){
-    	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByKeywords(null, null, null, null, "北京市", null,null, null, null, 
+    	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByKeywords(null, null, null, null, "北京市", null,null,null, null, null, 
     			null, null, null, null, null, null, 0, 4);
+    	System.out.println("test002SearchDocument 地址");
+    	System.out.println(searchByKeywords.getTotalElements());
+    	System.out.println(searchByKeywords.getContent().size());
+    	for(WifiDeviceDocument doc:searchByKeywords){
+    		System.out.println(doc.getAddress());
+    	}
+    	System.out.println("test002SearchDocument canOperateable");
+    	searchByKeywords = wifiDeviceDataSearchService.searchByKeywords(null, null, null, null, null, null,null,null, null, null, 
+    			null, Boolean.TRUE, null, null, null, null, 0, 10);
     	System.out.println(searchByKeywords.getTotalElements());
     	System.out.println(searchByKeywords.getContent().size());
     	for(WifiDeviceDocument doc:searchByKeywords){

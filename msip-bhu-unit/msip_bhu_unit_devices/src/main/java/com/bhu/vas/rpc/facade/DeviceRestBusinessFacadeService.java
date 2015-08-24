@@ -193,6 +193,7 @@ public class DeviceRestBusinessFacadeService {
 			Boolean online, 
 			Boolean moduleonline,
 			Boolean newVersionDevice, 
+			Boolean canOperateable,
 			String region, String region_excepts, String groupids, String groupids_excepts,
 			int pageNo, int pageSize){
 		List<WifiDeviceVTO> vtos = null;
@@ -200,7 +201,7 @@ public class DeviceRestBusinessFacadeService {
 		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByKeywords(
 				mac, sn, orig_swver,origvapmodule, 
 				adr, work_mode, config_mode, devicetype, 
-				online,moduleonline, newVersionDevice, 
+				online,moduleonline, newVersionDevice, canOperateable,
 				region, region_excepts, groupids, groupids_excepts, searchPageNo, pageSize);
 		/*QueryResponse<List<WifiDeviceSearchDTO>> search_result = wifiDeviceSearchService.searchByKeywords(mac, sn,
 				orig_swver, adr, work_mode, config_mode, devicetype, online, newVersionDevice, 
