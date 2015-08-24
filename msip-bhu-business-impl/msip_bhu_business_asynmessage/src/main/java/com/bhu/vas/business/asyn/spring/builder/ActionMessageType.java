@@ -38,6 +38,7 @@ public enum ActionMessageType {
 	USERFETCHCAPTCHACODE("请求验证码","fetchcaptchacode","FC"),//请求验证码动作
 	USERDEVICEREGISTER("用户设备注册","user device register","DR"),
 	USERDEVICEDESTORY("用户设备注销","user device destory","DD"),
+	USERBBSSIGNEDON("用户bbs登陆","user bbs signedon","UB"),//用户登陆
 	
 	TOPICCMJoinNotify("topic消息CM加入通知","topic cm join","TJ"),
 	TOPICCMLeaveNotify("topic消息CM离开通知","topic cm leave","TL"),

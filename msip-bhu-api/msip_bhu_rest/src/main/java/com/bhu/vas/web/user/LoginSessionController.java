@@ -117,4 +117,39 @@ public class LoginSessionController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
 		}
 	}
+	
+	
+	/**
+	 * 用户bbs登录
+	 * @param request
+	 * @param response
+	 * @param countrycode
+	 * @param acc
+	 * @param secretkey
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/bbs_login",method={RequestMethod.POST})
+	public void bbs_login(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true, value="sk") String secretkey) {
+		
+		//step 1.手机号正则验证
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		//RpcResponseDTO<UserDTO> userLogin = userRpcService.userLogin(countrycode, acc, from_device, remoteIp, captcha);
+		RpcResponseDTO<Boolean> rpcResult = userRpcService.userBBSsignedon(countrycode, acc, secretkey);
+		if(rpcResult.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}
+		
+	}
 }
