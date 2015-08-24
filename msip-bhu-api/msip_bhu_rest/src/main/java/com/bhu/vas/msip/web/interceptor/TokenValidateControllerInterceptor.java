@@ -51,6 +51,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	static{
 		ignoreTokensValidateUrlSet.add("/sessions/create");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
+		ignoreTokensValidateUrlSet.add("/sessions/bbs_login");
 		//ignoreTokensValidateUrlSet.add("/account/create");
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
