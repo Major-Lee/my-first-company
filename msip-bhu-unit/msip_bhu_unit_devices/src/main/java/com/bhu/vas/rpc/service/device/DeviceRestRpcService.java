@@ -104,6 +104,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			Boolean online, 
 			Boolean moduleonline,
 			Boolean newVersionDevice, 
+			Boolean canOperateable,
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"
 				+ " work_mode [%s] config_mode [%s] devicetype [%s] region [%s] excepts [%s] pageNo [%s] pageSize [%s]", mac, orig_swver, 
@@ -111,7 +112,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		
 		try{
 			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode,
-					devicetype, online, moduleonline, newVersionDevice, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
+					devicetype, online, moduleonline, newVersionDevice,canOperateable, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"

@@ -19,7 +19,7 @@ public interface IDeviceRestRpcService {
 			int pageNo, int pageSize);
 	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac, String sn,
 			String orig_swver,String origvapmodule, String adr, String work_mode,
-			String config_mode, String devicetype, Boolean online,Boolean moduleonline, Boolean newVersionDevice, 
+			String config_mode, String devicetype, Boolean online,Boolean moduleonline, Boolean newVersionDevice, Boolean canOperateable,
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize);
 	public StatisticsGeneralVTO fetchStatisticsGeneral();
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions);
