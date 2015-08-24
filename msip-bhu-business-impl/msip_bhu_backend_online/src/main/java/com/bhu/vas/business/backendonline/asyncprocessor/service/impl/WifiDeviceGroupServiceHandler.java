@@ -90,6 +90,7 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 							dto.getExtparams(), dto.getChannel(), dto.getChannel_taskid());
 					DaemonHelper.daemonCmdDown(wifi_id, downTask.getPayload(), daemonRpcService);
 				}catch(BusinessI18nCodeException bex){
+					System.out.println(bex.getErrorCode());
 					bex.printStackTrace(System.out);
 					logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
 				}catch(Exception ex){

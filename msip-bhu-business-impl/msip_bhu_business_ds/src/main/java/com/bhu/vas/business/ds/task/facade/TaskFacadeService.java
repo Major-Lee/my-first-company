@@ -457,32 +457,33 @@ public class TaskFacadeService {
 		return downTask;
 	}
 
-//	public static void main(String[] args){
-//
-//
-//			String extparams = "{\"url\":\"http://7xl3iu.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.2.15Build8119\",\"upgrade_begin\":\"\",\"upgrade_end\":\"\",\"ctrl_version\":true}";
-//
-//			WifiDeviceUpgradeDTO dto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
-//			if (dto.isCtrl_version()) { //需要考虑高版本强制升级 true:考虑升级 false:默认都升级
-//
-//				String url = dto.getUrl();
-//				if (url != null) {
-//					String deviceVersion = url.substring(url.lastIndexOf("/")+1);
-//					int ret = DeviceHelper.compareDeviceVersions("AP106P06V1.2.15Build8119", deviceVersion);
-//					if (ret >= 0) {
-//						// 设备版本高于需要升级的版本，不升级
-//						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);
-//					} else {
-//						//升级
-//					}
-//
-//				} else  {
-//					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-//				}
-//
-//			} else {
-//				//升级
-//			}
-//		}
+	public static void main(String[] args){
+
+
+			String extparams = "{\"url\":\"http://7xl3iu.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.3.0Build8328\",\"upgrade_begin\":\"\",\"upgrade_end\":\"\",\"ctrl_version\":true}";
+
+			WifiDeviceUpgradeDTO dto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
+			if (dto.isCtrl_version()) { //需要考虑高版本强制升级 true:考虑升级 false:默认都升级
+
+				String url = dto.getUrl();
+				if (url != null) {
+					String deviceVersion = url.substring(url.lastIndexOf("/")+1);
+					int ret = DeviceHelper.compareDeviceVersions("AP106P06V1.2.15Build8105", deviceVersion);
+					System.out.println(ret);
+					if (ret >= 0) {
+						// 设备版本高于需要升级的版本，不升级
+						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);
+					} else {
+						//升级
+					}
+
+				} else  {
+					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+				}
+
+			} else {
+				//升级
+			}
+		}
 
 }
