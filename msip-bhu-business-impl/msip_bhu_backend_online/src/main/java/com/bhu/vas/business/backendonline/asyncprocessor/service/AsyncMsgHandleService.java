@@ -1218,6 +1218,7 @@ public class AsyncMsgHandleService {
 		push_dto.setCountrycode(dto.getCountrycode());
 		push_dto.setAcc(dto.getAcc());
 		push_dto.setSecretkey(dto.getSecretkey());
+		push_dto.setTs(System.currentTimeMillis());
 		
 		DeviceMobilePresentDTO mobile_present_dto = new DeviceMobilePresentDTO();
 		BeanUtils.copyProperties(dto, mobile_present_dto);
