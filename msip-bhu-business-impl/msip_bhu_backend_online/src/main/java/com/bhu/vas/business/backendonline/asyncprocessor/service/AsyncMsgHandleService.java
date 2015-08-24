@@ -30,6 +30,7 @@ import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
@@ -170,7 +171,7 @@ public class AsyncMsgHandleService {
 					ex.printStackTrace(System.out);
 				}*/
 				//ss
-				/*UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
+				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
 				if(upgrade.isForceDeviceUpgrade()){
 					long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 		        	String cmdPayload = CMDBuilder.builderDeviceUpgrade(dto.getMac(), new_taskid, 
@@ -178,7 +179,7 @@ public class AsyncMsgHandleService {
 	        				WifiDeviceHelper.Upgrade_Default_EndTime, 
 	        				upgrade.getUpgradeurl());
 					payloads.add(cmdPayload);
-				}*/
+				}
 			}
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
