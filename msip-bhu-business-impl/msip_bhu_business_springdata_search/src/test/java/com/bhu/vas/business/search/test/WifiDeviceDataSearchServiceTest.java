@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -206,7 +208,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	public void test001BatchCreateDocument(){
     	//wifiDeviceDataSearchService.refresh(false);
     	
-		List<WifiDeviceDocument> docs = new ArrayList<>();
+		//List<WifiDeviceDocument> docs = new ArrayList<>();
+    	List<IndexQuery> indexQuerys = new ArrayList<IndexQuery>();
 		WifiDeviceDocument doc1 = new WifiDeviceDocument();
 		doc1.setId("62:68:75:10:11:80");
 		doc1.setSn("BN009BC100053AA");
@@ -288,12 +291,18 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc5.setRegisteredat(DateTimeHelper.getDateDaysAgo(6).getTime());
 		doc5.setUpdatedat(DateTimeHelper.getDateTime());
 		
-		docs.add(doc1);
-		docs.add(doc2);
-		docs.add(doc3);
-		docs.add(doc4);
-		docs.add(doc5);
-		wifiDeviceDataSearchService.getRepository().save(docs);
+//		docs.add(doc1);
+//		docs.add(doc2);
+//		docs.add(doc3);
+//		docs.add(doc4);
+//		docs.add(doc5);
+		indexQuerys.add(new IndexQueryBuilder().withId(doc1.getId()).withObject(doc1).build());
+		indexQuerys.add(new IndexQueryBuilder().withId(doc2.getId()).withObject(doc2).build());
+		indexQuerys.add(new IndexQueryBuilder().withId(doc3.getId()).withObject(doc3).build());
+		indexQuerys.add(new IndexQueryBuilder().withId(doc4.getId()).withObject(doc4).build());
+		indexQuerys.add(new IndexQueryBuilder().withId(doc5.getId()).withObject(doc5).build());
+		//wifiDeviceDataSearchService.getRepository().save(docs);
+		wifiDeviceDataSearchService.getElasticsearchTemplate().bulkIndex(indexQuerys);
 		
 		//wifiDeviceDataSearchService.refresh(true);
 	}
