@@ -38,6 +38,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -520,6 +521,18 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		return userDeviceService.findIdsByCommonCriteria(mc);
 	}
 	
+	public UserDevice getUserDevice(Integer uid, String mac){
+		return userDeviceService.getById(new UserDevicePK(mac, uid));
+	}
+	
+	public String getUserDeviceName(Integer uid, String mac){
+		UserDevice entity = this.getUserDevice(uid, mac);
+		if(entity != null){
+			return entity.getDevice_name();
+		}
+		return null;
+	}
+	
 	/**
 	 * 更新设备的mode状态信息
 	 * @param mac
@@ -697,7 +710,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_TYPE_NOT_SUPPORTED);
 		}
 		//1:当前用户使用app移动设备数据
-		userMobileDeviceService.deviceRegister(uid, dt, d, pt);
+		userMobileDeviceService.deviceRegister(uid, dm, dt, d, pt);
 		//2:用户使用app移动设备历史数据
 		userMobileDeviceStateService.userNewDeviceRegisterOrReplace(uid, de, dm, dt, cv, pv, ut, pt);
 		//3:用户所管理的设备的数据关系
@@ -734,6 +747,16 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	}
 	
 	/**
+	 * 移除设备与用户移动设备信息的关联
+	 * @param uid
+	 * @param mac
+	 */
+	public void removeMobilePresent(Integer uid, String mac){
+		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(mac);
+		this.generateDeviceMobilePresents(uid);
+	}
+	
+	/**
 	 * 根据用户所管理的设备 生成mobile和设备的关系信息
 	 * @param uid
 	 * @param presentDto
@@ -742,14 +765,31 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		if(uid == null || presentDto == null) return;
 		
 		List<UserDevicePK> userDevices = this.getUserDevices(uid);
-		if(userDevices.isEmpty()) return;
+		int size = userDevices.size();
+		if(size == 0) return;
 		
 		List<String> macs = new ArrayList<String>();
 		for(UserDevicePK pk : userDevices){
 			macs.add(pk.getMac());
 		}
+		
+		presentDto.setMulti(size > 1 ? true : false);
 		WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
 				JsonHelper.getJSONString(presentDto));
+	}
+	
+	/**
+	 * 根据用户所管理的设备 生成mobile和设备的关系信息
+	 * @param uid
+	 */
+	public void generateDeviceMobilePresents(Integer uid){
+		if(uid == null) return;
+		
+		UserMobileDevice entity = userMobileDeviceService.getById(uid);
+		if(entity != null){
+			this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, entity.getD(), entity.getDt(),
+					entity.getPt(), entity.getDm()));
+		}
 	}
 	
 	/**
@@ -768,6 +808,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(macs);
 	}
+
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
 	//修改设备配置的通用序列号

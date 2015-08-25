@@ -25,11 +25,12 @@ public class UserMobileDeviceService extends EntityService<Integer,UserMobileDev
 	/**
 	 * 注册用户当前设备
 	 * @param uid
+	 * @param dm
 	 * @param dt
 	 * @param d
 	 * @param pt
 	 */
-	public void deviceRegister(int uid, String dt, String d, String pt){
+	public void deviceRegister(int uid, String dm, String dt, String d, String pt){
 		if(StringHelper.isEmpty(dt)) return;
 		if(StringHelper.isEmpty(d)) return;
 		//如果已经存在关系, 则先删除
@@ -44,11 +45,13 @@ public class UserMobileDeviceService extends EntityService<Integer,UserMobileDev
 			entity.setId(uid);
 			entity.setDt(dt);
 			entity.setD(d);
+			entity.setDm(dm);
 			entity.setPt(pt);
 			this.insert(entity);
 		}else{
 			entity.setDt(dt);
 			entity.setD(d);
+			entity.setDm(dm);
 			entity.setPt(pt);
 			this.update(entity);
 		}

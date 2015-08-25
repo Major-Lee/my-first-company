@@ -1146,6 +1146,8 @@ public class AsyncMsgHandleService {
 //				afterUserSignedonThenCmdDown(dto.getMac(), DeviceHelper.builderSettingVapNames(setting_dto.getVaps()));
 //			}
 //		}
+		deviceFacadeService.generateDeviceMobilePresents(dto.getUid());
+		
 		afterUserSignedonThenCmdDown(dto.getMac());
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
@@ -1158,7 +1160,8 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s]", message));
 		UserDeviceDestoryDTO dto = JsonHelper.getDTO(message, UserDeviceDestoryDTO.class);
 		
-		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(dto.getMac());
+		//WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(dto.getMac());
+		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		
 		userSettingStateService.deleteById(dto.getMac());
 		
