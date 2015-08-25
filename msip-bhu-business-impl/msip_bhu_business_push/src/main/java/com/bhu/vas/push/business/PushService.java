@@ -163,8 +163,9 @@ public class PushService{
 			if(presentDto != null){
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
+					String push_deviceName = StringHelper.EMPTY_STRING_GAP;
 					if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
-						pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
+						pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), push_deviceName));
 						String name = wspush_dto.getHd_mac();
 						if(!StringUtils.isEmpty(wspush_dto.getN())){
 							name = wspush_dto.getN();
@@ -178,7 +179,13 @@ public class PushService{
 						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), name));
 						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					}else{
-						pushMsg.setTitle(PushType.HandsetDeviceWSOnline.getTitle());
+						if(presentDto.isMulti()){
+							String deviceName = deviceFacadeService.getUserDeviceName(presentDto.getUid(), wspush_dto.getMac());
+							if(!StringUtils.isEmpty(deviceName)){
+								push_deviceName = String.format(PushMessageConstant.Android_DeviceName, deviceName);
+							}
+						}
+						pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), push_deviceName));
 						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getHd_mac()));
 						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					}
@@ -361,9 +368,17 @@ public class PushService{
 			String payload = JsonHelper.getJSONString(hd_push_dto);
 			pushMsg.setPaylod(payload);
 			//构造title和text
-			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : ""));
+			//如果用户管理多个设备 标题中添加设备名称
+			String push_deviceName = StringHelper.EMPTY_STRING_GAP;
+			if(presentDto.isMulti()){
+				String deviceName = deviceFacadeService.getUserDeviceName(presentDto.getUid(), hd_push_dto.getMac());
+				if(!StringUtils.isEmpty(deviceName)){
+					push_deviceName = String.format(PushMessageConstant.Android_DeviceName, deviceName);
+				}
+			}
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : "", push_deviceName));
 		}else{
-			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), StringHelper.EMPTY_STRING_GAP));
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
 			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
 			pushMsg.setPaylod(JsonHelper.getJSONString(hd_push_dto));
 		}

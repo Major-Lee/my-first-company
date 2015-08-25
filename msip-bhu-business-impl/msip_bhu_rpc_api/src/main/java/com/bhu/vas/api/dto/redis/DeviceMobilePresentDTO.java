@@ -14,8 +14,10 @@ public class DeviceMobilePresentDTO {
 	private String dt;
 	//push type
 	private String pt;
-	//终端mac
+	//用户移动设备mac
 	private String dm;
+	//用户是否管理了多台设备
+	private boolean multi;
 	
 	public DeviceMobilePresentDTO(){
 		
@@ -60,5 +62,13 @@ public class DeviceMobilePresentDTO {
 
 	public void setDm(String dm) {
 		this.dm = dm;
+	}
+
+	public boolean isMulti() {
+		return multi;
+	}
+
+	public void setMulti(boolean multi) {
+		this.multi = multi;
 	}
 }

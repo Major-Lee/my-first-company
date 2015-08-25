@@ -33,7 +33,6 @@ public class VapCmdBenchmarkOp{
 		
 		while(true){
 			daemonRpcService.wifiDevicesSimulateCmdTimer();
-			Thread.sleep(60000);
 		}
 		//daemonRpcService.wifiDevicesSimulateCmdTimer();
 /*		String[] macs = new String[]{"42:43:44:42:41:42","42:43:44:42:41:43","42:43:44:42:41:44","42:43:44:42:41:45","42:43:44:42:41:46"};
