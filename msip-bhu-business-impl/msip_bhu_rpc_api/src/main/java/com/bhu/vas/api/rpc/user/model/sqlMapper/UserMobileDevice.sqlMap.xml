@@ -43,6 +43,7 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{dm},
 	    	#{dt},
 	    	#{d},
 	    	#{pt},
