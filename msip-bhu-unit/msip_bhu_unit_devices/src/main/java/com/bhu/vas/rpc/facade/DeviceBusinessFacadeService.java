@@ -682,10 +682,10 @@ public class DeviceBusinessFacadeService {
 			String wifiId, long taskid){
 		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
 		
-		if(CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.wasInFragment(taskid)){
+		/*if(CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.wasInFragment(taskid)){
 			//TODO:特殊处理商业wifi终端在线列表
 			return;
-		}
+		}*/
 		if(terminals != null && !terminals.isEmpty()){
 			//获取设备的配置的dto
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(wifiId);
