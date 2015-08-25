@@ -23,7 +23,7 @@ public class DaemonHelper {
 		}*/
 		//DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceOnlineTeminalQuery(info.getMac()));
 		//下发管理参数触发设备自动上报用户通知并同步终端
-		payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
+		//payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(mac));
 		//获取配置指令
 		payloads.add(CMDBuilder.builderDeviceSettingQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 		//获取设备系统信息
