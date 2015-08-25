@@ -52,12 +52,14 @@ public class WifiDeviceOnlineActionLoader {
 				
 				//List<String> payloads = new ArrayList<>();
 				for(WifiDevice device:next){
-					cmdPayload = CMDBuilder.builderDeviceTerminalsQuery(device.getId(), 
-							CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.getNextSequence(), 
-							10, 
-							60);
-					DaemonHelper.daemonCmdDown(device.getId(), cmdPayload, daemonRpcService);
-					System.out.println(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
+					if("84:82:f4:17:c2:94".equalsIgnoreCase(device.getId())){
+						cmdPayload = CMDBuilder.builderDeviceTerminalsQuery(device.getId(), 
+								CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.getNextSequence(), 
+								10, 
+								60);
+						DaemonHelper.daemonCmdDown(device.getId(), cmdPayload, daemonRpcService);
+						System.out.println(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
+					}
 					total++;
 				}
 			}
