@@ -187,7 +187,7 @@ public class CMDBuilder {
 	}
 	
 	public static String builderQuerySyncDeviceOnlineTerminalsQuery(String wifi_mac){
-		return String.format(OperationCMD.QuerySyncDeviceOnlineTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));
+		return String.format(OperationCMD.ParamQuerySyncDeviceOnlineTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));
 	}
 	/**
 	 * 生成Http404ResourceUpdate 指令

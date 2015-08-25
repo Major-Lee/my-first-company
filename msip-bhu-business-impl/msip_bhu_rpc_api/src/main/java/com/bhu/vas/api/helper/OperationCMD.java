@@ -20,7 +20,8 @@ public enum OperationCMD {
 	//2. 设备终端探测开启关闭指令
 	ParamWifiSinffer("002","Param指令设备终端探测开启关闭","param",
 			"00001001%s0020000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
-			
+	//3. 查询当前在线终端以sync的方式报到服务器
+	ParamQuerySyncDeviceOnlineTeminals("003","查询当前在线终端","param","00001001%s0010000000000"+"000000000006"+"<param><ITEM  wlan_user_sync=\"1\" /></param>"),		
 	
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",
@@ -84,9 +85,6 @@ public enum OperationCMD {
 	DeviceUpgrade("153", "设备升级","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"firmware_upgrade\" download_timeout=\"1800\" url=\"%s\" upgrade_begin=\"%s\" upgrade_end=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	DeviceModuleUpgrade("154", "设备module升级(设备vapmudule不为空)以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
 
-	QuerySyncDeviceOnlineTeminals("155","查询当前在线终端","param","00001001%s0010000000000"+"000000000006"+"<param><ITEM  wlan_user_sync=\"1\" /></param>"),
-
-	
 	;
 	static Map<String, OperationCMD> allOperationCMDs;
 	String no;
