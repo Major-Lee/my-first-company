@@ -17,9 +17,11 @@ import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
+import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.localunit.BaseTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -41,7 +43,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     }
     
     
-    @Test
+    //@Test
 	public void test002SearchDocument(){
     	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByKeywords(null, null, null, null, "北京市", null,null,null, null, null, 
     			null, null, null, null, null, null, 0, 4);
@@ -61,14 +63,14 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }    
     
-    @Test
+    //@Test
    	public void test003SearchOnline(){
        	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByOnlineTrue(new PageRequest(1,2));
        	System.out.println(searchByKeywords.getTotalElements());
        	System.out.println(searchByKeywords.getContent().size());
     }
     
-    @Test
+    //@Test
    	public void test004SearchGroup(){
        	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("1 2",new PageRequest(0,5));
        	System.out.println("test004SearchGroup1");
@@ -83,7 +85,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+    //@Test
    	public void test005RegisteratGreaterThen(){
        	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.findByRegisteredatGreaterThan(1438169971000l,0,5);
        	System.out.println("test005RegisteratGreaterThen");
@@ -92,7 +94,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+    //@Test
    	public void test006CountByAddress(){
        	Long count = wifiDeviceDataSearchService.countByAddressMatchAll("北京市 海淀区 荷清路");//findByRegisteratGreaterThan(1438169971000l,0,5);
        	System.out.println("test005CountByAddress");
@@ -108,7 +110,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
        	
     }
     
-    @Test
+    //@Test
    	public void test007SearchByAddress(){
     	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.searchByAddressMatchEach("北京市 海淀区 荷清路",0,10);//findByRegisteratGreaterThan(1438169971000l,0,5);
        	System.out.println("test007SearchByAddress");
@@ -120,7 +122,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
      
     
     
-    @Test
+    //@Test
    	public void test008SearchGeoInRectangle(){
     	Page<WifiDeviceDocument> searchByKeywords = 
     			wifiDeviceDataSearchService.searchGeoInBoundingBox(new double[]{40.06104160344549,116.27770453955074}, new double[]{40.04100280909214,116.31143600012203}, 0, 10);
@@ -130,7 +132,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     		System.out.println(doc.getAddress());
     	}
     } 
-    @Test
+    //@Test
    	public void test009SearchGeoInRectangle(){
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
 			.withFilter(
@@ -145,7 +147,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+    //@Test
    	public void test010SearchGeoInRangeBox(){
 		/*NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
 			.withFilter(
@@ -168,20 +170,18 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
-   /* @Test
+    //@Test
     public void test011Refresh(){
     	System.out.println("test011Refresh0");
-    	System.out.println("before refresh false:"+wifiDeviceDataSearchService.getSetting());
-    	//wifiDeviceDataSearchService.refresh(false);
-    	wifiDeviceDataSearchService.disableRefreshInterval("wifi_device_index3");
-    	System.out.println("after refresh false:"+wifiDeviceDataSearchService.getSetting());
+    	List<IndexQuery> indexQuerys = new ArrayList<IndexQuery>();
+    	//System.out.println("before refresh false:"+wifiDeviceDataSearchService.getSetting());
+    	//System.out.println("after refresh false:"+wifiDeviceDataSearchService.getSetting());
 		WifiDeviceDocument doc5 = new WifiDeviceDocument();
 		doc5.setId("84:82:f4:23:09:c9");
 		doc5.setSn("BN207DE100063BB");
 		doc5.setAddress("北京市西城区里仁街31号院-41号楼");
 		doc5.setCount(5);
 		doc5.setOnline(true);
-		//doc5.setGeopoint(new double[]{116.377757, 39.882544});
 		doc5.setGeopoint(new double[]{116.377757,39.882544});
 		doc5.setConfigmodel("basic");
 		doc5.setWorkmodel("router-ap");
@@ -190,30 +190,58 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc5.setGroups("1 2 5");
 		doc5.setRegisteredat(DateTimeHelper.getDateDaysAgo(6).getTime());
 		doc5.setUpdatedat(DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.getRepository().save(doc5);
-		
+		//wifiDeviceDataSearchService.getRepository().save(doc5);
+		indexQuerys.add(new IndexQueryBuilder().withId(doc5.getId()).withObject(doc5).build());
+		wifiDeviceDataSearchService.getElasticsearchTemplate().bulkIndex(indexQuerys);
+		//wifiDeviceDataSearchService.getElasticsearchTemplate().refresh(clazz, true);
 		Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("5",new PageRequest(0,5));
-       	System.out.println("test011Refresh1");
+       	System.out.println("test011Refresh1 before");
        	for(WifiDeviceDocument doc:searchByKeywords){
     		System.out.println(doc.getAddress());
     	}
-       	System.out.println("after refresh true:"+wifiDeviceDataSearchService.getSetting());
+       	
+        //	System.out.println("after refresh true:"+wifiDeviceDataSearchService.getSetting());
        	//wifiDeviceDataSearchService.refresh(true);
-       	wifiDeviceDataSearchService.openRefreshInterval("wifi_device_index3", "1s");
-       	System.out.println("after refresh true:"+wifiDeviceDataSearchService.getSetting());
+       	//wifiDeviceDataSearchService.openRefreshInterval("wifi_device_index3", "1s");
+       	wifiDeviceDataSearchService.getElasticsearchTemplate().refresh(WifiDeviceDocument.class, false);
+       	System.out.println("after refresh true");
        	searchByKeywords = wifiDeviceDataSearchService.getRepository().findByGroups("5",new PageRequest(0,5));
-       	System.out.println("test011Refresh2");
        	for(WifiDeviceDocument doc:searchByKeywords){
-    		System.out.println(doc.getAddress());
+    		System.out.println(doc.getId()+" "+doc.getAddress());
     	}
-    }*/
+    }
     
     @Test
+    public void test012IterateAll(){
+    	wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName,BusinessIndexDefine.WifiDevice.Type,new IteratorNotify<Page<WifiDeviceDocument>>(){
+			@Override
+			public void notifyComming(Page<WifiDeviceDocument> page) {
+				List<WifiDeviceDocument> docs = page.getContent();
+				System.out.println(page.getTotalElements()+"~~"+docs.size());
+				for(WifiDeviceDocument doc:docs){
+					System.out.println(doc.getId());
+				}
+				/*Iterator<Entry<String, String>> iter = t.entrySet().iterator();
+				while(iter.hasNext()){
+					Entry<String, String> next = iter.next();
+					String value = next.getValue();//value
+					if(StringUtils.isNotEmpty(value)){
+						if(!value.contains(HandsetDeviceDTO.Action_Offline)){
+							online.incrementAndGet();
+						}
+						total.incrementAndGet();
+					}
+				}*/
+			}
+		});
+    }
+    
+    //@Test
  	public void test000BatchEmptyDocument(){
     	//wifiDeviceDataSearchService.getRepository().deleteAll();
  	}
     
-    @Test
+    //@Test
 	public void test001BatchCreateDocument(){
     	//wifiDeviceDataSearchService.refresh(false);
     	
@@ -305,14 +333,14 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 //		docs.add(doc3);
 //		docs.add(doc4);
 //		docs.add(doc5);
-		indexQuerys.add(new IndexQueryBuilder().withId(doc1.getId()).withObject(doc1).build());
+		/*indexQuerys.add(new IndexQueryBuilder().withId(doc1.getId()).withObject(doc1).build());
 		indexQuerys.add(new IndexQueryBuilder().withId(doc2.getId()).withObject(doc2).build());
 		indexQuerys.add(new IndexQueryBuilder().withId(doc3.getId()).withObject(doc3).build());
 		indexQuerys.add(new IndexQueryBuilder().withId(doc4.getId()).withObject(doc4).build());
 		indexQuerys.add(new IndexQueryBuilder().withId(doc5.getId()).withObject(doc5).build());
 		//wifiDeviceDataSearchService.getRepository().save(docs);
 		wifiDeviceDataSearchService.getElasticsearchTemplate().bulkIndex(indexQuerys);
-		
+		wifiDeviceDataSearchService.getElasticsearchTemplate().refresh(clazz, true);*/
 		//wifiDeviceDataSearchService.refresh(true);
 	}
 }

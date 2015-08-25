@@ -19,7 +19,7 @@ import com.bhu.vas.business.search.BusinessIndexDefine;
 type = "myWifiDevice", 
 shards = 5, 
 replicas = 1)*/
-public class WifiDeviceDocument {
+public class WifiDeviceDocument extends AbstractDocument{
 	@Id
 	@Field(
 			type = FieldType.String,
@@ -147,6 +147,7 @@ public class WifiDeviceDocument {
 	)
 	private Date updateAt;*/
 
+	@Override
 	public String getId() {
 		return id;
 	}
