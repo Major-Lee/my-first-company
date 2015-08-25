@@ -80,8 +80,6 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	public final static int WIFI_DEVICE_STATUS_NOT_ONLINE = 99;
 	public final static int WIFI_DEVICE_STATUS_ONLINE = 100;
 
-	private final static String WIFI_DEVICE_ORIGIN_MODEL = "uRouter";
-	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
@@ -445,12 +443,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		if(StringUtils.isEmpty(mac)) return false;
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 		if(wifiDevice == null) return false;
-		return isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+		return WifiDeviceHelper.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
 	}
 	
-	public boolean isURooterDeviceWithOrigModel(String orig_model) {
-		return WIFI_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
-	}
 
 	/**
 	 * 验证用户所管理的设备

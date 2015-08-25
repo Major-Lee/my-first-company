@@ -151,7 +151,7 @@ public class AsyncMsgHandleService {
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
-			boolean isRouter = deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+			boolean isRouter = WifiDeviceHelper.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
 			//boolean needWiffsniffer = false;
 			List<String> payloads = new ArrayList<String>();
 			//boolean forceFirmwareUpdate = false;
@@ -556,8 +556,7 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
 		}
 
-		wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(),
-				dto.getUptime(), dto.getTx_bytes(), dto.getTs());
+		wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
 
 
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));

@@ -19,15 +19,19 @@
 				<ref bean="handsetStatisticsLoaderCronTrigger" />
 				<!-- 每一个小时执行一次  -->
 				<ref bean="statisticsOnlineLoaderCronTrigger" />
-				<!-- 每一个小时执行一次  -->
+				<!-- 每一个小时执行一次  
 				<ref bean="wifiDeviceLocationQueryLoaderCronTrigger" />
-				
+				-->
 				<!-- 每隔60分钟执行一次 
 				<ref bean="wifiDeviceOnlineCmdDownLoaderCronTrigger" />		
 				-->
 				<!-- 每隔3分钟执行一次 
 				<ref bean="wifiDeviceLocationStep2QueryLoaderCronTrigger" />		
 				-->
+				<!-- 每隔5分钟执行一次 -->
+				<ref bean="wifiDeviceOnlineActionLoaderCronTrigger" />		
+				
+				
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -188,6 +192,23 @@
 	<bean id="handsetStatisticsLoaderJob" class="com.bhu.vas.plugins.quartz.HandsetStatisticsLoader" />
 	
 	
+	<!-- Cron式Trigger定义 -->
+	<bean id="wifiDeviceOnlineActionLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="wifiDeviceOnlineActionLoaderJobDetail" />
+		<!-- 每隔5分钟执行一次   0 0/5 * * * ?  -->
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="wifiDeviceOnlineActionLoaderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="wifiDeviceOnlineActionLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="wifiDeviceOnlineActionLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineActionLoader" />
 	
 	
 </beans>

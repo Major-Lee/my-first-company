@@ -186,6 +186,9 @@ public class CMDBuilder {
 				builderCMDSerial(opt, taskid_format));
 	}
 	
+	public static String builderQuerySyncDeviceOnlineTerminalsQuery(String wifi_mac){
+		return String.format(OperationCMD.QuerySyncDeviceOnlineTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));
+	}
 	/**
 	 * 生成Http404ResourceUpdate 指令
 	 * @param wifi_mac
@@ -475,11 +478,13 @@ public class CMDBuilder {
 	//获取dhcp模式下的状态信息
 	//public static TaskSequenceFragment device_dhcpc_status_fragment = new TaskSequenceFragment(54001,56000);
 	
-	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(1,999999);
+	//用于特殊渠道后台指定定时任务给商业wifi发送查询在线终端指令
+	public static TaskSequenceFragment auto_special_query_commercial_terminals_taskid_fragment = new TaskSequenceFragment(1,10000);
+	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(10001,999999);
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(1000000,Integer.MAX_VALUE);
 	public static boolean wasAutoTaskid(long taskid){
-		return auto_taskid_fragment.wasInFragment(taskid);
+		return !normal_taskid_fragment.wasInFragment(taskid);
 	}
 	
 	public static boolean wasNormalTaskid(long taskid){

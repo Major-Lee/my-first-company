@@ -1,12 +1,24 @@
 package com.bhu.vas.business.search.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
+import com.bhu.vas.business.search.model.AbstractDocument;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
-public abstract class AbstractDataSearchService<MODEL> {
+public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> {
     @Resource
 	private ElasticsearchTemplate elasticsearchTemplate;
     
@@ -24,11 +36,55 @@ public abstract class AbstractDataSearchService<MODEL> {
 	public ElasticsearchTemplate getElasticsearchTemplate(){
 		return elasticsearchTemplate;
 	}
-	
-	
-	public void refresh(/*Class<T> classz,*/boolean waitForOperation){
+	/*public void refresh(Class<T> classz,boolean waitForOperation){
 		getElasticsearchTemplate().refresh(entityClass, waitForOperation);
+	}*/
+	
+	public void bulkIndex(List<MODEL> models){
+		bulkIndex(models,false,false);
 	}
+	
+	/**
+	 * 打包批量建索引
+	 * 不主动刷新和合并索引，由参数控制（由于springdata save生成索引会自动合并刷新）
+	 * 可以用于索引的批量生成，在打数据量的情况下使用提升性能
+	 * @param models
+	 * @param refresh
+	 * @param waitForOperation
+	 */
+	public void bulkIndex(List<MODEL> models,boolean refresh,boolean waitForOperation){
+		if(!models.isEmpty()){
+			List<IndexQuery> indexQuerys = new ArrayList<IndexQuery>();
+			for(MODEL model:models){
+				indexQuerys.add(new IndexQueryBuilder().withId(model.getId()).withObject(model).build());
+			}
+			getElasticsearchTemplate().bulkIndex(indexQuerys);
+			if(refresh){
+				getElasticsearchTemplate().refresh(entityClass, waitForOperation);
+			}
+		}
+	}
+	
+	public void iteratorAll(String indices,String types,IteratorNotify<Page<MODEL>> notify){
+		SearchQuery searchQuery = new NativeSearchQueryBuilder()
+	    .withQuery(QueryBuilders.matchAllQuery())
+	    .withIndices(indices)
+	    .withTypes(types)
+	    .withPageable(new PageRequest(0,10))
+	    .build();
+
+		String scrollId = elasticsearchTemplate.scan(searchQuery, 60000, false);
+		boolean hasRecords = true;
+		while (hasRecords) {
+			Page<MODEL> page = elasticsearchTemplate.scroll(scrollId, 60000, entityClass);
+			if (page.hasContent()) {
+				notify.notifyComming(page);
+			} else {
+				hasRecords = false;
+			}
+		}
+	}
+	
 	
 /*	public Map getSetting(){
 		return getElasticsearchTemplate().getSetting(entityClass);

@@ -681,6 +681,11 @@ public class DeviceBusinessFacadeService {
 	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, long taskid){
 		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
+		
+		if(CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.wasInFragment(taskid)){
+			//TODO:特殊处理商业wifi终端在线列表
+			return;
+		}
 		if(terminals != null && !terminals.isEmpty()){
 			//获取设备的配置的dto
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(wifiId);
@@ -695,8 +700,6 @@ public class DeviceBusinessFacadeService {
 				//1:更新被管理的终端的上下行速率和ssid bssid
 				int cursor = 0;
 				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hdIds);
-				//List<HandsetDevice> need_inserts = null;
-				//List<HandsetDevice> need_updates = null;
 				for(HandsetDeviceDTO handset : handsets){
 					WifiDeviceTerminalDTO terminal = terminals.get(cursor);
 					//判断是否在黑名单中
@@ -839,7 +842,7 @@ public class DeviceBusinessFacadeService {
 				//获取设备配置之后的指令分发
 				List<String> afterQueryPayloads = null;
 				//只有URouter的设备才需进行此操作
-				if(deviceFacadeService.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model())){
+				if(WifiDeviceHelper.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model())){
 					//验证URouter设备配置是否符合约定
 					if(!DeviceHelper.validateURouterBlackList(dto)){
 						if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
