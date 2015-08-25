@@ -60,10 +60,10 @@ public class WifiDeviceFacadeServiceTest extends BaseTest{
 
 		List<String> week = getSevenDateOfWeek(0);
 
-		Map<String, List<WifiHandsetDeviceItemDetailMDTO>> result = wifiHandsetDeviceRelationMService.updateOfflineWifiHandsetDeviceItems(
-				wifiHandsetDeviceItemDetailMTDTOMap, week, new Date().getTime() , "2015-08-01 13:36:22");
+//		Map<String, List<WifiHandsetDeviceItemDetailMDTO>> result = wifiHandsetDeviceRelationMService.updateOfflineWifiHandsetDeviceItems(
+//				wifiHandsetDeviceItemDetailMTDTOMap, week, new Date().getTime() , "2015-08-01 13:36:22");
 
-		System.out.println(result);
+//		System.out.println(result);
 	}
 
 	public static List<String> getSevenDateOfWeek(int before)
