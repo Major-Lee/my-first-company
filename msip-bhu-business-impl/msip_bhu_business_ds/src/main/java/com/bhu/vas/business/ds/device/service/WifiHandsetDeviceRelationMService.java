@@ -292,12 +292,10 @@ public class WifiHandsetDeviceRelationMService {
      * 终端离线更新记录
      * @param wifiId
      * @param handsetId
-     * @param uptime
      * @param tx_bytes
      * @param logout_at
      */
-    public void offlineWifiHandsetDeviceItems(String wifiId, String handsetId, String uptime,
-                                              String tx_bytes, long logout_at) {
+    public void offlineWifiHandsetDeviceItems(String wifiId, String handsetId, String tx_bytes, long logout_at) {
         WifiHandsetDeviceRelationMDTO mdto = new WifiHandsetDeviceRelationMDTO(wifiId, handsetId);
 
         WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
@@ -352,7 +350,7 @@ public class WifiHandsetDeviceRelationMService {
         if (handsets != null) {
             for(HandsetDeviceDTO dto:handsets){
                 if(dto != null){
-                    offlineWifiHandsetDeviceItems(wifiId, dto.getMac(), "0", "0", System.currentTimeMillis());
+                    offlineWifiHandsetDeviceItems(wifiId, dto.getMac(), "0", System.currentTimeMillis());
                 }
             }
         }
