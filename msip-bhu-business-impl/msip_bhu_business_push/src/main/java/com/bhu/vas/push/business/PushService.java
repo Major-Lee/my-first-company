@@ -372,6 +372,7 @@ public class PushService{
 			String push_deviceName = StringHelper.EMPTY_STRING_GAP;
 			if(presentDto.isMulti()){
 				String deviceName = deviceFacadeService.getUserDeviceName(presentDto.getUid(), hd_push_dto.getMac());
+				logger.info(String.format("multi device push deviceName [%s]", deviceName));
 				if(!StringUtils.isEmpty(deviceName)){
 					push_deviceName = String.format(PushMessageConstant.Android_DeviceName, deviceName);
 				}
