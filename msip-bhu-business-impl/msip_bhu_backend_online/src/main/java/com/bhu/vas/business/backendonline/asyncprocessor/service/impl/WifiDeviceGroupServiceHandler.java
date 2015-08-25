@@ -124,6 +124,8 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 		String wifiIdsStr = dto.getWifiIds();
 		String gidsStr = dto.getGroupIds();
 
+		if(StringUtils.isEmpty(gidsStr)) return;
+		
 		List<String> wifiIds = new ArrayList<>();
 		String[] wifiIdArray = wifiIdsStr.split(StringHelper.COMMA_STRING_GAP);
 		for (String wifiId : wifiIdArray) {

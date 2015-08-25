@@ -42,7 +42,11 @@ public class WifiDeviceDocumentHelper {
 		if(doc != null){
 			vto.setWid(doc.getId());
 			vto.setOl(doc.getOnline()?1:0);
-			vto.setMol(doc.getModuleonline()?1:0);
+			if(doc.getModuleonline() != null){
+				vto.setMol(doc.getModuleonline()?1:0);
+			}else{
+				vto.setMol(0);
+			}
 			vto.setCohc(doc.getCount());
 			vto.setAdr(doc.getAddress());
 			vto.setDt(doc.getDevicetype());
