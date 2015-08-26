@@ -326,10 +326,18 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
 //
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+
 					}
 
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
+						//模拟一条登入的记录
+						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+
+						last_type = "logout";
+						type = "login";
+
+						filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
 
 					}
 
