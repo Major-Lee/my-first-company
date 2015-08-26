@@ -36,9 +36,9 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 	public ElasticsearchTemplate getElasticsearchTemplate(){
 		return elasticsearchTemplate;
 	}
-	/*public void refresh(Class<T> classz,boolean waitForOperation){
+	public void refresh(/*Class<MODEL> classz,*/boolean waitForOperation){
 		getElasticsearchTemplate().refresh(entityClass, waitForOperation);
-	}*/
+	}
 	
 	public void bulkIndex(List<MODEL> models){
 		bulkIndex(models,false,false);
