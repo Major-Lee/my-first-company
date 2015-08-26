@@ -294,8 +294,6 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	private List<URouterHdTimeLineVTO> getLogs(List<URouterHdTimeLineVTO> vtos, List<WifiHandsetDeviceItemLogMDTO> logs) {
 		long currentTime = System.currentTimeMillis();
-		String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
-
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
 		if (logs != null) {
@@ -311,12 +309,12 @@ public class DeviceURouterRestBusinessFacadeService {
 					offset = -1;
 				}
 				if (offset > 5) {
-					offset = 5;
+					//offset = 5; //7天外的数据直接忽略
+					continue;
 				}
 
 				String type = log.getType();
-//				logger.info("offset==" + offset +  ", ts =" + ts + ",currentTimeZeor[" + currentTimeZero +"],currentZeroTime" + currentZeroTime);
-//				logger.info("type["+type + "],last_type[" + last_type+"],ts[" + ts + "]");
+				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
@@ -324,41 +322,34 @@ public class DeviceURouterRestBusinessFacadeService {
 					filterDay(ts, currentTime, type,last_type, vtos, offset, true);
 
 				} else { //第二条数据开始
-					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
-						//忽略记录
 
-						//先模拟一条上一次登出的记录
-						last_type = "login";
-						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
-						
-						//继续登入
-						last_type = type;
-						last_ts = ts;
-						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
-
-
-					}
 					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
 //
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+					}
+
+					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
+						//忽略记录
+
+					}
+
+					if (type.equals("login") && last_type.equals("logout")) {
+
+						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
 					}
 					if (type.equals("login") && last_type.equals("login")) {
 						//忽略记录
 						//先模拟一条当前登出的记录
 						type = "logout";
-						ts = System.currentTimeMillis();
-						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+						filterDay(last_ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
 
-						//继续登入
-						last_type = type;
-						last_ts = ts;
-						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+						last_type = "logout";
+						type = "login";
+//						last_ts = ts;
+						filterDay(ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
 
 					}
-					if (type.equals("login") && last_type.equals("logout")) {
 
-						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
-					}
 				}
 
 				last_type = type;
@@ -371,6 +362,18 @@ public class DeviceURouterRestBusinessFacadeService {
 		return vtos;
 	}
 
+
+	private int getOffSet(long ts, long currentZeroTime) {
+		long space = currentZeroTime - ts;
+		int offset = (int) (space)/(24 * 3600 * 1000);
+		if (space < 0) {
+			offset = -1;
+		}
+		if (offset > 5) {
+			offset = 5;
+		}
+		return offset;
+	}
 
 	/**
 	 *
@@ -512,7 +515,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
 //							logger.info("set login_ ts ==" + ts);
 						}
-						if (offset + 1 + i == 6)  {
+						if (offset + 1 + i >= 6)  {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
 							mdtos.add(dto);
 							vto.setDetail(mdtos);
