@@ -146,9 +146,8 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) Long gid,
-			@RequestParam(required = true) String wifi_ids,
-			@RequestParam(required = true) String group_ids) {
-		RpcResponseDTO<Boolean> grant = deviceGroupRpcService.grant(uid, gid, wifi_ids, group_ids);
+			@RequestParam(required = true) String wifi_ids) {
+		RpcResponseDTO<Boolean> grant = deviceGroupRpcService.grant(uid, gid, wifi_ids);
 		if(grant.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, grant.getPayload());
 		else
@@ -169,9 +168,8 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) long gid,
-			@RequestParam(required = true) String wifi_ids,
-			@RequestParam(required = true) String group_ids) {
-		RpcResponseDTO<Boolean> ungrant = deviceGroupRpcService.ungrant(uid, gid, wifi_ids, group_ids);
+			@RequestParam(required = true) String wifi_ids) {
+		RpcResponseDTO<Boolean> ungrant = deviceGroupRpcService.ungrant(uid, gid, wifi_ids);
 		if(ungrant.getErrorCode() == null)
 			SpringMVCHelper.renderJson(response, ungrant.getPayload());
 		else

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -224,7 +225,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
-	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids, String group_ids) {
+	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
@@ -250,7 +251,8 @@ public class DeviceGroupUnitFacadeRpcService{
 			}
 
 			//批量建立索引
-			deliverMessageService.sendDeviceGroupCreateIndexMessage(wifi_ids, group_ids);
+			deliverMessageService.sendDeviceGroupCreateIndexMessage(wifi_ids, gid,
+					WifiDeviceGroupAsynCreateIndexDTO.GROUP_INDEX_GRANT);
 
 		}
 
@@ -259,7 +261,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
-	public RpcResponseDTO<Boolean> ungrant(Integer uid, long gid, String wifi_ids, String group_ids) {
+	public RpcResponseDTO<Boolean> ungrant(Integer uid, long gid, String wifi_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
@@ -274,7 +276,8 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 
 		//批量建立索引
-		deliverMessageService.sendDeviceGroupCreateIndexMessage(wifi_ids, group_ids);
+		deliverMessageService.sendDeviceGroupCreateIndexMessage(wifi_ids, gid,
+				WifiDeviceGroupAsynCreateIndexDTO.GROUP_INDEX_UNGRANT);
 
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}

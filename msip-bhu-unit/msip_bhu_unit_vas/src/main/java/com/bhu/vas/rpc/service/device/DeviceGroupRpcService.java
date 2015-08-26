@@ -43,14 +43,14 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		return deviceGroupUnitFacadeRpcService.remove(uid, gids);
 	}
 	@Override
-	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids,String group_ids) {
-		logger.info(String.format("grant uid:%s gid:%s wifi_ids:%s grup_ids:%s",uid,gid,wifi_ids,group_ids));
-		return deviceGroupUnitFacadeRpcService.grant(uid, gid, wifi_ids,group_ids);
+	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
+		logger.info(String.format("grant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
+		return deviceGroupUnitFacadeRpcService.grant(uid, gid, wifi_ids);
 	}
 	@Override
-	public RpcResponseDTO<Boolean> ungrant(Integer uid, long gid,String wifi_ids, String group_ids) {
-		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s grup_ids:%s",uid,gid,wifi_ids,group_ids));
-		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids,group_ids);
+	public RpcResponseDTO<Boolean> ungrant(Integer uid, long gid,String wifi_ids) {
+		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
+		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids);
 	}
 
 	
