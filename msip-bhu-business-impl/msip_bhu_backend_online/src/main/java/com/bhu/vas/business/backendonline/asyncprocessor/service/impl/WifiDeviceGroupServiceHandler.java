@@ -122,36 +122,28 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("WifiDeviceGroupServiceHandler createDeviceGroupIndex message[%s]", message));
 		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
 		String wifiIdsStr = dto.getWifiIds();
-		String gidsStr = dto.getGroupIds();
+		String type = dto.getType();
+		Long gid = dto.getGid();
 
-		if(StringUtils.isEmpty(gidsStr)) return;
-		
 		List<String> wifiIds = new ArrayList<>();
+		List<List<Long>> groupIdList = new ArrayList<List<Long>>();
 		String[] wifiIdArray = wifiIdsStr.split(StringHelper.COMMA_STRING_GAP);
 		for (String wifiId : wifiIdArray) {
 			wifiIds.add(wifiId);
+
+			List<Long> gids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifiId);
+			if (type.equals(WifiDeviceGroupAsynCreateIndexDTO.GROUP_INDEX_GRANT)) {
+				gids.add(gid);
+			} else if (type.equals(WifiDeviceGroupAsynCreateIndexDTO.GROUP_INDEX_UNGRANT)) {
+				gids.remove(gid);
+			}
+			groupIdList.add(gids);
 		}
 		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
 
 
-		List<List<Long>> groupIdList = new ArrayList<List<Long>>();
 
-		String[] groupidArray = gidsStr.split(StringHelper.COMMA_STRING_GAP);
 
-		for (String singleGroupIds : groupidArray) {
-			List<Long> groupIds = new ArrayList<Long>();
-			String[] groupids_array = singleGroupIds.split(StringHelper.WHITESPACE_STRING_GAP);
-			for(String gid : groupids_array){
-				try {
-					if(!StringHelper.isEmpty(gid))
-						groupIds.add(Long.parseLong(gid));
-				} catch (Exception e) {
-					e.printStackTrace(System.out);
-					logger.error("createDeviceGroupIndex invoke exception : " + e.getMessage(), e);
-				}
-			}
-			groupIdList.add(groupIds);
-		}
 
 		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);
 

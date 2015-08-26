@@ -52,7 +52,8 @@ public class WifiDeviceOnlineActionLoader {
 				
 				//List<String> payloads = new ArrayList<>();
 				for(WifiDevice device:next){
-					if("84:82:f4:17:c2:94".equalsIgnoreCase(device.getId())){
+					//if("84:82:f4:17:c2:94".equalsIgnoreCase(device.getId()))
+					{
 						cmdPayload = CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId());
 								/*CMDBuilder.builderDeviceTerminalsQuery(device.getId(), 
 								CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.getNextSequence(), 

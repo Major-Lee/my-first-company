@@ -156,8 +156,10 @@ public class AsyncMsgHandleService {
 			List<String> payloads = new ArrayList<String>();
 			//boolean forceFirmwareUpdate = false;
 			if(isRouter){
-				//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端
+				//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
 				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
+				//获取设备系统信息
+				payloads.add(CMDBuilder.builderSysinfoQuery(dto.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 /*				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
 				if(settingState != null){

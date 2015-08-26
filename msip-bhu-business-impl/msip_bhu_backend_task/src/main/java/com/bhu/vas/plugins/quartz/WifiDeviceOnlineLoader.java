@@ -46,7 +46,6 @@ public class WifiDeviceOnlineLoader {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-
 	
 	public void init(){
 		bulk_success = 0;
@@ -76,7 +75,7 @@ public class WifiDeviceOnlineLoader {
 			//wifiDeviceIndexService.openIndexRefresh();
 			//wifiDeviceIndexService.destroy();
 		}
-		
+		wifiDeviceDataSearchService.refresh(false);
 		logger.info(String.format("WifiDeviceOnlineUser ended, total index [%s] bluk success [%s] fail [%s]", 
 				index_count, bulk_success, bulk_fail));
 	}
@@ -113,7 +112,8 @@ public class WifiDeviceOnlineLoader {
 			}
 			
 			if(!docs.isEmpty()){
-				wifiDeviceDataSearchService.getRepository().save(docs);
+				wifiDeviceDataSearchService.bulkIndex(docs);
+				//wifiDeviceDataSearchService.getRepository().save(docs);
 				/*boolean bulk_result = wifiDeviceIndexService.createIndexComponents(indexDtos);
 				if(bulk_result){
 					bulk_success++;

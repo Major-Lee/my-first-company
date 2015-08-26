@@ -9,9 +9,15 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 public class WifiDeviceGroupAsynCreateIndexDTO extends ActionDTO{
 
 
+    public static final String GROUP_INDEX_GRANT = "grant";
+
+    public static final String GROUP_INDEX_UNGRANT = "ungrant";
+
     private String wifiIds;
 
-    private String groupIds;
+    private long gid;
+
+    private String type;
 
 
     public String getWifiIds() {
@@ -22,12 +28,20 @@ public class WifiDeviceGroupAsynCreateIndexDTO extends ActionDTO{
         this.wifiIds = wifiIds;
     }
 
-    public String getGroupIds() {
-        return groupIds;
+    public long getGid() {
+        return gid;
     }
 
-    public void setGroupIds(String groupIds) {
-        this.groupIds = groupIds;
+    public void setGid(long gid) {
+        this.gid = gid;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
