@@ -313,13 +313,26 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
 					}
 				}
-			}
-			//兼容AP106P06V1.2.15Build8057版本以前的设备 升级发送的serial为10位 处理方式 截取第一位后面的内容作为任务id
-			else{
-				String serial_substring = serial.substring(1);
-				if(!StringUtils.isEmpty(serial)){
-					taskid = Long.parseLong(serial_substring);
+			}else{
+				char first = serial.charAt(0);
+				if(first == '1'){// refer CMDBuilder.builderFirmwareUpdateSerialno
+					//兼容AP106P06V1.2.15Build8057版本以前的设备 升级发送的serial为10位 处理方式 截取第一位后面的内容作为任务id
+					String serial_substring = serial.substring(1);
+					if(!StringUtils.isEmpty(serial)){
+						taskid = Long.parseLong(serial_substring);
+					}
+				}else{
+					try{
+						//可能是给老设备查询地理位置的serial溢出的值2147483647 
+						String mac = parserHeader.getMac().toLowerCase();
+						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
+						//地理位置都是系统发起的，所以不考虑任务状态更新，直接return
+						return;
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
 				}
+				
 			}
 		}	
 		
