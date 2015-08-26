@@ -72,10 +72,11 @@ public class WifiDeviceOnlineLoader {
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
 		}finally{
+			wifiDeviceDataSearchService.refresh(false);
 			//wifiDeviceIndexService.openIndexRefresh();
 			//wifiDeviceIndexService.destroy();
 		}
-		wifiDeviceDataSearchService.refresh(false);
+		
 		logger.info(String.format("WifiDeviceOnlineUser ended, total index [%s] bluk success [%s] fail [%s]", 
 				index_count, bulk_success, bulk_fail));
 	}
@@ -119,8 +120,8 @@ public class WifiDeviceOnlineLoader {
 					bulk_success++;
 				}else{
 					bulk_fail++;
-				}
-				index_count = index_count + indexDtos.size();*/
+				}*/
+				index_count += docs.size();
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

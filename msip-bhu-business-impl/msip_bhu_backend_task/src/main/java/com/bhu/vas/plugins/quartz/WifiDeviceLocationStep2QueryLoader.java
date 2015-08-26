@@ -17,7 +17,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 触发老设备的地理位置第二次查询
- * @author Edmond
+ * @author Edmond Lee
  *
  */
 public class WifiDeviceLocationStep2QueryLoader {

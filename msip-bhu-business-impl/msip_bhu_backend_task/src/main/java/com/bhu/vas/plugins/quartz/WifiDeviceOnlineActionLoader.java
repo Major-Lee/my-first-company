@@ -20,7 +20,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  * 每60分钟执行一次
  * 对所有在线商业wifi发送在线终端查询指令（此业务在商业wif【非uRouter】上线不发送触发终端上下线请求）
  * 如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
- * @author tangzichao
+ * @author Edmond Lee
  *
  */
 public class WifiDeviceOnlineActionLoader {

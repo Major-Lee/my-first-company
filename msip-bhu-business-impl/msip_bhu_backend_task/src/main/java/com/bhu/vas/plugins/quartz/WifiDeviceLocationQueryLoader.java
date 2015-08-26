@@ -17,7 +17,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * 对于地理位置没有的设备触发设备的地理位置查询
- * @author Edmond
+ * @author Edmond Lee
  *
  */
 public class WifiDeviceLocationQueryLoader {
