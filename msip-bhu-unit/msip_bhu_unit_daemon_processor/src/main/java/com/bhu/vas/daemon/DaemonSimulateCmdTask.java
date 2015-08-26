@@ -36,6 +36,7 @@ public class DaemonSimulateCmdTask extends TimerTask{
 				SessionInfo info = next.getValue();
 				if(info != null){
 					//if(info.canBeExecute(current)){
+					for(int i = 0;i<10;i++){
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 						//获取配置指令
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
@@ -74,6 +75,7 @@ public class DaemonSimulateCmdTask extends TimerTask{
 //					}else{
 //						unsended++;
 //					}
+					}
 				}else{
 					iter.remove();
 					removed++;
