@@ -305,10 +305,11 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 
-	public void sendDeviceGroupCreateIndexMessage(String wifiIds, String groupIds) {
+	public void sendDeviceGroupCreateIndexMessage(String wifiIds, long gid, String type) {
 		WifiDeviceGroupAsynCreateIndexDTO dto = new WifiDeviceGroupAsynCreateIndexDTO();
 		dto.setWifiIds(wifiIds);
-		dto.setGroupIds(groupIds);
+		dto.setGid(gid);
+		dto.setType(type);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
