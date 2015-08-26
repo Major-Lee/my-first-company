@@ -473,11 +473,14 @@ public class DeviceBusinessFacadeService {
 		 * 3:统计增量 移动设备的daily访问时长增量
 		 * 如果最后接入时间是今天才会记入daily访问时长
 		 */
-		if(DateTimeHelper.isSameDay(handset.getTs(), 
+/*		if(DateTimeHelper.isSameDay(handset.getTs(), 
 				System.currentTimeMillis())){
 			deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac, 
 					handset.getMac(), dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
-		}
+		}*/
+		
+		deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac, 
+				handset.getMac(), dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
 		/*HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_d_mac);
 		if(exist_handset_device_entity != null){
 			BeanUtils.copyProperties(dto, exist_handset_device_entity, HandsetDeviceDTO.copyIgnoreProperties);
