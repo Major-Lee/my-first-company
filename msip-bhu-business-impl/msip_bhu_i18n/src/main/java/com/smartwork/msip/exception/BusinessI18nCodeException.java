@@ -38,7 +38,7 @@ public class BusinessI18nCodeException extends RuntimeException{
 
 	@Override
 	public String getMessage() {
-		return LocalI18NMessageSource.getInstance().getMessage(this.errorCode.i18n());
+		return LocalI18NMessageSource.getInstance().getMessage(this.errorCode.i18n(),this.payload);
 		//return (this.errorCode.i18n());
 	}
 	

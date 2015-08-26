@@ -4,16 +4,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
-import com.bhu.vas.api.helper.*;
-import com.smartwork.msip.jdo.ResponseError;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
@@ -53,7 +56,7 @@ public class TaskFacadeService {
 	public WifiDeviceDownTaskCompleted taskExecuteCallback(long taskid,String state,String response){
 		WifiDeviceDownTask downtask = wifiDeviceDownTaskService.getById(taskid);
 		if(downtask == null) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_UNDEFINED);
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_UNDEFINED,new String[]{String.valueOf(taskid)});
 		}
 		/*if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Failed.equals(state)){
 			WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, state, response);

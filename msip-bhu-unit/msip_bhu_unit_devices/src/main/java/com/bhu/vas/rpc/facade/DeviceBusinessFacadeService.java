@@ -1402,6 +1402,7 @@ public class DeviceBusinessFacadeService {
 				return taskFacadeService.taskExecuteCallback(taskid, status,response);
 			}catch(BusinessI18nCodeException bex){
 				bex.printStackTrace(System.out);
+				System.out.println("~~~~~~~~:taskid"+taskid +" response:"+response);
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 				logger.error("DeviceBusinessFacadeService doTaskCallback exception", ex);
