@@ -326,6 +326,17 @@ public class DeviceURouterRestBusinessFacadeService {
 				} else { //第二条数据开始
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
+
+						//先模拟一条上一次登出的记录
+						last_type = "login";
+						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+						
+						//继续登入
+						last_type = type;
+						last_ts = ts;
+						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+
+
 					}
 					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
 //
@@ -333,6 +344,16 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 					if (type.equals("login") && last_type.equals("login")) {
 						//忽略记录
+						//先模拟一条当前登出的记录
+						type = "logout";
+						ts = System.currentTimeMillis();
+						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+
+						//继续登入
+						last_type = type;
+						last_ts = ts;
+						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+
 					}
 					if (type.equals("login") && last_type.equals("logout")) {
 

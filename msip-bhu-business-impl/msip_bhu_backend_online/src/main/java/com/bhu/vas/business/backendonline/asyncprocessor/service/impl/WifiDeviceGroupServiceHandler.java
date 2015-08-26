@@ -141,10 +141,6 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 		}
 		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
 
-
-
-
-
 		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);
 
 	}
