@@ -21,7 +21,7 @@ public enum OperationCMD {
 	ParamWifiSinffer("002","Param指令设备终端探测开启关闭","param",
 			"00001001%s0020000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
 	//3. 查询当前在线终端以sync的方式报到服务器
-	ParamQuerySyncDeviceOnlineTeminals("003","查询当前在线终端","param","00001001%s0010000000000"+"000000000006"+"<param><ITEM  wlan_user_sync=\"1\" /></param>"),		
+	ParamQuerySyncDeviceOnlineTeminals("003","查询当前在线终端","param","00001001%s0010000000000"+"000000000006"+"<param><ITEM  wlan_user_notify=\"disable\" wlan_user_sync=\"1\" /></param>"),		
 	
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",

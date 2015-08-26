@@ -106,9 +106,9 @@ public class WifiDeviceOnlineLoader {
 				//indexDtos.add(indexDto);
 				doc.setCount((int)count);
 				docs.add(doc);
-				if(count > 0){
+				/*if(count > 0){
 					logger.info(String.format("WifiDeviceOnlineUser index dto id[%s] count[%s]", doc.getId(), count));
-				}
+				}*/
 			}
 			
 			if(!docs.isEmpty()){

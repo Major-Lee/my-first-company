@@ -60,7 +60,8 @@ public class WifiDeviceOnlineActionLoader {
 								10, 
 								60);*/
 						DaemonHelper.daemonCmdDown(device.getId(), cmdPayload, daemonRpcService);
-						System.out.println(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
+						logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
+						//System.out.println(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
 					}
 					total++;
 				}
