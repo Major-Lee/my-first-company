@@ -314,7 +314,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
-				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
+//				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
@@ -494,7 +494,6 @@ public class DeviceURouterRestBusinessFacadeService {
 					//如果j >1 的时候 offset >= 0
 					for (int i = 1; i< j + 1 ; i++) {
 						// >>> j == 1
-
 						logger.info("iiiii===" + i);
 						URouterHdTimeLineVTO vto_ = vtos.get(offset - (j - i ));
 						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
