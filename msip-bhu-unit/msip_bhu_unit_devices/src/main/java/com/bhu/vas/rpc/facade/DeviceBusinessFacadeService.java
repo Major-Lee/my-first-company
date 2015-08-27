@@ -328,11 +328,13 @@ public class DeviceBusinessFacadeService {
 		long this_login_at = System.currentTimeMillis();
 		//HandsetDevice handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(handset == null){
+			last_login_at = this_login_at;
 			dto.setLast_wifi_id(wifiId_lowerCase);
 			dto.setTs(this_login_at);
 			HandsetStorageFacadeService.handsetComming(dto);
 			newHandset = true;
 		}else{
+			last_login_at = handset.getTs();
 			handset.setLast_wifi_id(wifiId_lowerCase);
 			handset.setTs(this_login_at);
 			handset.setAction(HandsetDeviceDTO.Action_Online);

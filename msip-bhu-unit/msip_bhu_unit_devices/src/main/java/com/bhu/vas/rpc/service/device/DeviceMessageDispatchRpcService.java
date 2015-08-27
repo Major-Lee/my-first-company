@@ -323,9 +323,11 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					}
 				}else{
 					try{
+						System.out.println(String.format("QueryDeviceLocationNotify msg ctx[%s] taskid[%s] payload[%s] header[%s]", ctx,taskid, payload, parserHeader));
 						//可能是给老设备查询地理位置的serial溢出的值2147483647 
 						String mac = parserHeader.getMac().toLowerCase();
 						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
+						
 						//地理位置都是系统发起的，所以不考虑任务状态更新，直接return
 						return;
 					}catch(Exception ex){
