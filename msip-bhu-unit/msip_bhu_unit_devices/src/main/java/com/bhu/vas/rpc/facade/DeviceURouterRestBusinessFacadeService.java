@@ -314,7 +314,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
-//				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
+				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
@@ -332,11 +332,11 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
 						//模拟一条登入的记录
+						last_type = "login";
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
 
 						last_type = "logout";
 						type = "login";
-
 						filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
 
 					}
@@ -450,7 +450,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto.setLogout_at(ts);
 						mdtos.add(dto);
 					} else {
-						if (last_ts - ts < 15 * 60 * 1000) { //小于15分钟的记录
+						if (last_ts - ts < 15 * 60 * 1000 && last_ts -ts > 0) { //小于15分钟的记录
 							//忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
 						} else {
