@@ -451,7 +451,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto.setLogout_at(ts);
 						mdtos.add(dto);
 					} else {
-						if (last_ts - ts < 15 * 60 * 1000 7) { //小于15分钟的记录
+						if (last_ts - ts < 15 * 60 * 1000) { //小于15分钟的记录
 							//忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
 						} else {
