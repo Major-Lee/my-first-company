@@ -197,8 +197,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			
 			if(canOperateable != null){
 				if(canOperateable.booleanValue()){
+					//existsFilter 字段值不为空
 					boolfilter.must(FilterBuilders.existsFilter(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE));//.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
 				}else{
+					//existsFilter 字段值为空
 					boolfilter.must(FilterBuilders.missingFilter(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE));//.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
 				}
 			}
