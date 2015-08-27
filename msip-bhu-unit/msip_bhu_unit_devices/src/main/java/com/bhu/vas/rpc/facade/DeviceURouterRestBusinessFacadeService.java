@@ -433,7 +433,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
 //				if (type.equals("login") && last_type.equals("logout")) { //正常流程
-				if (HANDSET_LOGOUT_TYPE.equals(type)) { //正常流程
+				if (HANDSET_LOGIN_TYPE.equals(type)) { //正常流程
 					if (first) { // last_type == null
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogin_at(ts);
