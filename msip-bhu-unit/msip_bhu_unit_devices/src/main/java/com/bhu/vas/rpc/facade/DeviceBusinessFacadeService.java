@@ -66,7 +66,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -1420,6 +1419,7 @@ public class DeviceBusinessFacadeService {
 	 * @param response
 	 * @param mac
 	 * @param taskid
+	 * TODO:taskQueryOldDeviceLocationNotifyProcessor mac[84:82:f4:1a:c3:00] taskid[7298] serial[2147483647] update2redis successfully
 	 */
 	public void taskQueryOldDeviceLocationNotifyProcessor(String ctx, String response, String mac, long taskid){
 		System.out.println(String.format("taskQueryOldDeviceLocationNotifyProcessor mac[%s] taskid[%s]", mac,taskid));
