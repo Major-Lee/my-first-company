@@ -94,7 +94,10 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	private static final long IGNORE_LOGIN_TIME_SPACE = 15 * 60 * 1000L;
 
-	private static final long DAY_TIME_MILLION_SECOND = 24 * 3600 * 1000L;
+	private static final int DAY_TIME_MILLION_SECOND = 24 * 3600 * 1000;
+
+	private static final String HANDSET_LOGIN_TYPE = "login";
+	private static final String HANDSET_LOGOUT_TYPE = "logout";
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -304,7 +307,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {
 				long ts = log.getTs();
 				long space = currentZeroTime - ts;
-				int offset = (int) (space)/(24 * 3600 * 1000);
+				int offset = (int) (space)/(DAY_TIME_MILLION_SECOND);
 				if (space < 0) {
 					offset = -1;
 				}
@@ -314,7 +317,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
-				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
+//				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
@@ -323,37 +326,35 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				} else { //第二条数据开始
 
-					if (type.equals("logout") && last_type.equals("login")) { //新的的登出记录
-//
+					if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //新的的登出记录
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
-
 					}
 
-					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
+					if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) { //连续两条登出
 						//忽略记录
 						//模拟一条登入的记录
 //						last_type = "logout";
-						type = "login";
+						type = HANDSET_LOGIN_TYPE;
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
 
-						last_type = "login";
-						type = "logout";
+						last_type = HANDSET_LOGIN_TYPE;
+						type = HANDSET_LOGOUT_TYPE;
 						filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
 
 					}
 
-					if (type.equals("login") && last_type.equals("logout")) {
+					if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) {
 
 						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
 					}
-					if (type.equals("login") && last_type.equals("login")) {
+					if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) {
 						//忽略记录
 						//先模拟一条当前登出的记录
-						type = "logout";
+						type = HANDSET_LOGOUT_TYPE;
 						filterDay(last_ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
 
-						last_type = "logout";
-						type = "login";
+						last_type = HANDSET_LOGOUT_TYPE;
+						type = HANDSET_LOGIN_TYPE;
 //						last_ts = ts;
 						filterDay(ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
 
@@ -374,7 +375,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	private int getOffSet(long ts, long currentZeroTime) {
 		long space = currentZeroTime - ts;
-		int offset = (int) (space)/(24 * 3600 * 1000);
+		int offset = (int) (space)/(DAY_TIME_MILLION_SECOND);
 		if (space < 0) {
 			offset = -1;
 		}
@@ -411,7 +412,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		long spaceTime = last_ts - ts_zero_at;
 		//获取终端连续在线的时间段j天
-		int j = (int)spaceTime / (24 * 3600 * 1000);
+		int j = (int)spaceTime / (DAY_TIME_MILLION_SECOND);
 		if (j >= 6) {
 			j = 6;
 		}
@@ -432,7 +433,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
 //				if (type.equals("login") && last_type.equals("logout")) { //正常流程
-				if (type.equals("login")) { //正常流程
+				if (HANDSET_LOGOUT_TYPE.equals(type)) { //正常流程
 					if (first) { // last_type == null
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogin_at(ts);
@@ -444,14 +445,14 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 
-				if (type.equals("logout") ) { //正常流程
+				if (HANDSET_LOGOUT_TYPE.equals(type)) { //正常流程
 
 					if (first) { //last_type == null
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(ts);
 						mdtos.add(dto);
 					} else {
-						if (last_ts - ts < 15 * 60 * 1000) { //小于15分钟的记录
+						if (last_ts - ts < IGNORE_LOGIN_TIME_SPACE) { //小于15分钟的记录
 							//忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
 						} else {
@@ -470,7 +471,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
-				if (type.equals("logout") && last_type.equals("login")) { //如果上一次正常退出
+				if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //如果上一次正常退出
 
 					//有隔天记录的拆分第一条记录 >>>
 					URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
@@ -490,7 +491,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				//隔天记录
 				//补齐上一天的最后一条login记录为00:00:00，当天的第一条记录11:59:59
-				if (type.equals("login") && last_type.equals("logout")) { ////隔天仍在线
+				if ( HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) { ////隔天仍在线
 
 					//如果j >1 的时候 offset >= 0
 					for (int i = 1; i< j + 1 ; i++) {
