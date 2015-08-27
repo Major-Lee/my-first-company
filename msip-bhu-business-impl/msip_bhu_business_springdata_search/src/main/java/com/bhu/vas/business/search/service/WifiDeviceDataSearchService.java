@@ -196,7 +196,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 			}
 			
 			if(canOperateable != null){
-				boolfilter.must(FilterBuilders.existsFilter(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE));//.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
+				if(canOperateable.booleanValue()){
+					boolfilter.must(FilterBuilders.existsFilter(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE));//.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
+				}else{
+					boolfilter.must(FilterBuilders.missingFilter(BusinessIndexDefine.WifiDevice.Field.ORIGVAPMODULE));//.termFilter(BusinessIndexDefine.WifiDevice.Field.NVD, newVersionDevice ? 1 : 0));
+				}
 			}
 			
 			if(StringUtils.isNotEmpty(region)){
