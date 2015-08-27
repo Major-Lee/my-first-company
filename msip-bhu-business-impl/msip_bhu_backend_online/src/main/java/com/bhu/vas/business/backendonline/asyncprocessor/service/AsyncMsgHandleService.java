@@ -574,9 +574,6 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 * modified by Edmond Lee for handset storage
 	 */
-	public void handsetDeviceSyncHandle(String message){
-		
-	}
 /*	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
 		
