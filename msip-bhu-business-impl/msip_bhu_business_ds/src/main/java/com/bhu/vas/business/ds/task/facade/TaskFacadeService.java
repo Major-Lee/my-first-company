@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.task.facade;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -93,21 +94,15 @@ public class TaskFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_CHANNELTASKID_ILLEGAL);
 			}
 		}
-		
-		/*if(StringUtils.isNotEmpty(downtask.getChannel_taskid()) && StringUtils.isNotEmpty(downtask.getChannel()) ){//外部应用触发任务
-			//看看WifiDeviceDownTaskService是否存在此任务
-			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnEqualTo("channel_taskid", downtask.getChannel_taskid()).andColumnEqualTo("channel", downtask.getChannel());
-			int count  = wifiDeviceDownTaskService.countByModelCriteria(mc);
-			//if(count > 0) return RpcResponseCodeConst.Task_Already_Exist;
-			if(count > 0)
-				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_ALREADY_EXIST);
-			count  = wifiDeviceDownTaskCompletedService.countByModelCriteria(mc);
-			//if(count > 0) return RpcResponseCodeConst.Task_Already_Completed;
-			if(count > 0) 
-				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_ALREADY_COMPLETED);
-		}*/
-		downtask = wifiDeviceDownTaskService.insert(downtask);
+		if(WifiDeviceHelper.isAutoCompletedTask(downtask.getOpt())){
+			Date current = new Date();
+			downtask.setCreated_at(current);
+			downtask.setUpdated_at(current);
+			WifiDeviceDownTaskCompleted completed = WifiDeviceDownTaskCompleted.fromWifiDeviceDownTask(downtask, WifiDeviceDownTask.State_Done, "System AutoCompleted");
+			wifiDeviceDownTaskCompletedService.insert(completed);
+		}else{
+			downtask = wifiDeviceDownTaskService.insert(downtask);
+		}
 	}
 	
 	
@@ -421,7 +416,6 @@ public class TaskFacadeService {
 			downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(),extparams));
 		}
 		this.taskComming(downTask);
-		//this.taskUpdate(downTask);
 		return downTask;
 	}
 	

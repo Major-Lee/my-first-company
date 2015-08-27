@@ -83,6 +83,18 @@ public class WifiDeviceHelper {
 		}
 	}
 	
+	
+	/**
+	 * 有些指令发送下去后设备端没有响应结果，此类指令下发后会自动进入完成任务表中
+	 * @param opt
+	 * @return
+	 */
+	/*public static boolean isAutoCompletedTask(OperationCMD opt){
+		return OperationCMD.DeviceModuleUpgrade == opt;
+	}*/
+	public static boolean isAutoCompletedTask(String optno){
+		return OperationCMD.DeviceModuleUpgrade.getNo().equals(optno);
+	}
 	/**
 	 * opt = OperationCMD.ModifyDeviceSetting
 	 * 		subopt = OperationDS.
