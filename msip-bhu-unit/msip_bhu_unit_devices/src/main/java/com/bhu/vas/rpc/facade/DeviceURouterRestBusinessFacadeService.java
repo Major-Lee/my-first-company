@@ -332,11 +332,12 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
 						//模拟一条登入的记录
-						last_type = "login";
+//						last_type = "logout";
+						type = "login";
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
 
-						last_type = "logout";
-						type = "login";
+						last_type = "login";
+						type = "logout";
 						filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
 
 					}
@@ -450,7 +451,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto.setLogout_at(ts);
 						mdtos.add(dto);
 					} else {
-						if (last_ts - ts < 15 * 60 * 1000 && last_ts -ts > 0) { //小于15分钟的记录
+						if (last_ts - ts < 15 * 60 * 1000 7) { //小于15分钟的记录
 							//忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
 						} else {
