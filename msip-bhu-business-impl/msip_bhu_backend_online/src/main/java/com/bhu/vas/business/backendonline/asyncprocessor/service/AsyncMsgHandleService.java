@@ -500,7 +500,7 @@ public class AsyncMsgHandleService {
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());
 		
 		//终端统计
-		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())), 
+		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())),
 				DeviceStatistics.Statis_HandsetDevice_Type);
 		
 		//如果是urouter设备 才会发push
@@ -550,6 +550,13 @@ public class AsyncMsgHandleService {
 	}
 
 
+	/**
+	 * 设备上线后，sync会同步在线的终端，会通知终端上线。
+	 *
+	 * 设备下线的时候，会通知终端下线；
+	 *
+	 * @param message
+	 */
 	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
 		HandsetDeviceSyncDTO syncDto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
