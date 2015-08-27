@@ -546,6 +546,7 @@ public class DeviceBusinessFacadeService {
 	 * 		1:移动设备连接wifi设备的接入记录(非流水) (backend)
 	 * 		2:移动设备连接wifi设备的流水log (backend)
 	 * 		3:wifi设备接入移动设备的接入数量 (backend)
+	 * 5. 终端
 	 * @param ctx
 	 * @param dto
 	 */
@@ -578,10 +579,13 @@ public class DeviceBusinessFacadeService {
 				//1:wifi设备对应handset在线列表redis 重新写入
 				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
 				cursor++;
+
 			}
 			HandsetStorageFacadeService.handsetsComming(dtos);
 			//相关统计数据，业务日志，终端接入流水日志
-			//deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, dtos);
+			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, dtos);
+
+
 		}
 	}
 	
@@ -594,7 +598,6 @@ public class DeviceBusinessFacadeService {
 	 * 2:根据坐标提取地理位置详细信息 (backend)
 	 * 3:任务callback
 	 * @param ctx
-	 * @param payload
 	 * @param wifiId
 	 * @param taskid
 	 */

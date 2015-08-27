@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Created by bluesand on 6/24/15.
  */
-public class Test {
+public class HandsetTest {
 
     public static void main(String[] args){
 
-        long ts= 1440559762541L;
+        long ts= 1440507993560L;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
         System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
         System.out.println(getDateZeroTime(new Date()).getTime());

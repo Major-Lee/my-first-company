@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.business.asyn.spring.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,25 +38,6 @@ import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
-import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
-import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
-import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
@@ -517,7 +500,7 @@ public class AsyncMsgHandleService {
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());
 		
 		//终端统计
-		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())), 
+		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())),
 				DeviceStatistics.Statis_HandsetDevice_Type);
 		
 		//如果是urouter设备 才会发push
@@ -565,7 +548,27 @@ public class AsyncMsgHandleService {
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
 	}
-	
+
+
+	/**
+	 * 设备上线后，sync会同步在线的终端，会通知终端上线。
+	 *
+	 * 设备下线的时候，会通知终端下线；
+	 *
+	 * @param message
+	 */
+	public void handsetDeviceSyncHandle(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
+		HandsetDeviceSyncDTO syncDto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
+
+		for (HandsetDeviceDTO dto : syncDto.getDtos()) {
+			wifiHandsetDeviceRelationMService.addRelation(syncDto.getMac(), dto.getMac(),
+					new Date(dto.getTs()));
+		}
+
+	}
+
+
 	/**
 	 * 移动设备连接状态sync
 	 * 1:清除wifi设备对应handset在线列表redis 并重新写入 (backend)
@@ -578,9 +581,6 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 * modified by Edmond Lee for handset storage
 	 */
-	public void handsetDeviceSyncHandle(String message){
-		
-	}
 /*	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
 		

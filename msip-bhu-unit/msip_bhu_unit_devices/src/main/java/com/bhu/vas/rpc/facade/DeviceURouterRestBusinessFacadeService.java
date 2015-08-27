@@ -314,7 +314,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
-//				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
+				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
@@ -332,11 +332,12 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (type.equals("logout") && last_type.equals("logout")) { //连续两条登出
 						//忽略记录
 						//模拟一条登入的记录
+//						last_type = "logout";
+						type = "login";
 						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
 
-						last_type = "logout";
-						type = "login";
-
+						last_type = "login";
+						type = "logout";
 						filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
 
 					}
