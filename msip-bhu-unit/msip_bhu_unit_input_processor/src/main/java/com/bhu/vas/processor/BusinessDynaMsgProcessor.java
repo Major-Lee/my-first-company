@@ -42,7 +42,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
 	private int[] hits;
 	//private int hash_prime = 50;
-	private int hash_prime = 300;
+	private int hash_prime = 50;
 	private int per_threads = 1;
 	//private static String Online_Prefix = "00000001";
 	/*private static final int DeviceOffline_Prefix = 3;
