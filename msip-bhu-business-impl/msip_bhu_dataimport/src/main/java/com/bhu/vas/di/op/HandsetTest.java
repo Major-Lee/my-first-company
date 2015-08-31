@@ -18,7 +18,7 @@ public class HandsetTest {
 
     public static void main(String[] args){
 
-        long ts= 1440751353047L ;
+        long ts= 1440748137881L ;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
 //        System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
 //        System.out.println(getDateZeroTime(new Date()).getTime());
@@ -36,7 +36,7 @@ public class HandsetTest {
         long currentTime = System.currentTimeMillis();
         long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
-        ts = 1440748137881L;
+        ts = 1440751353047L;
         long space = currentZeroTime - ts;
 
         int  offset = (int)(space/(24 * 3600 * 1000));
@@ -50,12 +50,14 @@ public class HandsetTest {
         System.out.println(offset);
 
 
+        long last_ts = 1440748137881L;
+
         //如果当前在线，当前时间与上一次登录时间相隔数天
         String tsZeroStr = DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.shortDateFormat);
 
         long ts_zero_at =  DateTimeHelper.getDateLongTime(tsZeroStr, DateTimeHelper.shortDateFormat);
 
-        long spaceTime = currentTime - ts_zero_at;
+        long spaceTime = last_ts - ts_zero_at;
 
         System.out.println(spaceTime);
 
