@@ -418,7 +418,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			j = 6;
 		}
 
-		logger.info("j====" + j);
+		logger.info("ts["+ts+"],last_ts["+last_ts+"], type["+type+"], last_type["+last_type+"], offset["+offset+"],j["+j+"]");
 		try {
 
 			if (j == 0) { //当天记录
@@ -478,20 +478,17 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (mdtos == null) {
 						mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 					}
-//					if (HANDSET_LOGIN_TYPE.equals(type)) { //正常流程
-//						//忽略只有第一条是logout的记录
-//					}
-//
-//					if (HANDSET_LOGOUT_TYPE.equals(type)) {
-//						dto = new WifiHandsetDeviceItemDetailMDTO();
-//						dto.setLogin_at(ts);
-//						dto.setLogout_at(0);
-//						mdtos.add(dto);
-//					}
-					dto = new WifiHandsetDeviceItemDetailMDTO();
-					dto.setLogin_at(ts);
-					dto.setLogout_at(0);
-					mdtos.add(dto);
+
+					if (HANDSET_LOGOUT_TYPE.equals(type)) {
+						dto = new WifiHandsetDeviceItemDetailMDTO();
+						dto.setLogout_at(ts);
+						mdtos.add(dto);
+					}
+
+					if (HANDSET_LOGIN_TYPE.equals(type)) {
+						//忽略
+					}
+
 				}
 
 				if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //如果上一次正常退出
