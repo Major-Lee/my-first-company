@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.smartwork.msip.cores.helper.*;
+import org.apache.xpath.operations.Equals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -470,6 +471,24 @@ public class DeviceURouterRestBusinessFacadeService {
 			if (j > 0) {
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
+
+				if (first) { //隔天的第一条记录
+					URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
+					List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
+					if (mdtos == null) {
+						mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+					}
+					if (HANDSET_LOGIN_TYPE.equals(type)) { //正常流程
+						dto = new WifiHandsetDeviceItemDetailMDTO();
+						dto.setLogin_at(ts);
+						dto.setLogout_at(0);
+						mdtos.add(dto);
+					}
+
+					if (HANDSET_LOGOUT_TYPE.equals(type)) {
+						//忽略只有第一条是logout的记录
+					}
+				}
 
 				if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //如果上一次正常退出
 

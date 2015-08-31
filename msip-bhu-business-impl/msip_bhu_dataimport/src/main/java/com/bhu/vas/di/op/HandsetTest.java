@@ -18,20 +18,27 @@ public class HandsetTest {
 
     public static void main(String[] args){
 
-        long ts= 1440655348272L;
+        long ts= 1440751353047L ;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
-        System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
-        System.out.println(getDateZeroTime(new Date()).getTime());
-
-        System.out.println((int)(1439740800779L - 1439783798513L) / (24 * 3600 * 1000));
+//        System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
+//        System.out.println(getDateZeroTime(new Date()).getTime());
+//
+//        System.out.println((int)(1439740800779L - 1439783798513L) / (24 * 3600 * 1000));
 //        System.out.println(DateTimeExtHelper.getSevenDateOfWeek());
 //        long currentTime = System.currentTimeMillis();
 //        String currentTimeZero = DateTimeHelper.formatDate(new Date(), DateTimeHelper.shortDateFormat);
 //        long currentZeroTime = getDateZeroTime(new Date()).getTime();
 //        System.out.println(DateTimeHelper.formatDate(new Date(currentZeroTime), DateTimeHelper.longDateFormat));
 //        System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
-        long space = 1439740800779L - 1439783798513L;
-        System.out.println(1439740800779L - 1439783798513L);
+//        long space = 1439740800779L - 1439783798513L;
+//        System.out.println(1439740800779L - 1439783798513L);
+
+        long currentTime = System.currentTimeMillis();
+        long currentZeroTime = getDateZeroTime(new Date()).getTime();
+
+        ts = 1440748137881L;
+        long space = currentZeroTime - ts;
+
         int  offset = (int)(space/(24 * 3600 * 1000));
         if (space < 0) {
             offset = -1;
@@ -43,7 +50,21 @@ public class HandsetTest {
         System.out.println(offset);
 
 
-        System.out.println(DateTimeHelper.parseDate("2015-08-08 23:00:00", DateTimeHelper.longDateFormat).getTime());
+        //如果当前在线，当前时间与上一次登录时间相隔数天
+        String tsZeroStr = DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.shortDateFormat);
+
+        long ts_zero_at =  DateTimeHelper.getDateLongTime(tsZeroStr, DateTimeHelper.shortDateFormat);
+
+        long spaceTime = currentTime - ts_zero_at;
+
+        System.out.println(spaceTime);
+
+        int j = (int)spaceTime / (24 * 3600 * 1000);
+        if (j >= 6) {
+            j = 6;
+        }
+
+        System.out.println("j====" + j);
 
 //        String dateStr = "2015-08-06 19:01:35";
 //        Date date = DateTimeHelper.parseDate(dateStr,DateTimeHelper.shortDateFormat);
