@@ -5,6 +5,7 @@ import java.util.*;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
 import com.smartwork.msip.cores.helper.*;
 import org.apache.xpath.operations.Equals;
 import org.slf4j.Logger;
@@ -995,7 +996,29 @@ public class DeviceURouterRestBusinessFacadeService {
 			//黑名单列表
 			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
 			if(acl_dto != null){
-				vto.setBlock_macs(acl_dto.getMacs());
+
+				List<String> macs = acl_dto.getMacs();
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(acl_dto.getMacs());
+
+				List<URouterDeviceConfigNVTO> blocks = new ArrayList<URouterDeviceConfigNVTO>();
+
+				int i = 0;
+
+				if (macs != null) {
+					for (String dto_mac: macs) {
+						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
+						nvto.setMac(dto_mac);
+						HandsetDeviceDTO dto = handsets.get(i);
+						if (dto != null) {
+							nvto.setN(dto.getDhcp_name());
+						}
+						i++;
+						blocks.add(nvto);
+					}
+				}
+
+				
+				vto.setBlock_macs(blocks);
 			}
 			//终端别名
 			List<WifiDeviceSettingMMDTO> mm_dtos = setting_dto.getMms();

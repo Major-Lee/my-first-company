@@ -20,8 +20,9 @@ public class URouterDeviceConfigVTO implements Serializable{
 	private String admin_pwd;
 	//vap 密码
 	private String vap_pwd;
-	//黑名单列表macs
-	private List<String> block_macs;
+//	//黑名单列表macs
+//	private List<String> block_macs;
+	private List<URouterDeviceConfigNVTO> block_macs;
 	//终端限速列表
 	private List<URouterDeviceConfigRateControlVTO> rcs;
 	//终端别名列表
@@ -68,12 +69,15 @@ public class URouterDeviceConfigVTO implements Serializable{
 	public void setVap_pwd(String vap_pwd) {
 		this.vap_pwd = vap_pwd;
 	}
-	public List<String> getBlock_macs() {
+
+	public List<URouterDeviceConfigNVTO> getBlock_macs() {
 		return block_macs;
 	}
-	public void setBlock_macs(List<String> block_macs) {
+
+	public void setBlock_macs(List<URouterDeviceConfigNVTO> block_macs) {
 		this.block_macs = block_macs;
 	}
+
 	public List<URouterDeviceConfigRateControlVTO> getRcs() {
 		return rcs;
 	}
