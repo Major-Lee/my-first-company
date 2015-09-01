@@ -5,6 +5,7 @@ import java.io.Serializable;
 /** 终端名称
  * Created by bluesand on 8/31/15.
  */
+@SuppressWarnings("serial")
 public class URouterDeviceConfigNVTO  implements Serializable {
 
     private String mac;
