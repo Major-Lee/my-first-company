@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
+	<!--  
+	<property name="log.base" 		value="/BHUData/logs/backendonline/backendonline" />
+	-->
+	<property name="log.base" 		value="/Users/tangzichao/work/document" />
+	<Property name="datalog.base" 	value="/BHUData/bulogs/actionlogs/business-data-action" />
+	<Property name="flowlog.base" 	value="/BHUData/bulogs/flowlogs/business-data-flow" />
+	<!-- 
+	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
+	 -->
+	<jmxConfigurator />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<Encoding>UTF-8</Encoding>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+	<!--  
+	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+	-->
+	
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator class="com.bhu.vas.business.backendonline.asyncprocessor.ThreadNameBasedDiscriminator"/>
+    	<sift>
+    		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<Encoding>UTF-8</Encoding>
+				<File>${log.base}.${hashid}.log</File>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<FileNamePattern>${log.base}.${hashid}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+				</rollingPolicy>
+				<layout class="ch.qos.logback.classic.PatternLayout">
+					<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+				</layout>
+			</appender>
+		</sift>
+    </appender>
+    
+	<!--
+	<appender name="sqllogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.sqllog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.sqllog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>	
+			-->
+	<appender name="actionlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${datalog.base}.actionlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${datalog.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>	
+	
+	<appender name="wifideviceflowlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${flowlog.base}.wifideviceflowlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${datalog.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>	
+	<!--
+	<logger name="java.sql" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="sqllogfile" />
+	</logger>
+-->
+	<logger name="com.bhu.vas.business.logger.BusinessStatisticsLogger" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="actionlogfile" />
+	</logger>
+	
+	<logger name="com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="wifideviceflowlogfile" />
+	</logger>
+	
+	<logger name="com.bhu.vas.business.backendonline.asyncprocessor" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="SIFT" />
+	</logger>
+	
+	<logger name="com.bhu.vas.push.business" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="SIFT" />
+	</logger>
+	<!-- 
+	<logger name="com.wecite.toplines.business.asyn.web.activemq.queue.consumer" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="stdout" />
+		<appender-ref ref="actionlogfile" />
+	</logger>
+	<logger name="com.wecite.toplines.business.asyn.web.handler" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="stdout" />
+		<appender-ref ref="actionlogfile" />
+	</logger>
+	 -->
+	<!-- 
+	<logger name="com.et.msip.business">
+		<level value="INFO" />
+	</logger>
+ 	-->
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="SIFT" />
+	</root> 
+</configuration>
+

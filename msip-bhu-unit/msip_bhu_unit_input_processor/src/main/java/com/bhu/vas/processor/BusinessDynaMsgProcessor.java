@@ -11,6 +11,7 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
+import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -137,9 +139,13 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 				}
 				if(ParserHeader.Transfer_Prefix == type){
-					if(headers.getMt() == 0 && headers.getSt()==1){//设备上线
+					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
+						DynamicLogWriter.doLogger(headers.getMac(), headers.getMac());
 						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
 						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+					}
+					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
+						DynamicLogWriter.doLogger(headers.getMac(), payload);
 					}
 					/*if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理
 						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
