@@ -1005,8 +1005,6 @@ public class DeviceURouterRestBusinessFacadeService {
 				int i = 0;
 
 				if (macs != null) {
-					logger.info("block_size" + blocks.size());
-					logger.info("macs" + macs.size());
 					for (String dto_mac: macs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
 						nvto.setMac(dto_mac);
