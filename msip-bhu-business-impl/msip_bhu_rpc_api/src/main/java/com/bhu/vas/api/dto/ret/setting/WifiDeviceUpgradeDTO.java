@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 5/14/15.
  */
+@SuppressWarnings("serial")
 public class WifiDeviceUpgradeDTO implements Serializable {
 
     private String upgrade_begin;

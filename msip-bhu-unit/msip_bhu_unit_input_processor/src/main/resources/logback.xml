@@ -3,7 +3,7 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	<property name="log.base" 		value="/BHUData/logs/unitlogs/msip-unit-input/${consumer.instanceno}/inputprocessor" />
-	<Property name="flowlog.base" 	value="/BHUData/bulogs/flowlogs/business-data-flow" />
+	<Property name="charging.base" 	value="/BHUData/bulogs/charginglogs/business-charging" />
 	<jmxConfigurator />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -48,9 +48,9 @@
     	<sift>
     		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
 				<Encoding>UTF-8</Encoding>
-				<File>${flowlog.base}.${hashid}.log</File>
+				<File>${charging.base}.${hashid}.log</File>
 				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-					<FileNamePattern>${flowlog.base}.${hashid}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+					<FileNamePattern>${charging.base}.${hashid}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
 				</rollingPolicy>
 				<layout class="ch.qos.logback.classic.PatternLayout">
 					<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
