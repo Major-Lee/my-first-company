@@ -353,6 +353,7 @@ public class URouterDeviceController extends BaseController{
 		
 		RpcResponseDTO<URouterDeviceConfigVTO> rpcResponse = deviceURouterRestRpcService.urouterConfigs(uid, mac);
 		if(rpcResponse.getErrorCode() == null){
+			logger.info("ttt"+ rpcResponse.getPayload());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));

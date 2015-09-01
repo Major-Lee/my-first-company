@@ -1004,16 +1004,21 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				int i = 0;
 
-				for (String dto_mac: macs) {
-					URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
-					nvto.setMac(dto_mac);
-					HandsetDeviceDTO dto = handsets.get(i);
-					if (dto != null) {
-						nvto.setN(dto.getDhcp_name());
+				if (macs != null) {
+					logger.info("block_size" + blocks.size());
+					logger.info("macs" + macs.size());
+					for (String dto_mac: macs) {
+						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
+						nvto.setMac(dto_mac);
+						HandsetDeviceDTO dto = handsets.get(i);
+						if (dto != null) {
+							nvto.setN(dto.getDhcp_name());
+						}
+						i++;
+						blocks.add(nvto);
 					}
-					i++;
-					blocks.add(nvto);
 				}
+
 				
 				vto.setBlock_macs(blocks);
 			}
