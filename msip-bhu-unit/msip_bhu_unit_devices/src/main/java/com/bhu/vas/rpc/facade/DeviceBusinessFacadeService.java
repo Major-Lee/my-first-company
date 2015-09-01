@@ -1093,7 +1093,7 @@ public class DeviceBusinessFacadeService {
 				}
 				if(!cmdPayloads.isEmpty()){
 					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayloads);
-					System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+cmdPayloads.size());
+					//System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+cmdPayloads.size());
 				}
 				deliverMessageService.sendWifiDeviceModuleOnlineMessage(mac);
 			}
@@ -1427,7 +1427,7 @@ public class DeviceBusinessFacadeService {
 	 * TODO:taskQueryOldDeviceLocationNotifyProcessor mac[84:82:f4:1a:c3:00] taskid[7298] serial[2147483647] update2redis successfully
 	 */
 	public void taskQueryOldDeviceLocationNotifyProcessor(String ctx, String response, String mac, long taskid){
-		System.out.println(String.format("taskQueryOldDeviceLocationNotifyProcessor mac[%s] taskid[%s]", mac,taskid));
+		System.out.println(String.format("taskQueryOldDeviceLocationNotifyProcessor mac[%s] taskid[%s] response[%s]", mac,taskid,response));
 		try{
 			QuerySerialReturnDTO retDTO = RPCMessageParseHelper.parserMessageByDom4j(response, QuerySerialReturnDTO.class);
 			if(StringUtils.isNotEmpty(retDTO.getSerial())){//如果此类消息没有serial则忽略掉

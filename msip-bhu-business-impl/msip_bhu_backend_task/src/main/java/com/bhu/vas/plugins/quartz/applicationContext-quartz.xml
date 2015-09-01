@@ -25,9 +25,9 @@
 				<!-- 每隔60分钟执行一次 
 				<ref bean="wifiDeviceOnlineCmdDownLoaderCronTrigger" />		
 				-->
-				<!-- 每隔3分钟执行一次 
+				<!-- 每隔5分钟执行一次 -->
 				<ref bean="wifiDeviceLocationStep2QueryLoaderCronTrigger" />		
-				-->
+				
 				<!-- 每一个小时执行一次 -->
 				<ref bean="wifiDeviceOnlineActionLoaderCronTrigger" />		
 				
@@ -158,7 +158,7 @@
 	<!-- Cron式Trigger定义 -->
 	<bean id="wifiDeviceLocationStep2QueryLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="wifiDeviceLocationStep2QueryLoaderCronJobDetail" />
-		<!-- 每隔5分钟执行一次   0 0/1 * * * ?  -->
+		<!-- 每隔5分钟执行一次   0 0/5 * * * ?  -->
 		<property name="cronExpression" value="0 0/3 * * * ?" />
 	</bean>
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->

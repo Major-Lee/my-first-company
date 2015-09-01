@@ -349,7 +349,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 
 	
 	public void deviceVapModuleResponse(String ctx, String payload, ParserHeader parserHeader){
-		System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]", ctx,parserHeader,payload);
+		//System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]", ctx,parserHeader,payload);
 		long taskid = parserHeader.getTaskid();
 		String mac = parserHeader.getMac().toLowerCase();
 		switch(parserHeader.getVaptype()){
