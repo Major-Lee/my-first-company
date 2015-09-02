@@ -1,13 +1,16 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
-import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
-import com.smartwork.msip.cores.helper.*;
-import org.apache.xpath.operations.Equals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -58,6 +62,7 @@ import com.bhu.vas.api.vto.URouterWSHotVTO;
 import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.WifiSinfferSettingVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -79,6 +84,12 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeExtHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -998,13 +1009,12 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(acl_dto != null){
 
 				List<String> macs = acl_dto.getMacs();
-				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(acl_dto.getMacs());
+				//System.out.println("~~~~~~~~~~~~:"+macs);
 
 				List<URouterDeviceConfigNVTO> blocks = new ArrayList<URouterDeviceConfigNVTO>();
-
 				int i = 0;
-
-				if (macs != null) {
+				if (macs != null && !macs.isEmpty()) {
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(acl_dto.getMacs());
 					for (String dto_mac: macs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
 						nvto.setMac(dto_mac);
@@ -1073,6 +1083,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
