@@ -952,7 +952,7 @@ public class DeviceBusinessFacadeService {
 			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 			if(currentDto != null){
 				String current_sequence = currentDto.getSequence();
-				if(!StringUtils.isEmpty(current_sequence)){
+				if(StringUtils.isNotEmpty(current_sequence) && StringUtils.isNotEmpty(dto.getSequence())){
 					//如果获取的设备配置序列号小于当前序列号 认为是设备恢复出厂
 					if(Integer.parseInt(dto.getSequence()) < Integer.parseInt(current_sequence)){
 						state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
