@@ -1007,14 +1007,15 @@ public class DeviceURouterRestBusinessFacadeService {
 			//黑名单列表
 			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
 			if(acl_dto != null){
-
 				List<String> macs = acl_dto.getMacs();
-				//System.out.println("~~~~~~~~~~~~:"+macs);
-
-				List<URouterDeviceConfigNVTO> blocks = new ArrayList<URouterDeviceConfigNVTO>();
-				int i = 0;
-				if (macs != null && !macs.isEmpty()) {
-					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(acl_dto.getMacs());
+				
+				if(macs != null && !macs.isEmpty()){
+					//老版本app的返回值
+					vto.setBlock_macs(macs);
+					//新版本app的返回值
+					List<URouterDeviceConfigNVTO> block_with_names = new ArrayList<URouterDeviceConfigNVTO>();
+					int i = 0;
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(macs);
 					for (String dto_mac: macs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
 						nvto.setMac(dto_mac);
@@ -1023,12 +1024,10 @@ public class DeviceURouterRestBusinessFacadeService {
 							nvto.setN(dto.getDhcp_name());
 						}
 						i++;
-						blocks.add(nvto);
+						block_with_names.add(nvto);
 					}
+					vto.setBlock_with_names(block_with_names);
 				}
-
-				
-				vto.setBlock_macs(blocks);
 			}
 			//终端别名
 			List<WifiDeviceSettingMMDTO> mm_dtos = setting_dto.getMms();
