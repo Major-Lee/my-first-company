@@ -11,6 +11,7 @@ public class UserDTO implements java.io.Serializable{
 	private String nick;
 	//是否是注册  true 注册  false 登录
 	private boolean reg = false;
+	private int utype;
 	/*private int ut;//用户类型
 	private boolean ow;//是否是单向好友
 	private boolean frdshp;//是否是双向好友
@@ -53,15 +54,22 @@ public class UserDTO implements java.io.Serializable{
 		this.reg = reg;
 	}
 	
+	public int getUtype() {
+		return utype;
+	}
+	public void setUtype(int utype) {
+		this.utype = utype;
+	}
 	public UserDTO() {
 	}
-	public UserDTO(int id, int countrycode, String mobileno, String nick,
+	public UserDTO(int id, int countrycode, String mobileno, String nick,int utype,
 			boolean reg) {
 		super();
 		this.id = id;
 		this.countrycode = countrycode;
 		this.mobileno = mobileno;
 		this.nick = nick;
+		this.utype = utype;
 		this.reg = reg;
 	}
 	

@@ -33,16 +33,16 @@ public class RpcResponseDTOBuilder {
 		return res;
 	}
 	
-	public static Map<String,Object> builderSimpleUserRpcPayload(int uid, int countrycode, String acc, String nick,
+	public static Map<String,Object> builderSimpleUserRpcPayload(int uid, int countrycode, String acc, String nick,int utype,
 			   String atoken, String rtoken, boolean isReg){
-		return builderUserRpcPayload(uid,countrycode,acc,nick,atoken,rtoken,isReg,null);
+		return builderUserRpcPayload(uid,countrycode,acc,nick,utype,atoken,rtoken,isReg,null);
 	}
 	
-	public static Map<String,Object> builderUserRpcPayload(int uid, int countrycode, String acc, String nick,
+	public static Map<String,Object> builderUserRpcPayload(int uid, int countrycode, String acc, String nick,int utype,
 														   String atoken, String rtoken, boolean isReg,
 														   List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
-		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,isReg));
+		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,utype,isReg));
 		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
 		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(acc));
 		ret.put(Key_Cm, "60");

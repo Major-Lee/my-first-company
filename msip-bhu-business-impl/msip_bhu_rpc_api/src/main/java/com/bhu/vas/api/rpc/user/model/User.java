@@ -9,6 +9,10 @@ import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 @SuppressWarnings("serial")
 public class User extends BaseIntModel{// implements ISequenceGenable,TableSplitable<Integer>{
+	
+	public static final int Normal_User = 1;
+	public static final int Agent_User = 10;
+	
 	//电话号码国家区号
 	private int countrycode = 86;
 	private String mobileno;
@@ -52,9 +56,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	
 
 	private String lastlogindevice_uuid;
+	private int utype = Normal_User;//用户类型
+	
 	/*private Date lastlogin_at;
 	private String channel;
-	private int utype;//用户类型
+	
 */	//private Integer inviteuid;
 	
 	private Date created_at;
@@ -191,6 +197,12 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	}
 	public void setLastlogindevice_uuid(String lastlogindevice_uuid) {
 		this.lastlogindevice_uuid = lastlogindevice_uuid;
+	}
+	public int getUtype() {
+		return utype;
+	}
+	public void setUtype(int utype) {
+		this.utype = utype;
 	}
 	
 }

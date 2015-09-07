@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -20,7 +19,6 @@ import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -31,7 +29,6 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -155,7 +152,8 @@ public class UserUnitFacadeService {
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 		}
 		//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
+				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), false);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
@@ -199,7 +197,8 @@ public class UserUnitFacadeService {
 		}
 		this.userService.update(user);
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), false,
 				fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
@@ -293,7 +292,8 @@ public class UserUnitFacadeService {
 		}
 
 
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), countrycode, acc, user.getNick(), 
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user.getId(), countrycode, acc, user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), reg,fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();

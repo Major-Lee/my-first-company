@@ -10,6 +10,7 @@
     <result property="mobileno" column="mobileno"/>
     <result property="nick" column="nick"/>
     <result property="password" column="password"/>
+    <result property="utype" column="utype"/>
     <!-- 
     <result property="plainpwd" column="plainpwd"/>
      -->
@@ -41,6 +42,7 @@
 	    	mobileno,
 	    	nick,
 	    	password,
+	    	utype,
 	    	locked,
 	    	validated,
 	    	sex,
@@ -59,6 +61,7 @@
 	    	mobileno,
 	    	nick,
 	    	password,
+	    	utype,
 	    	locked,
 	    	validated,
 	    	sex,
@@ -78,6 +81,7 @@
 	    	#{mobileno},
 	    	#{nick},
 	    	#{password},
+	    	#{utype},
 	    	#{locked},
 	    	#{validated},
 	    	#{sex},
@@ -95,6 +99,7 @@
 	    	mobileno = #{mobileno},
 	    	nick = #{nick},
 	    	password = #{password},
+	    	utype = #{utype},
 	    	locked = #{locked},
 	    	validated = #{validated},
 	    	sex = #{sex},
