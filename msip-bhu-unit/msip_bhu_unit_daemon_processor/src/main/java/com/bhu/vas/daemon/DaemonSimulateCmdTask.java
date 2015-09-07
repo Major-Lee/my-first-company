@@ -37,38 +37,38 @@ public class DaemonSimulateCmdTask extends TimerTask{
 				if(info != null){
 					//if(info.canBeExecute(current)){
 					for(int i = 0;i<10;i++){
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
-						//获取配置指令
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
-						//获取地理位置
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceLocationNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+//						//获取配置指令
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+//						//获取地理位置
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceLocationNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 						//修改信号强度
 						String config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><wifi><radio><ITEM name=\"wifi0\" power=\"20\" /></radio></wifi></dev>";
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
 						//修改admin管理密码
-						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><sys><users><ITEM password_rsa=\"8143b8e16ebff24b330ca46bd7b358d265431a323f05120d723d73bc4fab2f373fe7088d9e054698c53122161ba11cbfd5df7412afffda396d567f51299f12be\" name=\"admin\" /></users></sys></dev>";
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
-						//广告注入开启
-						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><ad><ITEM  bhu_id=\"1000000\" bhu_ad_url=\"http://auth.wi2o.cn/ad/ad.js\" bhu_enable=\"enable\"  /></ad></net></dev>";
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
-						//重定向开启
-						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><ad><ITEM bhu_http_redirect_enable=\"enable\" bhu_http_redirect_rule=\"20,8:00:00,22:00:00,http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com\"/></ad></net></dev>";
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
-						//404跳转开启
-						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><ad><ITEM bhu_http404_enable=\"enable\" bhu_http404_url=\"http://vap.bhunetworks.com/vap/rw404?bid=10002\" bhu_http404_codes=\"40*,502\"/></ad></net></dev>";
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
-						//访客网络开启
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderCMD4HttpPortalResourceUpdate(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "{\"style\":\"style000\"}"));
-						//查询终端速率
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
-						//查询设备网速
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSpeedNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10, "", ""));
-						//查询设备实时速率
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceRateNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "wan", 2, 10));
-						//查询设备dhcpc信息
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDhcpcStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "eth1"));
-						//查询设备使用情况
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceUsedStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+//						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><sys><users><ITEM password_rsa=\"8143b8e16ebff24b330ca46bd7b358d265431a323f05120d723d73bc4fab2f373fe7088d9e054698c53122161ba11cbfd5df7412afffda396d567f51299f12be\" name=\"admin\" /></users></sys></dev>";
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
+//						//广告注入开启
+//						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><ad><ITEM  bhu_id=\"1000000\" bhu_ad_url=\"http://auth.wi2o.cn/ad/ad.js\" bhu_enable=\"enable\"  /></ad></net></dev>";
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
+//						//重定向开启
+//						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><ad><ITEM bhu_http_redirect_enable=\"enable\" bhu_http_redirect_rule=\"20,8:00:00,22:00:00,http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com\"/></ad></net></dev>";
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
+//						//404跳转开启
+//						config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><ad><ITEM bhu_http404_enable=\"enable\" bhu_http404_url=\"http://vap.bhunetworks.com/vap/rw404?bid=10002\" bhu_http404_codes=\"40*,502\"/></ad></net></dev>";
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
+//						//访客网络开启
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderCMD4HttpPortalResourceUpdate(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "{\"style\":\"style000\"}"));
+//						//查询终端速率
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
+//						//查询设备网速
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSpeedNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10, "", ""));
+//						//查询设备实时速率
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceRateNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "wan", 2, 10));
+//						//查询设备dhcpc信息
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDhcpcStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "eth1"));
+//						//查询设备使用情况
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceUsedStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 						
 						info.setRects(current);
 						sended++;

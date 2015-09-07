@@ -320,7 +320,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {
 				long ts = log.getTs();
 				long space = currentZeroTime - ts;
-				int offset = (int) (space)/(DAY_TIME_MILLION_SECOND);
+				int offset = (int)(space/(DAY_TIME_MILLION_SECOND));
 				if (space < 0) {
 					offset = -1;
 				}
@@ -388,7 +388,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	private int getOffSet(long ts, long currentZeroTime) {
 		long space = currentZeroTime - ts;
-		int offset = (int) (space)/(DAY_TIME_MILLION_SECOND);
+		int offset = (int) (space/(DAY_TIME_MILLION_SECOND));
 		if (space < 0) {
 			offset = -1;
 		}
@@ -435,13 +435,10 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			if (j == 0) { //当天记录
 				URouterHdTimeLineVTO vto = vtos.get(offset + 1); //更新logs
-//				logger.info("date===date[" + vto.getDate() + "]");
 				List<WifiHandsetDeviceItemDetailMDTO> mdtos = vto.getDetail();
-//				logger.info("mdtos===mdtos[" + mdtos + "]");
 				if (mdtos == null) {
 					mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 				}
-//				logger.info("mdtos===mdtos[" + mdtos.size() + "]");
 
 				WifiHandsetDeviceItemDetailMDTO dto = null;
 
@@ -530,11 +527,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						// >>> j == 1
 						logger.info("iiiii===" + i);
 						URouterHdTimeLineVTO vto_ = vtos.get(offset - (j - i ));
-						//List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getLogs(); //肯定有数据
 						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto_.getDetail();
-
-//						logger.info("mdtos_" + mdtos_);
-
 						if (mdtos_ == null) {
 							mdtos_ = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
 						}
@@ -556,12 +549,12 @@ public class DeviceURouterRestBusinessFacadeService {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
 //							logger.info("set login_ ts ==" + ts);
 						}
-						if (offset + 1 + i >= 6)  {
-							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
-							mdtos.add(dto);
-							vto.setDetail(mdtos);
-							break;
-						}
+//						if (offset + 1 + i >= 6)  {
+//							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
+//							mdtos.add(dto);
+//							vto.setDetail(mdtos);
+//							break;
+//						}
 
 
 						mdtos.add(dto);
