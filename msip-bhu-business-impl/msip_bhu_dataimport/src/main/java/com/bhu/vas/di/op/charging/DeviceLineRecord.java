@@ -1,5 +1,9 @@
 package com.bhu.vas.di.op.charging;
 
+import java.util.Date;
+
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+
 public class DeviceLineRecord {
 	private long up_ts;
 	private long down_ts;
@@ -25,6 +29,10 @@ public class DeviceLineRecord {
 	
 	
 	public String toString(){
-		return String.format("up[%s] down[%s] hint[%s] valid[%s]", up_ts,down_ts,hint,down_ts>=up_ts);
+		;
+		return String.format("up[%s] down[%s] valid[%s] hint[%s]", 
+				DateTimeHelper.formatDate(new Date(up_ts),DateTimeHelper.DefalutFormatPattern),
+				DateTimeHelper.formatDate(new Date(down_ts),DateTimeHelper.DefalutFormatPattern),
+				down_ts>up_ts,hint);
 	}
 }

@@ -13,6 +13,7 @@ public class ActionBuilder {
 	public enum ActionMode {
 		DeviceOnline("DO"),
 		DeviceOffline("DF"),
+		DeviceNotExist("DE"),
 		HandsetOnline("HO"),
 		HandsetOffline("HF"),
 		HandsetSync("HS"),
@@ -58,6 +59,15 @@ public class ActionBuilder {
 		action.setTs(ts);
 		return action;
 	}
+	
+	public static DeviceNotExistAction builderDeviceNotExistAction(String mac,long ts){
+		DeviceNotExistAction action = new DeviceNotExistAction();
+		action.setMac(mac);
+		action.setTs(ts);
+		return action;
+	}
+	
+	
 	public static HandsetOnlineAction builderHandsetOnlineAction(String hmac,String mac,long ts){
 		HandsetOnlineAction action = new HandsetOnlineAction();
 		action.setHmac(hmac);

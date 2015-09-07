@@ -132,22 +132,23 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		}));
 	}
 	
-	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
-		String mac = headers.getMac();
-		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
-		hits[hash] = hits[hash]+1;
-		exec_processes.get(hash).submit((new Runnable() {
-			@Override
-			public void run() {
-				if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
-					DynamicLogWriter.doLogger(headers.getMac(), 
-							ActionBuilder.toJsonHasPrefix(
-									ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
-							);
-					deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
-					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
-				}
-				if(ParserHeader.Transfer_Prefix == type){
+	public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
+		switch(type){
+			case ParserHeader.DeviceOffline_Prefix:
+				DynamicLogWriter.doLogger(headers.getMac(), 
+						ActionBuilder.toJsonHasPrefix(
+								ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
+						);
+				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				break;
+			case ParserHeader.DeviceNotExist_Prefix:
+				DynamicLogWriter.doLogger(headers.getMac(), 
+						ActionBuilder.toJsonHasPrefix(
+								ActionBuilder.builderDeviceNotExistAction(headers.getMac(), System.currentTimeMillis()))
+						);
+				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				break;
+			case ParserHeader.Transfer_Prefix:
 					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
 						DynamicLogWriter.doLogger(headers.getMac(), 
 								ActionBuilder.toJsonHasPrefix(
@@ -192,7 +193,64 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							}
 						}
 					}*/
+				break;
+		}
+	}
+	
+	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
+		String mac = headers.getMac();
+		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
+		hits[hash] = hits[hash]+1;
+		exec_processes.get(hash).submit((new Runnable() {
+			@Override
+			public void run() {
+				doSpecialProcessor(ctx,payload,type,headers);
+				/*if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
+					DynamicLogWriter.doLogger(headers.getMac(), 
+							ActionBuilder.toJsonHasPrefix(
+									ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
+							);
+					deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 				}
+				if(ParserHeader.Transfer_Prefix == type){
+					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
+						DynamicLogWriter.doLogger(headers.getMac(), 
+								ActionBuilder.toJsonHasPrefix(
+										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
+						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
+						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+					}
+					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
+						//DynamicLogWriter.doLogger(headers.getMac(), payload);
+						List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
+								HandsetDeviceDTO.class);
+						if(dtos != null && !dtos.isEmpty()){
+							HandsetDeviceDTO fristDto = dtos.get(0);
+							if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+							}
+							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+							}
+							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
+								List<String> hmacs = new ArrayList<String>();
+								for(HandsetDeviceDTO dto:dtos){
+									hmacs.add(dto.getMac());
+								}
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetSyncAction(hmacs,headers.getMac(), System.currentTimeMillis())));
+								hmacs.clear();
+								hmacs = null;
+							}
+						}
+					}
+				}*/
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
