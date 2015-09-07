@@ -14,6 +14,7 @@ public class WifiDeviceDownTask extends BaseLongModel implements IRedisSequenceG
 
 	//设备使用
 	public static final String State_Done = "done";//完成
+	public static final String State_Ok = "ok";//完成
 	public static final String State_Doing = "doing";//正在做
 	public static final String State_None = "none";//没有这个任务
 	public static final String State_Next = "next";//周期性上报的任务
