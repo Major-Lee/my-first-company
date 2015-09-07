@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-daemon/${provider.port}/daemon" />
+	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-agent/${provider.port}/daemon" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->
@@ -49,12 +49,6 @@
 
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="unitrequestfile" />
-	</logger>
-	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
-		<appender-ref ref="stdout" />
-	</logger>
-	<logger name="com.bhu.vas.daemon.processor" additivity="false" level="INFO">
-		<appender-ref ref="unittopicrecvfile" />
 	</logger>
 	<root level="WARN">
 		<appender-ref ref="stdout" />
