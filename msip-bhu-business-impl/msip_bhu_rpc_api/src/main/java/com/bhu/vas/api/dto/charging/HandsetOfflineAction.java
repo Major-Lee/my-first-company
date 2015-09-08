@@ -13,7 +13,7 @@ public class HandsetOfflineAction extends ChargingAction{
 
 	@Override
 	public String getAct() {
-		return ActionBuilder.ActionMode.HandsetOnline.getPrefix();
+		return ActionBuilder.ActionMode.HandsetOffline.getPrefix();
 	}
 	
 }
