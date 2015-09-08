@@ -23,13 +23,25 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Override
     public TailPage<AgentDeviceClaim> pageClaimedAgentDevice(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageClaimedAgentDevice uid:%s pageNo:%s pageSize",uid, pageNo, pageSize));
+        logger.info(String.format("pageClaimedAgentDevice uid:%s pageNo:%s pageSize:%s",uid, pageNo, pageSize));
         return agentFacadeService.pageClaimedAgentDevice(uid, pageNo, pageSize);
     }
 
     @Override
+    public TailPage<AgentDeviceClaim> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageUnClaimAgentDevice uid:%s pageNo:%s pageSize:%s", pageNo, pageSize));
+        return agentFacadeService.pageUnClaimAgentDeviceByUid(uid, pageNo, pageSize);
+    }
+
+    @Override
     public TailPage<AgentDeviceClaim> pageUnClaimAgentDevice(int pageNo, int pageSize) {
-        logger.info(String.format("pageUnClaimAgentDevice pageNo:%s pageSize", pageNo, pageSize));
+        logger.info(String.format("pageUnClaimAgentDevice pageNo:%s pageSize:%s", pageNo, pageSize));
         return agentFacadeService.pageUnClaimAgentDevice(pageNo, pageSize);
+    }
+
+    @Override
+    public void importAgentDeviceClaim(int uid, String path, String originName) {
+        logger.info(String.format("importAgentDeviceClaim uid:%s orginName:%s path:%s", uid, path, originName));
+        agentFacadeService.importAgentDeviceClaim(uid, path, originName);
     }
 }

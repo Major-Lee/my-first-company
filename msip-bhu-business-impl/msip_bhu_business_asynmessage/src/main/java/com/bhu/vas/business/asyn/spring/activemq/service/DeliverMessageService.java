@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.*;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 
 
 public class DeliverMessageService {
@@ -324,5 +325,15 @@ public class DeliverMessageService {
 		dto.setSecretkey(secretkey);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
+
+	public void sendAgentDeviceClaimImportMessage(Integer uid, String path, String originName) {
+		AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
+		dto.setUid(uid);
+		dto.setPath(path);
+		dto.setOriginName(originName);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+
 	}
 }

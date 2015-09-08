@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceGroupServiceHandler;
+
+	@Resource
+	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
 	
 	@PostConstruct
 	public void initialize() {
@@ -129,6 +133,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case USERBBSSIGNEDON:
 							asyncMsgHandleService.userBBSsignedon(message);
+							break;
+						case AgentDeviceClaimImport:
+							agentDeviceClaimServiceHandler.importAgentDeviceClaim(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

@@ -45,6 +45,9 @@ public enum ActionMessageType {
 	TOPICDeviceOnlineNotify("topic消息Device上线","topic device online","TO"),
 	TOPICDevicesOnlineNotify("topic消息Devices上线","topic cm devices online","TS"),
 	TOPICDeviceOfflineNotify("topic消息Device下线","topic cm offline","TF"),
+
+
+	AgentDeviceClaimImport("代理商设备导入","agent device claim import","AI"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;
