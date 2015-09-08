@@ -536,9 +536,14 @@ public class ChargingDataParserOp {
 				String hmac = next2.getKey();
 				sb.append("      hmac:"+hmac).append('\n');
 				DeviceLineRecords val = next2.getValue();
+				int times = 0;
+				long total_online_time = 0l;
 				for(DeviceLineRecord record:val.getRecords()){
 					sb.append("		      "+record).append('\n');
+					times++;
+					total_online_time += record.gaps();
 				}
+				sb.append(String.format("		      统计 次数[%s] 时长[%s]", times,DateTimeHelper.getTimeDiff(total_online_time))).append('\n');
 			}
 			
 			/*DeviceLineRecords  val = value;
