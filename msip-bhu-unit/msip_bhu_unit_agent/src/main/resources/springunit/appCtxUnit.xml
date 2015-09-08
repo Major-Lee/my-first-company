@@ -11,7 +11,8 @@
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
        default-lazy-init="true"> 
 	<import resource="classpath*:spring/applicationContext*.xml"/>
-	<import resource="classpath*:springservice/applicationContext-bhu-agent-service.xml"/>
+    <import resource="classpath*:springcache/applicationContextCore-cache.xml"/>
+    <import resource="classpath*:springservice/applicationContext-bhu-agent-service.xml"/>
 	<!-- -->
 	<import resource="classpath*:springunit/applicationContextRpcUnitProvider.xml"/> 
 </beans>
