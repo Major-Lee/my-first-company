@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -21,6 +20,8 @@ import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
 import com.bhu.vas.api.dto.charging.DeviceOfflineAction;
 import com.bhu.vas.api.dto.charging.DeviceOnlineAction;
+import com.bhu.vas.api.dto.charging.HandsetOfflineAction;
+import com.bhu.vas.api.dto.charging.HandsetOnlineAction;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -79,8 +80,12 @@ public class ChargingDataParserOp {
 		}
 	}
 	
+	//设备 在线区间段 dmac -》DeviceLineRecords
 	private Map<String,DeviceLineRecords> device_records = new HashMap<>();
-	private Map<String,Set<String>> device_handset_records = new HashMap<>();
+	//设备 终端列表 dmac -> Set<hmac>
+	//private Map<String,Set<String>> device_handset_records = new HashMap<>();
+	//终端 在线区间段dmac -> <hmac -》DeviceLineRecords>
+	private Map<String,Map<String,DeviceLineRecords>> device_handset_records = new HashMap<>();
 	public void processBackendActionMessage(String messagejsonHasPrefix) throws Exception{
 		//System.out.println(messagejsonHasPrefix);
 		ActionMode actionType = ActionBuilder.determineActionType(messagejsonHasPrefix);
@@ -96,8 +101,10 @@ public class ChargingDataParserOp {
 	    		processDeviceOffline(message);
 	    		break;
 	    	case HandsetOnline:
+	    		processHandsetOnline(message);
 	    		break;
 	    	case HandsetOffline:
+	    		processHandsetOffline(message);
 	    		break;
 	    	case HandsetSync:
 	    		break;	
@@ -105,6 +112,93 @@ public class ChargingDataParserOp {
 	    		//throw new UnsupportedOperationException(actType.getCname()+" message not yet implement handler process!");
 	    }
 	}
+	
+	private Map<String, DeviceLineRecords> handsetRecordGetOrCreate(String dmac){
+		Map<String, DeviceLineRecords> recordmap = device_handset_records.get(dmac);
+		if(recordmap == null){
+			recordmap = new HashMap<String, DeviceLineRecords>();
+			device_handset_records.put(dmac, recordmap);
+		}
+		return recordmap;
+		/*if(recordmap == null){
+			hmacSet = new HashSet<String>();
+			device_handset_records.put(dmac, hmacSet);
+		}
+		if(hmacs.length == 1){
+			hmacSet.add(hmacs[0]);
+		}else{
+			hmacSet.addAll(ArrayHelper.toList(hmacs));
+		}*/
+	}
+	
+	private void processHandsetOnline(String message){
+		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
+		//handsetComming(dto.getMac(),dto.getHmac());
+		Map<String, DeviceLineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
+		DeviceLineRecords records = handset_records.get(dto.getHmac());
+		if(records == null){
+			records = new DeviceLineRecords();
+			handset_records.put(dto.getHmac(), records);
+		}
+		if(!records.hasCurrent()){
+			//records.setCurrent(new );
+			DeviceLineRecord record = new DeviceLineRecord();
+			record.setUp_ts(dto.getTs());
+			records.setCurrent(record);
+		}else{
+			if(records.currentHasUp()){//重复两次up,不进行累积
+				records.getCurrent().setDown_ts(dto.getTs());
+				records.getCurrent().setHint("缺失down，补齐");
+				records.getRecords().add(records.getCurrent());
+				
+				DeviceLineRecord record = new DeviceLineRecord();
+				record.setUp_ts(dto.getTs());
+				records.setCurrent(record);
+			}else{
+				System.out.println("此情况貌似不存在2");;//此情况貌似不存在
+			}
+		}
+	}
+	
+	private void processHandsetOffline(String message){
+		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
+		Map<String, DeviceLineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
+		DeviceLineRecords records = handset_records.get(dto.getHmac());
+		if(records == null){
+			records = new DeviceLineRecords();
+			device_records.put(dto.getHmac(), records);
+		}
+		
+		if(!records.hasCurrent()){
+			if(records.getRecords().isEmpty()){//此mac当天的第一条为down，则开始时间为今天的零点
+				DeviceLineRecord record = new DeviceLineRecord();
+				record.setUp_ts(DateTimeHelper.getDateStart(currentDate).getTime());
+				record.setDown_ts(dto.getTs());
+				record.setHint("缺失up，补齐到当天开始");
+				records.getRecords().add(record);
+			}else{
+				//合并列表中最后一条数据的down 替换为当前down
+				DeviceLineRecord previous = records.getRecords().get(records.getRecords().size()-1);
+				long down_ts= previous.getDown_ts();
+				previous.setDown_ts(dto.getTs());
+				previous.setHint("缺失up，合并上条数据中的down为当前记录down时间，上条记录down_ts:"+down_ts);
+			}
+			
+		}else{
+			if(records.currentHasUp()){
+				records.getCurrent().setDown_ts(dto.getTs());
+				records.getRecords().add(records.getCurrent());
+				//records.setCurrent(new DeviceLineRecord());
+				records.setCurrent(null);
+			}else{
+				System.out.println("此情况貌似不存在3");
+			}
+			if(records.currentHasDown()){//此情况貌似不存在
+				System.out.println("此情况貌似不存在4");
+			}
+		}
+	}
+	
 	
 	
 	private void processDeviceOnline(String message){
@@ -114,7 +208,6 @@ public class ChargingDataParserOp {
 			records = new DeviceLineRecords();
 			device_records.put(dto.getMac(), records);
 		}
-		
 		if(!records.hasCurrent()){
 			//records.setCurrent(new );
 			DeviceLineRecord record = new DeviceLineRecord();
@@ -139,7 +232,6 @@ public class ChargingDataParserOp {
 			}*/
 		}
 	}
-	
 	
 	private void processDeviceOffline(String message){
 		DeviceOfflineAction dto = JsonHelper.getDTO(message, DeviceOfflineAction.class);
@@ -168,7 +260,7 @@ public class ChargingDataParserOp {
 				record.setHint("缺失up，去上一条数据的down补齐到up");
 				records.getRecords().add(record);*/
 				
-				//合并最后一条数据的down 替换为当前down
+				//合并列表中最后一条数据的down 替换为当前down
 				DeviceLineRecord previous = records.getRecords().get(records.getRecords().size()-1);
 				long down_ts= previous.getDown_ts();
 				previous.setDown_ts(dto.getTs());
@@ -217,6 +309,35 @@ public class ChargingDataParserOp {
 				val.setCurrent(null);
 			}
 		}
+		
+		
+		Iterator<Entry<String, Map<String, DeviceLineRecords>>> iter_first = device_handset_records.entrySet().iterator();
+		
+		while (iter_first.hasNext()) {
+			Entry<String, Map<String,DeviceLineRecords>> next = iter_first.next();
+			//String dmac = next.getKey();
+			Map<String, DeviceLineRecords> value = next.getValue();
+			Iterator<Entry<String, DeviceLineRecords>> iter_second = value.entrySet().iterator();
+			while(iter_second.hasNext()){
+				Entry<String, DeviceLineRecords> next2 = iter_second.next();
+				//String hmac = next2.getKey();
+				DeviceLineRecords val = next2.getValue();
+				if(val.getCurrent() !=  null){//补齐最后登出时间
+					val.getCurrent().setDown_ts(DateTimeHelper.getDateEnd(currentDate).getTime());
+					val.getCurrent().setHint("日志截尾，补齐到当天最后时间");
+					val.getRecords().add(val.getCurrent());
+					val.setCurrent(null);
+				}
+			}
+			
+			/*DeviceLineRecords  val = value;
+			if(val.getCurrent() !=  null){//补齐最后登出时间
+				val.getCurrent().setDown_ts(DateTimeHelper.getDateEnd(currentDate).getTime());
+				val.getCurrent().setHint("日志截尾，补齐到当天最后时间");
+				val.getRecords().add(val.getCurrent());
+				val.setCurrent(null);
+			}*/
+		}
 	}
 	
 	public Map<String, DeviceLineRecords> getDevice_records() {
@@ -224,10 +345,14 @@ public class ChargingDataParserOp {
 	}
 
 
-	public void setDevice_records(Map<String, DeviceLineRecords> device_records) {
-		this.device_records = device_records;
+	public Map<String, Map<String, DeviceLineRecords>> getDevice_handset_records() {
+		return device_handset_records;
 	}
 
+	public void setDevice_handset_records(
+			Map<String, Map<String, DeviceLineRecords>> device_handset_records) {
+		this.device_handset_records = device_handset_records;
+	}
 
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
 		ChargingDataParserOp op = new ChargingDataParserOp();
@@ -244,92 +369,35 @@ public class ChargingDataParserOp {
 				sb.append("		"+record).append('\n');
 			}
 		}
-		FileHelper.generateFile("/BHUData/data/abcd.txt", new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
-		/*
-		File file = new File(RuntimeConfiguration.PathFile_Blur_BadgeNormalDict);
-		if (!file.exists()) {
-			file.getParentFile().mkdirs();
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
+		
+		sb.append("~~~~~~~~~~~~~~~~~~~~~~~gap line~~~~~~~~~~~~~~~~~~\n");
+		Iterator<Entry<String, Map<String, DeviceLineRecords>>> iter_first = op.getDevice_handset_records().entrySet().iterator();
+		
+		while (iter_first.hasNext()) {
+			Entry<String, Map<String,DeviceLineRecords>> next = iter_first.next();
+			String dmac = next.getKey();
+			sb.append("dmac:"+dmac).append('\n');
+			Map<String, DeviceLineRecords> value = next.getValue();
+			Iterator<Entry<String, DeviceLineRecords>> iter_second = value.entrySet().iterator();
+			while(iter_second.hasNext()){
+				Entry<String, DeviceLineRecords> next2 = iter_second.next();
+				String hmac = next2.getKey();
+				sb.append("      hmac:"+hmac).append('\n');
+				DeviceLineRecords val = next2.getValue();
+				for(DeviceLineRecord record:val.getRecords()){
+					sb.append("		      "+record).append('\n');
+				}
 			}
+			
+			/*DeviceLineRecords  val = value;
+			if(val.getCurrent() !=  null){//补齐最后登出时间
+				val.getCurrent().setDown_ts(DateTimeHelper.getDateEnd(currentDate).getTime());
+				val.getCurrent().setHint("日志截尾，补齐到当天最后时间");
+				val.getRecords().add(val.getCurrent());
+				val.setCurrent(null);
+			}*/
 		}
 		
-		File file1 = new File(RuntimeConfiguration.PathFile_Blur_BadgeSpecialDict);
-		if (!file1.exists()) {
-			file1.getParentFile().mkdirs();
-			try {
-				file1.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}*/
-		/*FileOutputStream fos = null;
-		OutputStreamWriter osw = null;
-		BufferedWriter  bw = null;
-		
-		FileOutputStream fos1 = null;
-		OutputStreamWriter osw1 = null;
-		BufferedWriter  bw1 = null;
-		try{
-			fos=new FileOutputStream(new File(RuntimeConfiguration.PathFile_Blur_BadgeNormalDict));
-			osw=new OutputStreamWriter(fos, "UTF-8");
-			bw=new BufferedWriter(osw);
-			
-			fos1=new FileOutputStream(new File(RuntimeConfiguration.PathFile_Blur_BadgeSpecialDict));
-			osw1=new OutputStreamWriter(fos1, "UTF-8");
-			bw1=new BufferedWriter(osw1);
-			for (Map.Entry<String, String> entry : badgeSynonyms.entrySet()) {
-				String key = entry.getKey();
-				//if("-".equals(key)) continue;
-				//if(StringHelper.containsPlusOrMinus(key)){
-				if(StringHelper.containsSpecialBusinessSplitChar(key)){
-					bw1.write(StringHelper.replaceBlankAndLowercase(key).concat(StringHelper.EQUAL_STRING_GAP).concat(entry.getValue())+"\n");
-				}
-				bw.write(StringHelper.replaceBlankAndLowercase(key).concat(StringHelper.EQUAL_STRING_GAP).concat(StringHelper.replaceEnterAndOtherLineChar(entry.getValue()))+"\n");
-				//bw.write(artist+"\n");
-				//System.out.println(meuser.getKey()+"::"+meuser.getValue());
-			}
-			//yearsBetween
-			String datetemplete = "%s=%s$+%s$+-1$+%s$+V1,"+CmbtExtensionField.TagsPatternField+CmbtTagPatternDefine.Pattern_Date;
-			for(int year = yearsBetween[0];year<=yearsBetween[1];year++){
-				String yearstr =String.valueOf(year);
-				bw.write(String.format(datetemplete,yearstr,yearstr,yearstr,CmbtCategory.TimeYear.getName())+"\n");
-			}
-			for(int month = monthsBetween[0];month<=monthsBetween[1];month++){
-				String monthstr =String.format("%02d", month);
-				String fullstr = monthstr+"月";
-				bw.write(String.format(datetemplete,fullstr,fullstr,monthstr,CmbtCategory.TimeMonth.getName())+"\n");
-				String monthstr1 = month+"月";
-				bw.write(String.format(datetemplete,monthstr1,monthstr1,monthstr,CmbtCategory.TimeMonth.getName())+"\n");
-			}
-			for(int day = daysBetween[0];day<=daysBetween[1];day++){
-				String daystr =String.format("%02d", day);
-				String fullstr = daystr+"日";
-				bw.write(String.format(datetemplete,fullstr,fullstr,daystr,CmbtCategory.TimeMonth.getName())+"\n");
-				String daystr1 = day+"日";
-				bw.write(String.format(datetemplete,daystr1,daystr1,daystr,CmbtCategory.TimeDay.getName())+"\n");
-			}
-		    bw.close();
-		    osw.close();
-		    fos.close();
-		    
-		}catch(IOException ex){
-			ex.printStackTrace();
-		}finally{
-			try {
-				if(bw != null)
-					bw.close();
-				if(osw != null)
-					osw.close();
-				if(fos != null)
-					fos.close();
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			this.init();
-		}*/
+		FileHelper.generateFile("/BHUData/data/abcd.txt", new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
 	}
 }
