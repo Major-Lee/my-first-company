@@ -7,6 +7,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 9/7/15.
  */
+@SuppressWarnings("serial")
 public class AgentDeviceClaim extends BaseStringModel {
     /**
      * 设备sn号
