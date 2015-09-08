@@ -4,9 +4,16 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +43,46 @@ public class AgentDeviceClaimTest extends BaseTest {
         mc.setPageSize(5);
         List<AgentDeviceClaim> groups = agentDeviceClaimService.findModelByModelCriteria(mc);
         System.out.println(groups);
+    }
+
+
+    @Test
+    public void excel() throws Exception{
+        InputStream is = new FileInputStream("/Users/bluesand/Desktop/workbook.xls");
+        HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is);
+        AgentDeviceClaim agentDeviceClaim = null;
+        List<AgentDeviceClaim> list = new ArrayList<AgentDeviceClaim>();
+
+        for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
+            System.out.println(String.format("numSheet[%s]",numSheet));
+            HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+            if (hssfSheet == null) {
+                continue;
+            }
+            for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+                HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+                if (hssfRow == null) {
+                    continue;
+                }
+
+                agentDeviceClaim = new AgentDeviceClaim();
+
+                HSSFCell uid = hssfRow.getCell(0);
+
+                if (uid == null) {
+                    continue;
+                }
+                agentDeviceClaim.setUid((int)uid.getNumericCellValue());
+
+                HSSFCell sn = hssfRow.getCell(1);
+
+                agentDeviceClaim.setId(sn.getStringCellValue());
+
+                Date date = new Date();
+                agentDeviceClaim.setSold_at(date);
+                agentDeviceClaimService.insert(agentDeviceClaim);
+            }
+        }
     }
 
 }
