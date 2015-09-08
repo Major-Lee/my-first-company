@@ -22,6 +22,7 @@ import com.bhu.vas.api.dto.charging.DeviceOfflineAction;
 import com.bhu.vas.api.dto.charging.DeviceOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetOfflineAction;
 import com.bhu.vas.api.dto.charging.HandsetOnlineAction;
+import com.bhu.vas.api.dto.charging.HandsetSyncAction;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -120,16 +121,28 @@ public class ChargingDataParserOp {
 			device_handset_records.put(dmac, recordmap);
 		}
 		return recordmap;
-		/*if(recordmap == null){
-			hmacSet = new HashSet<String>();
-			device_handset_records.put(dmac, hmacSet);
-		}
-		if(hmacs.length == 1){
-			hmacSet.add(hmacs[0]);
-		}else{
-			hmacSet.addAll(ArrayHelper.toList(hmacs));
-		}*/
 	}
+	/**
+	 * 当设备下线后，其当前连接的终端也需要一起下线
+	 * @param dmac
+	 * @param offline_ts
+	 */
+	private void processHandsetWhenDeviceOffline(String dmac,String offline_ts){
+		
+	}
+	
+	/**
+	 * 设备掉线又上线后，会sync过来所有的在线终端列表
+	 * 0、在线终端列表A
+	 * 1、当前缓存中的在线终端列表B（records.getCurrent() ！= null）
+	 * 2、B中的不在A中的终端进行下线操作，在A中的终端不操作
+	 * 3、如果B为空或empty，则A进行上线操作
+	 * @param message
+	 */
+	private void processHandsetSync(String message){
+		HandsetSyncAction dto = JsonHelper.getDTO(message, HandsetSyncAction.class);
+	}
+	
 	
 	private void processHandsetOnline(String message){
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
