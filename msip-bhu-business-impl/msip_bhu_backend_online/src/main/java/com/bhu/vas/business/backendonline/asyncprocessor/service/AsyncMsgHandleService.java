@@ -1224,9 +1224,9 @@ public class AsyncMsgHandleService {
 		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
 		int addret = ExchangeBBSHelper.userAdd2BBS(dto.getMobileno());
 		if(addret == 1){
-			logger.info("AnsyncMsgBackendProcessor userRegister2BBS successful");
+			logger.info("AnsyncMsgBackendProcessor userRegister2BBS successful:"+dto.getMobileno());
 		}else{
-			logger.info("AnsyncMsgBackendProcessor userRegister2BBS error:"+addret);
+			logger.info("AnsyncMsgBackendProcessor userRegister2BBS error:"+addret + " mobileno:"+dto.getMobileno());
 		}
 		
 	}

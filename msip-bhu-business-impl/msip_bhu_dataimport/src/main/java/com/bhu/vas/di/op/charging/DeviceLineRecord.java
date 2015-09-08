@@ -2,37 +2,57 @@ package com.bhu.vas.di.op.charging;
 
 import java.util.Date;
 
+import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class DeviceLineRecord {
-	private long up_ts;
-	private long down_ts;
-	private String hint;
-	public long getUp_ts() {
-		return up_ts;
+	private long uts;
+	private long dts;
+	private StringBuilder h = new StringBuilder();
+	
+	public long getUts() {
+		return uts;
 	}
-	public void setUp_ts(long up_ts) {
-		this.up_ts = up_ts;
+
+	public void setUts(long uts) {
+		this.uts = uts;
 	}
-	public long getDown_ts() {
-		return down_ts;
+
+	public long getDts() {
+		return dts;
 	}
-	public void setDown_ts(long down_ts) {
-		this.down_ts = down_ts;
+
+	public void setDts(long dts) {
+		this.dts = dts;
 	}
-	public String getHint() {
+
+	/*public String getHint() {
 		return hint;
 	}
 	public void setHint(String hint) {
 		this.hint = hint;
+	}*/
+	public void appendHint(Hint hint) {
+		/*if(h.length() > 0)
+			this.h.append('\n');
+		this.h.append(hint.getDesc());*/
+		if(h.length() > 0)
+			this.h.append(' ');
+		this.h.append(hint.getKey());
 	}
-	
-	
+	public long gaps(){
+		return dts-uts;
+	}
 	public String toString(){
-		;
-		return String.format("up[%s] down[%s] valid[%s] hint[%s]", 
-				DateTimeHelper.formatDate(new Date(up_ts),DateTimeHelper.DefalutFormatPattern),
-				DateTimeHelper.formatDate(new Date(down_ts),DateTimeHelper.DefalutFormatPattern),
-				down_ts>up_ts,hint);
+		if(h.length() == 0){
+			return String.format("u[%s] d[%s] v[%s]", 
+					DateTimeHelper.formatDate(new Date(uts),DateTimeHelper.DefalutFormatPattern),
+					DateTimeHelper.formatDate(new Date(dts),DateTimeHelper.DefalutFormatPattern),
+					dts>uts);
+		}else
+			return String.format("u[%s] d[%s] v[%s] h[%s]", 
+				DateTimeHelper.formatDate(new Date(uts),DateTimeHelper.DefalutFormatPattern),
+				DateTimeHelper.formatDate(new Date(dts),DateTimeHelper.DefalutFormatPattern),
+				dts>uts,h.toString());
 	}
 }
