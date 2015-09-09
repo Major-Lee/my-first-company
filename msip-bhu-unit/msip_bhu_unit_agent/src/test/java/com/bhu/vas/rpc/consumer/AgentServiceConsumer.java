@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.consumer;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -21,7 +22,11 @@ public class AgentServiceConsumer {
 
         IAgentRpcService agentRpcService = (IAgentRpcService)context.getBean("agentRpcService");
 
+        IAgentUserRpcService agentUserRpcService = (IAgentUserRpcService)context.getBean("agentUserRpcService");
+
         System.out.println(JsonHelper.getJSONString(agentRpcService.pageUnClaimAgentDevice(1, 5)));
+
+        System.out.println(agentUserRpcService.tokenValidate("6","NTtMV1JXARFBSENdXVYN").getPayload().booleanValue());
 
 //        System.out.println(JsonHelper.getJSONString(agentRpcService.pageClaimedAgentDevice(6, 1, 5)));
 

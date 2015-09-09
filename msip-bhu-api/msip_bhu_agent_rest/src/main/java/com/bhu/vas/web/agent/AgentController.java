@@ -1,8 +1,11 @@
 package com.bhu.vas.web.agent;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,11 +25,18 @@ import java.util.Date;
 @Controller
 @RequestMapping("/agent")
 public class AgentController {
-
-
-
     @Resource
     private IAgentRpcService agentRpcService;
+
+
+    @ResponseBody()
+    @RequestMapping(value="/hello", method={RequestMethod.POST})
+    public void hello(HttpServletRequest request,
+                                       HttpServletResponse response,
+                                       @RequestParam(required = true) Integer uid){
+        System.out.println("hello !!!!!");
+        SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+    }
 
     @ResponseBody()
     @RequestMapping(value="/upload",method={RequestMethod.POST})
@@ -37,15 +47,33 @@ public class AgentController {
             @RequestParam(required = true) Integer uid ) {
 
         try {
-            String path = IAgentRpcService.PATH_PREFIX + File.separator + uid + File.separator + new Date().getTime() + ".xls";
+            String dirPath = IAgentRpcService.PATH_PREFIX + File.separator + uid;
+
+            File dirFile = new File(dirPath);
+            if (dirFile.exists()) {
+                if (!dirFile.isDirectory()) {
+                    dirFile.delete();
+                    dirFile = new File(dirPath);
+                    dirFile.mkdirs();
+                }
+            } else {
+                dirFile.mkdirs();
+            }
+
+            String path = dirPath + File.separator + new Date().getTime() + ".xls";
 
             String originName = file.getOriginalFilename();
 
             File newFile = new File(path);
 
+            newFile.mkdirs();
+
             file.transferTo(newFile);
 
             agentRpcService.importAgentDeviceClaim(uid, path, originName);
+
+            SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
