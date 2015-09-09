@@ -8,6 +8,7 @@ import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class RpcResponseDTOBuilder {
@@ -56,6 +57,11 @@ public class RpcResponseDTOBuilder {
 		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,utype,isReg));
 		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
 		ret.put(Key_Cm, "60");
+		return ret;
+	}
+	
+	public static UserDTO builderUserDTOFromUser(User user,boolean isReg){
+		UserDTO ret = new UserDTO(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(),user.getUtype(),isReg);
 		return ret;
 	}
 	

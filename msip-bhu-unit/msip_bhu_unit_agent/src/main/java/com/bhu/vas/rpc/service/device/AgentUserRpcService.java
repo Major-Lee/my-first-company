@@ -8,7 +8,9 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.rpc.facade.AgentUserUnitFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public class AgentUserRpcService implements IAgentUserRpcService {
 	private final Logger logger = LoggerFactory.getLogger(AgentUserRpcService.class);
@@ -48,6 +50,12 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 		logger.info(String.format("userLogin with countrycode[%s] acc[%s] pwd[%s] device[%s] remoteIp[%s]",
 				countrycode,acc,pwd,device,remoteIp));
 		return agentUserUnitFacadeService.userLogin(countrycode, acc, pwd, device, remoteIp);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int pageno,int pagesize) {
+		logger.info("pageAgentUsers");
+		return agentUserUnitFacadeService.pageAgentUsers(pageno,pagesize);
 	}
 
 }

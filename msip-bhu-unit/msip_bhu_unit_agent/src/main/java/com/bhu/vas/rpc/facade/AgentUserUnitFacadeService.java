@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserToken;
@@ -18,6 +21,9 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -156,5 +162,21 @@ public class AgentUserUnitFacadeService {
 				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), false);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
+	
+	
+	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int pageno,int pagesize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("utype", User.Agent_User);
+		mc.setOrderByClause("id");
+		mc.setPageNumber(pageno);
+		mc.setPageSize(pagesize);
+		TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
+		List<UserDTO> vtos = new ArrayList<>();
+		for(User user:tailusers.getItems()){
+			vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false));
+		}
+		TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 	}
 }
