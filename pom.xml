@@ -45,6 +45,7 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
+        <module>msip-bhu-api/msip_bhu_agent_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
         <module>msip-bhu-business-impl/msip_bhu_spark_task</module>
         <!--
