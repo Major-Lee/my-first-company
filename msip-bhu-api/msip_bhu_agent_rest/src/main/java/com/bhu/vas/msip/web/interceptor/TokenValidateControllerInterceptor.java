@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.jdo.ResponseError;
@@ -34,82 +34,24 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	private final Logger logger = LoggerFactory.getLogger(TokenValidateControllerInterceptor.class);
 	
 	@Resource
-	private IUserRpcService userRpcService;
+	private IAgentUserRpcService agentUserRpcService;
 
 	private static final String ConsolePrefixUrl = "/console";
-	/*private static final String NoAuthPrefixUrl = "/noauth";
-	private static final String pingurl = "/ping";
-	private static final String commonurl = "/common";
-	//private static final String dashboardurl = "/dashboard";
-	private static final String statisticsurl = "/statistics";
-	private static final String deviceurl = "/device";*/
-	//private static final String historyurl = "/history";
-	//private static final String guesturl = "/guest";
-	//private static final String visiturl = "/visit";
-	//private static Set<String> ignoreTokensValidateUrlPrefixSet = new HashSet<String>();
 	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
 	static{
 		ignoreTokensValidateUrlSet.add("/sessions/create");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
-		ignoreTokensValidateUrlSet.add("/sessions/bbs_login");
-		//ignoreTokensValidateUrlSet.add("/account/create");
-		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
-		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
+		ignoreTokensValidateUrlSet.add("/account/create");
 		//检测名称唯一性
 		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
-		ignoreTokensValidateUrlSet.add("/account/check_device_binded");
-		//请求验证码
-		ignoreTokensValidateUrlSet.add("/user/captcha/fetch_captcha");
-		
-		ignoreTokensValidateUrlSet.add("/console/sessions/create");
-		ignoreTokensValidateUrlSet.add("/console/sessions/validates");
-		//ignoreTokensValidateUrlSet.add("/account/check_nick");
-		//ignoreTokensValidateUrlSet.add("/account/check_email");
-		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");
-		
-		//忘记密码
-		//ignoreTokensValidateUrlSet.add("/account/forgot_password");
-		//ignoreTokensValidateUrlSet.add("/account/verify_forgot_token");
-		//ignoreTokensValidateUrlSet.add("/account/reset_password");
-		
-		//ignoreTokensValidateUrlSet.add("/personal/fetch");
-		
-		/*ignoreTokensValidateUrlSet.add("/config/ios");
-		ignoreTokensValidateUrlSet.add("/config/android");
-		
-		//ignoreTokensValidateUrlSet.add("/user/tmp/upload");
-		
-		ignoreTokensValidateUrlSet.add("/handset/release/ios");
-		ignoreTokensValidateUrlSet.add("/handset/release/android");
-		//ignoreTokensValidateUrlSet.add("/user/topic/fetch_topics_wall");
-		//ignoreTokensValidateUrlSet.add("/tag/fetch_tags");
-		//ignoreTokensValidateUrlSet.add("/wallpaper/fetch_categories");
-		ignoreTokensValidateUrlSet.add("/handset/feedback/post");
-
-		ignoreTokensValidateUrlSet.add("/user/device/validate");*/
 	}
-	
-	
-	/*@Resource
-	private IegalTokenHashService iegalTokenHashService;*/
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		//System.out.println("---ControllerInterceptor.preHandle() URI:"+request.getRequestURI()+" uid:"+request.getParameter("uid"));
-		//String uri = request.getRequestURI();
 		String uri = request.getServletPath();
-		//boolean output = false;
-		/*if(uri.indexOf("config") != -1){
-			output = true;
-		}*/
 		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
 		logger.info(String.format("Rest Request uri[%s] URL [%s] uid [%s]",uri, request.getRequestURI(), UID));
-		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
-		//if(output)
-			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
-		/*if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(statisticsurl) || uri.startsWith(deviceurl)|| uri.startsWith(commonurl) || uri.startsWith(pingurl))
-	        return true; */ 
 		if(uriStartWithThenSkip(uri)){
 			return true;
 		}
@@ -118,7 +60,6 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 			return false;
 		}
-		//if(!method.equalsIgnoreCase("POST")){
 		if(!RuntimeConfiguration.isRequestMethodSupported(method)){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 			return false;
@@ -136,7 +77,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			}
 		}
 		
-		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken);
+		RpcResponseDTO<Boolean> tokenValidate = agentUserRpcService.tokenValidate(UID, accessToken);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
