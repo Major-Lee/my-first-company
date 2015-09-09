@@ -4,16 +4,9 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 
 import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
