@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -12,6 +14,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.rpc.facade.AgentUserUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
+@Service("agentUserRpcService")
 public class AgentUserRpcService implements IAgentUserRpcService {
 	private final Logger logger = LoggerFactory.getLogger(AgentUserRpcService.class);
 	@Resource
