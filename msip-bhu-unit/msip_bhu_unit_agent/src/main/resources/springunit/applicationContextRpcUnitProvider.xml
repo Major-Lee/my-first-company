@@ -31,5 +31,6 @@
     <dubbo:protocol name="dubbo" port="${provider.port}" />
 	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<dubbo:service delay="-1" timeout="2000" retries="2" loadbalance="random" actives="100" interface="com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService" ref="agentRpcService" />
+	<dubbo:service delay="-1" timeout="2000" retries="2" loadbalance="random" actives="50" interface="com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService" ref="userAgentRpcService" />
 	
 </beans>

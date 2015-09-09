@@ -50,6 +50,15 @@ public class RpcResponseDTOBuilder {
 		return ret;
 	}
 	
+	public static Map<String,Object> builderUserRpcPayload4Agent(int uid, int countrycode, String acc, String nick,int utype,
+			   String atoken, String rtoken, boolean isReg){
+		Map<String,Object> ret = new HashMap<String,Object>();
+		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,utype,isReg));
+		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
+		ret.put(Key_Cm, "60");
+		return ret;
+	}
+	
 	public static String Key_User = "usr";
 	public static String Key_UserToken = "utk";
 	public static String Key_UserToken_BBS = "utb";
