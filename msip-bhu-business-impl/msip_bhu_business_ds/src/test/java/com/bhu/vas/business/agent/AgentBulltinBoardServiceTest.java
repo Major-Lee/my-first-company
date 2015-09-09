@@ -46,7 +46,7 @@ public class AgentBulltinBoardServiceTest extends BaseTest {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andColumnEqualTo("type", RandomPicker.pick(AgentBulltinType.values()).getKey()).andSimpleCaulse(" 1=1 ");
         mc.setPageNumber(1);
-        mc.setPageSize(5);
+        mc.setPageSize(100);
         List<AgentBulltinBoard> results = agentBulltinBoardService.findModelByModelCriteria(mc);
         for(AgentBulltinBoard bulltin:results){
         	System.out.printf("%s %s %s %s %s \n", bulltin.getId(),bulltin.getPublisher(),bulltin.getConsumer(),bulltin.getType(),bulltin.getContent());
