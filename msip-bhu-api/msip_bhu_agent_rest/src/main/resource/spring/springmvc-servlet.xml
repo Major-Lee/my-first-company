@@ -21,7 +21,7 @@
 	<mvc:annotation-driven />
 
 	<!-- swagger config -->
-	<bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig" />
+	<!--<bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig" />-->
 	<!-- Direct static mappings--> 
     <mvc:resources mapping="*.html" location="/"/>
     <!-- Serve static content --> 

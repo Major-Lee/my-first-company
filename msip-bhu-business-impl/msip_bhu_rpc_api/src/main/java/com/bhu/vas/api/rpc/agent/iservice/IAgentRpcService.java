@@ -7,6 +7,8 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  * Created by bluesand on 9/7/15.
  */
 public interface IAgentRpcService {
+
+      String PATH_PREFIX = "/Users/bluesand/Desktop/input";
 //    /**
 //     * 生成代理商
 //     * @param agentDeviceClaim
