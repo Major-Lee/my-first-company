@@ -1,23 +1,14 @@
 package com.bhu.vas.business.ds.agent.mdto;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.smartwork.msip.cores.helper.StringHelper;
 
-/**
- * wifi设备每日全天统计数据，包括此天的上下线日志
- * 此表数据每月汇总生成月统计数据，并清除汇总后的月数据（考虑数据量大，定时任务清除数据）
- * 此表数据理论上可以查询当前自然月的设备上下线日志
- * @author Edmond
- *
- */
-@Document(collection = "t_wifi_device_wholeday")
-public class WifiDeviceWholeDayMDTO {
+@Document(collection = "t_wifi_device_wholemonth")
+public class WifiDeviceWholeMonthMDTO {
 	/**
-	 * 规则为 yyyy-MM-dd_mac
+	 * 规则为 yyyy-MM_mac
 	 */
 	@Id
 	private String id;
@@ -28,8 +19,6 @@ public class WifiDeviceWholeDayMDTO {
 	private long onlinetime;
 	//当天连接次数
 	private int connecttimes;
-	//上下线连接记录
-	private List<LineRecord> records;
 	public String getId() {
 		return id;
 	}
@@ -59,12 +48,6 @@ public class WifiDeviceWholeDayMDTO {
 	}
 	public void setConnecttimes(int connecttimes) {
 		this.connecttimes = connecttimes;
-	}
-	public List<LineRecord> getRecords() {
-		return records;
-	}
-	public void setRecords(List<LineRecord> records) {
-		this.records = records;
 	}
 	
 	public static String generateId(String date, String mac){
