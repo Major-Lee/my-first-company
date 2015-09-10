@@ -11,6 +11,9 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	//信号强度
 	private String power;
 	
+	//信道
+	private String real_channel;
+	
 	public WifiDeviceSettingRadioDTO(){
 		
 	}
@@ -52,6 +55,7 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = new Object[2];
 		properties[0] = name;
 		properties[1] = power;
+		//properties[2] = real_channel;
 		return properties;
 	}
 	
@@ -64,4 +68,14 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	public boolean beRemoved() {
 		return false;
 	}
+
+	public String getReal_channel() {
+		return real_channel;
+	}
+
+	public void setReal_channel(String real_channel) {
+		this.real_channel = real_channel;
+	}
+	
+	
 }

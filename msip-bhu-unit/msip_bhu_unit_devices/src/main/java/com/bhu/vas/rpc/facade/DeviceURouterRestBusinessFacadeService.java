@@ -313,8 +313,8 @@ public class DeviceURouterRestBusinessFacadeService {
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
 		if (logs != null) {
-			WifiHandsetDeviceItemDetailMDTO dto = null;
-			List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
+			//WifiHandsetDeviceItemDetailMDTO dto = null;
+			//List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
 			String last_type = null;
 			long last_ts = 0;
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {

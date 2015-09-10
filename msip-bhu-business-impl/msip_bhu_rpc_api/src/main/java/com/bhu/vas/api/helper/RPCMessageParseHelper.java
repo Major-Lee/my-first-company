@@ -446,6 +446,7 @@ public class RPCMessageParseHelper {
 					WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
 					radio_dto.setName(radio_item.attributeValue("name"));
 					radio_dto.setPower(radio_item.attributeValue("power"));
+					radio_dto.setReal_channel(radio_item.attributeValue("real_channel"));
 					radio_dtos.add(radio_dto);
 				}
 				dto.setRadios(radio_dtos);
