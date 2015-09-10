@@ -2,6 +2,7 @@ package com.bhu.vas.di.op.charging;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -39,9 +40,14 @@ public class ChargingTest {
 		}
 		System.out.println(String.format("A total_onlinetimes[%s] total_connecttimes[%s]", total_onlinetimes,total_connecttimes));
 		
-		List<RecordSummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregation("84:82:f4:1a:b4:b0","2015-09-07", "2015-09-09");
+		
+		List<String> macs = new ArrayList<String>();
+		macs.add("84:82:f4:1a:b4:b0");
+		macs.add("84:78:8b:6d:5a:b0");
+		macs.add("84:82:f4:12:1a:34");
+		List<RecordSummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregation(macs,"2015-09-07", "2015-09-09");
 		for(RecordSummaryDTO dto:summaryAggregation){
-			System.out.println(String.format("B total_onlinetimes[%s] total_connecttimes[%s]", dto.getTotal_onlinetime(),dto.getTotal_connecttimes()));
+			System.out.println(String.format("B mac[%s] total_onlinetimes[%s] total_connecttimes[%s]",dto.getId(), dto.getTotal_onlinetime(),dto.getTotal_connecttimes()));
 		}
 	}
 }

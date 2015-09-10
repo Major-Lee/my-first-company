@@ -54,9 +54,16 @@ public class WifiDeviceWholeDayMService {
 		return wifiDeviceWholeDayMDao.find(query);
 	}
 	
-	public List<RecordSummaryDTO> summaryAggregation(String mac,String dateStart,String dateEnd){
+	/**
+	 * 统计指定时间段内 
+	 * @param mac
+	 * @param dateStart
+	 * @param dateEnd
+	 * @return
+	 */
+	public List<RecordSummaryDTO> summaryAggregation(List<String> macs,String dateStart,String dateEnd){
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
-				match(Criteria.where("mac").is(mac)),//.and("appId").is(appId)),
+				match(Criteria.where("mac").in(macs)),//.and("appId").is(appId)),
 			    group("mac").sum("onlinetime").as("total_onlinetime").sum("connecttimes").as("total_connecttimes"),
 			    sort(Direction.ASC, "total_onlinetime", "total_connecttimes")
 			);
