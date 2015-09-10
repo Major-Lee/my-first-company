@@ -33,7 +33,7 @@ public class AgentController {
     @RequestMapping(value="/hello", method={RequestMethod.POST})
     public void hello(HttpServletRequest request,
                                        HttpServletResponse response,
-                                       @RequestParam(required = true) Integer uid){
+                                       @RequestParam(required = true) Integer uid){d
         System.out.println("hello !!!!!");
         SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
     }

@@ -1,10 +1,23 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl;
 
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by bluesand on 9/8/15.
@@ -13,6 +26,9 @@ import org.springframework.stereotype.Service;
 public class AgentDeviceClaimServiceHandler {
 
     private final Logger logger = LoggerFactory.getLogger(AgentDeviceClaimServiceHandler.class);
+
+    @Resource
+    private AgentDeviceClaimService agentDeviceClaimService;
 
     /**
      * 导入代理商设备
@@ -23,6 +39,50 @@ public class AgentDeviceClaimServiceHandler {
         AgentDeviceClaimImportDTO dto =  JsonHelper.getDTO(message, AgentDeviceClaimImportDTO.class);
 
         //todo(bluesand)：处理POI excel,导入数据
+        try {
+            excel(dto);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
+
+    private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
+        InputStream is = new FileInputStream(dto.getPath());
+        HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is);
+        AgentDeviceClaim agentDeviceClaim = null;
+        List<AgentDeviceClaim> list = new ArrayList<AgentDeviceClaim>();
+
+        for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
+            System.out.println(String.format("numSheet[%s]",numSheet));
+            HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+            if (hssfSheet == null) {
+                continue;
+            }
+            for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+                HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+                if (hssfRow == null) {
+                    continue;
+                }
+
+                agentDeviceClaim = new AgentDeviceClaim();
+
+                HSSFCell uid = hssfRow.getCell(0);
+
+                if (uid == null) {
+                    continue;
+                }
+                agentDeviceClaim.setUid((int)uid.getNumericCellValue());
+
+                HSSFCell sn = hssfRow.getCell(1);
+
+                agentDeviceClaim.setId(sn.getStringCellValue());
+
+                Date date = new Date();
+                agentDeviceClaim.setSold_at(date);
+                agentDeviceClaimService.insert(agentDeviceClaim);
+            }
+        }
+    }
 }

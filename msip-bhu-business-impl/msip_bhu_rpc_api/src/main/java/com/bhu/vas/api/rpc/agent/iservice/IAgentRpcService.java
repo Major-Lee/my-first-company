@@ -8,7 +8,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  */
 public interface IAgentRpcService {
 
-      String PATH_PREFIX = "/Users/bluesand/Desktop/input";
+      String PATH_PREFIX = "/BHUData/agent/input";
 //    /**
 //     * 生成代理商
 //     * @param agentDeviceClaim
