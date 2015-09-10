@@ -63,6 +63,9 @@ cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zi
 
 echo '拷贝文件 msip_bhu_unit_vas-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_vas/target/msip_bhu_unit_vas-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_unit_agent-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_agent/target/msip_bhu_unit_agent-bin.zip ./$CuDateDir
+
 
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
@@ -89,6 +92,10 @@ unzip -q msip_bhu_unit_devices-bin.zip
 unzip -qo msip_bhu_unit_devices/bin/msip_bhu_unit_devices.jar -d msip_bhu_unit_devices/classes/
 unzip -q msip_bhu_unit_vas-bin.zip
 unzip -qo msip_bhu_unit_vas/bin/msip_bhu_unit_vas.jar -d msip_bhu_unit_vas/classes/
+unzip -q msip_bhu_unit_agent-bin.zip
+unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent/classes/
+
+
 
 
 unzip -q msip_bhu_backend_online-bin.zip
@@ -142,6 +149,14 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/lib/spring*.RELEASE.jar
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/lib/msip_*.jar  			root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_vas/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/classes/com/ 				root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_vas/classes/com/
 echo 'deploy msip_bhu_unit_vas successfully @'$Deploy2Server0
+
+echo 'deploy msip_bhu_unit_agent to ...@'$Deploy2Server0
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/spring*.RELEASE.jar      root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_agent/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/msip_*.jar       root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_agent/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/classes/com/         root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_agent/classes/com/
+echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2Server0
+
+
 echo '发布业务组件成功'
 
 echo '准备发布其他服务到'$Deploy2Server
