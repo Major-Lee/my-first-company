@@ -41,7 +41,7 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Override
     public void importAgentDeviceClaim(int uid, String path, String originName) {
-        logger.info(String.format("importAgentDeviceClaim uid:%s orginName:%s path:%s", uid, path, originName));
+        logger.info(String.format("importAgentDeviceClaim uid:%s orginName:%s path:%s", uid, originName, path));
         agentFacadeService.importAgentDeviceClaim(uid, path, originName);
     }
 }
