@@ -76,6 +76,8 @@ echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_rest.war到'$CuDateDir
 cp ../../msip-bhu-api/msip_bhu_rest/target/msip_bhu_rest.war ./$CuDateDir
+echo '拷贝文件 msip_bhu_agent_rest.war到'$CuDateDir
+cp ../../msip-bhu-api/msip_bhu_agent_rest/target/msip_bhu_agent_rest.war ./$CuDateDir
 
 cd $CuDateDir
 echo '进行文件解压过程'
@@ -105,6 +107,7 @@ unzip -q msip_bhu_spark_task-bin.zip
 unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
 
 unzip -qo msip_bhu_rest.war -d msip_bhu_rest
+unzip -qo msip_bhu_agent_rest.war -d msip_bhu_agent_rest
 echo '文件解压过程成功'
 
 echo '准备发布业务组件到'$Deploy2Server
@@ -180,6 +183,13 @@ echo 'deploy msip_bhu_rest to ...@'$Deploy2ServerWeb
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/lib/spring*.RELEASE.jar  	root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_rest/WEB-INF/lib/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/lib/msip_*.jar  	root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_rest/WEB-INF/lib/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/classes/com/ 		root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_rest/WEB-INF/classes/com/
-echo 'deploy msip_bhu_dataimport successfully @'$Deploy2ServerWeb
-echo '发布其他服务成功'
+echo 'deploy msip_bhu_rest successfully @'$Deploy2ServerWeb
+
+echo 'deploy msip_bhu_agent_rest to ...@'$Deploy2ServerWeb
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/classes/com/
+echo 'deploy msip_bhu_agent_rest successfully @'$Deploy2ServerWeb
+
+echo '发布rest api服务成功'
 

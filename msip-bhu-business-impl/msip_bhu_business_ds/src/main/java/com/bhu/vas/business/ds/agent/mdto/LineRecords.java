@@ -1,23 +1,23 @@
-package com.bhu.vas.di.op.charging;
+package com.bhu.vas.business.ds.agent.mdto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 
-public class DeviceLineRecords {
-	private List<DeviceLineRecord> records = new ArrayList<>();
-	private DeviceLineRecord current;
-	public List<DeviceLineRecord> getRecords() {
+public class LineRecords {
+	private List<LineRecord> records = new ArrayList<>();
+	private LineRecord current;
+	public List<LineRecord> getRecords() {
 		return records;
 	}
-	public void setRecords(List<DeviceLineRecord> records) {
+	public void setRecords(List<LineRecord> records) {
 		this.records = records;
 	}
-	public DeviceLineRecord getCurrent() {
+	public LineRecord getCurrent() {
 		return current;
 	}
-	public void setCurrent(DeviceLineRecord current) {
+	public void setCurrent(LineRecord current) {
 		this.current = current;
 	}
 	
