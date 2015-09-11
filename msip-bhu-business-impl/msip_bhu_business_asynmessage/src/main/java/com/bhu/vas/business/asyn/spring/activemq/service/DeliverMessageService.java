@@ -333,6 +333,7 @@ public class DeliverMessageService {
 		dto.setUid(uid);
 		dto.setPath(path);
 		dto.setOriginName(originName);
+		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 
 	}

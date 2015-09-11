@@ -40,22 +40,24 @@ public class AgentDeviceClaimServiceHandler {
 
         //todo(bluesand)：处理POI excel,导入数据
         try {
+            logger.info(String.format("Agent excel..."));
             excel(dto);
         }catch (Exception e) {
+            logger.error(String.format("error[%s]",e.getMessage()));
             e.printStackTrace();
+
         }
 
     }
 
 
     private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
+
         InputStream is = new FileInputStream(dto.getPath());
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is);
         AgentDeviceClaim agentDeviceClaim = null;
-        List<AgentDeviceClaim> list = new ArrayList<AgentDeviceClaim>();
 
         for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
-            System.out.println(String.format("numSheet[%s]",numSheet));
             HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
             if (hssfSheet == null) {
                 continue;
@@ -81,6 +83,7 @@ public class AgentDeviceClaimServiceHandler {
 
                 Date date = new Date();
                 agentDeviceClaim.setSold_at(date);
+                logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]",JsonHelper.getJSONString(agentDeviceClaim)));
                 agentDeviceClaimService.insert(agentDeviceClaim);
             }
         }
