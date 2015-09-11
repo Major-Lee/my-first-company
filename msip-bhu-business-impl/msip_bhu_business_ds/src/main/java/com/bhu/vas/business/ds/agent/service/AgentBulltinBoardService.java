@@ -36,7 +36,14 @@ public class AgentBulltinBoardService extends AbstractCoreService<Long, AgentBul
 		return super.insert(entity);
 	}
     
-    
+    /**
+     * 公告发布接口
+     * @param publisher
+     * @param consumer
+     * @param type
+     * @param content
+     * @return
+     */
     public AgentBulltinBoard bulltinPublish(int publisher,int consumer,AgentBulltinType type,String content){
     	AgentBulltinBoard bulltin = new AgentBulltinBoard();
     	bulltin.setPublisher(publisher);
@@ -46,14 +53,38 @@ public class AgentBulltinBoardService extends AbstractCoreService<Long, AgentBul
     	return this.insert(bulltin);
     }
     
+    
+    /**
+     * 代理商公告列表分页
+     * @param consumer
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
     public TailPage<AgentBulltinBoard> pageAgentBulltinBoard4Consumer(int consumer,int pageno,int pagesize){
     	return pageAgentBulltinBoard(0,consumer,null, pageno, pagesize);
     }
     
+    
+    /**
+     * 管理员公告列表管理页面
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
     public TailPage<AgentBulltinBoard> pageAllAgentBulltinBoard(int pageno,int pagesize){
     	return pageAgentBulltinBoard(0,0,null, pageno, pagesize);
     }
     
+    /**
+     * 通用接口
+     * @param publisher
+     * @param consumer
+     * @param type
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
     private TailPage<AgentBulltinBoard> pageAgentBulltinBoard(int publisher,int consumer,AgentBulltinType type,int pageno,int pagesize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
