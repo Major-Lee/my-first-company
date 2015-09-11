@@ -7,6 +7,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +39,27 @@ public class AgentController {
         System.out.println("hello !!!!!");
         SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
     }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/list_agent", method={RequestMethod.POST})
+    public void agentList(HttpServletRequest request,
+                      HttpServletResponse response,
+                      @RequestParam(required = true) Integer uid,
+                          @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                          @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+
+        try {
+            TailPage<AgentDeviceClaimDTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
 
     @ResponseBody()
     @RequestMapping(value="/upload",method={RequestMethod.POST})

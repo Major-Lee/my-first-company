@@ -1,6 +1,6 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -30,7 +30,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaim> pageClaimedAgentDevice(int uid, int pageNo, int pageSize);
+    TailPage<AgentDeviceClaimDTO> pageClaimedAgentDevice(int uid, int pageNo, int pageSize);
 
     /**
      * 获取具体代理商未认领的设备
@@ -39,7 +39,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaim> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize);
+    TailPage<AgentDeviceClaimDTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize);
 
     /**
      * 获取未认领的设备
@@ -47,7 +47,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaim> pageUnClaimAgentDevice(int pageNo, int pageSize);
+    TailPage<AgentDeviceClaimDTO> pageUnClaimAgentDevice(int pageNo, int pageSize);
 
     /**
      * 代理商导入设备
