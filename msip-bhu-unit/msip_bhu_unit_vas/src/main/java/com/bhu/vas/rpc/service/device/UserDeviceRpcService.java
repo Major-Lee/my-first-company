@@ -30,7 +30,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 
     private final Logger logger = LoggerFactory.getLogger(UserDeviceRpcService.class);
 
-    private final static int WIFI_DEVICE_BIND_LIMIT_NUM = 3;
+    private final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
 
     @Resource
     private UserDeviceFacadeService userDeviceFacadeService;

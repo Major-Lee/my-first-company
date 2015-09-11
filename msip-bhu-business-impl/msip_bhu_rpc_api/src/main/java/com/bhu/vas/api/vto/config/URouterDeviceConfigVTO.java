@@ -16,6 +16,8 @@ public class URouterDeviceConfigVTO implements Serializable{
 	private String vap_auth;
 	//信号强度
 	private int power;
+	//当前使用信道
+	private int real_channel;
 	//admin管理密码
 	private String admin_pwd;
 	//vap 密码
@@ -115,5 +117,10 @@ public class URouterDeviceConfigVTO implements Serializable{
 	public void setInfo(URouterInfoVTO info) {
 		this.info = info;
 	}
-	
+	public int getReal_channel() {
+		return real_channel;
+	}
+	public void setReal_channel(int real_channel) {
+		this.real_channel = real_channel;
+	}
 }

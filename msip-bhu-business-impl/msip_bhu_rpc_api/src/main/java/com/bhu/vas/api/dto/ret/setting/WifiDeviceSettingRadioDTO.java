@@ -6,6 +6,10 @@ package com.bhu.vas.api.dto.ret.setting;
  *
  */
 public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
+	
+    public static final int MODEL_Power_Radio = 0;
+    public static final int MODEL_RealChannel_Radio = 1;
+	
 	//名称
 	private String name;
 	//信号强度
@@ -61,7 +65,15 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	
 	@Override
 	public Object[] builderProperties(int type) {
-		return builderProperties();
+		Object[] properties = new Object[2];
+		if (MODEL_Power_Radio == type) {
+			properties[0] = name;
+			properties[1] = power;
+        }else if (MODEL_RealChannel_Radio == type) {
+        	properties[0] = name;
+			properties[1] = real_channel;
+        }
+		return properties;
 	}
 	
 	@Override

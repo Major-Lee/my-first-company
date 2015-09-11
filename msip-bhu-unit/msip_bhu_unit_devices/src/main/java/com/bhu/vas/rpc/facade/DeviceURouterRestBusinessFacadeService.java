@@ -1046,8 +1046,10 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				vto.setRcs(rcs_vtos);
 			}
-			//信号强度
-			vto.setPower(Integer.parseInt(DeviceHelper.getURouterDevicePower(setting_dto)));
+			//信号强度和当前信道
+			String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
+			vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
+			vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
 			//admin密码
 			WifiDeviceSettingUserDTO admin_user_dto = DeviceHelper.getURouterDeviceAdminUser(setting_dto);
 			if(admin_user_dto != null){

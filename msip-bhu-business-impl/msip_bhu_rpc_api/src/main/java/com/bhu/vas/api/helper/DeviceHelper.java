@@ -39,6 +39,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.localunit.RandomPicker;
 
 public class DeviceHelper {
 	
@@ -274,15 +275,24 @@ public class DeviceHelper {
 		return radio_dtos.get(0);
 	}
 	
+	private static final String Unknow_Power = "-1";
+	private static final String Unknow_RealChannel = "-1";
 	/**
 	 * URouter设备获取信号强度信息 由于urouter设备是单频 只返回第一个radio的信号强度
 	 * @param dto
 	 * @return
 	 */
-	public static String getURouterDevicePower(WifiDeviceSettingDTO dto){
+	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingDTO dto){
+		String[] result = new String[2];
 		WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(dto);
-		if(radio_dto == null) return null;
-		return radio_dto.getPower();
+		if(radio_dto == null){
+			result[0] = Unknow_Power;
+			result[1] = Unknow_RealChannel;
+		}else{
+			result[0] = StringUtils.isEmpty(radio_dto.getPower())?Unknow_Power:radio_dto.getPower();
+			result[1] = StringUtils.isEmpty(radio_dto.getReal_channel())?Unknow_RealChannel:radio_dto.getReal_channel();
+		}
+		return result;
 	}
 	
 	/**
@@ -708,7 +718,9 @@ public class DeviceHelper {
      "</wifi>"+
      "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";
 	
-	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
+	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
+	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" real_channel=\"%s\" />";
+	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\"/>";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
@@ -979,7 +991,44 @@ public class DeviceHelper {
 			
 			radio_dto.setName(frist_radio_dto.getName());
 		}
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem, radio_dto);
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem_Power, radio_dto);
+		String item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+				radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
+	}
+	
+	
+	private static final String[] optionalChannel4URouter = {"1","6","11"};
+	public static String builderDSRealChannelOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dto == null /*|| StringUtils.isEmpty(radio_dto.getReal_channel()) || 
+				Integer.parseInt(radio_dto.getReal_channel()) < 0*/)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		if(!StringUtils.isEmpty(radio_dto.getName())){
+			//如果radio名称不存在 则返回null
+			if(!isExistRadioName(radio_dto.getName(), ds_dto)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+		}else{
+			//如果没有指定radio的具体名称 则获取默认第一个radio进行修改
+			WifiDeviceSettingRadioDTO frist_radio_dto = getFristDeviceRadio(ds_dto);
+			//如果没有一个可用的radio
+			if(frist_radio_dto == null) 
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
+				String old_real_channel = frist_radio_dto.getReal_channel();
+				Set<String> optionals = ArrayHelper.toSet(optionalChannel4URouter);
+				if(StringUtils.isNotEmpty(old_real_channel)){
+					optionals.remove(old_real_channel);
+				}
+				radio_dto.setReal_channel(RandomPicker.pick(optionals));
+			}
+			radio_dto.setName(frist_radio_dto.getName());
+		}
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem_RealChannel, radio_dto);
+		String item = builderDeviceSettingItem(DeviceSetting_RadioItem_RealChannel, 
+				radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_RealChannel_Radio));
 		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 	}
 	

@@ -20,6 +20,9 @@ public enum OperationDS {
 	DS_VapGuest("08","修改vap访客网络开关"),
 	DS_LinkMode("10","修改上网方式"),
 	
+	DS_RealChannel("11","切换信道"),
+	
+	
 	DS_Http_Ad_Start("01","开启广告注入"),
 	DS_Http_404_Start("15","开启404错误页面"),
 	DS_Http_Redirect_Start("16","开启http redirect"),

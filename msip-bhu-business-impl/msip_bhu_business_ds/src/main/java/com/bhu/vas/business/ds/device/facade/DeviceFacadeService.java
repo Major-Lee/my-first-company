@@ -845,9 +845,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
 				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);
-				
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+			case DS_RealChannel:
+				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_VapPassword:
 				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_AclMacs:
