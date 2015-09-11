@@ -328,10 +328,12 @@ public class DeliverMessageService {
 	}
 
 
-	public void sendAgentDeviceClaimImportMessage(Integer uid, String path, String originName) {
+	public void sendAgentDeviceClaimImportMessage(Integer uid, Integer aid, String inputPath, String outputPath, String originName) {
 		AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
 		dto.setUid(uid);
-		dto.setPath(path);
+		dto.setAid(aid);
+		dto.setInputPath(inputPath);
+		dto.setOutputPath(outputPath);
 		dto.setOriginName(originName);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

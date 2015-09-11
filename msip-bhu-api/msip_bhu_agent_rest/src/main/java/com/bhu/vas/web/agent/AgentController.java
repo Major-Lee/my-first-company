@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
+import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import org.springframework.stereotype.Controller;
@@ -60,47 +61,55 @@ public class AgentController {
 
     }
 
-
     @ResponseBody()
     @RequestMapping(value="/upload",method={RequestMethod.POST})
     public void uploadClaimAgentDevice(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam("file") CommonsMultipartFile file,
-            @RequestParam(required = true) Integer uid ) {
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer aid) {
 
         try {
-            String dirPath = IAgentRpcService.PATH_PREFIX + File.separator + uid;
+            String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
+            String outputDirPath = IAgentRpcService.PATH_OUTPUT_PREFIX + File.separator + aid;
 
-            File dirFile = new File(dirPath);
-            if (dirFile.exists()) {
-                if (!dirFile.isDirectory()) {
-                    dirFile.delete();
-                    dirFile = new File(dirPath);
-                    dirFile.mkdirs();
-                }
-            } else {
-                dirFile.mkdirs();
-            }
 
-            String path = dirPath + File.separator + new Date().getTime() + ".xls";
+            //todo(bluesand): 创建目录结构的时候方法有问题？
+            FileHelper.makeDirectory(inputDirPath);
+            FileHelper.makeDirectory(outputDirPath);
+
+//            File dirFile = new File(inputDirPath);
+//            if (dirFile.exists()) {
+//                if (!dirFile.isDirectory()) {
+//                    dirFile.delete();
+//                    dirFile = new File(inputDirPath);
+//                    dirFile.mkdirs();
+//                }
+//            } else {
+//                dirFile.mkdirs();
+//            }
+
+            Date date = new Date();
+            String inputPath = inputDirPath + File.separator + date.getTime() + ".xls";
+            String outputPath = outputDirPath + File.separator + date.getTime() + ".xls";
 
             String originName = file.getOriginalFilename();
 
-            File newFile = new File(path);
-
-            newFile.mkdirs();
+            File newFile = new File(inputPath);
 
             file.transferTo(newFile);
 
-            agentRpcService.importAgentDeviceClaim(uid, path, originName);
+            agentRpcService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 
         } catch (Exception e) {
             e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
         }
     }
+
 
 
 }

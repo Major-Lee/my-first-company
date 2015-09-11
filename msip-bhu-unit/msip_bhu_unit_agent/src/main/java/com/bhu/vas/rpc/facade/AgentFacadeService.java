@@ -91,7 +91,7 @@ public class AgentFacadeService {
         return new CommonPage<AgentDeviceClaimDTO>(pageNo, pageSize, total,dtos);
     }
 
-    public void importAgentDeviceClaim(int uid, String path, String originName) {
-        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, path, originName);
+    public void importAgentDeviceClaim(int uid, String inputPath, String outputPath, String originName) {
+        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, inputPath, outputPath, originName);
     }
 }

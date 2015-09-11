@@ -8,16 +8,37 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
  */
 public class AgentDeviceClaimImportDTO extends ActionDTO {
 
-    private String path;
+    private int aid;
+
+    private String inputPath;
+
+    private String outputPath;
 
     private String originName;
 
-    public String getPath() {
-        return path;
+
+    public int getAid() {
+        return aid;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setAid(int aid) {
+        this.aid = aid;
+    }
+
+    public String getInputPath() {
+        return inputPath;
+    }
+
+    public void setInputPath(String inputPath) {
+        this.inputPath = inputPath;
+    }
+
+    public String getOutputPath() {
+        return outputPath;
+    }
+
+    public void setOutputPath(String outputPath) {
+        this.outputPath = outputPath;
     }
 
     public String getOriginName() {

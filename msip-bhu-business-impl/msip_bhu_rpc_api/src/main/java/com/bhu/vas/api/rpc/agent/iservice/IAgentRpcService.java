@@ -8,7 +8,9 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  */
 public interface IAgentRpcService {
 
-      String PATH_PREFIX = "/BHUData/agent/input";
+      String PATH_INPUT_PREFIX = "/BHUData/agent/input";
+      String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+
 //    /**
 //     * 生成代理商
 //     * @param agentDeviceClaim
@@ -52,10 +54,12 @@ public interface IAgentRpcService {
     /**
      * 代理商导入设备
      * @param uid
-     * @param path excel文件位置
+     * @param aid
+     * @param inputPath excel文件位置
+     * @param outputPath excel文件位置
      * @param originName 文件原始名称
      */
-    void importAgentDeviceClaim(int uid, String path, String originName);
+    void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName);
 
 
 
