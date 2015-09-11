@@ -18,7 +18,7 @@
 	<artifactId>msip_bhu_business_springdata_search</artifactId>
 	<packaging>jar</packaging>
 
-
+	<!-- 
 	<profiles>
 		<profile>
 			<id>default</id>
@@ -59,6 +59,7 @@
 			</pluginRepositories>
 		</profile>
 	</profiles>
+	 -->
 	<dependencies>
 		<dependency>
 			<groupId>com.smartwork</groupId>
