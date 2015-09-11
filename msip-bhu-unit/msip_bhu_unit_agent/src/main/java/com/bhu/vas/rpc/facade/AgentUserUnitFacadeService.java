@@ -20,6 +20,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacade
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -32,19 +33,36 @@ public class AgentUserUnitFacadeService {
 	private UserService userService;
 	@Resource
 	private UserTokenService userTokenService;
-/*	@Resource
-	private DeliverMessageService deliverMessageService;
-	@Resource
-	private UserDeviceService userDeviceService;
-	@Resource
-	private WifiDeviceService wifiDeviceService;
-	@Resource
-	private UserMobileDeviceService userMobileDeviceService;*/
 
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
-		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
-	}
+		try{
+				int uid = Integer.parseInt(uidParam); 
+				boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
+				//还需验证此用户是否是代理商用户或者是管理员用户
+				if(validate){
+					if(RuntimeConfiguration.isConsoleUser(uid))
+						return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+					User user = userService.getById(uid);
+					if(user == null){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST,Boolean.FALSE);
+					}else{
+						if(User.Agent_User != user.getUtype()){
+							return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT,Boolean.FALSE);
+						}else{
+							return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+						}
+					}
+				}else{
+					return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
+				}
+			}catch(NumberFormatException ex){
+				ex.printStackTrace(System.out);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
+			}
+		}
 	
 	/**
 	 * 检查手机号是否注册过
