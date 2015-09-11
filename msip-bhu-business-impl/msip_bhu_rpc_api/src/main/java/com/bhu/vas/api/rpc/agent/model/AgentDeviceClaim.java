@@ -25,6 +25,15 @@ public class AgentDeviceClaim extends BaseStringModel {
     private String mac;
 
     /**
+     * 存货编码
+     */
+    private String stock_code;
+    /**
+     * 存货名称
+     */
+    private String stock_name;
+
+    /**
      * 0:导入 1:认领
      */
     private int status;
@@ -57,6 +66,22 @@ public class AgentDeviceClaim extends BaseStringModel {
 
     public int getStatus() {
         return status;
+    }
+
+    public String getStock_code() {
+        return stock_code;
+    }
+
+    public void setStock_code(String stock_code) {
+        this.stock_code = stock_code;
+    }
+
+    public String getStock_name() {
+        return stock_name;
+    }
+
+    public void setStock_name(String stock_name) {
+        this.stock_name = stock_name;
     }
 
     public void setStatus(int status) {
