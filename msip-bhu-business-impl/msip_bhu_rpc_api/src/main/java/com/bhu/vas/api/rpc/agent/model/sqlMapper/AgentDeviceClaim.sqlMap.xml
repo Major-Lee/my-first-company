@@ -8,6 +8,7 @@
     <id property="id" column="id"/>
 	  <result property="uid" column="uid"/>
 	  <result property="mac" column="mac"/>
+	  <result property="status" column="status"/>
 	  <result property="sold_at" column="sold_at"/>
 	  <result property="claim_at" column="claim_at"/>
 	  <result property="updated_at" column="updated_at"/>
@@ -23,6 +24,7 @@
 	    	id,
 	    	uid,
 	    	mac,
+	    	status,
 	    	sold_at,
 	    	claim_at,
 	    	updated_at
@@ -32,6 +34,7 @@
 	    <![CDATA[
 	    	uid,
 	    	mac,
+	    	status,
 	    	sold_at,
 	    	claim_at,
 	    	updated_at
@@ -42,6 +45,7 @@
 			#{id},
 			#{uid},
 			#{mac},
+			#{status},
 			#{sold_at},
 			#{claim_at},
 	    	#{updated_at}
@@ -50,6 +54,7 @@
 	<sql id="modelUpdateValues">
 	    	uid = #{uid},
 	    	mac = #{mac},
+	    	status = #{status},
 	    	sold_at = #{sold_at},
 	    	claim_at = #{claim_at},
 	    	updated_at = #{updated_at}

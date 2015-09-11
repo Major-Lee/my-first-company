@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -26,6 +27,21 @@ public class AgentFacadeService {
 
     @Resource
     private DeliverMessageService deliverMessageService;
+
+    public boolean claimAgentDevice(String sn) {
+        AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(sn);
+
+        if (agentDeviceClaim != null) {
+            agentDeviceClaim.setClaim_at(new Date());
+            agentDeviceClaim.setStatus(1);
+            agentDeviceClaimService.update(agentDeviceClaim);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 
     public TailPage<AgentDeviceClaimDTO> pageClaimedAgentDevice(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
@@ -91,7 +107,7 @@ public class AgentFacadeService {
         return new CommonPage<AgentDeviceClaimDTO>(pageNo, pageSize, total,dtos);
     }
 
-    public void importAgentDeviceClaim(int uid, String inputPath, String outputPath, String originName) {
-        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, inputPath, outputPath, originName);
+    public void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName) {
+        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, aid, inputPath, outputPath, originName);
     }
 }

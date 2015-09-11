@@ -25,6 +25,11 @@ public class AgentDeviceClaim extends BaseStringModel {
     private String mac;
 
     /**
+     * 0:导入 1:认领
+     */
+    private int status;
+
+    /**
      * 设备售出日期
      */
     private Date sold_at;
@@ -50,6 +55,14 @@ public class AgentDeviceClaim extends BaseStringModel {
         this.mac = mac;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public Date getSold_at() {
         return sold_at;
     }
@@ -65,4 +78,5 @@ public class AgentDeviceClaim extends BaseStringModel {
     public void setClaim_at(Date claim_at) {
         this.claim_at = claim_at;
     }
+
 }

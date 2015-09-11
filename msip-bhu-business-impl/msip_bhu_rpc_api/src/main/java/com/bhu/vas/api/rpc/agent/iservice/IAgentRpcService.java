@@ -17,13 +17,11 @@ public interface IAgentRpcService {
 //     */
 //    void createAgent(AgentDeviceClaim agentDeviceClaim);
 //
-//    /**
-//     * 设备认领代理商
-//     * @param sn
-//     * @param uid
-//     * @param mac
-//     */
-//    void claimAgentDevice(String sn, int uid, String mac);
+    /**
+     * 设备认领代理商
+     * @param sn
+     */
+    boolean claimAgentDevice(String sn);
 
     /**
      * 代理商设备列表

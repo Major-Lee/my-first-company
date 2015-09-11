@@ -23,6 +23,12 @@ public class AgentRpcService implements IAgentRpcService {
     public AgentFacadeService agentFacadeService;
 
     @Override
+    public boolean claimAgentDevice(String sn) {
+        logger.info(String.format("claimAgentDevice sn[%s]", sn));
+        return agentFacadeService.claimAgentDevice(sn);
+    }
+
+    @Override
     public TailPage<AgentDeviceClaimDTO> pageClaimedAgentDevice(int uid, int pageNo, int pageSize) {
         logger.info(String.format("pageClaimedAgentDevice uid:%s pageNo:%s pageSize:%s",uid, pageNo, pageSize));
         return agentFacadeService.pageClaimedAgentDevice(uid, pageNo, pageSize);
@@ -41,8 +47,9 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public void importAgentDeviceClaim(int uid, String path, String originName) {
-        logger.info(String.format("importAgentDeviceClaim uid:%s orginName:%s path:%s", uid, originName, path));
-        agentFacadeService.importAgentDeviceClaim(uid, path, originName);
+    public void importAgentDeviceClaim(int uid,int aid, String inputPath, String outputPath, String originName) {
+        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s orginName:%s inputpath:%s outputPath:%s",
+                uid, aid, originName, inputPath, outputPath));
+        agentFacadeService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
     }
 }
