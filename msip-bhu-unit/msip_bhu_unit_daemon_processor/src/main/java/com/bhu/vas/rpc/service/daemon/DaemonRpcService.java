@@ -8,11 +8,13 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
@@ -115,6 +117,33 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	}
 	
 	@Override
+	public boolean wifiMultiDevicesCmdsDown(DownCmds... downCmds) {
+		for(DownCmds downCmd:downCmds){
+			if(downCmd != null){
+				if(downCmd.valid()){
+					String ctx = downCmd.getCtx();
+					if(StringUtils.isEmpty(ctx)){
+						SessionInfo sessionCtx = SessionManager.getInstance().getSession(downCmd.getMac());
+						if(sessionCtx != null){
+							ctx = sessionCtx.getCtx();
+							//logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmds));
+						}else{
+							logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] ctx not existed",ctx,downCmd.getMac()));
+							return false;
+						}
+					}
+					for(String cmd:downCmd.getCmds()){
+						logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmd));
+						activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+					}
+				}
+				
+			}
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		//System.out.println("cmJoinService:"+info);
 		logger.info("cmJoinService:"+info);
@@ -159,6 +188,8 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		TaskEngine.getInstance().schedule(new DaemonSimulateCmdTask(), 0l);
 		return true;
 	}
+
+
 
 	/*@Override
 	public boolean wifiDevicesLocationQuerySerialTimer() {

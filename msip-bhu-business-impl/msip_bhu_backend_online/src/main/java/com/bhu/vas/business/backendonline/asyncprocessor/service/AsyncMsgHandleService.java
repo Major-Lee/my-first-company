@@ -161,6 +161,11 @@ public class AsyncMsgHandleService {
 				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
 				//获取设备系统信息
 				payloads.add(CMDBuilder.builderSysinfoQuery(dto.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+				
+				//用户登录后 给其绑定的设备mac地址发送设备使用情况
+				boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(dto.getMac(),false);
+				if(needDeviceUsedQuery)
+					payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(dto.getMac()));
 /*				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
 				if(settingState != null){
