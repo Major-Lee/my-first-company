@@ -427,7 +427,6 @@ public class VapModeDefined {
 		}
 	}
 	
-	
 	public enum HtmlRedirect{
 		STYLE000("style000","00.00.01","http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com"),
 		STYLE001("style001","00.00.01","http://www.csdn.net,http://wap.sogou.com/web/sl?keyword=&amp;bid=sogou-waps-34adeb8e32428240"),
@@ -436,7 +435,7 @@ public class VapModeDefined {
 		STYLE004("style004","00.00.01","http://sina.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c"
 				+ ",http://m.sohu.com,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c"
 				+ ",http://h5.mse.360.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c"
-				+ ",http://hao.360.cn,http://www.hao123.com"),
+				+ ",http://hao.360.cn,http://www.hao123.com/?tn=99801877_s_hao_pg"),
 		;
 		private String style;
 		private String ver;
