@@ -11,6 +11,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
+import com.mongodb.WriteResult;
 
 public class ChargingTest {
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
@@ -49,5 +50,15 @@ public class ChargingTest {
 		for(RecordSummaryDTO dto:summaryAggregation){
 			System.out.println(String.format("B mac[%s] total_onlinetimes[%s] total_connecttimes[%s]",dto.getId(), dto.getTotal_onlinetime(),dto.getTotal_connecttimes()));
 		}
+		
+		//WifiDeviceWholeDayMDTO result = wifiDeviceWholeDayMService.findAndModifyFlowBytes("2015-09-09", "84:82:f4:1a:c5:1c", 78645123l, 1278645123l);
+		//System.out.println(result.getId());
+		
+		WriteResult upsertFlowBytes = wifiDeviceWholeDayMService.upsertFlowBytes("2015-09-09", "84:82:f4:1a:c5:1c:aa", 78645123l, 1278645123l);
+		System.out.println(upsertFlowBytes.getUpsertedId()+"   "+upsertFlowBytes.getN() +" "+upsertFlowBytes.isUpdateOfExisting());
+		
+		upsertFlowBytes = wifiDeviceWholeDayMService.upsertFlowBytes("2015-09-09", "84:82:f4:1a:c5:1c:bb", 78645023l, 1278645023l);
+		System.out.println(upsertFlowBytes.getUpsertedId()+"   "+upsertFlowBytes.getN() +" "+upsertFlowBytes.isUpdateOfExisting());
+		
 	}
 }

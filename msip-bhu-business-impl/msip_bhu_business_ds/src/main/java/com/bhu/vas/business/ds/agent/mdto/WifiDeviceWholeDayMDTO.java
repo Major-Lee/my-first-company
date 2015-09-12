@@ -30,6 +30,9 @@ public class WifiDeviceWholeDayMDTO {
 	private int connecttimes;
 	//终端数
 	private int handsets;
+	
+	private long tx_bytes;
+	private long rx_bytes;
 	//上下线连接记录
 	private List<LineRecord> records;
 	public String getId() {
@@ -79,6 +82,18 @@ public class WifiDeviceWholeDayMDTO {
 	}
 	public void setHandsets(int handsets) {
 		this.handsets = handsets;
+	}
+	public long getTx_bytes() {
+		return tx_bytes;
+	}
+	public void setTx_bytes(long tx_bytes) {
+		this.tx_bytes = tx_bytes;
+	}
+	public long getRx_bytes() {
+		return rx_bytes;
+	}
+	public void setRx_bytes(long rx_bytes) {
+		this.rx_bytes = rx_bytes;
 	}
 	
 	
