@@ -19,15 +19,15 @@ import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 /**
- * 每60分钟执行一次
- * 对所有在线商业wifi发送在线终端查询指令（此业务在商业wif【非uRouter】上线不发送触发终端上下线请求）
- * 对非商业wifi设备（uRouter）
+ * 每天零点开始执行
+ * 对所有零点在线设备进行模拟登录指令日志，保证代理商统计日志的完整性
+ * 写入到单独的log日志
  * 	  下发设备状态查询
  * @author Edmond Lee
  *
  */
-public class WifiDeviceOnlineActionLoader {
-	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineActionLoader.class);
+public class WifiDeviceOnlineSimulateLoader {
+	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineSimulateLoader.class);
 	
 	public int bulk_success = 0;
 	public int bulk_fail = 0;
@@ -36,14 +36,9 @@ public class WifiDeviceOnlineActionLoader {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-	@Resource
-	private IDaemonRpcService daemonRpcService;	
-	
 	public void execute() {
-		logger.info("WifiDeviceOnlineActionLoader starting...");
+		logger.info("WifiDeviceOnlineSimulateLoader starting...");
 		int total = 0;
-		String cmdPayload = null;
-		List<DownCmds> downCmds = new ArrayList<DownCmds>();
 		try{
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("online", 1);//.andColumnNotEqualTo("orig_model", WifiDeviceHelper.WIFI_URouter_DEVICE_ORIGIN_MODEL);
@@ -54,26 +49,8 @@ public class WifiDeviceOnlineActionLoader {
 			while(it.hasNext()){
 				List<WifiDevice> next = it.next();
 				for(WifiDevice device:next){
-					{
-						if(WifiDeviceHelper.isURooterDeviceWithOrigModel(device.getOrig_model())){
-							//确定是否需要下发指令
-							boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(device.getId(),false);
-							if(needDeviceUsedQuery){
-								cmdPayload = CMDBuilder.builderDeviceUsedStatusQuery(device.getId());
-								downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));
-							}
-						}else{
-							cmdPayload = CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId());
-							downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));
-						}
-						//daemonRpcService.wifiMultiDevicesCmdsDown(downCmds);
-						//DaemonHelper.daemonCmdDown(device.getId(), cmdPayload, daemonRpcService);
-						logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
-					}
-					total++;
+					
 				}
-				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
-				downCmds.clear();
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

@@ -53,7 +53,7 @@
 					<FileNamePattern>${charging.base}.${hashid}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
 				</rollingPolicy>
 				<layout class="ch.qos.logback.classic.PatternLayout">
-					<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+					<pattern>%date - %msg%n</pattern>
 				</layout>
 			</appender>
 		</sift>

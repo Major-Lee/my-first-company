@@ -98,6 +98,14 @@ public class ActionBuilder {
 		DeviceOnlineAction action = new DeviceOnlineAction();
 		action.setMac(mac);
 		action.setTs(ts);
+		action.setSm(false);
+		return action;
+	}
+	public static DeviceOnlineAction builderDeviceSimulateOnlineAction(String mac,long ts){
+		DeviceOnlineAction action = new DeviceOnlineAction();
+		action.setMac(mac);
+		action.setTs(ts);
+		action.setSm(true);
 		return action;
 	}
 	public static DeviceOfflineAction builderDeviceOfflineAction(String mac,long ts){

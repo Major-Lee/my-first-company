@@ -43,6 +43,10 @@ public class DownCmds implements java.io.Serializable{
 		return (StringUtils.isEmpty(mac) || cmds == null || cmds.length ==0 );
 	}
 	
+	/*public static DownCmds builderDownCmds(int aa,String... cmds){
+		return null;
+	}*/
+	
 	public static DownCmds builderDownCmds(String mac,String... cmds){
 		return new DownCmds(mac,cmds);
 	}
