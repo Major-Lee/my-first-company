@@ -313,8 +313,8 @@ public class DeviceURouterRestBusinessFacadeService {
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
 		if (logs != null) {
-			WifiHandsetDeviceItemDetailMDTO dto = null;
-			List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
+			//WifiHandsetDeviceItemDetailMDTO dto = null;
+			//List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
 			String last_type = null;
 			long last_ts = 0;
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {
@@ -889,7 +889,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 			DeviceUsedStatisticsDTO dto = BusinessMarkerService.getInstance().deviceUsedStatisticsGet(wifiId);
-			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId);
+			boolean needNewRequestAndMarker = BusinessMarkerService.getInstance().needNewRequestAndMarker(wifiId,true);
 			if(needNewRequestAndMarker){
 				deliverMessageService.sendWifiCmdsCommingNotifyMessage(
 						wifiId,/*0,OperationCMD.QueryDeviceUsedStatus.getNo(),*/

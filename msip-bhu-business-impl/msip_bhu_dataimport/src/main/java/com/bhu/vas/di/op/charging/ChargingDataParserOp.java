@@ -532,7 +532,12 @@ public class ChargingDataParserOp {
 				times++;
 				total_online_time += record.gaps();
 			}
-			sb.append(String.format("      统计 次数[%s] 时长[%s]", times,DateTimeHelper.getTimeDiff(total_online_time))).append('\n');
+			int handsets = 0;
+			Map<String, LineRecords> map = op.getDevice_handset_records().get(key);
+			if(map != null){
+				handsets = map.size();
+			}
+			sb.append(String.format("      统计 次数[%s] 时长[%s] 终端数[%s]", times,DateTimeHelper.getTimeDiff(total_online_time),handsets)).append('\n');
 			
 			WifiDeviceWholeDayMDTO dto = new WifiDeviceWholeDayMDTO();
 			dto.setId(WifiDeviceWholeDayMDTO.generateId(date, key));
@@ -540,6 +545,7 @@ public class ChargingDataParserOp {
 			dto.setDate(date);
 			dto.setConnecttimes(times);
 			dto.setOnlinetime(total_online_time);
+			dto.setHandsets(handsets);
 			dto.setRecords(val.getRecords());
 			wifiDeviceWholeDayMService.save(dto);
 			System.out.println(dto.getId());

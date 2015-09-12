@@ -1270,7 +1270,7 @@ public class AsyncMsgHandleService {
 	public void afterUserSignedonThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
 		boolean needDeviceUsedQuery = false;
-		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac);
+		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac,true);
 		DaemonHelper.afterUserSignedon(mac, needDeviceUsedQuery, daemonRpcService);
 /*		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
 			//获取设备的终端列表

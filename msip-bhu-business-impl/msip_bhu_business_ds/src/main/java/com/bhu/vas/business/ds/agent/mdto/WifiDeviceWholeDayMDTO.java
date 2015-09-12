@@ -28,6 +28,8 @@ public class WifiDeviceWholeDayMDTO {
 	private long onlinetime;
 	//当天连接次数
 	private int connecttimes;
+	//终端数
+	private int handsets;
 	//上下线连接记录
 	private List<LineRecord> records;
 	public String getId() {
@@ -72,4 +74,12 @@ public class WifiDeviceWholeDayMDTO {
 		idstring.append(date).append(StringHelper.UNDERLINE_STRING_GAP).append(mac);
 		return idstring.toString();
 	}
+	public int getHandsets() {
+		return handsets;
+	}
+	public void setHandsets(int handsets) {
+		this.handsets = handsets;
+	}
+	
+	
 }
