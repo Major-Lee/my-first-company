@@ -31,6 +31,8 @@
 				<!-- 每隔2小时执行一次   * * 0/2 * * ?   -->
 				<ref bean="wifiDeviceOnlineActionLoaderCronTrigger" />		
 				
+				<!-- 每天凌晨1点执行一次   0 0 1 * * ?   -->
+				<ref bean="wifiDeviceOnlineSimulateLoaderCronTrigger" />		
 				
 			</list>
 		</property>
@@ -210,5 +212,23 @@
 	<!-- 被Cron执行的普通Spring Bean -->
 	<bean id="wifiDeviceOnlineActionLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineActionLoader" />
 	
+
+	<!-- Cron式Trigger定义 -->
+	<bean id="wifiDeviceOnlineSimulateLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="wifiDeviceOnlineSimulateLoaderJobDetail" />
+		<!-- 每天凌晨1点执行一次   0 0 1 * * ?   -->
+		<property name="cronExpression" value="0 0 1 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="wifiDeviceOnlineSimulateLoaderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="wifiDeviceOnlineSimulateLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="wifiDeviceOnlineSimulateLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineSimulateLoader" />
 	
 </beans>
