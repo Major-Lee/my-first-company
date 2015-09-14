@@ -341,8 +341,11 @@ public class UserUnitFacadeService {
 				WifiDevice wifiDevice = wifiDeviceService.getById(userDevice.getMac());
 				if (wifiDevice != null) {
 					userDeviceDTO.setOnline(wifiDevice.isOnline());
-					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
-							.presentOnlineSize(userDevice.getMac()));
+					if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
+						userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								.presentOnlineSize(userDevice.getMac()));
+					}
+
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}
