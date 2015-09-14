@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdao.WifiDeviceWholeDayMDao;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.mongodb.WriteResult;
 
 /**
@@ -38,11 +37,11 @@ public class WifiDeviceWholeDayMService {
 	}
 	
 	public WifiDeviceWholeDayMDTO getWholeDay(String date, String mac){
-		return wifiDeviceWholeDayMDao.findById(WifiHandsetDeviceRelationMDTO.generateId(date, mac));
+		return wifiDeviceWholeDayMDao.findById(WifiDeviceWholeDayMDTO.generateId(date, mac));
 	}
 	
 	public WifiDeviceWholeDayMDTO findAndModifyFlowBytes(String date, String mac,long tx_bytes,long rx_bytes){
-		Query query=Query.query(Criteria.where("id").is(WifiHandsetDeviceRelationMDTO.generateId(date, mac)));
+		Query query=Query.query(Criteria.where("id").is(WifiDeviceWholeDayMDTO.generateId(date, mac)));
 		Update update = new Update();
         update.set("tx_bytes", tx_bytes);
         update.set("rx_bytes", rx_bytes);
@@ -50,7 +49,7 @@ public class WifiDeviceWholeDayMService {
 	}
 	
 	public WriteResult upsertFlowBytes(String date, String mac,long tx_bytes,long rx_bytes){
-		Query query=Query.query(Criteria.where("id").is(WifiHandsetDeviceRelationMDTO.generateId(date, mac)));
+		Query query=Query.query(Criteria.where("id").is(WifiDeviceWholeDayMDTO.generateId(date, mac)));
 		Update update = new Update();
         update.set("tx_bytes", tx_bytes);
         update.set("rx_bytes", rx_bytes);

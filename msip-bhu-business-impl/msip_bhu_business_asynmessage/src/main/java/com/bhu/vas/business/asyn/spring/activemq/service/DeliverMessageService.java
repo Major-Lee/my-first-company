@@ -87,6 +87,15 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
+	public void sendWifiDeviceUsedStatusActionMessage(String ctx,String mac, String response, long taskid){
+		WifiDeviceUsedStatusDTO dto = new WifiDeviceUsedStatusDTO();
+		dto.setCtx(ctx);
+		dto.setMac(mac);
+		dto.setResponse(response);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 	public void sendCMUPWithWifiDeviceOnlinesActionMessage(String ctx, List<WifiDeviceDTO> devices){
 		CMUPWithWifiDeviceOnlinesDTO dto = new CMUPWithWifiDeviceOnlinesDTO();
 		dto.setCtx(ctx);
