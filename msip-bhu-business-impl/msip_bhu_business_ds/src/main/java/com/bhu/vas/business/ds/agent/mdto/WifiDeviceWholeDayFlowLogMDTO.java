@@ -11,10 +11,9 @@ import com.smartwork.msip.cores.helper.StringHelper;
  * wifi设备每日全天流量统计数据
  * 此数据来源于设备使用情况
  * @author Edmond
- * 
  */
-@Document(collection = "t_wifi_device_wholeday")
-public class WifiDeviceWholeFlowLogMDTO {
+@Document(collection = "t_wifi_device_wholeday_flowlog")
+public class WifiDeviceWholeDayFlowLogMDTO {
 	/**
 	 * 规则为 yyyy-MM-dd_mac
 	 */
