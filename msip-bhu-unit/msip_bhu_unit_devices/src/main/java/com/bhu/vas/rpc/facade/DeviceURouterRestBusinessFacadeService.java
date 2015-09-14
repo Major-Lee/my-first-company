@@ -451,7 +451,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogin_at(ts);
 						dto.setLogout_at(0);
-						dto.setRx_bytes(rx_bytes);
+						dto.setRx_bytes(0);
 						mdtos.add(dto);
 					} else {
 						dto = mdtos.get(mdtos.size() - 1);
