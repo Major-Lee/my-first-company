@@ -264,14 +264,18 @@ public class DeviceURouterRestBusinessFacadeService {
 				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
 				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
 
+				long rx_bytes = 0;
+
 				if (handsetDeviceDTO != null) {
 					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
 						if (handsetDeviceDTO.getTx_bytes() != null ) {
 							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getTx_bytes());
+							rx_bytes = Long.parseLong(handsetDeviceDTO.getTx_bytes());
 						}
 					}
 				}
 
+				vto.setRx_bytes(String.valueOf(rx_bytes));
 				vto.setTotal_rx_bytes(String.valueOf(total_rx_bytes));
 
 				List<String> weeks = DateTimeExtHelper.getSevenDateOfWeek();

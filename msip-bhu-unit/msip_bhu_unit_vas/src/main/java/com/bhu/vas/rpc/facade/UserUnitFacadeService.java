@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -340,6 +341,8 @@ public class UserUnitFacadeService {
 				WifiDevice wifiDevice = wifiDeviceService.getById(userDevice.getMac());
 				if (wifiDevice != null) {
 					userDeviceDTO.setOnline(wifiDevice.isOnline());
+					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+							.presentOnlineSize(userDevice.getMac()));
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}

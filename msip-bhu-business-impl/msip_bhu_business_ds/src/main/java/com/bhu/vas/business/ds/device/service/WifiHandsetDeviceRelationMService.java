@@ -153,12 +153,13 @@ public class WifiHandsetDeviceRelationMService {
 
                 update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(tx_bytes));
-
+                update.set(WifiHandsetDeviceRelationMDao.M_RX_BYTES, tx_bytes);
             } else { //如果离线记录先上报
                 logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
                 Date date = new Date();
                 update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
                 update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
+                update.set(WifiHandsetDeviceRelationMDao.M_RX_BYTES, 0);
 
             }
 

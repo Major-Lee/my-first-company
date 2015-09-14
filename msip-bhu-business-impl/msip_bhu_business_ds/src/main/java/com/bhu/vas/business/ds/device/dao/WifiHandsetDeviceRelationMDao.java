@@ -16,7 +16,7 @@ public class WifiHandsetDeviceRelationMDao extends BaseMongoDAOImpl<WifiHandsetD
 	public static final String M_HANDSETID = "handsetId";
 	public static final String M_LAST_LOGIN_AT = "last_login_at";
 	public static final String M_TOTAL_RX_BYTES = "total_rx_bytes";
-	public static final String M_ITEMS = "items";
+	public static final String M_RX_BYTES = "rx_bytes";
 	public static final String M_LOGS = "logs";
 	public static final String M_LOGS_TYPE_LOGIN = "login";
 	public static final String M_LOGS_TYPE_LOGOUT = "logout";

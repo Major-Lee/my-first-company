@@ -14,6 +14,8 @@ public class URouterHdDetailVTO implements Serializable {
     //下行字节累加
     private String total_rx_bytes;
 
+    private String rx_bytes;
+
     private List<URouterHdTimeLineVTO> timeline;
 
     public String getMac() {
@@ -34,6 +36,14 @@ public class URouterHdDetailVTO implements Serializable {
 
     public String getTotal_rx_bytes() {
         return total_rx_bytes;
+    }
+
+    public String getRx_bytes() {
+        return rx_bytes;
+    }
+
+    public void setRx_bytes(String rx_bytes) {
+        this.rx_bytes = rx_bytes;
     }
 
     public void setTotal_rx_bytes(String total_rx_bytes) {
