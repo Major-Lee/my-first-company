@@ -1,10 +1,13 @@
 package com.bhu.vas.plugins.quartz;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +32,6 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class WifiDeviceOnlineActionLoader {
 	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineActionLoader.class);
 	
-	public int bulk_success = 0;
-	public int bulk_fail = 0;
-	public int index_count = 0;
-	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
@@ -42,7 +41,7 @@ public class WifiDeviceOnlineActionLoader {
 	public void execute() {
 		logger.info("WifiDeviceOnlineActionLoader starting...");
 		int total = 0;
-		String cmdPayload = null;
+		//String cmdPayload = null;
 		List<DownCmds> downCmds = new ArrayList<DownCmds>();
 		try{
 			ModelCriteria mc = new ModelCriteria();
@@ -55,30 +54,44 @@ public class WifiDeviceOnlineActionLoader {
 				List<WifiDevice> next = it.next();
 				for(WifiDevice device:next){
 					{
+						Set<String> payloads =  new HashSet<String>();
 						if(WifiDeviceHelper.isURooterDeviceWithOrigModel(device.getOrig_model())){
 							//确定是否需要下发指令
 							boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(device.getId(),false);
 							if(needDeviceUsedQuery){
-								cmdPayload = CMDBuilder.builderDeviceUsedStatusQuery(device.getId());
-								downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));
+								payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(device.getId()));
 							}
+							if(StringUtils.isEmpty(device.getLat()) || StringUtils.isEmpty(device.getLon())){
+								payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(device.getId()));
+							}
+							
 						}else{
-							cmdPayload = CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId());
-							downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));
+							payloads.add(CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId()));
+							//cmdPayload = CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId());
+							//downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));
 						}
-						//daemonRpcService.wifiMultiDevicesCmdsDown(downCmds);
-						//DaemonHelper.daemonCmdDown(device.getId(), cmdPayload, daemonRpcService);
-						logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),cmdPayload));
+						if(!payloads.isEmpty()){
+							logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),payloads));
+							downCmds.add(DownCmds.builderDownCmds(device.getId(), payloads.toArray(new String[0])));
+							payloads.clear();
+							payloads = null;
+						}
 					}
 					total++;
 				}
-				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
-				downCmds.clear();
+				if(!downCmds.isEmpty()){
+					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
+					downCmds.clear();
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
 		}finally{
+			if(downCmds != null){
+				downCmds.clear();
+				downCmds = null;
+			}
 		}
 		logger.info(String.format("WifiDeviceOnlineActionLoader ended, total devices [%s]", total));
 	}

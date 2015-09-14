@@ -156,6 +156,10 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceLocationS2.getNo(),builderTaskidFormat(taskid),serialno);
 	}
 	
+	
+	public static String builderDeviceLocationNotifyQuery(String wifi_mac){
+		return builderDeviceLocationNotifyQuery(wifi_mac,auto_taskid_fragment.getNextSequence());
+	}
 	public static String builderDeviceLocationNotifyQuery(String wifi_mac,long taskid){
 		String opt = OperationCMD.QueryDeviceLocationNotify.getNo();
 		String taskid_format = builderTaskidFormat(taskid);

@@ -1,6 +1,5 @@
 package com.bhu.vas.plugins.quartz;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,13 +7,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.api.dto.DownCmds;
-import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
-import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.logger.BusinessStatisticsLogger;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -49,7 +44,7 @@ public class WifiDeviceOnlineSimulateLoader {
 			while(it.hasNext()){
 				List<WifiDevice> next = it.next();
 				for(WifiDevice device:next){
-					
+					BusinessStatisticsLogger.doSimulateLoginActionLog(device.getId());
 				}
 			}
 		}catch(Exception ex){
@@ -57,6 +52,6 @@ public class WifiDeviceOnlineSimulateLoader {
 			logger.error(ex.getMessage(), ex);
 		}finally{
 		}
-		logger.info(String.format("WifiDeviceOnlineActionLoader ended, total devices [%s]", total));
+		logger.info(String.format("WifiDeviceOnlineSimulateLoader ended, total devices [%s]", total));
 	}
 }
