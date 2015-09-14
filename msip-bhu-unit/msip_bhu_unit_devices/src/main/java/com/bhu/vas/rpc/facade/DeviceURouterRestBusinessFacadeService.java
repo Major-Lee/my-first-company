@@ -456,6 +456,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					} else {
 						dto = mdtos.get(mdtos.size() - 1);
 						dto.setLogin_at(ts);
+						dto.setRx_bytes(0);
 					}
 				}
 
