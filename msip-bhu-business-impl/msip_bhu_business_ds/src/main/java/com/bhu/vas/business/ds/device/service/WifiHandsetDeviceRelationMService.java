@@ -143,7 +143,7 @@ public class WifiHandsetDeviceRelationMService {
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(logout_at);
             log.setType(WifiHandsetDeviceRelationMDao.M_LOGS_TYPE_LOGOUT);
-            log.setRx_bytes(tx_bytes);
+            log.setRx_bytes(Long.parseLong(tx_bytes));
 
             //离线的情况下，肯定有七天的在线记录
             if (wifiHandsetDeviceRelationMDTO != null) {

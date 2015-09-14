@@ -316,6 +316,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			//WifiHandsetDeviceItemDetailMDTO dto = null;
 			//List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
 			String last_type = null;
+			long last_rx_bytes = 0;
 			long last_ts = 0;
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {
 				long ts = log.getTs();
@@ -330,10 +331,8 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
-				String rx_bytes = log.getRx_bytes();
-				if (rx_bytes == null) {
-					rx_bytes = "0";
-				}
+				long rx_bytes = log.getRx_bytes();
+
 //				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
@@ -380,7 +379,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				last_type = type;
+				last_rx_bytes = rx_bytes;
 				last_ts = ts;
+
 
 			}
 
@@ -419,7 +420,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param offset 记录是七天的第几天
 	 * @param first last_type == null 时候
 	 */
-	private void filterDay(long ts, long last_ts, String type, String last_type, String rx_bytes, List<URouterHdTimeLineVTO> vtos,
+	private void filterDay(long ts, long last_ts, String type, String last_type, long rx_bytes, List<URouterHdTimeLineVTO> vtos,
 						   int offset, boolean first) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
@@ -452,9 +453,11 @@ public class DeviceURouterRestBusinessFacadeService {
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogin_at(ts);
 						dto.setLogout_at(0);
+						dto.setRx_bytes(rx_bytes);
 						mdtos.add(dto);
 					} else {
 						dto = mdtos.get(mdtos.size() - 1);
+						dto.setRx_bytes(rx_bytes);
 						dto.setLogin_at(ts);
 					}
 				}
@@ -542,6 +545,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size() - 1);
 						long login_at_zero = DateTimeHelper.parseDate(vto_.getDate(), DateTimeHelper.shortDateFormat).getTime();
 						dto_.setLogin_at(login_at_zero); //补齐零点登入
+						dto.setRx_bytes(rx_bytes);
 						vto_.setDetail(mdtos_);
 						// <<<
 
@@ -556,6 +560,7 @@ public class DeviceURouterRestBusinessFacadeService {
 //						logger.info("set ts ==" + ts + ",i===" + i);
 						if (i == j) {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
+							dto.setRx_bytes(rx_bytes);
 //							logger.info("set login_ ts ==" + ts);
 						}
 //						if (offset + 1 + i >= 6)  {

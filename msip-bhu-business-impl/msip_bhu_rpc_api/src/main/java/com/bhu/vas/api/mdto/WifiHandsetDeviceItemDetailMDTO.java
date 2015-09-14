@@ -11,7 +11,7 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     private long logout_at;
 
-    private String rx_bytes;
+    private long rx_bytes;
 
     public long getLogin_at() {
         return login_at;
@@ -29,11 +29,11 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
         this.logout_at = logout_at;
     }
 
-    public String getRx_bytes() {
+    public long getRx_bytes() {
         return rx_bytes;
     }
 
-    public void setRx_bytes(String rx_bytes) {
+    public void setRx_bytes(long rx_bytes) {
         this.rx_bytes = rx_bytes;
     }
 }
