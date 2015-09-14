@@ -143,6 +143,7 @@ public class WifiHandsetDeviceRelationMService {
             WifiHandsetDeviceItemLogMDTO log = new WifiHandsetDeviceItemLogMDTO();
             log.setTs(logout_at);
             log.setType(WifiHandsetDeviceRelationMDao.M_LOGS_TYPE_LOGOUT);
+            log.setRx_bytes(tx_bytes);
 
             //离线的情况下，肯定有七天的在线记录
             if (wifiHandsetDeviceRelationMDTO != null) {
@@ -153,13 +154,11 @@ public class WifiHandsetDeviceRelationMService {
 
                 update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, wifiHandsetDeviceRelationMDTO.getLast_login_at());
                 update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes() + Long.parseLong(tx_bytes));
-                update.set(WifiHandsetDeviceRelationMDao.M_RX_BYTES, tx_bytes);
             } else { //如果离线记录先上报
                 logs = new ArrayList<WifiHandsetDeviceItemLogMDTO>();
                 Date date = new Date();
                 update.set(WifiHandsetDeviceRelationMDao.M_LAST_LOGIN_AT, DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern1));
                 update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
-                update.set(WifiHandsetDeviceRelationMDao.M_RX_BYTES, 0);
 
             }
 

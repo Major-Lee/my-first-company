@@ -15,6 +15,8 @@ public class WifiHandsetDeviceItemLogMDTO implements Serializable {
      */
     private String type;
 
+    private String rx_bytes;
+
     public long getTs() {
         return ts;
     }
@@ -29,5 +31,13 @@ public class WifiHandsetDeviceItemLogMDTO implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getRx_bytes() {
+        return rx_bytes;
+    }
+
+    public void setRx_bytes(String rx_bytes) {
+        this.rx_bytes = rx_bytes;
     }
 }

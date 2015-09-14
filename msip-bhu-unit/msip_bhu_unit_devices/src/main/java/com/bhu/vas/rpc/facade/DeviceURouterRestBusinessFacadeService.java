@@ -264,18 +264,14 @@ public class DeviceURouterRestBusinessFacadeService {
 				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
 				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
 
-				long rx_bytes = 0;
-
 				if (handsetDeviceDTO != null) {
 					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
 						if (handsetDeviceDTO.getTx_bytes() != null ) {
 							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getTx_bytes());
-							rx_bytes = Long.parseLong(handsetDeviceDTO.getTx_bytes());
 						}
 					}
 				}
 
-				vto.setRx_bytes(String.valueOf(rx_bytes));
 				vto.setTotal_rx_bytes(String.valueOf(total_rx_bytes));
 
 				List<String> weeks = DateTimeExtHelper.getSevenDateOfWeek();
@@ -334,17 +330,21 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				String type = log.getType();
+				String rx_bytes = log.getRx_bytes();
+				if (rx_bytes == null) {
+					rx_bytes = "0";
+				}
 //				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
 				if (last_type == null) { //最新一条记录
 					//处理分割记录
-					filterDay(ts, currentTime, type,last_type, vtos, offset, true);
+					filterDay(ts, currentTime, type,last_type, rx_bytes, vtos, offset, true);
 
 				} else { //第二条数据开始
 
 					if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //新的的登出记录
-						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, offset, false);
 					}
 
 					if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) { //连续两条登出
@@ -352,28 +352,28 @@ public class DeviceURouterRestBusinessFacadeService {
 						//模拟一条登入的记录
 //						last_type = "logout";
 						type = HANDSET_LOGIN_TYPE;
-						filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, offset, false);
 
 						last_type = HANDSET_LOGIN_TYPE;
 						type = HANDSET_LOGOUT_TYPE;
-						filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
+						filterDay(last_ts, last_ts, type, last_type, rx_bytes, vtos, offset, false);
 
 					}
 
 					if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) {
 
-						filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+						filterDay(ts, last_ts, type, last_type, rx_bytes,vtos, offset, false);
 					}
 					if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) {
 						//忽略记录
 						//先模拟一条当前登出的记录
 						type = HANDSET_LOGOUT_TYPE;
-						filterDay(last_ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
+						filterDay(last_ts, last_ts, type, last_type, rx_bytes, vtos, getOffSet(ts, currentZeroTime), false);
 
 						last_type = HANDSET_LOGOUT_TYPE;
 						type = HANDSET_LOGIN_TYPE;
 //						last_ts = ts;
-						filterDay(ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
+						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, getOffSet(ts, currentZeroTime), false);
 
 					}
 
@@ -419,7 +419,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param offset 记录是七天的第几天
 	 * @param first last_type == null 时候
 	 */
-	private void filterDay(long ts, long last_ts, String type, String last_type, List<URouterHdTimeLineVTO> vtos,
+	private void filterDay(long ts, long last_ts, String type, String last_type, String rx_bytes, List<URouterHdTimeLineVTO> vtos,
 						   int offset, boolean first) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
@@ -464,6 +464,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (first) { //last_type == null
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(ts);
+						dto.setRx_bytes(rx_bytes);
 						mdtos.add(dto);
 					} else {
 						if (last_ts - ts < IGNORE_LOGIN_TIME_SPACE) { //小于15分钟的记录
@@ -472,6 +473,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						} else {
 							dto = new WifiHandsetDeviceItemDetailMDTO();
 							dto.setLogout_at(ts);
+							dto.setRx_bytes(rx_bytes);
 							mdtos.add(dto);
 						}
 					}
@@ -495,6 +497,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (HANDSET_LOGOUT_TYPE.equals(type)) {
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(ts);
+						dto.setRx_bytes(rx_bytes);
 						mdtos.add(dto);
 					}
 
@@ -517,6 +520,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 					dto = new WifiHandsetDeviceItemDetailMDTO();
 					dto.setLogout_at(ts);
+					dto.setRx_bytes(rx_bytes);
 					mdtos.add(dto);
 					vto.setDetail(mdtos);
 				}
@@ -547,6 +551,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 						dto = new WifiHandsetDeviceItemDetailMDTO();
 						dto.setLogout_at(login_at_zero - 1);  //补齐零点登出
+						dto.setRx_bytes(rx_bytes);
 
 //						logger.info("set ts ==" + ts + ",i===" + i);
 						if (i == j) {
