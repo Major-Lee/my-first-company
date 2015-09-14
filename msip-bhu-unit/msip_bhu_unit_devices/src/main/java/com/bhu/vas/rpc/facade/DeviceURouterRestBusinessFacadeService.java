@@ -457,7 +457,6 @@ public class DeviceURouterRestBusinessFacadeService {
 						mdtos.add(dto);
 					} else {
 						dto = mdtos.get(mdtos.size() - 1);
-						dto.setRx_bytes(rx_bytes);
 						dto.setLogin_at(ts);
 					}
 				}
@@ -545,7 +544,6 @@ public class DeviceURouterRestBusinessFacadeService {
 						WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size() - 1);
 						long login_at_zero = DateTimeHelper.parseDate(vto_.getDate(), DateTimeHelper.shortDateFormat).getTime();
 						dto_.setLogin_at(login_at_zero); //补齐零点登入
-						dto.setRx_bytes(rx_bytes);
 						vto_.setDetail(mdtos_);
 						// <<<
 
@@ -560,7 +558,6 @@ public class DeviceURouterRestBusinessFacadeService {
 //						logger.info("set ts ==" + ts + ",i===" + i);
 						if (i == j) {
 							dto.setLogin_at(ts);  //如果最后一次的话添加一个登录时间
-							dto.setRx_bytes(rx_bytes);
 //							logger.info("set login_ ts ==" + ts);
 						}
 //						if (offset + 1 + i >= 6)  {
