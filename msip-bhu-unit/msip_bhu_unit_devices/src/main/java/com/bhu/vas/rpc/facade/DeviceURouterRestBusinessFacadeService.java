@@ -316,7 +316,6 @@ public class DeviceURouterRestBusinessFacadeService {
 			//WifiHandsetDeviceItemDetailMDTO dto = null;
 			//List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
 			String last_type = null;
-			long last_rx_bytes = 0;
 			long last_ts = 0;
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {
 				long ts = log.getTs();
@@ -379,7 +378,6 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				last_type = type;
-				last_rx_bytes = rx_bytes;
 				last_ts = ts;
 
 
@@ -472,6 +470,8 @@ public class DeviceURouterRestBusinessFacadeService {
 						if (last_ts - ts < IGNORE_LOGIN_TIME_SPACE) { //小于15分钟的记录
 							//忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
+							dto = mdtos.get(mdtos.size() - 1);
+							dto.setRx_bytes(dto.getRx_bytes() + rx_bytes);
 						} else {
 							dto = new WifiHandsetDeviceItemDetailMDTO();
 							dto.setLogout_at(ts);
