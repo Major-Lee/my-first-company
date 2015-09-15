@@ -137,11 +137,12 @@ public class UserController extends BaseController{
 	public void pages(
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,value = "k") String keywords,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 		try{
-			RpcResponseDTO<TailPage<AgentUserDetailVTO>> rpcResult = agentUserRpcService.pageAgentUsers(uid, pageNo, pageSize);
+			RpcResponseDTO<TailPage<AgentUserDetailVTO>> rpcResult = agentUserRpcService.pageAgentUsers(uid,keywords, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else

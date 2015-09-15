@@ -66,9 +66,9 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,int pageno,int pagesize) {
-		logger.info(String.format("pageAgentUsers with uid[%s] pageno[%s] pagesize[%s]",uid,pageno,pagesize));
-		return agentUserUnitFacadeService.pageAgentUsers(uid,pageno,pagesize);
+	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,String keywords,int pageno,int pagesize) {
+		logger.info(String.format("pageAgentUsers with uid[%s] keywords[%s] pageno[%s] pagesize[%s]",uid,keywords,pageno,pagesize));
+		return agentUserUnitFacadeService.pageAgentUsers(uid,keywords,pageno,pagesize);
 	}
 
 	@Override
