@@ -8,13 +8,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.jdo.ResponseError;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,7 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
@@ -40,6 +37,15 @@ public class AgentController {
     @Resource
     private IAgentRpcService agentRpcService;
 
+    @ResponseBody()
+    @RequestMapping(value="/mainpage", method={RequestMethod.POST})
+    public void mainpage(HttpServletRequest request,
+                                       HttpServletResponse response,
+                                       @RequestParam(required = true) Integer uid){
+        System.out.println("hello !!!!!");
+        SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+    }
+    
     @ResponseBody()
     @RequestMapping(value="/hello", method={RequestMethod.POST})
     public void hello(HttpServletRequest request,

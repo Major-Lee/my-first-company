@@ -1,11 +1,8 @@
-package com.bhu.vas.di.op.charging;
+package com.bhu.vas.di.business.datainit.charging;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -13,45 +10,43 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.charging.ActionBuilder;
-import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
-import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.bhu.vas.api.dto.charging.DeviceNotExistAction;
 import com.bhu.vas.api.dto.charging.DeviceOfflineAction;
 import com.bhu.vas.api.dto.charging.DeviceOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetOfflineAction;
 import com.bhu.vas.api.dto.charging.HandsetOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetSyncAction;
+import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
+import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.bhu.vas.business.ds.agent.mdto.LineRecord;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
-import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
-import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
-/**
- * 每日必须进行状态保活，每天凌晨需要把在线的设备重新写入到日志中，作为模拟登录，模拟登录的时间缺省为当日的起始时间，防止漏算了长时间在线的设备
- * 对于终端则无需这样
- * @author Edmond
- *
- */
-public class ChargingDataParserOp {
+@Service
+public class Step0ParserLogService {
 	private Date currentDate;
+	
+	//设备 在线区间段 dmac -》LineRecords
+	private Map<String,LineRecords> device_records = new HashMap<>();
+	//设备 终端列表 dmac -> Set<hmac>
+	//private Map<String,Set<String>> device_handset_records = new HashMap<>();
+	//终端 在线区间段dmac -> <hmac -》LineRecords>
+	private Map<String,Map<String,LineRecords>> device_handset_records = new HashMap<>();
 	/**
-	 * 
+	 * 分析指定日期的日志
 	 * @param date yyyy-MM-dd
 	 */
-	public void perdayDataGen(String date){
+	public void parser(String date){
 		this.currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.shortDateFormat);
 		File[] files = FileHelper.getFilesFilterName("/BHUData/bulogs/charginglogs/", date);//"2012-08-01""2012-07-31"
 		if(files != null && files.length != 0){
@@ -92,12 +87,6 @@ public class ChargingDataParserOp {
 		}
 	}
 	
-	//设备 在线区间段 dmac -》LineRecords
-	private Map<String,LineRecords> device_records = new HashMap<>();
-	//设备 终端列表 dmac -> Set<hmac>
-	//private Map<String,Set<String>> device_handset_records = new HashMap<>();
-	//终端 在线区间段dmac -> <hmac -》LineRecords>
-	private Map<String,Map<String,LineRecords>> device_handset_records = new HashMap<>();
 	public void processBackendActionMessage(String messagejsonHasPrefix) throws Exception{
 		//System.out.println(messagejsonHasPrefix);
 		ActionMode actionType = ActionBuilder.determineActionType(messagejsonHasPrefix);
@@ -507,83 +496,5 @@ public class ChargingDataParserOp {
 	public void setDevice_handset_records(
 			Map<String, Map<String, LineRecords>> device_handset_records) {
 		this.device_handset_records = device_handset_records;
-	}
-
-	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-		WifiDeviceWholeDayMService wifiDeviceWholeDayMService = (WifiDeviceWholeDayMService)ctx.getBean("wifiDeviceWholeDayMService");
-
-		String date = "2015-09-09";
-		ChargingDataParserOp op = new ChargingDataParserOp();
-		op.perdayDataGen(date);
-		op.processEnd(op.getDevice_records());
-		StringBuilder sb = new StringBuilder();
-		Iterator<Entry<String, LineRecords>> iter = op.getDevice_records().entrySet().iterator();
-		while (iter.hasNext()) {
-			Entry<String, LineRecords> next = iter.next();
-			String key = next.getKey();
-			LineRecords  val = next.getValue();
-			sb.append("mac:"+key).append(String.format("[%s]", MacDictParserFilterHelper.prefixMactch(key,false,false))).append('\n');
-			int times = 0;
-			long total_online_duration = 0l;
-			for(LineRecord record:val.getRecords()){
-				sb.append("		"+record).append('\n');
-				times++;
-				total_online_duration += record.gaps();
-			}
-			int handsets = 0;
-			Map<String, LineRecords> map = op.getDevice_handset_records().get(key);
-			if(map != null){
-				handsets = map.size();
-			}
-			sb.append(String.format("      统计 次数[%s] 时长[%s] 终端数[%s]", times,DateTimeHelper.getTimeDiff(total_online_duration),handsets)).append('\n');
-			
-			WifiDeviceWholeDayMDTO dto = new WifiDeviceWholeDayMDTO();
-			dto.setId(WifiDeviceWholeDayMDTO.generateId(date, key));
-			dto.setMac(key);
-			dto.setDate(date);
-			dto.setConnecttimes(times);
-			dto.setOnlineduration(total_online_duration);
-			dto.setHandsets(handsets);
-			dto.setRecords(val.getRecords());
-			wifiDeviceWholeDayMService.save(dto);
-			System.out.println(dto.getId());
-		}
-		
-		sb.append("~~~~~~~~~~~~~~~~~~~~~~~gap line~~~~~~~~~~~~~~~~~~\n");
-		Iterator<Entry<String, Map<String, LineRecords>>> iter_first = op.getDevice_handset_records().entrySet().iterator();
-		
-		while (iter_first.hasNext()) {
-			Entry<String, Map<String,LineRecords>> next = iter_first.next();
-			String dmac = next.getKey();
-			sb.append("dmac:"+dmac).append(String.format("[%s]", MacDictParserFilterHelper.prefixMactch(dmac,false,false))).append('\n');
-			Map<String, LineRecords> value = next.getValue();
-			Iterator<Entry<String, LineRecords>> iter_second = value.entrySet().iterator();
-			while(iter_second.hasNext()){
-				Entry<String, LineRecords> next2 = iter_second.next();
-				String hmac = next2.getKey();
-				sb.append("      hmac:"+hmac).append(String.format("[%s]", MacDictParserFilterHelper.prefixMactch(hmac,false,false))).append('\n');
-				LineRecords val = next2.getValue();
-				int times = 0;
-				long total_online_time = 0l;
-				for(LineRecord record:val.getRecords()){
-					sb.append("		      "+record).append('\n');
-					times++;
-					total_online_time += record.gaps();
-				}
-				sb.append(String.format("		      统计 次数[%s] 时长[%s]", times,DateTimeHelper.getTimeDiff(total_online_time))).append('\n');
-			}
-			
-			/*LineRecords  val = value;
-			if(val.getCurrent() !=  null){//补齐最后登出时间
-				val.getCurrent().setDown_ts(DateTimeHelper.getDateEnd(currentDate).getTime());
-				val.getCurrent().setHint("日志截尾，补齐到当天最后时间");
-				val.getRecords().add(val.getCurrent());
-				val.setCurrent(null);
-			}*/
-		}
-		
-		FileHelper.generateFile("/BHUData/data/abcd.txt", new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
 	}
 }

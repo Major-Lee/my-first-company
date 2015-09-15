@@ -1,19 +1,21 @@
 package com.bhu.vas.rpc.service.device;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
-import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
-import com.bhu.vas.rpc.facade.AgentFacadeService;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.rpc.facade.AgentFacadeService;
+import com.bhu.vas.rpc.facade.AgentStatisticsUnitFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * Created by bluesand on 9/7/15.
@@ -24,10 +26,11 @@ public class AgentRpcService implements IAgentRpcService {
     private final Logger logger = LoggerFactory.getLogger(AgentRpcService.class);
 
     @Resource
-    public AgentFacadeService agentFacadeService;
+    private AgentFacadeService agentFacadeService;
 
 
-
+    private AgentStatisticsUnitFacadeService agentStatisticsUnitFacadeService;
+    
     @Override
     public boolean claimAgentDevice(String sn) {
         logger.info(String.format("claimAgentDevice sn[%s]", sn));
@@ -72,4 +75,15 @@ public class AgentRpcService implements IAgentRpcService {
         return agentFacadeService.findAgentBulltinBoardById(bid);
     }
 
+	@Override
+	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String enddate) {
+		logger.info(String.format("statistics uid[%s] date[%s]", uid, enddate));
+		return agentStatisticsUnitFacadeService.statistics(uid, enddate);
+	}
+
+	@Override
+	public RpcResponseDTO<List<DailyRevenueRecordVTO>> historyrecords(int uid,String enddate) {
+		logger.info(String.format("historyrecords uid[%s] date[%s]", uid, enddate));
+		return agentStatisticsUnitFacadeService.historyrecords(uid, enddate);
+	}
 }
