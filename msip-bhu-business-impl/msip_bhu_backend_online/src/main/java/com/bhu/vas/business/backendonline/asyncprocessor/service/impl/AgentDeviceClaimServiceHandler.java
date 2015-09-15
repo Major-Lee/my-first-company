@@ -117,7 +117,7 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setUid(dto.getAid());
 
                     logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
-                    //agentDeviceClaimService.insert(agentDeviceClaim);
+                    agentDeviceClaimService.insert(agentDeviceClaim);
 
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
@@ -137,8 +137,8 @@ public class AgentDeviceClaimServiceHandler {
 
             outWorkbook.write(out);
 
-//            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
-//                    "设备发放完毕，<a href='"+dto.getOutputPath() + "'>下载</a>");
+            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
+                    "设备发放完毕，<a href='"+dto.getOutputPath() + "'>下载</a>");
 
 
 
