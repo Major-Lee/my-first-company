@@ -100,9 +100,6 @@ public class AgentController {
                 outDirFile.mkdirs();
             }
 
-
-
-
             Date date = new Date();
             String inputPath = inputDirPath + File.separator + date.getTime() + ".xls";
             String outputPath = outputDirPath + File.separator + date.getTime() + ".xls";

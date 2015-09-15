@@ -106,9 +106,15 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
 
                     HSSFCell sn = hssfRow.getCell(2);
+                    if (sn == null) {
+                        continue;
+                    }
                     agentDeviceClaim.setId(sn.getStringCellValue());
 
                     HSSFCell mac = hssfRow.getCell(3);
+                    if (sn == null) {
+                        continue;
+                    }
                     agentDeviceClaim.setMac(StringHelper.formatMacAddress(mac.getStringCellValue()));
 
                     Date date = new Date();
