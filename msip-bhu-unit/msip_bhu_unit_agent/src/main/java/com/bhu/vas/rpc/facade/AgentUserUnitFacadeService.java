@@ -255,4 +255,56 @@ public class AgentUserUnitFacadeService {
 		}
 
 	}
+	
+	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid) {
+		try{
+			User user  = userService.getById(uid);
+			if(user == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
+			UserTypeValidateService.validConsoleOrAgentUser(user);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid, String nick,
+			String org, String addr1, String addr2, String memo) {
+		try{
+			User user  = userService.getById(uid);
+			if(user == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
+			UserTypeValidateService.validConsoleOrAgentUser(user);
+			if(StringUtils.isEmpty(nick)){
+				user.setNick(nick);;
+			}
+			if(StringUtils.isEmpty(org)){
+				user.setOrg(org);
+			}
+			
+			if(StringUtils.isEmpty(addr1)){
+				user.setAddr1(addr1);
+			}
+			if(StringUtils.isEmpty(addr2)){
+				user.setAddr2(addr2);
+			}
+			if(StringUtils.isEmpty(memo)){
+				user.setMemo(memo);
+			}
+			this.userService.update(user);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

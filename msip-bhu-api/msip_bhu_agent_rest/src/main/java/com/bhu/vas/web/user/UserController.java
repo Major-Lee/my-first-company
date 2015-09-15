@@ -151,4 +151,43 @@ public class UserController extends BaseController{
 		}
 	}
 	
+	
+	@ResponseBody()
+	@RequestMapping(value="/detail",method={RequestMethod.POST})
+	public void detail(
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid
+			) {
+		try{
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userDetail(uid);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/modify",method={RequestMethod.POST})
+	public void modify(
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String nick,
+			@RequestParam(required = false) String org,
+			@RequestParam(required = false) String addr1,
+			@RequestParam(required = false) String addr2,
+			@RequestParam(required = false) String memo
+			) {
+		try{
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid, nick, org, addr1, addr2, memo);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }
