@@ -66,7 +66,7 @@ public class AgentUserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
 			}catch(BusinessI18nCodeException bex){
 				bex.printStackTrace(System.out);
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(), Boolean.FALSE);
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
