@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.smartwork.msip.cores.helper.FileHelper;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import org.springframework.stereotype.Controller;
@@ -52,6 +52,26 @@ public class AgentController {
 
         try {
             TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/log_list", method={RequestMethod.POST})
+    public void agentImportLogList(HttpServletRequest request,
+                          HttpServletResponse response,
+                          @RequestParam(required = true) Integer uid,
+                          @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                          @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+
+        try {
+            TailPage<AgentDeviceImportLogVTO> dtos = agentRpcService.pageAgentDeviceImportLog(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,6 +139,9 @@ public class AgentController {
             SpringMVCHelper.renderJson(response, ResponseError.ERROR);
         }
     }
+
+
+
 
 
 

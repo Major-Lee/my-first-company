@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -60,6 +61,12 @@ public interface IAgentRpcService {
     void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName);
 
 
-
+    /**
+     * 代理商导入日志
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize);
 
 }

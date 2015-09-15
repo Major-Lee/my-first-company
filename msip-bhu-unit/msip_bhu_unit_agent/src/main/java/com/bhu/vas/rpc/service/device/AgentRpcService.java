@@ -4,7 +4,10 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.rpc.facade.AgentFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Resource
     public AgentFacadeService agentFacadeService;
+
+
 
     @Override
     public boolean claimAgentDevice(String sn) {
@@ -51,5 +56,11 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s orginName:%s inputpath:%s outputPath:%s",
                 uid, aid, originName, inputPath, outputPath));
         agentFacadeService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
+    }
+
+    @Override
+    public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentDeviceImportLog pageNo:%s pageSize:%s", pageNo, pageSize));
+        return agentFacadeService.pageAgentDeviceImportLog(pageNo, pageSize);
     }
 }
