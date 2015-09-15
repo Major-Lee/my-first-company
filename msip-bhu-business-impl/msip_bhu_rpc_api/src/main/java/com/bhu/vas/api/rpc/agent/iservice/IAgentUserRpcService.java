@@ -70,5 +70,5 @@ public interface IAgentUserRpcService {
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
 
 	
-	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int pageno,int pagesize);
+	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int uid,int pageno,int pagesize);
 }

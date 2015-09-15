@@ -40,7 +40,7 @@ public class AgentUserUnitFacadeService {
 				boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
 				//还需验证此用户是否是代理商用户或者是管理员用户
 				if(validate){
-					if(RuntimeConfiguration.isConsoleUser(uid))
+					if(RuntimeConfiguration.isConsoleUser(uid))//管理员账户直接通过验证
 						return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 					User user = userService.getById(uid);
 					if(user == null){
@@ -84,7 +84,6 @@ public class AgentUserUnitFacadeService {
 			String nick, String sex, String device,String regIp) {
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
-			//return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
 		
 		User user = new User();
@@ -130,6 +129,11 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
 		}
 		
+		//管理账户或者代理商账户才能继续
+		if(!RuntimeConfiguration.isConsoleUser(uid) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
+		}
+		
 		if(StringUtils.isEmpty(user.getRegip())){
 			user.setRegip(remoteIp);
 		}
@@ -169,6 +173,10 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		
+		//管理账户或者代理商账户才能继续
+		if(!RuntimeConfiguration.isConsoleUser(user.getId()) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
+		}
 		if(StringUtils.isEmpty(user.getRegip())){
 			user.setRegip(remoteIp);
 		}
@@ -183,7 +191,11 @@ public class AgentUserUnitFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int pageno,int pagesize){
+	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int uid,int pageno,int pagesize){
+		//管理账户才能继续
+		if(!RuntimeConfiguration.isConsoleUser(uid)){//管理员账户直接通过验证
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
+		}
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("utype", User.Agent_User);
 		mc.setOrderByClause("id");
