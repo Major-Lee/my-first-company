@@ -38,8 +38,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	//是否锁住用户 ，例如用户尝试几次都登录失败可能锁住此用户，每天解锁一次
 	private boolean locked = false;
 	/*private String avatar;
-	private String cover;
-	private String memo;*/
+	private String cover;*/
+	private String org;
+	private String addr1;
+	private String addr2;
+	private String memo;
 	
 	//注册ip
 	private String regip;
@@ -204,5 +207,28 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	public void setUtype(int utype) {
 		this.utype = utype;
 	}
-	
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+	public String getOrg() {
+		return org;
+	}
+	public void setOrg(String org) {
+		this.org = org;
+	}
+	public String getAddr1() {
+		return addr1;
+	}
+	public void setAddr1(String addr1) {
+		this.addr1 = addr1;
+	}
+	public String getAddr2() {
+		return addr2;
+	}
+	public void setAddr2(String addr2) {
+		this.addr2 = addr2;
+	}
 }

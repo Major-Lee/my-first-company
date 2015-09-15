@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
+import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -22,6 +23,7 @@ import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -59,6 +61,10 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = true) String pwd,
 			@RequestParam(required = false) String sex,
+			@RequestParam(required = false) String org,
+			@RequestParam(required = false) String addr1,
+			@RequestParam(required = false) String addr2,
+			@RequestParam(required = false) String memo,
 			@RequestParam(required = false, value="d",defaultValue="R") String device//,
 			) {
 		//step 1.deviceuuid 验证
@@ -73,7 +79,12 @@ public class UserController extends BaseController{
 				return;
 			}
 			System.out.println(countrycode+" "+acc+" "+pwd+" "+nick+" "+sex+" "+from_device+" "+remoteIp);
-			RpcResponseDTO<Map<String, Object>> rpcResult = agentUserRpcService.createNewUser(countrycode, acc,pwd, nick, sex, from_device, remoteIp);
+			RpcResponseDTO<Map<String, Object>> rpcResult = agentUserRpcService.createNewUser(countrycode, acc,pwd, nick, sex,
+					org,
+					addr1,
+					addr2,
+					memo,
+					from_device, remoteIp);
 			if(rpcResult.getErrorCode() == null){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
@@ -121,4 +132,62 @@ public class UserController extends BaseController{
 		}
 	}
 	
+	@ResponseBody()
+	@RequestMapping(value="/pages",method={RequestMethod.POST})
+	public void pages(
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+		try{
+			RpcResponseDTO<TailPage<AgentUserDetailVTO>> rpcResult = agentUserRpcService.pageAgentUsers(uid, pageNo, pageSize);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	
+	@ResponseBody()
+	@RequestMapping(value="/detail",method={RequestMethod.POST})
+	public void detail(
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid
+			) {
+		try{
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userDetail(uid);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/modify",method={RequestMethod.POST})
+	public void modify(
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String nick,
+			@RequestParam(required = false) String org,
+			@RequestParam(required = false) String addr1,
+			@RequestParam(required = false) String addr2,
+			@RequestParam(required = false) String memo
+			) {
+		try{
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid, nick, org, addr1, addr2, memo);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }

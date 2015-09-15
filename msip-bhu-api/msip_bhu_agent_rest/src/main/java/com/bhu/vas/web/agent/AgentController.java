@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
@@ -43,7 +44,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/list_agent", method={RequestMethod.POST})
+    @RequestMapping(value="/list", method={RequestMethod.POST})
     public void agentList(HttpServletRequest request,
                       HttpServletResponse response,
                       @RequestParam(required = true) Integer uid,
@@ -51,7 +52,7 @@ public class AgentController {
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceClaimDTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,7 +74,6 @@ public class AgentController {
         try {
             String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
             String outputDirPath = IAgentRpcService.PATH_OUTPUT_PREFIX + File.separator + aid;
-
 
             //todo(bluesand): 创建目录结构的时候方法有问题？
             FileHelper.makeDirectory(inputDirPath);

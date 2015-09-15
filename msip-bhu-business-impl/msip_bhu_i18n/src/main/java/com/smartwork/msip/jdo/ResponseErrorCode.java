@@ -154,6 +154,8 @@ public enum ResponseErrorCode {
 	USER_NICK_ALREADY_BEUSED("314","user.nick.already.beused"),
 	USER_MOBILE_TOKEN_NOT_EXIST("315", "user.mobile.token.notexist"),
 	USER_TYPE_WASNOT_AGENT("316", "user.type.wasnot.agent"),
+	USER_TYPE_WASNOT_CONSOLE("317", "user.type.wasnot.console"),
+	USER_TYPE_WASNOT_CONSOLEORAGENT("318", "user.type.wasnot.consoleoragent"),
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),

@@ -10,7 +10,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.rpc.facade.AgentUserUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -22,10 +22,20 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 	
 	@Override
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String pwd, String nick, String sex, String device, String regIp) {
+			String pwd, String nick, String sex,
+			String org,
+			String addr1,
+			String addr2,
+			String memo,
+			String device, String regIp) {
 		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] pwd[%s] nick[%s] sex[%s] device[%s]",
 				countrycode,acc,pwd,nick,sex,device));
-		return agentUserUnitFacadeService.createNewUser(countrycode, acc,pwd, nick, sex, device,regIp);
+		return agentUserUnitFacadeService.createNewUser(countrycode, acc,pwd, nick, sex,
+				org,
+				addr1,
+				addr2,
+				memo,
+				device,regIp);
 	}
 
 	@Override
@@ -56,9 +66,22 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int pageno,int pagesize) {
-		logger.info("pageAgentUsers");
-		return agentUserUnitFacadeService.pageAgentUsers(pageno,pagesize);
+	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,int pageno,int pagesize) {
+		logger.info(String.format("pageAgentUsers with uid[%s] pageno[%s] pagesize[%s]",uid,pageno,pagesize));
+		return agentUserUnitFacadeService.pageAgentUsers(uid,pageno,pagesize);
+	}
+
+	@Override
+	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid) {
+		logger.info(String.format("userDetail with uid[%s]",uid));
+		return agentUserUnitFacadeService.userDetail(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid, String nick,
+			String org, String addr1, String addr2, String memo) {
+		logger.info(String.format("userModify with uid[%s] nick[%s] org[%s]",uid,nick,org));
+		return agentUserUnitFacadeService.userModify(uid, nick, org, addr1, addr2, memo);
 	}
 
 }
