@@ -23,6 +23,7 @@ import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -225,7 +226,7 @@ public class AgentUserUnitFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,int pageno,int pagesize){
+	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,String keywords,int pageno,int pagesize){
 		//管理账户才能继续
 		/*if(!RuntimeConfiguration.isConsoleUser(uid)){//管理员账户直接通过验证
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
@@ -233,7 +234,11 @@ public class AgentUserUnitFacadeService {
 		try{
 			UserTypeValidateService.validConsoleUser(uid);
 			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnEqualTo("utype", User.Agent_User);
+			Criteria cri = mc.createCriteria();
+			cri.andColumnEqualTo("utype", User.Agent_User);
+			if(StringUtils.isNotEmpty(keywords.trim())){
+				cri.andColumnLike("org", "%"+keywords+"%");
+			}
 			mc.setOrderByClause("id");
 			mc.setPageNumber(pageno);
 			mc.setPageSize(pagesize);

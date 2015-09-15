@@ -84,5 +84,5 @@ public interface IAgentUserRpcService {
 			String addr2,
 			String memo
 			);
-	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,int pageno,int pagesize);
+	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,String keywords,int pageno,int pagesize);
 }
