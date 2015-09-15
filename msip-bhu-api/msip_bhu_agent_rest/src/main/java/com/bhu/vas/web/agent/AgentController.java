@@ -43,7 +43,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/list_agent", method={RequestMethod.POST})
+    @RequestMapping(value="/list", method={RequestMethod.POST})
     public void agentList(HttpServletRequest request,
                       HttpServletResponse response,
                       @RequestParam(required = true) Integer uid,
