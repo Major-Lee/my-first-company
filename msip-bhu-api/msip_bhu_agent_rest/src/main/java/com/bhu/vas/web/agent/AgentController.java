@@ -1,16 +1,25 @@
 package com.bhu.vas.web.agent;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +39,6 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 public class AgentController {
     @Resource
     private IAgentRpcService agentRpcService;
-
 
     @ResponseBody()
     @RequestMapping(value="/hello", method={RequestMethod.POST})
@@ -141,6 +149,31 @@ public class AgentController {
     }
 
 
+    @ResponseBody()
+    @RequestMapping(value="/download", method={RequestMethod.POST})
+    public ResponseEntity<byte[]> downloadClaimAgentDevice (
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer bid) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(bid);
+        if (vto != null) {
+            String content = vto.getContent();
+            AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
+            String path = dto.getPath();
+            if (path != null) {
+                //headers.setContentDispositionFormData("attachment", "resutl.xls");
+                File file = new File(path);
+                return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
+            }
+        }
+        
+        return null;
+
+    }
 
 
 

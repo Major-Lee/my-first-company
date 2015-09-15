@@ -5,6 +5,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
@@ -63,4 +64,12 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("pageAgentDeviceImportLog pageNo:%s pageSize:%s", pageNo, pageSize));
         return agentFacadeService.pageAgentDeviceImportLog(pageNo, pageSize);
     }
+
+
+    @Override
+    public AgentBulltinBoardVTO findAgentBulltinBoardById(long bid) {
+        logger.info(String.format("findAgentBulltinBoardById bid:%s", bid));
+        return agentFacadeService.findAgentBulltinBoardById(bid);
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.bhu.vas.api.vto.agent;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by bluesand on 9/15/15.

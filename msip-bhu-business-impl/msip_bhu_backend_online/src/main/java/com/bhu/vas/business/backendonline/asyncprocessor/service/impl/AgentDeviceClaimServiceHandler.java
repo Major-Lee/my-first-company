@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.AgentBulltinType;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
@@ -154,8 +155,13 @@ public class AgentDeviceClaimServiceHandler {
             }
 
             outWorkbook.write(out);
+
+            AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
+            agentOutputDTO.setAid(dto.getAid());
+            agentOutputDTO.setPath(dto.getOutputPath());
+
             agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
-                    "设备发放完毕，<a href='" + dto.getOutputPath() + "'>下载</a>");
+                    JsonHelper.getJSONString(agentOutputDTO));
 
             AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
             agentDeviceImportLog.setCount(totalCount);

@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -68,5 +69,13 @@ public interface IAgentRpcService {
      * @return
      */
     TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize);
+
+
+    /**
+     * 获取公告
+     * @param bid
+     * @return
+     */
+    AgentBulltinBoardVTO findAgentBulltinBoardById(long bid);
 
 }
