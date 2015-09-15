@@ -5,7 +5,9 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -65,6 +67,13 @@ public interface IAgentRpcService {
     void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName);
 
 
+    /**
+     * 代理商导入日志
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize);
 
     /**
      * 代理商首页面的统计数据，包括本月收入，上月收入，昨日收入，总上线设备数，总收入数以及图表数据
@@ -81,5 +90,12 @@ public interface IAgentRpcService {
      * @return
      */
     public RpcResponseDTO<List<DailyRevenueRecordVTO>> historyrecords(int uid,String enddate);
+
+    /*
+     * 获取公告
+     * @param bid
+     * @return
+     */
+    AgentBulltinBoardVTO findAgentBulltinBoardById(long bid);
 
 }

@@ -12,7 +12,9 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.rpc.facade.AgentFacadeService;
 import com.bhu.vas.rpc.facade.AgentStatisticsUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -27,6 +29,7 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Resource
     private AgentFacadeService agentFacadeService;
+
 
     private AgentStatisticsUnitFacadeService agentStatisticsUnitFacadeService;
     
@@ -59,6 +62,19 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s orginName:%s inputpath:%s outputPath:%s",
                 uid, aid, originName, inputPath, outputPath));
         agentFacadeService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
+    }
+
+    @Override
+    public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentDeviceImportLog pageNo:%s pageSize:%s", pageNo, pageSize));
+        return agentFacadeService.pageAgentDeviceImportLog(pageNo, pageSize);
+    }
+
+
+    @Override
+    public AgentBulltinBoardVTO findAgentBulltinBoardById(long bid) {
+        logger.info(String.format("findAgentBulltinBoardById bid:%s", bid));
+        return agentFacadeService.findAgentBulltinBoardById(bid);
     }
 
 	@Override

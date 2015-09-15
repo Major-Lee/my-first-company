@@ -1,12 +1,18 @@
 package com.bhu.vas.web.agent;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,9 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -30,7 +40,6 @@ public class AgentController {
     @Resource
     private IAgentRpcService agentRpcService;
 
-
     @ResponseBody()
     @RequestMapping(value="/mainpage", method={RequestMethod.POST})
     public void mainpage(HttpServletRequest request,
@@ -39,6 +48,8 @@ public class AgentController {
         System.out.println("hello !!!!!");
         SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
     }
+    
+  
     
     @ResponseBody()
     @RequestMapping(value="/hello", method={RequestMethod.POST})
@@ -60,6 +71,26 @@ public class AgentController {
 
         try {
             TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/log_list", method={RequestMethod.POST})
+    public void agentImportLogList(HttpServletRequest request,
+                          HttpServletResponse response,
+                          @RequestParam(required = true) Integer uid,
+                          @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                          @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+
+        try {
+            TailPage<AgentDeviceImportLogVTO> dtos = agentRpcService.pageAgentDeviceImportLog(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,9 +139,6 @@ public class AgentController {
                 outDirFile.mkdirs();
             }
 
-
-
-
             Date date = new Date();
             String inputPath = inputDirPath + File.separator + date.getTime() + ".xls";
             String outputPath = outputDirPath + File.separator + date.getTime() + ".xls";
@@ -130,6 +158,34 @@ public class AgentController {
             SpringMVCHelper.renderJson(response, ResponseError.ERROR);
         }
     }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/download", method={RequestMethod.POST})
+    public ResponseEntity<byte[]> downloadClaimAgentDevice (
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer bid) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(bid);
+        if (vto != null) {
+            String content = vto.getContent();
+            AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
+            String path = dto.getPath();
+            if (path != null) {
+                //headers.setContentDispositionFormData("attachment", "resutl.xls");
+                File file = new File(path);
+                return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
+            }
+        }
+        
+        return null;
+
+    }
+
 
 
 

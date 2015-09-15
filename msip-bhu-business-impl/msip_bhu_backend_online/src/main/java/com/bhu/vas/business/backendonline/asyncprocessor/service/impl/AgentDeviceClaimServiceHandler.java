@@ -9,7 +9,10 @@ import java.util.Date;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.AgentBulltinType;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.poi.hssf.usermodel.*;
 import org.slf4j.Logger;
@@ -34,6 +37,9 @@ public class AgentDeviceClaimServiceHandler {
 
     @Resource
     private AgentBulltinBoardService agentBulltinBoardService;
+
+    @Resource
+    private AgentDeviceImportLogService agentDeviceImportLogService;
 
     /**
      * 导入代理商设备
@@ -70,6 +76,11 @@ public class AgentDeviceClaimServiceHandler {
             is = new FileInputStream(dto.getInputPath());
             out = new FileOutputStream(dto.getOutputPath());
             hssfWorkbook = new HSSFWorkbook(is);
+
+
+            int totalCount = 0;
+
+
             for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
                 HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
 
@@ -106,9 +117,15 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
 
                     HSSFCell sn = hssfRow.getCell(2);
+                    if (sn == null) {
+                        continue;
+                    }
                     agentDeviceClaim.setId(sn.getStringCellValue());
 
                     HSSFCell mac = hssfRow.getCell(3);
+                    if (sn == null) {
+                        continue;
+                    }
                     agentDeviceClaim.setMac(StringHelper.formatMacAddress(mac.getStringCellValue()));
 
                     Date date = new Date();
@@ -131,16 +148,26 @@ public class AgentDeviceClaimServiceHandler {
                     HSSFCell outMAC = outRow.createCell(4);
                     outMAC.setCellValue(mac.getStringCellValue());
 
+
+                    totalCount ++;
+
                 }
             }
 
-
             outWorkbook.write(out);
 
+            AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
+            agentOutputDTO.setAid(dto.getAid());
+            agentOutputDTO.setPath(dto.getOutputPath());
+
             agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
-                    "设备发放完毕，<a href='"+dto.getOutputPath() + "'>下载</a>");
+                    JsonHelper.getJSONString(agentOutputDTO));
 
-
+            AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
+            agentDeviceImportLog.setCount(totalCount);
+            agentDeviceImportLog.setAid(dto.getAid());
+            agentDeviceImportLog.setCreated_at(new Date());
+            agentDeviceImportLogService.insert(agentDeviceImportLog);
 
         }catch(Exception ex){
         	ex.printStackTrace(System.out);
