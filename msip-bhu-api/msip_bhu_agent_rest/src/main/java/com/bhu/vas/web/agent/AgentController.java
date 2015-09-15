@@ -7,10 +7,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.smartwork.msip.cores.helper.FileHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.jdo.ResponseError;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
@@ -32,6 +31,15 @@ public class AgentController {
     private IAgentRpcService agentRpcService;
 
 
+    @ResponseBody()
+    @RequestMapping(value="/mainpage", method={RequestMethod.POST})
+    public void mainpage(HttpServletRequest request,
+                                       HttpServletResponse response,
+                                       @RequestParam(required = true) Integer uid){
+        System.out.println("hello !!!!!");
+        SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+    }
+    
     @ResponseBody()
     @RequestMapping(value="/hello", method={RequestMethod.POST})
     public void hello(HttpServletRequest request,

@@ -23,6 +23,8 @@ import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.mongodb.WriteResult;
 
 /**
+ * 
+ * @author Edmond
  *
  */
 @Service
@@ -81,7 +83,11 @@ public class WifiDeviceWholeDayMService {
 	public List<RecordSummaryDTO> summaryAggregation(List<String> macs,String dateStart,String dateEnd){
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
 				match(Criteria.where("mac").in(macs)),//.and("appId").is(appId)),
-			    group("mac").sum("onlinetime").as("total_onlinetime").sum("connecttimes").as("total_connecttimes"),
+			    group("mac")
+			    	.sum("onlineduration").as("total_onlineduration")
+			    	.sum("connecttimes").as("total_connecttimes")
+			    	.sum("tx_bytes").as("total_tx_bytes")
+			    	.sum("rx_bytes").as("total_rx_bytes"),
 			    sort(Direction.ASC, "total_onlinetime", "total_connecttimes")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);

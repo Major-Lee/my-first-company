@@ -1,5 +1,10 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
+import java.util.List;
+
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -61,5 +66,20 @@ public interface IAgentRpcService {
 
 
 
+    /**
+     * 代理商首页面的统计数据，包括本月收入，上月收入，昨日收入，总上线设备数，总收入数以及图表数据
+     * @param uid
+     * @param date 截止日期
+     * @return
+     */
+    public RpcResponseDTO<StatisticsVTO> statistics(int uid,String enddate);
+    
+    /**
+     * 代理商首页面首页面 每日历史收益列表
+     * @param uid
+     * @param enddate
+     * @return
+     */
+    public RpcResponseDTO<List<DailyRevenueRecordVTO>> historyrecords(int uid,String enddate);
 
 }
