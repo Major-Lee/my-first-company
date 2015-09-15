@@ -31,11 +31,16 @@ public class AgentDeviceClaimTest extends BaseTest {
     @Test
     public void list() {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ");
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", 6).andColumnIsNotNull("mac");
+        int total = agentDeviceClaimService.countByCommonCriteria(mc);
+
+        System.out.println("total:" + total);
         mc.setPageNumber(1);
-        mc.setPageSize(5);
-        List<AgentDeviceClaim> groups = agentDeviceClaimService.findModelByModelCriteria(mc);
-        System.out.println(groups);
+        mc.setPageSize(20);
+        List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
+
+
+        System.out.println("agents:" + agents);
     }
 
 
