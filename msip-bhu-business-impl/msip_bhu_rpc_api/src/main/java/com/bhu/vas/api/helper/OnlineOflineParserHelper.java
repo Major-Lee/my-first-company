@@ -12,6 +12,7 @@ import java.util.List;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
+@Deprecated
 public class OnlineOflineParserHelper {
 	private static final String Login = "login";
 	private static final String Logout = "logout";

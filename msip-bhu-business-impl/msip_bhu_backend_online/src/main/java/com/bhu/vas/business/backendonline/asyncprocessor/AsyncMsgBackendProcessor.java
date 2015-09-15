@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.WifiDeviceUsedStatusServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -32,6 +34,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceGroupServiceHandler;
+
+	@Resource
+	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
+	
+	@Resource
+	private WifiDeviceUsedStatusServiceHandler wifiDeviceUsedStatusServiceHandler;
 	
 	@PostConstruct
 	public void initialize() {
@@ -129,6 +137,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case USERBBSSIGNEDON:
 							asyncMsgHandleService.userBBSsignedon(message);
+							break;
+						case WifiDeviceUsedStatus:
+							wifiDeviceUsedStatusServiceHandler.process(message);
+							break;
+						case AgentDeviceClaimImport:
+							agentDeviceClaimServiceHandler.importAgentDeviceClaim(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

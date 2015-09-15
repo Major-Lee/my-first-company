@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.*;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 
 
 public class DeliverMessageService {
@@ -82,6 +83,15 @@ public class DeliverMessageService {
 		dto.setLogin_ts(login_ts);
 		dto.setLast_login_at(last_login_at);
 		dto.setNeedLocationQuery(needLocationQuery);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendWifiDeviceUsedStatusActionMessage(String ctx,String mac, String response, long taskid){
+		WifiDeviceUsedStatusDTO dto = new WifiDeviceUsedStatusDTO();
+		dto.setCtx(ctx);
+		dto.setMac(mac);
+		dto.setResponse(response);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
@@ -324,5 +334,18 @@ public class DeliverMessageService {
 		dto.setSecretkey(secretkey);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
+
+	public void sendAgentDeviceClaimImportMessage(Integer uid, Integer aid, String inputPath, String outputPath, String originName) {
+		AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
+		dto.setUid(uid);
+		dto.setAid(aid);
+		dto.setInputPath(inputPath);
+		dto.setOutputPath(outputPath);
+		dto.setOriginName(originName);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+
 	}
 }

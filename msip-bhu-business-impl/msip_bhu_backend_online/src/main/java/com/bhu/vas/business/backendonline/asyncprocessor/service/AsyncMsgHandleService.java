@@ -161,6 +161,11 @@ public class AsyncMsgHandleService {
 				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
 				//获取设备系统信息
 				payloads.add(CMDBuilder.builderSysinfoQuery(dto.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+				
+				//用户登录后 给其绑定的设备mac地址发送设备使用情况
+				boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(dto.getMac(),false);
+				if(needDeviceUsedQuery)
+					payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(dto.getMac()));
 /*				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
 				if(settingState != null){
@@ -1224,9 +1229,9 @@ public class AsyncMsgHandleService {
 		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
 		int addret = ExchangeBBSHelper.userAdd2BBS(dto.getMobileno());
 		if(addret == 1){
-			logger.info("AnsyncMsgBackendProcessor userRegister2BBS successful");
+			logger.info("AnsyncMsgBackendProcessor userRegister2BBS successful:"+dto.getMobileno());
 		}else{
-			logger.info("AnsyncMsgBackendProcessor userRegister2BBS error:"+addret);
+			logger.info("AnsyncMsgBackendProcessor userRegister2BBS error:"+addret + " mobileno:"+dto.getMobileno());
 		}
 		
 	}
@@ -1270,7 +1275,7 @@ public class AsyncMsgHandleService {
 	public void afterUserSignedonThenCmdDown(String mac){
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
 		boolean needDeviceUsedQuery = false;
-		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac);
+		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac,true);
 		DaemonHelper.afterUserSignedon(mac, needDeviceUsedQuery, daemonRpcService);
 /*		if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(mac)){
 			//获取设备的终端列表

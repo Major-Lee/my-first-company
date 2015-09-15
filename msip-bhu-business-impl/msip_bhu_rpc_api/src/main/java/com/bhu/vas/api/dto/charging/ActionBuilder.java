@@ -10,6 +10,53 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class ActionBuilder {
 	
+	public enum Hint {
+		LogAnalyseDone("LAD","日志截尾，补齐到当天最后时间"),
+		DeviceOffline("DOF","所属设备下线"),
+		ElementNotExist("NEX","不存在，强制下线，补齐到不存在指令日志时间"),
+		ElementUpLoseSoCombinCurrentLastElement("ULC","缺失up，合并上条数据中的down为当前记录down时间"),
+		ElementUpLoseSoPollishDaysBegin("ULP","缺失up，补齐到当天开始"),
+		ElementDownLose("DLO","缺失down，补齐"),
+		HandsetInSyncSoForceOnline("HIS","在sync列表中，强制上线"),
+		HandsetNotInSyncSoForceOffline("HNS","不在sync列表中，强制下线"),
+		;
+		static Map<String, Hint> allHint;
+		private String key;
+		private String desc;
+		Hint(String key,String desc) {
+			this.key = key;
+			this.desc = desc;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+
+		public static Hint fromKey(String key){
+			return allHint.get(key);
+		}
+		
+		static {
+			allHint = new HashMap<String,Hint>();
+			Hint[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (Hint type : types){
+				allHint.put(type.getKey(), type);
+			}
+		}
+	}
+	
 	public enum ActionMode {
 		DeviceOnline("DO"),
 		DeviceOffline("DF"),
@@ -51,6 +98,14 @@ public class ActionBuilder {
 		DeviceOnlineAction action = new DeviceOnlineAction();
 		action.setMac(mac);
 		action.setTs(ts);
+		action.setSm(false);
+		return action;
+	}
+	public static DeviceOnlineAction builderDeviceSimulateOnlineAction(String mac,long ts){
+		DeviceOnlineAction action = new DeviceOnlineAction();
+		action.setMac(mac);
+		action.setTs(ts);
+		action.setSm(true);
 		return action;
 	}
 	public static DeviceOfflineAction builderDeviceOfflineAction(String mac,long ts){

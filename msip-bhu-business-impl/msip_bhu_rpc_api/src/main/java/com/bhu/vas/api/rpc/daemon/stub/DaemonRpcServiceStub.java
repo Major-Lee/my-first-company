@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -80,6 +81,13 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 	@Override
 	public boolean wifiDevicesSimulateCmdTimer() {
 		return daemonRpcService.wifiDevicesSimulateCmdTimer();
+	}
+
+	@Override
+	public boolean wifiMultiDevicesCmdsDown(DownCmds... downCmds) {
+		if(downCmds == null || downCmds.length ==0) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return daemonRpcService.wifiMultiDevicesCmdsDown(downCmds);
 	}
 
 	/*public boolean wifiDevicesLocationQuerySerialTimer(){

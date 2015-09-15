@@ -20,8 +20,7 @@ public enum ActionMessageType {
 	WifiDeviceRealtimeRateFetch("下发设备实时速率","wdrealtime","WR"),
 	WifiDeviceHDRateFetch("下发终端实时速率","wdrealtime","WH"),
 	WifiDeviceSpeedFetch("下发设备的网速","wdspeed","WS"),
-	
-	
+	WifiDeviceUsedStatus("下发设备的网速","wdspeed","WU"),
 	
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
 	
@@ -45,6 +44,9 @@ public enum ActionMessageType {
 	TOPICDeviceOnlineNotify("topic消息Device上线","topic device online","TO"),
 	TOPICDevicesOnlineNotify("topic消息Devices上线","topic cm devices online","TS"),
 	TOPICDeviceOfflineNotify("topic消息Device下线","topic cm offline","TF"),
+
+
+	AgentDeviceClaimImport("代理商设备导入","agent device claim import","AI"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

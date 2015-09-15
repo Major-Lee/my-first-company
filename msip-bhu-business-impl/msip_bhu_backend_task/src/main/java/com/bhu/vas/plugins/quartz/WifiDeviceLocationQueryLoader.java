@@ -19,7 +19,9 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  * 对于地理位置没有的设备触发设备的地理位置查询
  * @author Edmond Lee
  *
+ * @deprecated refer WifiDeviceOnlineActionLoader.java
  */
+@Deprecated 
 public class WifiDeviceLocationQueryLoader {
 	private static Logger logger = LoggerFactory.getLogger(WifiDeviceLocationQueryLoader.class);
 	

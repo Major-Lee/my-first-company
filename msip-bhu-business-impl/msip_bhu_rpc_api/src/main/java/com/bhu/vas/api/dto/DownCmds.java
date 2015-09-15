@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto;
 
+import org.apache.commons.lang.StringUtils;
+
 
 @SuppressWarnings("serial")
 public class DownCmds implements java.io.Serializable{
@@ -37,7 +39,18 @@ public class DownCmds implements java.io.Serializable{
 		this.cmds = cmds;
 	}
 	
-	public static DownCmds builderDownCmds(String ctx,String mac,String[] cmds){
+	public boolean valid(){
+		return (StringUtils.isEmpty(mac) || cmds == null || cmds.length ==0 );
+	}
+	
+	/*public static DownCmds builderDownCmds(int aa,String... cmds){
+		return null;
+	}*/
+	
+	public static DownCmds builderDownCmds(String mac,String... cmds){
+		return new DownCmds(mac,cmds);
+	}
+	public static DownCmds builderDownCmds(String ctx,String mac,String... cmds){
 		return new DownCmds(ctx,mac,cmds);
 	}
 }

@@ -39,11 +39,13 @@
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
         <module>msip-bhu-unit/msip_bhu_unit_vas</module>
+        <module>msip-bhu-unit/msip_bhu_unit_agent</module>
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
+        <module>msip-bhu-api/msip_bhu_agent_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
         <module>msip-bhu-business-impl/msip_bhu_spark_task</module>
         <!--

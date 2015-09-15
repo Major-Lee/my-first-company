@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
@@ -55,7 +54,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -993,13 +991,15 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	public void taskQueryDeviceUsedStatus(String ctx, String response, String mac, long taskid){
-		Document doc = RPCMessageParseHelper.parserMessage(response);
+		/*Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus()) 
 				&& OperationCMD.QueryDeviceUsedStatus.getCmd().equals(serialDto.getCmd())){
 			DeviceUsedStatisticsDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceUsedStatus(doc);
 			BusinessMarkerService.getInstance().deviceUsedStatisticsSet(mac, dto);
-		}
+		}*/
+		//ff
+		deliverMessageService.sendWifiDeviceUsedStatusActionMessage(ctx,mac,response,taskid);
 	}
 	
 	public void taskWifiTimerStart(String ctx, String response, String wifiId, long taskid){

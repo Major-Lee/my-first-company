@@ -78,6 +78,10 @@ public class BuilderMacOrganizationDictOp {
 					if(org.contains("EDISA HEWLETT PACKARD")){
 						name = ("Hewlett-Packard");
 					}
+					
+					if(org.contains("OPPO MOBILE")){
+						name = ("OPPO");
+					}
 				}
 				macPrefixMapping.put(macPrefix.getId(), name);
 			}
