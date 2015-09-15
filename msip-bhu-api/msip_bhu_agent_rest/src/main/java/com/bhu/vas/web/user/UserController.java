@@ -72,6 +72,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}
+			System.out.println(countrycode+" "+acc+" "+pwd+" "+nick+" "+sex+" "+from_device+" "+remoteIp);
 			RpcResponseDTO<Map<String, Object>> rpcResult = agentUserRpcService.createNewUser(countrycode, acc,pwd, nick, sex, from_device, remoteIp);
 			if(rpcResult.getErrorCode() == null){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));

@@ -24,7 +24,7 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
 			String pwd, String nick, String sex, String device, String regIp) {
 		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] pwd[%s] nick[%s] sex[%s] device[%s]",
-				countrycode,acc,nick,sex,device));
+				countrycode,acc,pwd,nick,sex,device));
 		return agentUserUnitFacadeService.createNewUser(countrycode, acc,pwd, nick, sex, device,regIp);
 	}
 
