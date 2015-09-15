@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserToken;
@@ -90,7 +89,12 @@ public class AgentUserUnitFacadeService {
 	}
 			
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,String pwd,
-			String nick, String sex, String device,String regIp) {
+			String nick, String sex,
+			String org,
+			String addr1,
+			String addr2,
+			String memo,
+			String device,String regIp) {
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
@@ -102,6 +106,12 @@ public class AgentUserUnitFacadeService {
 		user.setPlainpwd(pwd);
 		user.setNick(nick);
 		user.setSex(sex);
+		
+		user.setOrg(org);
+		user.setAddr1(addr1);
+		user.setAddr2(addr2);
+		user.setMemo(memo);
+		
 		user.setRegip(regIp);
 		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
 		user.setRegdevice(device);
@@ -117,8 +127,7 @@ public class AgentUserUnitFacadeService {
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 		}
 		//deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
-				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
 				uToken.getAccess_token(), uToken.getRefresh_token(), true);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
@@ -157,8 +166,7 @@ public class AgentUserUnitFacadeService {
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 			}
 			//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
-					user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
 					uToken.getAccess_token(), uToken.getRefresh_token(), false);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
@@ -201,8 +209,7 @@ public class AgentUserUnitFacadeService {
 				user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
 			}
 			this.userService.update(user);
-			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
-					user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
 					uToken.getAccess_token(), uToken.getRefresh_token(), false);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
@@ -218,7 +225,7 @@ public class AgentUserUnitFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int uid,int pageno,int pagesize){
+	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,int pageno,int pagesize){
 		//管理账户才能继续
 		/*if(!RuntimeConfiguration.isConsoleUser(uid)){//管理员账户直接通过验证
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
@@ -231,11 +238,11 @@ public class AgentUserUnitFacadeService {
 			mc.setPageNumber(pageno);
 			mc.setPageSize(pagesize);
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
-			List<UserDTO> vtos = new ArrayList<>();
+			List<AgentUserDetailVTO> vtos = new ArrayList<>();
 			for(User user:tailusers.getItems()){
-				vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false));
+				vtos.add(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
 			}
-			TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
+			TailPage<AgentUserDetailVTO> pages = new CommonPage<AgentUserDetailVTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);

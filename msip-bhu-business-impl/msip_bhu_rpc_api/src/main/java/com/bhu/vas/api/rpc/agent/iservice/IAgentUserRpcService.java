@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.agent.iservice;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -29,6 +29,12 @@ public interface IAgentUserRpcService {
 			String pwd,
 			String nick,
 			String sex,
+			
+			String org,
+			String addr1,
+			String addr2,
+			String memo,
+			
 			String device,
 			String regIp
 			);
@@ -70,5 +76,5 @@ public interface IAgentUserRpcService {
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
 
 	
-	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int uid,int pageno,int pagesize);
+	public RpcResponseDTO<TailPage<AgentUserDetailVTO>> pageAgentUsers(int uid,int pageno,int pagesize);
 }
