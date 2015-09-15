@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.poi.hssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,7 @@ public class AgentDeviceClaimServiceHandler {
             for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
                 HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
 
-                HSSFSheet outSheet = hssfSheet;
+                HSSFSheet outSheet = outWorkbook.createSheet(hssfSheet.getSheetName());
 
                 if (hssfSheet == null) {
                     continue;
@@ -81,11 +82,15 @@ public class AgentDeviceClaimServiceHandler {
                 HSSFRow outputFirstRow = outSheet.createRow(0); // 下标为0的行开始
                 HSSFCell[] firstcell = new HSSFCell[3];
                 firstcell[0] = outputFirstRow.createCell(0);
-                firstcell[0].setCellValue("uid");
+                firstcell[0].setCellValue("用户id");
                 firstcell[1] = outputFirstRow.createCell(1);
-                firstcell[1].setCellValue("SN");
+                firstcell[1].setCellValue("存货编码");
                 firstcell[2] = outputFirstRow.createCell(2);
-                firstcell[2].setCellValue("aid");
+                firstcell[2].setCellValue("存货名称");
+                firstcell[2] = outputFirstRow.createCell(3);
+                firstcell[2].setCellValue("序列号");
+                firstcell[2] = outputFirstRow.createCell(4);
+                firstcell[2].setCellValue("MAC");
 
                 for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
                     HSSFRow hssfRow = hssfSheet.getRow(rowNum);
@@ -94,30 +99,37 @@ public class AgentDeviceClaimServiceHandler {
                     }
                     agentDeviceClaim = new AgentDeviceClaim();
 
-                    HSSFCell uid = hssfRow.getCell(0);
+                    HSSFCell stock_code = hssfRow.getCell(0);
+                    agentDeviceClaim.setStock_code(String.valueOf(stock_code.getNumericCellValue()));
 
-                    if (uid == null) {
-                        continue;
-                    }
-                    agentDeviceClaim.setUid((int) uid.getNumericCellValue());
+                    HSSFCell stock_name = hssfRow.getCell(1);
+                    agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
 
-                    HSSFCell sn = hssfRow.getCell(1);
-
+                    HSSFCell sn = hssfRow.getCell(2);
                     agentDeviceClaim.setId(sn.getStringCellValue());
+
+                    HSSFCell mac = hssfRow.getCell(3);
+                    agentDeviceClaim.setMac(StringHelper.formatMacAddress(mac.getStringCellValue()));
 
                     Date date = new Date();
                     agentDeviceClaim.setSold_at(date);
-                    logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]",JsonHelper.getJSONString(agentDeviceClaim)));
-                    agentDeviceClaimService.insert(agentDeviceClaim);
 
+                    agentDeviceClaim.setUid(dto.getAid());
+
+                    logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
+                    //agentDeviceClaimService.insert(agentDeviceClaim);
 
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
-                    outUid.setCellValue(String.valueOf((int) uid.getNumericCellValue()));
-                    HSSFCell outSN = outRow.createCell(1);
+                    outUid.setCellValue(dto.getAid());
+                    HSSFCell outStockCode = outRow.createCell(1);
+                    outStockCode.setCellValue(String.valueOf(stock_code.getNumericCellValue()));
+                    HSSFCell outStockName = outRow.createCell(2);
+                    outStockName.setCellValue(stock_name.getStringCellValue());
+                    HSSFCell outSN = outRow.createCell(3);
                     outSN.setCellValue(sn.getStringCellValue());
-                    HSSFCell outUUid = outRow.createCell(2);
-                    outUUid.setCellValue(String.valueOf(dto.getAid()));
+                    HSSFCell outMAC = outRow.createCell(4);
+                    outMAC.setCellValue(mac.getStringCellValue());
 
                 }
             }
@@ -125,8 +137,8 @@ public class AgentDeviceClaimServiceHandler {
 
             outWorkbook.write(out);
 
-            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
-                    "设备发放完毕，<a href='"+dto.getOutputPath() + "'>下载</a>");
+//            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
+//                    "设备发放完毕，<a href='"+dto.getOutputPath() + "'>下载</a>");
 
 
 
@@ -150,7 +162,19 @@ public class AgentDeviceClaimServiceHandler {
                 out = null;
             }
         }
-        
 
+    }
+
+
+    public static void main(String[] args) throws  Exception{
+        AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
+        dto.setAid(1000023);
+        dto.setUid(6);
+        dto.setInputPath("/Users/bluesand/Downloads/山西岩涛网络NMAC对应代理商.xls");
+        dto.setOriginName("山西岩涛网络NMAC对应代理商.xls");
+        dto.setOutputPath("/Users/bluesand/Desktop/output.xls");
+        dto.setTs(new Date().getTime());
+
+        new AgentDeviceClaimServiceHandler().excel(dto);
     }
 }

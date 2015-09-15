@@ -54,14 +54,16 @@ public class AgentFacadeService {
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
         List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
         if (dtos != null) {
-            AgentDeviceClaimVTO agentDeviceClaimVTO = null;
-            for (AgentDeviceClaim dto : agents) {
-                agentDeviceClaimVTO = new AgentDeviceClaimVTO();
-                agentDeviceClaimVTO.setId(dto.getId());
-                agentDeviceClaimVTO.setMac(dto.getMac());
-                agentDeviceClaimVTO.setSold_at(dto.getSold_at());
-                agentDeviceClaimVTO.setClaim_at(dto.getClaim_at());
-                agentDeviceClaimVTO.setUid(dto.getUid());
+            AgentDeviceClaimVTO vto = null;
+            for (AgentDeviceClaim agentDeviceClaim : agents) {
+                vto = new AgentDeviceClaimVTO();
+                vto.setId(agentDeviceClaim.getId());
+                vto.setMac(agentDeviceClaim.getMac());
+                vto.setStock_code(agentDeviceClaim.getStock_code());
+                vto.setStock_name(agentDeviceClaim.getStock_name());
+                vto.setSold_at(agentDeviceClaim.getSold_at());
+                vto.setClaim_at(agentDeviceClaim.getClaim_at());
+                vto.setUid(agentDeviceClaim.getUid());
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
@@ -76,14 +78,16 @@ public class AgentFacadeService {
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
         List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
         if (dtos != null) {
-            AgentDeviceClaimVTO agentDeviceClaimVTO = null;
-            for (AgentDeviceClaim dto : agents) {
-                agentDeviceClaimVTO = new AgentDeviceClaimVTO();
-                agentDeviceClaimVTO.setId(dto.getId());
-                agentDeviceClaimVTO.setMac(dto.getMac());
-                agentDeviceClaimVTO.setSold_at(dto.getSold_at());
-                agentDeviceClaimVTO.setClaim_at(dto.getClaim_at());
-                agentDeviceClaimVTO.setUid(dto.getUid());
+            AgentDeviceClaimVTO vto = null;
+            for (AgentDeviceClaim agentDeviceClaim : agents) {
+                vto = new AgentDeviceClaimVTO();
+                vto.setId(agentDeviceClaim.getId());
+                vto.setMac(agentDeviceClaim.getMac());
+                vto.setStock_code(agentDeviceClaim.getStock_code());
+                vto.setStock_name(agentDeviceClaim.getStock_name());
+                vto.setSold_at(agentDeviceClaim.getSold_at());
+                vto.setClaim_at(agentDeviceClaim.getClaim_at());
+                vto.setUid(agentDeviceClaim.getUid());
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
@@ -98,14 +102,16 @@ public class AgentFacadeService {
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
         List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
         if (dtos != null) {
-            AgentDeviceClaimVTO agentDeviceClaimVTO = null;
-            for (AgentDeviceClaim dto : agents) {
-                agentDeviceClaimVTO = new AgentDeviceClaimVTO();
-                agentDeviceClaimVTO.setId(dto.getId());
-                agentDeviceClaimVTO.setMac(dto.getMac());
-                agentDeviceClaimVTO.setSold_at(dto.getSold_at());
-                agentDeviceClaimVTO.setClaim_at(dto.getClaim_at());
-                agentDeviceClaimVTO.setUid(dto.getUid());
+            AgentDeviceClaimVTO vto = null;
+            for (AgentDeviceClaim agentDeviceClaim : agents) {
+                vto = new AgentDeviceClaimVTO();
+                vto.setId(agentDeviceClaim.getId());
+                vto.setMac(agentDeviceClaim.getMac());
+                vto.setStock_code(agentDeviceClaim.getStock_code());
+                vto.setStock_name(agentDeviceClaim.getStock_name());
+                vto.setSold_at(agentDeviceClaim.getSold_at());
+                vto.setClaim_at(agentDeviceClaim.getClaim_at());
+                vto.setUid(agentDeviceClaim.getUid());
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
@@ -51,7 +52,7 @@ public class AgentController {
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceClaimDTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
