@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -76,19 +75,33 @@ public class AgentController {
             String outputDirPath = IAgentRpcService.PATH_OUTPUT_PREFIX + File.separator + aid;
 
             //todo(bluesand): 创建目录结构的时候方法有问题？
-            FileHelper.makeDirectory(inputDirPath);
-            FileHelper.makeDirectory(outputDirPath);
+//            FileHelper.makeDirectory(inputDirPath);
+//            FileHelper.makeDirectory(outputDirPath);
 
-//            File dirFile = new File(inputDirPath);
-//            if (dirFile.exists()) {
-//                if (!dirFile.isDirectory()) {
-//                    dirFile.delete();
-//                    dirFile = new File(inputDirPath);
-//                    dirFile.mkdirs();
-//                }
-//            } else {
-//                dirFile.mkdirs();
-//            }
+            File dirFile = new File(inputDirPath);
+            if (dirFile.exists()) {
+                if (!dirFile.isDirectory()) {
+                    dirFile.delete();
+                    dirFile = new File(inputDirPath);
+                    dirFile.mkdirs();
+                }
+            } else {
+                dirFile.mkdirs();
+            }
+
+            File outDirFile = new File(outputDirPath);
+            if (outDirFile.exists()) {
+                if (!outDirFile.isDirectory()) {
+                    outDirFile.delete();
+                    outDirFile = new File(outputDirPath);
+                    outDirFile.mkdirs();
+                }
+            } else {
+                outDirFile.mkdirs();
+            }
+
+
+
 
             Date date = new Date();
             String inputPath = inputDirPath + File.separator + date.getTime() + ".xls";
