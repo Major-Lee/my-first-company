@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -25,6 +26,7 @@ import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -45,19 +47,26 @@ public class AgentUserUnitFacadeService {
 					User user = userService.getById(uid);
 					if(user == null){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST,Boolean.FALSE);
-					}else{
-						if(User.Agent_User != user.getUtype()){
-							return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT,Boolean.FALSE);
-						}else{
-							return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-						}
 					}
+					if(UserTypeValidateService.validConsoleOrAgentUser(user)){
+						return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+					}else{
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_CONSOLEORAGENT,Boolean.FALSE);
+					}
+					/*if(User.Agent_User != user.getUtype()){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT,Boolean.FALSE);
+					}else{
+						return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+					}*/
 				}else{
 					return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
 				}
 			}catch(NumberFormatException ex){
 				ex.printStackTrace(System.out);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
+			}catch(BusinessI18nCodeException bex){
+				bex.printStackTrace(System.out);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
@@ -115,43 +124,51 @@ public class AgentUserUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
-		
-		//step 2.生产环境下的手机号验证码验证
-		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-		if(uid == null || uid.intValue() == 0){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		try{
+			//step 2.生产环境下的手机号验证码验证
+			Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+			if(uid == null || uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			User user = this.userService.getById(uid);
+			if(user == null){//存在不干净的数据，需要清理数据
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			if(!BCryptHelper.checkpw(pwd,user.getPassword())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
+			}
+			
+			//管理账户或者代理商账户才能继续
+			/*if(!RuntimeConfiguration.isConsoleUser(uid) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
+			}*/
+			UserTypeValidateService.validConsoleOrAgentUser(user);
+			if(StringUtils.isEmpty(user.getRegip())){
+				user.setRegip(remoteIp);
+			}
+			if(!user.getLastlogindevice().equals(device)){
+				user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
+			}
+			this.userService.update(user);
+			
+			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+			{//write header to response header
+				//BusinessWebHelper.setCustomizeHeader(response, uToken);
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+			}
+			//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
+					user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
+					uToken.getAccess_token(), uToken.getRefresh_token(), false);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		User user = this.userService.getById(uid);
-		if(user == null){//存在不干净的数据，需要清理数据
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-		}
-		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
-		}
-		
-		//管理账户或者代理商账户才能继续
-		if(!RuntimeConfiguration.isConsoleUser(uid) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
-		}
-		
-		if(StringUtils.isEmpty(user.getRegip())){
-			user.setRegip(remoteIp);
-		}
-		if(!user.getLastlogindevice().equals(device)){
-			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
-		}
-		this.userService.update(user);
-		
-		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
-		{//write header to response header
-			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
-		}
-		//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
-				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
-				uToken.getAccess_token(), uToken.getRefresh_token(), false);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp) {
@@ -167,46 +184,68 @@ public class AgentUserUnitFacadeService {
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
-		
-		User user  = userService.getById(uToken.getId());
-		if(user == null){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		try{
+			User user  = userService.getById(uToken.getId());
+			if(user == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			UserTypeValidateService.validConsoleOrAgentUser(user);
+			//管理账户或者代理商账户才能继续
+			/*if(!RuntimeConfiguration.isConsoleUser(user.getId()) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
+			}*/
+			if(StringUtils.isEmpty(user.getRegip())){
+				user.setRegip(remoteIp);
+			}
+			if(!user.getLastlogindevice().equals(device)){
+				user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
+			}
+			this.userService.update(user);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
+					user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
+					uToken.getAccess_token(), uToken.getRefresh_token(), false);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 		
-		//管理账户或者代理商账户才能继续
-		if(!RuntimeConfiguration.isConsoleUser(user.getId()) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
-		}
-		if(StringUtils.isEmpty(user.getRegip())){
-			user.setRegip(remoteIp);
-		}
-		if(!user.getLastlogindevice().equals(device)){
-			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
-		}
-		this.userService.update(user);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(
-				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
-				uToken.getAccess_token(), uToken.getRefresh_token(), false);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	
 	public RpcResponseDTO<TailPage<UserDTO>> pageAgentUsers(int uid,int pageno,int pagesize){
 		//管理账户才能继续
-		if(!RuntimeConfiguration.isConsoleUser(uid)){//管理员账户直接通过验证
+		/*if(!RuntimeConfiguration.isConsoleUser(uid)){//管理员账户直接通过验证
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
+		}*/
+		try{
+			UserTypeValidateService.validConsoleUser(uid);
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andColumnEqualTo("utype", User.Agent_User);
+			mc.setOrderByClause("id");
+			mc.setPageNumber(pageno);
+			mc.setPageSize(pagesize);
+			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
+			List<UserDTO> vtos = new ArrayList<>();
+			for(User user:tailusers.getItems()){
+				vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false));
+			}
+			TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("utype", User.Agent_User);
-		mc.setOrderByClause("id");
-		mc.setPageNumber(pageno);
-		mc.setPageSize(pagesize);
-		TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
-		List<UserDTO> vtos = new ArrayList<>();
-		for(User user:tailusers.getItems()){
-			vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false));
-		}
-		TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+
 	}
 }
