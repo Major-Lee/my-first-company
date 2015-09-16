@@ -42,6 +42,16 @@ public class ChargingTest {
 		System.out.println(String.format("A total_onlinetimes[%s] total_connecttimes[%s]", total_onlinetimes,total_connecttimes));
 		
 		
+		List<String> macs = new ArrayList<String>();
+		macs.add("84:82:f4:1a:b4:b0");
+		macs.add("84:82:f4:1a:c5:1c");
+		macs.add("84:78:8b:6d:5a:b0");
+		macs.add("84:82:f4:1a:4b:93");
+		List<RecordSummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregationWith(macs,"2015-09-09");
+		for(RecordSummaryDTO dto:summaryAggregation){
+			System.out.println(String.format("B mac[%s] total_onlineduration[%s] total_connecttimes[%s]",dto.getId(), dto.getTotal_onlineduration(),dto.getTotal_connecttimes()));
+		}
+		
 /*		List<String> macs = new ArrayList<String>();
 		macs.add("84:82:f4:1a:b4:b0");
 		macs.add("84:78:8b:6d:5a:b0");

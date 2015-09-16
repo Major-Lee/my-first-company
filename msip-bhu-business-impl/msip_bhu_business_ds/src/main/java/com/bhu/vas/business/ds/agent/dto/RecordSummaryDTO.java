@@ -6,6 +6,7 @@ public class RecordSummaryDTO {
 	private int  total_connecttimes;
 	private long total_tx_bytes;
 	private long total_rx_bytes;
+	private int  total_handsets;
 	public String getId() {
 		return id;
 	}
@@ -37,4 +38,23 @@ public class RecordSummaryDTO {
 		this.total_rx_bytes = total_rx_bytes;
 	}
 	
+	public int getTotal_handsets() {
+		return total_handsets;
+	}
+	public void setTotal_handsets(int total_handsets) {
+		this.total_handsets = total_handsets;
+	}
+	public void incr(RecordSummaryDTO dto){
+		if(dto == null) return;
+		total_onlineduration += dto.getTotal_onlineduration();
+		total_connecttimes += dto.getTotal_connecttimes();
+		total_tx_bytes += dto.getTotal_tx_bytes();
+		total_rx_bytes += dto.getTotal_rx_bytes();
+		total_handsets += dto.getTotal_handsets();
+	}
+	
+	public String toString(){
+		return String.format("id[%s] onlineduration[%s] connecttimes[%s] handsets[%s] tx_bytes[%s] rx_bytes[%s]", 
+				id,total_onlineduration,total_connecttimes,total_handsets,total_tx_bytes,total_rx_bytes);
+	}
 }
