@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,7 @@ import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
@@ -50,6 +52,9 @@ public class AgentController {
                            @RequestParam(required = true) Integer uid,
                            @RequestParam(required = false) String date){
     	try{
+    		if(StringUtils.isEmpty(date)){
+    			date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
+    		}
 			RpcResponseDTO<StatisticsVTO> rpcResult = agentRpcService.statistics(uid, date);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -70,6 +75,9 @@ public class AgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
     		){
     	try{
+    		if(StringUtils.isEmpty(date)){
+    			date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
+    		}
 			RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> rpcResult = agentRpcService.pageHistoryRecords(uid, date, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
