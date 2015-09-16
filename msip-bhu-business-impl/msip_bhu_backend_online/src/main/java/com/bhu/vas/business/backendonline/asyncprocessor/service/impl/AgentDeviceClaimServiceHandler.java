@@ -134,7 +134,7 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setUid(dto.getAid());
 
                     logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
-                    //agentDeviceClaimService.insert(agentDeviceClaim);
+                    agentDeviceClaimService.insert(agentDeviceClaim);
 
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
@@ -160,14 +160,14 @@ public class AgentDeviceClaimServiceHandler {
             agentOutputDTO.setAid(dto.getAid());
             agentOutputDTO.setPath(dto.getOutputPath());
 
-//            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
-//                    JsonHelper.getJSONString(agentOutputDTO));
+            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
+                    JsonHelper.getJSONString(agentOutputDTO));
 
             AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
             agentDeviceImportLog.setCount(totalCount);
             agentDeviceImportLog.setAid(dto.getAid());
             agentDeviceImportLog.setCreated_at(new Date());
-//            agentDeviceImportLogService.insert(agentDeviceImportLog);
+            agentDeviceImportLogService.insert(agentDeviceImportLog);
 
         }catch(Exception ex){
         	ex.printStackTrace(System.out);
