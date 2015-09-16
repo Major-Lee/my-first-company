@@ -78,10 +78,10 @@ public interface IAgentRpcService {
     /**
      * 代理商首页面的统计数据，包括本月收入，上月收入，昨日收入，总上线设备数，总收入数以及图表数据
      * @param uid
-     * @param date 截止日期
+     * @param enddate 截止日期
      * @return
      */
-    public RpcResponseDTO<StatisticsVTO> statistics(int uid,String enddate);
+    public RpcResponseDTO<StatisticsVTO> statistics(int uid, String enddate);
     
     /**
      * 代理商首页面首页面 每日历史收益列表

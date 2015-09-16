@@ -16,7 +16,7 @@ import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 @Service
-public class Step1Result2FileService {
+public class Step01Result2FileService {
 	public void records2File(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap) throws UnsupportedEncodingException, IOException{
 		StringBuilder sb = new StringBuilder();
 		Iterator<Entry<String, LineRecords>> iter = lineDeviceRecordsMap.entrySet().iterator();

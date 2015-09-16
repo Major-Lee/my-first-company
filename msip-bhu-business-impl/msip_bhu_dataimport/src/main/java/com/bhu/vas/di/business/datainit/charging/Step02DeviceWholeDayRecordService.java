@@ -13,7 +13,7 @@ import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
 @Service
-public class Step2DeviceWholeDayRecordService {
+public class Step02DeviceWholeDayRecordService {
 	@Resource
 	private WifiDeviceWholeDayMService wifiDeviceWholeDayMService;
 	public void deviceRecord2Mongo(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){

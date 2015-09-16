@@ -117,13 +117,13 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
 
                     HSSFCell sn = hssfRow.getCell(2);
-                    if (sn == null) {
+                    if (StringHelper.isEmpty(sn.getStringCellValue())) {
                         continue;
                     }
                     agentDeviceClaim.setId(sn.getStringCellValue());
 
                     HSSFCell mac = hssfRow.getCell(3);
-                    if (sn == null) {
+                    if (StringHelper.isEmpty(mac.getStringCellValue())) {
                         continue;
                     }
                     agentDeviceClaim.setMac(StringHelper.formatMacAddress(mac.getStringCellValue()));

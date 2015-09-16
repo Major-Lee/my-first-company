@@ -33,7 +33,7 @@ import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 @Service
-public class Step0ParserLogService {
+public class Step00ParserLogService {
 	private Date currentDate;
 	
 	//设备 在线区间段 dmac -》LineRecords

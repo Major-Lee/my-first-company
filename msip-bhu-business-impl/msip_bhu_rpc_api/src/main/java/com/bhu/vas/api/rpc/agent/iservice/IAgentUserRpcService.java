@@ -41,8 +41,8 @@ public interface IAgentUserRpcService {
 
 	/**
 	 * 检测token是否合法
-	 * @param countrycode
-	 * @param acc
+	 * @param uidParam
+	 * @param token
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token);
@@ -70,7 +70,6 @@ public interface IAgentUserRpcService {
 	 * @param acc
 	 * @param device
 	 * @param remoteIp
-	 * @param captcha
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
