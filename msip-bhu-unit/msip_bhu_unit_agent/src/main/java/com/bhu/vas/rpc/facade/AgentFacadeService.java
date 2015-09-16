@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
@@ -32,6 +34,8 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 @Service
 public class AgentFacadeService {
 
+    private final Logger logger = LoggerFactory.getLogger(AgentFacadeService.class);
+
     @Resource
     private AgentDeviceClaimService agentDeviceClaimService;
 
@@ -48,16 +52,19 @@ public class AgentFacadeService {
     private AgentBulltinBoardService agentBulltinBoardService;
 
     public boolean claimAgentDevice(String sn) {
+        logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
         AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(sn);
 
         if (agentDeviceClaim != null) {
-            agentDeviceClaim.setClaim_at(new Date());
-            agentDeviceClaim.setStatus(1);
-            agentDeviceClaimService.update(agentDeviceClaim);
-            return true;
-        } else {
-            return false;
+            int status = agentDeviceClaim.getStatus();
+            if (status == 0) { //如果未认领过需要认领
+                agentDeviceClaim.setClaim_at(new Date());
+                agentDeviceClaim.setStatus(1);
+                agentDeviceClaimService.update(agentDeviceClaim);
+                return true;
+            }
         }
+        return false;
 
     }
 
