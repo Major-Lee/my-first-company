@@ -6,10 +6,11 @@ import java.io.UnsupportedEncodingException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.di.business.datainit.charging.Step0ParserLogService;
-import com.bhu.vas.di.business.datainit.charging.Step1Result2FileService;
-import com.bhu.vas.di.business.datainit.charging.Step2DeviceWholeDayRecordService;
-import com.bhu.vas.di.business.datainit.charging.Step3HandsetWholeDayRecordService;
+import com.bhu.vas.di.business.datainit.charging.Step00ParserLogService;
+import com.bhu.vas.di.business.datainit.charging.Step01Result2FileService;
+import com.bhu.vas.di.business.datainit.charging.Step02DeviceWholeDayRecordService;
+import com.bhu.vas.di.business.datainit.charging.Step04AgentWholeDayRecordService;
+import com.bhu.vas.di.business.datainit.charging.Step10AgentDeviceSimulateDateGenService;
 
 /**
  * 每日必须进行状态保活，每天凌晨需要把在线的设备重新写入到日志中，作为模拟登录，模拟登录的时间缺省为当日的起始时间，防止漏算了长时间在线的设备
@@ -23,28 +24,32 @@ public class DailyChargingDataParserOp {
 		String date = "2015-09-11";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		
-		Step0ParserLogService step0ParserLogService = (Step0ParserLogService)ctx.getBean("step0ParserLogService");
-		Step1Result2FileService step1Result2FileService = (Step1Result2FileService)ctx.getBean("step1Result2FileService");
-		Step2DeviceWholeDayRecordService step2DeviceWholeDayRecordService = (Step2DeviceWholeDayRecordService)ctx.getBean("step2DeviceWholeDayRecordService");
+		Step00ParserLogService step00ParserLogService = (Step00ParserLogService)ctx.getBean("step00ParserLogService");
+		Step01Result2FileService step01Result2FileService = (Step01Result2FileService)ctx.getBean("step01Result2FileService");
+		Step02DeviceWholeDayRecordService step02DeviceWholeDayRecordService = (Step02DeviceWholeDayRecordService)ctx.getBean("step02DeviceWholeDayRecordService");
 		
-		Step3HandsetWholeDayRecordService step3HandsetWholeDayRecordService = (Step3HandsetWholeDayRecordService)ctx.getBean("step3HandsetWholeDayRecordService");
-		
-		//WifiDeviceWholeDayMService wifiDeviceWholeDayMService = (WifiDeviceWholeDayMService)ctx.getBean("wifiDeviceWholeDayMService");
-
+		//Step03HandsetWholeDayRecordService step03HandsetWholeDayRecordService = (Step03HandsetWholeDayRecordService)ctx.getBean("step3HandsetWholeDayRecordService");
+		Step04AgentWholeDayRecordService step04AgentWholeDayRecordService = (Step04AgentWholeDayRecordService)ctx.getBean("step04AgentWholeDayRecordService");
+		//Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
 		long ts1 = System.currentTimeMillis();
 		
 		//DailyChargingDataParserOp op = new DailyChargingDataParserOp();
-		step0ParserLogService.parser(date);
-		step0ParserLogService.processEnd(step0ParserLogService.getDevice_records());
+		step00ParserLogService.parser(date);
+		step00ParserLogService.processEnd(step00ParserLogService.getDevice_records());
 		long ts2 = System.currentTimeMillis();
+		
+		//step10AgentDeviceSimulateDateGenService.deviceDataGen(date, step00ParserLogService.getDevice_records());
+		
 		System.out.println(String.format("Step1 Completed cost %s ms", ts2-ts1));
-		step1Result2FileService.records2File(date, step0ParserLogService.getDevice_records(), step0ParserLogService.getDevice_handset_records());
+		step01Result2FileService.records2File(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
 		long ts3 = System.currentTimeMillis();
 		System.out.println(String.format("Step2 Completed cost %s ms", ts3-ts2));
 		
-		step2DeviceWholeDayRecordService.deviceRecord2Mongo(date, step0ParserLogService.getDevice_records(), step0ParserLogService.getDevice_handset_records());
+		step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
 		
 		long ts4 = System.currentTimeMillis();
 		System.out.println(String.format("Step2 Completed cost %s ms", ts4-ts3));
+		
+		step04AgentWholeDayRecordService.agentDailyRecord2Mongo(date);
 	}
 }
