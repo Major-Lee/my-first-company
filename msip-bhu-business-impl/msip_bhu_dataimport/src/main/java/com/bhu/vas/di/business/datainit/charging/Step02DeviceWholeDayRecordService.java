@@ -43,7 +43,7 @@ public class Step02DeviceWholeDayRecordService {
 			dto.setRecords(val.getRecords());
 			//TODO:获取此日的设备使用情况流量
 			wifiDeviceWholeDayMService.save(dto);
-			System.out.println(dto.getId());
+			//System.out.println(dto.getId());
 		}
 	}
 }

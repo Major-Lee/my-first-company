@@ -1,7 +1,5 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
-import java.util.List;
-
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
@@ -89,7 +87,7 @@ public interface IAgentRpcService {
      * @param enddate
      * @return
      */
-    public RpcResponseDTO<List<DailyRevenueRecordVTO>> historyrecords(int uid,String enddate);
+    public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);
 
     /*
      * 获取公告

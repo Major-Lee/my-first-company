@@ -80,26 +80,41 @@ public class WifiDeviceWholeDayMService {
 	 * @param dateEnd
 	 * @return
 	 */
-	public List<RecordSummaryDTO> summaryAggregation(List<String> macs,String dateStart,String dateEnd){
+	public List<RecordSummaryDTO> summaryAggregationBetween(List<String> macs,String dateStart,String dateEnd){
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
-				match(Criteria.where("mac").in(macs)),//.and("appId").is(appId)),
+				match(Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
 			    group("mac")
 			    	.sum("onlineduration").as("total_onlineduration")
 			    	.sum("connecttimes").as("total_connecttimes")
 			    	.sum("tx_bytes").as("total_tx_bytes")
-			    	.sum("rx_bytes").as("total_rx_bytes"),
+			    	.sum("rx_bytes").as("total_rx_bytes")
+			    	.sum("handsets").as("total_handsets"),
 			    sort(Direction.ASC, "total_onlinetime", "total_connecttimes")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;
-		/*for(Sumary sumary:aggregate){
-			System.out.println("~~~~~~~~~sum");
-			System.out.println(sumary.getId());
-			System.out.println(sumary.getTotal_amount());
-			System.out.println(sumary.getTotal_money());
-		}*/
 	}
 	
+	/**
+	 * 获取指定日期的所有的mac地址的汇总数据
+	 * @param macs
+	 * @param date
+	 * @return
+	 */
+	public List<RecordSummaryDTO> summaryAggregationWith(List<String> macs,String date){
+		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
+				match(Criteria.where("mac").in(macs).and("date").is(date)),
+			    group("date")
+			    	.sum("onlineduration").as("total_onlineduration")
+			    	.sum("connecttimes").as("total_connecttimes")
+			    	.sum("tx_bytes").as("total_tx_bytes")
+			    	.sum("rx_bytes").as("total_rx_bytes")
+			    	.sum("handsets").as("total_handsets"),
+			    sort(Direction.ASC, "total_onlineduration", "total_connecttimes")
+			);
+		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
+		return aggregate;
+	}
 	
 	public long countAll(){
 		return wifiDeviceWholeDayMDao.count(new Query());
