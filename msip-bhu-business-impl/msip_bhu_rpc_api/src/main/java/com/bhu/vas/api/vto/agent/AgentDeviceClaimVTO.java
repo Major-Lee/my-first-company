@@ -41,6 +41,26 @@ public class AgentDeviceClaimVTO implements Serializable {
      */
     private Date claim_at;
 
+    /**
+     * 设备位置
+     */
+    private String adr;
+
+    /**
+     * 是否在线
+     */
+    private boolean online;
+
+    /**
+     * 在线总时长
+     */
+    private String uptime;
+
+    /**
+     * 收入
+     */
+    private double income;
+
     public String getId() {
         return id;
     }
@@ -95,5 +115,37 @@ public class AgentDeviceClaimVTO implements Serializable {
 
     public void setClaim_at(Date claim_at) {
         this.claim_at = claim_at;
+    }
+
+    public String getAdr() {
+        return adr;
+    }
+
+    public void setAdr(String adr) {
+        this.adr = adr;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public String getUptime() {
+        return uptime;
+    }
+
+    public void setUptime(String uptime) {
+        this.uptime = uptime;
+    }
+
+    public double getIncome() {
+        return income;
+    }
+
+    public void setIncome(double income) {
+        this.income = income;
     }
 }
