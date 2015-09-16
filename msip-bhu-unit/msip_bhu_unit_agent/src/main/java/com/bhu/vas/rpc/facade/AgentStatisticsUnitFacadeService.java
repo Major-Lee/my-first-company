@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -16,8 +17,10 @@ import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -47,10 +50,12 @@ public class AgentStatisticsUnitFacadeService {
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
-			vto.setCharts(new HashMap<String,Double>());
+			//vto.setCharts(new HashMap<String,Double>());
+			Map<String,Double> charts = new HashMap<>();
 			for(AgentWholeDayMDTO dto:results){
-				vto.getCharts().put(dto.getDate(), (double)RandomData.floatNumber(5000, 20000));
+				charts.put(dto.getDate(), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
 			}
+			vto.setCharts(SortMapHelper.sortMapByKey(charts));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
