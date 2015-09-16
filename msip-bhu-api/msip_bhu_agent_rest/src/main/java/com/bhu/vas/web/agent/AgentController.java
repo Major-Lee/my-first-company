@@ -159,7 +159,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/download", method={RequestMethod.POST})
+    @RequestMapping(value="/download")
     public ResponseEntity<byte[]> downloadClaimAgentDevice (
             HttpServletRequest request,
             HttpServletResponse response,
