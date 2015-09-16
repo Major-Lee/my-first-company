@@ -50,6 +50,7 @@ public class Step04AgentWholeDayRecordService {
 			List<Integer> uids = it_user.nextKeys();
 			for(Integer uid:uids){
 				//agentDeviceClaimService.findModelPageByModelCriteria(mc);
+				int user_devices_hit = 0;
 				RecordSummaryDTO summary = new RecordSummaryDTO();
 				summary.setId(uid.toString());
 				ModelCriteria mc_claim = new ModelCriteria();
@@ -85,6 +86,7 @@ public class Step04AgentWholeDayRecordService {
 						}
 						Map<String, LineRecords> map = lineHandsetRecordsMap.get(device.getMac());
 						if(map != null){
+							user_devices_hit++;
 							summary.setTotal_handsets(summary.getTotal_handsets()+map.size());
 						}
 						//lineHandsetRecordsMap.remove(device.getMac());
@@ -92,11 +94,12 @@ public class Step04AgentWholeDayRecordService {
 				}
 				//System.out.println("uid:"+uid+summary);
 				AgentWholeDayMDTO mdto = new AgentWholeDayMDTO();
-				mdto.setId(AgentWholeDayMDTO.generateId(date, uid)+"_tmp");
+				mdto.setId(AgentWholeDayMDTO.generateId(date, uid));
 				mdto.setDate(date);
 				mdto.setUser(uid);
 				mdto.setConnecttimes(summary.getTotal_connecttimes());
 				mdto.setOnlineduration(summary.getTotal_onlineduration());
+				mdto.setDevices(user_devices_hit);
 				mdto.setHandsets(summary.getTotal_handsets());
 				mdto.setTx_bytes(0l);
 				mdto.setRx_bytes(0l);

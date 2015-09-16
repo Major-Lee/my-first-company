@@ -24,7 +24,7 @@ import com.bhu.vas.di.business.datainit.charging.Step04AgentWholeDayRecordServic
 public class DailyChargingDataParserOp {
 
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		String date = "2015-09-11";
+		String date = "2015-09-16";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		
 		Step00ParserLogService step00ParserLogService = (Step00ParserLogService)ctx.getBean("step00ParserLogService");

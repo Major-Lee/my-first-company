@@ -22,7 +22,9 @@ public class AgentWholeDayMDTO {
 	private long onlineduration;
 	//当天连接次数
 	private int connecttimes;
-	//终端数
+	//在线设备数
+	private int devices;
+	//在线终端数
 	private int handsets;
 	private long tx_bytes;
 	private long rx_bytes;
@@ -75,6 +77,12 @@ public class AgentWholeDayMDTO {
 		this.rx_bytes = rx_bytes;
 	}
 	
+	public int getDevices() {
+		return devices;
+	}
+	public void setDevices(int devices) {
+		this.devices = devices;
+	}
 	public static String generateId(String date, int user){
 		StringBuffer idstring = new StringBuffer();
 		idstring.append(date).append(StringHelper.UNDERLINE_STRING_GAP).append(user);

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.ds.agent.mdao.AgentWholeDayMDao;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  *
@@ -32,14 +33,21 @@ public class AgentWholeDayMService {
 	}
 	
 	/**
-	 * 获得指定区间内的代理商每日汇总列表数据
+	 * 分页获得指定区间内的代理商每日汇总列表数据
 	 * @param user
 	 * @param dateStart
 	 * @param dateEnd
 	 * @return
 	 */
+	public TailPage<AgentWholeDayMDTO> pageByDateBetween(int user,String dateStart,String dateEnd,int pageNo,int pageSize){
+		Query query = Query.query(Criteria.where("user").is(user).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
+		return agentWholeDayMDao.findTailPage(pageNo, pageSize, query);
+		//return new CommonPage<AgentWholeDayMDTO>(pageNo, pageSize, total, vtos);
+		//return agentWholeDayMDao.find(query);
+	}
+	
 	public List<AgentWholeDayMDTO> fetchByDateBetween(int user,String dateStart,String dateEnd){
-		Query query=Query.query(Criteria.where("user").is(user).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
+		Query query = Query.query(Criteria.where("user").is(user).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
 		return agentWholeDayMDao.find(query);
 	}
 }

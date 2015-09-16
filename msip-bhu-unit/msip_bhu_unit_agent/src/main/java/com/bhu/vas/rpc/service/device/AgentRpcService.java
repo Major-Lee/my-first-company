@@ -1,7 +1,5 @@
 package com.bhu.vas.rpc.service.device;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -84,8 +82,8 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<List<DailyRevenueRecordVTO>> historyrecords(int uid,String enddate) {
-		logger.info(String.format("historyrecords uid[%s] date[%s]", uid, enddate));
-		return agentStatisticsUnitFacadeService.historyrecords(uid, enddate);
+	public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize) {
+		logger.info(String.format("historyrecords uid[%s] date[%s]", uid, dateEndStr));
+		return agentStatisticsUnitFacadeService.pageHistoryRecords(uid, dateEndStr, pageNo, pageSize);
 	}
 }
