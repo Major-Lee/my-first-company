@@ -65,7 +65,7 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String addr1,
 			@RequestParam(required = false) String addr2,
 			@RequestParam(required = false) String memo,
-			@RequestParam(required = false, value="d",defaultValue="R") String device//,
+			@RequestParam(required = false, value="d",defaultValue="P") String device//,
 			) {
 		//step 1.deviceuuid 验证
 		ResponseError validateError = null;
