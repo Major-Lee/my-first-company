@@ -12,12 +12,15 @@ import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +52,9 @@ public class AgentFacadeService {
     private UserService userService;
 
     @Resource
+    private WifiDeviceService wifiDeviceService;
+
+    @Resource
     private AgentBulltinBoardService agentBulltinBoardService;
 
     public boolean claimAgentDevice(String sn) {
@@ -69,14 +75,7 @@ public class AgentFacadeService {
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = new AgentDeviceClaimVTO();
-                vto.setId(agentDeviceClaim.getId());
-                vto.setMac(agentDeviceClaim.getMac());
-                vto.setStock_code(agentDeviceClaim.getStock_code());
-                vto.setStock_name(agentDeviceClaim.getStock_name());
-                vto.setSold_at(agentDeviceClaim.getSold_at());
-                vto.setClaim_at(agentDeviceClaim.getClaim_at());
-                vto.setUid(agentDeviceClaim.getUid());
+                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
@@ -95,14 +94,7 @@ public class AgentFacadeService {
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = new AgentDeviceClaimVTO();
-                vto.setId(agentDeviceClaim.getId());
-                vto.setMac(agentDeviceClaim.getMac());
-                vto.setStock_code(agentDeviceClaim.getStock_code());
-                vto.setStock_name(agentDeviceClaim.getStock_name());
-                vto.setSold_at(agentDeviceClaim.getSold_at());
-                vto.setClaim_at(agentDeviceClaim.getClaim_at());
-                vto.setUid(agentDeviceClaim.getUid());
+                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
@@ -119,14 +111,7 @@ public class AgentFacadeService {
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = new AgentDeviceClaimVTO();
-                vto.setId(agentDeviceClaim.getId());
-                vto.setMac(agentDeviceClaim.getMac());
-                vto.setStock_code(agentDeviceClaim.getStock_code());
-                vto.setStock_name(agentDeviceClaim.getStock_name());
-                vto.setSold_at(agentDeviceClaim.getSold_at());
-                vto.setClaim_at(agentDeviceClaim.getClaim_at());
-                vto.setUid(agentDeviceClaim.getUid());
+                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
@@ -143,17 +128,33 @@ public class AgentFacadeService {
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = new AgentDeviceClaimVTO();
-                vto.setId(agentDeviceClaim.getId());
-                vto.setMac(agentDeviceClaim.getMac());
-                vto.setStock_code(agentDeviceClaim.getStock_code());
-                vto.setStock_name(agentDeviceClaim.getStock_name());
-                vto.setSold_at(agentDeviceClaim.getSold_at());
-                vto.setClaim_at(agentDeviceClaim.getClaim_at());
-                vto.setUid(agentDeviceClaim.getUid());
+                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
             }
         }
         return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
+    }
+
+
+    private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(AgentDeviceClaim agentDeviceClaim) {
+        AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
+        vto.setId(agentDeviceClaim.getId());
+        vto.setMac(agentDeviceClaim.getMac());
+        vto.setStock_code(agentDeviceClaim.getStock_code());
+        vto.setStock_name(agentDeviceClaim.getStock_name());
+        vto.setSold_at(agentDeviceClaim.getSold_at());
+        vto.setClaim_at(agentDeviceClaim.getClaim_at());
+        vto.setUid(agentDeviceClaim.getUid());
+
+        WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
+        if ( wifiDevice != null){
+            vto.setOnline(wifiDevice.isOnline());
+            vto.setUptime(wifiDevice.getUptime());
+            //todo(bluesand):收入
+            //vto.setIncome();
+            vto.setAdr(wifiDevice.getFormatted_address());
+        }
+
+        return vto;
     }
 
     public void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName) {
