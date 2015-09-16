@@ -111,7 +111,7 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim = new AgentDeviceClaim();
 
                     HSSFCell stock_code = hssfRow.getCell(0);
-                    agentDeviceClaim.setStock_code(String.valueOf(stock_code.getNumericCellValue()));
+                    agentDeviceClaim.setStock_code(String.valueOf((int)stock_code.getNumericCellValue()));
 
                     HSSFCell stock_name = hssfRow.getCell(1);
                     agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
@@ -140,7 +140,7 @@ public class AgentDeviceClaimServiceHandler {
                     HSSFCell outUid = outRow.createCell(0);
                     outUid.setCellValue(dto.getAid());
                     HSSFCell outStockCode = outRow.createCell(1);
-                    outStockCode.setCellValue(String.valueOf(stock_code.getNumericCellValue()));
+                    outStockCode.setCellValue(String.valueOf((int)stock_code.getNumericCellValue()));
                     HSSFCell outStockName = outRow.createCell(2);
                     outStockName.setCellValue(stock_name.getStringCellValue());
                     HSSFCell outSN = outRow.createCell(3);
