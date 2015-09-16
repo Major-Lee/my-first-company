@@ -5,7 +5,9 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
