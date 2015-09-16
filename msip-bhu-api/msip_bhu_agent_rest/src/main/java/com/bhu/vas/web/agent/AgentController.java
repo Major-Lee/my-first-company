@@ -8,11 +8,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
-import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
