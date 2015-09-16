@@ -224,6 +224,35 @@ public class AgentController {
     }
 
 
+    /**
+     * 获取公告列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @throws IOException
+     */
+    @ResponseBody()
+    @RequestMapping(value="/bullin_list")
+    public void bullinBoardList (
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) throws IOException {
+
+        try {
+            TailPage<AgentBulltinBoardVTO> vtos = agentRpcService.pageAgentBulltinBoardByUid(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
 
 
 }

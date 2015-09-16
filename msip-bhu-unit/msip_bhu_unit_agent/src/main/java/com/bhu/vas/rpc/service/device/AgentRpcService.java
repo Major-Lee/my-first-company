@@ -86,4 +86,10 @@ public class AgentRpcService implements IAgentRpcService {
 		logger.info(String.format("historyrecords uid[%s] date[%s]", uid, dateEndStr));
 		return agentStatisticsUnitFacadeService.pageHistoryRecords(uid, dateEndStr, pageNo, pageSize);
 	}
+
+    @Override
+    public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentBulltinBoardByUid uid:%s pageNo:%s pageSize:%s", pageNo, pageSize));
+        return agentFacadeService.pageAgentBulltinBoardByUid(uid, pageNo, pageSize);
+    }
 }
