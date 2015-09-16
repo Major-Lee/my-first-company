@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +138,9 @@ public class AsyncMsgHandleService {
 	@Resource
 	private BusinessCacheService businessCacheService;
 
+	@Resource
+	private AgentDeviceClaimService agentDeviceClaimService;
+
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -209,6 +213,9 @@ public class AsyncMsgHandleService {
 					wifiDeviceService.update(wifiDevice);
 				}
 			}
+
+			//设备上线后认领
+			agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn());
 			
 		}
 

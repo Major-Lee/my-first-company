@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created by bluesand on 9/7/15.
@@ -19,5 +20,20 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
     @Override
     public void setEntityDao(AgentDeviceClaimDao agentDeviceClaimDao) {
         super.setEntityDao(agentDeviceClaimDao);
+    }
+
+
+    public boolean claimAgentDevice(String sn) {
+        AgentDeviceClaim agentDeviceClaim = this.getById(sn);
+        if (agentDeviceClaim != null) {
+            int status = agentDeviceClaim.getStatus();
+            if (status == 0) { //如果未认领过需要认领
+                agentDeviceClaim.setClaim_at(new Date());
+                agentDeviceClaim.setStatus(1);
+                this.update(agentDeviceClaim);
+                return true;
+            }
+        }
+        return false;
     }
 }
