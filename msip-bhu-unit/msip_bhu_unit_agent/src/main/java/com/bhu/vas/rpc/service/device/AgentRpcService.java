@@ -28,7 +28,7 @@ public class AgentRpcService implements IAgentRpcService {
     @Resource
     private AgentFacadeService agentFacadeService;
 
-
+    @Resource
     private AgentStatisticsUnitFacadeService agentStatisticsUnitFacadeService;
     
     @Override
