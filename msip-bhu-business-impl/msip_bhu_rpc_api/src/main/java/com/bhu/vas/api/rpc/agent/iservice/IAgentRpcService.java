@@ -96,4 +96,14 @@ public interface IAgentRpcService {
      */
     AgentBulltinBoardVTO findAgentBulltinBoardById(long bid);
 
+    /**
+     * 获取代理商公告
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize);
+
+
 }

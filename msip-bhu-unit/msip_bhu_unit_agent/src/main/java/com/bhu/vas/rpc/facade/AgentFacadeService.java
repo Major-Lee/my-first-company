@@ -66,7 +66,7 @@ public class AgentFacadeService {
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
         List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
-        if (dtos != null) {
+        if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = new AgentDeviceClaimVTO();
@@ -90,7 +90,7 @@ public class AgentFacadeService {
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
         List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
-        if (dtos != null) {
+        if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = new AgentDeviceClaimVTO();
@@ -114,7 +114,7 @@ public class AgentFacadeService {
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
         List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
-        if (dtos != null) {
+        if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = new AgentDeviceClaimVTO();
@@ -142,7 +142,7 @@ public class AgentFacadeService {
         mc.setPageSize(pageSize);
         List<AgentDeviceImportLog> logs = agentDeviceImportLogService.findModelByModelCriteria(mc);
         List<AgentDeviceImportLogVTO>  dtos = new ArrayList<AgentDeviceImportLogVTO>();
-        if (dtos != null) {
+        if (logs != null) {
             AgentDeviceImportLogVTO vto = null;
             for (AgentDeviceImportLog log : logs) {
                 vto = new AgentDeviceImportLogVTO();
@@ -186,6 +186,44 @@ public class AgentFacadeService {
 
         return vto;
 
+    }
+
+    public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("uid", uid);
+        int total = agentBulltinBoardService.countByCommonCriteria(mc);
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+
+        List<AgentBulltinBoard> agentBulltinBoards = agentBulltinBoardService.findModelByCommonCriteria(mc);
+        List<AgentBulltinBoardVTO> vtos = new ArrayList<AgentBulltinBoardVTO>();
+
+        if (agentBulltinBoards != null) {
+            AgentBulltinBoardVTO vto = null;
+            for (AgentBulltinBoard agentBulltinBoard : agentBulltinBoards) {
+                vto = new AgentBulltinBoardVTO();
+                vto.setId(agentBulltinBoard.getId());
+                int cid = agentBulltinBoard.getConsumer();
+                vto.setCid(cid);
+                User consumer = userService.getById(cid);
+                if (consumer != null) {
+                    vto.setC_name(consumer.getNick());
+                }
+                int pid = agentBulltinBoard.getPublisher();
+                vto.setPid(pid);
+                User publisher = userService.getById(pid);
+                if (publisher != null) {
+                    vto.setP_name(publisher.getNick());
+                }
+
+                vto.setContent(agentBulltinBoard.getContent());
+                vto.setType(agentBulltinBoard.getType());
+                vto.setCreated_at(agentBulltinBoard.getCreated_at().getTime());
+                vtos.add(vto);
+            }
+        }
+
+        return new CommonPage<AgentBulltinBoardVTO>(pageNo, pageSize, total, vtos);
     }
 
 }
