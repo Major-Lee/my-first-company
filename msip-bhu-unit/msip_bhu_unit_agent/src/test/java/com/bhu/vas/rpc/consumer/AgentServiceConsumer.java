@@ -28,7 +28,7 @@ public class AgentServiceConsumer {
 
         System.out.println(agentUserRpcService.tokenValidate("6","NTtMV1JXARFBSENdXVYN").getPayload().booleanValue());
 
-//        System.out.println(JsonHelper.getJSONString(agentRpcService.pageClaimedAgentDevice(6, 1, 5)));
+//        System.out.println(JsonHelper.getJSONString(agentRpcService.pageClaimedAgentDeviceByUid(6, 1, 5)));
 
 
 

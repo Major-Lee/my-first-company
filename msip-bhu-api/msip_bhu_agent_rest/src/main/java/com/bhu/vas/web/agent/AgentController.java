@@ -107,7 +107,26 @@ public class AgentController {
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDeviceByUid(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
+    @ResponseBody()
+    @RequestMapping(value="/adminlist", method={RequestMethod.POST})
+    public void agenAdmintList(HttpServletRequest request,
+                          HttpServletResponse response,
+                          @RequestParam(required = true) Integer uid,
+                          @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                          @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+
+        try {
+            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();

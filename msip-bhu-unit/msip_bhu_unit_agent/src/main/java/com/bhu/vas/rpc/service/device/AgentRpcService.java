@@ -38,9 +38,15 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDevice(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageClaimedAgentDevice uid:%s pageNo:%s pageSize:%s",uid, pageNo, pageSize));
-        return agentFacadeService.pageClaimedAgentDevice(uid, pageNo, pageSize);
+    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] pageNo[%s] pageSize[%s]",uid, pageNo, pageSize));
+        return agentFacadeService.pageClaimedAgentDeviceById(uid, pageNo, pageSize);
+    }
+
+    @Override
+    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDevice(int pageNo, int pageSize) {
+        logger.info(String.format("pageClaimedAgentDeviceByUid pageNo[%s] pageSize[%s]", pageNo, pageSize));
+        return agentFacadeService.pageClaimedAgentDeviceById(pageNo, pageSize);
     }
 
     @Override

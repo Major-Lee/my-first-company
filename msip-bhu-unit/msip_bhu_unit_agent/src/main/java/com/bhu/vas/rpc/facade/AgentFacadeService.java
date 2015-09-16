@@ -57,9 +57,35 @@ public class AgentFacadeService {
     }
 
 
-    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDevice(int uid, int pageNo, int pageSize) {
+    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceById(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnIsNotNull("mac");
+        int total = agentDeviceClaimService.countByCommonCriteria(mc);
+
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+        List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
+        List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
+        if (agents != null) {
+            AgentDeviceClaimVTO vto = null;
+            for (AgentDeviceClaim agentDeviceClaim : agents) {
+                vto = new AgentDeviceClaimVTO();
+                vto.setId(agentDeviceClaim.getId());
+                vto.setMac(agentDeviceClaim.getMac());
+                vto.setStock_code(agentDeviceClaim.getStock_code());
+                vto.setStock_name(agentDeviceClaim.getStock_name());
+                vto.setSold_at(agentDeviceClaim.getSold_at());
+                vto.setClaim_at(agentDeviceClaim.getClaim_at());
+                vto.setUid(agentDeviceClaim.getUid());
+            }
+        }
+        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
+    }
+
+
+    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceById(int pageNo, int pageSize) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnIsNotNull("mac");
         int total = agentDeviceClaimService.countByCommonCriteria(mc);
 
         mc.setPageNumber(pageNo);
