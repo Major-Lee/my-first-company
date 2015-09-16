@@ -53,19 +53,7 @@ public class AgentFacadeService {
 
     public boolean claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
-        AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(sn);
-
-        if (agentDeviceClaim != null) {
-            int status = agentDeviceClaim.getStatus();
-            if (status == 0) { //如果未认领过需要认领
-                agentDeviceClaim.setClaim_at(new Date());
-                agentDeviceClaim.setStatus(1);
-                agentDeviceClaimService.update(agentDeviceClaim);
-                return true;
-            }
-        }
-        return false;
-
+        return agentDeviceClaimService.claimAgentDevice(sn);
     }
 
 

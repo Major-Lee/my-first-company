@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.rpc.facade.AgentFacadeService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +139,7 @@ public class AsyncMsgHandleService {
 	private BusinessCacheService businessCacheService;
 
 	@Resource
-	private AgentFacadeService agentFacadeService;
+	private AgentDeviceClaimService agentDeviceClaimService;
 
 	/**
 	 * wifi设备上线
@@ -214,7 +214,8 @@ public class AsyncMsgHandleService {
 				}
 			}
 
-			agentFacadeService.claimAgentDevice(wifiDevice.getSn());
+			//设备上线后认领
+			agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn());
 			
 		}
 
