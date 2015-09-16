@@ -159,7 +159,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/download", method={RequestMethod.POST})
+    @RequestMapping(value="/download")
     public ResponseEntity<byte[]> downloadClaimAgentDevice (
             HttpServletRequest request,
             HttpServletResponse response,
@@ -174,7 +174,7 @@ public class AgentController {
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
             if (path != null) {
-                //headers.setContentDispositionFormData("attachment", "resutl.xls");
+                headers.setContentDispositionFormData("attachment", "resutl.xls");
                 File file = new File(path);
                 return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
             }
