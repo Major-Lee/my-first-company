@@ -54,11 +54,11 @@ public class AgentStatisticsUnitFacadeService {
 	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String dateEndStr) {
 		try{
 			StatisticsVTO vto = new StatisticsVTO();
-			vto.setRcm(ArithHelper.getCurrency(String.valueOf(76696999l)));
-			vto.setRlm(ArithHelper.getCurrency(String.valueOf(977906l)));
-			vto.setRyd(ArithHelper.getCurrency(String.valueOf(96998l)));
+			vto.setRcm(ArithHelper.getFormatter(String.valueOf(76696999l)));
+			vto.setRlm(ArithHelper.getFormatter(String.valueOf(977906l)));
+			vto.setRyd(ArithHelper.getFormatter(String.valueOf(96998l)));
 			vto.setOd(ArithHelper.getFormatter(String.valueOf(90969)));
-			vto.setRtl(ArithHelper.getCurrency(String.valueOf(88932999l)));
+			vto.setRtl(ArithHelper.getFormatter(String.valueOf(88932999l)));
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
@@ -146,17 +146,23 @@ public class AgentStatisticsUnitFacadeService {
 				vto = new SettlementVTO();
 				vto.setIndex(++startIndex);
 				vto.setUid(user.getId());
-				vto.setOrg(vto.getOrg());
+				vto.setOrg(user.getOrg());
 				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
 				if(rsd != null){
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_onlineduration()))));
+				}else{
+					vto.setTr("0.00");
 				}
 				AgentWholeMonthMDTO preMonth = agentWholeMonthMService.getWholeMonth(previosMonth, user.getId());
 				if(preMonth != null)
 					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+				else
+					vto.setLsr("0.00");
 				AgentWholeMonthMDTO curMonth = agentWholeMonthMService.getWholeMonth(currentMonth, user.getId());
 				if(curMonth != null)
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(curMonth.getOnlineduration()))));
+				else
+					vto.setUr("0.00");
 				settleVtos.add(vto);
 			}
 			
