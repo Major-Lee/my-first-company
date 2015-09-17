@@ -222,7 +222,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("uid", uid);
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("consumer", uid);
         int total = agentBulltinBoardService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);

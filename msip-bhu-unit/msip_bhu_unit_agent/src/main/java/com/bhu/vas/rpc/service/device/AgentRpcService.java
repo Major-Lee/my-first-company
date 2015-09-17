@@ -95,7 +95,7 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Override
     public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageAgentBulltinBoardByUid uid:%s pageNo:%s pageSize:%s", pageNo, pageSize));
+        logger.info(String.format("pageAgentBulltinBoardByUid uid:%s pageNo:%s pageSize:%s", uid, pageNo, pageSize));
         return agentFacadeService.pageAgentBulltinBoardByUid(uid, pageNo, pageSize);
     }
 }
