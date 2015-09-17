@@ -1,6 +1,6 @@
 package com.bhu.vas.api.helper;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
@@ -328,8 +328,15 @@ public class CMDBuilder {
 				case DeviceWifiTimerStart:
 					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
 					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
+					String days = timerDto.getDays();
+					StringBuilder daysParam = new StringBuilder();
+					if(StringUtils.isNotEmpty(days))
+						daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+						//daysParam = ;//days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Default_Days);
+						//daysParam = days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Days);
 					resultCmd = String.format(opt.getCmdtpl(), 
-							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1]);
+								StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1],daysParam);
+						
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);

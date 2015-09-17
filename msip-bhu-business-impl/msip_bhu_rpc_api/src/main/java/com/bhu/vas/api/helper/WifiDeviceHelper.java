@@ -11,6 +11,8 @@ public class WifiDeviceHelper {
 	
 	public static final String WifiTimer_Timer_On = "on";
 	public static final String WifiTimer_Timer_Off = "off";
+	public static final String WifiTimer_Days = "days";
+	public static final String WifiTimer_Default_Days = "1234567";
 	public static final String WifiTimer_Default_Timeslot = "00:00:00-24:00:00";
 	public static final String[] WifiTimer_Default_Timeslot_Array = {"00:00:00","24:00:00"};
 
