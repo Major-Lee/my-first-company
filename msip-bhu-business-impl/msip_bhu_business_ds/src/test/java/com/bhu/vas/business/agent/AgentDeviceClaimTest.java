@@ -61,9 +61,9 @@ public class AgentDeviceClaimTest extends BaseTest {
     public void test() {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ");
-        int total = agentDeviceImportLogService.countByCommonCriteria(mc);
-        mc.setPageNumber(1);
-        mc.setPageSize(20);
+        int total = agentDeviceImportLogService.countByModelCriteria(mc);
+        //mc.setPageNumber(1);
+        //mc.setPageSize(20);
         List<AgentDeviceImportLog> logs = agentDeviceImportLogService.findModelByModelCriteria(mc);
         List<AgentDeviceImportLogVTO>  vtos = new ArrayList<AgentDeviceImportLogVTO>();
         if (logs != null) {
