@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -153,8 +154,12 @@ public class AgentFacadeService {
         if ( wifiDevice != null){
             vto.setOnline(wifiDevice.isOnline());
             vto.setUptime(wifiDevice.getUptime());
+            vto.setCreate_at(wifiDevice.getCreated_at());
+            vto.setOsv(wifiDevice.getOem_swver());
+            vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
             //todo(bluesand):收入
-            //vto.setIncome();
+            //vto.setMonth_income();
+//            vto.setTotal_income();
             vto.setAdr(wifiDevice.getFormatted_address());
         }
 
