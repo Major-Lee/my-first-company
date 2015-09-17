@@ -411,6 +411,7 @@ public class TaskFacadeService {
 				innerDTO.setOn(true);
 				innerDTO.setDs(false);
 				innerDTO.setTimeslot(param_dto.getTimeslot());
+				innerDTO.setDays(param_dto.getDays());
 				userSettingStateService.updateUserSetting(mac, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 			}
 			downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(),extparams));
