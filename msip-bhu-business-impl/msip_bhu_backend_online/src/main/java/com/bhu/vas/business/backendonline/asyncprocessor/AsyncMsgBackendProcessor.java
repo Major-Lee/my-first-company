@@ -14,7 +14,6 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.WifiDeviceUsedStatusServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -39,7 +38,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
 	
 	@Resource
-	private WifiDeviceUsedStatusServiceHandler wifiDeviceUsedStatusServiceHandler;
+	private IMsgHandlerService wifiDeviceUsedStatusServiceHandler;
 	
 	@PostConstruct
 	public void initialize() {

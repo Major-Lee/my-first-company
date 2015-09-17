@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
@@ -85,7 +86,7 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
-				vto.setR(0.00d);
+				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDevices(), dto.getHandsets()))));
 				vto.setC("+13.7%");
 				items.add(vto);
 			}
