@@ -122,6 +122,14 @@ public class AgentController {
     }
 
 
+    /**
+     * 代理商列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value="/list", method={RequestMethod.POST})
     public void agentList(HttpServletRequest request,
@@ -141,8 +149,16 @@ public class AgentController {
 
     }
 
+    /**
+     * 仓储代理商列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
-    @RequestMapping(value="/adminlist", method={RequestMethod.POST})
+    @RequestMapping(value="/admin/list", method={RequestMethod.POST})
     public void agenAdmintList(HttpServletRequest request,
                           HttpServletResponse response,
                           @RequestParam(required = true) Integer uid,
@@ -160,9 +176,16 @@ public class AgentController {
 
     }
 
-
+    /**
+     * 仓储导入记录列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
-    @RequestMapping(value="/log_list", method={RequestMethod.POST})
+    @RequestMapping(value="/admin/importlist", method={RequestMethod.POST})
     public void agentImportLogList(HttpServletRequest request,
                           HttpServletResponse response,
                           @RequestParam(required = true) Integer uid,
@@ -180,6 +203,14 @@ public class AgentController {
 
     }
 
+    /**
+     * 上传代理商Excel
+     * @param request
+     * @param response
+     * @param file
+     * @param uid
+     * @param aid
+     */
     @ResponseBody()
     @RequestMapping(value="/upload",method={RequestMethod.POST})
     public void uploadClaimAgentDevice(
@@ -240,6 +271,15 @@ public class AgentController {
     }
 
 
+    /**
+     * 下载导入记录
+     * @param request
+     * @param response
+     * @param uid
+     * @param bid
+     * @return
+     * @throws IOException
+     */
     @ResponseBody()
     @RequestMapping(value="/download")
     public ResponseEntity<byte[]> downloadClaimAgentDevice (
