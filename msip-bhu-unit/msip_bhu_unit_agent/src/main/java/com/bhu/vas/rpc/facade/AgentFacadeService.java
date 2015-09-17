@@ -65,7 +65,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceById(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnIsNotNull("mac");
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 1);
         int total = agentDeviceClaimService.countByCommonCriteria(mc);
 
         mc.setPageNumber(pageNo);
@@ -84,7 +84,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceById(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnIsNotNull("mac");
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status",1);
         int total = agentDeviceClaimService.countByCommonCriteria(mc);
 
         mc.setPageNumber(pageNo);
@@ -102,7 +102,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnIsNull("mac");
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 1);
         int total = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
@@ -119,7 +119,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnIsNull("mac");
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnNotEqualTo("status", 1);
         int total = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);

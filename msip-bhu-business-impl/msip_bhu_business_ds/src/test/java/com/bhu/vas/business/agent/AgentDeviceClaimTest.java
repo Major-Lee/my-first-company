@@ -31,7 +31,7 @@ public class AgentDeviceClaimTest extends BaseTest {
     @Test
     public void list() {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", 6).andColumnIsNotNull("mac");
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", 6).andColumnEqualTo("status", 1);
         int total = agentDeviceClaimService.countByCommonCriteria(mc);
 
         System.out.println("total:" + total);
