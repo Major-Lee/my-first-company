@@ -253,7 +253,7 @@ public class AgentController {
      * @throws IOException
      */
     @ResponseBody()
-    @RequestMapping(value="/bullin_list")
+    @RequestMapping(value="/bullinlist")
     public void bullinBoardList (
             HttpServletRequest request,
             HttpServletResponse response,
