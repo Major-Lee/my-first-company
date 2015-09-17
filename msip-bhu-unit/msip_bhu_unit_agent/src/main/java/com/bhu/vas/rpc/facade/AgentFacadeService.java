@@ -71,14 +71,15 @@ public class AgentFacadeService {
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
-        List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
+        List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+                vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
+        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total, vtos);
     }
 
 
@@ -90,14 +91,15 @@ public class AgentFacadeService {
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
-        List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
+        List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+                vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
+        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,vtos);
     }
 
     public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
@@ -107,14 +109,15 @@ public class AgentFacadeService {
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
-        List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
+        List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+                vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
+        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total, vtos);
     }
 
     public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize) {
@@ -124,14 +127,15 @@ public class AgentFacadeService {
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
-        List<AgentDeviceClaimVTO>  dtos = new ArrayList<AgentDeviceClaimVTO>();
+        List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
                 vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+                vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,dtos);
+        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,vtos);
     }
 
 
@@ -168,7 +172,7 @@ public class AgentFacadeService {
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceImportLog> logs = agentDeviceImportLogService.findModelByModelCriteria(mc);
-        List<AgentDeviceImportLogVTO>  dtos = new ArrayList<AgentDeviceImportLogVTO>();
+        List<AgentDeviceImportLogVTO>  vtos = new ArrayList<AgentDeviceImportLogVTO>();
         if (logs != null) {
             AgentDeviceImportLogVTO vto = null;
             for (AgentDeviceImportLog log : logs) {
@@ -181,9 +185,10 @@ public class AgentFacadeService {
                 if (agent != null) {
                     vto.setName(agent.getNick() == null ? "" : agent.getNick());
                 }
+                vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceImportLogVTO>(pageNo, pageSize, total,dtos);
+        return new CommonPage<AgentDeviceImportLogVTO>(pageNo, pageSize, total, vtos);
     }
 
     public AgentBulltinBoardVTO findAgentBulltinBoardById(long bid) {
