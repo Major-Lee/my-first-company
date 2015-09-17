@@ -120,7 +120,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}else{
-				RpcResponseDTO<Boolean> checkAcc = agentUserRpcService.checkAcc(countrycode, oldacc);
+				RpcResponseDTO<Boolean> checkAcc = agentUserRpcService.checkAcc(countrycode, acc);
 				if(checkAcc.getErrorCode() == null)
 					SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				else

@@ -236,7 +236,8 @@ public class AgentUserUnitFacadeService {
 			ModelCriteria mc = new ModelCriteria();
 			Criteria cri = mc.createCriteria();
 			cri.andColumnEqualTo("utype", User.Agent_User);
-			if(keywords != null && StringUtils.isNotEmpty(keywords.trim())){
+
+			if(keywords!=null && StringUtils.isNotEmpty(keywords.trim())){
 				cri.andColumnLike("org", "%"+keywords+"%");
 			}
 			mc.setOrderByClause("id");
