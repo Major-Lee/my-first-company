@@ -73,7 +73,7 @@ public class AgentStatisticsUnitFacadeService {
 					max = whichday;
 				}
 			}
-			//int days = DateTimeExtHelper.getDayOfMonth(dateEnd);
+			//小于max值并且charts中不存在的数据进行补零
 			for(int i=1;i<max;i++){
 				String indexday = String.valueOf(i);
 				if(!charts.containsKey(indexday)){

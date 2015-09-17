@@ -122,7 +122,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		//wifi设备是否是新设备
 		boolean newWifi = false;
-		boolean ipChanged = false;
+		boolean wanIpChanged = false;
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
 		
@@ -139,7 +139,7 @@ public class DeviceBusinessFacadeService {
 			wifi_device_entity.setLast_logout_at(new Date());
 			wifiDeviceService.insert(wifi_device_entity);
 			newWifi = true;
-			ipChanged = true;
+			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
@@ -148,13 +148,13 @@ public class DeviceBusinessFacadeService {
 			wifi_device_entity.setOnline(true);
 			wifiDeviceService.update(wifi_device_entity);
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
-				ipChanged = true;
+				wanIpChanged = true;
 			}
 		}
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
-		if(ipChanged || StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
+		if(wanIpChanged || StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
 			needLocationQuery = true;
 		}
 		/*
@@ -163,7 +163,7 @@ public class DeviceBusinessFacadeService {
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
-				this_login_at, last_login_at, newWifi,needLocationQuery);
+				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery);
 	}
 	
 	/**

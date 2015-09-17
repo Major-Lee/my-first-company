@@ -205,7 +205,7 @@ public class AsyncMsgHandleService {
 			deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 					new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
 			//根据wan_ip获取设备的网络运营商信息
-			if(!StringUtils.isEmpty(wifiDevice.getWan_ip())){
+			if(dto.isWanIpChanged() && !StringUtils.isEmpty(wifiDevice.getWan_ip())){
 				String carrier = IpLookup.lookup_carrier(wifiDevice.getWan_ip());
 				if(!StringUtils.isEmpty(carrier) && !carrier.equals(wifiDevice.getCarrier())){
 					//可能会引起设备在线状态数据不正常 不过考虑到只有网络运营商发生变化才会更新 可以忽略不计
@@ -221,7 +221,6 @@ public class AsyncMsgHandleService {
 
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
-	
 	
 	public void wifiDeviceModuleOnlineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s]", message));

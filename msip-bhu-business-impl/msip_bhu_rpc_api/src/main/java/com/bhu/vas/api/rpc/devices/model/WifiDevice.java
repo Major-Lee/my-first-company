@@ -78,6 +78,7 @@ public class WifiDevice extends BaseStringModel{
 	private boolean ipgen = false;
 	//设备运行时长
 	private String uptime;
+	private int agentuser;
 	//最后一次设备启动时间戳
 	private String last_start_at;
 	//最后一次登录时间
@@ -85,7 +86,6 @@ public class WifiDevice extends BaseStringModel{
 	//最后一次登出时间
 	private Date last_logout_at;
 	private Date created_at;
-	
 	
 	@Override
 	public void preInsert() {
@@ -420,6 +420,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setModule_online(boolean module_online) {
 		this.module_online = module_online;
+	}
+
+	public int getAgentuser() {
+		return agentuser;
+	}
+
+	public void setAgentuser(int agentuser) {
+		this.agentuser = agentuser;
 	}
 	
 }
