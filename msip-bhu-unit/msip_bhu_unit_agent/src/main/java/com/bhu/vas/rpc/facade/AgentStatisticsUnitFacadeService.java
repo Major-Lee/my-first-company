@@ -10,17 +10,25 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
+import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
+import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -34,6 +42,9 @@ public class AgentStatisticsUnitFacadeService {
 
 	@Resource
 	private AgentWholeDayMService agentWholeDayMService;
+	
+	@Resource
+	private AgentWholeMonthMService agentWholeMonthMService;
 	/**
 	 * 主页面统计数据
 	 * @param uid
@@ -85,7 +96,7 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
-				vto.setR(0.00d);
+				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getOnlineduration()))));
 				vto.setC("+13.7%");
 				items.add(vto);
 			}
@@ -95,5 +106,72 @@ public class AgentStatisticsUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+	
+	/**
+	 * 代理商结算页面列表（管理员可以访问）
+	 * 1、获取代理商列表
+	 * 2、获取代理商本月以前（不包括本月）的列表记录，作为已结算金额
+	 * 3、获取代理商本月的列表记录，作为未结算金额
+	 * 4、获取代理商上月的列表记录，作为上月结算金额
+	 * @param uid
+	 * @param monthDateEnd 截止时间点 yyyy-MM-dd 其中的月份代表本月
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
+		
+		List<SettlementVTO> settleVtos;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			ModelCriteria mc_user = new ModelCriteria();
+			mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+			mc_user.setPageNumber(pageNo);
+			mc_user.setPageSize(pageSize);
+			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
+			if(userPages.getItems().isEmpty()){
+				TailPage<SettlementVTO> result_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, new ArrayList<SettlementVTO>());
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+			}
+			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
+			Date certainDate = DateTimeHelper.parseDate(dateCurrent, DateTimeHelper.FormatPattern5);
+			String currentMonth = DateTimeHelper.formatDate(certainDate, DateTimeHelper.FormatPattern11);
+			String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(certainDate,1), DateTimeHelper.FormatPattern11);
+			List<Integer> users = IdHelper.getPKs(userPages.getItems(), Integer.class);
+			
+			List<RecordSummaryDTO> summary = agentWholeMonthMService.summaryAggregationBetween(users, null, previosMonth);
+			SettlementVTO vto = null;
+			for(User user:userPages.getItems()){
+				vto = new SettlementVTO();
+				vto.setIndex(++startIndex);
+				vto.setUid(user.getId());
+				vto.setOrg(vto.getOrg());
+				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
+				if(rsd != null){
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_onlineduration()))));
+				}
+				AgentWholeMonthMDTO preMonth = agentWholeMonthMService.getWholeMonth(previosMonth, user.getId());
+				if(preMonth != null)
+					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+				AgentWholeMonthMDTO curMonth = agentWholeMonthMService.getWholeMonth(currentMonth, user.getId());
+				if(curMonth != null)
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+				settleVtos.add(vto);
+			}
+			
+			TailPage<SettlementVTO> result_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	private RecordSummaryDTO distillRecordSummaryDTO(List<RecordSummaryDTO> summary,int user){
+		for(RecordSummaryDTO dto:summary){
+			if(dto.getId().equals(String.valueOf(user)))
+				return dto;
+		}
+		return null;
 	}
 }

@@ -5,7 +5,7 @@ public class DailyRevenueRecordVTO implements java.io.Serializable{
 	private int index;
 	private String date;
 	//Revenue
-	private double r;
+	private String r;
 	//当日在线总设备数onlinedevices
 	private long od;
 	//当日上线终端总数
@@ -18,10 +18,11 @@ public class DailyRevenueRecordVTO implements java.io.Serializable{
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public double getR() {
+	
+	public String getR() {
 		return r;
 	}
-	public void setR(double r) {
+	public void setR(String r) {
 		this.r = r;
 	}
 	public long getOd() {

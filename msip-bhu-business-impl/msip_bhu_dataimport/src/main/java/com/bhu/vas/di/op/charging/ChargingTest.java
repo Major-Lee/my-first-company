@@ -10,13 +10,14 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
+import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
-import com.mongodb.WriteResult;
 
 public class ChargingTest {
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		WifiDeviceWholeDayMService wifiDeviceWholeDayMService = (WifiDeviceWholeDayMService)ctx.getBean("wifiDeviceWholeDayMService");
+		AgentWholeDayMService agentWholeDayMService = (AgentWholeDayMService)ctx.getBean("agentWholeDayMService");
 		long count = wifiDeviceWholeDayMService.countAll();
 		
 		System.out.println(count);
@@ -70,5 +71,14 @@ public class ChargingTest {
 		upsertFlowBytes = wifiDeviceWholeDayMService.upsertFlowBytes("2015-09-09", "84:82:f4:1a:c5:1c:bb", 78645023l, 1278645023l);
 		System.out.println(upsertFlowBytes.getUpsertedId()+"   "+upsertFlowBytes.getN() +" "+upsertFlowBytes.isUpdateOfExisting());*/
 		
+	
+		List<Integer> users = new ArrayList<Integer>();
+		users.add(100083);
+		users.add(100084);
+		List<RecordSummaryDTO> summaryAggregationBetween = agentWholeDayMService.summaryAggregationBetween(users, "2015-09-09", "2015-09-17");
+	
+		for(RecordSummaryDTO dto:summaryAggregationBetween){
+			System.out.println(dto);
+		}
 	}
 }

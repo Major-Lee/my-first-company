@@ -26,7 +26,7 @@ public class WifiDeviceWholeDayUsedLogMDTO {
 	private int flow_max_time;
 	private long flow_max_time_num;
 	
-	private long time;
+	//private long time;
 	private long tx_bytes;
 	private long rx_bytes;
 	private int sta;
@@ -73,12 +73,12 @@ public class WifiDeviceWholeDayUsedLogMDTO {
 	public void setFlow_max_time_num(long flow_max_time_num) {
 		this.flow_max_time_num = flow_max_time_num;
 	}
-	public long getTime() {
+	/*public long getTime() {
 		return time;
 	}
 	public void setTime(long time) {
 		this.time = time;
-	}
+	}*/
 	public long getTx_bytes() {
 		return tx_bytes;
 	}
@@ -114,7 +114,7 @@ public class WifiDeviceWholeDayUsedLogMDTO {
 		result.setFlow_max_time(Integer.parseInt(dto.getFlow_max_time()));
 		result.setFlow_max_time_num(Long.parseLong(dto.getFlow_max_time_num()));
 		result.setSta(Integer.parseInt(dto.getSta()));
-		result.setTime(Long.parseLong(dto.getTime()));
+		//result.setTime(Long.parseLong(dto.getTime()));
 		result.setRx_bytes(Long.parseLong(dto.getRx_bytes()));
 		result.setTx_bytes(Long.parseLong(dto.getTx_bytes()));
 		return result;

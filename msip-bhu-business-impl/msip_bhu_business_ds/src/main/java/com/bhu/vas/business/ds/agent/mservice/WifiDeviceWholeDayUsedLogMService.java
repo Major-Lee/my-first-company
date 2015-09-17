@@ -39,7 +39,7 @@ public class WifiDeviceWholeDayUsedLogMService {
         update.set("sta_max_time_num", dto.getSta_max_time_num());
         update.set("flow_max_time", dto.getFlow_max_time());
         update.set("flow_max_time_num", dto.getFlow_max_time_num());
-        update.set("time", dto.getTime());
+        //update.set("time", dto.getTime());
         update.set("tx_bytes", dto.getTx_bytes());
         update.set("rx_bytes", dto.getRx_bytes());
         update.set("sta", dto.getSta());

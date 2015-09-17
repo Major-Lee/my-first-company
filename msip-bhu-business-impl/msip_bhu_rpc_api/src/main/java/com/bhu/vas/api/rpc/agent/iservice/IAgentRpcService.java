@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.agent.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
@@ -100,7 +101,15 @@ public interface IAgentRpcService {
      */
     public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);
 
-    /*
+    /**
+     * 代理商结算列表页面
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize);
+    /**
      * 获取公告
      * @param bid
      * @return
