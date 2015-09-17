@@ -255,8 +255,8 @@ public class AgentController {
      * @throws IOException
      */
     @ResponseBody()
-    @RequestMapping(value="/bullinlist")
-    public void bullinBoardList (
+    @RequestMapping(value="/bulltinlist")
+    public void bulltinBoardList (
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
