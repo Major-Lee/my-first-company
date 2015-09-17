@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,9 +65,20 @@ public class AgentStatisticsUnitFacadeService {
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
 			//vto.setCharts(new HashMap<String,Double>());
 			Map<String,Double> charts = new HashMap<>();
+			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
-				int day = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.valueOf(day), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
+				charts.put(String.valueOf(whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				if(whichday>max){
+					max = whichday;
+				}
+			}
+			//int days = DateTimeExtHelper.getDayOfMonth(dateEnd);
+			for(int i=1;i<max;i++){
+				String indexday = String.valueOf(i);
+				if(!charts.containsKey(indexday)){
+					charts.put(indexday, 0d);
+				}
 			}
 			vto.setCharts(SortMapHelper.sortMapByKey(charts));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
@@ -90,8 +102,9 @@ public class AgentStatisticsUnitFacadeService {
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
+			DailyRevenueRecordVTO vto = null;
 			for(AgentWholeDayMDTO dto : page.getItems()){
-				DailyRevenueRecordVTO vto = new DailyRevenueRecordVTO();
+				vto = new DailyRevenueRecordVTO();
 				vto.setIndex(++startIndex);
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
