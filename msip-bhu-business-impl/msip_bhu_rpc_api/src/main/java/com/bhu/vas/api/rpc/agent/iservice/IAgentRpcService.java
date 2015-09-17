@@ -93,7 +93,9 @@ public interface IAgentRpcService {
     /**
      * 代理商首页面首页面 每日历史收益列表
      * @param uid
-     * @param enddate
+     * @param dateEndStr
+     * @param pageNo
+     * @param pageSize 
      * @return
      */
     public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);

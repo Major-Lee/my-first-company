@@ -59,7 +59,15 @@ public class AgentDeviceClaimVTO implements Serializable {
     /**
      * 收入
      */
-    private double income;
+    private double month_income;
+
+    private String osv;
+
+    private double total_income;
+
+    private Date create_at;
+
+    private long hd_count;
 
     public String getId() {
         return id;
@@ -141,11 +149,43 @@ public class AgentDeviceClaimVTO implements Serializable {
         this.uptime = uptime;
     }
 
-    public double getIncome() {
-        return income;
+    public double getMonth_income() {
+        return month_income;
     }
 
-    public void setIncome(double income) {
-        this.income = income;
+    public void setMonth_income(double month_income) {
+        this.month_income = month_income;
+    }
+
+    public String getOsv() {
+        return osv;
+    }
+
+    public void setOsv(String osv) {
+        this.osv = osv;
+    }
+
+    public double getTotal_income() {
+        return total_income;
+    }
+
+    public void setTotal_income(double total_income) {
+        this.total_income = total_income;
+    }
+
+    public Date getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(Date create_at) {
+        this.create_at = create_at;
+    }
+
+    public long getHd_count() {
+        return hd_count;
+    }
+
+    public void setHd_count(long hd_count) {
+        this.hd_count = hd_count;
     }
 }

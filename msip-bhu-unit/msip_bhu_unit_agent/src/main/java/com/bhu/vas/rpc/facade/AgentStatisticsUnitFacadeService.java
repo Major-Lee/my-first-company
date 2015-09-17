@@ -43,11 +43,11 @@ public class AgentStatisticsUnitFacadeService {
 	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String dateEndStr) {
 		try{
 			StatisticsVTO vto = new StatisticsVTO();
-			vto.setRcm(76696999l);
-			vto.setRlm(977906l);
-			vto.setRyd(96998l);
-			vto.setOd(90969);
-			vto.setRtl(88932999l);
+			vto.setRcm(ArithHelper.getCurrency(String.valueOf(76696999l)));
+			vto.setRlm(ArithHelper.getCurrency(String.valueOf(977906l)));
+			vto.setRyd(ArithHelper.getCurrency(String.valueOf(96998l)));
+			vto.setOd(ArithHelper.getFormatter(String.valueOf(90969)));
+			vto.setRtl(ArithHelper.getCurrency(String.valueOf(88932999l)));
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
@@ -81,7 +81,7 @@ public class AgentStatisticsUnitFacadeService {
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
 			for(AgentWholeDayMDTO dto : page.getItems()){
 				DailyRevenueRecordVTO vto = new DailyRevenueRecordVTO();
-				vto.setIndex(startIndex++);
+				vto.setIndex(++startIndex);
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
