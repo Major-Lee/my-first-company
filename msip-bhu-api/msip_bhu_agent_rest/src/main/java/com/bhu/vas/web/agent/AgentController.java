@@ -25,6 +25,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
@@ -79,6 +80,29 @@ public class AgentController {
     			date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
     		}
 			RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> rpcResult = agentRpcService.pageHistoryRecords(uid, date, pageNo, pageSize);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value="/settlements", method={RequestMethod.POST})
+    public void settlements_pages(HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = false) String date,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+    		){
+    	try{
+    		if(StringUtils.isEmpty(date)){
+    			date = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5);
+    		}
+			RpcResponseDTO<TailPage<SettlementVTO>> rpcResult = agentRpcService.pageSettlements(uid,date, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
