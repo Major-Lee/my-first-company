@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.agent.vto;
 
 @SuppressWarnings("serial")
 public class DailyRevenueRecordVTO implements java.io.Serializable{
+	private int index;
 	private String date;
 	//Revenue
 	private double r;
@@ -40,6 +41,12 @@ public class DailyRevenueRecordVTO implements java.io.Serializable{
 	}
 	public void setC(String c) {
 		this.c = c;
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
 	}
 	
 }
