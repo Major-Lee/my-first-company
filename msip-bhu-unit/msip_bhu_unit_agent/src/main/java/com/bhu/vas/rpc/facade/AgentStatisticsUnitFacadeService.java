@@ -81,7 +81,7 @@ public class AgentStatisticsUnitFacadeService {
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
 			for(AgentWholeDayMDTO dto : page.getItems()){
 				DailyRevenueRecordVTO vto = new DailyRevenueRecordVTO();
-				vto.setIndex(startIndex++);
+				vto.setIndex(++startIndex);
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
