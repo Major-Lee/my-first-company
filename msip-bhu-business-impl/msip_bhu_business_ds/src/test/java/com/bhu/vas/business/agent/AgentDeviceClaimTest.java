@@ -1,12 +1,20 @@
 package com.bhu.vas.business.agent;
 
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.localunit.BaseTest;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +25,12 @@ public class AgentDeviceClaimTest extends BaseTest {
 
     @Resource
     public AgentDeviceClaimService agentDeviceClaimService;
+
+    @Resource
+    public AgentDeviceImportLogService agentDeviceImportLogService;
+
+    @Resource
+    public UserService userService;
 
     //@Test
     public void create() {
@@ -41,6 +55,33 @@ public class AgentDeviceClaimTest extends BaseTest {
 
 
         System.out.println("agents:" + agents);
+    }
+
+    @Test
+    public void test() {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ");
+        int total = agentDeviceImportLogService.countByCommonCriteria(mc);
+        mc.setPageNumber(1);
+        mc.setPageSize(20);
+        List<AgentDeviceImportLog> logs = agentDeviceImportLogService.findModelByModelCriteria(mc);
+        List<AgentDeviceImportLogVTO>  vtos = new ArrayList<AgentDeviceImportLogVTO>();
+        if (logs != null) {
+            AgentDeviceImportLogVTO vto = null;
+            for (AgentDeviceImportLog log : logs) {
+                vto = new AgentDeviceImportLogVTO();
+                vto.setAid(log.getAid());
+                vto.setCount(log.getCount());
+                vto.setCreated_at(log.getCreated_at().getTime());
+
+                User agent = userService.getById(log.getAid());
+                if (agent != null) {
+                    vto.setName(agent.getNick() == null ? "" : agent.getNick());
+                }
+                vtos.add(vto);
+            }
+        }
+        new CommonPage<AgentDeviceImportLogVTO>(1, 20, total, vtos);
     }
 
 
