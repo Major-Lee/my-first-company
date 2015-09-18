@@ -1013,6 +1013,7 @@ public class DeviceBusinessFacadeService {
 			innerDTO.setOn(true);
 			innerDTO.setDs(true);
 			innerDTO.setTimeslot(dto.getTimeslot());
+			innerDTO.setDays(dto.getDays());
 			//innerDTO.setStart(dto.getStart_time());
 			//innerDTO.setEnd(dto.getEnd_time());
 			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
