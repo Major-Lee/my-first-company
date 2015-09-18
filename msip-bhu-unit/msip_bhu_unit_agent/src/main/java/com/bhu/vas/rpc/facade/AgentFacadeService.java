@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -212,11 +214,7 @@ public class AgentFacadeService {
         vto.setMac(wifiDevice.getId());
         vto.setOnline(wifiDevice.isOnline());
         long uptime =  Long.parseLong(wifiDevice.getUptime());
-        long hour = uptime / 60 ;
-        long min  = uptime / 3600;
-        long sec = uptime / 216000;
-
-        vto.setUptime(String.format("%s:%s:%s", hour, min, sec));
+        vto.setUptime(DateTimeHelper.getTimeDiff(uptime));
         vto.setCreate_at(wifiDevice.getCreated_at());
         vto.setOsv(wifiDevice.getOem_swver());
         vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
