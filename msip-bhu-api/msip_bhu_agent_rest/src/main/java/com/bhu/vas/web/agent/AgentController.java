@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,12 +24,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
-import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -57,7 +57,7 @@ public class AgentController {
     		if(StringUtils.isEmpty(date)){
     			date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
     		}
-			RpcResponseDTO<StatisticsVTO> rpcResult = agentRpcService.statistics(uid, date);
+			RpcResponseDTO<AgentRevenueStatisticsVTO> rpcResult = agentRpcService.statistics(uid, date);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
@@ -105,7 +105,7 @@ public class AgentController {
     		if(StringUtils.isEmpty(date)){
     			date = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5);
     		}
-			RpcResponseDTO<TailPage<SettlementVTO>> rpcResult = agentRpcService.pageSettlements(uid,date, pageNo, pageSize);
+			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid,date, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
