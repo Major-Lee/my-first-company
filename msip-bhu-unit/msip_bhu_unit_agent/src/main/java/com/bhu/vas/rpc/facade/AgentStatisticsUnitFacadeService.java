@@ -144,7 +144,7 @@ public class AgentStatisticsUnitFacadeService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -194,7 +194,7 @@ public class AgentStatisticsUnitFacadeService {
 			}
 			
 			result_page = new SettlementPageVTO();
-			result_page.setStatistics(fetchAgentSettlementStatistics(uid));
+			result_page.setStatistics(fetchAgentSettlementStatistics(operator_user));
 			
 			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
 			result_page.setPages(settlement_pages);
@@ -204,10 +204,10 @@ public class AgentStatisticsUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	private SettlementStatisticsVTO fetchAgentSettlementStatistics(int agentuser){
+	private SettlementStatisticsVTO fetchAgentSettlementStatistics(int operator_user){
 		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
-		if(agentuser > 0){
-			result.setU(agentuser);
+		if(operator_user > 0){
+			result.setU(operator_user);
 			int ts = RandomData.intNumber(260,320);
 			int sd = RandomData.intNumber(240,250);
 			int us = ts-sd;
