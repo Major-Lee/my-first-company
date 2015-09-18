@@ -67,34 +67,37 @@ public class AgentFacadeService {
 
 
     public AgentDeviceVTO pageClaimedAgentDeviceById(int uid, int status, int pageNo, int pageSize) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid);
-
-        int total_count = wifiDeviceService.countByCommonCriteria(mc);
-
-        ModelCriteria mcc = new ModelCriteria();
-        mcc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
-        int online_count = wifiDeviceService.countByCommonCriteria(mcc);
+        ModelCriteria querymc = new ModelCriteria();
+        querymc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid);
+        int total_count = wifiDeviceService.countByCommonCriteria(querymc);
+        int online_count = 0;
         int offline_count = 0;
         int total_query = 0;
         switch (status) {
             case DEVICE_ONLINE_STATUS:
-                total_query = online_count;
+                querymc.createCriteria().andColumnEqualTo("online", true);
+                total_query = wifiDeviceService.countByCommonCriteria(querymc);
+                online_count = total_count;
                 offline_count = total_count - online_count;
                 break;
             case DEVICE_OFFLINE_STATUS:
-                offline_count = total_count - online_count;
-                total_query = offline_count;
+                querymc.createCriteria().andColumnEqualTo("online", false);
+                total_query = wifiDeviceService.countByCommonCriteria(querymc);
+                offline_count = total_query;
+                online_count = total_count - offline_count;
                 break;
             default:
+                ModelCriteria online_mc = querymc;
+                online_mc.createCriteria().andColumnEqualTo("online", true);
+                online_count = wifiDeviceService.countByCommonCriteria(online_mc);
                 total_query = total_count;
                 offline_count = total_count - online_count;
                 break;
         }
 
-        mc.setPageNumber(pageNo);
-        mc.setPageSize(pageSize);
-        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(mcc);
+        querymc.setPageNumber(pageNo);
+        querymc.setPageSize(pageSize);
+        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(querymc);
         List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
