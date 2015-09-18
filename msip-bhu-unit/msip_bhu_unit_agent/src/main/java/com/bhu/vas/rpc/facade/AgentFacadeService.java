@@ -211,7 +211,12 @@ public class AgentFacadeService {
         vto.setId(wifiDevice.getSn());
         vto.setMac(wifiDevice.getId());
         vto.setOnline(wifiDevice.isOnline());
-        vto.setUptime(wifiDevice.getUptime());
+        long uptime =  Long.parseLong(wifiDevice.getUptime());
+        long hour = uptime / 60 ;
+        long min  = uptime / 3600;
+        long sec = uptime / 216000;
+
+        vto.setUptime(String.format("%s:%s:%s", hour, min, sec));
         vto.setCreate_at(wifiDevice.getCreated_at());
         vto.setOsv(wifiDevice.getOem_swver());
         vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
