@@ -137,36 +137,45 @@ public class AgentDeviceClaimTest extends BaseTest {
 
     @Test
     public void query() {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084);
+        int status = 0;
+        ModelCriteria totalmc = new ModelCriteria();
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084);
+        int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
-        int total_count = wifiDeviceService.countByCommonCriteria(mc);
+        ModelCriteria onlinemc = new ModelCriteria();
+        ModelCriteria querymc = new ModelCriteria();
 
-        ModelCriteria mcc = new ModelCriteria();
-        mcc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", true);
-
-        int type = 0;
-        int online_count = wifiDeviceService.countByCommonCriteria(mcc);
+        int online_count = 0;
         int offline_count = 0;
         int total_query = 0;
-        switch (type) {
+        switch (status) {
             case 1:
-                total_query = online_count;
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", true);
+                querymc = onlinemc;
+                total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
+                online_count = total_count;
                 offline_count = total_count - online_count;
                 break;
             case 0:
-                offline_count = total_count - online_count;
-                total_query = offline_count;
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", false);
+                querymc = onlinemc;
+                total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
+                offline_count = total_query;
+                online_count = total_count - offline_count;
                 break;
             default:
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", true);
+                querymc = totalmc;
+                online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 total_query = total_count;
                 offline_count = total_count - online_count;
                 break;
         }
 
-        mc.setPageNumber(1);
-        mc.setPageSize(20);
-        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(mc);
+        querymc.setPageNumber(1);
+        querymc.setPageSize(5);
+
+        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(querymc);
         System.out.println(devices);
     }
 
