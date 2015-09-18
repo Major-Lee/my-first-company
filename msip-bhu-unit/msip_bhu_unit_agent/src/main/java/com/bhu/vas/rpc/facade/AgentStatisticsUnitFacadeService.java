@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,19 +55,30 @@ public class AgentStatisticsUnitFacadeService {
 	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String dateEndStr) {
 		try{
 			StatisticsVTO vto = new StatisticsVTO();
-			vto.setRcm(ArithHelper.getCurrency(String.valueOf(76696999l)));
-			vto.setRlm(ArithHelper.getCurrency(String.valueOf(977906l)));
-			vto.setRyd(ArithHelper.getCurrency(String.valueOf(96998l)));
+			vto.setRcm(ArithHelper.getFormatter(String.valueOf(76696999l)));
+			vto.setRlm(ArithHelper.getFormatter(String.valueOf(977906l)));
+			vto.setRyd(ArithHelper.getFormatter(String.valueOf(96998l)));
 			vto.setOd(ArithHelper.getFormatter(String.valueOf(90969)));
-			vto.setRtl(ArithHelper.getCurrency(String.valueOf(88932999l)));
+			vto.setRtl(ArithHelper.getFormatter(String.valueOf(88932999l)));
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
 			//vto.setCharts(new HashMap<String,Double>());
 			Map<String,Double> charts = new HashMap<>();
+			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
-				int day = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.valueOf(day), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
+				charts.put(String.valueOf(whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				if(whichday>max){
+					max = whichday;
+				}
+			}
+			//小于max值并且charts中不存在的数据进行补零
+			for(int i=1;i<max;i++){
+				String indexday = String.valueOf(i);
+				if(!charts.containsKey(indexday)){
+					charts.put(indexday, 0d);
+				}
 			}
 			vto.setCharts(SortMapHelper.sortMapByKey(charts));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
@@ -90,8 +102,9 @@ public class AgentStatisticsUnitFacadeService {
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
+			DailyRevenueRecordVTO vto = null;
 			for(AgentWholeDayMDTO dto : page.getItems()){
-				DailyRevenueRecordVTO vto = new DailyRevenueRecordVTO();
+				vto = new DailyRevenueRecordVTO();
 				vto.setIndex(++startIndex);
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
@@ -146,17 +159,23 @@ public class AgentStatisticsUnitFacadeService {
 				vto = new SettlementVTO();
 				vto.setIndex(++startIndex);
 				vto.setUid(user.getId());
-				vto.setOrg(vto.getOrg());
+				vto.setOrg(user.getOrg());
 				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
 				if(rsd != null){
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_onlineduration()))));
+				}else{
+					vto.setTr("0.00");
 				}
 				AgentWholeMonthMDTO preMonth = agentWholeMonthMService.getWholeMonth(previosMonth, user.getId());
 				if(preMonth != null)
 					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+				else
+					vto.setLsr("0.00");
 				AgentWholeMonthMDTO curMonth = agentWholeMonthMService.getWholeMonth(currentMonth, user.getId());
 				if(curMonth != null)
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(curMonth.getOnlineduration()))));
+				else
+					vto.setUr("0.00");
 				settleVtos.add(vto);
 			}
 			

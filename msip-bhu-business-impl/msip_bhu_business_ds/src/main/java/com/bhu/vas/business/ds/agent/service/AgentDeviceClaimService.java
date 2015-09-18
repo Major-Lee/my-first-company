@@ -23,7 +23,7 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
     }
 
 
-    public boolean claimAgentDevice(String sn) {
+    public int claimAgentDevice(String sn) {
         AgentDeviceClaim agentDeviceClaim = this.getById(sn);
         if (agentDeviceClaim != null) {
             int status = agentDeviceClaim.getStatus();
@@ -31,9 +31,13 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
                 agentDeviceClaim.setClaim_at(new Date());
                 agentDeviceClaim.setStatus(1);
                 this.update(agentDeviceClaim);
-                return true;
+                return agentDeviceClaim.getUid();
+            } else {
+                return 0; //已经认领过
             }
+        } else {
+            return -1; //不存在
         }
-        return false;
+
     }
 }

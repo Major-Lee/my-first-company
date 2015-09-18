@@ -78,6 +78,8 @@ public class WifiDevice extends BaseStringModel{
 	private boolean ipgen = false;
 	//设备运行时长
 	private String uptime;
+	// 设备认领的代理商 userid，如果为0 未进行认领 -1则代表认领失败，可能是由于认领库中不存在相关设备
+	private int agentuser;
 	//最后一次设备启动时间戳
 	private String last_start_at;
 	//最后一次登录时间
@@ -85,7 +87,6 @@ public class WifiDevice extends BaseStringModel{
 	//最后一次登出时间
 	private Date last_logout_at;
 	private Date created_at;
-	
 	
 	@Override
 	public void preInsert() {
@@ -421,5 +422,16 @@ public class WifiDevice extends BaseStringModel{
 	public void setModule_online(boolean module_online) {
 		this.module_online = module_online;
 	}
+
+	public int getAgentuser() {
+		return agentuser;
+	}
+
+	public void setAgentuser(int agentuser) {
+		this.agentuser = agentuser;
+	}
 	
+	public boolean needClaim(){
+		return this.agentuser == 0;
+	}
 }

@@ -152,7 +152,6 @@ public class AsyncMsgHandleService {
 	 */
 	public void wifiDeviceOnlineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s]", message));
-		
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
@@ -200,28 +199,44 @@ public class AsyncMsgHandleService {
 			}
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
-			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
+			try{
+				boolean needUpdate = false;
+				//设备上线后认领
+				if(wifiDevice.needClaim()){
+					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn());
+					if(claim_ret != 0){//-1 or >0
+						wifiDevice.setAgentuser(claim_ret);
+						needUpdate = true;
+					}
+				}
+				//根据wan_ip获取设备的网络运营商信息
+				if(dto.isWanIpChanged() && StringUtils.isNotEmpty(wifiDevice.getWan_ip())){
+					String carrier = IpLookup.lookup_carrier(wifiDevice.getWan_ip());
+					if(!StringUtils.isEmpty(carrier) && !carrier.equals(wifiDevice.getCarrier())){
+						//可能会引起设备在线状态数据不正常 不过考虑到只有网络运营商发生变化才会更新 可以忽略不计
+						wifiDevice.setCarrier(carrier);
+						needUpdate = true;
+						//wifiDeviceService.update(wifiDevice);
+					}
+				}
+				if(needUpdate)
+					wifiDeviceService.update(wifiDevice);
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+			}
+			
+			try{
+				wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+			}
 			//设备统计
 			deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 					new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
-			//根据wan_ip获取设备的网络运营商信息
-			if(!StringUtils.isEmpty(wifiDevice.getWan_ip())){
-				String carrier = IpLookup.lookup_carrier(wifiDevice.getWan_ip());
-				if(!StringUtils.isEmpty(carrier) && !carrier.equals(wifiDevice.getCarrier())){
-					//可能会引起设备在线状态数据不正常 不过考虑到只有网络运营商发生变化才会更新 可以忽略不计
-					wifiDevice.setCarrier(carrier);
-					wifiDeviceService.update(wifiDevice);
-				}
-			}
-
-			//设备上线后认领
-			agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn());
-			
 		}
 
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOnlineHandle message[%s] successful", message));
 	}
-	
 	
 	public void wifiDeviceModuleOnlineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s]", message));

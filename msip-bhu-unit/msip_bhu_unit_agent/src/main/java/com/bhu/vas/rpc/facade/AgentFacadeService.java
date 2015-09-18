@@ -58,7 +58,7 @@ public class AgentFacadeService {
     @Resource
     private AgentBulltinBoardService agentBulltinBoardService;
 
-    public boolean claimAgentDevice(String sn) {
+    public int claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
         return agentDeviceClaimService.claimAgentDevice(sn);
     }
@@ -207,18 +207,18 @@ public class AgentFacadeService {
             vto.setCid(cid);
             User consumer = userService.getById(cid);
             if (consumer != null) {
-                vto.setC_name(consumer.getNick());
+                vto.setCn(consumer.getNick());
             }
             int pid = agentBulltinBoard.getPublisher();
             vto.setPid(pid);
             User publisher = userService.getById(pid);
             if (publisher != null) {
-                vto.setP_name(publisher.getNick());
+                vto.setPn(publisher.getNick());
             }
 
-            vto.setContent(agentBulltinBoard.getContent());
+            vto.setM(agentBulltinBoard.getContent());
             vto.setType(agentBulltinBoard.getType());
-            vto.setCreated_at(agentBulltinBoard.getCreated_at().getTime());
+            vto.setD(agentBulltinBoard.getCreated_at());
         }
 
         return vto;
@@ -244,18 +244,19 @@ public class AgentFacadeService {
                 vto.setCid(cid);
                 User consumer = userService.getById(cid);
                 if (consumer != null) {
-                    vto.setC_name(consumer.getNick());
+                    vto.setCn(consumer.getNick());
                 }
                 int pid = agentBulltinBoard.getPublisher();
                 vto.setPid(pid);
                 User publisher = userService.getById(pid);
                 if (publisher != null) {
-                    vto.setP_name(publisher.getNick());
+                    vto.setPn(publisher.getNick());
                 }
 
-                vto.setContent(agentBulltinBoard.getContent());
                 vto.setType(agentBulltinBoard.getType());
-                vto.setCreated_at(agentBulltinBoard.getCreated_at().getTime());
+                vto.setTitle(AgentBulltinType.getAgentBulltinTypeFromKey(agentBulltinBoard.getType()).getDesc());
+                vto.setM(agentBulltinBoard.getContent());
+                vto.setD(agentBulltinBoard.getCreated_at());
                 vtos.add(vto);
             }
         }

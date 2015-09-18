@@ -28,6 +28,7 @@
     <result property="online" column="online"/>
     <result property="module_online" column="module_online"/>
     
+    <result property="agentuser" column="agentuser"/>
     
     <result property="rx_bytes" column="rx_bytes"/>
     <result property="tx_bytes" column="tx_bytes"/>
@@ -80,6 +81,7 @@
 	    	work_mode,
 	    	online,
 	    	module_online,
+	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
 	    	data_rx_rate,
@@ -125,6 +127,7 @@
 	    	work_mode,
 	    	online,
 	    	module_online,
+	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
 	    	data_rx_rate,
@@ -171,6 +174,7 @@
 	    	#{work_mode},
 	    	#{online},
 	    	#{module_online},
+	    	#{agentuser},
 	    	#{rx_bytes},
 	    	#{tx_bytes},
 	    	#{data_rx_rate},
@@ -215,6 +219,7 @@
 	    	work_mode = #{work_mode},
 	    	online = #{online},
 	    	module_online = #{module_online},
+	    	agentuser = #{agentuser},
 	    	rx_bytes = #{rx_bytes},
 	    	tx_bytes = #{tx_bytes},
 	    	data_rx_rate = #{data_rx_rate},

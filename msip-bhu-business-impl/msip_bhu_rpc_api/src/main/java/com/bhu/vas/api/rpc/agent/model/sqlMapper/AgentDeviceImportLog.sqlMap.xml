@@ -142,7 +142,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="string">
+	<select id="pkSelectByModelCriteria" resultType="long">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />

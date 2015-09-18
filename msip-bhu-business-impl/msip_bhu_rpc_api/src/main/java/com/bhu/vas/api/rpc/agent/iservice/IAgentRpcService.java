@@ -27,7 +27,7 @@ public interface IAgentRpcService {
      * 设备认领代理商
      * @param sn
      */
-    boolean claimAgentDevice(String sn);
+    int claimAgentDevice(String sn);
 
     /**
      * 代理商设备列表
