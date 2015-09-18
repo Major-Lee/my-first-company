@@ -8,6 +8,7 @@ import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -30,14 +31,25 @@ public interface IAgentRpcService {
      */
     int claimAgentDevice(String sn);
 
+//    /**
+//     * 代理商设备列表
+//     * @param uid
+//     * @param pageNo
+//     * @param pageSize
+//     * @return
+//     */
+//    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize);
+
+
     /**
-     * 代理商设备列表
+     *
      * @param uid
+     * @param type
      * @param pageNo
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize);
+    AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int type, int pageNo, int pageSize);
 
 
     /**

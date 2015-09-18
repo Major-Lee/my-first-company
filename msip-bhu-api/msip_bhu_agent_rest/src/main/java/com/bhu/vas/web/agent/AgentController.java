@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -123,23 +124,24 @@ public class AgentController {
 
 
     /**
-     * 代理商列表
+     * 代理商设备列表
      * @param request
      * @param response
      * @param uid
+     * @param status  0:离线 1:在线 2:所有
      * @param pageNo
      * @param pageSize
      */
     @ResponseBody()
     @RequestMapping(value="/list", method={RequestMethod.POST})
-    public void agentList(HttpServletRequest request,
-                      HttpServletResponse response,
-                      @RequestParam(required = true) Integer uid,
+    public void agentList(HttpServletRequest request, HttpServletResponse response,
+                          @RequestParam(required = true) Integer uid,
+                          @RequestParam(required = false, defaultValue="0") int status,
                           @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDeviceByUid(uid, pageNo, pageSize);
+            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDeviceByUid(uid, status, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -292,7 +294,7 @@ public class AgentController {
 
         AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(bid);
         if (vto != null) {
-            String content = vto.getContent();
+            String content = vto.getM();
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
             if (path != null) {
