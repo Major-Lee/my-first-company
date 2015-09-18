@@ -13,15 +13,20 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
@@ -41,32 +46,50 @@ public class AgentStatisticsUnitFacadeService {
 	private UserService userService;
 
 	@Resource
+	private WifiDeviceService wifiDeviceService;
+
+	@Resource
 	private AgentWholeDayMService agentWholeDayMService;
 	
 	@Resource
 	private AgentWholeMonthMService agentWholeMonthMService;
+	
+	@Resource
+	private BusinessCacheService businessCacheService;
+
 	/**
 	 * 主页面统计数据
 	 * @param uid
 	 * @param enddate
 	 * @return
 	 */
-	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String dateEndStr) {
+	public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String dateEndStr) {
 		try{
-			StatisticsVTO vto = new StatisticsVTO();
-			vto.setRcm(ArithHelper.getCurrency(String.valueOf(76696999l)));
-			vto.setRlm(ArithHelper.getCurrency(String.valueOf(977906l)));
-			vto.setRyd(ArithHelper.getCurrency(String.valueOf(96998l)));
+			AgentRevenueStatisticsVTO vto = new AgentRevenueStatisticsVTO();
+			vto.setRcm(ArithHelper.getFormatter(String.valueOf(76696999l)));
+			vto.setRlm(ArithHelper.getFormatter(String.valueOf(977906l)));
+			vto.setRyd(ArithHelper.getFormatter(String.valueOf(96998l)));
 			vto.setOd(ArithHelper.getFormatter(String.valueOf(90969)));
-			vto.setRtl(ArithHelper.getCurrency(String.valueOf(88932999l)));
+			vto.setRtl(ArithHelper.getFormatter(String.valueOf(88932999l)));
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
 			//vto.setCharts(new HashMap<String,Double>());
 			Map<String,Double> charts = new HashMap<>();
+			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
-				int day = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.valueOf(day), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
+				charts.put(String.valueOf(whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				if(whichday>max){
+					max = whichday;
+				}
+			}
+			//小于max值并且charts中不存在的数据进行补零
+			for(int i=1;i<max;i++){
+				String indexday = String.valueOf(i);
+				if(!charts.containsKey(indexday)){
+					charts.put(indexday, 0d);
+				}
 			}
 			vto.setCharts(SortMapHelper.sortMapByKey(charts));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
@@ -90,8 +113,9 @@ public class AgentStatisticsUnitFacadeService {
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
+			DailyRevenueRecordVTO vto = null;
 			for(AgentWholeDayMDTO dto : page.getItems()){
-				DailyRevenueRecordVTO vto = new DailyRevenueRecordVTO();
+				vto = new DailyRevenueRecordVTO();
 				vto.setIndex(++startIndex);
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
@@ -120,9 +144,9 @@ public class AgentStatisticsUnitFacadeService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
-		
-		List<SettlementVTO> settleVtos;
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
 			ModelCriteria mc_user = new ModelCriteria();
@@ -131,8 +155,11 @@ public class AgentStatisticsUnitFacadeService {
 			mc_user.setPageSize(pageSize);
 			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
 			if(userPages.getItems().isEmpty()){
-				TailPage<SettlementVTO> result_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, new ArrayList<SettlementVTO>());
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+				result_page = new SettlementPageVTO();
+				result_page.setStatistics(fetchAgentSettlementStatistics(0));
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, new ArrayList<SettlementVTO>());
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
 			}
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			Date certainDate = DateTimeHelper.parseDate(dateCurrent, DateTimeHelper.FormatPattern5);
@@ -146,32 +173,82 @@ public class AgentStatisticsUnitFacadeService {
 				vto = new SettlementVTO();
 				vto.setIndex(++startIndex);
 				vto.setUid(user.getId());
-				vto.setOrg(vto.getOrg());
+				vto.setOrg(user.getOrg());
 				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
 				if(rsd != null){
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_onlineduration()))));
+				}else{
+					vto.setTr("0.00");
 				}
 				AgentWholeMonthMDTO preMonth = agentWholeMonthMService.getWholeMonth(previosMonth, user.getId());
 				if(preMonth != null)
 					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+				else
+					vto.setLsr("0.00");
 				AgentWholeMonthMDTO curMonth = agentWholeMonthMService.getWholeMonth(currentMonth, user.getId());
 				if(curMonth != null)
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(curMonth.getOnlineduration()))));
+				else
+					vto.setUr("0.00");
 				settleVtos.add(vto);
 			}
 			
-			TailPage<SettlementVTO> result_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(fetchAgentSettlementStatistics(uid));
+			
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	private SettlementStatisticsVTO fetchAgentSettlementStatistics(int agentuser){
+		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
+		if(agentuser > 0){
+			result.setU(agentuser);
+			int ts = RandomData.intNumber(260,320);
+			int sd = RandomData.intNumber(240,250);
+			int us = ts-sd;
+			result.setTs(ts);
+			result.setSd(sd);
+			result.setUs(us);
+			result.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
+		}
+		return result;
+	}
+	
 	private RecordSummaryDTO distillRecordSummaryDTO(List<RecordSummaryDTO> summary,int user){
 		for(RecordSummaryDTO dto:summary){
 			if(dto.getId().equals(String.valueOf(user)))
 				return dto;
 		}
 		return null;
+	}
+	
+	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser){
+		if(agentuser <= 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
+		AgentDeviceStatisticsVTO statistics = businessCacheService.getAgentDSCacheByUser(agentuser);
+		if(statistics == null){
+			ModelCriteria mc_total = new ModelCriteria();
+			mc_total.createCriteria().andColumnEqualTo("agentuser", agentuser).andSimpleCaulse(" 1=1 ");
+	        int total = wifiDeviceService.countByModelCriteria(mc_total);
+	        
+	        ModelCriteria mc_online = new ModelCriteria();
+	        mc_online.createCriteria().andColumnEqualTo("online", 1).andColumnEqualTo("agentuser", agentuser).andSimpleCaulse(" 1=1 ");
+			int online = wifiDeviceService.countByModelCriteria(mc_online);
+			
+			statistics = new AgentDeviceStatisticsVTO();
+			statistics.setU(agentuser);
+			statistics.setTd(total);
+			statistics.setOd(online);
+			statistics.setFd(total-online);
+			statistics.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
+			businessCacheService.storeAgentDSCacheResult(agentuser, statistics);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(statistics);
 	}
 }

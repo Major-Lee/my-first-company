@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.agent.vto;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class StatisticsVTO implements java.io.Serializable{
+public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	//revenueCurrentMonth
 	private String rcm;
 	//revenueLastMonth

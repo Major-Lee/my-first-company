@@ -1,12 +1,11 @@
 package com.bhu.vas.business.bucache.local.serviceimpl;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.smartwork.msip.cores.cache.entitycache.Cache;
 import com.smartwork.msip.cores.cache.entitycache.CacheService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -18,7 +17,9 @@ import com.smartwork.msip.cores.helper.StringHelper;
  */
 @Service
 public class BusinessCacheService {
-	private final String QMediaCachePrefixKey = "QMediaCacheKey.";
+	//记录代理商设备状态缓存
+	private final String QAgentDevicesStatisticsCachePrefixKey = "QAgentDSKey.";
+	
 	//记录设备对于某终端的上线通知时间记录
 	private final String QTerminalPushNotifyCachePrefixKey = "QTPNCacheKey.";
 	
@@ -33,28 +34,23 @@ public class BusinessCacheService {
     }
 	
 	
-	public String generateQMediaCacheKeyBy(int qhashcode){
+	public String generateAgentDSCacheKeyBy(int agentuser){
 		StringBuilder sb = new StringBuilder();
-		sb.append(QMediaCachePrefixKey).append(qhashcode);
+		sb.append(QAgentDevicesStatisticsCachePrefixKey).append(agentuser);
 		return sb.toString();
 	}
 	
-	public void storeQMediaCacheResult(int qhashcode,List<Object> result){
-		String key = generateQMediaCacheKeyBy(qhashcode);
+	public void storeAgentDSCacheResult(int agentuser,AgentDeviceStatisticsVTO result){
+		String key = generateAgentDSCacheKeyBy(agentuser);
 		this.entityCache.remove(key);
-		//if(result.size() >200){
-		this.entityCache.put(key, result,10*3600);//10小时
-		//}else
-		//	this.entityCache.put(key, result);
+		this.entityCache.put(key, result,1*3600);//1小时
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Object> getMediaCacheByQ(int qhashcode){
-		Object cacheObj = this.entityCache.get(generateQMediaCacheKeyBy(qhashcode));
+	public AgentDeviceStatisticsVTO getAgentDSCacheByUser(int agentuser){
+		Object cacheObj = this.entityCache.get(generateAgentDSCacheKeyBy(agentuser));
 		if(cacheObj == null) return null;
-		return (List<Object>)cacheObj;
+		return AgentDeviceStatisticsVTO.class.cast(cacheObj);
 	}
-	
 	
 	public String generateQTerminalPushNotifyCachePrefixKeyBy(String mac, String hd_mac){
 		StringBuilder sb = new StringBuilder();

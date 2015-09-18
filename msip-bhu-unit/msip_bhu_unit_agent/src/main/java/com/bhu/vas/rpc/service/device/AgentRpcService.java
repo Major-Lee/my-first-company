@@ -2,15 +2,17 @@ package com.bhu.vas.rpc.service.device;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
-import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
@@ -33,15 +35,15 @@ public class AgentRpcService implements IAgentRpcService {
     private AgentStatisticsUnitFacadeService agentStatisticsUnitFacadeService;
     
     @Override
-    public boolean claimAgentDevice(String sn) {
+    public int claimAgentDevice(String sn) {
         logger.info(String.format("claimAgentDevice sn[%s]", sn));
         return agentFacadeService.claimAgentDevice(sn);
     }
 
     @Override
-    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] pageNo[%s] pageSize[%s]",uid, pageNo, pageSize));
-        return agentFacadeService.pageClaimedAgentDeviceById(uid, pageNo, pageSize);
+    public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
+        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] status[%s] pageNo[%s] pageSize[%s]",uid, status, pageNo, pageSize));
+        return agentFacadeService.pageClaimedAgentDeviceById(uid, status, pageNo, pageSize);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
 	@Override
-	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String enddate) {
+	public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate) {
 		logger.info(String.format("statistics uid[%s] date[%s]", uid, enddate));
 		return agentStatisticsUnitFacadeService.statistics(uid, enddate);
 	}
@@ -95,7 +97,7 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
 		logger.info(String.format("pageSettlements uid[%s]", uid));
 		return agentStatisticsUnitFacadeService.pageSettlements(uid,dateCurrent, pageNo, pageSize);
 	}
@@ -105,4 +107,10 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("pageAgentBulltinBoardByUid uid:%s pageNo:%s pageSize:%s", uid, pageNo, pageSize));
         return agentFacadeService.pageAgentBulltinBoardByUid(uid, pageNo, pageSize);
     }
+
+	@Override
+	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser) {
+		logger.info(String.format("fetchAgentDeviceStatistics agentuser[%s]", agentuser));
+		return agentStatisticsUnitFacadeService.fetchAgentDeviceStatistics(agentuser);
+	}
 }

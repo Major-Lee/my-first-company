@@ -1,12 +1,14 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
-import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -27,16 +29,27 @@ public interface IAgentRpcService {
      * 设备认领代理商
      * @param sn
      */
-    boolean claimAgentDevice(String sn);
+    int claimAgentDevice(String sn);
+
+//    /**
+//     * 代理商设备列表
+//     * @param uid
+//     * @param pageNo
+//     * @param pageSize
+//     * @return
+//     */
+//    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize);
+
 
     /**
-     * 代理商设备列表
+     *
      * @param uid
+     * @param type
      * @param pageNo
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize);
+    AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize);
 
 
     /**
@@ -89,7 +102,7 @@ public interface IAgentRpcService {
      * @param enddate 截止日期
      * @return
      */
-    public RpcResponseDTO<StatisticsVTO> statistics(int uid, String enddate);
+    public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate);
     
     /**
      * 代理商首页面首页面 每日历史收益列表
@@ -108,7 +121,14 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize);
+    public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize);
+    
+    /**
+     * 获取代理商代理设备的所有数量、在线数量、离线数量
+     * @param agentuser
+     * @return
+     */
+    public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser);
     /**
      * 获取公告
      * @param bid
