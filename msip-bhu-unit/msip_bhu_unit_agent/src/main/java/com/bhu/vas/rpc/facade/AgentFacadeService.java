@@ -94,7 +94,7 @@ public class AgentFacadeService {
 
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
-        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(mc);
+        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(mcc);
         List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
