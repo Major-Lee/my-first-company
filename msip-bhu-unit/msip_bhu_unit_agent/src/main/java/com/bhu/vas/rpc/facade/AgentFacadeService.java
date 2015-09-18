@@ -58,7 +58,7 @@ public class AgentFacadeService {
     @Resource
     private AgentBulltinBoardService agentBulltinBoardService;
 
-    public boolean claimAgentDevice(String sn) {
+    public int claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
         return agentDeviceClaimService.claimAgentDevice(sn);
     }
