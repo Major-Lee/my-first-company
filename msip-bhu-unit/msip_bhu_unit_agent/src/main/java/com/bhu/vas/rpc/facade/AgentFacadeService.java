@@ -66,17 +66,18 @@ public class AgentFacadeService {
     }
 
 
-    public AgentDeviceVTO pageClaimedAgentDeviceById(int uid, int type, int pageNo, int pageSize) {
+    public AgentDeviceVTO pageClaimedAgentDeviceById(int uid, int status, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid);
 
         int total_count = wifiDeviceService.countByCommonCriteria(mc);
 
-        mc.createCriteria().andColumnEqualTo("online", true);
+        ModelCriteria mcc = new ModelCriteria();
+        mcc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
         int online_count = wifiDeviceService.countByCommonCriteria(mc);
         int offline_count = 0;
         int total_query = 0;
-        switch (type) {
+        switch (status) {
             case DEVICE_ONLINE_STATUS:
                 total_query = online_count;
                 offline_count = total_count - online_count;

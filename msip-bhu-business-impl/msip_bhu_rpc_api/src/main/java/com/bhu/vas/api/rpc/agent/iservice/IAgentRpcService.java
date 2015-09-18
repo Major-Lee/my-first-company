@@ -49,7 +49,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int type, int pageNo, int pageSize);
+    AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize);
 
 
     /**

@@ -2,11 +2,15 @@ package com.bhu.vas.business.agent;
 
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -31,6 +35,9 @@ public class AgentDeviceClaimTest extends BaseTest {
 
     @Resource
     public UserService userService;
+
+    @Resource
+    public WifiDeviceService wifiDeviceService;
 
     //@Test
     public void create() {
@@ -82,6 +89,85 @@ public class AgentDeviceClaimTest extends BaseTest {
             }
         }
         new CommonPage<AgentDeviceImportLogVTO>(1, 20, total, vtos);
+    }
+
+
+    @Test
+    public void claim() {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", 100084);
+        List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
+        WifiDevice wifiDevice = null;
+        for (AgentDeviceClaim agentDeviceClaim : agents) {
+            wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
+            if (wifiDevice != null) {
+                wifiDevice.setAgentuser(agentDeviceClaim.getUid());
+                wifiDeviceService.update(wifiDevice);
+            }
+
+        }
+    }
+
+    @Test
+    public void claimDevice() {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("orig_model", "uRouter");
+        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(mc);
+        for (WifiDevice wifiDevice : devices) {
+            try {
+                AgentDeviceClaim agentDeviceClaim = new AgentDeviceClaim();
+                agentDeviceClaim.setId(wifiDevice.getSn());
+                agentDeviceClaim.setMac(wifiDevice.getId());
+                agentDeviceClaim.setUid(100084);
+                Date date = new Date();
+                agentDeviceClaim.setSold_at(date);
+                agentDeviceClaim.setClaim_at(date);
+                agentDeviceClaim.setStock_code("10000190");
+                agentDeviceClaim.setStock_name("uRouter");
+                agentDeviceClaimService.insert(agentDeviceClaim);
+
+                wifiDevice.setAgentuser(100084);
+                wifiDeviceService.update(wifiDevice);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Test
+    public void query() {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084);
+
+        int total_count = wifiDeviceService.countByCommonCriteria(mc);
+
+        ModelCriteria mcc = new ModelCriteria();
+        mcc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", true);
+
+        int type = 0;
+        int online_count = wifiDeviceService.countByCommonCriteria(mcc);
+        int offline_count = 0;
+        int total_query = 0;
+        switch (type) {
+            case 1:
+                total_query = online_count;
+                offline_count = total_count - online_count;
+                break;
+            case 0:
+                offline_count = total_count - online_count;
+                total_query = offline_count;
+                break;
+            default:
+                total_query = total_count;
+                offline_count = total_count - online_count;
+                break;
+        }
+
+        mc.setPageNumber(1);
+        mc.setPageSize(20);
+        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(mc);
+        System.out.println(devices);
     }
 
 
