@@ -85,7 +85,7 @@ public class AgentFacadeService {
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
-                online_count = total_count;
+                online_count = total_query;
                 offline_count = total_count - online_count;
                 break;
             case DEVICE_OFFLINE_STATUS:
@@ -100,9 +100,9 @@ public class AgentFacadeService {
             default:
 
                 onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", true);
-                querymc = totalmc;
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
-
+                querymc = totalmc;
+                
                 total_query = total_count;
                 offline_count = total_count - online_count;
                 break;
