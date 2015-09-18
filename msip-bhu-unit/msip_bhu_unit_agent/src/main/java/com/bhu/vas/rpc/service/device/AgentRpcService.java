@@ -9,9 +9,9 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
-import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
@@ -84,7 +84,7 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
 	@Override
-	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String enddate) {
+	public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate) {
 		logger.info(String.format("statistics uid[%s] date[%s]", uid, enddate));
 		return agentStatisticsUnitFacadeService.statistics(uid, enddate);
 	}
@@ -96,7 +96,7 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
 		logger.info(String.format("pageSettlements uid[%s]", uid));
 		return agentStatisticsUnitFacadeService.pageSettlements(uid,dateCurrent, pageNo, pageSize);
 	}

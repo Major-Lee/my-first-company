@@ -14,9 +14,11 @@ import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
@@ -61,9 +63,9 @@ public class AgentStatisticsUnitFacadeService {
 	 * @param enddate
 	 * @return
 	 */
-	public RpcResponseDTO<StatisticsVTO> statistics(int uid, String dateEndStr) {
+	public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String dateEndStr) {
 		try{
-			StatisticsVTO vto = new StatisticsVTO();
+			AgentRevenueStatisticsVTO vto = new AgentRevenueStatisticsVTO();
 			vto.setRcm(ArithHelper.getFormatter(String.valueOf(76696999l)));
 			vto.setRlm(ArithHelper.getFormatter(String.valueOf(977906l)));
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(96998l)));
@@ -142,9 +144,9 @@ public class AgentStatisticsUnitFacadeService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
-		
-		List<SettlementVTO> settleVtos;
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
 			ModelCriteria mc_user = new ModelCriteria();
@@ -153,8 +155,11 @@ public class AgentStatisticsUnitFacadeService {
 			mc_user.setPageSize(pageSize);
 			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
 			if(userPages.getItems().isEmpty()){
-				TailPage<SettlementVTO> result_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, new ArrayList<SettlementVTO>());
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+				result_page = new SettlementPageVTO();
+				result_page.setStatistics(fetchAgentSettlementStatistics(0));
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, new ArrayList<SettlementVTO>());
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
 			}
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			Date certainDate = DateTimeHelper.parseDate(dateCurrent, DateTimeHelper.FormatPattern5);
@@ -188,13 +193,32 @@ public class AgentStatisticsUnitFacadeService {
 				settleVtos.add(vto);
 			}
 			
-			TailPage<SettlementVTO> result_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(fetchAgentSettlementStatistics(uid));
+			
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	private SettlementStatisticsVTO fetchAgentSettlementStatistics(int agentuser){
+		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
+		if(agentuser > 0){
+			result.setU(agentuser);
+			int ts = RandomData.intNumber(260,320);
+			int sd = RandomData.intNumber(240,250);
+			int us = ts-sd;
+			result.setTs(ts);
+			result.setSd(sd);
+			result.setUs(us);
+			result.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
+		}
+		return result;
+	}
+	
 	private RecordSummaryDTO distillRecordSummaryDTO(List<RecordSummaryDTO> summary,int user){
 		for(RecordSummaryDTO dto:summary){
 			if(dto.getId().equals(String.valueOf(user)))

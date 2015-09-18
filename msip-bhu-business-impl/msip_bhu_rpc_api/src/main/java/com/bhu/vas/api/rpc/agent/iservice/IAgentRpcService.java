@@ -2,9 +2,9 @@ package com.bhu.vas.api.rpc.agent.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
-import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
-import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
@@ -90,7 +90,7 @@ public interface IAgentRpcService {
      * @param enddate 截止日期
      * @return
      */
-    public RpcResponseDTO<StatisticsVTO> statistics(int uid, String enddate);
+    public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate);
     
     /**
      * 代理商首页面首页面 每日历史收益列表
@@ -109,7 +109,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize);
+    public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize);
     
     /**
      * 获取代理商代理设备的所有数量、在线数量、离线数量

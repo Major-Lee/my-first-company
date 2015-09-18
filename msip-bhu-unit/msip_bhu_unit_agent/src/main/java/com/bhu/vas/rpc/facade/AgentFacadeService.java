@@ -1,33 +1,29 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.helper.AgentBulltinType;
-import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import org.springframework.stereotype.Service;
-
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
-import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
