@@ -100,8 +100,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", 100084).andColumnEqualTo("online", true);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
                 
@@ -133,23 +132,66 @@ public class AgentFacadeService {
     }
 
 
-    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceById(int pageNo, int pageSize) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status",1);
-        int total = agentDeviceClaimService.countByCommonCriteria(mc);
+    public AgentDeviceVTO pageClaimedAgentDeviceById(int status, int pageNo, int pageSize) {
+        ModelCriteria totalmc = new ModelCriteria();
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0);
+        int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
-        mc.setPageNumber(pageNo);
-        mc.setPageSize(pageSize);
-        List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
+        ModelCriteria onlinemc = new ModelCriteria();
+        ModelCriteria querymc = new ModelCriteria();
+
+        int online_count = 0;
+        int offline_count = 0;
+        int total_query = 0;
+        switch (status) {
+            case DEVICE_ONLINE_STATUS:
+
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true);
+                querymc = onlinemc;
+                total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
+
+                online_count = total_query;
+                offline_count = total_count - online_count;
+                break;
+            case DEVICE_OFFLINE_STATUS:
+
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", false);
+                querymc = onlinemc;
+                total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
+
+                offline_count = total_query;
+                online_count = total_count - offline_count;
+                break;
+            default:
+
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true);
+                online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
+                querymc = totalmc;
+
+                total_query = total_count;
+                offline_count = total_count - online_count;
+                break;
+        }
+
+        querymc.setPageNumber(pageNo);
+        querymc.setPageSize(pageSize);
+        List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(querymc);
         List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
-        if (agents != null) {
+        if (devices != null) {
             AgentDeviceClaimVTO vto = null;
-            for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+            for (WifiDevice wifiDevice : devices) {
+                vto = buildAgentDeviceClaimVTO(wifiDevice);
                 vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,vtos);
+
+        AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
+        agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
+        agentDeviceVTO.setTotal_count(total_count);
+        agentDeviceVTO.setOnline_count(online_count);
+        agentDeviceVTO.setOffline_count(offline_count);
+
+        return agentDeviceVTO;
     }
 
     public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {

@@ -114,15 +114,6 @@ public class AgentController {
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
-    @ResponseBody()
-    @RequestMapping(value="/hello", method={RequestMethod.POST})
-    public void hello(HttpServletRequest request,
-                                       HttpServletResponse response,
-                                       @RequestParam(required = true) Integer uid){
-        System.out.println("hello !!!!!");
-        SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
-    }
-
 
     /**
      * 代理商设备列表
@@ -169,7 +160,7 @@ public class AgentController {
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceClaimVTO> dtos = agentRpcService.pageClaimedAgentDevice(pageNo, pageSize);
+            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDevice(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();

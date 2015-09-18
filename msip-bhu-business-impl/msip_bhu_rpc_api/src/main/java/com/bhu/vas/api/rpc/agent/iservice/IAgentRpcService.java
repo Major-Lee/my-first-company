@@ -44,7 +44,7 @@ public interface IAgentRpcService {
     /**
      *
      * @param uid
-     * @param type
+     * @param status
      * @param pageNo
      * @param pageSize
      * @return
@@ -58,7 +58,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDevice(int pageNo, int pageSize);
+    AgentDeviceVTO pageClaimedAgentDevice(int status, int pageNo, int pageSize);
 
     /**
      * 获取具体代理商未认领的设备

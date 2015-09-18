@@ -31,10 +31,8 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
                 agentDeviceClaim.setClaim_at(new Date());
                 agentDeviceClaim.setStatus(1);
                 this.update(agentDeviceClaim);
-                return agentDeviceClaim.getUid();
-            } else {
-                return 0; //已经认领过
             }
+            return agentDeviceClaim.getUid(); //不管认领未认领返回uid
         } else {
             return -1; //不存在
         }
