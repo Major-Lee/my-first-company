@@ -97,9 +97,9 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize) {
-		logger.info(String.format("pageSettlements uid[%s]", uid));
-		return agentStatisticsUnitFacadeService.pageSettlements(uid,dateCurrent, pageNo, pageSize);
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize) {
+		logger.info(String.format("pageSettlements operator_user[%s]", operator_user));
+		return agentStatisticsUnitFacadeService.pageSettlements(operator_user,dateCurrent, pageNo, pageSize);
 	}
 	
     @Override
