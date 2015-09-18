@@ -292,7 +292,7 @@ public class AgentController {
 
         AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(bid);
         if (vto != null) {
-            String content = vto.getContent();
+            String content = vto.getM();
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
             if (path != null) {

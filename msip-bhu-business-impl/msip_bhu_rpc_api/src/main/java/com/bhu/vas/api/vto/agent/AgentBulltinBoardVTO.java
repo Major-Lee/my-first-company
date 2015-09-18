@@ -12,18 +12,20 @@ public class AgentBulltinBoardVTO implements Serializable {
     //发布者
     private int pid;
 
-    private String p_name;
+    private String pn;
 
     //消费者
     private int cid;
 
-    private String c_name;
+    private String cn;
     //公告类别
     private String type;
-    //公告内容
-    private String content;
 
-    private Long created_at;
+    private String title;
+    //公告内容
+    private String m;
+
+    private Date d;
 
     public long getId() {
         return id;
@@ -49,20 +51,20 @@ public class AgentBulltinBoardVTO implements Serializable {
         this.cid = cid;
     }
 
-    public String getP_name() {
-        return p_name;
+    public String getPn() {
+        return pn;
     }
 
-    public void setP_name(String p_name) {
-        this.p_name = p_name;
+    public void setPn(String pn) {
+        this.pn = pn;
     }
 
-    public String getC_name() {
-        return c_name;
+    public String getCn() {
+        return cn;
     }
 
-    public void setC_name(String c_name) {
-        this.c_name = c_name;
+    public void setCn(String cn) {
+        this.cn = cn;
     }
 
     public String getType() {
@@ -73,19 +75,27 @@ public class AgentBulltinBoardVTO implements Serializable {
         this.type = type;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public Long getCreated_at() {
-        return created_at;
+    public String getM() {
+        return m;
     }
 
-    public void setCreated_at(Long created_at) {
-        this.created_at = created_at;
+    public void setM(String m) {
+        this.m = m;
+    }
+
+    public Date getD() {
+        return d;
+    }
+
+    public void setD(Date d) {
+        this.d = d;
     }
 }

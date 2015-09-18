@@ -11,8 +11,10 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.poi.hssf.usermodel.*;
 import org.slf4j.Logger;
@@ -40,6 +42,9 @@ public class AgentDeviceClaimServiceHandler {
 
     @Resource
     private AgentDeviceImportLogService agentDeviceImportLogService;
+
+    @Resource
+    private WifiDeviceService wifiDeviceService;
 
     /**
      * 导入代理商设备
@@ -111,7 +116,7 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim = new AgentDeviceClaim();
 
                     HSSFCell stock_code = hssfRow.getCell(0);
-                    agentDeviceClaim.setStock_code(String.valueOf((int)stock_code.getNumericCellValue()));
+                    agentDeviceClaim.setStock_code(String.valueOf((int) stock_code.getNumericCellValue()));
 
                     HSSFCell stock_name = hssfRow.getCell(1);
                     agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
@@ -126,7 +131,8 @@ public class AgentDeviceClaimServiceHandler {
                     if (StringHelper.isEmpty(mac.getStringCellValue())) {
                         continue;
                     }
-                    agentDeviceClaim.setMac(StringHelper.formatMacAddress(mac.getStringCellValue()));
+                    String macStr = StringHelper.formatMacAddress(mac.getStringCellValue());
+                    agentDeviceClaim.setMac(macStr);
 
                     Date date = new Date();
                     agentDeviceClaim.setSold_at(date);
@@ -134,6 +140,13 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setUid(dto.getAid());
 
                     logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
+
+                    WifiDevice wifiDevice = wifiDeviceService.getById(macStr);
+                    if (wifiDevice != null) {
+                        agentDeviceClaim.setClaim_at(date);
+                        agentDeviceClaim.setStatus(1);
+                    }
+
                     agentDeviceClaimService.insert(agentDeviceClaim);
 
                     HSSFRow outRow  = outSheet.createRow(rowNum);
@@ -147,8 +160,6 @@ public class AgentDeviceClaimServiceHandler {
                     outSN.setCellValue(sn.getStringCellValue());
                     HSSFCell outMAC = outRow.createCell(4);
                     outMAC.setCellValue(mac.getStringCellValue());
-
-
                     totalCount ++;
 
                 }
@@ -160,14 +171,18 @@ public class AgentDeviceClaimServiceHandler {
             agentOutputDTO.setAid(dto.getAid());
             agentOutputDTO.setPath(dto.getOutputPath());
 
+            //发布公告给代理商
             agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
                     JsonHelper.getJSONString(agentOutputDTO));
 
+            //代理商导入记录
             AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
             agentDeviceImportLog.setCount(totalCount);
             agentDeviceImportLog.setAid(dto.getAid());
             agentDeviceImportLog.setCreated_at(new Date());
             agentDeviceImportLogService.insert(agentDeviceImportLog);
+
+
 
         }catch(Exception ex){
         	ex.printStackTrace(System.out);
