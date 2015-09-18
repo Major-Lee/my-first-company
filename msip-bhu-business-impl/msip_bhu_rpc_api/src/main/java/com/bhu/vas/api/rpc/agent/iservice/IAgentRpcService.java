@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.agent.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
@@ -109,6 +110,13 @@ public interface IAgentRpcService {
      * @return
      */
     public RpcResponseDTO<TailPage<SettlementVTO>> pageSettlements(int uid,String dateCurrent,int pageNo, int pageSize);
+    
+    /**
+     * 获取代理商代理设备的所有数量、在线数量、离线数量
+     * @param agentuser
+     * @return
+     */
+    public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser);
     /**
      * 获取公告
      * @param bid

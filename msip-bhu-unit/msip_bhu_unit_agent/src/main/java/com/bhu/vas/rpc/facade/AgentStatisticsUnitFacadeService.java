@@ -1,7 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,15 +13,18 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
@@ -42,10 +44,17 @@ public class AgentStatisticsUnitFacadeService {
 	private UserService userService;
 
 	@Resource
+	private WifiDeviceService wifiDeviceService;
+
+	@Resource
 	private AgentWholeDayMService agentWholeDayMService;
 	
 	@Resource
 	private AgentWholeMonthMService agentWholeMonthMService;
+	
+	@Resource
+	private BusinessCacheService businessCacheService;
+
 	/**
 	 * 主页面统计数据
 	 * @param uid
@@ -192,5 +201,30 @@ public class AgentStatisticsUnitFacadeService {
 				return dto;
 		}
 		return null;
+	}
+	
+	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser){
+		if(agentuser <= 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
+		AgentDeviceStatisticsVTO statistics = businessCacheService.getAgentDSCacheByUser(agentuser);
+		if(statistics == null){
+			ModelCriteria mc_total = new ModelCriteria();
+			mc_total.createCriteria().andColumnEqualTo("agentuser", agentuser).andSimpleCaulse(" 1=1 ");
+	        int total = wifiDeviceService.countByModelCriteria(mc_total);
+	        
+	        ModelCriteria mc_online = new ModelCriteria();
+	        mc_online.createCriteria().andColumnEqualTo("online", 1).andColumnEqualTo("agentuser", agentuser).andSimpleCaulse(" 1=1 ");
+			int online = wifiDeviceService.countByModelCriteria(mc_online);
+			
+			statistics = new AgentDeviceStatisticsVTO();
+			statistics.setU(agentuser);
+			statistics.setTd(total);
+			statistics.setOd(online);
+			statistics.setFd(total-online);
+			statistics.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
+			businessCacheService.storeAgentDSCacheResult(agentuser, statistics);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(statistics);
 	}
 }

@@ -8,6 +8,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.agent.vto.StatisticsVTO;
@@ -105,4 +106,10 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("pageAgentBulltinBoardByUid uid:%s pageNo:%s pageSize:%s", uid, pageNo, pageSize));
         return agentFacadeService.pageAgentBulltinBoardByUid(uid, pageNo, pageSize);
     }
+
+	@Override
+	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser) {
+		logger.info(String.format("fetchAgentDeviceStatistics agentuser[%s]", agentuser));
+		return agentStatisticsUnitFacadeService.fetchAgentDeviceStatistics(agentuser);
+	}
 }
