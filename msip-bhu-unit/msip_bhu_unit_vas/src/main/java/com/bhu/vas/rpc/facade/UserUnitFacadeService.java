@@ -51,6 +51,8 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
 
+	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
+
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
 		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
@@ -330,7 +332,7 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public List<UserDeviceDTO>  fetchBindDevices(int uid) {
-		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
+		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, WIFI_DEVICE_BIND_LIMIT_NUM);
 		List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
 		if(userDeviceList != null && !userDeviceList.isEmpty()){
 			for (UserDevice userDevice : userDeviceList) {

@@ -30,8 +30,6 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 
     private final Logger logger = LoggerFactory.getLogger(UserDeviceRpcService.class);
 
-    private final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
-
     @Resource
     private UserDeviceFacadeService userDeviceFacadeService;
 
@@ -44,7 +42,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid) {
         logger.info(String.format("bindDevice with mac[%s] uid[%s]",mac, uid));
-        if (userDeviceFacadeService.countBindDevices(uid) >= WIFI_DEVICE_BIND_LIMIT_NUM) {
+        if (userDeviceFacadeService.countBindDevices(uid) >= UserUnitFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_OWNER_REACHLIMIT);
         }
         int retStatus = validateDeviceStatusIsOnlineAndBinded(mac);
