@@ -153,14 +153,14 @@ public class AgentController {
      */
     @ResponseBody()
     @RequestMapping(value="/admin/list", method={RequestMethod.POST})
-    public void agenAdmintList(HttpServletRequest request,
-                          HttpServletResponse response,
-                          @RequestParam(required = true) Integer uid,
-                          @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-                          @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+    public void agenAdmintList(HttpServletRequest request, HttpServletResponse response,
+                               @RequestParam(required = true) Integer uid,
+                               @RequestParam(required = false, defaultValue="2") int status,
+                               @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                               @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDevice(pageNo, pageSize);
+            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDevice(status, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
