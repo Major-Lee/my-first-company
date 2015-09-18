@@ -74,7 +74,7 @@ public class AgentFacadeService {
 
         ModelCriteria mcc = new ModelCriteria();
         mcc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
-        int online_count = wifiDeviceService.countByCommonCriteria(mc);
+        int online_count = wifiDeviceService.countByCommonCriteria(mcc);
         int offline_count = 0;
         int total_query = 0;
         switch (status) {
