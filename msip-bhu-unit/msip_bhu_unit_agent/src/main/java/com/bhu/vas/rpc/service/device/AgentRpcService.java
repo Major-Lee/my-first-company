@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.service.device;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -39,9 +40,9 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] pageNo[%s] pageSize[%s]",uid, pageNo, pageSize));
-        return agentFacadeService.pageClaimedAgentDeviceById(uid, pageNo, pageSize);
+    public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int type, int pageNo, int pageSize) {
+        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] type[%s] pageNo[%s] pageSize[%s]",uid, type, pageNo, pageSize));
+        return agentFacadeService.pageClaimedAgentDeviceById(uid, type, pageNo, pageSize);
     }
 
     @Override
