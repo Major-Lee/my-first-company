@@ -114,7 +114,6 @@ public class AgentController {
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
-    
     @ResponseBody()
     @RequestMapping(value="/hello", method={RequestMethod.POST})
     public void hello(HttpServletRequest request,
@@ -138,7 +137,7 @@ public class AgentController {
     @RequestMapping(value="/list", method={RequestMethod.POST})
     public void agentList(HttpServletRequest request, HttpServletResponse response,
                           @RequestParam(required = true) Integer uid,
-                          @RequestParam(required = false, defaultValue="0") int status,
+                          @RequestParam(required = false, defaultValue="2") int status,
                           @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
