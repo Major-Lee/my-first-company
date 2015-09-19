@@ -383,7 +383,7 @@ public class TaskFacadeService {
 						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(),cmdDefined.getTemplate()));
 						break;
 					case DS_Http_VapModuleCMD_Stop:
-						downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
+						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
 						break;
 					default:
 						break;	
