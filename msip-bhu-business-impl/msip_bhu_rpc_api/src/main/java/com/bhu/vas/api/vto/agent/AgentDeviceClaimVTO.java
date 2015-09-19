@@ -10,7 +10,7 @@ public class AgentDeviceClaimVTO implements Serializable {
     /**
      * 设备sn号
      */
-    private String id;
+    private String sn;
 
     /**
      * 代理商用户ID
@@ -65,16 +65,16 @@ public class AgentDeviceClaimVTO implements Serializable {
 
     private double total_income;
 
-    private Date create_at;
+    private Date created_at;
 
     private long hd_count;
 
-    public String getId() {
-        return id;
+    public String getSn() {
+        return sn;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 
     public int getUid() {
@@ -173,12 +173,12 @@ public class AgentDeviceClaimVTO implements Serializable {
         this.total_income = total_income;
     }
 
-    public Date getCreate_at() {
-        return create_at;
+    public Date getCreated_at() {
+        return created_at;
     }
 
-    public void setCreate_at(Date create_at) {
-        this.create_at = create_at;
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
     }
 
     public long getHd_count() {

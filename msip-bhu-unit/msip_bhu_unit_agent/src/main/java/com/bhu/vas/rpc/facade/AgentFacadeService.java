@@ -233,7 +233,7 @@ public class AgentFacadeService {
 
     private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(AgentDeviceClaim agentDeviceClaim) {
         AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
-        vto.setId(agentDeviceClaim.getId());
+        vto.setSn(agentDeviceClaim.getId());
         vto.setMac(agentDeviceClaim.getMac());
         vto.setStock_code(agentDeviceClaim.getStock_code());
         vto.setStock_name(agentDeviceClaim.getStock_name());
@@ -245,7 +245,7 @@ public class AgentFacadeService {
         if ( wifiDevice != null){
             vto.setOnline(wifiDevice.isOnline());
             vto.setUptime(wifiDevice.getUptime());
-            vto.setCreate_at(wifiDevice.getCreated_at());
+            vto.setCreated_at(wifiDevice.getCreated_at());
             vto.setOsv(wifiDevice.getOem_swver());
             vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
             //todo(bluesand):收入
@@ -259,12 +259,12 @@ public class AgentFacadeService {
 
     private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(WifiDevice wifiDevice) {
         AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
-        vto.setId(wifiDevice.getSn());
+        vto.setSn(wifiDevice.getSn());
         vto.setMac(wifiDevice.getId());
         vto.setOnline(wifiDevice.isOnline());
         long uptime =  Long.parseLong(wifiDevice.getUptime());
         vto.setUptime(DateTimeHelper.getTimeDiff(uptime));
-        vto.setCreate_at(wifiDevice.getCreated_at());
+        vto.setCreated_at(wifiDevice.getCreated_at());
         vto.setOsv(wifiDevice.getOem_swver());
         vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
         //todo(bluesand):收入
