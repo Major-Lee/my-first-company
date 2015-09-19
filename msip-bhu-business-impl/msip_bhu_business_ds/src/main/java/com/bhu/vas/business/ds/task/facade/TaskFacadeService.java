@@ -382,9 +382,6 @@ public class TaskFacadeService {
 						}
 						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(),cmdDefined.getTemplate()));
 						break;
-					case DS_Http_VapModuleCMD_Stop:
-						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
-						break;
 					default:
 						break;	
 				}
@@ -393,6 +390,9 @@ public class TaskFacadeService {
 					case DS_Http_Portal_Start:
 						downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
 						break;
+					case DS_Http_VapModuleCMD_Stop:
+						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
+						break;	
 					/*case DS_Http_404_Start:
 					case DS_Http_404_Stop:
 					case DS_Http_Redirect_Start:
