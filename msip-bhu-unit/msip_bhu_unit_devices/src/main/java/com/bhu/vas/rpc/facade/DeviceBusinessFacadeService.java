@@ -1063,6 +1063,7 @@ public class DeviceBusinessFacadeService {
 			}else{
 				innerDTO.setTimeslot(WifiDeviceHelper.WifiTimer_Default_Timeslot);
 			}
+			innerDTO.setDays(serialDto.getDays());
 			userSettingStateService.updateUserSetting(wifiId, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
 		}
 		doTaskCallback(taskid, serialDto.getStatus(), response);
