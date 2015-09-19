@@ -21,7 +21,7 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 	//device response ok 时 为true
 	private boolean ds = false;
 	private String timeslot = WifiDeviceHelper.WifiTimer_Default_Timeslot;
-	private String days = WifiDeviceHelper.WifiTimer_Default_Days;
+	private String days;// = WifiDeviceHelper.WifiTimer_Default_Days;
 	//根据timeslot换算出当前时间是否wifi开启或关闭，此字段只用于展示，存储的值无效，取出后需重设定
 	private boolean enable = true;
 	/*//开始时间段
