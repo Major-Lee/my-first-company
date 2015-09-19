@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
@@ -19,12 +20,15 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
+import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
+import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -48,6 +52,8 @@ public class TaskFacadeService {
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
+	@Resource
+	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	/**
@@ -297,16 +303,10 @@ public class TaskFacadeService {
 				}
 			}
 		}
-
-
-
-
-
 		//如果设备升级的话，高版本的考虑不升级
 		if (OperationCMD.DeviceUpgrade == opt_cmd) {
 			WifiDeviceUpgradeDTO dto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
 			if (dto.isCtrl_version()) { //需要考虑高版本强制升级 true:考虑升级 false:默认都升级
-
 				String url = dto.getUrl();
 				if (url != null) {
 					String deviceVersion = url.substring(url.lastIndexOf("/") + 1);
@@ -317,7 +317,6 @@ public class TaskFacadeService {
 					} else {
 						//升级
 					}
-
 				} else  {
 					throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 				}
@@ -326,7 +325,6 @@ public class TaskFacadeService {
 				//升级
 			}
 		}
-
 
 		if(OperationCMD.DeviceModuleUpgrade == opt_cmd){//判定设备版本是否兼容
 			/*if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
@@ -340,11 +338,7 @@ public class TaskFacadeService {
 			}
 		}
 		//判定是否是增值指令
-		if(		OperationDS.DS_Http_404_Start == ods_cmd || OperationDS.DS_Http_404_Stop == ods_cmd
-				|| 	OperationDS.DS_Http_Ad_Start == ods_cmd || OperationDS.DS_Http_Ad_Stop == ods_cmd
-				|| OperationDS.DS_Http_Redirect_Start == ods_cmd || OperationDS.DS_Http_Redirect_Stop == ods_cmd
-				|| OperationDS.DS_Http_Portal_Start == ods_cmd || OperationDS.DS_Http_Portal_Stop == ods_cmd
-				){
+		if(WifiDeviceHelper.isVapCmd(opt_cmd,ods_cmd)){
 			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
@@ -358,10 +352,10 @@ public class TaskFacadeService {
 		}
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
-		if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd) && !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
+		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) && !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
 		}
-		
+
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
@@ -376,34 +370,44 @@ public class TaskFacadeService {
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
-			/*if(OperationDS.DS_Http_404.getNo().equals(subopt)){
-				//404和portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
-				downTask.setPayload(CMDBuilder.builderCMD4Http404ResourceUpdate(mac, downTask.getId(), extparams));
-			}else */
-			switch(ods_cmd){
-				case DS_Http_Portal_Start:
-					downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
-					break;
-				/*case DS_Http_404_Start:
-				case DS_Http_404_Stop:
-				case DS_Http_Redirect_Start:
-				case DS_Http_Redirect_Stop:
-					if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
-						
-					}else{
-						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
-					}
-					break;*/
-				default:
-					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
-					break;
-			}
-			/*if(OperationDS.DS_Http_Portal_Start == ods_cmd){
-				//portal指令需要先发送cmd resource update指令给设备，等收到设备反馈后再继续发送配置指令
-				downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
+			if(ods_cmd.hasRef()){
+				switch(ods_cmd){
+					case DS_Http_VapModuleCMD_Start:
+						ParamVasModuleDTO param_dto = JsonHelper.getDTO(extparams, ParamVasModuleDTO.class);
+						if(param_dto == null || StringUtils.isEmpty(param_dto.getStyle()))
+							throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+						VasModuleCmdDefined cmdDefined = vasModuleCmdDefinedService.getById(new VasModuleCmdPK(ods_cmd.getRef(),param_dto.getStyle()));
+						if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
+							throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED,new String[]{ods_cmd.getRef(),param_dto.getStyle()});
+						}
+						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(),cmdDefined.getTemplate()));
+						break;
+					case DS_Http_VapModuleCMD_Stop:
+						downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
+						break;
+					default:
+						break;	
+				}
 			}else{
-				downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
-			}*/
+				switch(ods_cmd){
+					case DS_Http_Portal_Start:
+						downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
+						break;
+					/*case DS_Http_404_Start:
+					case DS_Http_404_Stop:
+					case DS_Http_Redirect_Start:
+					case DS_Http_Redirect_Stop:
+						if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+							
+						}else{
+							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+						}
+						break;*/
+					default:
+						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
+						break;
+				}
+			}
 		}else{
 			if(OperationCMD.DeviceWifiTimerStart == opt_cmd){//需要先增加到个人配置表中
 				ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
