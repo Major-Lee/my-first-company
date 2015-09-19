@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -35,6 +36,8 @@ import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
+import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -50,6 +53,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatistic
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
@@ -102,8 +106,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	@Resource
+	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
+	
+	@Resource
 	private UserSettingStateService userSettingStateService;
 
+	
 	/**
 	 * 指定wifiId进行终端全部下线处理
 	 * @param wifiId
@@ -892,15 +900,29 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
 				if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 					if(ods_cmd == null) continue;
-					if(WifiDeviceHelper.isCmdVapModuleSupported(opt_cmd,ods_cmd)){// && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
+					if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd)){// && WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 						if(vap_module_ds == null) vap_module_ds = new ArrayList<>();
 						if(vap_module_ds_extparams == null) vap_module_ds_extparams = new ArrayList<>();
-						vap_module_ds.add(ods_cmd);
-						vap_module_ds_extparams.add(dto.getExtparams());
+						if(OperationDS.DS_Http_VapModuleCMD_Start == ods_cmd){
+							ParamVasModuleDTO param_dto = JsonHelper.getDTO(dto.getExtparams(), ParamVasModuleDTO.class);
+							if(param_dto == null || StringUtils.isEmpty(param_dto.getStyle()))
+								continue;
+							VasModuleCmdDefined cmdDefined = vasModuleCmdDefinedService.getById(new VasModuleCmdPK(ods_cmd.getRef(),param_dto.getStyle()));
+							if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
+								continue;
+							}
+							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(),cmdDefined.getTemplate()));
+						}else{
+							vap_module_ds.add(ods_cmd);
+							vap_module_ds_extparams.add(dto.getExtparams());
+						}
 					}
 				}
 			}
 			if(vap_module_ds != null && !vap_module_ds.isEmpty()){
+				/*if(vap_module_ds.contains(OperationDS.DS_Http_VapModuleCMD_Start)){
+					vap_module_ds
+				}*/
 				String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
 						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));
 				if(StringUtils.isNotEmpty(cmd))

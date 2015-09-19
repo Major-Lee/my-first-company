@@ -305,7 +305,7 @@ public class CMDBuilder {
 			switch(opt){
 				case ModifyDeviceSetting:
 					//新版本增值模块指令构造 目前支持增值指令 404 redirect
-					if(WifiDeviceHelper.isCmdVapModuleSupported(opt,subopt)){// && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
+					if(WifiDeviceHelper.isVapCmdModuleSupported(opt,subopt)){// && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
 						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{subopt},wifi_mac,taskid,new String[]{extparams});
 					}else{
 						try{
@@ -391,6 +391,13 @@ public class CMDBuilder {
 			return resultCmd.toString();
 		}
 		return null;
+	}
+	
+	public static String autoBuilderVapFullCMD4Opt(String wifi_mac,long taskid,String template){
+		StringBuilder resultCmd = new StringBuilder(
+				String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_VapSetting_REQ_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid)));
+		resultCmd.append(template);
+		return resultCmd.toString();
 	}
 	
 	public static String builderVapModuleRegisterResponse(String wifi_mac){

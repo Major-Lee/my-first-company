@@ -15,7 +15,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class ParamCmdWifiTimerStartDTO{
 	private String enable;
 	private String timeslot = WifiDeviceHelper.WifiTimer_Default_Timeslot;
-	private String days = WifiDeviceHelper.WifiTimer_Default_Days;
+	private String days;// = WifiDeviceHelper.WifiTimer_Default_Days;
 	//开始时间 18:00:00
 	//private String start_time;
 	//结束时间 05:00:00

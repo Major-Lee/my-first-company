@@ -10,7 +10,6 @@ import java.util.Map;
  */
 public enum OperationDS {
 	
-	
 	DS_Power("02","修改信号强度"),
 	DS_VapPassword("03","修改vap密码"),
 	DS_AclMacs("04","修改黑名单列表名单"),
@@ -31,6 +30,9 @@ public enum OperationDS {
 	DS_Http_Ad_Stop("19","关闭广告注入"),
 	DS_Http_404_Stop("20","关闭404错误页面"),
 	DS_Http_Redirect_Stop("21","关闭http redirect"),
+	
+	DS_Http_VapModuleCMD_Start("25","ModuleCMD","开启全部增值指令-404、redirect、品牌及渠道指令"),
+	DS_Http_VapModuleCMD_Stop("26","关闭全部增值指令-404、redirect、品牌及渠道指令"),
 	;
 
 	public static final String Empty_OperationDS = "00";
@@ -38,10 +40,16 @@ public enum OperationDS {
 	/*public static int Opt_Length = 3;
 	public static int Taskid_Length = 7;*/
 	String no;
+	String ref;
 	String desc;
 	
 	OperationDS(String no,String desc){
 		this.no = no;
+		this.desc = desc;
+	}
+	OperationDS(String no,String ref,String desc){
+		this.no = no;
+		this.ref = ref;
 		this.desc = desc;
 	}
 	static {
@@ -67,6 +75,15 @@ public enum OperationDS {
 		this.desc = desc;
 	}
 
+	public String getRef() {
+		return ref;
+	}
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
+	public boolean hasRef(){
+		return ref != null;
+	}
 	public static OperationDS getOperationDSFromNo(String no) {
 		return allOperationDSs.get(no);
 	}

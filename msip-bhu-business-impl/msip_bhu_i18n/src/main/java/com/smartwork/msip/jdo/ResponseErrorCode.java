@@ -73,6 +73,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED("730","wifidevice.vap.workmode.notsupported"),
 	WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED("731","wifidevice.vap.module.notsupported"),
 	WIFIDEVICE_VAP_MODULE_NOT_ONLINE("732","wifidevice.vap.module.notonline"),
+	WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED("732","wifidevice.vap.module.cmd.not.defined"),
 	
 	WIFIDEVICE_GROUP_NOTEXIST("750","wifidevice.group.notexist"),
 	WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY("751","wifidevice.group.current.devices.empty"),
