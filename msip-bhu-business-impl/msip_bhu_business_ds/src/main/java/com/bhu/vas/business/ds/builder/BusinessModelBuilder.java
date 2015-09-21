@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Tuple;
@@ -261,12 +262,13 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
+	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
 			WifiDeviceSettingDTO setting_dto){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
-		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
+//		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
+		vto.setN(getHandsetDeviceAlias(uid, hd_mac));
 		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
 		WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
 				setting_dto, hd_mac);
@@ -294,6 +296,12 @@ public class BusinessModelBuilder {
 		}
 		return vto;
 	}
+
+	private static String getHandsetDeviceAlias(int uid, String hd_mac){
+		return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
+	}
+
+
 	
 	public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
 			HandsetDeviceDTO hd_entity){

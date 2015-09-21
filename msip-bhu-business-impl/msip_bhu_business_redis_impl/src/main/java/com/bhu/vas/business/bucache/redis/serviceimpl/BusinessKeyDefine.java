@@ -82,4 +82,8 @@ public class BusinessKeyDefine {
 	public static class VapMode {
 		public static final String VapModeCount = "VM.";
 	}
+
+	public static class UserWifiDeviceHandset {
+		public static final String Nick = "UDHN";
+	}
 }

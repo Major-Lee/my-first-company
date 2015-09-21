@@ -1216,7 +1216,8 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		
 		userSettingStateService.deleteById(dto.getMac());
-		
+
+		//todo(bluesand):解除终端昵称别名`
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	
