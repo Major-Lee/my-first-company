@@ -120,7 +120,7 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
-				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getOnlineduration()))));
+				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod()))));
 				vto.setC("+13.7%");
 				items.add(vto);
 			}
@@ -176,18 +176,18 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setOrg(user.getOrg());
 				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
 				if(rsd != null){
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_d_od()))));
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getT_dod()))));
 				}else{
 					vto.setTr("0.00");
 				}
 				AgentWholeMonthMDTO preMonth = agentWholeMonthMService.getWholeMonth(previosMonth, user.getId());
 				if(preMonth != null)
-					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getOnlineduration()))));
+					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getDod()))));
 				else
 					vto.setLsr("0.00");
 				AgentWholeMonthMDTO curMonth = agentWholeMonthMService.getWholeMonth(currentMonth, user.getId());
 				if(curMonth != null)
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(curMonth.getOnlineduration()))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(curMonth.getDod()))));
 				else
 					vto.setUr("0.00");
 				settleVtos.add(vto);
