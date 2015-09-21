@@ -79,7 +79,7 @@ public class AgentStatisticsUnitFacadeService {
 			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
 				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.valueOf(whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				charts.put(String.valueOf(whichday).concat("日"), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
 				if(whichday>max){
 					max = whichday;
 				}
@@ -176,7 +176,7 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setOrg(user.getOrg());
 				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
 				if(rsd != null){
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_onlineduration()))));
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getTotal_d_od()))));
 				}else{
 					vto.setTr("0.00");
 				}

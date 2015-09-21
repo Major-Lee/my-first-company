@@ -24,7 +24,7 @@ import com.bhu.vas.di.business.datainit.charging.Step04AgentWholeDayRecordServic
 public class DailyChargingDataParserOp {
 
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		String date = "2015-09-16";
+		String date = "2015-09-10";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		
 		Step00ParserLogService step00ParserLogService = (Step00ParserLogService)ctx.getBean("step00ParserLogService");
@@ -57,8 +57,8 @@ public class DailyChargingDataParserOp {
 		step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
 		long ts4 = System.currentTimeMillis();
 		System.out.println(String.format("Step2 Completed cost %s ms", ts4-ts3));
-		step04AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
+		/*step04AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
 		long ts5 = System.currentTimeMillis();
-		System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));
+		System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));*/
 	}
 }

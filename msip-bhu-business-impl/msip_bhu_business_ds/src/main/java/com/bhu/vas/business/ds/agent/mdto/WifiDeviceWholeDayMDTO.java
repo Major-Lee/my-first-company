@@ -24,15 +24,22 @@ public class WifiDeviceWholeDayMDTO {
 	//yyyyMMdd
 	private String date;
 	private String mac;
-	//当天在线时长
-	private long onlineduration;
-	//当天连接次数
-	private int connecttimes;
-	//终端数
+	//当天在线时长device onlineduration
+	private long dod;//;
+	//当天连接次数device connect times
+	private int  dct;
+	private long dtx_bytes;
+	private long drx_bytes;
+	//终端数 对单设备排重
 	private int handsets;
-	
-	private long tx_bytes;
-	private long rx_bytes;
+	//当日终端连接次数 
+	private int  hct;
+	//handset onlineduration
+	private long hod;
+	//handsets 上行流量
+	private long htx_bytes;
+	//handsets 下行流量
+	private long hrx_bytes;
 	//上下线连接记录
 	private List<LineRecord> records;
 	public String getId() {
@@ -54,18 +61,6 @@ public class WifiDeviceWholeDayMDTO {
 		this.mac = mac;
 	}
 	
-	public long getOnlineduration() {
-		return onlineduration;
-	}
-	public void setOnlineduration(long onlineduration) {
-		this.onlineduration = onlineduration;
-	}
-	public int getConnecttimes() {
-		return connecttimes;
-	}
-	public void setConnecttimes(int connecttimes) {
-		this.connecttimes = connecttimes;
-	}
 	public List<LineRecord> getRecords() {
 		return records;
 	}
@@ -84,18 +79,53 @@ public class WifiDeviceWholeDayMDTO {
 	public void setHandsets(int handsets) {
 		this.handsets = handsets;
 	}
-	public long getTx_bytes() {
-		return tx_bytes;
+	public long getDod() {
+		return dod;
 	}
-	public void setTx_bytes(long tx_bytes) {
-		this.tx_bytes = tx_bytes;
+	public void setDod(long dod) {
+		this.dod = dod;
 	}
-	public long getRx_bytes() {
-		return rx_bytes;
+	public int getDct() {
+		return dct;
 	}
-	public void setRx_bytes(long rx_bytes) {
-		this.rx_bytes = rx_bytes;
+	public void setDct(int dct) {
+		this.dct = dct;
 	}
-	
+	public long getDtx_bytes() {
+		return dtx_bytes;
+	}
+	public void setDtx_bytes(long dtx_bytes) {
+		this.dtx_bytes = dtx_bytes;
+	}
+	public long getDrx_bytes() {
+		return drx_bytes;
+	}
+	public void setDrx_bytes(long drx_bytes) {
+		this.drx_bytes = drx_bytes;
+	}
+	public int getHct() {
+		return hct;
+	}
+	public void setHct(int hct) {
+		this.hct = hct;
+	}
+	public long getHod() {
+		return hod;
+	}
+	public void setHod(long hod) {
+		this.hod = hod;
+	}
+	public long getHtx_bytes() {
+		return htx_bytes;
+	}
+	public void setHtx_bytes(long htx_bytes) {
+		this.htx_bytes = htx_bytes;
+	}
+	public long getHrx_bytes() {
+		return hrx_bytes;
+	}
+	public void setHrx_bytes(long hrx_bytes) {
+		this.hrx_bytes = hrx_bytes;
+	}
 	
 }

@@ -45,16 +45,16 @@ public class WifiDeviceWholeDayMService {
 	public WifiDeviceWholeDayMDTO findAndModifyFlowBytes(String date, String mac,long tx_bytes,long rx_bytes){
 		Query query=Query.query(Criteria.where("id").is(WifiDeviceWholeDayMDTO.generateId(date, mac)));
 		Update update = new Update();
-        update.set("tx_bytes", tx_bytes);
-        update.set("rx_bytes", rx_bytes);
+        update.set("d_tx_bytes", tx_bytes);
+        update.set("d_rx_bytes", rx_bytes);
 		return wifiDeviceWholeDayMDao.findAndModify(query, update);//Update.update("tx_bytes",tx_bytes).set("rx_bytes", rx_bytes));
 	}
 	
 	public WriteResult upsertFlowBytes(String date, String mac,long tx_bytes,long rx_bytes){
 		Query query=Query.query(Criteria.where("id").is(WifiDeviceWholeDayMDTO.generateId(date, mac)));
 		Update update = new Update();
-        update.set("tx_bytes", tx_bytes);
-        update.set("rx_bytes", rx_bytes);
+        update.set("d_tx_bytes", tx_bytes);
+        update.set("d_rx_bytes", rx_bytes);
         return wifiDeviceWholeDayMDao.upsert(query, update);//Update.update("tx_bytes",tx_bytes).set("rx_bytes", rx_bytes));
 	}
 	
@@ -84,12 +84,17 @@ public class WifiDeviceWholeDayMService {
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
 				match(Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
 			    group("mac")
-			    	.sum("onlineduration").as("total_onlineduration")
-			    	.sum("connecttimes").as("total_connecttimes")
-			    	.sum("tx_bytes").as("total_tx_bytes")
-			    	.sum("rx_bytes").as("total_rx_bytes")
-			    	.sum("handsets").as("total_handsets"),
-			    sort(Direction.ASC, "total_onlinetime", "total_connecttimes")
+			    	.sum("dod").as("t_dod")
+			    	.sum("dct").as("t_dct")
+			    	.sum("dtx_bytes").as("t_dtx_bytes")
+			    	.sum("drx_bytes").as("t_drx_bytes")
+			    	.sum("handsets").as("t_handsets")
+			    	.sum("hod").as("t_hod")
+			    	.sum("hct").as("t_hct")
+			    	.sum("htx_bytes").as("t_htx_bytes")
+			    	.sum("hrx_bytes").as("t_hrx_bytes")
+			    	.sum("handsets").as("t_handsets"),
+			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;
@@ -105,12 +110,17 @@ public class WifiDeviceWholeDayMService {
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
 				match(Criteria.where("mac").in(macs).and("date").is(date)),
 			    group("date")
-			    	.sum("onlineduration").as("total_onlineduration")
-			    	.sum("connecttimes").as("total_connecttimes")
-			    	.sum("tx_bytes").as("total_tx_bytes")
-			    	.sum("rx_bytes").as("total_rx_bytes")
-			    	.sum("handsets").as("total_handsets"),
-			    sort(Direction.ASC, "total_onlineduration", "total_connecttimes")
+			    	.sum("dod").as("t_dod")
+			    	.sum("dct").as("t_dct")
+			    	.sum("dtx_bytes").as("t_dtx_bytes")
+			    	.sum("drx_bytes").as("t_drx_bytes")
+			    	.sum("handsets").as("t_handsets")
+			    	.sum("hod").as("t_hod")
+			    	.sum("hct").as("t_hct")
+			    	.sum("htx_bytes").as("t_htx_bytes")
+			    	.sum("hrx_bytes").as("t_hrx_bytes")
+			    	.sum("handsets").as("t_handsets"),
+			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;

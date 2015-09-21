@@ -22,12 +22,9 @@ public class ChargingTest {
 		
 		System.out.println(count);
 		
-		
-		
-		
 		List<WifiDeviceWholeDayMDTO> all = wifiDeviceWholeDayMService.findAllByDevice("84:82:f4:1b:52:8c");
 		for(WifiDeviceWholeDayMDTO element:all){
-			System.out.println(element.getId()+" "+element.getOnlineduration()+" "+element.getConnecttimes());
+			System.out.println(element.getId()+" "+element.getDod()+" "+element.getDct());
 		}
 		
 		
@@ -36,9 +33,9 @@ public class ChargingTest {
 		long total_onlinetimes = 0l;
 		long total_connecttimes = 0l;
 		for(WifiDeviceWholeDayMDTO element:allBetween){
-			System.out.println(element.getId()+" "+element.getOnlineduration()+" "+element.getConnecttimes());
-			total_onlinetimes += element.getOnlineduration();
-			total_connecttimes += element.getConnecttimes();
+			System.out.println(element.getId()+" "+element.getDod()+" "+element.getDct());
+			total_onlinetimes += element.getDod();
+			total_connecttimes += element.getDct();
 		}
 		System.out.println(String.format("A total_onlinetimes[%s] total_connecttimes[%s]", total_onlinetimes,total_connecttimes));
 		
@@ -50,7 +47,7 @@ public class ChargingTest {
 		macs.add("84:82:f4:1a:4b:93");
 		List<RecordSummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregationWith(macs,"2015-09-09");
 		for(RecordSummaryDTO dto:summaryAggregation){
-			System.out.println(String.format("B mac[%s] total_onlineduration[%s] total_connecttimes[%s]",dto.getId(), dto.getTotal_onlineduration(),dto.getTotal_connecttimes()));
+			System.out.println(String.format("B mac[%s] total_onlineduration[%s] total_connecttimes[%s]",dto.getId(), dto.getT_dod(),dto.getT_dct()));
 		}
 		
 /*		List<String> macs = new ArrayList<String>();
@@ -70,7 +67,6 @@ public class ChargingTest {
 		
 		upsertFlowBytes = wifiDeviceWholeDayMService.upsertFlowBytes("2015-09-09", "84:82:f4:1a:c5:1c:bb", 78645023l, 1278645023l);
 		System.out.println(upsertFlowBytes.getUpsertedId()+"   "+upsertFlowBytes.getN() +" "+upsertFlowBytes.isUpdateOfExisting());*/
-		
 	
 		List<Integer> users = new ArrayList<Integer>();
 		users.add(100083);

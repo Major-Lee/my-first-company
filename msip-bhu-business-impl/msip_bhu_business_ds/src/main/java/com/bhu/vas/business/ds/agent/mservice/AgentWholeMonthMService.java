@@ -77,12 +77,18 @@ public class AgentWholeMonthMService {
 		TypedAggregation<AgentWholeMonthMDTO> aggregation = newAggregation(AgentWholeMonthMDTO.class,
 				match(criteria),
 			    group("user")
-			    	.sum("onlineduration").as("total_onlineduration")
-			    	.sum("connecttimes").as("total_connecttimes")
-			    	.sum("tx_bytes").as("total_tx_bytes")
-			    	.sum("rx_bytes").as("total_rx_bytes"),
+			    	.sum("dod").as("t_dod")
+			    	.sum("dct").as("t_dct")
+			    	.sum("dtx_bytes").as("t_dtx_bytes")
+			    	.sum("drx_bytes").as("t_drx_bytes")
+			    	.sum("devices").as("t_devices")
+			    	.sum("hod").as("t_hod")
+			    	.sum("hct").as("t_hct")
+			    	.sum("htx_bytes").as("t_htx_bytes")
+			    	.sum("hrx_bytes").as("t_hrx_bytes")
+			    	.sum("handsets").as("t_handsets"),
 			    	//.sum("handsets").as("total_handsets"),
-			    sort(Direction.ASC, "total_onlineduration", "total_connecttimes")
+			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = agentWholeMonthMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;

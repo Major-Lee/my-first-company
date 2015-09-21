@@ -5,6 +5,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.smartwork.msip.cores.helper.StringHelper;
 
+/**
+ * wifi设备每月统计数据
+ * @author Edmond
+ *
+ */
 @Document(collection = "t_wifi_device_wholemonth")
 public class WifiDeviceWholeMonthMDTO {
 	/**
@@ -15,10 +20,16 @@ public class WifiDeviceWholeMonthMDTO {
 	//yyyyMMdd
 	private String date;
 	private String mac;
-	//当天在线时长
+	//当月在线时长
 	private long onlinetime;
-	//当天连接次数
+	//当月连接次数
 	private int connecttimes;
+	//当月在线时长
+	private long onlineduration;
+	//当月连接终端数
+	private int handsets;
+	private long tx_bytes;
+	private long rx_bytes;
 	public String getId() {
 		return id;
 	}
@@ -50,6 +61,30 @@ public class WifiDeviceWholeMonthMDTO {
 		this.connecttimes = connecttimes;
 	}
 	
+	public long getOnlineduration() {
+		return onlineduration;
+	}
+	public void setOnlineduration(long onlineduration) {
+		this.onlineduration = onlineduration;
+	}
+	public int getHandsets() {
+		return handsets;
+	}
+	public void setHandsets(int handsets) {
+		this.handsets = handsets;
+	}
+	public long getTx_bytes() {
+		return tx_bytes;
+	}
+	public void setTx_bytes(long tx_bytes) {
+		this.tx_bytes = tx_bytes;
+	}
+	public long getRx_bytes() {
+		return rx_bytes;
+	}
+	public void setRx_bytes(long rx_bytes) {
+		this.rx_bytes = rx_bytes;
+	}
 	public static String generateId(String date, String mac){
 		StringBuffer idstring = new StringBuffer();
 		idstring.append(date).append(StringHelper.UNDERLINE_STRING_GAP).append(mac);
