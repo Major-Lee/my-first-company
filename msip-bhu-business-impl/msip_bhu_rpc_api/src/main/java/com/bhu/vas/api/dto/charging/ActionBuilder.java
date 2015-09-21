@@ -139,10 +139,12 @@ public class ActionBuilder {
 		return action;
 	}
 	
-	public static HandsetOfflineAction builderHandsetOfflineAction(String hmac,String mac,long ts){
+	public static HandsetOfflineAction builderHandsetOfflineAction(String hmac,String mac,long tx_bytes,long rx_bytes,long ts){
 		HandsetOfflineAction action = new HandsetOfflineAction();
 		action.setHmac(hmac);
 		action.setMac(mac);
+		action.setTx_bytes(tx_bytes);
+		action.setRx_bytes(rx_bytes);
 		action.setTs(ts);
 		return action;
 	}
