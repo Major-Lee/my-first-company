@@ -108,20 +108,20 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	@Override
 	public RpcResponseDTO<Long> urouterHdModifyAlias(Integer uid, String wifiId, String hd_mac, String alias) {
 		logger.info(String.format("DeviceURouterRestRPC urouterHdDetail invoke uid [%s] wifi_mac [%s] hd_mac [%s] alias [%s]",
-				uid, wifiId, hd_mac));
+				uid, wifiId, hd_mac, alias));
 
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterHdModifyAlias(uid, wifiId, hd_mac, alias);
 		}
 		catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail failed uid [%s] wifi_mac [%s] hd_mac [%s], alias [%s]",
-					uid, wifiId, hd_mac));
+					uid, wifiId, hd_mac, alias));
 			throw ex;
 		}
 		catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail exception uid [%s] wifi_mac [%s] hd_mac [%s] alias [%s] exmsg[%s]",
-					uid, wifiId, hd_mac, ex.getMessage()), ex);
+					uid, wifiId, hd_mac,alias, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
