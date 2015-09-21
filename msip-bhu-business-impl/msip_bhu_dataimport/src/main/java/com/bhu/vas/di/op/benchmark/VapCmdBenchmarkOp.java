@@ -32,6 +32,7 @@ public class VapCmdBenchmarkOp{
 		
 		
 		while(true){
+			Thread.sleep(10*60*1000);
 			daemonRpcService.wifiDevicesSimulateCmdTimer();
 		}
 		//daemonRpcService.wifiDevicesSimulateCmdTimer();
