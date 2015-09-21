@@ -170,7 +170,8 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
 								DynamicLogWriter.doLogger(headers.getMac(), 
 										ActionBuilder.toJsonHasPrefix(
-												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(),
+														Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis())));
 							}
 							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
 								List<String> hmacs = new ArrayList<String>();
