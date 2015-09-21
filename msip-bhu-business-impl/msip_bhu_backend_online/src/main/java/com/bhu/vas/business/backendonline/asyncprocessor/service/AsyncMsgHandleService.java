@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,6 +139,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private BusinessCacheService businessCacheService;
+
+	@Resource
+	private UserDeviceService userDeviceService;
 
 	/**
 	 * wifi设备上线
@@ -1190,7 +1196,12 @@ public class AsyncMsgHandleService {
 		
 		userSettingStateService.deleteById(dto.getMac());
 
-		//todo(bluesand):解除终端昵称别名`
+		//如果没有绑定其他设备，删除别名
+		List<UserDevicePK> ids = userDeviceService.findAllIds();
+		if (ids == null || ids.size() ==0) {
+			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
+		}
+
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	
