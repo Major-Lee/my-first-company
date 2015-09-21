@@ -111,7 +111,7 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String alias
 			) {
 
-		RpcResponseDTO<URouterHdDetailVTO> rpcResponse = deviceURouterRestRpcService.urouterHdDetail(uid, mac, hd_mac);
+		RpcResponseDTO<Long> rpcResponse = deviceURouterRestRpcService.urouterHdModifyAlias(uid, mac, hd_mac, alias);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
