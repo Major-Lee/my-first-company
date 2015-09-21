@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -941,7 +942,10 @@ public class DeviceBusinessFacadeService {
 			}
 		}*/
 		int state = DeviceHelper.RefreashDeviceSetting_Normal;
-		
+
+
+		//todo(bluesand)新增&&更新 配置
+
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity == null){
 			entity = new WifiDeviceSetting();
@@ -958,6 +962,10 @@ public class DeviceBusinessFacadeService {
 						state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
 					}
 				}
+
+				List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
+
+
 			}
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);

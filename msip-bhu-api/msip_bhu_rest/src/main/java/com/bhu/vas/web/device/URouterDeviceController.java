@@ -98,12 +98,28 @@ public class URouterDeviceController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
 		}
+	}
 
+	@ResponseBody()
+	@RequestMapping(value="/hd_modify",method={RequestMethod.POST})
+	public void hdModify(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String hd_mac,
+			@RequestParam(required = true) String alias
+			) {
+
+		RpcResponseDTO<URouterHdDetailVTO> rpcResponse = deviceURouterRestRpcService.urouterHdDetail(uid, mac, hd_mac);
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
 	}
 
 
-
-	
 	/**
 	 * 设备的实时速率查询
 	 * @param request

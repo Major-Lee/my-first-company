@@ -231,6 +231,8 @@ public class DeviceHelper {
 		//TODO:如果没有别名 返回hostname
 		return null;
 	}
+
+
 	
 	/**
 	 * 判断radio name是否存在
@@ -1301,7 +1303,9 @@ public class DeviceHelper {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 
 		StringBuffer ds = new StringBuffer();
-		
+
+
+		//todo(bluesand): 新增别名
 		List<WifiDeviceSettingMMDTO> mm_incr_dtos = mm_dto_map.get(DeviceSettingAction_Incr);
 		if(mm_incr_dtos != null && !mm_incr_dtos.isEmpty()){
 			for(WifiDeviceSettingMMDTO mm_incr_dto : mm_incr_dtos){
@@ -1314,7 +1318,9 @@ public class DeviceHelper {
 				ds.append(builderDeviceSettingItem(DeviceSetting_MMItem, mm_incr_dto.builderProperties()));
 			}
 		}
-		
+
+
+
 		List<WifiDeviceSettingMMDTO> mm_del_dtos = mm_dto_map.get(DeviceSettingAction_Del);
 		if(mm_del_dtos != null && !mm_del_dtos.isEmpty()){
 			for(WifiDeviceSettingMMDTO mm_del_dto : mm_del_dtos){

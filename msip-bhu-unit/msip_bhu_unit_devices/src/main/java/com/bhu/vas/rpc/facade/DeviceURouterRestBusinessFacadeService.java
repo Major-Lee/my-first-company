@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -227,7 +228,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					for(Tuple tuple : presents){
 						hd_entity = handsets.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(tuple.getElement(), online, hd_entity, setting_dto);
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, hd_entity, setting_dto);
 						vtos.add(vto);
 						cursor++;
 					}
@@ -300,6 +301,19 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
+
+
+	public RpcResponseDTO<Long>  urouterHdModifyAlias(Integer uid, String wifiId, String mac, String alias) {
+		try {
+
+			Long ret = WifiDeviceHandsetAliasService.getInstance().hsetHandsetAlias(uid, mac, alias);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+
+		} catch (BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+
 
 
 	/**
@@ -759,7 +773,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
-							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(block_hd_mac, false, handsets.get(cursor), setting_dto);
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, block_hd_mac, false, handsets.get(cursor), setting_dto);
 							vtos.add(vto);
 							cursor++;
 						}

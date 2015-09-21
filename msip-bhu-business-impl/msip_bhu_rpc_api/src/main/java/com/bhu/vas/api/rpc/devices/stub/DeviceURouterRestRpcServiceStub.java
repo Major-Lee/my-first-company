@@ -58,6 +58,14 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 
 	@Override
+	public RpcResponseDTO<Long> urouterHdModifyAlias(Integer uid, String wifiId, String hd_mac, String alias) {
+		if(uid == null || StringUtils.isEmpty(wifiId))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+
+		return deviceURouterRestRpcService.urouterHdModifyAlias(uid, wifiId, hd_mac, alias);
+	}
+
+	@Override
 	public RpcResponseDTO<URouterRealtimeRateVTO> urouterRealtimeRate(Integer uid, String wifiId) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
