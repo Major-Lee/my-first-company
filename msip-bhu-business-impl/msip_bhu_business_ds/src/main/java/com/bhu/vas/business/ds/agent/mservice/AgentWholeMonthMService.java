@@ -5,6 +5,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -57,6 +58,19 @@ public class AgentWholeMonthMService {
 	public List<AgentWholeMonthMDTO> fetchByDateBetween(int user,String dateStart,String dateEnd){
 		Query query = Query.query(Criteria.where("user").is(user).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
 		return agentWholeMonthMDao.find(query);
+	}
+	
+	public RecordSummaryDTO summaryAggregationTotal4User(int user){
+		List<Integer> users = new ArrayList<Integer>();
+		users.add(user);
+		List<RecordSummaryDTO> summaryResult = this.summaryAggregationBetween(users, null, null);
+		if(summaryResult != null && !summaryResult.isEmpty()){
+			return summaryResult.get(0);
+		}else{
+			RecordSummaryDTO dto = new RecordSummaryDTO();
+			dto.setId(String.valueOf(user));
+			return dto;
+		}
 	}
 	
 	public List<RecordSummaryDTO> summaryAggregationBetween(List<Integer> users,String dateStart,String dateEnd){

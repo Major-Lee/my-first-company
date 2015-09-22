@@ -252,7 +252,15 @@ public class AgentFacadeService {
         querymc.setPageNumber(pageNo);
         querymc.setPageSize(pageSize);
         List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(querymc);
-        List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
+        List<String> device_macs = IdHelper.getPKs(devices, String.class);
+        //取当前时间的上月数据 和所有数据的汇总
+        String previous_month_key = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfPreviousMonth(), DateTimeHelper.FormatPattern11);
+
+        List<WifiDeviceWholeMonthMDTO> monthlyDtos = wifiDeviceWholeMonthMService.fetchByDate(device_macs, previous_month_key);
+        List<RecordSummaryDTO> summaryDtos = wifiDeviceWholeMonthMService.summaryAggregationBetween(device_macs, null, null);
+        
+        List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices,monthlyDtos,summaryDtos);
+        /*List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
             for (WifiDevice wifiDevice : devices) {
@@ -260,7 +268,7 @@ public class AgentFacadeService {
                 vto = buildAgentDeviceClaimVTO(wifiDevice);
                 vtos.add(vto);
             }
-        }
+        }*/
 
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
@@ -335,7 +343,7 @@ public class AgentFacadeService {
         return vto;
     }
 
-    private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(WifiDevice wifiDevice) {
+/*    private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(WifiDevice wifiDevice) {
         AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
         vto.setSn(wifiDevice.getSn());
         vto.setMac(wifiDevice.getId());
@@ -366,7 +374,7 @@ public class AgentFacadeService {
 
         }
         return vto;
-    }
+    }*/
 
 
 
