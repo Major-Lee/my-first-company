@@ -81,7 +81,8 @@ public class AgentStatisticsUnitFacadeService {
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
 			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?ChargingCurrencyHelper.currency(previosmonth_data.getDod()):0.00d)));
 			//昨日收入(元)  
-			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(dateEndStr, user);
+			String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
+			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?ChargingCurrencyHelper.currency(yesterday_data.getDod()):0.00d)));
 			//曾经上线终端数  
 			//总收入(元)
@@ -96,14 +97,14 @@ public class AgentStatisticsUnitFacadeService {
 			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
 				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.valueOf(whichday).concat("日"), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				charts.put(String.format("02d%日", whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
 				if(whichday>max){
 					max = whichday;
 				}
 			}
 			//小于max值并且charts中不存在的数据进行补零
 			for(int i=1;i<max;i++){
-				String indexday = String.valueOf(i).concat("日");
+				String indexday = String.format("02d%日", i);
 				if(!charts.containsKey(indexday)){
 					charts.put(indexday, 0d);
 				}
@@ -125,7 +126,9 @@ public class AgentStatisticsUnitFacadeService {
 	 */
 	public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize) {
 		try{
-			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
+			Date currentDate = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
+			//String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
+			Date dateEnd = DateTimeHelper.getDateDaysAgo(currentDate,1);//DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeHelper.getDateDaysAgo(dateEnd,180);
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);
