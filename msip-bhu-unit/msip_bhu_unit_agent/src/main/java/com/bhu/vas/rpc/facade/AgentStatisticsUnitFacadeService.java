@@ -81,7 +81,8 @@ public class AgentStatisticsUnitFacadeService {
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
 			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?ChargingCurrencyHelper.currency(previosmonth_data.getDod()):0.00d)));
 			//昨日收入(元)  
-			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(dateEndStr, user);
+			String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
+			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?ChargingCurrencyHelper.currency(yesterday_data.getDod()):0.00d)));
 			//曾经上线终端数  
 			//总收入(元)
@@ -125,7 +126,9 @@ public class AgentStatisticsUnitFacadeService {
 	 */
 	public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize) {
 		try{
-			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
+			Date currentDate = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
+			//String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
+			Date dateEnd = DateTimeHelper.getDateDaysAgo(currentDate,1);//DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeHelper.getDateDaysAgo(dateEnd,180);
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);

@@ -78,7 +78,8 @@ public class AgentController {
     		){
     	try{
     		if(StringUtils.isEmpty(date)){
-    			date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
+    			//date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
+    			date = DateTimeHelper.formatDate(new Date(),DateTimeHelper.FormatPattern5);
     		}
 			RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> rpcResult = agentRpcService.pageHistoryRecords(uid, date, pageNo, pageSize);
 			if(!rpcResult.hasError())
