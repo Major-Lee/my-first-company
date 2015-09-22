@@ -1,8 +1,10 @@
 package com.bhu.vas.di.business.datainit.charging;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -96,6 +98,8 @@ public class Step05AgentWholeDayRecordService {
 				for(LineRecord record:lineRecords.getRecords()){
 					summary.setT_dct(summary.getT_dct()+1);//setTotal_connecttimes(summary.getTotal_connecttimes()+1);
 					summary.setT_dod(summary.getT_dod()+record.gaps());//.setTotal_onlineduration(summary.getTotal_onlineduration()+record.gaps());
+					summary.setT_dtx_bytes(summary.getT_dtx_bytes()+record.getTx_bytes());
+					summary.setT_drx_bytes(summary.getT_drx_bytes()+record.getRx_bytes());
 					//total_connecttimes++;
 					//total_online_duration += record.gaps();
 				}
@@ -103,6 +107,18 @@ public class Step05AgentWholeDayRecordService {
 				if(map != null){
 					user_devices_hit++;
 					summary.setT_handsets(summary.getT_handsets()+map.size());
+					Iterator<Entry<String, LineRecords>> iter_inner = map.entrySet().iterator();
+					while(iter_inner.hasNext()){
+						Entry<String, LineRecords> next = iter_inner.next();
+						LineRecords value = next.getValue();
+						for(LineRecord record:value.getRecords()){
+							summary.setT_hct(summary.getT_hct()+1);
+							summary.setT_hod(summary.getT_dod()+record.gaps());
+							summary.setT_htx_bytes(summary.getT_htx_bytes()+record.getTx_bytes());
+							summary.setT_hrx_bytes(summary.getT_hrx_bytes()+record.getRx_bytes());
+						}
+					}
+					
 				}
 				//lineHandsetRecordsMap.remove(device.getMac());
 			}

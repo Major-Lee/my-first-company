@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
@@ -58,16 +59,38 @@ public class WifiDeviceWholeMonthMService {
 		return wifiDeviceWholeMonthMDao.find(query);
 	}
 	
-	
 	/**
-	 * 获取指定日期的所有的mac地址的汇总数据
+	 * 得到多个设备在指定日期的数据
+	 * @param mac
+	 * @param date
+	 * @return
+	 */
+	public List<WifiDeviceWholeMonthMDTO> fetchByDate(List<String> macs,String date){
+		Query query=Query.query(Criteria.where("mac").in(macs).and("date").is(date)).with(new Sort(Direction.DESC,"date"));
+		return wifiDeviceWholeMonthMDao.find(query);
+	}
+	/**
+	 * 获取指定日期区间内的所有的mac地址的汇总数据
 	 * @param macs
 	 * @param date
 	 * @return
 	 */
 	public List<RecordSummaryDTO> summaryAggregationBetween(List<String> macs,String dateStart,String dateEnd){
+		Criteria criteria = Criteria.where("mac").in(macs);//.and("date").gte(dateStart).lte(dateEnd);
+		boolean isStartNotEmpty = StringUtils.isNotEmpty(dateStart);
+		boolean isEndNotEmpty = StringUtils.isNotEmpty(dateEnd);
+		if(isStartNotEmpty && isEndNotEmpty){
+			criteria.and("date").gte(dateStart).lte(dateEnd);
+		}else{
+			if(isStartNotEmpty){
+				criteria.and("date").gte(dateStart);
+			}
+			if(isEndNotEmpty){
+				criteria.and("date").lte(dateEnd);
+			}
+		}
 		TypedAggregation<WifiDeviceWholeMonthMDTO> aggregation = newAggregation(WifiDeviceWholeMonthMDTO.class,
-				match(Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
+				match(criteria),//Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
 			    group("mac")
 			    	.sum("dod").as("t_dod")
 			    	.sum("dct").as("t_dct")
@@ -78,11 +101,13 @@ public class WifiDeviceWholeMonthMService {
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")
 			    	.sum("hrx_bytes").as("t_hrx_bytes")
-			    	.sum("handsets").as("t_handsets"),
+			    	.avg("handsets").as("t_handsets"),//终端数取平均值为终端总数
+			    	//.sum("handsets").as("t_handsets"),
 			    	//.sum("handsets").as("total_handsets"),
 			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeMonthMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;
 	}
+	
 }

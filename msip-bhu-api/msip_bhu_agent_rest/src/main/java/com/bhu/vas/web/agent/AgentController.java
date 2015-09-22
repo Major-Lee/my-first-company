@@ -131,7 +131,7 @@ public class AgentController {
                           @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDeviceByUid(uid, status, pageNo, pageSize);
+			AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDeviceByUid(uid, status, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
