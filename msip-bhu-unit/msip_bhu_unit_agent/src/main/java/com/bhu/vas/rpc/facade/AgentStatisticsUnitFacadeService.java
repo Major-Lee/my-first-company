@@ -97,14 +97,14 @@ public class AgentStatisticsUnitFacadeService {
 			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
 				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.valueOf(whichday).concat("日"), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				charts.put(String.format("02d%日", whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
 				if(whichday>max){
 					max = whichday;
 				}
 			}
 			//小于max值并且charts中不存在的数据进行补零
 			for(int i=1;i<max;i++){
-				String indexday = String.valueOf(i).concat("日");
+				String indexday = String.format("02d%日", i);
 				if(!charts.containsKey(indexday)){
 					charts.put(indexday, 0d);
 				}
