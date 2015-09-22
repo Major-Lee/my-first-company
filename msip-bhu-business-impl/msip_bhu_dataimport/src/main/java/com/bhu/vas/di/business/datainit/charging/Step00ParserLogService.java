@@ -258,6 +258,8 @@ public class Step00ParserLogService {
 			if(records.getRecords().isEmpty()){//此mac当天的第一条为down，则开始时间为今天的零点
 				LineRecord record = new LineRecord();
 				record.setUts(DateTimeHelper.getDateStart(currentDate).getTime());
+				record.setRx_bytes(dto.getRx_bytes());
+				record.setTx_bytes(dto.getTx_bytes());
 				record.setDts(dto.getTs());
 				record.appendHint(Hint.ElementUpLoseSoPollishDaysBegin);//"缺失up，补齐到当天开始");
 				records.getRecords().add(record);
@@ -271,6 +273,8 @@ public class Step00ParserLogService {
 			
 		}else{
 			if(records.currentHasUp()){
+				records.getCurrent().setRx_bytes(dto.getRx_bytes());
+				records.getCurrent().setTx_bytes(dto.getTx_bytes());
 				records.getCurrent().setDts(dto.getTs());
 				records.getRecords().add(records.getCurrent());
 				//records.setCurrent(new LineRecord());

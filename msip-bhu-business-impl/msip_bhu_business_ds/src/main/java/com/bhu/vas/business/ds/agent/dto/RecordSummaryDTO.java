@@ -2,59 +2,106 @@ package com.bhu.vas.business.ds.agent.dto;
 
 public class RecordSummaryDTO {
 	private String id;
-	private long total_onlineduration;
-	private int  total_connecttimes;
-	private long total_tx_bytes;
-	private long total_rx_bytes;
-	private int  total_handsets;
+	private int t_devices;
+	private long t_dod;
+	private int  t_dct;//connecttimes;
+	private long t_dtx_bytes;
+	private long t_drx_bytes;
+	
+	
+	private int  t_handsets;
+	//终端连接次数 
+	private int  t_hct;
+	//handset onlineduration
+	private long t_hod;
+	//handsets 上行流量
+	private long t_htx_bytes;
+	//handsets 下行流量
+	private long t_hrx_bytes;
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
-	public int getTotal_connecttimes() {
-		return total_connecttimes;
+	
+	public long getT_dod() {
+		return t_dod;
 	}
-	public void setTotal_connecttimes(int total_connecttimes) {
-		this.total_connecttimes = total_connecttimes;
+	public void setT_dod(long t_dod) {
+		this.t_dod = t_dod;
 	}
-	public long getTotal_onlineduration() {
-		return total_onlineduration;
+	public int getT_dct() {
+		return t_dct;
 	}
-	public void setTotal_onlineduration(long total_onlineduration) {
-		this.total_onlineduration = total_onlineduration;
+	public void setT_dct(int t_dct) {
+		this.t_dct = t_dct;
 	}
-	public long getTotal_tx_bytes() {
-		return total_tx_bytes;
+	public long getT_dtx_bytes() {
+		return t_dtx_bytes;
 	}
-	public void setTotal_tx_bytes(long total_tx_bytes) {
-		this.total_tx_bytes = total_tx_bytes;
+	public void setT_dtx_bytes(long t_dtx_bytes) {
+		this.t_dtx_bytes = t_dtx_bytes;
 	}
-	public long getTotal_rx_bytes() {
-		return total_rx_bytes;
+	public long getT_drx_bytes() {
+		return t_drx_bytes;
 	}
-	public void setTotal_rx_bytes(long total_rx_bytes) {
-		this.total_rx_bytes = total_rx_bytes;
+	public void setT_drx_bytes(long t_drx_bytes) {
+		this.t_drx_bytes = t_drx_bytes;
+	}
+	public int getT_handsets() {
+		return t_handsets;
+	}
+	public void setT_handsets(int t_handsets) {
+		this.t_handsets = t_handsets;
 	}
 	
-	public int getTotal_handsets() {
-		return total_handsets;
+	public int getT_hct() {
+		return t_hct;
 	}
-	public void setTotal_handsets(int total_handsets) {
-		this.total_handsets = total_handsets;
+	public void setT_hct(int t_hct) {
+		this.t_hct = t_hct;
+	}
+	public long getT_hod() {
+		return t_hod;
+	}
+	public void setT_hod(long t_hod) {
+		this.t_hod = t_hod;
+	}
+	public long getT_htx_bytes() {
+		return t_htx_bytes;
+	}
+	public void setT_htx_bytes(long t_htx_bytes) {
+		this.t_htx_bytes = t_htx_bytes;
+	}
+	public long getT_hrx_bytes() {
+		return t_hrx_bytes;
+	}
+	public void setT_hrx_bytes(long t_hrx_bytes) {
+		this.t_hrx_bytes = t_hrx_bytes;
 	}
 	public void incr(RecordSummaryDTO dto){
 		if(dto == null) return;
-		total_onlineduration += dto.getTotal_onlineduration();
-		total_connecttimes += dto.getTotal_connecttimes();
-		total_tx_bytes += dto.getTotal_tx_bytes();
-		total_rx_bytes += dto.getTotal_rx_bytes();
-		total_handsets += dto.getTotal_handsets();
+		t_dod += dto.getT_dod();
+		t_dct += dto.getT_dct();
+		t_dtx_bytes += dto.getT_dtx_bytes();
+		t_drx_bytes += dto.getT_drx_bytes();
+		
+		t_handsets += dto.getT_handsets();
+		t_hod += dto.getT_hod();
+		t_hct += dto.getT_hct();
+		t_htx_bytes += dto.getT_htx_bytes();
+		t_hrx_bytes += dto.getT_hrx_bytes();
 	}
 	
+	public int getT_devices() {
+		return t_devices;
+	}
+	public void setT_devices(int t_devices) {
+		this.t_devices = t_devices;
+	}
 	public String toString(){
 		return String.format("id[%s] onlineduration[%s] connecttimes[%s] handsets[%s] tx_bytes[%s] rx_bytes[%s]", 
-				id,total_onlineduration,total_connecttimes,total_handsets,total_tx_bytes,total_rx_bytes);
+				id,t_dod,t_dct,t_handsets,t_dtx_bytes,t_drx_bytes);
 	}
 }

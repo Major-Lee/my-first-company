@@ -17,45 +17,45 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
-import com.bhu.vas.business.ds.agent.mdao.AgentWholeDayMDao;
-import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
+import com.bhu.vas.business.ds.agent.mdao.WifiDeviceWholeMonthMDao;
+import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  *
  */
 @Service
-public class AgentWholeDayMService {
+public class WifiDeviceWholeMonthMService {
 	
 	@Resource
-	private AgentWholeDayMDao agentWholeDayMDao;
+	private WifiDeviceWholeMonthMDao wifiDeviceWholeMonthMDao;
 	
-	public AgentWholeDayMDTO save(AgentWholeDayMDTO dto){
-		return agentWholeDayMDao.save(dto);
+	public WifiDeviceWholeMonthMDTO save(WifiDeviceWholeMonthMDTO dto){
+		return wifiDeviceWholeMonthMDao.save(dto);
 	}
 	
 	
-	public AgentWholeDayMDTO getWholeDay(String date, int user){
-		return agentWholeDayMDao.findById(AgentWholeDayMDTO.generateId(date, user));
+	public WifiDeviceWholeMonthMDTO getWholeMonth(String date, String mac){
+		return wifiDeviceWholeMonthMDao.findById(WifiDeviceWholeMonthMDTO.generateId(date, mac));
 	}
 	
 	/**
-	 * 分页获得指定区间内的代理商每日汇总列表数据
+	 * 分页获得指定时间区间内的设备每日汇总列表数据
 	 * @param user
 	 * @param dateStart
 	 * @param dateEnd
 	 * @return
 	 */
-	public TailPage<AgentWholeDayMDTO> pageByDateBetween(int user,String dateStart,String dateEnd,int pageNo,int pageSize){
-		Query query = Query.query(Criteria.where("user").is(user).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
-		return agentWholeDayMDao.findTailPage(pageNo, pageSize, query);
+	public TailPage<WifiDeviceWholeMonthMDTO> pageByDateBetween(String mac,String dateStart,String dateEnd,int pageNo,int pageSize){
+		Query query = Query.query(Criteria.where("mac").is(mac).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
+		return wifiDeviceWholeMonthMDao.findTailPage(pageNo, pageSize, query);
 		//return new CommonPage<AgentWholeDayMDTO>(pageNo, pageSize, total, vtos);
 		//return agentWholeDayMDao.find(query);
 	}
 	
-	public List<AgentWholeDayMDTO> fetchByDateBetween(int user,String dateStart,String dateEnd){
-		Query query = Query.query(Criteria.where("user").is(user).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
-		return agentWholeDayMDao.find(query);
+	public List<WifiDeviceWholeMonthMDTO> fetchByDateBetween(String mac,String dateStart,String dateEnd){
+		Query query = Query.query(Criteria.where("mac").is(mac).and("date").gte(dateStart).lte(dateEnd)).with(new Sort(Direction.DESC,"date"));
+		return wifiDeviceWholeMonthMDao.find(query);
 	}
 	
 	
@@ -65,15 +65,15 @@ public class AgentWholeDayMService {
 	 * @param date
 	 * @return
 	 */
-	public List<RecordSummaryDTO> summaryAggregationBetween(List<Integer> users,String dateStart,String dateEnd){
-		TypedAggregation<AgentWholeDayMDTO> aggregation = newAggregation(AgentWholeDayMDTO.class,
-				match(Criteria.where("user").in(users).and("date").gte(dateStart).lte(dateEnd)),
-			    group("user")
+	public List<RecordSummaryDTO> summaryAggregationBetween(List<String> macs,String dateStart,String dateEnd){
+		TypedAggregation<WifiDeviceWholeMonthMDTO> aggregation = newAggregation(WifiDeviceWholeMonthMDTO.class,
+				match(Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
+			    group("mac")
 			    	.sum("dod").as("t_dod")
 			    	.sum("dct").as("t_dct")
 			    	.sum("dtx_bytes").as("t_dtx_bytes")
 			    	.sum("drx_bytes").as("t_drx_bytes")
-			    	.sum("devices").as("t_devices")
+			    	//.sum("handsets").as("t_handsets")
 			    	.sum("hod").as("t_hod")
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")
@@ -82,7 +82,7 @@ public class AgentWholeDayMService {
 			    	//.sum("handsets").as("total_handsets"),
 			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
-		List<RecordSummaryDTO> aggregate = agentWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
+		List<RecordSummaryDTO> aggregate = wifiDeviceWholeMonthMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;
 	}
 }

@@ -34,14 +34,14 @@ public class DaemonSimulateCmdTask extends TimerTask{
 				total++;
 				Entry<String, SessionInfo> next = iter.next();
 				SessionInfo info = next.getValue();
-				if(info != null){
+				if(info != null && info.getMac().startsWith("84:61")){
 					//if(info.canBeExecute(current)){
 					for(int i = 0;i<10;i++){
-//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
-//						//获取配置指令
-//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
-//						//获取地理位置
-//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceLocationNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+						//获取配置指令
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+						//获取地理位置
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceLocationNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 						//修改信号强度
 						String config_payload = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><wifi><radio><ITEM name=\"wifi0\" power=\"20\" /></radio></wifi></dev>";
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingModify(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), config_payload));
@@ -60,14 +60,14 @@ public class DaemonSimulateCmdTask extends TimerTask{
 //						//访客网络开启
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderCMD4HttpPortalResourceUpdate(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "{\"style\":\"style000\"}"));
 //						//查询终端速率
-//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
 //						//查询设备网速
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSpeedNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10, "", ""));
-//						//查询设备实时速率
+						//查询设备实时速率
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceRateNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "wan", 2, 10));
-//						//查询设备dhcpc信息
+						//查询设备dhcpc信息
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDhcpcStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "eth1"));
-//						//查询设备使用情况
+						//查询设备使用情况
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceUsedStatusQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
 						
 						info.setRects(current);

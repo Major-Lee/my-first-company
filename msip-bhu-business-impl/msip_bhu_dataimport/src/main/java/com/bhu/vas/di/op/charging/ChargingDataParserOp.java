@@ -543,8 +543,8 @@ public class ChargingDataParserOp {
 			dto.setId(WifiDeviceWholeDayMDTO.generateId(date, key));
 			dto.setMac(key);
 			dto.setDate(date);
-			dto.setConnecttimes(times);
-			dto.setOnlineduration(total_online_duration);
+			dto.setDct(times);//.setConnecttimes(times);
+			dto.setDod(total_online_duration);//.setOnlineduration(total_online_duration);
 			dto.setHandsets(handsets);
 			dto.setRecords(val.getRecords());
 			wifiDeviceWholeDayMService.save(dto);

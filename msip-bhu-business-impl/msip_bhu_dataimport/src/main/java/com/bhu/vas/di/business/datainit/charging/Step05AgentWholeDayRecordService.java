@@ -32,7 +32,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  *
  */
 @Service
-public class Step04AgentWholeDayRecordService {
+public class Step05AgentWholeDayRecordService {
 	
 	@Resource
 	private UserService userSerivce;
@@ -94,15 +94,15 @@ public class Step04AgentWholeDayRecordService {
 				LineRecords lineRecords = lineDeviceRecordsMap.get(device.getMac());
 				if(lineRecords == null || lineRecords.getRecords().isEmpty() ) continue;
 				for(LineRecord record:lineRecords.getRecords()){
-					summary.setTotal_connecttimes(summary.getTotal_connecttimes()+1);
-					summary.setTotal_onlineduration(summary.getTotal_onlineduration()+record.gaps());
+					summary.setT_dct(summary.getT_dct()+1);//setTotal_connecttimes(summary.getTotal_connecttimes()+1);
+					summary.setT_dod(summary.getT_dod()+record.gaps());//.setTotal_onlineduration(summary.getTotal_onlineduration()+record.gaps());
 					//total_connecttimes++;
 					//total_online_duration += record.gaps();
 				}
 				Map<String, LineRecords> map = lineHandsetRecordsMap.get(device.getMac());
 				if(map != null){
 					user_devices_hit++;
-					summary.setTotal_handsets(summary.getTotal_handsets()+map.size());
+					summary.setT_handsets(summary.getT_handsets()+map.size());
 				}
 				//lineHandsetRecordsMap.remove(device.getMac());
 			}
@@ -112,12 +112,18 @@ public class Step04AgentWholeDayRecordService {
 		mdto.setId(AgentWholeDayMDTO.generateId(date, uid));
 		mdto.setDate(date);
 		mdto.setUser(uid);
-		mdto.setConnecttimes(summary.getTotal_connecttimes());
-		mdto.setOnlineduration(summary.getTotal_onlineduration());
+		mdto.setDct(summary.getT_dct());
+		mdto.setDod(summary.getT_dod());
 		mdto.setDevices(user_devices_hit);
-		mdto.setHandsets(summary.getTotal_handsets());
-		mdto.setTx_bytes(0l);
-		mdto.setRx_bytes(0l);
+		mdto.setDtx_bytes(summary.getT_dtx_bytes());
+		mdto.setDrx_bytes(summary.getT_drx_bytes());
+		
+		mdto.setHandsets(summary.getT_handsets());
+		mdto.setHct(summary.getT_hct());
+		mdto.setHod(summary.getT_hod());
+		mdto.setHtx_bytes(summary.getT_htx_bytes());
+		mdto.setHrx_bytes(summary.getT_hrx_bytes());
+		mdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 		agentWholeDayMService.save(mdto);
 		
 		//System.out.println("~~~~~~~size:"+lineHandsetRecordsMap.size());
@@ -139,10 +145,17 @@ public class Step04AgentWholeDayRecordService {
 			monthdto.setId(AgentWholeMonthMDTO.generateId(monthKey, user));
 			monthdto.setDate(monthKey);
 			monthdto.setUser(user);
-			monthdto.setOnlineduration(dto.getTotal_onlineduration());
-			monthdto.setConnecttimes(dto.getTotal_connecttimes());
-			monthdto.setRx_bytes(dto.getTotal_rx_bytes());
-			monthdto.setTx_bytes(dto.getTotal_tx_bytes());
+			monthdto.setDevices(dto.getT_devices());
+			monthdto.setDod(dto.getT_dod());
+			monthdto.setDct(dto.getT_dct());
+			monthdto.setDrx_bytes(dto.getT_drx_bytes());
+			monthdto.setDtx_bytes(dto.getT_dtx_bytes());
+			monthdto.setHandsets(dto.getT_handsets());
+			monthdto.setHct(dto.getT_hct());
+			monthdto.setHod(dto.getT_hod());
+			monthdto.setHtx_bytes(dto.getT_htx_bytes());
+			monthdto.setHrx_bytes(dto.getT_hrx_bytes());
+			
 			monthdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 			agentWholeMonthMService.save(monthdto);
 		}
