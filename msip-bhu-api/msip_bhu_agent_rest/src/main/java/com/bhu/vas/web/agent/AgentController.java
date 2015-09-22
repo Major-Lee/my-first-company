@@ -28,7 +28,6 @@ import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -55,7 +54,8 @@ public class AgentController {
                            @RequestParam(required = false) String date){
     	try{
     		if(StringUtils.isEmpty(date)){
-    			date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
+    			//date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1),DateTimeHelper.FormatPattern5);
+    			date = DateTimeHelper.formatDate(new Date(),DateTimeHelper.FormatPattern5);
     		}
 			RpcResponseDTO<AgentRevenueStatisticsVTO> rpcResult = agentRpcService.statistics(uid, date);
 			if(!rpcResult.hasError())
