@@ -33,8 +33,9 @@ public class DailyChargingDataParserOp {
 		Step05AgentWholeDayRecordService step05AgentWholeDayRecordService = (Step05AgentWholeDayRecordService)ctx.getBean("step05AgentWholeDayRecordService");
 		Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
 		long ts1 = System.currentTimeMillis();
-		//String[] dates = new String[]{"2015-09-10","2015-09-11","2015-09-12","2015-09-13","2015-09-14","2015-09-15","2015-09-16","2015-09-17"};
-		String[] dates = new String[]{"2015-09-18","2015-09-19","2015-09-20","2015-09-21"};
+		//String[] dates = new String[]{"2015-09-10","2015-09-11","2015-09-12","2015-09-13"};
+		String[] dates = new String[]{"2015-09-14","2015-09-15","2015-09-16","2015-09-17"};
+		//String[] dates = new String[]{"2015-09-18","2015-09-19","2015-09-20","2015-09-21"};
 		
 		for(String date:dates){
 			//DailyChargingDataParserOp op = new DailyChargingDataParserOp();

@@ -18,7 +18,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
@@ -83,7 +82,7 @@ public class BusinessModelBuilder {
 		return wifi_device_alarm_entity;
 	}
 	
-	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
+/*	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
 		HandsetDevice handset_device_entity = new HandsetDevice();
 		handset_device_entity.setId(dto.getMac().toLowerCase());
 		handset_device_entity.setPhy_tx_rate(dto.getPhy_tx_rate());
@@ -114,9 +113,9 @@ public class BusinessModelBuilder {
 		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		handset_device_entity.setOnline(true);
 		return handset_device_entity;
-	}
+	}*/
 	
-	public static HandsetDeviceDTO fromHandsetDevice(HandsetDevice hDevice){
+	/*public static HandsetDeviceDTO fromHandsetDevice(HandsetDevice hDevice){
 		HandsetDeviceDTO result = new HandsetDeviceDTO();
 		result.setMac(hDevice.getId());
 		result.setAction(hDevice.isOnline()?HandsetDeviceDTO.Action_Online:HandsetDeviceDTO.Action_Offline);
@@ -150,7 +149,7 @@ public class BusinessModelBuilder {
 		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		//handset_device_entity.setOnline(true);
 		return result;
-	}
+	}*/
 	
 	public static WifiDeviceStatus wifiDeviceStatusDtoToEntity(WifiDeviceStatusDTO dto){
 		WifiDeviceStatus wifi_device_status_entity = new WifiDeviceStatus();
@@ -230,7 +229,7 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDevice hd_entity,
+/*	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDevice hd_entity,
 			WifiDeviceSettingDTO setting_dto){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
@@ -259,7 +258,7 @@ public class BusinessModelBuilder {
 				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
 		}
 		return vto;
-	}
+	}*/
 	
 	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
 			WifiDeviceSettingDTO setting_dto){
@@ -309,7 +308,7 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
+	/*public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
 			HandsetDevice hd_entity){
 		HandsetDeviceVTO vto = new HandsetDeviceVTO();
 		vto.setWid(mac);
@@ -321,7 +320,7 @@ public class BusinessModelBuilder {
 			}
 		}
 		return vto;
-	}
+	}*/
 	
 /*	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
 		if(hd_macs == null || hd_macs.isEmpty()) return Collections.emptyList();

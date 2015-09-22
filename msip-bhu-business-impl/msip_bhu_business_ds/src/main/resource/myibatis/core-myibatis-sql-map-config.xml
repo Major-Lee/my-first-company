@@ -39,7 +39,6 @@
 		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation"/>
 		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK"/>
 		<typeAlias alias="wifiDeviceAlarm" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm"/>
-		<typeAlias alias="handsetDevice" 				type="com.bhu.vas.api.rpc.devices.model.HandsetDevice"/>
 		<typeAlias alias="wifiDeviceSetting" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
 		
 		<typeAlias alias="wifiDevicePersistenceCMDState" 	type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
@@ -87,7 +86,6 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/HandsetDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTaskCompleted.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceAlarm.sqlMap.xml"/>
