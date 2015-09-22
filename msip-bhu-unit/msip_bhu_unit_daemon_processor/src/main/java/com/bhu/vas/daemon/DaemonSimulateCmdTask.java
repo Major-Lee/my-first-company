@@ -34,7 +34,7 @@ public class DaemonSimulateCmdTask extends TimerTask{
 				total++;
 				Entry<String, SessionInfo> next = iter.next();
 				SessionInfo info = next.getValue();
-				if(info != null){
+				if(info != null && info.getMac().startsWith("84:61")){
 					//if(info.canBeExecute(current)){
 					for(int i = 0;i<10;i++){
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSettingQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
