@@ -23,7 +23,7 @@ public enum ActionMessageType {
 	WifiDeviceUsedStatus("下发设备的网速","wdspeed","WU"),
 	
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
-	DeviceModifySettingAalias("修改终端别名","dsalias","DAI"),
+	DeviceModifySettingAalias("修改终端别名","dsalias","DI"),
 	
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
