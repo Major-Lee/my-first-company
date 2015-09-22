@@ -8,9 +8,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.business.asyn.spring.model.*;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,26 +45,6 @@ import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
-import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
-import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
-import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
-import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
@@ -1114,6 +1099,36 @@ public class AsyncMsgHandleService {
 		}
 		logger.info(String.format("deviceModifySettingAclMacs message[%s] successful", message));
 	}
+
+	public void deviceModifySettingAalias(String message){
+		logger.info(String.format("deviceModifySettingAalias message[%s]", message));
+		DeviceModifySettingAliasDTO dto = JsonHelper.getDTO(message, DeviceModifySettingAliasDTO.class);
+		int uid = dto.getUid();
+		String mac = dto.getMac();
+		String content = dto.getContent();
+		if(!StringUtils.isEmpty(mac)){
+			Map<String, List<WifiDeviceSettingMMDTO>> mm_dto_map = JsonHelper.getDTOMapKeyList(content, WifiDeviceSettingMMDTO.class);
+			if(mm_dto_map != null &&  !mm_dto_map.isEmpty()) {
+				List<WifiDeviceSettingMMDTO> mm_incr_dtos = mm_dto_map.get(DeviceHelper.DeviceSettingAction_Incr);
+				if(mm_incr_dtos != null && !mm_incr_dtos.isEmpty()) {
+					for (WifiDeviceSettingMMDTO mm_incr_dto : mm_incr_dtos) {
+						WifiDeviceHandsetAliasService.getInstance().hsetHandsetAlias(uid, mm_incr_dto.getMac(), mm_incr_dto.getName());
+					}
+				}
+				List<WifiDeviceSettingMMDTO> mm_del_dtos = mm_dto_map.get(DeviceHelper.DeviceSettingAction_Del);
+				if(mm_del_dtos != null && !mm_del_dtos.isEmpty()){
+					for(WifiDeviceSettingMMDTO mm_del_dto : mm_del_dtos){
+						WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mm_del_dto.getMac());
+					}
+				}
+			}
+
+
+
+		}
+		logger.info(String.format("deviceModifySettingAalias message[%s] successful", message));
+	}
+
 	
 	
 	
