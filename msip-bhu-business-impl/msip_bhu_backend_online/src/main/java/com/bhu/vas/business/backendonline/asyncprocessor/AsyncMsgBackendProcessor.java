@@ -113,6 +113,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case DeviceModifySettingAclMacs:
 							asyncMsgHandleService.deviceModifySettingAclMacs(message);
 							break;
+						case DeviceModifySettingAalias:
+							asyncMsgHandleService.deviceModifySettingAalias(message);
+							break;
 						case USERFETCHCAPTCHACODE:
 							asyncMsgHandleService.sendCaptchaCodeNotifyHandle(message);
 							break;

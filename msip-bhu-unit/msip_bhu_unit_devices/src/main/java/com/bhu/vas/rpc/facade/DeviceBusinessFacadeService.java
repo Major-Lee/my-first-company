@@ -1211,7 +1211,7 @@ public class DeviceBusinessFacadeService {
 									wifiDeviceSettingService.update(entity);
 									//修改配置成功的后续业务操作
 									this.taskModifyDeviceSettingCompletedDeliverMessage(task_with_paylaod.getUid(), 
-												wifiId, task_with_paylaod.getSubopt());
+												wifiId, task_with_paylaod.getSubopt(), task_with_paylaod.getContext_var());
 								}
 							}
 						}
@@ -1289,12 +1289,15 @@ public class DeviceBusinessFacadeService {
 	 * @param mac
 	 * @param subopt
 	 */
-	public void taskModifyDeviceSettingCompletedDeliverMessage(Integer uid, String mac, String subopt){
+	public void taskModifyDeviceSettingCompletedDeliverMessage(Integer uid, String mac, String subopt, String content){
 		OperationDS ods = OperationDS.getOperationDSFromNo(subopt);
 		if(ods != null){
 			switch(ods){
 				case DS_AclMacs:
 					deliverMessageService.sendDeviceModifySettingAclMacsActionMessage(uid, mac);
+					break;
+				case DS_MM: //修改昵称
+					deliverMessageService.sendDeviceModifySettingAaliasActionMessage(uid, mac, content);
 					break;
 				default:
 					break;

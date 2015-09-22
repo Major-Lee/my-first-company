@@ -316,6 +316,17 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 
+	public void sendDeviceModifySettingAaliasActionMessage(Integer uid, String mac, String content){
+		DeviceModifySettingAliasDTO dto = new DeviceModifySettingAliasDTO();
+		dto.setUid(uid);
+		dto.setMac(mac);
+		dto.setContent(content);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+
 	public void sendDeviceGroupCreateIndexMessage(String wifiIds, long gid, String type) {
 		WifiDeviceGroupAsynCreateIndexDTO dto = new WifiDeviceGroupAsynCreateIndexDTO();
 		dto.setWifiIds(wifiIds);
