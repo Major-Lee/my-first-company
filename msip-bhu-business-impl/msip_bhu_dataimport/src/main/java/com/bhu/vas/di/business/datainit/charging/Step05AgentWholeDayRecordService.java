@@ -32,7 +32,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  *
  */
 @Service
-public class Step04AgentWholeDayRecordService {
+public class Step05AgentWholeDayRecordService {
 	
 	@Resource
 	private UserService userSerivce;
@@ -123,7 +123,7 @@ public class Step04AgentWholeDayRecordService {
 		mdto.setHod(summary.getT_hod());
 		mdto.setHtx_bytes(summary.getT_htx_bytes());
 		mdto.setHrx_bytes(summary.getT_hrx_bytes());
-		
+		mdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 		agentWholeDayMService.save(mdto);
 		
 		//System.out.println("~~~~~~~size:"+lineHandsetRecordsMap.size());

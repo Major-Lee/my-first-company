@@ -34,7 +34,7 @@ public class WifiDeviceWholeDayMDTO {
 	private int handsets;
 	//当日终端连接次数 
 	private int  hct;
-	//handset onlineduration
+	//当日在线设备的连接终端的在线时长总和handset onlineduration
 	private long hod;
 	//handsets 上行流量
 	private long htx_bytes;

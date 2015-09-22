@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdao.WifiDeviceWholeMonthMDao;
-import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -70,12 +69,18 @@ public class WifiDeviceWholeMonthMService {
 		TypedAggregation<WifiDeviceWholeMonthMDTO> aggregation = newAggregation(WifiDeviceWholeMonthMDTO.class,
 				match(Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
 			    group("mac")
-			    	.sum("onlineduration").as("total_onlineduration")
-			    	.sum("connecttimes").as("total_connecttimes")
-			    	.sum("tx_bytes").as("total_tx_bytes")
-			    	.sum("rx_bytes").as("total_rx_bytes"),
+			    	.sum("dod").as("t_dod")
+			    	.sum("dct").as("t_dct")
+			    	.sum("dtx_bytes").as("t_dtx_bytes")
+			    	.sum("drx_bytes").as("t_drx_bytes")
+			    	//.sum("handsets").as("t_handsets")
+			    	.sum("hod").as("t_hod")
+			    	.sum("hct").as("t_hct")
+			    	.sum("htx_bytes").as("t_htx_bytes")
+			    	.sum("hrx_bytes").as("t_hrx_bytes")
+			    	.sum("handsets").as("t_handsets"),
 			    	//.sum("handsets").as("total_handsets"),
-			    sort(Direction.ASC, "total_onlineduration", "total_connecttimes")
+			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeMonthMDao.aggregate(aggregation, RecordSummaryDTO.class);
 		return aggregate;

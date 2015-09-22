@@ -37,6 +37,7 @@ public class AgentWholeDayMDTO {
 	private long htx_bytes;
 	//handsets 下行流量
 	private long hrx_bytes;
+	private String updated_at;
 	public String getId() {
 		return id;
 	}
@@ -115,6 +116,13 @@ public class AgentWholeDayMDTO {
 	}
 	public void setHrx_bytes(long hrx_bytes) {
 		this.hrx_bytes = hrx_bytes;
+	}
+	
+	public String getUpdated_at() {
+		return updated_at;
+	}
+	public void setUpdated_at(String updated_at) {
+		this.updated_at = updated_at;
 	}
 	public static String generateId(String date, int user){
 		StringBuffer idstring = new StringBuffer();

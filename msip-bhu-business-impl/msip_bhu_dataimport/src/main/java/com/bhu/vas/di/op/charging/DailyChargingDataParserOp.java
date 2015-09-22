@@ -2,18 +2,15 @@ package com.bhu.vas.di.op.charging;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.bhu.vas.di.business.datainit.charging.Step00ParserLogService;
 import com.bhu.vas.di.business.datainit.charging.Step01Result2FileService;
 import com.bhu.vas.di.business.datainit.charging.Step02DeviceWholeDayRecordService;
-import com.bhu.vas.di.business.datainit.charging.Step04AgentWholeDayRecordService;
+import com.bhu.vas.di.business.datainit.charging.Step04DeviceWholeMonthRecordService;
+import com.bhu.vas.di.business.datainit.charging.Step05AgentWholeDayRecordService;
 
 /**
  * 每日必须进行状态保活，每天凌晨需要把在线的设备重新写入到日志中，作为模拟登录，模拟登录的时间缺省为当日的起始时间，防止漏算了长时间在线的设备
@@ -31,8 +28,8 @@ public class DailyChargingDataParserOp {
 		Step01Result2FileService step01Result2FileService = (Step01Result2FileService)ctx.getBean("step01Result2FileService");
 		Step02DeviceWholeDayRecordService step02DeviceWholeDayRecordService = (Step02DeviceWholeDayRecordService)ctx.getBean("step02DeviceWholeDayRecordService");
 		
-		//Step03HandsetWholeDayRecordService step03HandsetWholeDayRecordService = (Step03HandsetWholeDayRecordService)ctx.getBean("step3HandsetWholeDayRecordService");
-		Step04AgentWholeDayRecordService step04AgentWholeDayRecordService = (Step04AgentWholeDayRecordService)ctx.getBean("step04AgentWholeDayRecordService");
+		Step04DeviceWholeMonthRecordService step04DeviceWholeMonthRecordService = (Step04DeviceWholeMonthRecordService)ctx.getBean("step04DeviceWholeMonthRecordService");
+		Step05AgentWholeDayRecordService step05AgentWholeDayRecordService = (Step05AgentWholeDayRecordService)ctx.getBean("step05AgentWholeDayRecordService");
 		//Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
 		long ts1 = System.currentTimeMillis();
 		
@@ -57,8 +54,12 @@ public class DailyChargingDataParserOp {
 		step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
 		long ts4 = System.currentTimeMillis();
 		System.out.println(String.format("Step2 Completed cost %s ms", ts4-ts3));
-		/*step04AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
+		step04DeviceWholeMonthRecordService.deviceMonthlyRecord2Mongo(date, step00ParserLogService.getDevice_records());
 		long ts5 = System.currentTimeMillis();
-		System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));*/
+		System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));
+		
+		step05AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
+		long ts6 = System.currentTimeMillis();
+		System.out.println(String.format("Step5 Completed cost %s ms", ts6-ts5));
 	}
 }
