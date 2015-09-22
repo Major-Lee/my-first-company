@@ -93,7 +93,7 @@ public class WifiDeviceWholeDayMService {
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")
 			    	.sum("hrx_bytes").as("t_hrx_bytes")
-			    	.sum("handsets").as("t_handsets"),
+			    	.avg("handsets").as("t_handsets"),
 			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
@@ -119,7 +119,7 @@ public class WifiDeviceWholeDayMService {
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")
 			    	.sum("hrx_bytes").as("t_hrx_bytes")
-			    	.sum("handsets").as("t_handsets"),
+			    	.avg("handsets").as("t_handsets"),
 			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
 		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);

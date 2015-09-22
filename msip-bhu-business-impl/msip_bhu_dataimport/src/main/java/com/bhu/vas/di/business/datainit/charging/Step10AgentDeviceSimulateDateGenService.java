@@ -11,8 +11,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.localunit.RandomData;
 import com.smartwork.msip.localunit.RandomPicker;
@@ -22,6 +24,9 @@ import com.smartwork.msip.localunit.RandomPicker;
 public class Step10AgentDeviceSimulateDateGenService {
 	@Resource
 	private AgentDeviceClaimService agentDeviceClaimService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	public void deviceDataGen(String date,Map<String, LineRecords> lineDeviceRecordsMap){
 		buildSimulateSN();
 		AgentDeviceClaim agentDeviceClaim = null;
@@ -42,6 +47,16 @@ public class Step10AgentDeviceSimulateDateGenService {
             else
             	agentDeviceClaim.setUid(100083);
             agentDeviceClaimService.insert(agentDeviceClaim);
+            
+            WifiDevice device  = wifiDeviceService.getById(key);
+            if(device == null){
+            	device = new WifiDevice();
+            	device.setId(key);
+            	device.setSn(sn);
+                device.setAgentuser(agentDeviceClaim.getUid());
+                wifiDeviceService.insert(device);
+            }
+            
 			System.out.println(sn);
 		}
 	}

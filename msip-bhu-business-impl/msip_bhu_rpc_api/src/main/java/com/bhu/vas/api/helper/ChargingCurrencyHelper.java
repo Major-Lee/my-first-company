@@ -11,6 +11,6 @@ public class ChargingCurrencyHelper {
 	 * @return
 	 */
 	public static double currency(long onlineduration){
-		return onlineduration/(3600*1000)*2;
+		return onlineduration/(5*3600*1000)*2;
 	}
 }

@@ -5,13 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.AgentBulltinType;
+import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
@@ -23,11 +22,16 @@ import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
+import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
+import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeMonthMService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -61,6 +65,9 @@ public class AgentFacadeService {
 
     @Resource
     private AgentBulltinBoardService agentBulltinBoardService;
+    
+    @Resource
+    private WifiDeviceWholeMonthMService wifiDeviceWholeMonthMService;
 
     public int claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
@@ -112,15 +119,23 @@ public class AgentFacadeService {
         querymc.setPageNumber(pageNo);
         querymc.setPageSize(pageSize);
         List<WifiDevice> devices = wifiDeviceService.findModelByModelCriteria(querymc);
-        List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
+        
+        List<String> device_macs = IdHelper.getPKs(devices, String.class);
+        //取当前时间的上月数据 和所有数据的汇总
+        String previous_month_key = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfPreviousMonth(), DateTimeHelper.FormatPattern11);
+		
+        List<WifiDeviceWholeMonthMDTO> monthlyDtos = wifiDeviceWholeMonthMService.fetchByDate(device_macs, previous_month_key);
+        List<RecordSummaryDTO> summaryDtos = wifiDeviceWholeMonthMService.summaryAggregationBetween(device_macs, null, null);
+        
+       /*List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
             for (WifiDevice wifiDevice : devices) {
-                vto = buildAgentDeviceClaimVTO(wifiDevice);
+                vto = buildAgentDeviceClaimVTO(wifiDevice,monthlyDtos,summaryDtos);
                 vtos.add(vto);
             }
-        }
-
+        }*/
+        List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices,monthlyDtos,summaryDtos);
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
         agentDeviceVTO.setTotal_count(total_count);
@@ -131,6 +146,67 @@ public class AgentFacadeService {
 
     }
 
+    private List<AgentDeviceClaimVTO> buildAgentDeviceClaimVTOs(List<WifiDevice> devices,List<WifiDeviceWholeMonthMDTO> monthlyDtos,List<RecordSummaryDTO> summaryDtos){
+    	List<AgentDeviceClaimVTO>  results = new ArrayList<AgentDeviceClaimVTO>();
+    	AgentDeviceClaimVTO vto = null;
+    	WifiDeviceWholeMonthMDTO wholeMonthDTO = null;
+    	RecordSummaryDTO summaryDTO = null;
+        for (WifiDevice device : devices) {
+        	String mac = device.getId();
+        	for(WifiDeviceWholeMonthMDTO dto:monthlyDtos){
+        		if(dto.getMac().equals(mac)){
+        			wholeMonthDTO = dto;
+        			break;
+        		}
+        	}
+        	
+        	for(RecordSummaryDTO dto:summaryDtos){
+        		if(dto.getId().equals(mac)){
+        			summaryDTO = dto;
+        			break;
+        		}
+        	}
+            vto = buildAgentDeviceClaimVTO(device,wholeMonthDTO,summaryDTO);
+            results.add(vto);
+        }
+        return results;
+    }
+    
+    private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(WifiDevice wifiDevice,WifiDeviceWholeMonthMDTO wholeMonthDTO,RecordSummaryDTO summaryDTO) {
+        AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
+        vto.setSn(wifiDevice.getSn());
+        vto.setMac(wifiDevice.getId());
+        vto.setOnline(wifiDevice.isOnline());
+        long total_dod =  summaryDTO != null?summaryDTO.getT_dod():0l;
+        vto.setUptime(DateTimeHelper.getTimeDiff(total_dod));
+        vto.setTotal_income(ChargingCurrencyHelper.currency(total_dod));
+        long previous_dod = wholeMonthDTO !=null ?wholeMonthDTO.getDod():0l;
+        vto.setMonth_income(ChargingCurrencyHelper.currency(previous_dod));
+        long total_handsets =  summaryDTO != null?summaryDTO.getT_handsets():0l;
+        vto.setHd_count(total_handsets);
+        vto.setCreated_at(wifiDevice.getCreated_at());
+        vto.setOsv(wifiDevice.getOem_swver());
+        //vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
+        //todo(bluesand):收入
+        //vto.setMonth_income();
+//            vto.setTotal_income();
+        vto.setAdr(wifiDevice.getFormatted_address());
+        vto.setUid(wifiDevice.getAgentuser());
+
+        AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
+        if (agentDeviceClaim != null) {
+            vto.setStock_code(agentDeviceClaim.getStock_code());
+            vto.setStock_name(agentDeviceClaim.getStock_name());
+            vto.setSold_at(agentDeviceClaim.getSold_at());
+            vto.setClaim_at(agentDeviceClaim.getClaim_at());
+
+        }
+        return vto;
+    }
+
+    
+    
+    
 
     public AgentDeviceVTO pageClaimedAgentDeviceById(int status, int pageNo, int pageSize) {
         ModelCriteria totalmc = new ModelCriteria();
@@ -180,6 +256,7 @@ public class AgentFacadeService {
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
             for (WifiDevice wifiDevice : devices) {
+            	
                 vto = buildAgentDeviceClaimVTO(wifiDevice);
                 vtos.add(vto);
             }
@@ -194,6 +271,7 @@ public class AgentFacadeService {
         return agentDeviceVTO;
     }
 
+    
     public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 1);

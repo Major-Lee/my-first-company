@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 9/18/15.
  */
+@SuppressWarnings("serial")
 public class AgentDeviceVTO implements Serializable {
 
     private TailPage<AgentDeviceClaimVTO> vtos;

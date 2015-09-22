@@ -45,9 +45,9 @@ public class ChargingTest {
 		macs.add("84:82:f4:1a:c5:1c");
 		macs.add("84:78:8b:6d:5a:b0");
 		macs.add("84:82:f4:1a:4b:93");
-		List<RecordSummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregationWith(macs,"2015-09-09");
+		List<RecordSummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregationWith(macs,"2015-09-18");
 		for(RecordSummaryDTO dto:summaryAggregation){
-			System.out.println(String.format("B mac[%s] total_onlineduration[%s] total_connecttimes[%s]",dto.getId(), dto.getT_dod(),dto.getT_dct()));
+			System.out.println(String.format("B id[%s] total_onlineduration[%s] total_connecttimes[%s]",dto.getId(), dto.getT_dod(),dto.getT_dct()));
 		}
 		
 /*		List<String> macs = new ArrayList<String>();
@@ -68,13 +68,13 @@ public class ChargingTest {
 		upsertFlowBytes = wifiDeviceWholeDayMService.upsertFlowBytes("2015-09-09", "84:82:f4:1a:c5:1c:bb", 78645023l, 1278645023l);
 		System.out.println(upsertFlowBytes.getUpsertedId()+"   "+upsertFlowBytes.getN() +" "+upsertFlowBytes.isUpdateOfExisting());*/
 	
-		List<Integer> users = new ArrayList<Integer>();
+		/*List<Integer> users = new ArrayList<Integer>();
 		users.add(100083);
 		users.add(100084);
 		List<RecordSummaryDTO> summaryAggregationBetween = agentWholeDayMService.summaryAggregationBetween(users, "2015-09-09", "2015-09-17");
 	
 		for(RecordSummaryDTO dto:summaryAggregationBetween){
 			System.out.println(dto);
-		}
+		}*/
 	}
 }

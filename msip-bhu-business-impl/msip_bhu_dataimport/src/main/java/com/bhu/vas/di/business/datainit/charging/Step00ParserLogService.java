@@ -42,6 +42,11 @@ public class Step00ParserLogService {
 	//private Map<String,Set<String>> device_handset_records = new HashMap<>();
 	//终端 在线区间段dmac -> <hmac -》LineRecords>
 	private Map<String,Map<String,LineRecords>> device_handset_records = new HashMap<>();
+	
+	public void reset(){
+		device_records.clear();
+		device_handset_records.clear();
+	}
 	/**
 	 * 分析指定日期的日志
 	 * @param date yyyy-MM-dd

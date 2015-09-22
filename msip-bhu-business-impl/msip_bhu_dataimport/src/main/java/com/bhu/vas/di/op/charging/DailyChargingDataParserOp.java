@@ -11,6 +11,7 @@ import com.bhu.vas.di.business.datainit.charging.Step01Result2FileService;
 import com.bhu.vas.di.business.datainit.charging.Step02DeviceWholeDayRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step04DeviceWholeMonthRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step05AgentWholeDayRecordService;
+import com.bhu.vas.di.business.datainit.charging.Step10AgentDeviceSimulateDateGenService;
 
 /**
  * 每日必须进行状态保活，每天凌晨需要把在线的设备重新写入到日志中，作为模拟登录，模拟登录的时间缺省为当日的起始时间，防止漏算了长时间在线的设备
@@ -21,7 +22,7 @@ import com.bhu.vas.di.business.datainit.charging.Step05AgentWholeDayRecordServic
 public class DailyChargingDataParserOp {
 
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		String date = "2015-09-10";
+		//String date = "2015-09-10";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		
 		Step00ParserLogService step00ParserLogService = (Step00ParserLogService)ctx.getBean("step00ParserLogService");
@@ -30,36 +31,41 @@ public class DailyChargingDataParserOp {
 		
 		Step04DeviceWholeMonthRecordService step04DeviceWholeMonthRecordService = (Step04DeviceWholeMonthRecordService)ctx.getBean("step04DeviceWholeMonthRecordService");
 		Step05AgentWholeDayRecordService step05AgentWholeDayRecordService = (Step05AgentWholeDayRecordService)ctx.getBean("step05AgentWholeDayRecordService");
-		//Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
+		Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
 		long ts1 = System.currentTimeMillis();
+		//String[] dates = new String[]{"2015-09-10","2015-09-11","2015-09-12","2015-09-13","2015-09-14","2015-09-15","2015-09-16","2015-09-17"};
+		String[] dates = new String[]{"2015-09-18","2015-09-19","2015-09-20","2015-09-21"};
 		
-		//DailyChargingDataParserOp op = new DailyChargingDataParserOp();
-		step00ParserLogService.parser(date);
-		step00ParserLogService.processEnd(step00ParserLogService.getDevice_records());
-		System.out.println("Device_records size:"+step00ParserLogService.getDevice_records().size());
-		System.out.println("Device_handset_records size:"+step00ParserLogService.getDevice_handset_records().size());
-		
-		/*int handsets = 0;
-		Iterator<Entry<String, Map<String, LineRecords>>> iterator = step00ParserLogService.getDevice_handset_records().entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, Map<String, LineRecords>> next = iterator.next();
-			handsets+=next.getValue().size();
+		for(String date:dates){
+			//DailyChargingDataParserOp op = new DailyChargingDataParserOp();
+			step00ParserLogService.reset();
+			step00ParserLogService.parser(date);
+			step00ParserLogService.processEnd(step00ParserLogService.getDevice_records());
+			System.out.println("Device_records size:"+step00ParserLogService.getDevice_records().size());
+			System.out.println("Device_handset_records size:"+step00ParserLogService.getDevice_handset_records().size());
+			
+			/*int handsets = 0;
+			Iterator<Entry<String, Map<String, LineRecords>>> iterator = step00ParserLogService.getDevice_handset_records().entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, Map<String, LineRecords>> next = iterator.next();
+				handsets+=next.getValue().size();
+			}
+			System.out.println(handsets);*/
+			long ts2 = System.currentTimeMillis();
+			//step10AgentDeviceSimulateDateGenService.deviceDataGen(date, step00ParserLogService.getDevice_records());
+			System.out.println(String.format("Step1 Completed cost %s ms", ts2-ts1));
+			//step01Result2FileService.records2File(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
+			long ts3 = System.currentTimeMillis();
+			step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
+			long ts4 = System.currentTimeMillis();
+			System.out.println(String.format("Step2 Completed cost %s ms", ts4-ts3));
+			step04DeviceWholeMonthRecordService.deviceMonthlyRecord2Mongo(date, step00ParserLogService.getDevice_records());
+			long ts5 = System.currentTimeMillis();
+			System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));
+			
+			step05AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
+			long ts6 = System.currentTimeMillis();
+			System.out.println(String.format("Step5 Completed cost %s ms", ts6-ts5));
 		}
-		System.out.println(handsets);*/
-		long ts2 = System.currentTimeMillis();
-		//step10AgentDeviceSimulateDateGenService.deviceDataGen(date, step00ParserLogService.getDevice_records());
-		System.out.println(String.format("Step1 Completed cost %s ms", ts2-ts1));
-		//step01Result2FileService.records2File(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
-		long ts3 = System.currentTimeMillis();
-		step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
-		long ts4 = System.currentTimeMillis();
-		System.out.println(String.format("Step2 Completed cost %s ms", ts4-ts3));
-		step04DeviceWholeMonthRecordService.deviceMonthlyRecord2Mongo(date, step00ParserLogService.getDevice_records());
-		long ts5 = System.currentTimeMillis();
-		System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));
-		
-		step05AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
-		long ts6 = System.currentTimeMillis();
-		System.out.println(String.format("Step5 Completed cost %s ms", ts6-ts5));
 	}
 }
