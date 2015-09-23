@@ -22,8 +22,11 @@ import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
+import com.bhu.vas.business.ds.agent.dto.SettlementSummaryDTO;
+import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
+import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -31,12 +34,12 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.cores.plugins.filterhelper.StringHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.localunit.RandomData;
 
@@ -53,6 +56,9 @@ public class AgentStatisticsUnitFacadeService {
 	
 	@Resource
 	private AgentWholeMonthMService agentWholeMonthMService;
+
+	@Resource
+	private AgentSettlementsRecordMService agentSettlementsRecordMService;
 	
 	@Resource
 	private BusinessCacheService businessCacheService;
@@ -152,6 +158,14 @@ public class AgentStatisticsUnitFacadeService {
 		}
 	}
 	
+	private double fetchSettlementSummary(String agent,List<SettlementSummaryDTO> summary){
+		if(summary != null && !summary.isEmpty()){
+			for(SettlementSummaryDTO summaryDTO:summary){
+				if(agent.equals(summaryDTO.getId())) return summaryDTO.getMoney();
+			}
+		}
+		return 0.00d;
+	}
 	/**
 	 * 代理商结算页面列表（管理员可以访问）
 	 * 1、获取代理商列表
@@ -159,12 +173,180 @@ public class AgentStatisticsUnitFacadeService {
 	 * 3、获取代理商本月的列表记录，作为未结算金额
 	 * 4、获取代理商上月的列表记录，作为上月结算金额
 	 * @param uid
-	 * @param monthDateEnd 截止时间点 yyyy-MM-dd 其中的月份代表本月
+	 * @param viewstatus -1 所有 1 settled 0 unsettled
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize) {
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus, int pageNo, int pageSize){
+		if(viewstatus == -1){
+			return pageTotalSettlements(operator_user,pageNo, pageSize);
+		}else if(viewstatus == 1){
+			return pageSettledSettlements(operator_user,pageNo, pageSize);
+		}else{
+			return pageUnSettledSettlements(operator_user,pageNo, pageSize);
+		}
+	}
+	
+	private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
+			//获取主界面显示结构 agents 列表
+			List<SettlementSummaryDTO> summaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_View_All, null, null, pageNo, pageSize);
+			List<Integer> agents = new ArrayList<Integer>();
+			for(SettlementSummaryDTO summaryDTO:summaryMain){
+				agents.add(Integer.parseInt(summaryDTO.getId()));
+			}
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(statistics);
+			if(!agents.isEmpty()){
+				//取未结清记录汇总
+				List<SettlementSummaryDTO> unsettledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Created, null, null, 1, agents.size());
+				//取已结清记录汇总
+				List<SettlementSummaryDTO> settledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Done, null, null, 1, agents.size());
+				List<User> users = userService.findByIds(agents, true, true);
+				SettlementVTO vto = null;
+				int index = 0;
+				for(SettlementSummaryDTO summaryDTO:summaryMain){
+					vto = new SettlementVTO();
+					User user = users.get(index);
+					vto.setIndex(index);
+					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
+					vto.setUid(user.getId());
+					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
+					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
+					if(previosMonth_settlement != null)
+						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
+					else
+						vto.setLsr("0.00");
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummary),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummary),2))));
+					settleVtos.add(vto);
+				}
+			}else{
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+			}
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getTs(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	private RpcResponseDTO<SettlementPageVTO> pageSettledSettlements(int operator_user,int pageNo, int pageSize) {
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
+			//去所有已结清按agent group by的记录
+			List<SettlementSummaryDTO> settledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_Done, null, null, pageNo, pageSize);
+			List<Integer> agents = new ArrayList<Integer>();
+			for(SettlementSummaryDTO summaryDTO:settledSummaryMain){
+				agents.add(Integer.parseInt(summaryDTO.getId()));
+			}
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(statistics);
+			if(!agents.isEmpty()){
+				//取未结清记录汇总
+				List<SettlementSummaryDTO> unsettledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Created, null, null, 1, agents.size());
+				List<User> users = userService.findByIds(agents, true, true);
+				SettlementVTO vto = null;
+				int index = 0;
+				for(SettlementSummaryDTO summaryDTO:settledSummaryMain){
+					vto = new SettlementVTO();
+					User user = users.get(index);
+					vto.setIndex(index);
+					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
+					vto.setUid(user.getId());
+					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
+					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
+					if(previosMonth_settlement != null)
+						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
+					else
+						vto.setLsr("0.00");
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummaryMain),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummary),2))));
+					settleVtos.add(vto);
+				}
+			}else{
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+			}
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getSd(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	private RpcResponseDTO<SettlementPageVTO> pageUnSettledSettlements(int operator_user,int pageNo, int pageSize) {
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
+			//去所有已结清按agent group by的记录
+			List<SettlementSummaryDTO> unsettledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_Created, null, null, pageNo, pageSize);
+			List<Integer> agents = new ArrayList<Integer>();
+			for(SettlementSummaryDTO summaryDTO:unsettledSummaryMain){
+				agents.add(Integer.parseInt(summaryDTO.getId()));
+			}
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(statistics);
+			if(!agents.isEmpty()){
+				//取未结清记录汇总
+				List<SettlementSummaryDTO> settledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Done, null, null, 1, agents.size());
+				List<User> users = userService.findByIds(agents, true, true);
+				SettlementVTO vto = null;
+				int index = 0;
+				for(SettlementSummaryDTO summaryDTO:unsettledSummaryMain){
+					vto = new SettlementVTO();
+					User user = users.get(index);
+					vto.setIndex(index);
+					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
+					vto.setUid(user.getId());
+					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
+					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
+					if(previosMonth_settlement != null)
+						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
+					else
+						vto.setLsr("0.00");
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummary),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummaryMain),2))));
+					settleVtos.add(vto);
+				}
+			}else{
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+			}
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getUs(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	
+	
+	
+/*	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -245,7 +427,7 @@ public class AgentStatisticsUnitFacadeService {
 				return dto;
 		}
 		return null;
-	}
+	}*/
 	
 	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser){
 		if(agentuser <= 0){

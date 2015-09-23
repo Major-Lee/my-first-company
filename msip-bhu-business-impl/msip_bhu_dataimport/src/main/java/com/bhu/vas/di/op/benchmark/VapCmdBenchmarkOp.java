@@ -1,12 +1,8 @@
 package com.bhu.vas.di.op.benchmark;
 
-import java.util.ArrayList;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 
@@ -32,9 +28,8 @@ public class VapCmdBenchmarkOp{
 		
 		
 		while(true){
-			Thread.sleep(10*60*1000);
 			daemonRpcService.wifiDevicesSimulateCmdTimer();
-			Thread.sleep(5*60*1000);
+			Thread.sleep(10*60*1000);
 		}
 		//daemonRpcService.wifiDevicesSimulateCmdTimer();
 /*		String[] macs = new String[]{"42:43:44:42:41:42","42:43:44:42:41:43","42:43:44:42:41:44","42:43:44:42:41:45","42:43:44:42:41:46"};

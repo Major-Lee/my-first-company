@@ -72,16 +72,16 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid) {
-		logger.info(String.format("userDetail with uid[%s]",uid));
-		return agentUserUnitFacadeService.userDetail(uid);
+	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid,int tid) {
+		logger.info(String.format("userDetail with uid[%s] tid[%s]",uid,tid));
+		return agentUserUnitFacadeService.userDetail(uid,tid);
 	}
 
 	@Override
-	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid, String nick,
+	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid, String nick,
 			String org, String addr1, String addr2, String memo) {
-		logger.info(String.format("userModify with uid[%s] nick[%s] org[%s]",uid,nick,org));
-		return agentUserUnitFacadeService.userModify(uid, nick, org, addr1, addr2, memo);
+		logger.info(String.format("userModify with uid[%s] tid[%s] nick[%s] org[%s]",uid,tid,nick,org));
+		return agentUserUnitFacadeService.userModify(uid,tid, nick, org, addr1, addr2, memo);
 	}
 
 }

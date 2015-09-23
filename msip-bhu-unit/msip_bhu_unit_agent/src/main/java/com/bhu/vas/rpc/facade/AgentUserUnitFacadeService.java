@@ -262,9 +262,9 @@ public class AgentUserUnitFacadeService {
 
 	}
 	
-	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid) {
+	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid,int tid) {
 		try{
-			User user  = userService.getById(uid);
+			User user  = userService.getById(tid);
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 			}
@@ -279,10 +279,10 @@ public class AgentUserUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid, String nick,
+	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid, String nick,
 			String org, String addr1, String addr2, String memo) {
 		try{
-			User user  = userService.getById(uid);
+			User user  = userService.getById(tid);
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 			}

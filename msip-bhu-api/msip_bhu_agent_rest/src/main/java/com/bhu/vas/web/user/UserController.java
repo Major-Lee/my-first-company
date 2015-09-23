@@ -157,10 +157,11 @@ public class UserController extends BaseController{
 	@RequestMapping(value="/detail",method={RequestMethod.POST})
 	public void detail(
 			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) Integer tid
 			) {
 		try{
-			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userDetail(uid);
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userDetail(uid,tid);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
@@ -175,6 +176,7 @@ public class UserController extends BaseController{
 	public void modify(
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) Integer tid,
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = false) String org,
 			@RequestParam(required = false) String addr1,
@@ -182,7 +184,7 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String memo
 			) {
 		try{
-			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid, nick, org, addr1, addr2, memo);
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid,tid, nick, org, addr1, addr2, memo);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else

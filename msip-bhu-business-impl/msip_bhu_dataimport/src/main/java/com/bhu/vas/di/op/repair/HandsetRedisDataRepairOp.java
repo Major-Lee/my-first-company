@@ -1,8 +1,6 @@
 package com.bhu.vas.di.op.repair;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
@@ -12,14 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * 数据迁移

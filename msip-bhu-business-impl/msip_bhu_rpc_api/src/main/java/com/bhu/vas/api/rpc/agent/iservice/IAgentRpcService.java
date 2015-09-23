@@ -117,11 +117,12 @@ public interface IAgentRpcService {
     /**
      * 代理商结算列表页面
      * @param operator_user 操作用户
+     * @param viewstatus -1 所有 1 settled 0 unsettled
      * @param pageNo
      * @param pageSize
      * @return
      */
-    public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize);
+    public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,int pageNo, int pageSize);
     
     /**
      * 获取代理商代理设备的所有数量、在线数量、离线数量

@@ -98,15 +98,15 @@ public class AgentController {
     public void settlements_pages(HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = false) String date,
+            @RequestParam(required = false, defaultValue="-1") int status,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
     		){
     	try{
-    		if(StringUtils.isEmpty(date)){
+    		/*if(StringUtils.isEmpty(date)){
     			date = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5);
-    		}
-			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid,date, pageNo, pageSize);
+    		}*/
+			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid,status, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
