@@ -226,6 +226,7 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummary),2))));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummary),2))));
 					settleVtos.add(vto);
+					index++;
 				}
 			}else{
 				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
