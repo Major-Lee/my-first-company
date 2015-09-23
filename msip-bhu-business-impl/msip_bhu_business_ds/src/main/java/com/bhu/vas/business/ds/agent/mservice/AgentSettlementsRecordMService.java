@@ -1,11 +1,11 @@
 package com.bhu.vas.business.ds.agent.mservice;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.skip;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.util.List;
 
@@ -130,6 +130,7 @@ public class AgentSettlementsRecordMService {
 			unsettled_criteria.and("agent").is(agent);
 			settled_criteria.and("agent").is(agent);
 		}
+		
 		TypedAggregation<AgentSettlementsRecordMDTO> total_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				group("agent"),//.count().as("count1"),
 				group().count().as("count")
