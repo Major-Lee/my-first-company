@@ -194,7 +194,7 @@ public class AgentStatisticsUnitFacadeService {
 		List<SettlementVTO> settleVtos = null;
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
-			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
+			SettlementStatisticsVTO statistics = this.statistics(-1);
 			//获取主界面显示结构 agents 列表
 			ModelCriteria mc_user = new ModelCriteria();
 			mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
@@ -253,7 +253,7 @@ public class AgentStatisticsUnitFacadeService {
 		List<SettlementVTO> settleVtos = null;
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
-			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
+			SettlementStatisticsVTO statistics = this.statistics(-1);
 			//去所有已结清按agent group by的记录
 			List<SettlementSummaryDTO> settledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_Done, null, null, pageNo, pageSize);
 			List<Integer> agents = new ArrayList<Integer>();
@@ -305,7 +305,7 @@ public class AgentStatisticsUnitFacadeService {
 		List<SettlementVTO> settleVtos = null;
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
-			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
+			SettlementStatisticsVTO statistics = this.statistics(-1);
 			//去所有已结清按agent group by的记录
 			List<SettlementSummaryDTO> unsettledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_Created, null, null, pageNo, pageSize);
 			List<Integer> agents = new ArrayList<Integer>();
@@ -352,7 +352,14 @@ public class AgentStatisticsUnitFacadeService {
 		}
 	}
 	
-	
+	private SettlementStatisticsVTO statistics(int agent){
+		SettlementStatisticsVTO result = agentSettlementsRecordMService.statistics(agent);
+		ModelCriteria mc_user = new ModelCriteria();
+		mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		int total = userService.countByModelCriteria(mc_user);
+		result.setTs(total);
+		return result;
+	}
 	
 	
 /*	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize) {
