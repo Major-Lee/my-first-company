@@ -287,20 +287,20 @@ public class AgentUserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 			}
 			UserTypeValidateService.validConsoleOrAgentUser(user);
-			if(StringUtils.isEmpty(nick)){
+			if(StringUtils.isNotEmpty(nick)){
 				user.setNick(nick);;
 			}
-			if(StringUtils.isEmpty(org)){
+			if(StringUtils.isNotEmpty(org)){
 				user.setOrg(org);
 			}
 			
-			if(StringUtils.isEmpty(addr1)){
+			if(StringUtils.isNotEmpty(addr1)){
 				user.setAddr1(addr1);
 			}
-			if(StringUtils.isEmpty(addr2)){
+			if(StringUtils.isNotEmpty(addr2)){
 				user.setAddr2(addr2);
 			}
-			if(StringUtils.isEmpty(memo)){
+			if(StringUtils.isNotEmpty(memo)){
 				user.setMemo(memo);
 			}
 			this.userService.update(user);
