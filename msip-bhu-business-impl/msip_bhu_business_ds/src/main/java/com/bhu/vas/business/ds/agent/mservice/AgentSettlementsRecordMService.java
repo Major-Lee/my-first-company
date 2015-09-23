@@ -131,7 +131,7 @@ public class AgentSettlementsRecordMService {
 			settled_criteria.and("agent").is(agent);
 		}
 		
-		TypedAggregation<AgentSettlementsRecordMDTO> total_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
+		/*TypedAggregation<AgentSettlementsRecordMDTO> total_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				group("agent"),//.count().as("count1"),
 				group().count().as("count")
 			    //group("status","agent")
@@ -141,7 +141,7 @@ public class AgentSettlementsRecordMService {
 		if(total_aggregate != null && !total_aggregate.isEmpty()){
 			long total = total_aggregate.get(0).getCount();
 			result.setTs(total);
-		}
+		}*/
 		TypedAggregation<AgentSettlementsRecordMDTO> unsettled_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				match(unsettled_criteria),
 				group("agent"),//.count().as("count1"),
