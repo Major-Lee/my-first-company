@@ -75,8 +75,8 @@ public interface IAgentUserRpcService {
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
 	
 	
-	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid);
-	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,
+	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid,int tid);
+	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid,
 			String nick,
 			String org,
 			String addr1,

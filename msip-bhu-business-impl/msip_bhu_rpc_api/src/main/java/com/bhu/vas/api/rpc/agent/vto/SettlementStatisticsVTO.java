@@ -4,11 +4,11 @@ package com.bhu.vas.api.rpc.agent.vto;
 public class SettlementStatisticsVTO implements java.io.Serializable{
 	private int u;
 	//total settle num 所有的
-	private int ts;
+	private long ts;
 	//settled num 已经结清
-	private int sd;
+	private long sd;
 	//un settled  未结清
-	private int us;
+	private long us;
 	//数据生成时间cached_at
 	private String c_at;
 	public int getU() {
@@ -17,22 +17,22 @@ public class SettlementStatisticsVTO implements java.io.Serializable{
 	public void setU(int u) {
 		this.u = u;
 	}
-	public int getTs() {
+	public long getTs() {
 		return ts;
 	}
-	public void setTs(int ts) {
+	public void setTs(long ts) {
 		this.ts = ts;
 	}
-	public int getSd() {
+	public long getSd() {
 		return sd;
 	}
-	public void setSd(int sd) {
+	public void setSd(long sd) {
 		this.sd = sd;
 	}
-	public int getUs() {
+	public long getUs() {
 		return us;
 	}
-	public void setUs(int us) {
+	public void setUs(long us) {
 		this.us = us;
 	}
 	public String getC_at() {
