@@ -130,20 +130,28 @@ public class AgentSettlementsRecordMService {
 			unsettled_criteria.and("agent").is(agent);
 			settled_criteria.and("agent").is(agent);
 		}
-		long total = 0l;//
+		TypedAggregation<AgentSettlementsRecordMDTO> total_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
+				group("agent"),//.count().as("count1"),
+				group().count().as("count")
+			    //group("status","agent")
+			    	//.count().as("count")
+			);
+		List<SettlementCountDTO> total_aggregate = agentSettlementsRecordMDao.aggregate(total_aggregation, SettlementCountDTO.class);
+		if(total_aggregate != null && !total_aggregate.isEmpty()){
+			long total = total_aggregate.get(0).getCount();
+			result.setTs(total);
+		}
 		TypedAggregation<AgentSettlementsRecordMDTO> unsettled_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				match(unsettled_criteria),
 				group("agent"),//.count().as("count1"),
 				group().count().as("count")
 			    //group("status","agent")
 			    	//.count().as("count")
-			    	
 			);
 		List<SettlementCountDTO> unsettled_aggregate = agentSettlementsRecordMDao.aggregate(unsettled_aggregation, SettlementCountDTO.class);
 		if(unsettled_aggregate != null && !unsettled_aggregate.isEmpty()){
 			long us = unsettled_aggregate.get(0).getCount();
 			result.setUs(us);
-			total += us;
 		}
 		
 		TypedAggregation<AgentSettlementsRecordMDTO> settled_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
@@ -156,9 +164,8 @@ public class AgentSettlementsRecordMService {
 		if(settled_aggregate != null && !settled_aggregate.isEmpty()){
 			long sd = settled_aggregate.get(0).getCount();
 			result.setSd(sd);
-			total += sd;
 		}
-		result.setTs(total);
+		
 		result.setU(agent);
 		result.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
 		return result;
