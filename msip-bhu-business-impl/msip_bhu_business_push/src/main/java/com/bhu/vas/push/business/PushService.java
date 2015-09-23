@@ -149,12 +149,8 @@ public class PushService{
 											if (dto.isAlias_on()) { //开启陌生人终端和昵称,陌生人不存在昵称
 												List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
 												if (!bindDevices.isEmpty()) {
-													if (WifiDeviceHandsetAliasService.getInstance().
-															hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac())) {
-														need_push = true;
-													} else {
-														need_push = false;
-													}
+													need_push = WifiDeviceHandsetAliasService.getInstance().
+															hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac());
 												} else {
 													need_push = false;
 												}
@@ -167,12 +163,9 @@ public class PushService{
 										if (dto.isAlias_on()) { //关闭陌生,开启昵称
 											List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
 											if (!bindDevices.isEmpty()) {
-												if (WifiDeviceHandsetAliasService.getInstance().
-														hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac())) {
-													need_push = true;
-												} else {
-													need_push = false;
-												}
+												need_push = WifiDeviceHandsetAliasService.getInstance().
+														hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac());
+
 											} else {
 												need_push = false;
 											}
@@ -180,9 +173,6 @@ public class PushService{
 											need_push = true;
 										}
 									}
-
-
-
 
 									if(need_push){
 										PushMsg pushMsg = this.generatePushMsg(presentDto);
