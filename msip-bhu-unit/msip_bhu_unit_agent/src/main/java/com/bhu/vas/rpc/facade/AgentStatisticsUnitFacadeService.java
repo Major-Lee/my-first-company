@@ -34,6 +34,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -195,11 +196,16 @@ public class AgentStatisticsUnitFacadeService {
 			settleVtos = new ArrayList<SettlementVTO>();
 			SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(-1);
 			//获取主界面显示结构 agents 列表
-			List<SettlementSummaryDTO> summaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_View_All, null, null, pageNo, pageSize);
-			List<Integer> agents = new ArrayList<Integer>();
-			for(SettlementSummaryDTO summaryDTO:summaryMain){
+			ModelCriteria mc_user = new ModelCriteria();
+			mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+			mc_user.setPageNumber(pageNo);
+			mc_user.setPageSize(pageSize);
+			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
+			List<Integer> agents = IdHelper.getPKs(userPages.getItems(), Integer.class);
+			//List<SettlementSummaryDTO> summaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_View_All, null, null, pageNo, pageSize);
+			/*for(SettlementSummaryDTO summaryDTO:summaryMain){
 				agents.add(Integer.parseInt(summaryDTO.getId()));
-			}
+			}*/
 			result_page = new SettlementPageVTO();
 			result_page.setStatistics(statistics);
 			if(!agents.isEmpty()){
@@ -207,14 +213,14 @@ public class AgentStatisticsUnitFacadeService {
 				List<SettlementSummaryDTO> unsettledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Created, null, null, 1, agents.size());
 				//取已结清记录汇总
 				List<SettlementSummaryDTO> settledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Done, null, null, 1, agents.size());
-				List<User> users = userService.findByIds(agents, true, true);
+				//List<User> users = userService.findByIds(agents, true, true);
 				SettlementVTO vto = null;
 				int index = 0;
-				for(SettlementSummaryDTO summaryDTO:summaryMain){
+				//for(SettlementSummaryDTO summaryDTO:summaryMain){
+				for(User user:userPages.getItems()){
 					vto = new SettlementVTO();
-					User user = users.get(index);
 					vto.setIndex(index);
-					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
+					vto.setOrg(user.getOrg());
 					vto.setUid(user.getId());
 					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
 					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
@@ -223,8 +229,8 @@ public class AgentStatisticsUnitFacadeService {
 						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
 					else
 						vto.setLsr("0.00");
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummary),2))));
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummary),2))));
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(user.getId().toString(),settledSummary),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(user.getId().toString(),unsettledSummary),2))));
 					settleVtos.add(vto);
 					index++;
 				}
