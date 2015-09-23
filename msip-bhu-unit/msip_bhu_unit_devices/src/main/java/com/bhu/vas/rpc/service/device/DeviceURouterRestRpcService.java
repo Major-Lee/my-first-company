@@ -321,14 +321,14 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	
 	@Override
 	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid,
-			String wifiId, boolean on, boolean stranger_on, String timeslot,
+			String wifiId, boolean on, boolean stranger_on, boolean alias_on, String timeslot,
 			int timeslot_mode) {
 		logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline invoke uid [%s] mac [%s]", 
 				uid, wifiId));
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterUpdPluginTerminalOnline(uid, wifiId, 
-					on, stranger_on, timeslot, timeslot_mode);
+					on, stranger_on,alias_on, timeslot, timeslot_mode);
 		}catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline failed uid [%s] mac [%s]",
 					uid, wifiId));

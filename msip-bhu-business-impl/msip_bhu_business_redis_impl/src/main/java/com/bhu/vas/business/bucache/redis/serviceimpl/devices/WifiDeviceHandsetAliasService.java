@@ -59,4 +59,8 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
     public String hgetHandsetAlias(int uid, String handsetMac) {
         return this.hget(generateKey(String.valueOf(uid)), handsetMac);
     }
+
+    public boolean hexistsHandsetAlias(int uid, String handsetMac) {
+        return this.hexists(String.valueOf(uid), handsetMac);
+    }
 }

@@ -2,6 +2,9 @@ package com.bhu.vas.push.business;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.user.model.*;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -17,10 +20,6 @@ import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
-import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
-import com.bhu.vas.api.rpc.user.model.PushType;
-import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -32,6 +31,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
+
+import java.util.List;
 
 /**
  * 业务push service
@@ -47,6 +48,9 @@ public class PushService{
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+
+	@Resource
+	private UserDeviceService userDeviceService;
 	
 	//@Resource
 	//private HandsetDeviceService handsetDeviceService;
@@ -114,15 +118,72 @@ public class PushService{
 								
 								if(valid_time){
 									boolean need_push = false;
-									//判断是否开启陌生终端设置
-									if(dto.isStranger_on()){
+//									//判断是否只对添加昵称的发送push
+//									if(dto.isAlias_on()) {
+//										List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
+//										if (!bindDevices.isEmpty()) {
+//											if (WifiDeviceHandsetAliasService.getInstance().
+//													hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac())) {
+//												need_push = true;
+//											}
+//										}
+//									} else {
+//										need_push = true;
+//									}
+//
+//									//判断是否开启陌生终端设置
+//									if(dto.isStranger_on()){
+//										//第一次接入的终端算是陌生终端
+//										if(hd_push_dto.isNewed()) {
+//											need_push = true;
+//										}
+//									}else{
+//										need_push = true;
+//									}
+
+									if(dto.isStranger_on()) {
 										//第一次接入的终端算是陌生终端
-										if(hd_push_dto.isNewed()) 
+										if(hd_push_dto.isNewed()) {
 											need_push = true;
-									}else{
-										need_push = true;
+										} else {
+											if (dto.isAlias_on()) { //开启陌生人终端和昵称,陌生人不存在昵称
+												List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
+												if (!bindDevices.isEmpty()) {
+													if (WifiDeviceHandsetAliasService.getInstance().
+															hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac())) {
+														need_push = true;
+													} else {
+														need_push = false;
+													}
+												} else {
+													need_push = false;
+												}
+											} else { //开启陌生,关闭昵称
+												need_push = false;
+											}
+										}
+
+									} else {
+										if (dto.isAlias_on()) { //关闭陌生,开启昵称
+											List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
+											if (!bindDevices.isEmpty()) {
+												if (WifiDeviceHandsetAliasService.getInstance().
+														hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac())) {
+													need_push = true;
+												} else {
+													need_push = false;
+												}
+											} else {
+												need_push = false;
+											}
+										} else { //关闭陌生，关闭昵称
+											need_push = true;
+										}
 									}
-									
+
+
+
+
 									if(need_push){
 										PushMsg pushMsg = this.generatePushMsg(presentDto);
 										if(pushMsg != null){

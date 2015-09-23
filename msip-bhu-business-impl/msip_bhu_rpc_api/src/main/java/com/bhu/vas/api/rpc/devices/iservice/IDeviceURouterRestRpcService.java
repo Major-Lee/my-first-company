@@ -47,7 +47,7 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Map<String,Object>> urouterPlugins(Integer uid, String wifiId);
 	
 	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid, String wifiId, boolean on, 
-			boolean stranger_on, String timeslot, int timeslot_mode);
+			boolean stranger_on, boolean alias_on, String timeslot, int timeslot_mode);
 	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,String wifiId, boolean on);
 	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId);
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac);

@@ -308,11 +308,12 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) boolean on,
 			@RequestParam(required = true) boolean stranger_on,
+			@RequestParam(required = true) boolean alias_on,
 			@RequestParam(required = false, defaultValue=UserTerminalOnlineSettingDTO.Default_Timeslot) String timeslot,
 			@RequestParam(required = true) int timeslot_mode) {
 		
 		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(
-				uid, mac, on, stranger_on, timeslot, timeslot_mode);
+				uid, mac, on, stranger_on, alias_on, timeslot, timeslot_mode);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
