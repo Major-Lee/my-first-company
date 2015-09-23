@@ -20,6 +20,8 @@ public class UserTerminalOnlineSettingDTO extends UserSettingDTO{
 	private boolean on = true;
 	//陌生终端通知开关
 	private boolean stranger_on;
+	//修改昵称终端通知开关
+	private boolean alias_on;
 	//时间段
 	private String timeslot = Default_Timeslot;
 	//时间段通知模式
@@ -37,6 +39,15 @@ public class UserTerminalOnlineSettingDTO extends UserSettingDTO{
 	public void setStranger_on(boolean stranger_on) {
 		this.stranger_on = stranger_on;
 	}
+
+	public boolean isAlias_on() {
+		return alias_on;
+	}
+
+	public void setAlias_on(boolean alias_on) {
+		this.alias_on = alias_on;
+	}
+
 	public String getTimeslot() {
 		return timeslot;
 	}

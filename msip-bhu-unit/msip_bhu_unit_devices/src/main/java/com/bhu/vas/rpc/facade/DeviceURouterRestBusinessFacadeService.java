@@ -869,7 +869,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid,
-			String wifiId, boolean on, boolean stranger_on, String timeslot,
+			String wifiId, boolean on, boolean stranger_on, boolean alias_on, String timeslot,
 			int timeslot_mode){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
@@ -879,6 +879,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			UserTerminalOnlineSettingDTO uto_dto = new UserTerminalOnlineSettingDTO();
 			uto_dto.setOn(on);
 			uto_dto.setStranger_on(stranger_on);
+			uto_dto.setAlias_on(alias_on);
 			uto_dto.setTimeslot(timeslot);
 			uto_dto.setTimeslot_mode(timeslot_mode);
 			
