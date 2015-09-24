@@ -398,11 +398,11 @@ public class AgentFacadeService {
                 vto = new AgentDeviceImportLogVTO();
                 vto.setAid(log.getAid());
                 vto.setCount(log.getCount());
-                vto.setCreated_at(log.getCreated_at().getTime());
+                vto.setCreated_at(log.getCreated_at());
 
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
-                    vto.setName(agent.getNick() == null ? "" : agent.getNick());
+                    vto.setNick(agent.getNick() == null ? "" : agent.getNick());
                 }
                 vtos.add(vto);
             }
