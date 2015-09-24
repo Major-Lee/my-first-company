@@ -109,7 +109,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 								String vap_header = message.substring(ParserHeader.Cmd_Header_Length,ParserHeader.Cmd_Vap_Header_Length);
 								headers.append(vap_header);
 								payload = message.substring(ParserHeader.Cmd_Vap_Header_Length);
-								System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]",ctx, headers,payload);
+								//System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]",ctx, headers,payload);
 							}else{
 								payload = message.substring(ParserHeader.Cmd_Header_Length);
 							}
