@@ -1,10 +1,10 @@
 package com.bhu.vas.rpc.consumer;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
-import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Created by bluesand on 9/7/15.
@@ -33,5 +33,6 @@ public class AgentServiceConsumer {
 
 
         Thread.currentThread().join();
+        context.close();
     }
 }

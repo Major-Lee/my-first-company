@@ -1,11 +1,8 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
-import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Map;
+import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 
 public class VapServiceConsumer {
 	public static void main(String[] args) throws Exception {
@@ -21,5 +18,6 @@ public class VapServiceConsumer {
 		vapRpcService.urlView("html","2323");
 		
 		Thread.currentThread().join();
+		context.close();
 	}
 }

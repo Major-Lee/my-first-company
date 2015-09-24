@@ -1,7 +1,5 @@
 package com.bhu.vas.business.user;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -10,19 +8,12 @@ import javax.annotation.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.helper.AssertHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.page.Page;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
 import com.smartwork.msip.localunit.RandomPicker;

@@ -3,7 +3,6 @@ package com.bhu.vas.rpc.consumer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.api.dto.WifiDeviceContextDTO;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 
 public class MessageDaemonConsumer {
@@ -23,6 +22,8 @@ public class MessageDaemonConsumer {
 		rpcService.cmJoinService(new CmCtxInfo("cm009","1"));
 		//rpcService.wifiDeviceOffline(dto);
 		
+		Thread.currentThread().join();
+		context.close();
 		
 		//System.out.println(tokenRpcService);
 		/*CmCtxInfo info = new CmCtxInfo("cm002","1");

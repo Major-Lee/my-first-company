@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.business.asyn.kafka.producer.KafkaMessageQueueProducer;
 import com.smartwork.async.messagequeue.builder.MessageFactoryBuilder;
 import com.smartwork.async.messagequeue.builder.PayloadModelBuilder;
 import com.smartwork.async.messagequeue.kafka.model.CommonMessage;
@@ -63,6 +62,7 @@ public class KafkaCommonMessageProducerTest {
 
 			LOG.info("message sent " + i);
 		}
+		ctx.close();
 	}
 	/*public static void main(String[] argv){
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("/springkafka/testProducerCtx.xml", KafkaProducerTest.class);

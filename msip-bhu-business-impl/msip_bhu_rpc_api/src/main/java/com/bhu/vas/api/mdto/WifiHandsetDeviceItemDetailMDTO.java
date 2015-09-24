@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 6/24/15.
  */
+@SuppressWarnings("serial")
 public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
 
     private long login_at;

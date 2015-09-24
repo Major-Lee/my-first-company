@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 5/23/15.
  */
+@SuppressWarnings("serial")
 public class UserBrandSubDTO implements Serializable {
 
     private String brand;

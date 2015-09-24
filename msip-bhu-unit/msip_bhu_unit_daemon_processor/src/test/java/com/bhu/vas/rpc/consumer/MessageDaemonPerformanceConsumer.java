@@ -1,19 +1,12 @@
 package com.bhu.vas.rpc.consumer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 public class MessageDaemonPerformanceConsumer {
 	public static void main(String[] args) throws Exception {

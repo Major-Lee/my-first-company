@@ -8,7 +8,6 @@ import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IStatisticsRpcService {

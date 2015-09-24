@@ -25,10 +25,12 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- 
 		<spring-integration.version>4.0.3.RELEASE</spring-integration.version>
 		<spring-integration-stream.version>4.1.0.RELEASE</spring-integration-stream.version>
-		<spring-integration-kafka.version>1.0.0.M2</spring-integration-kafka.version>
-		<kafka.version>0.8.1.1</kafka.version>
+		 -->
+		<spring-integration-kafka.version>1.2.1.RELEASE</spring-integration-kafka.version>
+		<kafka.version>0.8.2.1</kafka.version>
 	</properties>
 
 	<dependencies>
@@ -62,12 +64,13 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro-compiler</artifactId>
 			<version>1.7.7</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId> org.apache.kafka</groupId>
 			<artifactId>kafka_2.10</artifactId>
 			<version>${kafka.version}</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-core</artifactId>
@@ -83,7 +86,8 @@
 					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>		
+		</dependency>
+		 -->		
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-kafka</artifactId>
@@ -95,6 +99,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
@@ -110,6 +115,7 @@
 			<artifactId>zkclient</artifactId>
 			<version>0.3</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>

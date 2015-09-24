@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 5/29/15.
  */
+@SuppressWarnings("serial")
 public class UserUrlSubDTO implements Serializable {
 
     private String category;

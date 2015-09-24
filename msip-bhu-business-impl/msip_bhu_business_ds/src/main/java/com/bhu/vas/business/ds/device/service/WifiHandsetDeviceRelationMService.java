@@ -1,13 +1,11 @@
 package com.bhu.vas.business.ds.device.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.mongodb.WriteResult;

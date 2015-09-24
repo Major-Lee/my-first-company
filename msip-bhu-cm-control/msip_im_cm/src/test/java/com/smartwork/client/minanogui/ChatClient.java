@@ -32,8 +32,6 @@ import com.smartwork.client.minanogui.ChatClientHandler.Callback;
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
 public class ChatClient implements Callback {
-    private static final long serialVersionUID = 1538675161745436968L;
-
     private ChatClientSupport client;
 
     private ChatClientHandler handler;

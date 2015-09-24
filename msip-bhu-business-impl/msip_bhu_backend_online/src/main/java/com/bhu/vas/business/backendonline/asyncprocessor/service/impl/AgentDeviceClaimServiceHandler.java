@@ -95,12 +95,10 @@ public class AgentDeviceClaimServiceHandler {
 
             for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
                 HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
-
-                HSSFSheet outSheet = outWorkbook.createSheet(hssfSheet.getSheetName());
-
                 if (hssfSheet == null) {
                     continue;
                 }
+                HSSFSheet outSheet = outWorkbook.createSheet(hssfSheet.getSheetName());
 
                 HSSFRow outputFirstRow = outSheet.createRow(0); // 下标为0的行开始
                 HSSFCell[] firstcell = new HSSFCell[3];

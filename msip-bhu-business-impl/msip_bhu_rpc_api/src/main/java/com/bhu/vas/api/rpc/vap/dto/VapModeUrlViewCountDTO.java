@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 6/1/15.
  */
+@SuppressWarnings("serial")
 public class VapModeUrlViewCountDTO implements Serializable {
     private long total_count;
     private long count;

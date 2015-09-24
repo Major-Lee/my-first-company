@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * 代理商导出文件
  */
+@SuppressWarnings("serial")
 public class AgentOutputDTO implements Serializable{
 
     private int aid;

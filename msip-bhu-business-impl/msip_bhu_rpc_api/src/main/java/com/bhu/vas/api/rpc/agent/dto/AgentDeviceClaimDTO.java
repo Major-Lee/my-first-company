@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 9/11/15.
  */
+@SuppressWarnings("serial")
 public class AgentDeviceClaimDTO implements Serializable {
     /**
      * 设备sn号
