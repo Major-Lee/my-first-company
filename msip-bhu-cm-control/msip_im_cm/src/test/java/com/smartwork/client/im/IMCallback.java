@@ -3,8 +3,6 @@ package com.smartwork.client.im;
 import java.io.PrintWriter;
 
 import com.smartwork.client.im.IMClientHandler.Callback;
-import com.smartwork.im.message.MessageBuilder;
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class IMCallback implements Callback{
 	

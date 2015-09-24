@@ -17,5 +17,6 @@ public class AgentServiceProvider {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"classpath*:/springunit/appCtxUnit.xml" });
         context.start();
         Thread.currentThread().join();
+        context.close();
     }
 }

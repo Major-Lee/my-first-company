@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 5/23/15.
  */
+@SuppressWarnings("serial")
 public class UserBrandStatisticsDTO implements Serializable{
 
     private String date;

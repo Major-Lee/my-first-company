@@ -1,18 +1,20 @@
 package com.bhu.vas.business.device;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+
+import org.junit.Test;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import org.junit.Test;
-
-import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.smartwork.msip.localunit.BaseTest;
 
 public class WifiDeviceFacadeServiceTest extends BaseTest{
@@ -68,7 +70,7 @@ public class WifiDeviceFacadeServiceTest extends BaseTest{
 
 	public static List<String> getSevenDateOfWeek(int before)
 	{
-		List<String> week = new ArrayList();
+		List<String> week = new ArrayList<>();
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, before);
 		week.add(DateTimeHelper.formatDate(calendar.getTime(), "yyyy-MM-dd"));

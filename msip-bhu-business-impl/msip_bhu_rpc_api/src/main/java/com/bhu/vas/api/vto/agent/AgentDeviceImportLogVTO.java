@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 9/15/15.
  */
+@SuppressWarnings("serial")
 public class AgentDeviceImportLogVTO implements Serializable {
 
     private long id;

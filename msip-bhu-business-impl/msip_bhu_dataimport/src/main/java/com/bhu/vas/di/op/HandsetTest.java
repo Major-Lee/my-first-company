@@ -1,15 +1,9 @@
 package com.bhu.vas.di.op;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import org.elasticsearch.common.joda.time.DateTime;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 /**
  * Created by bluesand on 6/24/15.
@@ -33,7 +27,7 @@ public class HandsetTest {
 //        long space = 1439740800779L - 1439783798513L;
 //        System.out.println(1439740800779L - 1439783798513L);
 
-        long currentTime = System.currentTimeMillis();
+        //long currentTime = System.currentTimeMillis();
         long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
         ts = 1440751353047L;

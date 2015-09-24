@@ -8,6 +8,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 5/23/15.
  */
+@SuppressWarnings("serial")
 public class UserBrandStatistics extends ListJsonExtStringModel<UserBrandDTO> {
 
     private Date created_at;

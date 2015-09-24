@@ -15,6 +15,7 @@ public class MessageInputConsumer {
 		
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"classpath*:springunit/appCtxUnit.xml" });
+		context.close();
 		//context.start();
 		/*IWifiDeviceCmdDownRpcService rpcService = (IWifiDeviceCmdDownRpcService)context.getBean("wifiDeviceCmdDownRpcService");
 		//System.out.println(tokenRpcService);

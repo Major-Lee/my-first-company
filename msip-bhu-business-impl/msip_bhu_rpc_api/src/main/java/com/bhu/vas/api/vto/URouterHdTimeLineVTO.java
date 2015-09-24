@@ -1,10 +1,9 @@
 package com.bhu.vas.api.vto;
 
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
-
 import java.io.Serializable;
 import java.util.List;
+
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 
 /**
  * Created by bluesand on 6/25/15.

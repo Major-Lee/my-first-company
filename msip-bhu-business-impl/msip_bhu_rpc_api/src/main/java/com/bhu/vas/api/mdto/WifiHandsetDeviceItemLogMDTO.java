@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 8/11/15.
  */
+@SuppressWarnings("serial")
 public class WifiHandsetDeviceItemLogMDTO implements Serializable {
     /**
      * 时间戳

@@ -1,8 +1,16 @@
 package com.bhu.vas.business.mdevices;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.junit.Test;
+
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
@@ -11,13 +19,6 @@ import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
-import org.junit.Test;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by bluesand on 9/2/15.
@@ -101,8 +102,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
         long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
         if (logs != null) {
-            WifiHandsetDeviceItemDetailMDTO dto = null;
-            List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
+            //WifiHandsetDeviceItemDetailMDTO dto = null;
+            //List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
             String last_type = null;
             long last_ts = 0;
             for (WifiHandsetDeviceItemLogMDTO log : logs) {

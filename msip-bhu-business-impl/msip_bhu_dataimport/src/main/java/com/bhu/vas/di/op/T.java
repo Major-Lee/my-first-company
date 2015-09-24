@@ -2,7 +2,6 @@ package com.bhu.vas.di.op;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -12,9 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nl.bitwalker.useragentutils.UserAgent;
-
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
  * Created by bluesand on 5/9/15.

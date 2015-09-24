@@ -1,11 +1,8 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.List;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 
 public class UserDeviceServiceConsumer {
 	public static void main(String[] args) throws Exception {
@@ -89,6 +86,7 @@ public class UserDeviceServiceConsumer {
 		//RpcResponseDTO<List<UserDeviceDTO>> ret =  userDeviceRpcService.fetchBindDevices(123);
 		//System.out.println(ret);
 		Thread.currentThread().join();
+		context.close();
 	}
 
 

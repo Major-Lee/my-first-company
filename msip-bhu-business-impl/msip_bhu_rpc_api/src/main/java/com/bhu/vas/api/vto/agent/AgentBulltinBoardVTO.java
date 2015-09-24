@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 9/15/15.
  */
+@SuppressWarnings("serial")
 public class AgentBulltinBoardVTO implements Serializable {
 
     private long id;

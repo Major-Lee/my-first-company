@@ -58,9 +58,10 @@ public class ChargingDataParserOp {
 			Arrays.sort(files, new FileHelper.CompratorByLastModified());
 			for(File file : files){
 				System.out.println("log file :" + file.getName() + " start");
+				ZipFile zf = null;
 				try{
 					if(file.getName().indexOf("business-charging") == -1) continue;
-					ZipFile zf = new ZipFile(new File(file.getAbsolutePath()), ZipFile.OPEN_READ);
+					zf = new ZipFile(new File(file.getAbsolutePath()), ZipFile.OPEN_READ);
 					// 返回 ZIP file entries的枚举.
 					Enumeration<? extends ZipEntry> entries = zf.entries();
 	
@@ -87,6 +88,16 @@ public class ChargingDataParserOp {
 					}
 				}catch(Exception ex){
 					ex.printStackTrace();
+				}finally{
+					if(zf != null){
+						try {
+							zf.close();
+							zf = null;
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}

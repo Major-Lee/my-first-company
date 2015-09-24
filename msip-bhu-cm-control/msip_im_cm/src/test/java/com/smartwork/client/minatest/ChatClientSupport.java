@@ -43,8 +43,7 @@ import com.smartwork.client.minatest.TestClientHandler.Callback;
 public class ChatClientSupport {
     private final IoHandler handler;
 
-    private final String username;
-
+    private String username;
     private IoSession session;
     
     private Callback callback;
