@@ -82,9 +82,16 @@ public class AgentDeviceClaimServiceHandler {
             out = new FileOutputStream(dto.getOutputPath());
             hssfWorkbook = new HSSFWorkbook(is);
 
-
             int totalCount = 0;
 
+            //代理商导入记录
+            AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
+            //agentDeviceImportLog.setCount(totalCount);
+            agentDeviceImportLog.setAid(dto.getAid());
+            agentDeviceImportLog.setCreated_at(new Date());
+            agentDeviceImportLog = agentDeviceImportLogService.insert(agentDeviceImportLog);
+
+            Long import_id = agentDeviceImportLog.getId();
 
             for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
                 HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
@@ -145,6 +152,7 @@ public class AgentDeviceClaimServiceHandler {
                         agentDeviceClaim.setStatus(1);
                     }
 
+                    agentDeviceClaim.setImport_id(import_id);
                     agentDeviceClaimService.insert(agentDeviceClaim);
 
                     HSSFRow outRow  = outSheet.createRow(rowNum);
@@ -173,12 +181,14 @@ public class AgentDeviceClaimServiceHandler {
             agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
                     JsonHelper.getJSONString(agentOutputDTO));
 
-            //代理商导入记录
-            AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
+//            //代理商导入记录
+//            AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
+//            agentDeviceImportLog.setCount(totalCount);
+//            agentDeviceImportLog.setAid(dto.getAid());
+//            agentDeviceImportLog.setCreated_at(new Date());
+//            agentDeviceImportLogService.insert(agentDeviceImportLog);
             agentDeviceImportLog.setCount(totalCount);
-            agentDeviceImportLog.setAid(dto.getAid());
-            agentDeviceImportLog.setCreated_at(new Date());
-            agentDeviceImportLogService.insert(agentDeviceImportLog);
+            agentDeviceImportLogService.update(agentDeviceImportLog);
 
 
 
