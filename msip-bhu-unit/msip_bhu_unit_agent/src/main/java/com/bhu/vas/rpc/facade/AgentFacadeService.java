@@ -191,7 +191,15 @@ public class AgentFacadeService {
         //vto.setMonth_income();
 //            vto.setTotal_income();
         vto.setAdr(wifiDevice.getFormatted_address());
-        vto.setUid(wifiDevice.getAgentuser());
+
+        int uid = wifiDevice.getAgentuser();
+        vto.setUid(uid);
+        User user = userService.getById(uid);
+        String nick = "";
+        if (user != null) {
+            nick = user.getNick();
+        }
+        vto.setNick(nick == null ? "" : nick);
 
         AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
         if (agentDeviceClaim != null) {
@@ -199,7 +207,7 @@ public class AgentFacadeService {
             vto.setStock_name(agentDeviceClaim.getStock_name());
             vto.setSold_at(agentDeviceClaim.getSold_at());
             vto.setClaim_at(agentDeviceClaim.getClaim_at());
-
+            vto.setImport_id(agentDeviceClaim.getImport_id());
         }
         return vto;
     }
