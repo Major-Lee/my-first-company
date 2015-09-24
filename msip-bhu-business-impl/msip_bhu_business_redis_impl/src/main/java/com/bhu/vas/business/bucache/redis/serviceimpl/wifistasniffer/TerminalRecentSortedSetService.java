@@ -107,7 +107,7 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 	}
 	
 	public static void main(String[] args){
-		String mac = "84:82:f4:23:06:68";
+		//String mac = "84:82:f4:23:06:68";
 //		long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, 0, System.currentTimeMillis());
 //		System.out.println(count);
 //		Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
