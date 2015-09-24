@@ -19,6 +19,11 @@ public class AgentDeviceClaimVTO implements Serializable {
     private int uid;
 
     /**
+     * 代理商名称
+     */
+    private String nick;
+
+    /**
      * 设备mac地址
      */
     private String mac;
@@ -41,6 +46,11 @@ public class AgentDeviceClaimVTO implements Serializable {
      * 设备认领日期
      */
     private Date claim_at;
+
+    /**
+     * 设备导入批次号
+     */
+    private long import_id;
 
     /**
      * 设备位置
@@ -86,6 +96,14 @@ public class AgentDeviceClaimVTO implements Serializable {
         this.uid = uid;
     }
 
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
     public String getMac() {
         return mac;
     }
@@ -108,6 +126,14 @@ public class AgentDeviceClaimVTO implements Serializable {
 
     public void setStock_name(String stock_name) {
         this.stock_name = stock_name;
+    }
+
+    public long getImport_id() {
+        return import_id;
+    }
+
+    public void setImport_id(long import_id) {
+        this.import_id = import_id;
     }
 
     public Date getSold_at() {

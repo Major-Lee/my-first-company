@@ -39,6 +39,11 @@ public class AgentDeviceClaim extends BaseStringModel {
     private int status;
 
     /**
+     * 导入批次id
+     */
+    private long import_id;
+
+    /**
      * 设备售出日期
      */
     private Date sold_at;
@@ -86,6 +91,14 @@ public class AgentDeviceClaim extends BaseStringModel {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public long getImport_id() {
+        return import_id;
+    }
+
+    public void setImport_id(long import_id) {
+        this.import_id = import_id;
     }
 
     public Date getSold_at() {
