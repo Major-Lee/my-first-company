@@ -396,6 +396,7 @@ public class AgentFacadeService {
             AgentDeviceImportLogVTO vto = null;
             for (AgentDeviceImportLog log : logs) {
                 vto = new AgentDeviceImportLogVTO();
+                vto.setId(log.getId());
                 vto.setAid(log.getAid());
                 vto.setCount(log.getCount());
                 vto.setCreated_at(log.getCreated_at());
