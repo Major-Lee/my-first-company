@@ -1,8 +1,5 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.unique;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
@@ -11,7 +8,6 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
-import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.localunit.RandomData;
 
 /**
