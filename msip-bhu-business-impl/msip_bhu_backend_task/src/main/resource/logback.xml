@@ -4,7 +4,7 @@
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
 	<property name="log.base" value="/BHUData/logs/backendtask/backendtask" />
-	<Property name="charging.base" 	value="/BHUData/bulogs/chargingsimulogs/business-charging" />
+	<property name="charging.base" 	value="/BHUData/bulogs/chargingsimulogs/business-charging" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->
