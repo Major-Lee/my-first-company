@@ -153,8 +153,10 @@ public class AgentDeviceClaimServiceHandler {
                     }
 
                     agentDeviceClaim.setImport_id(import_id);
-                    agentDeviceClaimService.insert(agentDeviceClaim);
-
+                   if (agentDeviceClaimService.getById(agentDeviceClaim.getId()) == null) {
+                       agentDeviceClaimService.insert(agentDeviceClaim);
+                   }
+                    
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
                     outUid.setCellValue(dto.getAid());
