@@ -176,6 +176,7 @@ public class AgentDeviceClaimServiceHandler {
             AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
             agentOutputDTO.setAid(dto.getAid());
             agentOutputDTO.setPath(dto.getOutputPath());
+            agentOutputDTO.setName(dto.getOriginName());
 
             //发布公告给代理商
             agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
