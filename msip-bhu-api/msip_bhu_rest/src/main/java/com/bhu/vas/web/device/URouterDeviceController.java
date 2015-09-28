@@ -296,6 +296,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param mac
 	 * @param on 终端上线通知开关
 	 * @param stranger_on 陌生终端通知开关
+	 * @param alias_on 昵称终端开关
 	 * @param timeslot 时间段
 	 * @param timeslot_mode 时间段通知模式
 	 */

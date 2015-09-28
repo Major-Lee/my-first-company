@@ -341,6 +341,16 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				if (offset > 5) {
 					//offset = 5; //7天外的数据直接忽略
+					if (HANDSET_LOGOUT_TYPE.equals(last_type)) { //如果最后一天数据是隔天数据
+						URouterHdTimeLineVTO vto = vtos.get(6);
+						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
+						if (mdtos_ != null && !mdtos_.isEmpty()) {
+							WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size()-1);
+							dto_.setLogin_at(getDateZeroTime(new Date(ts)).getTime());
+							vto.setDetail(mdtos_);
+						}
+
+					}
 					continue;
 				}
 
