@@ -12,6 +12,8 @@ public class AgentOutputDTO implements Serializable{
 
     private String path;
 
+    private String name;
+
     public int getAid() {
         return aid;
     }
@@ -26,5 +28,13 @@ public class AgentOutputDTO implements Serializable{
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

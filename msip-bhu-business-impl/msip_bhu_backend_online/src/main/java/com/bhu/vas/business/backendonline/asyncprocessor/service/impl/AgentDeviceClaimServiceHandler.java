@@ -153,8 +153,10 @@ public class AgentDeviceClaimServiceHandler {
                     }
 
                     agentDeviceClaim.setImport_id(import_id);
-                    agentDeviceClaimService.insert(agentDeviceClaim);
-
+                   if (agentDeviceClaimService.getById(agentDeviceClaim.getId()) == null) {
+                       agentDeviceClaimService.insert(agentDeviceClaim);
+                   }
+                    
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
                     outUid.setCellValue(dto.getAid());
@@ -176,6 +178,7 @@ public class AgentDeviceClaimServiceHandler {
             AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
             agentOutputDTO.setAid(dto.getAid());
             agentOutputDTO.setPath(dto.getOutputPath());
+            agentOutputDTO.setName(dto.getOriginName());
 
             //发布公告给代理商
             agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
