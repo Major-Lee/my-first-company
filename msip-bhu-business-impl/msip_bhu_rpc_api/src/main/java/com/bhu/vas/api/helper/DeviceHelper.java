@@ -688,6 +688,9 @@ public class DeviceHelper {
 							    "<channel>"+
 							        "<ITEM enable=\"disable\"/>"+
 							    "</channel>"+
+							    "<brand>"+
+						        	"<ITEM enable=\"disable\"/>"+
+						        "</brand>"+							    
 							    "<redirect>"+
 							        "<ITEM enable=\"disable\"/>"+
 							    "</redirect>"+
