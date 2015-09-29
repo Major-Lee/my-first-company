@@ -217,6 +217,7 @@ public class AgentController {
 
         AgentUploadVTO vto = new AgentUploadVTO();
         String originName = file.getOriginalFilename();
+        vto.setFilename(originName);
         try {
             String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
             String outputDirPath = IAgentRpcService.PATH_OUTPUT_PREFIX + File.separator + aid;
@@ -257,7 +258,7 @@ public class AgentController {
 
             vto.setUid(uid);
             vto.setAid(aid);
-            vto.setFilename(originName);
+
 
             agentRpcService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
 
