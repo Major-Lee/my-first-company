@@ -7,7 +7,9 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
 
+import com.bhu.vas.api.vto.agent.AgentUploadVTO;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -213,6 +215,8 @@ public class AgentController {
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = true) Integer aid) {
 
+        AgentUploadVTO vto = new AgentUploadVTO();
+
         try {
             String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
             String outputDirPath = IAgentRpcService.PATH_OUTPUT_PREFIX + File.separator + aid;
@@ -255,11 +259,16 @@ public class AgentController {
 
             agentRpcService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
 
-            SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+
+            vto.setUid(uid);
+            vto.setAid(aid);
+            vto.setFilename(originName);
+
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 
         } catch (Exception e) {
             e.printStackTrace();
-            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+            SpringMVCHelper.renderJson(response, new com.smartwork.msip.jdo.Response(false, JsonHelper.getJSONString(vto)));
         }
     }
 
