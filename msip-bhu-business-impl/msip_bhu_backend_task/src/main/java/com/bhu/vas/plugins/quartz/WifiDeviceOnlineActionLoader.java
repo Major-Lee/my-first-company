@@ -71,7 +71,7 @@ public class WifiDeviceOnlineActionLoader {
 							//downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));
 						}
 						if(!payloads.isEmpty()){
-							logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),payloads));
+							//logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),payloads));
 							downCmds.add(DownCmds.builderDownCmds(device.getId(), payloads.toArray(new String[0])));
 							payloads.clear();
 							payloads = null;

@@ -111,8 +111,8 @@ public class WifiDeviceWholeDayUsedLogMDTO {
 		result.setMac(mac);
 		result.setSta_max_time(Integer.parseInt(dto.getSta_max_time_num()));
 		result.setSta_max_time_num(Integer.parseInt(dto.getSta_max_time_num()));
-		result.setFlow_max_time(Integer.parseInt(dto.getFlow_max_time()));
-		result.setFlow_max_time_num(Long.parseLong(dto.getFlow_max_time_num()));
+		result.setFlow_max_time(Integer.parseInt(dto.getFlow_max_time() == null?"0":dto.getFlow_max_time()));
+		result.setFlow_max_time_num(Long.parseLong(dto.getFlow_max_time_num()== null?"0":dto.getFlow_max_time_num()));
 		result.setSta(Integer.parseInt(dto.getSta()));
 		//result.setTime(Long.parseLong(dto.getTime()));
 		result.setRx_bytes(Long.parseLong(dto.getRx_bytes()));

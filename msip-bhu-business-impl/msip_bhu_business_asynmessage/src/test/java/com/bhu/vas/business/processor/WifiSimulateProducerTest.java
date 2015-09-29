@@ -68,9 +68,9 @@ public class WifiSimulateProducerTest {
 	
 	private static List<WifiInfo> online_devices = new ArrayList<WifiInfo>();
 	static{
-		/*online_devices.add(new WifiInfo("34:36:3b:d0:4b:ac","BN001BI112190AA","192.168.0.1"));
+		online_devices.add(new WifiInfo("34:36:3b:d0:4b:ac","BN001BI112190AA","192.168.0.1"));
 		online_devices.add(new WifiInfo("72:00:08:75:ef:c0","BN002BI112190AA","192.168.0.2"));
-		online_devices.add(new WifiInfo("72:00:08:75:ef:c1","BN003BI112190AA","192.168.0.3"));
+		/*online_devices.add(new WifiInfo("72:00:08:75:ef:c1","BN003BI112190AA","192.168.0.3"));
 		online_devices.add(new WifiInfo("06:36:3b:d0:4b:ac","BN004BI112190AA","192.168.0.4"));
 		online_devices.add(new WifiInfo("8a:48:9b:16:97:0f","BN005BI112190AA","192.168.0.5"));
 		online_devices.add(new WifiInfo("36:36:3b:0d:18:00","BN006BI112190AA","192.168.0.6"));
