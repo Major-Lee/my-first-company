@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 
-import com.bhu.vas.api.vto.agent.AgentUploadVTO;
+import com.bhu.vas.api.vto.agent.*;
 import com.smartwork.msip.jdo.ResponseSuccessCode;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
@@ -30,9 +30,6 @@ import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -219,6 +216,10 @@ public class AgentController {
             @RequestParam(required = true) Integer aid) {
 
         AgentUploadVTO vto = new AgentUploadVTO();
+        String originName = file.getOriginalFilename();
+        vto.setUid(uid);
+        vto.setAid(aid);
+        vto.setFilename(originName);
 
         try {
             String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
@@ -254,24 +255,18 @@ public class AgentController {
             String inputPath = inputDirPath + File.separator + date.getTime() + ".xls";
             String outputPath = outputDirPath + File.separator + date.getTime() + ".xls";
 
-            String originName = file.getOriginalFilename();
-
             File newFile = new File(inputPath);
 
             file.transferTo(newFile);
 
             agentRpcService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
 
-
-            vto.setUid(uid);
-            vto.setAid(aid);
-            vto.setFilename(originName);
-
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 
         } catch (Exception e) {
             e.printStackTrace();
-            SpringMVCHelper.renderJson(response, new ResponseSuccess("操作失败",ResponseSuccessCode.COMMON_BUSINESS_SUCCESS,vto));
+
+            SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"error",JsonHelper.getJSONString(vto)));
 
         }
     }
