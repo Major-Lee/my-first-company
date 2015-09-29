@@ -9,18 +9,18 @@ import java.io.Serializable;
  */
 public class AgentUploadResponseError extends Response implements Serializable {
 
-    public AgentUploadResponseError(boolean success, String message, String result) {
+    public AgentUploadResponseError(boolean success, String message, Object result) {
         super(success, message);
         this.result = result;
     }
 
-    private String result;
+    private Object result;
 
-    public String getResult() {
+    public Object getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(Object result) {
         this.result = result;
     }
 }
