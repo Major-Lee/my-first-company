@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 
 import com.bhu.vas.api.vto.agent.AgentUploadVTO;
+import com.smartwork.msip.jdo.ResponseSuccessCode;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -270,7 +271,8 @@ public class AgentController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            SpringMVCHelper.renderJson(response, new com.smartwork.msip.jdo.Response(false, JsonHelper.getJSONString(vto)));
+            SpringMVCHelper.renderJson(response, new ResponseSuccess("操作失败",ResponseSuccessCode.COMMON_BUSINESS_SUCCESS,vto));
+
         }
     }
 
