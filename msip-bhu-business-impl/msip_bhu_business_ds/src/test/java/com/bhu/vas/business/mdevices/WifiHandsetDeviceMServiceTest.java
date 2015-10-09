@@ -55,6 +55,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 //            wifiId = dto.getWifiId();
 //            mac = dto.getHandsetId();
 
+
             WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
                     wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
 
@@ -107,8 +108,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
             String last_type = null;
             long last_ts = 0;
             for (WifiHandsetDeviceItemLogMDTO log : logs) {
+                boolean online = false;
                 long ts = log.getTs();
-                String type = log.getType();
                 long space = currentZeroTime - ts;
                 int offset = (int) (space/(DAY_TIME_MILLION_SECOND));
                 if (space < 0) {
@@ -130,18 +131,24 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                     break;
                 }
 
+                String type = log.getType();
+                long rx_bytes = log.getRx_bytes();
+
 
 //				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
                 if (last_type == null) { //最新一条记录
                     //处理分割记录
-                    filterDay(ts, currentTime, type,last_type, vtos, offset, true);
+                    if (HANDSET_LOGIN_TYPE.equals(type)) {
+                        online = true;
+                    }
+                    filterDay(ts, currentTime, type,last_type, rx_bytes, vtos, offset, true, online);
 
                 } else { //第二条数据开始
 
                     if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //新的的登出记录
-                        filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+                        filterDay(ts, last_ts, type, last_type, rx_bytes,  vtos, offset, false, online);
                     }
 
                     if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) { //连续两条登出
@@ -149,28 +156,28 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                         //模拟一条登入的记录
 //						last_type = "logout";
                         type = HANDSET_LOGIN_TYPE;
-                        filterDay(ts, last_ts, type, last_type,  vtos, offset, false);
+                        filterDay(ts, last_ts, type, last_type,rx_bytes,  vtos, offset, false, online);
 
                         last_type = HANDSET_LOGIN_TYPE;
                         type = HANDSET_LOGOUT_TYPE;
-                        filterDay(last_ts, last_ts, type, last_type,  vtos, offset, false);
+                        filterDay(last_ts, last_ts, type, last_type,rx_bytes,  vtos, offset, false, online);
 
                     }
 
                     if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) {
 
-                        filterDay(ts, last_ts, type, last_type, vtos, offset, false);
+                        filterDay(ts, last_ts, type, last_type, rx_bytes,vtos, offset, false, online);
                     }
                     if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) {
                         //忽略记录
                         //先模拟一条当前登出的记录
                         type = HANDSET_LOGOUT_TYPE;
-                        filterDay(last_ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
+                        filterDay(last_ts, last_ts, type, last_type, rx_bytes,vtos, getOffSet(ts, currentZeroTime), false, online);
 
                         last_type = HANDSET_LOGOUT_TYPE;
                         type = HANDSET_LOGIN_TYPE;
 //						last_ts = ts;
-                        filterDay(ts, last_ts, type, last_type, vtos, getOffSet(ts, currentZeroTime), false);
+                        filterDay(ts, last_ts, type, last_type, rx_bytes,vtos, getOffSet(ts, currentZeroTime), false, online);
 
                     }
 
@@ -217,8 +224,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
      * @param offset 记录是七天的第几天
      * @param first last_type == null 时候
      */
-    private void filterDay(long ts, long last_ts, String type, String last_type, List<URouterHdTimeLineVTO> vtos,
-                           int offset, boolean first) {
+    private void filterDay(long ts, long last_ts, String type, String last_type, long rx_bytes,List<URouterHdTimeLineVTO> vtos,
+                           int offset, boolean first, boolean online) {
 
         //如果当前在线，当前时间与上一次登录时间相隔数天
         String tsZeroStr = DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.shortDateFormat);
@@ -249,6 +256,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                         dto = new WifiHandsetDeviceItemDetailMDTO();
                         dto.setLogin_at(ts);
                         dto.setLogout_at(0);
+                        dto.setRx_bytes(0);
                         mdtos.add(dto);
                     } else {
                         dto = mdtos.get(mdtos.size() - 1);
@@ -261,14 +269,22 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                     if (first) { //last_type == null
                         dto = new WifiHandsetDeviceItemDetailMDTO();
                         dto.setLogout_at(ts);
+                        dto.setRx_bytes(rx_bytes);
                         mdtos.add(dto);
                     } else {
                         if (last_ts - ts < IGNORE_LOGIN_TIME_SPACE) { //小于15分钟的记录
                             //忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
+                            dto = mdtos.get(mdtos.size() - 1);
+                            if (!online) { //如果不在线的话就累加
+                                dto.setRx_bytes(dto.getRx_bytes() + rx_bytes);
+                            } else {
+                                dto.setRx_bytes(0);
+                            }
                         } else {
                             dto = new WifiHandsetDeviceItemDetailMDTO();
                             dto.setLogout_at(ts);
+                            dto.setRx_bytes(rx_bytes);
                             mdtos.add(dto);
                         }
                     }
