@@ -349,9 +349,8 @@ public class DeviceURouterRestBusinessFacadeService {
 							dto_.setLogin_at(getDateZeroTime(new Date(ts)).getTime());
 							vto.setDetail(mdtos_);
 						}
-
 					}
-					continue;
+					break;
 				}
 
 				String type = log.getType();
