@@ -331,7 +331,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			//List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
 			String last_type = null;
 			long last_ts = 0;
-			boolean online = false;
+
 			for (WifiHandsetDeviceItemLogMDTO log : logs) {
 
 				long ts = log.getTs();
@@ -361,15 +361,16 @@ public class DeviceURouterRestBusinessFacadeService {
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 				if (last_type == null) { //最新一条记录
 					//处理分割记录
+					boolean first_day_online = false;
 					if (HANDSET_LOGIN_TYPE.equals(type)) {
-						online = true;
+						first_day_online = true;
 					}
-					filterDay(ts, currentTime, type,last_type, rx_bytes, vtos, offset, true, online);
+					filterDay(ts, currentTime, type,last_type, rx_bytes, vtos, offset, true, first_day_online);
 
 				} else { //第二条数据开始
 
 					if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) { //新的的登出记录
-						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, offset, false, online);
+						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, offset, false, false);
 					}
 
 					if (HANDSET_LOGOUT_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) { //连续两条登出
@@ -377,28 +378,28 @@ public class DeviceURouterRestBusinessFacadeService {
 						//模拟一条登入的记录
 //						last_type = "logout";
 						type = HANDSET_LOGIN_TYPE;
-						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, offset, false, online);
+						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, offset, false, false);
 
 						last_type = HANDSET_LOGIN_TYPE;
 						type = HANDSET_LOGOUT_TYPE;
-						filterDay(last_ts, last_ts, type, last_type, rx_bytes, vtos, offset, false, online);
+						filterDay(last_ts, last_ts, type, last_type, rx_bytes, vtos, offset, false, false);
 
 					}
 
 					if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGOUT_TYPE.equals(last_type)) {
 
-						filterDay(ts, last_ts, type, last_type, rx_bytes,vtos, offset, false, online);
+						filterDay(ts, last_ts, type, last_type, rx_bytes,vtos, offset, false, false);
 					}
 					if (HANDSET_LOGIN_TYPE.equals(type) && HANDSET_LOGIN_TYPE.equals(last_type)) {
 						//忽略记录
 						//先模拟一条当前登出的记录
 						type = HANDSET_LOGOUT_TYPE;
-						filterDay(last_ts, last_ts, type, last_type, rx_bytes, vtos, getOffSet(ts, currentZeroTime), false, online);
+						filterDay(last_ts, last_ts, type, last_type, rx_bytes, vtos, getOffSet(ts, currentZeroTime), false, false);
 
 						last_type = HANDSET_LOGOUT_TYPE;
 						type = HANDSET_LOGIN_TYPE;
 //						last_ts = ts;
-						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, getOffSet(ts, currentZeroTime), false, online);
+						filterDay(ts, last_ts, type, last_type, rx_bytes, vtos, getOffSet(ts, currentZeroTime), false, false);
 
 					}
 

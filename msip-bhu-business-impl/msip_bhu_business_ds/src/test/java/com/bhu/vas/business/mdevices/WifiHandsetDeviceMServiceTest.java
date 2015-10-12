@@ -107,7 +107,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
             //List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
             String last_type = null;
             long last_ts = 0;
-            boolean online = false;
+
             for (WifiHandsetDeviceItemLogMDTO log : logs) {
 
                 long ts = log.getTs();
@@ -135,17 +135,18 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                 String type = log.getType();
                 long rx_bytes = log.getRx_bytes();
 
-
+                boolean online = false;
+                //处理分割记录
+                if (HANDSET_LOGIN_TYPE.equals(type)) {
+                    online = true;
+                }
 
 
 //				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
 //				logger.info("spacetime[" + (last_ts -ts) + "]");
 
                 if (last_type == null) { //最新一条记录
-                    //处理分割记录
-                    if (HANDSET_LOGIN_TYPE.equals(type)) {
-                        online = true;
-                    }
+
                     filterDay(ts, currentTime, type,last_type, rx_bytes, vtos, offset, true, online);
 
                 } else { //第二条数据开始
