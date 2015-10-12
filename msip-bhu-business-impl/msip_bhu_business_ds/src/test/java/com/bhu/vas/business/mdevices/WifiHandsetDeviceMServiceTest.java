@@ -107,8 +107,9 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
             //List<WifiHandsetDeviceItemDetailMDTO> mdtos = null;
             String last_type = null;
             long last_ts = 0;
+            boolean online = false;
             for (WifiHandsetDeviceItemLogMDTO log : logs) {
-                boolean online = false;
+
                 long ts = log.getTs();
                 long space = currentZeroTime - ts;
                 int offset = (int) (space/(DAY_TIME_MILLION_SECOND));
@@ -133,6 +134,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 
                 String type = log.getType();
                 long rx_bytes = log.getRx_bytes();
+
+
 
 
 //				logger.info("offset[" + offset + "],type[" + type + "],last_type[" + last_type+"],ts[" + ts + "]");
