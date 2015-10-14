@@ -12,9 +12,14 @@ import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.IteratorNotify;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
+/**
+ * 触发老设备的地理位置第二次查询
+ * @author Edmond Lee
+ *
+ */
 public class WifiDeviceLocationStep2QueryLoader {
 	private static Logger logger = LoggerFactory.getLogger(WifiDeviceLocationStep2QueryLoader.class);
 	

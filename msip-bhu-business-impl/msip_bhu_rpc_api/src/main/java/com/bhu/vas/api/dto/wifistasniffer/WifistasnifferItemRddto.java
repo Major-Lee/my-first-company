@@ -6,6 +6,8 @@ import java.io.Serializable;
 public class WifistasnifferItemRddto implements Serializable{
 	public static final int State_Online = 0;
 	public static final int State_Offline = 1;
+	//周边探测的终端离线的timeout时间 针对终端探测下线消息没有上报的情况
+	public static final long State_Offline_TimeoutMs = 24 * 3600 * 1000l;
 	
 	//终端探测状态
 	private int state;
@@ -97,8 +99,7 @@ public class WifistasnifferItemRddto implements Serializable{
 	public boolean equals(Object obj) {
 		if(obj == null) return false;
 		WifistasnifferItemRddto dto = (WifistasnifferItemRddto)obj;
-		if(dto.getMac().equals(this.getMac()) && dto.getD_mac().equals(this.getD_mac())
-				&& dto.getSnifftime() == this.getSnifftime()){
+		if(dto.getMac().equals(this.getMac()) && dto.getSnifftime() == this.getSnifftime()){
 			return true;
 		}
 		return false;

@@ -10,6 +10,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+
+
+
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -17,11 +21,15 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
+import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -40,6 +48,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
 	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
 	private int[] hits;
+	//private int hash_prime = 50;
 	private int hash_prime = 50;
 	private int per_threads = 1;
 	//private static String Online_Prefix = "00000001";
@@ -63,7 +72,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
 		hits = new int[hash_prime];
-		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 5*60*1000,5*60*1000);
+		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
@@ -94,8 +103,16 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							headers.setMac(payload);
 							break;
 						case ParserHeader.Transfer_Prefix:
-							headers = ParserHeader.builder(message.substring(8, 42),type);
-							payload = message.substring(42);
+							headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length),type);
+							if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == ParserHeader.Transfer_stype_12){
+								//新版本增值模块上报的指令
+								String vap_header = message.substring(ParserHeader.Cmd_Header_Length,ParserHeader.Cmd_Vap_Header_Length);
+								headers.append(vap_header);
+								payload = message.substring(ParserHeader.Cmd_Vap_Header_Length);
+								//System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]",ctx, headers,payload);
+							}else{
+								payload = message.substring(ParserHeader.Cmd_Header_Length);
+							}
 							break;
 						default:
 							throw new UnsupportedOperationException(
@@ -115,21 +132,59 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		}));
 	}
 	
-	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
-		String mac = headers.getMac();
-		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
-		hits[hash] = hits[hash]+1;
-		exec_processes.get(hash).submit((new Runnable() {
-			@Override
-			public void run() {
-				if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
-					deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
-					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
-				}
-				if(ParserHeader.Transfer_Prefix == type){
-					if(headers.getMt() == 0 && headers.getSt()==1){//设备上线
+	public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
+		switch(type){
+			case ParserHeader.DeviceOffline_Prefix:
+				DynamicLogWriter.doLogger(headers.getMac(), 
+						ActionBuilder.toJsonHasPrefix(
+								ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
+						);
+				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				break;
+			case ParserHeader.DeviceNotExist_Prefix:
+				DynamicLogWriter.doLogger(headers.getMac(), 
+						ActionBuilder.toJsonHasPrefix(
+								ActionBuilder.builderDeviceNotExistAction(headers.getMac(), System.currentTimeMillis()))
+						);
+				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				break;
+			case ParserHeader.Transfer_Prefix:
+					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
+						DynamicLogWriter.doLogger(headers.getMac(), 
+								ActionBuilder.toJsonHasPrefix(
+										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
 						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
 						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+					}
+					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
+						//DynamicLogWriter.doLogger(headers.getMac(), payload);
+						List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
+								HandsetDeviceDTO.class);
+						if(dtos != null && !dtos.isEmpty()){
+							HandsetDeviceDTO fristDto = dtos.get(0);
+							if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+							}
+							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(),
+														Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis())));
+							}
+							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
+								List<String> hmacs = new ArrayList<String>();
+								for(HandsetDeviceDTO dto:dtos){
+									hmacs.add(dto.getMac());
+								}
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetSyncAction(hmacs,headers.getMac(), System.currentTimeMillis())));
+								hmacs.clear();
+								hmacs = null;
+							}
+						}
 					}
 					/*if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理
 						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
@@ -139,7 +194,64 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							}
 						}
 					}*/
+				break;
+		}
+	}
+	
+	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
+		String mac = headers.getMac();
+		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
+		hits[hash] = hits[hash]+1;
+		exec_processes.get(hash).submit((new Runnable() {
+			@Override
+			public void run() {
+				doSpecialProcessor(ctx,payload,type,headers);
+				/*if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
+					DynamicLogWriter.doLogger(headers.getMac(), 
+							ActionBuilder.toJsonHasPrefix(
+									ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
+							);
+					deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
 				}
+				if(ParserHeader.Transfer_Prefix == type){
+					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
+						DynamicLogWriter.doLogger(headers.getMac(), 
+								ActionBuilder.toJsonHasPrefix(
+										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
+						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
+						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+					}
+					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
+						//DynamicLogWriter.doLogger(headers.getMac(), payload);
+						List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
+								HandsetDeviceDTO.class);
+						if(dtos != null && !dtos.isEmpty()){
+							HandsetDeviceDTO fristDto = dtos.get(0);
+							if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+							}
+							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+							}
+							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
+								List<String> hmacs = new ArrayList<String>();
+								for(HandsetDeviceDTO dto:dtos){
+									hmacs.add(dto.getMac());
+								}
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetSyncAction(hmacs,headers.getMac(), System.currentTimeMillis())));
+								hmacs.clear();
+								hmacs = null;
+							}
+						}
+					}
+				}*/
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));

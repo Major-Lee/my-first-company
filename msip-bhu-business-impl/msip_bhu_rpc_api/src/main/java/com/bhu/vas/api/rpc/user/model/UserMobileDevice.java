@@ -10,6 +10,8 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  */
 @SuppressWarnings("serial")
 public class UserMobileDevice extends BaseIntModel{
+	//device mac
+	private String dm;
 	//每台设备的厂商授权token
 	private String dt;
 	//device type
@@ -64,5 +66,12 @@ public class UserMobileDevice extends BaseIntModel{
 		this.pt = pt;
 	}
 
+	public String getDm() {
+		return dm;
+	}
+
+	public void setDm(String dm) {
+		this.dm = dm;
+	}
 		
 }

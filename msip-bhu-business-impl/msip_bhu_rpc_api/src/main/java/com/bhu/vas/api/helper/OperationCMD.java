@@ -16,11 +16,12 @@ import java.util.Map;
 public enum OperationCMD {
 	//1. 查询当前在线终端，下发此命令后触发设备主动上报一次,不走任务号机制  下发管理参数触发设备自动上报用户通知并同步终端
 	ParamQueryTeminals("001","Param指令查询当前在线终端","param",
-			"00001001%s0000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>"),
+			"00001001%s0010000000000"+"000000000006"+"<param><ITEM wlan_user_notify=\"enable\" trap=\"disable\" wlan_user_sync=\"1\" /></param>"),
 	//2. 设备终端探测开启关闭指令
 	ParamWifiSinffer("002","Param指令设备终端探测开启关闭","param",
-			"00001001%s0000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
-			
+			"00001001%s0020000000000"+"000000000006"+"<param><ITEM sta_sniffer=\"%s\" sta_sniffer_batch_num=\"%s\" sta_sniffer_delay=\"%s\" sta_sniffer_url=\"%s\"/></param>"),
+	//3. 查询当前在线终端以sync的方式报到服务器
+	ParamQuerySyncDeviceOnlineTeminals("003","查询当前在线终端","param","00001001%s0010000000000"+"000000000006"+"<param><ITEM  wlan_user_notify=\"disable\" wlan_user_sync=\"1\" /></param>"),		
 	
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",
@@ -38,7 +39,7 @@ public enum OperationCMD {
 		
 	//1. 查询wifi地理位置 等待设备通知结果
 	QueryDeviceLocationNotify("102","查询设备地理位置notify","",
-			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
+			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysdebug\" supercmd=\"wifiloc -a\" __notify=\"true\" serial=\"%s\"/></cmd>"),
 			
 	QueryDeviceSetting("103","查询设备配置","",
 			"00001001%s%s%s"+"000100000001"+"<query><ITEM path=\"dev.wifi.radio,dev.wifi.vap,dev.wifi.acllist,dev.net.interface,dev.net.rate_control,dev.net.ad,dev.mod.basic.wan,dev.sys.users,dev.sys.config,dev.net.mac_management\"/></query>"),
@@ -52,7 +53,9 @@ public enum OperationCMD {
 	//QueryDeviceTerminals("104","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" interface=\"%s\"/></cmd>"),
 	QueryDeviceTerminals("104","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
 			
-	QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"%s\" combine=\"1\" __notify=\"true\"  serial=\"%s\" url=\"http://vap.bhunetworks.com/speedtest/speedtest.tar.gz\"/></cmd>"),
+	//QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"%s\" combine=\"1\" __notify=\"true\"  serial=\"%s\" url=\"http://vap.bhunetworks.com/speedtest/speedtest.tar.gz\"/></cmd>"),
+	
+	QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" download=\"%s\" upload=\"%s\" __notify=\"enable\"  period=\"%s\"  duration=\"%s\" serial=\"%s\" /></cmd>"),
 	
 	QueryDeviceRateNotify("106","查询设备实时速率","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"ifrate\" interface=\"%s\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
 	//params:mac opt taskid serverip
@@ -63,10 +66,11 @@ public enum OperationCMD {
 	QueryDhcpcStatus("109","查询dhcp模式下的状态信息(ip,网关,dns,子网掩码)","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"dhcpcstatus\" interface=\"%s\" /></cmd>"),
 	QueryDeviceUsedStatus("110","查询设备使用情况","data_stats","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"data_stats\"/></cmd>"),
 	
-	TriggerHttp404ResourceUpdate("118","触发设备更新http404资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"http404\" url=\"%s\" resource_ver=\"%s\" serial=\"%s\" __notify=\"true\"/></cmd>"),
+	QueryDeviceSysinfo("111","查询设备系统信息","sysinfo","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"sysinfo\"/></cmd>"),
+	//TriggerHttp404ResourceUpdate("118","触发设备更新http404资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"http404\" url=\"%s\" resource_ver=\"%s\" serial=\"%s\" __notify=\"true\"/></cmd>"),
 	TriggerHttpPortalResourceUpdate("119","触发设备更新portal资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"portal\" url=\"%s\" resource_ver=\"%s\"serial=\"%s\" __notify=\"true\"/></cmd>"),
 	
-	DeviceWifiTimerStart("125","开启wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"enable\" rule=\"%s-on,%s-off\" __notify=\"true\"/></cmd>"),
+	DeviceWifiTimerStart("125","开启wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"enable\" rule=\"%s-on,%s-off%s\" __notify=\"true\"/></cmd>"),
 	DeviceWifiTimerStop("126","关闭wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"disable\" __notify=\"true\"/></cmd>"),
 	DeviceWifiTimerQuery("127","查询wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" __notify=\"true\"/></cmd>"),
 	
@@ -79,11 +83,10 @@ public enum OperationCMD {
 	DeviceDelayReboot("152","设备延迟重启","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"delayreboot\" delay=\"5\"/></cmd>"),
 
 	DeviceUpgrade("153", "设备升级","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"firmware_upgrade\" download_timeout=\"1800\" url=\"%s\" upgrade_begin=\"%s\" upgrade_end=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
+	DeviceModuleUpgrade("154", "设备module升级(设备vapmudule不为空)以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
+
 	;
-	
 	static Map<String, OperationCMD> allOperationCMDs;
-	/*public static int Opt_Length = 3;
-	public static int Taskid_Length = 7;*/
 	String no;
 	String desc;
 	String cmd;

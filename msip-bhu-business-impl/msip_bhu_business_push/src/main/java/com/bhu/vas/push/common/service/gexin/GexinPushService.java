@@ -56,9 +56,9 @@ public class GexinPushService{
 				template.setTransmissionContent(pushMsg.getPaylod());
 		        
 		        SingleMessage message = new SingleMessage();
-	            //message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
+	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
-		        //message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
 		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
 		        message.setPushNetWorkType(0); 
@@ -96,7 +96,7 @@ public class GexinPushService{
 	            // template.setIsClearable(true); // 通知是否可清除，可选，默认可清除
 		        
 		        SingleMessage message = new SingleMessage();
-	            //message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
+	            message.setOffline(false); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
 		       // message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
@@ -234,7 +234,7 @@ public class GexinPushService{
 			return false;
 		}
 		Map<String, Object> response = ret.getResponse();
-		System.out.println(response.toString());
+		logger.info(response.toString());
 		Object resultObj = response.get("result");
 		if(resultObj == null){
 			logger.info("Gexin Response result empty");

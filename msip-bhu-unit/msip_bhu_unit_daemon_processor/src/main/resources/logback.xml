@@ -49,7 +49,7 @@
 
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="unitrequestfile" />
-	</logger>	
+	</logger>
 	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
 	</logger>

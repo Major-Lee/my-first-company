@@ -14,7 +14,7 @@ public class URouterWSRecentVTO implements Serializable{
 	//终端型号
 	private String tt;
 	//最新一次探测上线时间
-	private long last_ts;
+	private long last_snifftime;
 	
 	public String getHd_mac() {
 		return hd_mac;
@@ -28,11 +28,11 @@ public class URouterWSRecentVTO implements Serializable{
 	public void setTt(String tt) {
 		this.tt = tt;
 	}
-	public long getLast_ts() {
-		return last_ts;
+	public long getLast_snifftime() {
+		return last_snifftime;
 	}
-	public void setLast_ts(long last_ts) {
-		this.last_ts = last_ts;
+	public void setLast_snifftime(long last_snifftime) {
+		this.last_snifftime = last_snifftime;
 	}
 
 }

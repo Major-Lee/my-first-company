@@ -9,13 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.dto.search.WifiDeviceIndexDTO;
-import com.bhu.vas.api.helper.IndexDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.search.service.device.WifiDeviceIndexService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -35,31 +36,33 @@ public class WifiDeviceOnlineLoader {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
-	
-	@Resource
-	private WifiDeviceIndexService wifiDeviceIndexService;
-	
+	//@Resource
+	//private WifiDeviceIndexService wifiDeviceIndexService;
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	public void init(){
 		bulk_success = 0;
 		bulk_fail = 0;
 		index_count = 0;
 	}
-	
 	public void execute() {
 		logger.info("WifiDeviceOnlineUser starting...");
 		try{
 			init();
-			
-			wifiDeviceIndexService.disableIndexRefresh();
+			//wifiDeviceIndexService.disableIndexRefresh();
 			
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("online", 1);
 			//mc.setOrderByClause(" created_at ");
 	    	mc.setPageNumber(1);
-	    	mc.setPageSize(400);
+	    	mc.setPageSize(500);
 			EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
 					,WifiDevice.class, wifiDeviceService.getEntityDao(), mc);
 			while(it.hasNext()){
@@ -69,7 +72,8 @@ public class WifiDeviceOnlineLoader {
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
 		}finally{
-			wifiDeviceIndexService.openIndexRefresh();
+			wifiDeviceDataSearchService.refresh(false);
+			//wifiDeviceIndexService.openIndexRefresh();
 			//wifiDeviceIndexService.destroy();
 		}
 		
@@ -82,35 +86,42 @@ public class WifiDeviceOnlineLoader {
 	 * @param entitys
 	 */
 	public void wifiDeviceIndexIncrement(List<WifiDevice> entitys){
+		List<WifiDeviceDocument> docs = new ArrayList<>();
 		try{
-			List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
-			WifiDeviceIndexDTO indexDto = null;
+			//List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
+			//WifiDeviceIndexDTO indexDto = null;
+			WifiDeviceDocument doc = null;
 			for(WifiDevice device:entitys){
 				//如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
 				if(validateCoordinateAndGet(device)){
 					wifiDeviceService.update(device);
 				}
-				
 				String wifi_mac = device.getId();
-				//long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
 				long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifi_mac);
-				indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device);
-				indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
-				indexDto.setCount((int)count);
-				indexDtos.add(indexDto);
-				if(count > 0){
-					logger.info(String.format("WifiDeviceOnlineUser index dto id[%s] count[%s]", indexDto.getWifiId(), count));
-				}
+				List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
+				
+				doc = WifiDeviceDocumentHelper.fromWifiDevice(device, groupids);
+				//indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device, groupids);
+				//indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
+				//indexDto.setCount((int)count);
+				//indexDtos.add(indexDto);
+				doc.setCount((int)count);
+				docs.add(doc);
+				/*if(count > 0){
+					logger.info(String.format("WifiDeviceOnlineUser index dto id[%s] count[%s]", doc.getId(), count));
+				}*/
 			}
 			
-			if(!indexDtos.isEmpty()){
-				boolean bulk_result = wifiDeviceIndexService.createIndexComponents(indexDtos);
+			if(!docs.isEmpty()){
+				wifiDeviceDataSearchService.bulkIndex(docs);
+				//wifiDeviceDataSearchService.getRepository().save(docs);
+				/*boolean bulk_result = wifiDeviceIndexService.createIndexComponents(indexDtos);
 				if(bulk_result){
 					bulk_success++;
 				}else{
 					bulk_fail++;
-				}
-				index_count = index_count + indexDtos.size();
+				}*/
+				index_count += docs.size();
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

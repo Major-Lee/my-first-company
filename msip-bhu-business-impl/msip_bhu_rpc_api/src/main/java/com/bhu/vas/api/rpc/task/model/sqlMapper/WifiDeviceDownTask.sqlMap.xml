@@ -149,7 +149,7 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="int">
+	<delete id="deleteByPrimaryKey" parameterType="long">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
@@ -164,9 +164,11 @@
 	
 	<insert id="insert" parameterType="wifiDeviceDownTask">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
-		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+		<!-- 
+		<selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
 			select last_insert_id(); 
 		</selectKey>
+		 -->
 	</insert>
  
 	<update id="update" parameterType="wifiDeviceDownTask">
@@ -193,7 +195,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="int">
+	<select id="pkSelectByModelCriteria" resultType="long">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />

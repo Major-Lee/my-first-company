@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.QuerySerialReturnDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
@@ -60,7 +61,6 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
-			
 			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
 					ctx, payload, parserHeader));
 			//logger.info("1");
@@ -135,6 +135,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case 11://3.4.20 notify命令执行结果通知消息
 					taskNotifyResponse(ctx, payload, parserHeader);
 					break;
+				case ParserHeader.Transfer_stype_12://增值指令
+					deviceVapModuleResponse(ctx, payload, parserHeader);
+					//taskNotifyResponse(ctx, payload, parserHeader);
+					break;	
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
@@ -154,7 +158,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		String opt = parserHeader.getOpt();
 		if(!StringUtils.isEmpty(opt)){
 			String mac = parserHeader.getMac();
-			int taskid = parserHeader.getTaskid();
+			long taskid = parserHeader.getTaskid();
 			OperationCMD cmd = OperationCMD.getOperationCMDFromNo(opt);
 			if(cmd != null){
 				switch(cmd){
@@ -167,7 +171,6 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					case TurnOnDeviceDPINotify:
 						deviceBusinessFacadeService.taskCommonProcessor(ctx,payload,mac,taskid);
 						break;
-						
 					case QueryDeviceLocationNotify:
 						deviceBusinessFacadeService.taskQueryOldDeviceLocationNotifyProcessor(ctx,payload,mac,taskid);
 						break;
@@ -198,12 +201,21 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					case DeviceWifiTimerQuery:
 						deviceBusinessFacadeService.taskWifiTimerQuery(ctx, payload, mac, taskid);
 						break;
-					case TriggerHttp404ResourceUpdate:
+					case QueryDeviceSpeedNotify:
+						deviceBusinessFacadeService.taskQueryDeviceSpeed(ctx, payload, mac, taskid);
+						break;
+					/*case TriggerHttp404ResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
-						break;	
+						break;	*/
 					case TriggerHttpPortalResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-						break;	
+						break;
+					case DeviceUpgrade:
+						deviceBusinessFacadeService.taskDeviceUpgrade(ctx, payload, mac, taskid);
+						break;
+					case QueryDeviceSysinfo:
+						deviceBusinessFacadeService.taskQuerySysinfoSpeed(ctx, payload, mac, taskid);
+						break;
 					default:
 						messageDispatchUnsupport(ctx, payload, parserHeader);
 						break;
@@ -271,14 +283,19 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	public void taskNotifyResponse(String ctx, String payload, ParserHeader parserHeader){
 		Document doc = RPCMessageParseHelper.parserMessage(payload);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
-		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
-				|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
-			String serial = serialDto.getSerial();
-			if(!StringUtils.isEmpty(serial)){
-				if(serial.length() == 10){
-					String opt = serial.substring(0, 3);
-					int taskid = Integer.parseInt(serial.substring(3, 10));
-					String mac = parserHeader.getMac();
+		long taskid = 0l; 
+
+		String serial = serialDto.getSerial();
+		if(!StringUtils.isEmpty(serial)){
+			//AP106P06V1.2.15Build8057以后版本的设备以13位作为serial
+			if(serial.length() == 13){
+				String opt = serial.substring(0, 3);
+				//long taskid = Long.parseLong(serial.substring(3, 10));
+				taskid = Long.parseLong(serial.substring(3, 13));
+				String mac = parserHeader.getMac().toLowerCase();
+				
+				if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())
+						|| WifiDeviceDownTask.State_Next.equals(serialDto.getStatus())){
 					
 					if(OperationCMD.QueryDeviceLocationNotify.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
@@ -292,17 +309,37 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
 					}
-					else if(OperationCMD.TriggerHttp404ResourceUpdate.getNo().equals(opt)){
-						deviceBusinessFacadeService.taskNotifyTriggerHttp404Processor(ctx, payload, mac, taskid);
-					}
 					else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
 					}
-					//2:任务callback
-					deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
 				}
+			}else{
+				char first = serial.charAt(0);
+				if(first == '1'){// refer CMDBuilder.builderFirmwareUpdateSerialno
+					//兼容AP106P06V1.2.15Build8057版本以前的设备 升级发送的serial为10位 处理方式 截取第一位后面的内容作为任务id
+					String serial_substring = serial.substring(1);
+					if(!StringUtils.isEmpty(serial)){
+						taskid = Long.parseLong(serial_substring);
+					}
+				}else{
+					try{
+						System.out.println(String.format("QueryDeviceLocationNotify msg ctx[%s] taskid[%s] payload[%s] header[%s]", ctx,taskid, payload, parserHeader));
+						//可能是给老设备查询地理位置的serial溢出的值2147483647 
+						String mac = parserHeader.getMac().toLowerCase();
+						deviceBusinessFacadeService.taskQueryDeviceLocationNotify(ctx, doc, serialDto, mac, taskid);
+						
+						//地理位置都是系统发起的，所以不考虑任务状态更新，直接return
+						return;
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+				
 			}
 		}	
+		
+		//2:任务callback
+		deviceBusinessFacadeService.doTaskCallback(taskid, serialDto.getStatus(), payload);
 	}
 	
 	public void messageDispatchUnsupport(String ctx, String payload, ParserHeader parserHeader){
@@ -310,6 +347,27 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 		//throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 	}
 
+	
+	public void deviceVapModuleResponse(String ctx, String payload, ParserHeader parserHeader){
+		//System.out.printf("~~~~~~~~~~ctx[%s] ParserHeader[%s] playload[%s]", ctx,parserHeader,payload);
+		long taskid = parserHeader.getTaskid();
+		String mac = parserHeader.getMac().toLowerCase();
+		switch(parserHeader.getVaptype()){
+			case ParserHeader.Vap_Module_Register_REQ_D2S:
+			case ParserHeader.Vap_Module_VapQuery_RES_D2S:
+				Document doc = RPCMessageParseHelper.parserMessage(payload);
+				WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
+				deviceBusinessFacadeService.processVapModuleResponse(ctx,mac, vapDTO,taskid);
+				break;
+			case ParserHeader.Vap_Module_VapSetting_RES_D2S:
+				deviceBusinessFacadeService.taskModuleProcessor(ctx, payload, mac, taskid);
+				break;
+			default:
+				messageDispatchUnsupport(ctx, payload, parserHeader);
+				break;
+		}
+	}
+	
 	/**
 	 * CM与控制层的连接断开以后 会分批次批量发送在此CM上的wifi设备在线信息
 	 */

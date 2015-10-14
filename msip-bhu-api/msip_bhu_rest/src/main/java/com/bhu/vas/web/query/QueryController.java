@@ -28,7 +28,7 @@ public class QueryController extends BaseController {
     private IUserDeviceRpcService userDeviceRpcService;
 
 	@ResponseBody()
-    @RequestMapping(value="/fetch_device_bind_user",method={RequestMethod.GET})
+    @RequestMapping(value="/fetch_device_bind_user",method={RequestMethod.GET,RequestMethod.POST})
     public void fetch_device_bind_user(HttpServletResponse response,
     		@RequestParam(required = false) String jsonpcallback,
             @RequestParam(required = true) String mac) {

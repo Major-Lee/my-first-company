@@ -1,8 +1,5 @@
 package com.bhu.vas.api.helper;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -14,13 +11,18 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.ScoreDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.DailyUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.HourUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
+import com.bhu.vas.api.dto.ret.WifiDevicePeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
+import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
@@ -31,8 +33,11 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.dto.vap.Http404ModuleDTO;
+import com.bhu.vas.api.dto.vap.HttpRedirectModuleDTO;
+import com.bhu.vas.api.dto.vap.ModuleDTO;
+import com.bhu.vas.api.dto.vap.RegisterDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
@@ -80,6 +85,18 @@ public class RPCMessageParseHelper {
 		}
 	}
 	
+	public static WifiDeviceVapReturnDTO generateVapDTOFromMessage(Document doc){
+		if(doc == null){
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		}
+		try{
+			return parserVapDTOByDom4j(doc);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+	}
+	
 	public static <T> T parserMessageByXStream(String message, Class<T> clazz) throws Exception{
 		return XStreamHelper.fromXML(message, clazz);
 	}
@@ -105,6 +122,37 @@ public class RPCMessageParseHelper {
 	public static <T> T parserMessageByDom4j(Document doc, Class<T> clazz) throws Exception{
 		Element item_element = (Element)doc.selectSingleNode("//ITEM");
 		return Dom4jHelper.fromElement(item_element, clazz);
+	}
+	
+	public static WifiDeviceVapReturnDTO parserVapDTOByDom4j(Document doc) throws Exception{
+		WifiDeviceVapReturnDTO result = new WifiDeviceVapReturnDTO();
+		Element item_element = (Element)doc.selectSingleNode("//login/ITEM");
+		if(item_element != null)
+			result.setRegister(Dom4jHelper.fromElement(item_element, RegisterDTO.class));
+		Element http404_item_element = (Element)doc.selectSingleNode("//bhu_module/http404/ITEM");
+		if(http404_item_element != null){
+			if(result.getModules() == null) result.setModules(new ArrayList<ModuleDTO>());
+			result.getModules().add(Dom4jHelper.fromElement(http404_item_element, Http404ModuleDTO.class));
+		}
+		
+		Element httpredirect_item_element = (Element)doc.selectSingleNode("//bhu_module/redirect/ITEM");
+		if(httpredirect_item_element != null){
+			if(result.getModules() == null) result.setModules(new ArrayList<ModuleDTO>());
+			result.getModules().add(Dom4jHelper.fromElement(httpredirect_item_element, HttpRedirectModuleDTO.class));
+		}
+		
+		/*List<Element> item_elements = (List<Element>)doc.selectNodes("//bhu_module/module");
+		if(item_elements != null && !item_elements.isEmpty()){
+			result.setModules(new ArrayList<ModuleDTO>());
+			for(Element item:item_elements){
+				if("http404".equals(item.attributeValue("type"))){
+					result.getModules().add(Dom4jHelper.fromElement(item, Http404ModuleDTO.class));
+				}else if("redirect".equals(item.attributeValue("type"))){
+					result.getModules().add(Dom4jHelper.fromElement(item, HttpRedirectModuleDTO.class));
+				}
+			}
+		}*/
+		return result;
 	}
 	
 	public static Document parserMessage(String message) {
@@ -166,6 +214,57 @@ public class RPCMessageParseHelper {
 		}
 		return dto;
 	}
+	
+	/**
+	 * 设备测速的分段数据解析
+	 * <ITEM serial=“0200000002” cmd=“netspeed_test” statue=“doing”>
+	 *    <download>
+               <SUB time_cost=“” rx_bytes=“1111” last="true"/>
+          </download>
+          <upload>
+               <SUB time_cost=“” tx_bytes=“1111” />
+          </upload>
+     </ITEM>
+	 * @param doc
+	 * @return
+	 */
+	public static WifiDevicePeakSectionDTO generateDTOFromQuerySpeedTest(Document doc){
+		WifiDevicePeakSectionDTO dto = null;
+		try{
+			Element download_sub_element = Dom4jHelper.select(doc, "//download/SUB");
+			if(download_sub_element != null){
+				WifiDeviceRxPeakSectionDTO rx_dto = Dom4jHelper.fromElement(download_sub_element, 
+						WifiDeviceRxPeakSectionDTO.class);
+				String last = download_sub_element.attributeValue("last");
+				if(!StringUtils.isEmpty(last)){
+					rx_dto.setLast(Boolean.parseBoolean(last));
+				}
+				if(dto == null){
+					dto = new WifiDevicePeakSectionDTO();
+				}
+				dto.setRx_dto(rx_dto);
+			}
+	
+			Element upload_sub_element = Dom4jHelper.select(doc, "//upload/SUB");
+			if(upload_sub_element != null){
+				WifiDeviceTxPeakSectionDTO tx_dto = Dom4jHelper.fromElement(upload_sub_element, 
+						WifiDeviceTxPeakSectionDTO.class);
+				String last = upload_sub_element.attributeValue("last");
+				if(!StringUtils.isEmpty(last)){
+					tx_dto.setLast(Boolean.parseBoolean(last));
+				}
+				if(dto == null){
+					dto = new WifiDevicePeakSectionDTO();
+				}
+				dto.setTx_dto(tx_dto);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		}
+		return dto;
+	}
+	
 	
 	/**
 	 * 解析获取wifi设备流量的xml
@@ -258,6 +357,11 @@ public class RPCMessageParseHelper {
 				String time = next.attribute(Node_Time_Attr).getStringValue();
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setToday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
+					if(dto.getToday() != null){
+						ScoreDTO analyse = ScoreHelper.analyse(convert(dto.getToday().getRx_bytes()), Integer.parseInt(dto.getToday().getSta_max_time_num()));
+						dto.getToday().setKo(analyse.getHint());
+						dto.getToday().setScore(analyse.getScore());
+					}
 				}else{
 					dto.getToday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
 				}
@@ -269,16 +373,32 @@ public class RPCMessageParseHelper {
 				String time = next.attribute(Node_Time_Attr).getStringValue();
 				if(Node_Time_ALL_Value.equals(time)){
 					dto.setYesterday(Dom4jHelper.fromElement(next, DailyUsedStatisticsDTO.class));
+					if(dto.getYesterday() != null){
+						ScoreDTO analyse = ScoreHelper.analyse(convert(dto.getYesterday().getRx_bytes()), Integer.parseInt(dto.getYesterday().getSta_max_time_num()));
+						dto.getYesterday().setKo(analyse.getHint());
+						dto.getYesterday().setScore(analyse.getScore());
+					}
 				}else{
 					dto.getYesterday_detail().add(Dom4jHelper.fromElement(next, HourUsedStatisticsDTO.class));
 				}
 			}
+			dto.analyseMaxFlow();
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		}finally{
 		}
 		return dto;
+	}
+	
+	private static long convert(String rx_bytes){
+		long ret = 0l;
+		try{
+			ret = Long.parseLong(rx_bytes);
+		}catch(NumberFormatException ex){
+			ret = Long.MAX_VALUE;
+		}
+		return ret;
 	}
 	/***
 	 * 获取实时速率的解析xml
@@ -326,6 +446,7 @@ public class RPCMessageParseHelper {
 					WifiDeviceSettingRadioDTO radio_dto = new WifiDeviceSettingRadioDTO();
 					radio_dto.setName(radio_item.attributeValue("name"));
 					radio_dto.setPower(radio_item.attributeValue("power"));
+					radio_dto.setReal_channel(radio_item.attributeValue("real_channel"));
 					radio_dtos.add(radio_dto);
 				}
 				dto.setRadios(radio_dtos);
@@ -499,6 +620,8 @@ public class RPCMessageParseHelper {
 						dto.setMac(element.attributeValue("mac"));
 						dto.setData_tx_rate(element.attributeValue("data_tx_rate"));
 						dto.setData_rx_rate(element.attributeValue("data_rx_rate"));
+						dto.setRx_bytes(element.attributeValue("rx_bytes"));
+						dto.setTx_bytes(element.attributeValue("tx_bytes"));
 						dtos.add(dto);
 					}
 				}
@@ -526,7 +649,45 @@ public class RPCMessageParseHelper {
 //		for(WifiDeviceFlowDTO dto : dtos){
 //			System.out.println(dto.getName() + "-" + dto.getRx_bytes());
 //		}
-		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
+//		long parseLong = convert("18446744072804816726");
+//		
+//		System.out.println(Long.MAX_VALUE);
+//		System.out.println(new BigInteger("18446744072804816726").longValue());
+//        System.out.println(new Date(1435807903055l));
+//		BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/deviceusedstatus.xml")));
+//        String str;
+//        StringBuffer content = new StringBuffer();
+//        while ((str = in.readLine()) != null) 
+//        {
+//        	content.append(str+"\n");
+//        }
+//        in.close();
+//        
+//        System.out.println(content.toString());
+//        Document doc = parserMessage(content.toString());
+//        DeviceUsedStatisticsDTO dto = generateDTOFromQueryDeviceUsedStatus(doc);
+//        long today_rx = Long.parseLong(dto.getToday().getRx_bytes());
+//        long today_rx_total = 0;
+//        for(HourUsedStatisticsDTO sdto:dto.getToday_detail()){
+//        	today_rx_total+= Long.parseLong(sdto.getRx_bytes());
+//        }
+//        System.out.println(String.format("today_rx[%s] today_rx_total[%s]",today_rx,today_rx_total));
+        /*
+        long yesterday_rx = Long.parseLong(dto.getYesterday().getRx_bytes());
+        long yesterday_rx_total = 0;
+        for(HourUsedStatisticsDTO sdto:dto.getYesterday_detail()){
+        	yesterday_rx_total += Long.parseLong(sdto.getRx_bytes());
+        }
+        System.out.println(String.format("yesterday_rx[%s] yesterday_rx_total[%s]",yesterday_rx,yesterday_rx_total));*/
+        /*System.out.println(JsonHelper.getJSONString(dto));
+        
+        String json = JsonHelper.getJSONString(dto);
+        
+        DeviceUsedStatisticsDTO dto2 = JsonHelper.getDTO(json, DeviceUsedStatisticsDTO.class);
+        System.out.println(dto2);*/
+        
+        
+		/*BufferedReader in = new BufferedReader(new FileReader(new File("/BHUData/data/wifitimer.xml")));
         String str;
         StringBuffer content = new StringBuffer();
         while ((str = in.readLine()) != null) 
@@ -534,18 +695,10 @@ public class RPCMessageParseHelper {
         	content.append(str+"\n");
         }
         in.close();
-        
-        System.out.println(content.toString());
         Document doc = parserMessage(content.toString());
-        DeviceUsedStatisticsDTO dto = generateDTOFromQueryDeviceUsedStatus(doc);
-        
-        System.out.println(JsonHelper.getJSONString(dto));
-        
-        String json = JsonHelper.getJSONString(dto);
-        
-        DeviceUsedStatisticsDTO dto2 = JsonHelper.getDTO(json, DeviceUsedStatisticsDTO.class);
-        System.out.println(dto2);
-//        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
+        QueryWifiTimerSerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QueryWifiTimerSerialReturnDTO.class);
+        System.out.println(serialDto);*/
+        //        ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage("<return><ITEM result=\"ok\" config_sequence=\"60\" /></return>", ModifyDeviceSettingDTO.class);
 //		String status = WifiDeviceDownTask.State_Failed;
 //		if(ModifyDeviceSettingDTO.Result_Success.equals(dto.getResult())){
 //			status = WifiDeviceDownTask.State_Done;
@@ -556,9 +709,56 @@ public class RPCMessageParseHelper {
 		//WifiDeviceSettingDTO dto = generateDTOFromQueryDeviceSetting(content.toString());
 		System.out.println(dto.getSequence());*/
 		
-		
-		
-		
-		//generateDTOFromQueryDeviceUsedStatus
+        
+		String text = "<ITEM serial=\"0200000002\" cmd=\"netspeed_test\" statue=\"doing\"><download><SUB time_cost=\"3333\" rx_bytes=\"1111\" last=\"true\"/></download><upload><SUB time_cost=\"4444\" tx_bytes=\"1113\" /></upload></ITEM>";
+		Document doc = RPCMessageParseHelper.parserMessage(text);
+		WifiDevicePeakSectionDTO obj = generateDTOFromQuerySpeedTest(doc);
+        System.out.println(obj.toString());
+        
+        /*String text1 = "<register>"+
+							"<login>"+
+							    "<ITEM mac=\"62:68:75:aa:00:00\" version=\"1.2.15M23\" />"+
+							"</login>"+
+							"<bhu_module>"+
+							    "<http404>"+
+							        "<ITEM enable=\"enable\" codes=\"404,50*\" url=\"vap.bhunetworks.com/urlwrite\" ver=\"style001-00.00.03\" />"+
+							    "</http404>"+
+							    "<redirect>"+
+							        //"<ITEM enable=\"enable\" rule=\"**(TBD)\" ver=\"style001-00.00.03\" />"+
+							        "<ITEM enable=\"disable\" />"+
+							    "</redirect>"+
+							"</bhu_module>"+
+						"</register>";*/
+        /*String text1 = 
+				"<bhu_module>"+
+				    "<http404>"+
+				        "<ITEM enable=\"enable\" codes=\"404,50*\" url=\"vap.bhunetworks.com/urlwrite\" ver=\"style001-00.00.03\" />"+
+				    "</http404>"+
+				    "<redirect>"+
+				        //"<ITEM enable=\"enable\" rule=\"**(TBD)\" ver=\"style001-00.00.03\" />"+
+				        "<ITEM enable=\"disable\" />"+
+				    "</redirect>"+
+				"</bhu_module>";*/
+        //Document doc = RPCMessageParseHelper.parserMessage(payload);
+		//WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
+        
+        String text1 = "<register><login>"+
+        					"<ITEM version=\"H108V1.2.10M8281\" />"+
+        						"</login>"+
+        				"<bhu_module>"+
+        					"<http404>"+
+					                "<ITEM enable=\"disable\" ver=\"style001-00.00.03\" codes=\"40*,50*,10*\" url=\"http://vap.bhunetworks.com/vap/rw404?bid=10002\" />"+
+					        "</http404>"+
+					        "<redirect>"+
+					                "<ITEM enable=\"enable\" ver=\"style000-00.00.01\" rule=\"100,11:00:00,23:00:00,http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com\" />"+
+					        "</redirect>"+
+					"</bhu_module>"+
+					"</register>";
+        Document doc1= RPCMessageParseHelper.parserMessage(text1);
+        
+        WifiDeviceVapReturnDTO generateVapDTOFromMessage = generateVapDTOFromMessage(doc1);
+        
+        System.out.println(generateVapDTOFromMessage);
+        
 	}
 }

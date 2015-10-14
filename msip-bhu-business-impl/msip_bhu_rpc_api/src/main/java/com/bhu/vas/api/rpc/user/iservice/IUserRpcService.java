@@ -84,7 +84,7 @@ public interface IUserRpcService {
 			String channel_taskid);
 	
 	public void taskStatusFetch(
-			int taskid
+			long taskid
 			);
 	
 	public void taskStatusFetch4ThirdParties(
@@ -92,4 +92,6 @@ public interface IUserRpcService {
 			String channel_taskid
 			);*/
 	//public boolean taskCompleted(String taskid);
+
+	RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey);
 }

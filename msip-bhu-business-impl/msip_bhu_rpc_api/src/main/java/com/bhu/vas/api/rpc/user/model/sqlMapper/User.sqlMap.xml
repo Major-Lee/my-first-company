@@ -10,6 +10,7 @@
     <result property="mobileno" column="mobileno"/>
     <result property="nick" column="nick"/>
     <result property="password" column="password"/>
+    <result property="utype" column="utype"/>
     <!-- 
     <result property="plainpwd" column="plainpwd"/>
      -->
@@ -17,10 +18,12 @@
     <result property="validated" column="validated"/>
     <result property="sex" column="sex"/>
     <result property="birthday" column="birthday"/>
-    <!-- 
-    <result property="avatar" column="avatar"/>
-    <result property="cover" column="cover"/>
-    <result property="memo" column="memo"/> -->
+    
+    <result property="org" column="org"/>
+    <result property="addr1" column="addr1"/>
+    <result property="addr2" column="addr2"/>
+    <result property="memo" column="memo"/> 
+    
     <result property="lastlogindevice_uuid" column="lastlogindevice_uuid"/>
     <result property="regip" column="regip"/>
     <result property="regdevice" column="regdevice"/>
@@ -41,10 +44,15 @@
 	    	mobileno,
 	    	nick,
 	    	password,
+	    	utype,
 	    	locked,
 	    	validated,
 	    	sex,
 	    	birthday,
+	    	org,
+	    	addr1,
+	    	addr2,
+	    	memo,
 	    	lastlogindevice_uuid,
 	    	regip,
 	    	regdevice,
@@ -59,10 +67,15 @@
 	    	mobileno,
 	    	nick,
 	    	password,
+	    	utype,
 	    	locked,
 	    	validated,
 	    	sex,
 	    	birthday,
+	    	org,
+	    	addr1,
+	    	addr2,
+	    	memo,
 	    	lastlogindevice_uuid,
 	    	regip,
 	    	regdevice,
@@ -78,10 +91,15 @@
 	    	#{mobileno},
 	    	#{nick},
 	    	#{password},
+	    	#{utype},
 	    	#{locked},
 	    	#{validated},
 	    	#{sex},
 	    	#{birthday},
+	    	#{org},
+	    	#{addr1},
+	    	#{addr2},
+	    	#{memo},
 	    	#{lastlogindevice_uuid},
 	    	#{regip},
 	    	#{regdevice},
@@ -95,10 +113,15 @@
 	    	mobileno = #{mobileno},
 	    	nick = #{nick},
 	    	password = #{password},
+	    	utype = #{utype},
 	    	locked = #{locked},
 	    	validated = #{validated},
 	    	sex = #{sex},
 	    	birthday = #{birthday},
+	    	org = #{org},
+	    	addr1 = #{addr1},
+	    	addr2 = #{addr2},
+	    	memo = #{memo},
 	    	lastlogindevice_uuid = #{lastlogindevice_uuid},
 	    	regip = #{regip},
 	    	regdevice = #{regdevice},

@@ -13,6 +13,8 @@ public class UserDeviceDTO implements Serializable {
     //wifi设备是否在线
     private boolean online;
 
+    private long ohd_count;
+
     public String getMac() {
         return mac;
     }
@@ -43,5 +45,13 @@ public class UserDeviceDTO implements Serializable {
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public long getOhd_count() {
+        return ohd_count;
+    }
+
+    public void setOhd_count(long ohd_count) {
+        this.ohd_count = ohd_count;
     }
 }

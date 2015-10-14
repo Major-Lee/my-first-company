@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 /**
  * wifi设备上线请求
  * @author tangzichao

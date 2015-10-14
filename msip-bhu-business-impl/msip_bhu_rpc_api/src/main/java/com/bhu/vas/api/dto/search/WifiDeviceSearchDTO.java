@@ -7,6 +7,8 @@ import java.io.Serializable;
 public class WifiDeviceSearchDTO implements Serializable{
 	//wifi设备mac
 	private String id;
+	//设备sn
+	private String sn;
 	//规格化地址信息
 	private String address;
 	//工作模式
@@ -19,6 +21,8 @@ public class WifiDeviceSearchDTO implements Serializable{
 	private String devicetype;
 	//wifi设备是否在线
 	private int online;
+	//设备所在分组ids
+	private String groups;
 	//接入的移动设备数量
 	private int count;
 	//wifi设备的注册时间
@@ -33,6 +37,12 @@ public class WifiDeviceSearchDTO implements Serializable{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getSn() {
+		return sn;
+	}
+	public void setSn(String sn) {
+		this.sn = sn;
 	}
 	public String getAddress() {
 		return address;
@@ -81,6 +91,12 @@ public class WifiDeviceSearchDTO implements Serializable{
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public String getGroups() {
+		return groups;
+	}
+	public void setGroups(String groups) {
+		this.groups = groups;
 	}
 	public int getCount() {
 		return count;

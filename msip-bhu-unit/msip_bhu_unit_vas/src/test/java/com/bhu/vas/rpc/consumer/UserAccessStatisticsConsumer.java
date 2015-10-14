@@ -1,12 +1,12 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
-import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
-import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
+import java.util.List;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.List;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
+import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
 
 public class UserAccessStatisticsConsumer {
 	public static void main(String[] args) throws Exception {

@@ -51,6 +51,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	static{
 		ignoreTokensValidateUrlSet.add("/sessions/create");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
+		ignoreTokensValidateUrlSet.add("/sessions/bbs_login");
 		//ignoreTokensValidateUrlSet.add("/account/create");
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
@@ -102,7 +103,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		/*if(uri.indexOf("config") != -1){
 			output = true;
 		}*/
-		logger.info(String.format("Rest Request uri[%s] URL [%s] Params [%s]",uri, request.getRequestURI(), request.getParameterMap()));
+		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
+		logger.info(String.format("Rest Request uri[%s] URL [%s] uid [%s]",uri, request.getRequestURI(), UID));
 		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
 		//if(output)
 			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
@@ -133,7 +135,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}
 		}
-		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
+		
 		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
@@ -166,7 +168,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		return false;
 	}
 	//private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
-	private static final String patternRegx = "^/((noauth)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	//private static final String patternRegx = "^/((noauth)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	private static final String patternRegx = "^/((noauth)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	/**
 	 * 以定义好的字符串前缀
 	 * @param url

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -32,6 +33,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceGroupServiceHandler;
+
+	@Resource
+	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
+	
+	@Resource
+	private IMsgHandlerService wifiDeviceUsedStatusServiceHandler;
 	
 	@PostConstruct
 	public void initialize() {
@@ -58,6 +65,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceOffline:
 							asyncMsgHandleService.wifiDeviceOfflineHandle(message);
 							break;
+						case WifiDeviceModuleOnline:
+							asyncMsgHandleService.wifiDeviceModuleOnlineHandle(message);
+							break;
 						case HandsetDeviceOnline:
 							asyncMsgHandleService.handsetDeviceOnlineHandle(message);
 							break;
@@ -79,9 +89,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceSettingChanged:
 							asyncMsgHandleService.wifiDeviceSettingChanged(message);
 							break;
-						case WifiDeviceTerminalNotify:
-							asyncMsgHandleService.WifiDeviceTerminalNotify(message);
+						case WifiDeviceSettingQuery:
+							asyncMsgHandleService.wifiDeviceSettingQuery(message);
 							break;
+//						case WifiDeviceTerminalNotify:
+//							asyncMsgHandleService.WifiDeviceTerminalNotify(message);
+//							break;
 						case WifiDeviceRealtimeRateFetch:
 							asyncMsgHandleService.wifiDeviceRealtimeRateFetch(message);
 							break;		
@@ -91,11 +104,17 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceHDRateFetch:
 							asyncMsgHandleService.wifiDeviceHDRateFetch(message);
 							break;
-						case WifiCmdDownNotify:
+						/*case WifiCmdDownNotify:
 							asyncMsgHandleService.wifiCmdDownNotifyHandle(message);
+							break;*/
+						case WifiCmdsDownNotify:
+							asyncMsgHandleService.wifiCmdsDownNotifyHandle(message);
 							break;
 						case DeviceModifySettingAclMacs:
 							asyncMsgHandleService.deviceModifySettingAclMacs(message);
+							break;
+						case DeviceModifySettingAalias:
+							asyncMsgHandleService.deviceModifySettingAalias(message);
 							break;
 						case USERFETCHCAPTCHACODE:
 							asyncMsgHandleService.sendCaptchaCodeNotifyHandle(message);
@@ -104,7 +123,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							asyncMsgHandleService.userSignedon(message);
 							break;
 						case USERREGISTERED:
-							asyncMsgHandleService.userSignedon(message);
+							asyncMsgHandleService.userRegister(message);
 							break;
 						case USERDEVICEREGISTER:
 							asyncMsgHandleService.userDeviceRegister(message);
@@ -114,6 +133,18 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;							
 						case WifiDeviceAsyncCMDGen:
 							wifiDeviceGroupServiceHandler.process(message);
+							break;
+						case WifiDeviceGroupCreateIndex:
+							wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
+							break;
+						case USERBBSSIGNEDON:
+							asyncMsgHandleService.userBBSsignedon(message);
+							break;
+						case WifiDeviceUsedStatus:
+							wifiDeviceUsedStatusServiceHandler.process(message);
+							break;
+						case AgentDeviceClaimImport:
+							agentDeviceClaimServiceHandler.importAgentDeviceClaim(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 5/19/15.
  */
+@SuppressWarnings("serial")
 public class URouterVapPasswordVTO implements Serializable {
     private String password;
     private String ssid;

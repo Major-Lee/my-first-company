@@ -3,6 +3,7 @@ package com.bhu.vas.init;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
 
@@ -10,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.IteratorNotify;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.daemon.SessionManager;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 系统重新启动后加载数据库中在线标记的设备
@@ -69,8 +70,7 @@ public class DaemonInitService {
 				}
 			}
 		}*/
-		//int index = 0;
-		//int count = 0;
+		final AtomicInteger atomic = new AtomicInteger(0);
 		//System.out.println("~~~~~~~~~~ gogogo:");
 		WifiDevicePresentCtxService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
 			@Override
@@ -82,11 +82,13 @@ public class DaemonInitService {
 					String key = next.getKey();//mac
 					String value = next.getValue();//ctx
 					SessionManager.getInstance().addSession(key, value);
+					atomic.incrementAndGet();
 					//System.out.println(String.format("Online device[%s] ctx[%s]", key,value));
 				}
 				//System.out.println(t);
 			}
 		});
+		System.out.println(String.format("Init Online count[%s] Ok~~~~~~",atomic.get()));
 		//logger.info(String.format("Init Online total[%s] count[%s]", it.getTotalItemsCount(),count));
 		//System.out.println(String.format("Init Online total[%s] count[%s]", it.getTotalItemsCount(),count));
 		return true;

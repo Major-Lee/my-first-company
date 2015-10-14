@@ -10,6 +10,7 @@ import com.smartwork.msip.es.index.field.GeoPointsIndexableField;
 public class WifiDeviceIndexableComponent extends IndexableComponent{
 	
 	private String id;
+	private String sn;
 	private GeoPointsIndexableField ghash;
 	private String address;
 	private String showaddress;
@@ -18,6 +19,7 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	private String configmodel;
 	private String devicetype;
 	private int online;
+	private String groups;
 	private int nvd;
 	private int count;
 	private long register_at;
@@ -28,6 +30,12 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getSn() {
+		return sn;
+	}
+	public void setSn(String sn) {
+		this.sn = sn;
 	}
 	public GeoPointsIndexableField getGhash() {
 		return ghash;
@@ -76,6 +84,12 @@ public class WifiDeviceIndexableComponent extends IndexableComponent{
 	}
 	public void setOnline(int online) {
 		this.online = online;
+	}
+	public String getGroups() {
+		return groups;
+	}
+	public void setGroups(String groups) {
+		this.groups = groups;
 	}
 	public int getNvd() {
 		return nvd;

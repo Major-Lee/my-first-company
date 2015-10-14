@@ -18,6 +18,8 @@ public class WifiDevice extends BaseStringModel{
 	private String orig_hdver;
 	//原始软件版本号
 	private String orig_swver;
+	//原始软件vapmodule版本号
+	private String orig_vap_module;
 	//oem厂商
 	private String oem_vendor;
 	//oem后设备型号
@@ -43,6 +45,7 @@ public class WifiDevice extends BaseStringModel{
 	private String work_mode;
 	//wifi设备是否在线
 	private boolean online;
+	private boolean module_online;
 	//下行流量
 	private String rx_bytes;
 	//上行流量
@@ -67,18 +70,23 @@ public class WifiDevice extends BaseStringModel{
 	private String street;
 	//结构化地址 如北京市海淀区后八家路
 	private String formatted_address;
+	//网络运营商信息
+	private String carrier;
 	//百度geocoding create result id
 	private String bdid;
 	//通过ip得到的坐标和地址
 	private boolean ipgen = false;
 	//设备运行时长
 	private String uptime;
+	// 设备认领的代理商 userid，如果为0 未进行认领 -1则代表认领失败，可能是由于认领库中不存在相关设备
+	private int agentuser;
+	//最后一次设备启动时间戳
+	private String last_start_at;
 	//最后一次登录时间
 	private Date last_reged_at;
 	//最后一次登出时间
 	private Date last_logout_at;
 	private Date created_at;
-	
 	
 	@Override
 	public void preInsert() {
@@ -230,6 +238,9 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setOnline(boolean online) {
 		this.online = online;
+		if(!online){
+			this.module_online = false;
+		}
 	}
 	
 	public String getRx_bytes() {
@@ -372,6 +383,14 @@ public class WifiDevice extends BaseStringModel{
 		this.uptime = uptime;
 	}
 
+	public String getLast_start_at() {
+		return last_start_at;
+	}
+
+	public void setLast_start_at(String last_start_at) {
+		this.last_start_at = last_start_at;
+	}
+
 	public Date getLast_logout_at() {
 		return last_logout_at;
 	}
@@ -379,5 +398,40 @@ public class WifiDevice extends BaseStringModel{
 	public void setLast_logout_at(Date last_logout_at) {
 		this.last_logout_at = last_logout_at;
 	}
+
+	public String getCarrier() {
+		return carrier;
+	}
+
+	public void setCarrier(String carrier) {
+		this.carrier = carrier;
+	}
+
+	public String getOrig_vap_module() {
+		return orig_vap_module;
+	}
+
+	public void setOrig_vap_module(String orig_vap_module) {
+		this.orig_vap_module = orig_vap_module;
+	}
+
+	public boolean isModule_online() {
+		return module_online;
+	}
+
+	public void setModule_online(boolean module_online) {
+		this.module_online = module_online;
+	}
+
+	public int getAgentuser() {
+		return agentuser;
+	}
+
+	public void setAgentuser(int agentuser) {
+		this.agentuser = agentuser;
+	}
 	
+	public boolean needClaim(){
+		return this.agentuser == 0;
+	}
 }

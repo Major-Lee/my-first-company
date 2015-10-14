@@ -1,6 +1,5 @@
 package com.bhu.vas.rpc.service.device;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.vto.GeoMapVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -92,17 +92,27 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(String mac,
-			String orig_swver, String adr, String work_mode,
-			String config_mode, String devicetype, Boolean online, Boolean newVersionDevice, 
-			String region, String excepts, int pageNo, int pageSize) {
+	public TailPage<WifiDeviceVTO> fetchWDevicesByKeywords(
+			String mac, 
+			String sn, 
+			String orig_swver, 
+			String origvapmodule,
+			String adr, 
+			String work_mode,
+			String config_mode, 
+			String devicetype, 
+			Boolean online, 
+			Boolean moduleonline,
+			Boolean newVersionDevice, 
+			Boolean canOperateable,
+			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"
 				+ " work_mode [%s] config_mode [%s] devicetype [%s] region [%s] excepts [%s] pageNo [%s] pageSize [%s]", mac, orig_swver, 
 				adr, work_mode, config_mode, devicetype, region, excepts, pageNo, pageSize));
 		
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, orig_swver, adr, work_mode, config_mode,
-					devicetype, online, newVersionDevice, region, excepts, pageNo, pageSize);
+			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode,
+					devicetype, online, moduleonline, newVersionDevice,canOperateable, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"
@@ -165,8 +175,20 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
-	
+
 	@Override
+	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId) {
+		logger.info(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD invoke wifiId [%s]", wifiId));
+		try{
+			return deviceRestBusinessFacadeService.fetchDevicePersistenceDetailCMD(wifiId);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	
+	/*@Override
 	public Collection<GeoMapVTO> fetchGeoMap(){
 		logger.info("DeviceRestRPC fetchGeoMap invoke");
 		try{
@@ -176,5 +198,5 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			logger.error(String.format("DeviceRestRPC fetchGeoMap exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
-	}
+	}*/
 }

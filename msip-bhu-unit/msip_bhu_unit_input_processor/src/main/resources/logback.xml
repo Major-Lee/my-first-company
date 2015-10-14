@@ -2,7 +2,8 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-input/${consumer.instanceno}/inputprocessor" />
+	<property name="log.base" 		value="/BHUData/logs/unitlogs/msip-unit-input/${consumer.instanceno}/inputprocessor" />
+	<Property name="charging.base" 	value="/BHUData/bulogs/charginglogs/business-charging" />
 	<jmxConfigurator />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -42,12 +43,31 @@
 		</encoder>
 	</appender>	
 
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator class="com.bhu.vas.processor.bulogs.ThreadNameBasedDiscriminator"/>
+    	<sift>
+    		<appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<Encoding>UTF-8</Encoding>
+				<File>${charging.base}.${hashid}.log</File>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<FileNamePattern>${charging.base}.${hashid}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+				</rollingPolicy>
+				<layout class="ch.qos.logback.classic.PatternLayout">
+					<pattern>%date - %msg%n</pattern>
+				</layout>
+			</appender>
+		</sift>
+    </appender>
+
 	<logger name="com.bhu.vas.processor" additivity="false" level="INFO">
 		<appender-ref ref="unitqueueprocessor" />
 	</logger>	
 	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
 		<appender-ref ref="unitqueuerecv" />
 	</logger>
+	<logger name="com.bhu.vas.processor.bulogs" additivity="false" level="INFO">
+		<appender-ref ref="SIFT" />
+	</logger>	
 	<root>
 		<level value="WARN" />
 		<appender-ref ref="stdout" />

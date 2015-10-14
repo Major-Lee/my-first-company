@@ -10,6 +10,10 @@ public class BusinessKeyDefine {
 		public static final String WorldHotSubject 					= "WHS";
 	}
 	
+	public static class HandsetPresent{
+		public static final String StatisticsPrefixKey 			= "HPS.";
+		public static final String PresentPrefixKey 			= "HPP.";
+	}
 	
 	public static class Present{
 		public static final String MarkPrefixKey = "MP";
@@ -52,7 +56,8 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceStatistics_LastRate 		= "LR";
 		public static final String WifiDeviceStatistics_RateWaiting 		= "RWG";
 		public static final String WifiDeviceStatistics_PeakRate 		= "PR";
-		public static final String WifiDeviceStatistics_PeakRateWaiting 		= "PRWG";
+		public static final String WifiDeviceStatistics_PeakSectionRate 		= "PSR";
+		//public static final String WifiDeviceStatistics_PeakRateWaiting 		= "PRWG";
 		public static final String WifiDeviceStatistics_HDRateWaiting 		= "HDRWG";
 	}
 	public static class Unique{
@@ -62,6 +67,8 @@ public class BusinessKeyDefine {
 		//public static final String PermalinkCheck = "UPC";
 		//public static final String SnsTokenCheck = "USC";
 		public static final String UserSnsCheck  = "WUSC";
+		
+		public static final String Sequence = "SEQ";
 	}
 
 	public static class WifiStasniffer{
@@ -69,9 +76,14 @@ public class BusinessKeyDefine {
 		public static final String TerminalHot = "WSTH";
 		public static final String TerminalDetailRecent = "WSTDR";
 		public static final String TerminalDeviceTypeCount = "WSDTC";
+		public static final String TerminalLastTime = "WSLT";
 		public static final String UserTerminalFocus = "WSUTF";
 	}
 	public static class VapMode {
 		public static final String VapModeCount = "VM.";
+	}
+
+	public static class UserWifiDeviceHandset {
+		public static final String Nick = "UDHN";
 	}
 }

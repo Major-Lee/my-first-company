@@ -11,10 +11,8 @@
 
 package com.smartwork.multiplexer.spi;
 
-import com.smartwork.im.message.HintCode;
 import com.smartwork.im.message.Message;
 import com.smartwork.im.message.MessageType;
-import com.smartwork.im.message.common.HintMessage;
 import com.smartwork.im.net.Session;
 import com.smartwork.im.utils.IMHelper;
 import com.smartwork.im.utils.ToDto;

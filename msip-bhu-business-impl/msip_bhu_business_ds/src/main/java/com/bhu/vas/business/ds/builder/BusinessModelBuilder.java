@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Tuple;
@@ -18,7 +19,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.rpc.devices.model.HandsetDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
@@ -83,7 +83,7 @@ public class BusinessModelBuilder {
 		return wifi_device_alarm_entity;
 	}
 	
-	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
+/*	public static HandsetDevice handsetDeviceDtoToEntity(HandsetDeviceDTO dto){
 		HandsetDevice handset_device_entity = new HandsetDevice();
 		handset_device_entity.setId(dto.getMac().toLowerCase());
 		handset_device_entity.setPhy_tx_rate(dto.getPhy_tx_rate());
@@ -114,7 +114,43 @@ public class BusinessModelBuilder {
 		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
 		handset_device_entity.setOnline(true);
 		return handset_device_entity;
-	}
+	}*/
+	
+	/*public static HandsetDeviceDTO fromHandsetDevice(HandsetDevice hDevice){
+		HandsetDeviceDTO result = new HandsetDeviceDTO();
+		result.setMac(hDevice.getId());
+		result.setAction(hDevice.isOnline()?HandsetDeviceDTO.Action_Online:HandsetDeviceDTO.Action_Offline);
+		result.setPhy_tx_rate(hDevice.getPhy_tx_rate());
+		result.setPhy_rx_rate(hDevice.getPhy_rx_rate());
+		result.setData_tx_rate(hDevice.getData_tx_rate());
+		result.setData_rx_rate(hDevice.getData_rx_rate());
+		result.setPhy_rate(hDevice.getPhy_rate());
+		result.setTx_power(hDevice.getTx_power());
+		result.setRx_chain_num(hDevice.getRx_chain_num());
+		result.setRssi(hDevice.getRssi());
+		result.setSnr(hDevice.getSnr());
+		result.setIdle(hDevice.getIdle());
+		result.setState(hDevice.getState());
+		result.setUptime(hDevice.getUptime());
+		result.setRx_pkts(hDevice.getRx_pkts());
+		result.setRx_bytes(hDevice.getRx_bytes());
+		result.setTx_pkts(hDevice.getTx_pkts());
+		result.setTx_bytes(hDevice.getTx_bytes());
+		result.setRx_unicast(hDevice.getRx_unicast());
+		result.setTx_assoc(hDevice.getTx_assoc());
+		result.setSsid(hDevice.getSsid());
+		result.setBssid(hDevice.getBssid().toLowerCase());
+		result.setLocation(hDevice.getLocation());
+		result.setChannel(hDevice.getChannel());
+		result.setTs(hDevice.getLast_login_at().getTime());
+		//result.setLast_login_at(new Date());
+		result.setDhcp_name(hDevice.getHostname());
+		result.setVapname(hDevice.getVapname());
+		result.setLast_wifi_id(hDevice.getLast_wifi_id());
+		//handset_device_entity.setLast_wifi_id(dto.getBssid().toLowerCase());
+		//handset_device_entity.setOnline(true);
+		return result;
+	}*/
 	
 	public static WifiDeviceStatus wifiDeviceStatusDtoToEntity(WifiDeviceStatusDTO dto){
 		WifiDeviceStatus wifi_device_status_entity = new WifiDeviceStatus();
@@ -136,6 +172,7 @@ public class BusinessModelBuilder {
 			vto.setAdr(searchDto.getAddress());
 			vto.setDt(searchDto.getDevicetype());
 			vto.setOsv(searchDto.getOrigswver());
+			vto.setGids(searchDto.getGroups());
 		}
 		if(entity != null){
 			vto.setOm(StringUtils.isEmpty(entity.getOem_model()) ? entity.getOrig_model() : entity.getOem_model());
@@ -148,6 +185,7 @@ public class BusinessModelBuilder {
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
 			vto.setIpgen(entity.isIpgen());
+			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
 				long logout_ts = entity.getLast_logout_at().getTime();
@@ -181,6 +219,7 @@ public class BusinessModelBuilder {
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
 			vto.setIpgen(entity.isIpgen());
+			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
 				long logout_ts = entity.getLast_logout_at().getTime();
@@ -191,7 +230,7 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 	
-	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDevice hd_entity,
+/*	public static URouterHdVTO toURouterHdVTO(String hd_mac, boolean online, HandsetDevice hd_entity,
 			WifiDeviceSettingDTO setting_dto){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
@@ -220,9 +259,64 @@ public class BusinessModelBuilder {
 				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
 		}
 		return vto;
+	}*/
+	
+	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
+			WifiDeviceSettingDTO setting_dto){
+		URouterHdVTO vto = new URouterHdVTO();
+		vto.setHd_mac(hd_mac);
+		vto.setOnline(online);
+//		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
+		vto.setN(getHandsetDeviceAlias(uid, hd_mac));
+		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
+		WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
+				setting_dto, hd_mac);
+		if(rc != null){
+			//vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(mark_entity.getData_rx_limit()));
+			if(!StringUtils.isEmpty(rc.getRx()))
+				vto.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getRx()));
+			if(!StringUtils.isEmpty(rc.getTx()))
+				vto.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc.getTx()));
+		}
+		
+		if(hd_entity != null){
+			if(StringUtils.isEmpty(vto.getN())){
+				vto.setN(hd_entity.getDhcp_name());
+			}
+			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
+			vto.setTx_rate(hd_entity.getData_rx_rate());
+			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
+			vto.setRx_rate(hd_entity.getData_tx_rate());
+			if(!StringUtils.isEmpty(hd_entity.getVapname()))
+				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
+
+			vto.setRx_bytes(hd_entity.getTx_bytes());
+			vto.setTx_bytes(hd_entity.getRx_bytes());
+		}
+		return vto;
 	}
+
+	private static String getHandsetDeviceAlias(int uid, String hd_mac){
+		return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
+	}
+
+
 	
 	public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
+			HandsetDeviceDTO hd_entity){
+		HandsetDeviceVTO vto = new HandsetDeviceVTO();
+		vto.setWid(mac);
+		vto.setHid(hd_mac);
+		vto.setOl(online ? 1 : 0);
+		if(hd_entity != null){
+			if(mac.equals(hd_entity.getLast_wifi_id())){
+				vto.setTs(hd_entity.getTs());
+			}
+		}
+		return vto;
+	}
+	
+	/*public static HandsetDeviceVTO toHandsetDeviceVTO(String mac, String hd_mac, boolean online, 
 			HandsetDevice hd_entity){
 		HandsetDeviceVTO vto = new HandsetDeviceVTO();
 		vto.setWid(mac);
@@ -234,7 +328,7 @@ public class BusinessModelBuilder {
 			}
 		}
 		return vto;
-	}
+	}*/
 	
 /*	public static List<WifiHandsetDeviceMarkPK> toWifiHandsetDeviceMarkPKs(String mac, List<String> hd_macs){
 		if(hd_macs == null || hd_macs.isEmpty()) return Collections.emptyList();
@@ -256,7 +350,7 @@ public class BusinessModelBuilder {
 		return ids;
 	}
 	
-	public static List<String> toHandsetDeviceIds(Set<Tuple> tupes){
+	public static List<String> toElementsList(Set<Tuple> tupes){
 		if(tupes == null || tupes.isEmpty()) return Collections.emptyList();
 		
 		List<String> ids = new ArrayList<String>();
@@ -264,6 +358,18 @@ public class BusinessModelBuilder {
 			ids.add(tuple.getElement());
 		}
 		return ids;
+	}
+	
+	public static String[] toElementsArray(Set<Tuple> tuples){
+		if(tuples == null || tuples.isEmpty()) return null;
+		
+		String[] rets = new String[tuples.size()];
+		int cursor = 0;
+		for(Tuple tuple : tuples){
+			rets[cursor] = tuple.getElement();
+			cursor++;
+		}
+		return rets;
 	}
 	
 }

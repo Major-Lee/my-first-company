@@ -4,6 +4,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class UserRegisteredDTO extends ActionDTO {
+	private String mobileno;
 	private String channel;
 	private String d;
 	private String remoteip;
@@ -36,6 +37,13 @@ public class UserRegisteredDTO extends ActionDTO {
 	public void setRemoteip(String remoteip) {
 		this.remoteip = remoteip;
 	}
-	
+
+	public String getMobileno() {
+		return mobileno;
+	}
+
+	public void setMobileno(String mobileno) {
+		this.mobileno = mobileno;
+	}
 	
 }

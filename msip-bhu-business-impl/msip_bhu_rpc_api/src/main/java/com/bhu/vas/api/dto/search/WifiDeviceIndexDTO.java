@@ -1,6 +1,7 @@
 package com.bhu.vas.api.dto.search;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.util.StringUtils;
@@ -13,6 +14,8 @@ public class WifiDeviceIndexDTO {
 	public static final int offline_Status = 0;
 	//wifi设备mac
 	private String wifiId;
+	//SN名称
+	private String sn;
 	//经度
 	private String lat;
 	//纬度
@@ -39,6 +42,8 @@ public class WifiDeviceIndexDTO {
 	private String devicetype;
 	//wifi设备是否在线
 	private int online;
+	//设备所属群组ids
+	private List<Long> groupids;
 	//设备是否为新版本设备
 	private int nvd;
 	//接入的移动设备数量
@@ -158,6 +163,23 @@ public class WifiDeviceIndexDTO {
 	public void setOnline(int online) {
 		this.online = online;
 	}
+	public List<Long> getGroupids() {
+		return groupids;
+	}
+	public void setGroupids(List<Long> groupids) {
+		this.groupids = groupids;
+	}
+	public String getGroups(){
+		if(groupids != null && !groupids.isEmpty()){
+			StringBuffer groups = new StringBuffer();
+			for(Long groupid : groupids){
+				if(groups.length() > 0) groups.append(StringHelper.WHITESPACE_STRING_GAP);
+				groups.append(String.valueOf(groupid));
+			}
+			return groups.toString();
+		}
+		return null;
+	}
 	public int getNvd() {
 		return nvd;
 	}
@@ -175,5 +197,11 @@ public class WifiDeviceIndexDTO {
 	}
 	public void setRegister_at(long register_at) {
 		this.register_at = register_at;
+	}
+	public String getSn() {
+		return sn;
+	}
+	public void setSn(String sn) {
+		this.sn = sn;
 	}
 }

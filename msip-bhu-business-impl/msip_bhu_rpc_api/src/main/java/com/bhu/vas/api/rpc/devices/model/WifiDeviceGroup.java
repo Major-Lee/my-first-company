@@ -1,19 +1,17 @@
 package com.bhu.vas.api.rpc.devices.model;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
-import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
+import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.smartwork.msip.cores.orm.model.BaseLongModel;
 /*
  * wifi设备的组
  */
 @SuppressWarnings("serial")
-public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISequenceGenable{
-	private int pid;
+public class WifiDeviceGroup extends BaseLongModel implements IRedisSequenceGenable{
+	private long pid;
 	private String path;//树状结构path
 	private String name;
 	//此节点下一级的子节点数量
@@ -26,7 +24,7 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 	public WifiDeviceGroup() {
 		super();
 	}
-	public WifiDeviceGroup(Integer id,String name) {
+	public WifiDeviceGroup(Long id,String name) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -38,10 +36,10 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 		this.name = name;
 	}
 	
-	public int getPid() {
+	public long getPid() {
 		return pid;
 	}
-	public void setPid(int pid) {
+	public void setPid(long pid) {
 		this.pid = pid;
 	}
 	
@@ -78,9 +76,9 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 		super.preInsert();
 	}
 	
-	public List<String> getWifiIds() {
+	/*public List<String> getWifiIds() {
         return this.getInnerModels();//.getInnerModels();//this.get(Authorities, new LinkedHashMap<Integer, String>(), true);
-    }
+    }*/
 	
 	//static final String Authorities = "Authorities";
 	
@@ -113,21 +111,13 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
     		return sb.toString();
     	}
     }*/
-    public void setResources(Collection<String> set) {
+    /*public void setResources(Collection<String> set) {
     	this.replaceInnerModels(set);
         //this.put(Authorities, map);
-    }
+    }*/
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
-	}
-	@Override
-	public Class<String> getJsonParserModel() {
-		return String.class;
-	}
-	@Override
-	public void setSequenceKey(Integer key) {
-		this.setId(key);
 	}
 	
 	@Override
@@ -141,18 +131,23 @@ public class WifiDeviceGroup extends ListJsonExtIntModel<String> implements ISeq
 	}
 	@Override
 	public int hashCode() {
-		if(this.getId() == null) this.setId(new Integer(0));
+		if(this.getId() == null) this.setId(0l);
 		return this.getId().hashCode();
 	}
-	@Override
+	/*@Override
 	public int limitSize() {
 		return 100;
-	}
+	}*/
 	public int getChildren() {
 		return children;
 	}
 	public void setChildren(int children) {
 		this.children = children;
+	}
+	@Override
+	public void setSequenceKey(Long key) {
+		// TODO Auto-generated method stub
+		this.setId(key);
 	}
 	
 }

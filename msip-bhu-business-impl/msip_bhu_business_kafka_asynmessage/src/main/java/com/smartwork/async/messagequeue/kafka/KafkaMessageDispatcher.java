@@ -29,6 +29,7 @@ public class KafkaMessageDispatcher {
 		Iterator<Entry<String, Map<Integer, List<Object>>>> iter = origData.entrySet().iterator();
 		while(iter.hasNext()){
 			Entry<String, Map<Integer, List<Object>>> element = iter.next();
+			System.out.println("~~~:"+element.getKey());
 			IMessageHandler handler = messageHandlers.get(element.getKey());
 			//IMessageHandler<?> handler = iMessageHandler;
 			if(handler != null){

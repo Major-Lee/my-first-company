@@ -2,6 +2,9 @@ package com.bhu.vas.push.business;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.user.model.*;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -10,26 +13,26 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
+import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
+import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
-import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
-import com.bhu.vas.api.rpc.user.model.PushType;
-import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.service.HandsetDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
+
+import java.util.List;
 
 /**
  * 业务push service
@@ -45,9 +48,12 @@ public class PushService{
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
-	
+
 	@Resource
-	private HandsetDeviceService handsetDeviceService;
+	private UserDeviceService userDeviceService;
+	
+	//@Resource
+	//private HandsetDeviceService handsetDeviceService;
 	
 	/**
 	 * 业务逻辑发送push消息统一接口
@@ -112,15 +118,62 @@ public class PushService{
 								
 								if(valid_time){
 									boolean need_push = false;
-									//判断是否开启陌生终端设置
-									if(dto.isStranger_on()){
+//									//判断是否只对添加昵称的发送push
+//									if(dto.isAlias_on()) {
+//										List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
+//										if (!bindDevices.isEmpty()) {
+//											if (WifiDeviceHandsetAliasService.getInstance().
+//													hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac())) {
+//												need_push = true;
+//											}
+//										}
+//									} else {
+//										need_push = true;
+//									}
+//
+//									//判断是否开启陌生终端设置
+//									if(dto.isStranger_on()){
+//										//第一次接入的终端算是陌生终端
+//										if(hd_push_dto.isNewed()) {
+//											need_push = true;
+//										}
+//									}else{
+//										need_push = true;
+//									}
+
+									if(dto.isStranger_on()) {
 										//第一次接入的终端算是陌生终端
-										if(hd_push_dto.isNewed()) 
+										if(hd_push_dto.isNewed()) {
 											need_push = true;
-									}else{
-										need_push = true;
+										} else {
+											if (dto.isAlias_on()) { //开启陌生人终端和昵称,陌生人不存在昵称
+												List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
+												if (!bindDevices.isEmpty()) {
+													need_push = WifiDeviceHandsetAliasService.getInstance().
+															hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac());
+												} else {
+													need_push = false;
+												}
+											} else { //开启陌生,关闭昵称
+												need_push = false;
+											}
+										}
+
+									} else {
+										if (dto.isAlias_on()) { //关闭陌生,开启昵称
+											List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(hd_push_dto.getMac());
+											if (!bindDevices.isEmpty()) {
+												need_push = WifiDeviceHandsetAliasService.getInstance().
+														hexistsHandsetAlias(bindDevices.get(0).getUid(), hd_push_dto.getHd_mac());
+
+											} else {
+												need_push = false;
+											}
+										} else { //关闭陌生，关闭昵称
+											need_push = true;
+										}
 									}
-									
+
 									if(need_push){
 										PushMsg pushMsg = this.generatePushMsg(presentDto);
 										if(pushMsg != null){
@@ -144,6 +197,91 @@ public class PushService{
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("PushHandsetDeviceOnline exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
+	 * 终端探测出现push
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public boolean pushHandsetDeviceWSOnline(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+		boolean ret = false;
+		try{
+			HandsetDeviceWSOnlinePushDTO wspush_dto = (HandsetDeviceWSOnlinePushDTO)pushDto;
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					String push_deviceName = StringHelper.EMPTY_STRING_GAP;
+					if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
+						pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), push_deviceName));
+						String name = wspush_dto.getHd_mac();
+						if(!StringUtils.isEmpty(wspush_dto.getN())){
+							name = wspush_dto.getN();
+						}else{
+							//如果没有昵称 匹配mac短名称
+							String scn = MacDictParserFilterHelper.prefixMactch(wspush_dto.getHd_mac(),true,false);
+							if(!DevicesSet.Unknow.getScn().equals(scn)){
+								name = scn;
+							}
+						}
+						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), name));
+						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
+					}else{
+						if(presentDto.isMulti()){
+							String deviceName = deviceFacadeService.getUserDeviceName(presentDto.getUid(), wspush_dto.getMac());
+							if(!StringUtils.isEmpty(deviceName)){
+								push_deviceName = String.format(PushMessageConstant.Android_DeviceName, deviceName);
+							}
+						}
+						pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), push_deviceName));
+						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getHd_mac()));
+						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
+					}
+					//发送push
+					ret = pushNotification(pushMsg);
+					if(ret){
+						logger.info("PushHandsetDeviceWSOnline Successed " + pushMsg.toString());
+					}else{
+						logger.info("PushHandsetDeviceWSOnline Failed " + pushMsg.toString());
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("PushHandsetDeviceWSOnline exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
+	 * 发送用户bbs登录消息
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public boolean pushUserBBSsignedon(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+		boolean ret = false;
+		try{
+			UserBBSsignedonPushDTO bbs_push_dto = (UserBBSsignedonPushDTO)pushDto;
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					pushMsg.setPaylod(JsonHelper.getJSONString(bbs_push_dto));
+					//发送push
+					ret = pushAndroidTransmissionAndIosNotification(pushMsg);
+					if(ret){
+						logger.info("PushUserBBSsignedon Successed " + pushMsg.toString());
+					}else{
+						logger.info("PushUserBBSsignedon Failed " + pushMsg.toString());
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("PushUserBBSsignedon exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}
@@ -217,76 +355,85 @@ public class PushService{
 	 */
 	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto, 
 			HandsetDeviceOnlinePushDTO hd_push_dto){
-		//终端名称
-		//String hd_name = deviceFacadeService.queryPushHandsetDeviceName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
-		//设备名称
-//		String d_name = deviceFacadeService.queryDeviceName(presentDto.getUid(), hd_push_dto.getMac());
-		//格式化连接时间
-//		String date_format = DateTimeHelper.getDateTime(new Date(hd_push_dto.getTs()), DateTimeHelper.DefalutFormatPattern);
-		//构造payload
-		String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
-		//如果终端有别名 则不显示终端厂商短名称
-		if(!StringUtils.isEmpty(aliasName)){
-			hd_push_dto.setN(aliasName);
-			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, 
-					aliasName));
-		}
-		//如果不存在终端别名 显示厂商短名称
-		else{
-			boolean exist_hostname = false;
-			boolean exist_scn = false;
-			String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
-			hd_push_dto.setN(hostname);
-			if(!StringUtils.isEmpty(hostname)){
-				exist_hostname = true;
+		if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
+			//构造payload
+			String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+			//如果终端有别名 则不显示终端厂商短名称
+			if(!StringUtils.isEmpty(aliasName)){
+				hd_push_dto.setN(aliasName);
+				pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, 
+						aliasName));
 			}
-			//根据设备mac匹配终端厂商
-			String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
-			if(!DevicesSet.Unknow.getScn().equals(scn)){
-				exist_scn = true;
-				//scn = "终端";
-			}
-			//如果主机名和短名称都存在 显示短名称+主机名
-			if(exist_hostname && exist_scn){
-				//如果短名称包含 手机 字样
-				if(scn.contains(PushMessageConstant.Android_Mobile_String)){
-					//主机名是安卓标记的显示为安卓os
-					if(PushMessageConstant.Android_Host_Name.equals(hostname)){
-						hostname = PushMessageConstant.Android_OS;
+			//如果不存在终端别名 显示厂商短名称
+			else{
+				boolean exist_hostname = false;
+				boolean exist_scn = false;
+				String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+				hd_push_dto.setN(hostname);
+				if(!StringUtils.isEmpty(hostname)){
+					exist_hostname = true;
+				}
+				//根据设备mac匹配终端厂商
+				String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
+				logger.info(String.format("builderHandsetDeviceOnlinePushMsg scn [%s] hostname [%s]", scn, hostname));
+				if(!DevicesSet.Unknow.getScn().equals(scn)){
+					exist_scn = true;
+					//scn = "终端";
+				}
+				//如果主机名和短名称都存在 显示短名称+主机名
+				if(exist_hostname && exist_scn){
+					//如果短名称包含 手机 字样
+					if(scn.contains(PushMessageConstant.Android_Mobile_String)){
+						//主机名是安卓标记的显示为安卓os
+						if(PushMessageConstant.Android_Host_Name.equals(hostname)){
+							hostname = PushMessageConstant.Android_OS;
+						}
+					}
+					//如果短名称不包含 手机 字样 短名称+主机名
+					else{
+						//主机名是安卓标记的显示为安卓终端
+						if(PushMessageConstant.Android_Host_Name.equals(hostname)){
+							hostname = PushMessageConstant.Android_Terminal;
+						}
 					}
 				}
-				//如果短名称不包含 手机 字样 短名称+主机名
-				else{
-					//主机名是安卓标记的显示为安卓终端
+				//如果只有主机名 只显示主机名
+				else if(exist_hostname){
 					if(PushMessageConstant.Android_Host_Name.equals(hostname)){
 						hostname = PushMessageConstant.Android_Terminal;
 					}
+					scn = StringHelper.EMPTY_STRING_GAP;
+				}
+				//如果只有短名称 显示短名称+未知终端
+				else if(exist_scn){
+					hostname = PushMessageConstant.Android_Unkown_Hostname;
+				}
+				//如果主机名和短名称都没有 显示 未知终端
+				else{
+					hostname = PushMessageConstant.Android_Unkown_Hostname;
+					scn = StringHelper.EMPTY_STRING_GAP;
+				}
+				pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hostname));
+			}
+			
+			String payload = JsonHelper.getJSONString(hd_push_dto);
+			pushMsg.setPaylod(payload);
+			//构造title和text
+			//如果用户管理多个设备 标题中添加设备名称
+			String push_deviceName = StringHelper.EMPTY_STRING_GAP;
+			if(presentDto.isMulti()){
+				String deviceName = deviceFacadeService.getUserDeviceName(presentDto.getUid(), hd_push_dto.getMac());
+				logger.info(String.format("multi device push deviceName [%s]", deviceName));
+				if(!StringUtils.isEmpty(deviceName)){
+					push_deviceName = String.format(PushMessageConstant.Android_DeviceName, deviceName);
 				}
 			}
-			//如果只有主机名 只显示主机名
-			else if(exist_hostname){
-				if(PushMessageConstant.Android_Host_Name.equals(hostname)){
-					hostname = PushMessageConstant.Android_Terminal;
-				}
-				scn = StringHelper.EMPTY_STRING_GAP;
-			}
-			//如果只有短名称 显示短名称+未知终端
-			else if(exist_scn){
-				hostname = PushMessageConstant.Android_Unkown_Hostname;
-			}
-			//如果主机名和短名称都没有 显示 未知终端
-			else{
-				hostname = PushMessageConstant.Android_Unkown_Hostname;
-				scn = StringHelper.EMPTY_STRING_GAP;
-			}
-			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), scn, hostname));
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : "", push_deviceName));
+		}else{
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
+			pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
+			pushMsg.setPaylod(JsonHelper.getJSONString(hd_push_dto));
 		}
-		
-		String payload = JsonHelper.getJSONString(hd_push_dto);
-		pushMsg.setPaylod(payload);
-		//构造title和text
-		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), hd_push_dto.isNewed() ? "陌生" : ""));
-		
 	}
 	
 	/**
@@ -313,6 +460,20 @@ public class PushService{
 			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
 		}else{
 			return GexinPushService.getInstance().pushNotification(pushMsg);
+		}
+	}
+	
+	/**
+	 * 安卓发送透传消息
+	 * ios发送通知消息
+	 * @param pushMsg
+	 * @return
+	 */
+	protected boolean pushAndroidTransmissionAndIosNotification(PushMsg pushMsg){
+		if(DeviceEnum.isIos(pushMsg.getD())){
+			return GexinPushService.getInstance().pushNotification4ios(pushMsg);
+		}else{
+			return GexinPushService.getInstance().pushTransmission(pushMsg);
 		}
 	}
 	

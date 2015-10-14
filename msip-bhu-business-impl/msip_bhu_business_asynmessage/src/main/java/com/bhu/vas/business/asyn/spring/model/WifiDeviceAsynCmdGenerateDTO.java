@@ -6,7 +6,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 public class WifiDeviceAsynCmdGenerateDTO extends ActionDTO {
 	
 	//private int user;
-	private int gid;
+	private long gid;
 	private boolean dependency;
 	private String mac;
 	String opt;
@@ -28,11 +28,11 @@ public class WifiDeviceAsynCmdGenerateDTO extends ActionDTO {
 		this.user = user;
 	}*/
 
-	public int getGid() {
+	public long getGid() {
 		return gid;
 	}
 
-	public void setGid(int gid) {
+	public void setGid(long gid) {
 		this.gid = gid;
 	}
 

@@ -11,7 +11,7 @@
 	
 	<context:component-scan base-package="com.bhu.vas.business"/>
 	<context:component-scan base-package="com.smartwork.rpc.service.daemon"/>-->
-	 
+	<!-- 
 	<context:component-scan base-package="com.bhu.vas.business.asyn.web.service"/>
-	<context:component-scan base-package="com.bhu.vas.business.processor"/>
+	<context:component-scan base-package="com.bhu.vas.business.processor"/> -->
 </beans>

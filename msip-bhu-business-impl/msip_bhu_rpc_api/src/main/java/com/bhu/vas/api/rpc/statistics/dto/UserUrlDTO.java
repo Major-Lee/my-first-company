@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Created by bluesand on 5/29/15.
  */
+@SuppressWarnings("serial")
 public class UserUrlDTO implements Serializable{
 
     private String category;

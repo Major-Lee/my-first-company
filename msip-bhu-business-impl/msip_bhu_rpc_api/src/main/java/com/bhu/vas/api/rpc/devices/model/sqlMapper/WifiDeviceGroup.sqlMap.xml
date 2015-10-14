@@ -15,12 +15,11 @@
     
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
-    <result property="extension_content" column="extension_content"/>
-  </resultMap>  
+  </resultMap>
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devicegroup
+	    	t_wifi_device_group
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
@@ -33,8 +32,7 @@
 	    	creator,
 	    	updator,
 	    	created_at,
-	    	updated_at,
-	    	extension_content
+	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
@@ -46,8 +44,7 @@
 	    	creator,
 	    	updator,
 	    	created_at,
-	    	updated_at,
-	    	extension_content
+	    	updated_at
 	    ]]>
 	</sql>   
 	
@@ -60,9 +57,8 @@
 	    	#{creator},
 	    	#{updator},
 	    	#{created_at},
-	    	#{updated_at},
-	    	#{extension_content}
-	</sql> 
+	    	#{updated_at}
+	</sql>
 	
 	<sql id="modelUpdateValues">
 	    	pid = #{pid},
@@ -72,8 +68,7 @@
 	    	creator = #{creator},
 	    	updator = #{updator},
 	    	created_at = #{created_at},
-	    	updated_at = #{updated_at},
-	    	extension_content = #{extension_content}
+	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
@@ -123,7 +118,7 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
@@ -164,7 +159,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="int">
+	<select id="pkSelectByModelCriteria" resultType="long">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	      	<include refid="model_CRITERIA_SQL_GenCondition" />

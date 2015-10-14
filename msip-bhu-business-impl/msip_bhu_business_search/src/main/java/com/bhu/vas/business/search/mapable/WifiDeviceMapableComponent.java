@@ -16,6 +16,7 @@ import com.smartwork.msip.es.mapping.field.type.IMapableFieldType;
 public class WifiDeviceMapableComponent extends MapableComponent{
 	
 	public static final String M_id = "id";//wifi id
+	public static final String M_sn = "sn";//wifi sn
 	public static final String M_ghash = "ghash";//地理位置的geohash
 	public static final String M_address = "address";//地理位置的详细地址
 	public static final String M_show_address = "showaddress";//地理位置的详细地址
@@ -24,12 +25,14 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	public static final String M_configmodel = "configmodel";//工作模式
 	public static final String M_devicetype = "devicetype";//设备类型
 	public static final String M_online = "online";//wifi设备是否在线
+	public static final String M_groups = "groups";//wifi设备是否在线
 	public static final String M_nvd = "nvd";//是否是新版本设备
 	public static final String M_count = "count";//wifi设备上的移动设备在线数量
 	public static final String M_register_at = "register_at";//wifi设备的注册时间
 	public static final String M_i_update_at = "i_update_at";//索引记录的更新时间
 	
 	private StringMapableField id;
+	private StringMapableField sn;
 	private GeoPointsMapableField ghash;
 	private StringMapableField address;
 	private StringMapableField showaddress;
@@ -38,6 +41,7 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 	private StringMapableField configmodel;
 	private StringMapableField devicetype;
 	private IntegerMapableField online;
+	private StringMapableField groups;
 	private IntegerMapableField nvd;
 	private IntegerMapableField count;
 	private LongMapableField register_at;
@@ -45,6 +49,7 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 
 	public WifiDeviceMapableComponent(){
 		id = new StringMapableField(M_id, StringMapableField.TYPE_STORED_NOT_ANALYZED);
+		sn = new StringMapableField(M_sn, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		ghash = new GeoPointsMapableField(M_ghash);
 		address = new StringMapableField(M_address, IMapableFieldType.Store_YES, 
 				IMapableFieldType.Index_Analyzed, AnalyzerSupport.EDGENGRAM_WHITESPACE_ANALYZER);
@@ -54,6 +59,8 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 		configmodel = new StringMapableField(M_configmodel, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		devicetype = new StringMapableField(M_devicetype, StringMapableField.TYPE_STORED_NOT_ANALYZED);
 		online = new IntegerMapableField(M_online, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
+		groups = new StringMapableField(M_groups, IMapableFieldType.Store_YES, 
+				IMapableFieldType.Index_Analyzed, AnalyzerSupport.LOWERCASE_WHITESPACE_ANALYZER);
 		nvd = new IntegerMapableField(M_nvd, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
 		count = new IntegerMapableField(M_count, IntegerMapableField.TYPE_STORED_NOT_ANALYZED);
 		register_at = new LongMapableField(M_register_at, LongMapableField.TYPE_STORED_NOT_ANALYZED);
@@ -62,6 +69,10 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 
 	public StringMapableField getId() {
 		return id;
+	}
+
+	public StringMapableField getSn() {
+		return sn;
 	}
 
 	public GeoPointsMapableField getGhash() {
@@ -88,6 +99,10 @@ public class WifiDeviceMapableComponent extends MapableComponent{
 		return online;
 	}
 	
+	public StringMapableField getGroups() {
+		return groups;
+	}
+
 	public IntegerMapableField getNvd() {
 		return nvd;
 	}

@@ -8,6 +8,7 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 	private long login_ts;//wifi设备本次登录的时间
 	private long last_login_at;//wifi设备上次的登录时间
 	private boolean newWifi;//是否是新增wifi设备
+	private boolean wanIpChanged;//wanip变更
 	private boolean needLocationQuery;//是否需要发送查询地理位置指令
 	private String dhcpcStatusQuery_interface;//是否需要发送查询dhcp状态信息
 	@Override
@@ -61,6 +62,14 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 
 	public void setDhcpcStatusQuery_interface(String dhcpcStatusQuery_interface) {
 		this.dhcpcStatusQuery_interface = dhcpcStatusQuery_interface;
+	}
+
+	public boolean isWanIpChanged() {
+		return wanIpChanged;
+	}
+
+	public void setWanIpChanged(boolean wanIpChanged) {
+		this.wanIpChanged = wanIpChanged;
 	}	
 	
 }

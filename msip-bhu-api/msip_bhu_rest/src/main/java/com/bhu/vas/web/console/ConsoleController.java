@@ -14,6 +14,8 @@ import com.bhu.vas.api.rpc.statistics.dto.*;
 import com.bhu.vas.api.vto.*;
 import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -76,6 +79,8 @@ public class ConsoleController extends BaseController {
      * @param newVersionDevice 新老版本设备
      * @param request
      * @param response
+     * @param groupids 所属分组ids 空格分隔
+     * @param groupids_excepts 排除所属分组ids 空格分隔
      * @param pageNo
      * @param pageSize
      */
@@ -87,20 +92,27 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false) int uid,
             //@RequestParam(required = false, value = "q") String keyword,
             @RequestParam(required = false) String mac,
+            @RequestParam(required = false) String sn,
             @RequestParam(required = false) String orig_swver,
+            @RequestParam(required = false) String origvapmodule,
             @RequestParam(required = false) String adr,
             @RequestParam(required = false) String work_mode,
             @RequestParam(required = false) String config_mode,
             @RequestParam(required = false) String devicetype,
             @RequestParam(required = false) Boolean online,
+            @RequestParam(required = false) Boolean moduleonline,
             @RequestParam(required = false, value = "nvd") Boolean newVersionDevice,
+            @RequestParam(required = false, value = "co") Boolean canOperateable,
             @RequestParam(required = false, value = "region") String region,
             @RequestParam(required = false, value = "excepts") String excepts,
+            @RequestParam(required = false, value = "gids") String groupids,
+            @RequestParam(required = false, value = "gids_excepts") String groupids_excepts,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
 
-        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, orig_swver,
-                adr, work_mode, config_mode, devicetype, online, newVersionDevice, region, excepts, pageNo, pageSize);
+        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,origvapmodule,
+                adr, work_mode, config_mode, devicetype, online,moduleonline, newVersionDevice,canOperateable, region, excepts, 
+                groupids, groupids_excepts, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
     }
 
@@ -382,4 +394,23 @@ public class ConsoleController extends BaseController {
         }
     }
 
+    
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_persinstence_cmd", method = {RequestMethod.POST})
+    public void fetch_persinstence_cmd(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false) String mac) {
+        if (StringUtils.isEmpty(mac)) {
+        	throw new BusinessException(ResponseStatus.Forbidden, ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+        }
+        RpcResponseDTO<List<PersistenceCMDDetailDTO>> resp = deviceRestRpcService.fetchDevicePersistenceDetailCMD(mac);//.fetchUserUrlStatistics(date);
+
+		if(!resp.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+    }
 }

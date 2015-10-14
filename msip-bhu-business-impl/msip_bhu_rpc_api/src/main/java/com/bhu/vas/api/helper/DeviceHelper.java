@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -37,8 +39,18 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.localunit.RandomPicker;
 
 public class DeviceHelper {
+	
+	public static final int Device_Peak_Section_Type_OnlyDownload = 1;//设备只测速下行
+	public static final int Device_Peak_Section_Type_OnlyUpload = 2;//设备只测速上行
+	public static final int Device_Peak_Section_Type_All = 3;//设备上下行都进行测速
+	
+	//获取配置数据正常
+	public static final int RefreashDeviceSetting_Normal = 0;
+	//获取配置数据序列号比当前小 认为是恢复出厂
+	public static final int RefreashDeviceSetting_RestoreFactory = 1;
 	
 	/**
 	 * 获取可用的vap的names
@@ -219,6 +231,8 @@ public class DeviceHelper {
 		//TODO:如果没有别名 返回hostname
 		return null;
 	}
+
+
 	
 	/**
 	 * 判断radio name是否存在
@@ -263,15 +277,24 @@ public class DeviceHelper {
 		return radio_dtos.get(0);
 	}
 	
+	private static final String Unknow_Power = "-1";
+	private static final String Unknow_RealChannel = "-1";
 	/**
 	 * URouter设备获取信号强度信息 由于urouter设备是单频 只返回第一个radio的信号强度
 	 * @param dto
 	 * @return
 	 */
-	public static String getURouterDevicePower(WifiDeviceSettingDTO dto){
+	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingDTO dto){
+		String[] result = new String[2];
 		WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(dto);
-		if(radio_dto == null) return null;
-		return radio_dto.getPower();
+		if(radio_dto == null){
+			result[0] = Unknow_Power;
+			result[1] = Unknow_RealChannel;
+		}else{
+			result[0] = StringUtils.isEmpty(radio_dto.getPower())?Unknow_Power:radio_dto.getPower();
+			result[1] = StringUtils.isEmpty(radio_dto.getReal_channel())?Unknow_RealChannel:radio_dto.getReal_channel();
+		}
+		return result;
 	}
 	
 	/**
@@ -360,7 +383,7 @@ public class DeviceHelper {
 	 * @param device_entity
 	 * @return
 	 */
-	public static String getCurrentDeviceUptime(WifiDevice device_entity){
+/*	public static String getCurrentDeviceUptime(WifiDevice device_entity){
 		String uptime = null;
 		if(device_entity != null) {
 			//如果设备在线 
@@ -376,11 +399,11 @@ public class DeviceHelper {
 			uptime = "0";
 		
 		return uptime;
-	}
+	}*/
 	
 	//新版本设备定义
-	public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
-	
+	//public static final String[] newOrigSwvers = new String[]{"1.2.8","1.2.9","1.2.10","1.2.11","1.2.12","1.2.13","1.2.14","1.2.15"};
+	public static final String NewMinOrgiSwverVersion = "1.2.8";
 	/**
 	 * 根据设备的原始软件版本号 判断是否新版本设备
 	 * @param orig_swver
@@ -389,12 +412,83 @@ public class DeviceHelper {
 	public static boolean isNewOrigSwverDevice(String orig_swver){
 		if(StringUtils.isEmpty(orig_swver)) return false;
 		
-		for(String newOrigSwver : newOrigSwvers){
-			if(orig_swver.contains(newOrigSwver)){
-				return true;
-			}
+		try{
+	    	Pattern p = Pattern.compile("V(.*)(B|r)");  
+	    	Matcher m = p.matcher(orig_swver);
+	    	String version = null;
+	    	while(m.find()){  
+	    		version = m.group(1);  
+	    	}
+	    	if(StringUtils.isEmpty(version)) return false;
+	    	int ret = StringHelper.compareVersion(version, NewMinOrgiSwverVersion);
+	    	return ret >= 0 ? true : false;
+		}catch(Exception ex){
+			//ex.printStackTrace(System.out);
 		}
 		return false;
+//		for(String newOrigSwver : newOrigSwvers){
+//			if(orig_swver.contains(newOrigSwver)){
+//				return true;
+//			}
+//		}
+//		return false;
+	}
+	
+	/**
+	 * 比较两个设备的软件版本号
+	 * 返回 1 表示 orig_swver1 大于 orig_swver2
+	 * 返回 0 表示 orig_swver1 等于 orig_swver2
+	 * 返回 -1 表示 orig_swver1 小于 orig_swver2
+	 * @param orig_swver1
+	 * @param orig_swver2
+	 * @return
+	 */
+	public static int compareDeviceVersions(String orig_swver1, String orig_swver2){
+		if(StringUtils.isEmpty(orig_swver1) || StringUtils.isEmpty(orig_swver2)) 
+			throw new RuntimeException("param validate empty");
+		
+		String[] orig_swver1_versions = parseDeviceSwverVersion(orig_swver1);
+		if(orig_swver1_versions == null) return -1;
+		String[] orig_swver2_versions = parseDeviceSwverVersion(orig_swver2);
+		if(orig_swver2_versions == null) return 1;
+		//判断大版本号
+		int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
+		//System.out.println("top ret " + top_ret);
+		if(top_ret != 0) return top_ret;
+		
+		//判断小版本号
+		int bottom_ret = StringHelper.compareVersion(orig_swver1_versions[1], orig_swver2_versions[1]);
+		//System.out.println("bottom ret " + bottom_ret);
+		return bottom_ret;
+	}
+	
+	/**
+	 * 解析设备的软件版本
+	 * 返回数组 0 大版本号 1 小版本号
+	 * @param orig_swver
+	 * @return
+	 */
+	public static String[] parseDeviceSwverVersion(String orig_swver){
+		try{
+	    	Pattern p = Pattern.compile("V(.*)(B|r)");
+	    	Matcher m = p.matcher(orig_swver);
+	    	String top_version = null;
+	    	while(m.find()){  
+	    		top_version = m.group(1);  
+	    	}
+	    	
+	    	p = Pattern.compile("Build(\\d+)");
+	    	m = p.matcher(orig_swver);
+	    	String bottom_version = null;
+	    	while(m.find()){  
+	    		bottom_version = m.group(1);  
+	    	}
+	    	System.out.println(top_version + "-" + bottom_version);
+	    	return new String[]{top_version, bottom_version};
+		}catch(Exception ex){
+			
+		}
+		return null;
 	}
 	
 	/**
@@ -562,13 +656,52 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	
 	
-	public static final String DeviceSetting_HttpAdItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_Start_HttpAdItem 	= "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
+	public static final String DeviceSetting_Stop_HttpAdItem 	= "<ITEM bhu_enable=\"disable\" />";
 	/*
 	<ITEM bhu_http404_enable="enable" bhu_http404_url="" bhu_http_redirect_enable="enable"
 		    bhu_http_redirect_rule="1,20:00:00,21:00:00,http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com ..."
 		 />*/
-	public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"http://auth.wi2o.cn/404/\" />";
-	public static final String DeviceSetting_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
+	//public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"http://auth.wi2o.cn/404/\" bhu_http404_codes=\"404,502\"/>";
+	public static final String DeviceSetting_Start_Http404Item 		= "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
+	public static final String DeviceSetting_Stop_Http404Item 		= "<ITEM bhu_http404_enable=\"disable\"/>";
+	public static final String DeviceSetting_Start_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
+	public static final String DeviceSetting_Stop_HttpRedirectItem 	= "<ITEM bhu_http_redirect_enable=\"disable\"/>";
+	
+	public static final String DeviceSetting_Start_VapItem_Begin_Fragment 		= "<ITEM ";
+	public static final String DeviceSetting_Start_HttpAdItem_Inner_Fragment 	= " bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" ";
+	public static final String DeviceSetting_Start_Http404Item_Inner_Fragment 	= " bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"%s\" ";
+	public static final String DeviceSetting_Start_HttpRedirectItem_Inner_Fragment = " bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\" ";
+	public static final String DeviceSetting_Start_VapItem_End_Fragment 	= " />";
+	
+	//mac type opt taskid
+	public static final String DeviceSetting_VapModule_VapItem_Header_Fragment 	= "00001001%s0000000000000000100000012%s%s%s";
+	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
+	public static final String DeviceSetting_VapModule_VapItem_End_Fragment 	= "</bhu_module>";
+	public static final String DeviceSetting_VapModule_Start_Http404Item 		= "<http404><ITEM enable=\"%s\" url=\"%s\" codes=\"%s\" ver=\"%s\"/></http404>";
+	public static final String DeviceSetting_VapModule_Stop_Http404Item 		= "<http404><ITEM enable=\"disable\"/></http404>";
+	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<redirect><ITEM enable=\"%s\" rule=\"%s\" ver=\"%s\" /></redirect>";
+	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<redirect><ITEM enable=\"disable\"/></redirect>";
+	public static final String DeviceSetting_VapModule_Upgrade = "<upgrade><ITEM url = “” retry_count=”” retry_interval=”” /></upgrade>";
+	
+	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
+							    "<channel>"+
+							        "<ITEM enable=\"disable\"/>"+
+							    "</channel>"+
+							    "<brand>"+
+						        	"<ITEM enable=\"disable\"/>"+
+						        "</brand>"+							    
+							    "<redirect>"+
+							        "<ITEM enable=\"disable\"/>"+
+							    "</redirect>"+
+							    "<http404>"+
+							        "<ITEM enable=\"disable\"/>"+
+							    "</http404>"+
+							"</bhu_module>";
+	
+	/*public static final String VapModule_Setting_MsgType = "00000003";
+	public static final String VapModule_Query_MsgType = "00000004";*/
+	
 	//TODO:待完善
 	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
 	public static final String DeviceSetting_Start_HttpPortalItem =  	
@@ -603,7 +736,9 @@ public class DeviceHelper {
      "</wifi>"+
      "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";
 	
-	public static final String DeviceSetting_RadioItem = "<ITEM name=\"%s\" power=\"%s\" />";
+	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
+	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" />";
+	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\"/>";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
@@ -748,6 +883,43 @@ public class DeviceHelper {
 		return builderDeviceSettingItemWithDto(DeviceSetting_AclItem, result);
 	}
 	
+	
+	/*public static String autoBuilderDSOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
+		if(pad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		//WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
+	}*/
+	
+	public static String builderDSHttpVapSettinStartOuter(String config_sequence, String innerPayload){
+		StringBuilder payload = new StringBuilder();
+		payload.append(DeviceSetting_Start_VapItem_Begin_Fragment).append(innerPayload).append(DeviceSetting_Start_VapItem_End_Fragment);
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, payload.toString());
+	}
+	
+	public static String builderDSHttpAdStartFragmentOuter(String extparams){
+		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
+		if(pad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem_Inner_Fragment, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
+	}
+	public static String builderDSHttpRedirectStartFragmentOuter(String extparams){
+		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
+		if(pad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return  builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpRedirectItem_Inner_Fragment, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
+	}
+	
+	public static String builderDSHttp404StartFragmentOuter(String extparams){
+		//WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
+		ParamVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
+		if(ad_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item_Inner_Fragment, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
+	}
+	
 	/**
 	 * 构建广告配置数据
 	 * @param config_sequence
@@ -755,36 +927,45 @@ public class DeviceHelper {
 	 * @param ds_dto
 	 * @return throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	 */
-	public static String builderDSHttpAdOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
-		//WifiDeviceSettingVapAdDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapAdDTO.class);
+	public static String builderDSHttpAdStartOuter(String config_sequence, String extparams){
 		ParamVapAdDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapAdDTO.class);
 		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		//WifiDeviceSettingVapAdDTO ad_dto = new WifiDeviceSettingVapAdDTO();
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttpRedirectOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpAdStopOuter(String config_sequence){
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpAdItem);
+	}
+	
+	public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		//WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
 		if(pad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpRedirectItem, WifiDeviceSettingVapHttpRedirectDTO.fromParamVapAdDTO(pad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
 	
-	public static String builderDSHttp404Outer(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSHttpRedirectStopOuter(String config_sequence){
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpRedirectItem);
+	}
+	
+	public static String builderDSHttp404StartOuter(String config_sequence, String extparams){
 		//WifiDeviceSettingVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttp404DTO.class);
 		ParamVapHttp404DTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttp404DTO.class);
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
+		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, item);
 	}
+	public static String builderDSHttp404StopOuter(String config_sequence){
+		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
+	}
 	
-	
-	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams){
 		ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		if(ad_dto == null)
@@ -793,7 +974,7 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	
-	public static String builderDSStopHttpPortalOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+	public static String builderDSStopHttpPortalOuter(String config_sequence){
 		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		//if(ad_dto == null)
@@ -828,7 +1009,44 @@ public class DeviceHelper {
 			
 			radio_dto.setName(frist_radio_dto.getName());
 		}
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem, radio_dto);
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem_Power, radio_dto);
+		String item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+				radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
+	}
+	
+	
+	private static final String[] optionalChannel4URouter = {"1","6","11"};
+	public static String builderDSRealChannelOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dto == null /*|| StringUtils.isEmpty(radio_dto.getReal_channel()) || 
+				Integer.parseInt(radio_dto.getReal_channel()) < 0*/)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		if(!StringUtils.isEmpty(radio_dto.getName())){
+			//如果radio名称不存在 则返回null
+			if(!isExistRadioName(radio_dto.getName(), ds_dto)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+		}else{
+			//如果没有指定radio的具体名称 则获取默认第一个radio进行修改
+			WifiDeviceSettingRadioDTO frist_radio_dto = getFristDeviceRadio(ds_dto);
+			//如果没有一个可用的radio
+			if(frist_radio_dto == null) 
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
+				String old_real_channel = frist_radio_dto.getReal_channel();
+				Set<String> optionals = ArrayHelper.toSet(optionalChannel4URouter);
+				if(StringUtils.isNotEmpty(old_real_channel)){
+					optionals.remove(old_real_channel);
+				}
+				radio_dto.setReal_channel(RandomPicker.pick(optionals));
+			}
+			radio_dto.setName(frist_radio_dto.getName());
+		}
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem_RealChannel, radio_dto);
+		String item = builderDeviceSettingItem(DeviceSetting_RadioItem_RealChannel, 
+				radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_RealChannel_Radio));
 		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 	}
 	
@@ -1023,7 +1241,7 @@ public class DeviceHelper {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto)
+	public static String builderDSAdminPasswordOuter(String config_sequence, String extparams)
 			throws Exception {
 		WifiDeviceSettingUserDTO user_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingUserDTO.class);
 		if(user_dto == null || StringUtils.isEmpty(user_dto.getPassword())){
@@ -1047,7 +1265,7 @@ public class DeviceHelper {
 	 * @param extparams
 	 * @return
 	 */
-	public static String builderDSLinkModeOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto) throws Exception {
+	public static String builderDSLinkModeOuter(String config_sequence, String extparams) throws Exception {
 		if(!StringUtils.isEmpty(config_sequence) && !StringUtils.isEmpty(extparams)){
 			WifiDeviceSettingLinkModeDTO linkModelDTO = JsonHelper.getDTO(extparams, WifiDeviceSettingLinkModeDTO.class);
 			if (linkModelDTO != null) {
@@ -1088,7 +1306,9 @@ public class DeviceHelper {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 
 		StringBuffer ds = new StringBuffer();
-		
+
+
+		//todo(bluesand): 新增别名
 		List<WifiDeviceSettingMMDTO> mm_incr_dtos = mm_dto_map.get(DeviceSettingAction_Incr);
 		if(mm_incr_dtos != null && !mm_incr_dtos.isEmpty()){
 			for(WifiDeviceSettingMMDTO mm_incr_dto : mm_incr_dtos){
@@ -1101,7 +1321,9 @@ public class DeviceHelper {
 				ds.append(builderDeviceSettingItem(DeviceSetting_MMItem, mm_incr_dto.builderProperties()));
 			}
 		}
-		
+
+
+
 		List<WifiDeviceSettingMMDTO> mm_del_dtos = mm_dto_map.get(DeviceSettingAction_Del);
 		if(mm_del_dtos != null && !mm_del_dtos.isEmpty()){
 			for(WifiDeviceSettingMMDTO mm_del_dto : mm_del_dtos){
@@ -1199,7 +1421,12 @@ public class DeviceHelper {
 
 
 		System.out.println(item);
-
+		
+		
+		System.out.println(isNewOrigSwverDevice("AP104P06V1.2.12r2"));
+		
+		parseDeviceSwverVersion("AP106P06V1.2.15BuildYt");
+		compareDeviceVersions("AP106P06V1.2.16Build8057", "AP106P06V1.2.15Build8057");
 	}
 
 }

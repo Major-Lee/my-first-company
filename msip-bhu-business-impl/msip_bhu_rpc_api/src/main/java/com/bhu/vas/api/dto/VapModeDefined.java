@@ -9,6 +9,16 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class VapModeDefined {
+	
+	private static final String Vap_Supported_Work_Mode1 = "router-ap";
+	private static final String Vap_Supported_Work_Mode2 = "wwan_router-ap";
+	private static final String Vap_Supported_Work_Mode3 = "bridge-ap";
+	
+	public static boolean supported(String device_workmode){
+		return Vap_Supported_Work_Mode1.equals(device_workmode) 
+				|| Vap_Supported_Work_Mode2.equals(device_workmode) || Vap_Supported_Work_Mode3.equals(device_workmode);
+	}
+	
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
 	//private final static String url_prefix = "http://vap.bhunetworks.com/vap/";
 	//private final static String url_prefix = "http://192.168.66.7/vap/";
@@ -38,6 +48,8 @@ public class VapModeDefined {
 	public enum HtmlInjectAdv{
 		STYLE000("style000","00.00.01","1000000","http://auth.wi2o.cn/ad/ad.js"),
 		STYLE001("style001","00.00.01","1000001",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/001/js/ad.js")),
+		STYLE002("style002","00.00.01","1000002",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/002/js/ad.js")),
+		STYLE003("style003","00.00.01","1000003",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/003/js/ad.js")),
 		;
 		//private String index;
 		private String style;
@@ -158,21 +170,48 @@ public class VapModeDefined {
 	 *
 	 *进入目录style001 执行tar -czf style001.tar.gz *
 	 *tar -xvf style001.tar.gz
+	 *
+	 *http://192.168.66.7/vap/404/style001/index.html
+	 *
+	 *404页面 内容系统实现思路
+	 *A、实现规则
+	 *	1、所有访问的404页面都是静态的，事先生成好的
+	 *  2、提供n中页面模板，对于每个客户可以同时选择多个模板，根据每个客户、每个模板生成独立的静态内容，每个客户的内容可能存在多个不同的静态内容
+	 *  3、静态内容的生成频次默认为30分钟重新生成，时间可以配置，也可以手动触发马上生成
+	 *B、生成规则
+	 *C、内容规则
+	 *	1、每套模板都存在静态的tpl文件，模板中的内容版块可以事先定义，不通的模板的内容版块数量可以不一致
 	 */
 	public enum HtmlInject404{
-		STYLE000("style000","00.00.01",RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
-		STYLE001("style001","00.00.03",RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style001.tar.gz")),
+		STYLE000("style000","00.00.01","404,500",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10001")),
+		STYLE001("style001","00.00.03","40*,50*,10*",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
+				
+		/*STYLE002("style002","00.00.03","40*,50*,10*",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
+		STYLE003("style003","00.00.03","40*,50*,10*",
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),*/
+				
+				//RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/style001/index.html?bid=10002")),
+/*		STYLE000("style000","00.00.01",
+				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style000.tar.gz")),
+		STYLE001("style001","00.00.03",
+				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/url404"),
+				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/rawfiles/style001.tar.gz")),*/
 		;
 		private String style;
 		private String ver;
+		private String codes;//在什么codes的情况下进行HtmlInject404，例如404，403，40*，50*等
 		private String dynaurl;
-		private String packurl;
+		//private String packurl;
 		static Map<String, HtmlInject404> allInject404Types;
-		HtmlInject404(String style,String ver,String dynaurl,String packurl){
+		HtmlInject404(String style,String ver,String codes,String dynaurl/*,String packurl*/){
 			this.style = style;
 			this.ver = ver;
+			this.codes = codes;
 			this.dynaurl = dynaurl;
-			this.packurl = packurl;
 		}
 		public String getStyle() {
 			return style;
@@ -187,13 +226,20 @@ public class VapModeDefined {
 			this.ver = ver;
 		}
 		
-		public String getPackurl() {
+		
+		/*public String getPackurl() {
 			return packurl;
 		}
 		public void setPackurl(String packurl) {
 			this.packurl = packurl;
-		}
+		}*/
 		
+		public String getCodes() {
+			return codes;
+		}
+		public void setCodes(String codes) {
+			this.codes = codes;
+		}
 		public String getDynaurl() {
 			return dynaurl;
 		}
@@ -269,9 +315,13 @@ public class VapModeDefined {
 	 *
 	 */
 	public enum HtmlPortal{
-		STYLE000("style000","00.00.01","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","192.168.66.7,bhunetworks.com",
+		STYLE000("style000","00.00.01",
+				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/urlportal"),
+				"192.168.66.7,bhunetworks.com",
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
-		STYLE001("style001","00.00.02","http://192.168.66.7/bhu_api/v1/noauth/vap/urlportal","192.168.66.7,bhunetworks.com",
+		STYLE001("style001","00.00.02",
+				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/urlportal"),
+				"192.168.66.7,bhunetworks.com",
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
 		;
 		
@@ -377,10 +427,15 @@ public class VapModeDefined {
 		}
 	}
 	
-	
 	public enum HtmlRedirect{
-		STYLE000("style000","00.00.01","http://www.sina.com.cn,http://www.bhunetworks.com"),
-		STYLE001("style001","00.00.01","http://baidu.com,http://google.com.hk"),
+		STYLE000("style000","00.00.01","http://www.sina.com.cn,http://www.bhunetworks.com,http://www.chinaren.com,http://www.bhunetworks.com"),
+		STYLE001("style001","00.00.01","http://www.csdn.net,http://wap.sogou.com/web/sl?keyword=&amp;bid=sogou-waps-34adeb8e32428240"),
+		STYLE002("style002","00.00.01","http://baidu.com,http://google.com.hk"),
+		STYLE003("style003","00.00.01","http://www.bhunetworks.com,http://www.csdn.net"),
+		STYLE004("style004","00.00.01","http://sina.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c"
+				+ ",http://m.sohu.com,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c"
+				+ ",http://h5.mse.360.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c"
+				+ ",http://hao.360.cn,http://www.hao123.com/?tn=99801877_s_hao_pg"),
 		;
 		private String style;
 		private String ver;

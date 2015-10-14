@@ -6,28 +6,26 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
-import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserUrlStatistics;
-import com.bhu.vas.business.ds.statistics.service.UserUrlStatisticsService;
-import com.smartwork.msip.jdo.ResponseErrorCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
-import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
-import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
 import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
+import com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics;
+import com.bhu.vas.api.rpc.statistics.model.UserUrlStatistics;
 import com.bhu.vas.business.ds.statistics.service.UserAccessStatisticsService;
+import com.bhu.vas.business.ds.statistics.service.UserBrandStatisticsService;
+import com.bhu.vas.business.ds.statistics.service.UserUrlStatisticsService;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * Created by bluesand on 4/29/15.
@@ -35,7 +33,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 @Service
 public class UserAccessStatisticsFacadeService {
 
-    private final Logger logger = LoggerFactory.getLogger(UserAccessStatisticsFacadeService.class);
+    //private final Logger logger = LoggerFactory.getLogger(UserAccessStatisticsFacadeService.class);
     @Resource
     private UserAccessStatisticsService userAccessStatisticsService;
 

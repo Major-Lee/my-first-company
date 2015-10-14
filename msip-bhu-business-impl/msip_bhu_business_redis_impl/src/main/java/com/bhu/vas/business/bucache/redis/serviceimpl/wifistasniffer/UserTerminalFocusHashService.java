@@ -87,7 +87,7 @@ public class UserTerminalFocusHashService extends AbstractRelationHashCache{
 	 * @param hd_mac
 	 * @param focus
 	 */
-	protected void setFocusValue(int uid, String hd_mac, boolean focus){
+	public void setFocusValue(int uid, String hd_mac, boolean focus){
 		String key = generateMarkPrefixKey(uid);
 		String value = super.hget(key, hd_mac);
 		UserTerminalFocusDTO dto = null;
@@ -105,7 +105,7 @@ public class UserTerminalFocusHashService extends AbstractRelationHashCache{
 	 * @param hd_mac
 	 * @param nick
 	 */
-	protected void setNickValue(int uid, String hd_mac, String nick){
+	public void setNickValue(int uid, String hd_mac, String nick){
 		String key = generateMarkPrefixKey(uid);
 		String value = super.hget(key, hd_mac);
 		UserTerminalFocusDTO dto = null;

@@ -58,4 +58,10 @@ public class UserRpcService implements IUserRpcService{
 		// TODO Auto-generated method stub
 		return userUnitFacadeService.tokenValidate(uidParam, token);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey) {
+		logger.info(String.format("userBBSsignedon with countrycode[%s] acc[%s] sk[%s]", countrycode,acc,secretkey));
+		return userUnitFacadeService.userBBSsignedon(countrycode, acc, secretkey);
+	}
 }

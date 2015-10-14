@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 5/14/15.
  */
+@SuppressWarnings("serial")
 public class WifiDeviceUpgradeDTO implements Serializable {
 
     private String upgrade_begin;
@@ -12,6 +13,8 @@ public class WifiDeviceUpgradeDTO implements Serializable {
     private String upgrade_end;
 
     private String url;
+
+    private boolean ctrl_version;
 
     public String getUpgrade_begin() {
         return upgrade_begin;
@@ -35,5 +38,13 @@ public class WifiDeviceUpgradeDTO implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isCtrl_version() {
+        return ctrl_version;
+    }
+
+    public void setCtrl_version(boolean ctrl_version) {
+        this.ctrl_version = ctrl_version;
     }
 }

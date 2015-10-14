@@ -73,6 +73,11 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 		return super.zrevrangeWithScores(generateKey(mac), start, (start+size-1));
 	}
 	
+	public Set<String> fetchTerminalRecent(String mac,int start,int size){
+		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
+		return super.zrevrange(generateKey(mac), start, (start+size-1));
+	}
+	
 	public Set<Tuple> fetchTerminalRecentByScoreWithScores(String mac,double min, double max, int start,int size){
 		if(StringUtils.isEmpty(mac)) return Collections.emptySet();
 		return super.zrevrangeByScoreWithScores(generateKey(mac), min, max, start, size);
@@ -80,6 +85,10 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 
 	public long sizeByScore(String mac,double min, double max){
 		return super.zcount(generateKey(mac), min, max);
+	}
+	
+	public void del(String mac){
+		super.del(generateKey(mac));
 	}
 	
 	@Override
@@ -95,6 +104,40 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 	@Override
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.WIFISTASNIFFER);
+	}
+	
+	public static void main(String[] args){
+		//String mac = "84:82:f4:23:06:68";
+//		long count = TerminalRecentSortedSetService.getInstance().sizeByScore(mac, 0, System.currentTimeMillis());
+//		System.out.println(count);
+//		Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
+//				0, System.currentTimeMillis(), 0, 5);
+//		
+//		ArrayList<URouterWSRecentVTO> vto_list = new ArrayList<URouterWSRecentVTO>();
+//		for(Tuple tuple : tuples){
+//			URouterWSRecentVTO vto = new URouterWSRecentVTO();
+//			vto.setHd_mac(tuple.getElement());
+//			vto.setLast_ts(Double.valueOf(tuple.getScore()).longValue());
+//			vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
+//			vto_list.add(vto);
+//		}
+//		System.out.println(vto_list.size());
+//		Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, 0, 5);
+//		System.out.println(payload);
+		
+//		int start = 0;
+//		int size = 100;
+//		int count = 0;
+//		//遍历获取recent探测数据
+//		do{
+//			Set<String> recent_set = TerminalRecentSortedSetService.getInstance().fetchTerminalRecent(mac, start, size);
+//			if(recent_set == null || recent_set.isEmpty()){
+//				count = 0;
+//			}else{
+//				count = recent_set.size();
+//			}
+//			start = start + size;
+//		}while(count == size);
 	}
 	
 }

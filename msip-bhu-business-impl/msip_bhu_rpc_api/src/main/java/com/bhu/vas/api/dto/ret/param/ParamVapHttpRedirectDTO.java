@@ -94,12 +94,12 @@ public class ParamVapHttpRedirectDTO{
 	public void setUrls(String urls) {
 		this.urls = urls;
 	}*/
-//{"enable":"enable","times":10,"start_time":"20:00","end_time":"21:00","urls":"http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com"}
+	//{"enable":"enable","times":10,"start_time":"20:00:00","end_time":"21:00:00","urls":"http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com"}
 	public static void main(String[] argv){
 		ParamVapHttpRedirectDTO dto = new ParamVapHttpRedirectDTO();
 		dto.setTimes(10);
-		dto.setStart_time("20:00");
-		dto.setEnd_time("21:00");
+		dto.setStart_time("20:00:00");
+		dto.setEnd_time("21:00:00");
 		dto.setStyle("style0001");
 		//dto.setUrls("http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com");
 		dto.setEnable("enable");

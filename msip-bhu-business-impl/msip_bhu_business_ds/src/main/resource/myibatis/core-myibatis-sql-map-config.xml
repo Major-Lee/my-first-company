@@ -36,19 +36,32 @@
 		<typeAlias alias="wifiDeviceStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus"/>
 		<typeAlias alias="wifiDevice" 					type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
 		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
+		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation"/>
+		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK"/>
 		<typeAlias alias="wifiDeviceAlarm" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm"/>
-		<typeAlias alias="handsetDevice" 				type="com.bhu.vas.api.rpc.devices.model.HandsetDevice"/>
 		<typeAlias alias="wifiDeviceSetting" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
+		
+		<typeAlias alias="wifiDevicePersistenceCMDState" 	type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
+		<typeAlias alias="wifiDeviceVersionBuilder" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder"/>
+		
 		<typeAlias alias="wifiDeviceDownTaskCompleted" 	type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
 		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
+		
+		<typeAlias alias="vasModuleCmdPK" 				type="com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK"/>
+		<typeAlias alias="vasModuleCmdDefined" 			type="com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined"/>
+		
 		<!--
 		<typeAlias alias="wifiHandsetDeviceMark" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark"/>
 		<typeAlias alias="wifiHandsetDeviceMarkPK" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK"/>
 		  -->
 		<typeAlias alias="userMobileDeviceState" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState"/>
-		<typeAlias alias="userMobileDevice" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
+		<typeAlias alias="userMobileDevice" 			type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
 		
 		<typeAlias alias="dictMacPrefix" 		type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix"/>
+
+		<typeAlias alias="agentDeviceClaim"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim"/>
+		<typeAlias alias="agentBulltinBoard"  type="com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard"/>
+		<typeAlias alias="agentDeviceImportLog"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog"/>
 	</typeAliases>
 	
 	<!-- 
@@ -75,11 +88,15 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/HandsetDevice.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTaskCompleted.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/VasModuleCmdDefined.sqlMap.xml"/>
+		
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceAlarm.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml"/>
 		<!--
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiHandsetDeviceMark.sqlMap.xml"/>
 		-->
@@ -89,6 +106,10 @@
 		
 		<!-- Dict defined Area -->
 		<mapper resource="com/bhu/vas/api/rpc/dict/model/sqlMapper/DictMacPrefix.sqlMap.xml"/>
+
+		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceClaim.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBulltinBoard.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceImportLog.sqlMap.xml"/>
 	</mappers>
 	
 </configuration>

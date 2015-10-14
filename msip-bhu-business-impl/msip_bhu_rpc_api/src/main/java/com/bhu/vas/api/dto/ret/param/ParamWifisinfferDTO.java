@@ -12,9 +12,6 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  */
 public class ParamWifisinfferDTO{
 	
-	public static final String Start_Sta_Sniffer = "enable";
-	public static final String Stop_Sta_Sniffer  = "disable";
-	
 	private String sta_sniffer;
 	public String getSta_sniffer() {
 		return sta_sniffer;

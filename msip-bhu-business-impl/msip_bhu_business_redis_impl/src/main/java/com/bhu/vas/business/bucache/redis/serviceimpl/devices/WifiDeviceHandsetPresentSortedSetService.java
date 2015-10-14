@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -137,7 +138,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return false;
 	}
 	
-	public void clearOnlinePresents(String wifiId){
+	/**
+	 * 把设备的在线终端变成离线状态
+	 * @param wifiId
+	 */
+	public void changeOnlinePresentsToOffline(String wifiId){
 		int size = 50;
 		long count = presentOnlineSize(wifiId);
 		int page = PageHelper.getTotalPages((int)count, size);
@@ -149,6 +154,36 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		}
 	}
 	
+	/**
+	 * 移除设备的离线终端记录
+	 * @param wifiId
+	 */
+	public long clearOfflinePresents(String wifiId){
+		return super.zremrangeByScore(generateKey(wifiId), 0, (OnlineBaseScore-1));
+	}
+	
+	
+	/**
+	 * 
+	 * @param wifiId
+	 * @return
+	 * modified by Edmond Lee for handset storage
+	 */
+	public List<String> fetchAllOnlinePresents(String wifiId){
+		List<String> result = new ArrayList<String>();
+		int size = 100;
+		long count = presentOnlineSize(wifiId);
+		int page = PageHelper.getTotalPages((int)count, size);
+		for(int i=1;i<=page;i++){
+			Set<Tuple> tuple_result = fetchOnlinePresentWithScores(wifiId, PageHelper.getStartIndexOfPage(i, size), size);
+			for(Tuple tuple : tuple_result){
+				result.add(tuple.getElement());
+			}
+		}
+		return result;
+	}
+	
+
 //	public Set<String> fetchPresents(String wifiId){
 //		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
 //		//return super.zrevrangeWithScores(generateKey(wifiId), 0, 10);

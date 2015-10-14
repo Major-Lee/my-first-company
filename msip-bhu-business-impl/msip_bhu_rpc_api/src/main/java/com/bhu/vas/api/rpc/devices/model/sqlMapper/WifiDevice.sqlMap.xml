@@ -11,6 +11,8 @@
     <result property="orig_model" column="orig_model"/>
     <result property="orig_hdver" column="orig_hdver"/>
     <result property="orig_swver" column="orig_swver"/>
+    <result property="orig_vap_module" column="orig_vap_module"/>
+    
     <result property="oem_vendor" column="oem_vendor"/>
     <result property="oem_model" column="oem_model"/>
     <result property="oem_hdver" column="oem_hdver"/>
@@ -24,6 +26,10 @@
     <result property="config_mode" column="config_mode"/>
     <result property="work_mode" column="work_mode"/>
     <result property="online" column="online"/>
+    <result property="module_online" column="module_online"/>
+    
+    <result property="agentuser" column="agentuser"/>
+    
     <result property="rx_bytes" column="rx_bytes"/>
     <result property="tx_bytes" column="tx_bytes"/>
     <result property="data_rx_rate" column="data_rx_rate"/>
@@ -36,9 +42,11 @@
     <result property="district" column="district"/>
     <result property="street" column="street"/>
     <result property="formatted_address" column="formatted_address"/>
+    <result property="carrier" column="carrier"/>
     <result property="bdid" column="bdid"/>
     <result property="ipgen" column="ipgen"/>
     <result property="uptime" column="uptime"/>
+	<result property="last_start_at" column="last_start_at"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="last_logout_at" column="last_logout_at"/>
     <result property="created_at" column="created_at"/>
@@ -58,6 +66,7 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
+	    	orig_vap_module,
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -71,6 +80,8 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
+	    	module_online,
+	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
 	    	data_rx_rate,
@@ -83,9 +94,11 @@
 	    	district,
 	    	street,
 	    	formatted_address,
+	    	carrier,
 	    	bdid,
 	    	ipgen,
 	    	uptime,
+	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
 	    	created_at,
@@ -99,6 +112,7 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
+	    	orig_vap_module
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -112,6 +126,8 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
+	    	module_online,
+	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
 	    	data_rx_rate,
@@ -124,9 +140,11 @@
 	    	district,
 	    	street,
 	    	formatted_address,
+	    	carrier,
 	    	bdid,
 	    	ipgen,
 	    	uptime,
+	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
 	    	created_at,
@@ -141,6 +159,7 @@
 	    	#{orig_model},
 	    	#{orig_hdver},
 	    	#{orig_swver},
+	    	#{orig_vap_module},
 	    	#{oem_vendor},
 	    	#{oem_model},
 	    	#{oem_hdver},
@@ -154,6 +173,8 @@
 	    	#{config_mode},
 	    	#{work_mode},
 	    	#{online},
+	    	#{module_online},
+	    	#{agentuser},
 	    	#{rx_bytes},
 	    	#{tx_bytes},
 	    	#{data_rx_rate},
@@ -166,9 +187,11 @@
 	    	#{district},
 	    	#{street},
 	    	#{formatted_address},
+	    	#{carrier},
 	    	#{bdid},
 	    	#{ipgen},
 	    	#{uptime},
+	    	#{last_start_at},
 	    	#{last_reged_at},
 	    	#{last_logout_at},
 	    	#{created_at},
@@ -181,6 +204,7 @@
 	    	orig_model = #{orig_model},
 	    	orig_hdver = #{orig_hdver},
 	    	orig_swver = #{orig_swver},
+	    	orig_vap_module = #{orig_vap_module},
 	    	oem_vendor = #{oem_vendor},
 	    	oem_model = #{oem_model},
 	    	oem_hdver = #{oem_hdver},
@@ -194,6 +218,8 @@
 	    	config_mode = #{config_mode},
 	    	work_mode = #{work_mode},
 	    	online = #{online},
+	    	module_online = #{module_online},
+	    	agentuser = #{agentuser},
 	    	rx_bytes = #{rx_bytes},
 	    	tx_bytes = #{tx_bytes},
 	    	data_rx_rate = #{data_rx_rate},
@@ -206,9 +232,11 @@
 	    	district = #{district},
 	    	street = #{street},
 	    	formatted_address = #{formatted_address},
+	    	carrier = #{carrier},
 	    	bdid = #{bdid},
 	    	ipgen = #{ipgen},
 	    	uptime = #{uptime},
+	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},
 	    	updated_at = #{updated_at}
@@ -302,7 +330,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="string">
+	<select id="pkSelectByModelCriteria" resultType="java.lang.String">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />

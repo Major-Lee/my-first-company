@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by bluesand on 5/23/15.
  */
+@SuppressWarnings("serial")
 public class UserBrandDTO implements Serializable {
 
     private String brand;

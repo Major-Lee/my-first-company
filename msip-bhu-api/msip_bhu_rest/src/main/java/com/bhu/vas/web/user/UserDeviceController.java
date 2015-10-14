@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -36,19 +37,13 @@ public class UserDeviceController extends BaseController {
     @RequestMapping(value="/bind",method={RequestMethod.POST})
     public void bindDevice(HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
-                           @RequestParam(required = true, value = "uid") int uid,
-                           @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
+                           @RequestParam(required = true, value = "uid") int uid) throws Exception{
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
         }
-        if (!validateDeviceName(deviceName)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-            return;
 
-        }
-
-        RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid, deviceName);
+        RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid);
         if (userDeviceResult.getErrorCode() != null) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult.getErrorCode()));
             return;
@@ -57,7 +52,6 @@ public class UserDeviceController extends BaseController {
         }
 
     }
-
 
     /**
      * 设备不在线可以解绑
@@ -142,6 +136,44 @@ public class UserDeviceController extends BaseController {
         }
     }
 
+    
+    @ResponseBody()
+    @RequestMapping(value="/check_upgrade",method={RequestMethod.POST})
+    public void check_upgrade(HttpServletResponse response,
+                               @RequestParam(required = true, value = "uid") int uid,
+                               @RequestParam(required = true) String mac,
+                               @RequestParam(required = true) String appver
+                               ) {
+    	if (!StringHelper.isValidMac(mac)) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            return;
+        }
+        RpcResponseDTO<UserDeviceCheckUpdateDTO> resp = userDeviceRpcService.checkDeviceUpdate(uid, mac, appver);
+		if(!resp.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value="/force_upgrade",method={RequestMethod.POST})
+    public void force_upgrade(HttpServletResponse response,
+                               @RequestParam(required = true, value = "uid") int uid,
+                               @RequestParam(required = true) String mac
+                               ) {
+    	if (!StringHelper.isValidMac(mac)) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            return;
+        }
+        RpcResponseDTO<Boolean> resp = userDeviceRpcService.forceDeviceUpdate(uid, mac);
+		if(!resp.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+			return;
+		}
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+    }
+    
     private boolean validateDeviceName(String deviceName) throws  Exception {
         if (deviceName.getBytes("utf-8").length < 48) {
             return true;

@@ -28,14 +28,14 @@ public interface ITaskRpcService {
 	
 	
 	public void taskStatusFetch(
-			int taskid
+			long taskid
 			);
 	
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(
 			Integer uid,
 			String channel,
 			String channel_taskid,
-			Integer taskid
+			Long taskid
 			);
 	//public boolean taskCompleted(String taskid);
 }

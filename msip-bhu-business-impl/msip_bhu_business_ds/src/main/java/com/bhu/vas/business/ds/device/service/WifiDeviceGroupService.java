@@ -8,21 +8,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceGroupDao;
-import com.bhu.vas.business.ds.sequence.service.SequenceService;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.localunit.RandomData;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
-public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDeviceGroup, WifiDeviceGroupDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class WifiDeviceGroupService extends AbstractCoreService<Long,WifiDeviceGroup, WifiDeviceGroupDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
-	@Resource
-	SequenceService sequenceService;
-	
+	//@Resource
+	//SequenceService sequenceService;
+
 	@Resource
 	@Override
 	public void setEntityDao(WifiDeviceGroupDao wifiDeviceGroupDao) {
@@ -47,7 +46,9 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 	@Override
 	public WifiDeviceGroup insert(WifiDeviceGroup entity) {
 		if(entity.getId() == null)
-			sequenceService.onCreateSequenceKey(entity, false);
+			SequenceService.getInstance().onCreateSequenceKey(entity, false);
+		//if(entity.getId() == null)
+		//	sequenceService.onCreateSequenceKey(entity, false);
 		entity.setPath(generateRelativePath(entity));
 		entity.setChildren(0);
 		//entity.setHaschild(false);
@@ -125,46 +126,5 @@ public class WifiDeviceGroupService extends AbstractCoreService<Integer,WifiDevi
 		createCriteria.andColumnLike("path", path+"%");
 		return mc;
 	}
-	
-	/**
-	 * 还需要删除gid及其所有的子节点
-	 * @param uid
-	 * @param gids
-	 */
-	public void cleanUpByIds(Integer uid,String gids){
-		String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
-		for(String residstr:arrayresids){
-			Integer resid = new Integer(residstr);
-			WifiDeviceGroup group = this.getById(resid);
-			if(group != null){
-				//int gid = group.getId().intValue();
-				int pid = group.getPid();
-				removeAllByPath(group.getPath(),true);
-				//removeAllByPathStepByStep(group.getPath(),true);
-				//判定每个gid的parentid是否为hanchild
-				if(pid != 0){
-					/*try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}*/
-					WifiDeviceGroup parent_group = this.getById(pid);
-					parent_group.setChildren(parent_group.getChildren()-1);
-					this.update(parent_group);
-					/*if(parent_group.getChildren() > 1){
-						
-					}*/
-					/*int count  = countAllByPath(parent_group.getPath(),false);
-					System.out.println("~~~~~~~~~~~~count:"+count);
-					if(count == 0 && parent_group.getChildren() > 0){
-						parent_group.setChildren(0);
-						this.update(parent_group);
-					}*/
-				}else{//pid == 0 本身是根节点，被删除后，无需动作
-					;
-				}
-				
-			}
-		}
-	}
+
 }

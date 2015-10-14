@@ -7,11 +7,13 @@ import javax.annotation.Resource;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.rpc.facade.UserUnitFacadeService;
+
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
@@ -28,8 +30,6 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 
     private final Logger logger = LoggerFactory.getLogger(UserDeviceRpcService.class);
 
-    private final static int WIFI_DEVICE_BIND_LIMIT_NUM = 3;
-
     @Resource
     private UserDeviceFacadeService userDeviceFacadeService;
 
@@ -40,9 +40,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     private UserUnitFacadeService userUnitFacadeService;
 
     @Override
-    public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
-        logger.info(String.format("bindDevice with mac[%s] uid[%s] deviceName[%s]",mac, uid, deviceName));
-        if (userDeviceFacadeService.countBindDevices(uid) >= WIFI_DEVICE_BIND_LIMIT_NUM) {
+    public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid) {
+        logger.info(String.format("bindDevice with mac[%s] uid[%s]",mac, uid));
+        if (userDeviceFacadeService.countBindDevices(uid) >= UserUnitFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_OWNER_REACHLIMIT);
         }
         int retStatus = validateDeviceStatusIsOnlineAndBinded(mac);
@@ -61,7 +61,10 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         } else if (retStatus == WIFI_DEVICE_STATUS_BINDED){
            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
         }
-        RpcResponseDTO<UserDeviceDTO> result = userDeviceFacadeService.bindDevice(mac,uid,deviceName);
+        
+        String deviceName = deviceFacadeService.getUrouterSSID(mac);
+
+        RpcResponseDTO<UserDeviceDTO> result = userDeviceFacadeService.bindDevice(mac,uid,deviceName == null ? "":deviceName );
         return result;
     }
 
@@ -131,4 +134,16 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         logger.info(String.format("modifyDeviceName with mac[%s] uid[%s] deviceName[%s]", mac, uid, deviceName));
         return userDeviceFacadeService.modifyUserDeviceName(mac, uid, deviceName);
     }
+
+	@Override
+	public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid,String mac, String appver) {
+		logger.info(String.format("checkDeviceUpdate with uid[%s] mac[%s] appver[%s]", uid,mac,  appver));
+		return userDeviceFacadeService.checkDeviceUpdate(uid, mac, appver);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac) {
+		logger.info(String.format("forceDeviceUpdate with uid[%s] mac[%s]", uid,mac));
+		return userDeviceFacadeService.forceDeviceUpdate(uid, mac);
+	}
 }

@@ -2,7 +2,6 @@ package com.bhu.vas.di.op;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -12,9 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nl.bitwalker.useragentutils.UserAgent;
-
-import com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics;
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
  * Created by bluesand on 5/9/15.
@@ -28,9 +24,6 @@ public class T {
         map.put("baidu.com", 24);
         map.put("google.com", 14);
 
-
-//        U1
-        
         //String agentString = "Mozilla/5.0 (Linux; Android 4.4.2; SM705 Build/SANFRANCISCO) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
         //String agentString = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36";
         String agentString = "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70 MicroMessenger/6.1.5 NetType/WIFI";

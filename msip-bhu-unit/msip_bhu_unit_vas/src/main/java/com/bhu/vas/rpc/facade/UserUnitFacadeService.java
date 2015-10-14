@@ -6,23 +6,26 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
@@ -45,6 +48,10 @@ public class UserUnitFacadeService {
 	private UserDeviceService userDeviceService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	@Resource
+	private UserMobileDeviceService userMobileDeviceService;
+
+	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
 
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
 		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
@@ -148,7 +155,8 @@ public class UserUnitFacadeService {
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 		}
 		//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
+				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), false);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
@@ -192,7 +200,8 @@ public class UserUnitFacadeService {
 		}
 		this.userService.update(user);
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), 
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), false,
 				fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
@@ -225,6 +234,10 @@ public class UserUnitFacadeService {
 				if(errorCode != null){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
 				}
+			}else{
+				if(!RuntimeConfiguration.DefaultCaptchaCode.equals(captcha)){//和系统定义的缺省码进行匹配
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_CAPTCHA_DATA_NOTEXIST);
+				}
 			}
 		}
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
@@ -256,7 +269,7 @@ public class UserUnitFacadeService {
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 			}
-			deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,remoteIp);
+			deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,remoteIp);
 		}else{//登录
 			reg = false;
 			user = this.userService.getById(uid);
@@ -282,7 +295,8 @@ public class UserUnitFacadeService {
 		}
 
 
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(user.getId(), countrycode, acc, user.getNick(), 
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user.getId(), countrycode, acc, user.getNick(), user.getUtype(),
 				uToken.getAccess_token(), uToken.getRefresh_token(), reg,fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
@@ -318,7 +332,7 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public List<UserDeviceDTO>  fetchBindDevices(int uid) {
-		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, 3);
+		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, WIFI_DEVICE_BIND_LIMIT_NUM);
 		List<UserDeviceDTO> bindDevicesDTO = new ArrayList<UserDeviceDTO>();
 		if(userDeviceList != null && !userDeviceList.isEmpty()){
 			for (UserDevice userDevice : userDeviceList) {
@@ -329,10 +343,41 @@ public class UserUnitFacadeService {
 				WifiDevice wifiDevice = wifiDeviceService.getById(userDevice.getMac());
 				if (wifiDevice != null) {
 					userDeviceDTO.setOnline(wifiDevice.isOnline());
+					if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
+						userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								.presentOnlineSize(userDevice.getMac()));
+					}
+
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}
 		}
 		return bindDevicesDTO;
+	}
+	
+	/**
+	 * 用户bbs登录 通过发送push消息通知app
+	 * 安卓设备推送静默发送
+	 * ios设备推送通知发送
+	 * @param countrycode
+	 * @param acc
+	 * @param secretkey
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey) {
+		//step 2.生产环境下的手机号验证码验证
+		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+		if(uid == null || uid.intValue() == 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		
+		UserMobileDevice entity = userMobileDeviceService.getById(uid);
+		if(entity == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_TOKEN_NOT_EXIST);
+		}
+
+		deliverMessageService.sendUserBBSsignedonMessage(uid, entity.getDt(), entity.getD(), countrycode, acc, secretkey);
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 }

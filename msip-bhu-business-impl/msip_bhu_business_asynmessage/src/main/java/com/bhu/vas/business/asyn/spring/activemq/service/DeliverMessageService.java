@@ -1,5 +1,6 @@
 package com.bhu.vas.business.asyn.spring.activemq.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,28 +10,8 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
-import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
-import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
-import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
-import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiCmdNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiHDRateFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.*;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 
 
 public class DeliverMessageService {
@@ -56,7 +37,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendWifiCmdCommingNotifyMessage(String mac,int taskid,String opt,String payload){
+	/*public void sendWifiCmdCommingNotifyMessage(String mac,long taskid,String opt,String payload){
 		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
 		dto.setMac(mac);
 		dto.setTaskid(taskid);
@@ -64,10 +45,37 @@ public class DeliverMessageService {
 		dto.setPayload(payload);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}*/
+	
+	public void sendWifiCmdsCommingNotifyMessage(String mac,String... payloads){
+		sendWifiCmdsCommingNotifyMessage(mac,Arrays.asList(payloads));
+	}
+	public void sendWifiCmdsCommingNotifyMessage(String mac,/*long taskid,String opt,*/List<String> payloads){
+		WifiCmdsNotifyDTO dto = new WifiCmdsNotifyDTO();
+		dto.setMac(mac);
+		dto.setPayloads(payloads);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	/*public void sendWifiCmdsCommingNotifyMessage(String mac,int taskid,String opt,List<String> payloads){
+		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
+		dto.setMac(mac);
+		dto.setTaskid(taskid);
+		dto.setOpt(opt);
+		dto.setPayload(payload);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}*/
+	
+	public void sendWifiDeviceModuleOnlineMessage(String wifiId){
+		WifiDeviceModuleOnlineDTO dto = new WifiDeviceModuleOnlineDTO();
+		dto.setMac(wifiId);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
-			long last_login_at, boolean newWifi,boolean needLocationQuery){
+			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
 		dto.setMac(wifiId);
 		dto.setJoin_reason(join_reason);
@@ -75,6 +83,16 @@ public class DeliverMessageService {
 		dto.setLogin_ts(login_ts);
 		dto.setLast_login_at(last_login_at);
 		dto.setNeedLocationQuery(needLocationQuery);
+		dto.setWanIpChanged(wanIpChanged);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendWifiDeviceUsedStatusActionMessage(String ctx,String mac, String response, long taskid){
+		WifiDeviceUsedStatusDTO dto = new WifiDeviceUsedStatusDTO();
+		dto.setCtx(ctx);
+		dto.setMac(mac);
+		dto.setResponse(response);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
@@ -107,11 +125,14 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendHandsetDeviceOfflineActionMessage(String wifiId, String handsetId, String uptime){
+	public void sendHandsetDeviceOfflineActionMessage(String wifiId, String handsetId, String uptime,
+													  String rx_bytes, String tx_bytes){
 		HandsetDeviceOfflineDTO dto = new HandsetDeviceOfflineDTO();
 		dto.setMac(handsetId);
 		dto.setWifiId(wifiId);
 		dto.setUptime(uptime);
+		dto.setRx_bytes(rx_bytes);
+		dto.setTx_bytes(tx_bytes);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
@@ -167,9 +188,12 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendQueryDeviceSpeedFetchActionMessage(String wifiId){
+	public void sendQueryDeviceSpeedFetchActionMessage(String wifiId, int type, int period, int duration){
 		WifiDeviceSpeedFetchDTO dto = new WifiDeviceSpeedFetchDTO();
 		dto.setMac(wifiId);
+		dto.setType(type);
+		dto.setPeriod(period);
+		dto.setDuration(duration);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
@@ -222,10 +246,21 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendDeviceSettingChangedActionMessage(String mac, boolean init_default_acl){
+	public void sendDeviceSettingQueryActionMessage(String mac, int refresh_status, List<String> payloads){
+		WifiDeviceSettingQueryDTO dto = new WifiDeviceSettingQueryDTO();
+		dto.setMac(mac);
+		dto.setRefresh_status(refresh_status);
+		dto.setPayloads(payloads);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendDeviceSettingChangedActionMessage(String mac, List<String> payloads){
 		WifiDeviceSettingChangedDTO dto = new WifiDeviceSettingChangedDTO();
 		dto.setMac(mac);
-		dto.setInit_default_acl(init_default_acl);
+		dto.setPayloads(payloads);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
@@ -233,9 +268,10 @@ public class DeliverMessageService {
 	}
 	
 
-	public void sendUserRegisteredActionMessage(Integer uid,String channel,String device,String remoteip){
+	public void sendUserRegisteredActionMessage(Integer uid,String mobileno,String channel,String device,String remoteip){
 		UserRegisteredDTO dto = new UserRegisteredDTO();
 		dto.setUid(uid);
+		dto.setMobileno(mobileno);
 		dto.setChannel(channel);
 		//dto.setInviteuid(inviteuid);
 		//dto.setInvitetoken(invitetoken);
@@ -278,5 +314,50 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//deliverMessageQueueProducer.send(message);
+	}
+
+	public void sendDeviceModifySettingAaliasActionMessage(Integer uid, String mac, String content){
+		DeviceModifySettingAliasDTO dto = new DeviceModifySettingAliasDTO();
+		dto.setUid(uid);
+		dto.setMac(mac);
+		dto.setContent(content);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+
+	public void sendDeviceGroupCreateIndexMessage(String wifiIds, long gid, String type) {
+		WifiDeviceGroupAsynCreateIndexDTO dto = new WifiDeviceGroupAsynCreateIndexDTO();
+		dto.setWifiIds(wifiIds);
+		dto.setGid(gid);
+		dto.setType(type);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendUserBBSsignedonMessage(Integer uid, String dt, String d, int countrycode, String acc, String secretkey) {
+		UserBBSsignedonDTO dto = new UserBBSsignedonDTO();
+		dto.setUid(uid);
+		dto.setDt(dt);
+		dto.setD(d);
+		dto.setCountrycode(countrycode);
+		dto.setAcc(acc);
+		dto.setSecretkey(secretkey);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
+
+	public void sendAgentDeviceClaimImportMessage(Integer uid, Integer aid, String inputPath, String outputPath, String originName) {
+		AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
+		dto.setUid(uid);
+		dto.setAid(aid);
+		dto.setInputPath(inputPath);
+		dto.setOutputPath(outputPath);
+		dto.setOriginName(originName);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+
 	}
 }

@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -37,7 +38,52 @@ public class BuilderMacOrganizationDictOp {
 		while(itit.hasNext()){
 			List<DictMacPrefix> list = itit.next();
 			for(DictMacPrefix macPrefix:list){
-				macPrefixMapping.put(macPrefix.getId(), macPrefix.getName());
+				
+				String name = macPrefix.getName();
+				String org = macPrefix.getOrg();
+				if(StringUtils.isNotEmpty(org)){
+					if(org.contains("Yulong Computer") || org.contains("Shenzhen Siviton")){
+						name = ("Coolpad");
+					}
+					if(org.contains("Hangzhou H3C")){
+						name = ("HUAWEI");
+					}
+					if(org.contains("Shenzhen TCL")){
+						name = ("TCL");
+					}
+					if(org.contains("Beijing Huasun")){
+						name = ("Huasun");
+					}
+					if(org.contains("Jiangsu Datang")){
+						name = ("Datang");
+					}
+					if(org.contains("Beijing Xiaomi")){
+						name = ("Xiaomi");
+					} 
+					if(org.contains("SHENZHEN MERCURY")){
+						name = ("Mercury");
+					}
+					if(org.contains("Tp-Link") || org.contains("TP-LINK")){
+						name = ("Tp-Link");
+					}
+					if(org.contains("N.V. PHILIPS")){
+						name = ("PHILIPS");
+					}
+					if(org.contains("SHENZHEN HUAPU") || org.contains("Shenzhen Huapu")){
+						name = ("HUAPU");
+					}
+					if(org.contains("Hisense") || org.contains("HISENSE")){
+						name = ("Hisense");
+					}
+					if(org.contains("EDISA HEWLETT PACKARD")){
+						name = ("Hewlett-Packard");
+					}
+					
+					if(org.contains("OPPO MOBILE")){
+						name = ("OPPO");
+					}
+				}
+				macPrefixMapping.put(macPrefix.getId(), name);
 			}
 		}
 		processDictGen();

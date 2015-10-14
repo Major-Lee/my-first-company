@@ -1,28 +1,21 @@
 package com.bhu.vas.business.ds.user.service;
 
-import java.util.UUID;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.business.ds.sequence.service.SequenceService;
 import com.bhu.vas.business.ds.user.dao.UserDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
-import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.localunit.RandomData;
-import com.smartwork.msip.localunit.RandomPicker;
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
 public class UserService extends AbstractCoreService<Integer,User, UserDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
-	@Resource
-	private SequenceService sequenceService;
+	//@Resource
+	//private SequenceService sequenceService;
 	
 	@Resource
 	@Override

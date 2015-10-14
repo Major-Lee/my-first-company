@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.device.mdto;
 
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,7 +29,12 @@ public class WifiHandsetDeviceRelationMDTO{
 	//最后登录wifi的时间 用string存储格式化好的日期 因为直接用date，mongodb就会用标准时间存储
 	private String last_login_at;
 
-	private Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items;
+	//todo(bluesand): 累加终端的下载字节数会越来越大
+	private long total_rx_bytes;
+
+	private Map<String, List<WifiHandsetDeviceItemDetailMDTO>> items;
+
+	private List<WifiHandsetDeviceItemLogMDTO> logs;
 
 	public WifiHandsetDeviceRelationMDTO(){
 		
@@ -71,11 +78,27 @@ public class WifiHandsetDeviceRelationMDTO{
 		this.last_login_at = last_login_at;
 	}
 
-	public Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> getItems() {
+	public Map<String, List<WifiHandsetDeviceItemDetailMDTO>> getItems() {
 		return items;
 	}
 
-	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMTDTO>> items) {
+	public void setItems(Map<String, List<WifiHandsetDeviceItemDetailMDTO>> items) {
 		this.items = items;
+	}
+
+	public List<WifiHandsetDeviceItemLogMDTO> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(List<WifiHandsetDeviceItemLogMDTO> logs) {
+		this.logs = logs;
+	}
+
+	public long getTotal_rx_bytes() {
+		return total_rx_bytes;
+	}
+
+	public void setTotal_rx_bytes(long total_rx_bytes) {
+		this.total_rx_bytes = total_rx_bytes;
 	}
 }

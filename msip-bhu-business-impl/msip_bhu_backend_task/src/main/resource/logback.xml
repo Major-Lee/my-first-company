@@ -4,6 +4,7 @@
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
 	<property name="log.base" value="/BHUData/logs/backendtask/backendtask" />
+	<property name="charging.base" 	value="/BHUData/bulogs/chargingsimulogs/business-charging" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->
@@ -26,15 +27,28 @@
 			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
 		</layout>
 	</appender>
+
+	<appender name="charginglogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${charging.base}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${charging.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date - %msg%n</pattern>
+		</layout>
+	</appender>
 	
 	<logger name="com.bhu.vas.plugins.quartz" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
 	</logger>
-	
+	<logger name="com.bhu.vas.business.logger" additivity="false" level="INFO">
+		<appender-ref ref="charginglogfile" />
+	</logger>	
 	<root>
-		<level value="INFO" />
+		<level value="WARN" />
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
 	</root> 

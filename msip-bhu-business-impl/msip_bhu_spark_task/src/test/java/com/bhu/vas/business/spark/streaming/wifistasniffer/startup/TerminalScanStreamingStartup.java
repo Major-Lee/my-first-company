@@ -23,15 +23,12 @@ import java.util.Map;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
-import org.apache.spark.streaming.api.java.JavaPairDStream;
 import org.apache.spark.streaming.api.java.JavaPairReceiverInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.business.spark.streaming.wifistasniffer.TerminalScanStreamingDTO;
-import com.bhu.vas.business.spark.streaming.wifistasniffer.parser.TerminalScanDtoToPair;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.parser.TerminalScanPrint;
 import com.bhu.vas.business.spark.streaming.wifistasniffer.parser.TerminalScanStringToDtoParser;
 /**

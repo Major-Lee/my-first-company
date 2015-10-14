@@ -70,6 +70,11 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_SETTING_ACLMAC_MAX_MEMBER("711","wifidevice.setting.aclmac.maxmember"),
 	WIFIDEVICE_SETTING_RATECONTROL_MAX_MEMBER("712","wifidevice.setting.ratecontrol.maxmember"),
 	
+	WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED("730","wifidevice.vap.workmode.notsupported"),
+	WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED("731","wifidevice.vap.module.notsupported"),
+	WIFIDEVICE_VAP_MODULE_NOT_ONLINE("732","wifidevice.vap.module.notonline"),
+	WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED("732","wifidevice.vap.module.cmd.not.defined"),
+	
 	WIFIDEVICE_GROUP_NOTEXIST("750","wifidevice.group.notexist"),
 	WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY("751","wifidevice.group.current.devices.empty"),
 	WIFIDEVICE_GROUP_DEPENDENCY_DEVICES_EMPTY("752","wifidevice.group.dependency.devices.empty"),
@@ -77,6 +82,11 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_GROUP_TOO_LONG("754","wifidevice.group.devices.too.long"),
 	WIFIDEVICE_GROUP_EXIST_CHILDREN("755", "wifidevice.group.devices.exist.children"),
 	WIFIDEVICE_GROUP_NOTEXIST_PARENT("766", "wifidevice.group.devices.notexist.parent"),
+
+	WIFIDEVICE_VERSION_TOO_HIGH("770", "wifidevice.version.too.high"),
+
+	WIFISTASNIFFER_NICK_LENGTH_INVALID("781", "wifistasniffer.nick.length.invalid"),
+
 
 	
 	//WIFIDEVICE_GROUP_REMOVE_NOTEXIST("711","wifidevice.group.notexist"),
@@ -143,6 +153,10 @@ public enum ResponseErrorCode {
 	USER_AVATAR_UPLOAD_IMAGE_FILEFORMAT_INVALID("312","user.avatar.upload.image.fileformat.invalid"),
 	USER_OPERATION_UPDPWD_NOTMATCH("313","user.operation.updpwd.notmatch"),
 	USER_NICK_ALREADY_BEUSED("314","user.nick.already.beused"),
+	USER_MOBILE_TOKEN_NOT_EXIST("315", "user.mobile.token.notexist"),
+	USER_TYPE_WASNOT_AGENT("316", "user.type.wasnot.agent"),
+	USER_TYPE_WASNOT_CONSOLE("317", "user.type.wasnot.console"),
+	USER_TYPE_WASNOT_CONSOLEORAGENT("318", "user.type.wasnot.consoleoragent"),
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),

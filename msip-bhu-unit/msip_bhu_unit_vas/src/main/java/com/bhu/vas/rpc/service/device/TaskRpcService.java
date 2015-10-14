@@ -44,7 +44,7 @@ public class TaskRpcService implements ITaskRpcService{
 	 * 任务状态获取（对内）
 	 */
 	@Override
-	public void taskStatusFetch(int taskid) {
+	public void taskStatusFetch(long taskid) {
 		logger.info(String.format("taskStatusFetch mac:%s", taskid));
 	}
 
@@ -53,7 +53,7 @@ public class TaskRpcService implements ITaskRpcService{
 	 */
 	@Override
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
-			String channel_taskid, Integer taskid) {
+			String channel_taskid, Long taskid) {
 		logger.info(String.format("taskStatusFetch4ThirdParties uid:%s channel:%s channel_taskid:%s", uid, channel,channel_taskid));
 		return taskUnitFacadeService.taskStatus(uid, channel, channel_taskid, taskid);	
 	}

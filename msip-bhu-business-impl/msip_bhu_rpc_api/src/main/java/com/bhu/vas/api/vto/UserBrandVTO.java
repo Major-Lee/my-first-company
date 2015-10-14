@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Created by bluesand on 5/27/15.
  */
+@SuppressWarnings("serial")
 public class UserBrandVTO implements Serializable {
 
     private String brand;

@@ -1,36 +1,38 @@
 package com.bhu.vas.api.vto;
 
-import com.bhu.vas.api.dto.WifiDeviceDTO;
-
-import java.util.List;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @SuppressWarnings("serial")
 public class DeviceGroupVTO implements java.io.Serializable{
-	private int gid;
-	private int pid;
+	private long gid;
+
+	private long pid;
 	
 	private String name;
+
 	private String pname;
 	
 	private String path;
+
 	private int children;
-	private List<String> devices;
 
-	private List<WifiDeviceVTO> detail_devices;
+	private int device_count;
 
-	public int getGid() {
+	private TailPage<WifiDeviceVTO> page_devices;
+
+	public long getGid() {
 		return gid;
 	}
 
-	public void setGid(int gid) {
+	public void setGid(long gid) {
 		this.gid = gid;
 	}
 
-	public int getPid() {
+	public long getPid() {
 		return pid;
 	}
 
-	public void setPid(int pid) {
+	public void setPid(long pid) {
 		this.pid = pid;
 	}
 
@@ -58,20 +60,12 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.path = path;
 	}
 
-	public List<String> getDevices() {
-		return devices;
+	public int getDevice_count() {
+		return device_count;
 	}
 
-	public void setDevices(List<String> devices) {
-		this.devices = devices;
-	}
-
-	public List<WifiDeviceVTO> getDetail_devices() {
-		return detail_devices;
-	}
-
-	public void setDetail_devices(List<WifiDeviceVTO> detail_devices) {
-		this.detail_devices = detail_devices;
+	public void setDevice_count(int device_count) {
+		this.device_count = device_count;
 	}
 
 	public int getChildren() {
@@ -82,4 +76,11 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.children = children;
 	}
 
+	public TailPage<WifiDeviceVTO> getPage_devices() {
+		return page_devices;
+	}
+
+	public void setPage_devices(TailPage<WifiDeviceVTO> page_devices) {
+		this.page_devices = page_devices;
+	}
 }

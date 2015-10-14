@@ -8,15 +8,18 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
 import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
 import com.bhu.vas.daemon.DaemonCheckTask;
+import com.bhu.vas.daemon.DaemonSimulateCmdTask;
 import com.bhu.vas.daemon.SessionInfo;
 import com.bhu.vas.daemon.SessionManager;
 import com.bhu.vas.daemon.observer.DaemonObserverManager;
@@ -41,7 +44,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiDevicesOnline(String ctx,List<String> macs) {
-		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOnline ctx[%s] macs[%s]",ctx,macs));
 		for(String mac:macs){
 			SessionManager.getInstance().addSession(mac, ctx);
@@ -54,7 +56,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiDeviceOnline(String ctx,String mac) {
-		//System.out.println(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOnline ctx[%s] mac[%s]",ctx,mac));
 		SessionManager.getInstance().addSession(mac, ctx);
 		//设备上行首先发送查询地理位置指令
@@ -65,7 +66,6 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiDeviceOffline(String ctx,String mac) {
-		//System.out.println(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		logger.info(String.format("wifiDeviceOffline ctx[%s] mac[%s]",ctx,mac));
 		SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
 		if(sessionCtx != null && ctx.equals(sessionCtx.getCtx())){
@@ -78,17 +78,18 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
-		//System.out.println(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
-		logger.info(String.format("wifiDeviceCmdDown0 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+		//logger.info(String.format("wifiDeviceCmdDown0 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		if(StringUtils.isEmpty(ctx)){
 			SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
-				logger.info(String.format("wifiDeviceCmdDown1 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+				logger.info(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s] ctx existed",ctx,mac,cmd));
 			}else{
-				logger.info(String.format("wifiDeviceCmdDown2 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+				logger.info(String.format("wifiDeviceCmdDown ctx[%s] mac[%s] cmd[%s] ctx not existed",ctx,mac,cmd));
 				return false;
 			}
+		}else{
+			logger.info(String.format("wifiDeviceCmdDown with ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		}
 		activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
 		return true;
@@ -96,19 +97,48 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 
 	@Override
 	public boolean wifiDeviceCmdsDown(String ctx, String mac, List<String> cmds) {
-		logger.info(String.format("wifiDeviceCmdsDown0 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+		//logger.info(String.format("wifiDeviceCmdsDown0 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 		if(StringUtils.isEmpty(ctx)){
 			SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
 			if(sessionCtx != null){
 				ctx = sessionCtx.getCtx();
-				logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+				logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,mac,cmds));
 			}else{
-				logger.info(String.format("wifiDeviceCmdsDown2 ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
+				logger.info(String.format("wifiDeviceCmdsDown2 ctx[%s] mac[%s] cmds[%s] ctx not existed",ctx,mac,cmds));
 				return false;
 			}
+		}else{
+			logger.info(String.format("wifiDeviceCmdsDown with ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 		}
 		for(String cmd:cmds){
 			activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean wifiMultiDevicesCmdsDown(DownCmds... downCmds) {
+		for(DownCmds downCmd:downCmds){
+			if(downCmd != null){
+				if(downCmd.valid()){
+					String ctx = downCmd.getCtx();
+					if(StringUtils.isEmpty(ctx)){
+						SessionInfo sessionCtx = SessionManager.getInstance().getSession(downCmd.getMac());
+						if(sessionCtx != null){
+							ctx = sessionCtx.getCtx();
+							//logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmds));
+						}else{
+							logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] ctx not existed",ctx,downCmd.getMac()));
+							return false;
+						}
+					}
+					for(String cmd:downCmd.getCmds()){
+						logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmd));
+						activeMQDynamicProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+					}
+				}
+				
+			}
 		}
 		return true;
 	}
@@ -151,6 +181,15 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		TaskEngine.getInstance().schedule(new DaemonCheckTask(), 5*1000);
 		return true;
 	}
+	
+	@Override
+	public boolean wifiDevicesSimulateCmdTimer() {
+		logger.info("wifiDevicesSimulateCmdTimer notify");
+		TaskEngine.getInstance().schedule(new DaemonSimulateCmdTask(), 0l);
+		return true;
+	}
+
+
 
 	/*@Override
 	public boolean wifiDevicesLocationQuerySerialTimer() {

@@ -8,4 +8,5 @@ public class PushMessageConstant {
 	public static final String Android_OS = "(安卓os)";
 	public static final String Android_Mobile_String = "手机";
 	public static final String Android_Unkown_Hostname = "未知终端";
+	public static final String Android_DeviceName = "(%s)";
 }

@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="userMobileDevice">
     <id property="id" column="id"/>
+    <result property="dm" column="dm"/>
     <result property="dt" column="dt"/>
     <result property="d" column="d"/>
     <result property="pt" column="pt"/>
@@ -21,6 +22,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	dm,
 	    	dt,
 	    	d,
 	    	pt,
@@ -30,6 +32,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	dm,
 	    	dt,
 	    	d,
 	    	pt,
@@ -40,6 +43,7 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{dm},
 	    	#{dt},
 	    	#{d},
 	    	#{pt},
@@ -48,6 +52,7 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			dm = #{dm},
 	    	dt = #{dt},
 	    	d = #{d},
 	    	pt = #{pt},

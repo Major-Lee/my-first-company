@@ -112,6 +112,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 		}
 	}
 	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode){
+		//if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
 		return this.doGenerateCaptchaCode(accWithContryCode, false, false);
 	}
 	

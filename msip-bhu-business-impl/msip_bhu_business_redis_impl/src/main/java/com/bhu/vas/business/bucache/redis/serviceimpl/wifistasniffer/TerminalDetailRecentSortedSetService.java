@@ -45,27 +45,46 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		return sb.toString();
 	}
 	
-	public Long TerminalDetailRecentSize(String mac, String hd_mac){
+	private static String[] generateKeys(String mac, String... hd_macs){
+		if(hd_macs == null || hd_macs.length == 0) return null;
+		String[] keys = new String[hd_macs.length];
+		int cursor = 0;
+		for(String hd_mac : hd_macs){
+			keys[cursor] = generateKey(mac, hd_mac);
+			cursor++;
+		}
+		return keys;
+	}
+	
+	public Long terminalDetailRecentSize(String mac, String hd_mac){
 		return super.zcard(generateKey(mac, hd_mac));
 	}
 	
-	public void addTerminalDetailOnline(String mac, String hd_mac, TerminalDetailDTO dto){
+	public boolean addTerminalDetailOnline(String mac, String hd_mac, TerminalDetailDTO dto){
 		String key = generateKey(mac, hd_mac);
 		long snifftime = dto.getSnifftime();
 		//判断此上下文的下线状态是否已经存在
 		long count = super.zcount(key, snifftime, snifftime);
 		if(count == 0){
-			super.zadd(key, snifftime, JsonHelper.getJSONString(dto));
+			long ret = super.zadd(key, snifftime, JsonHelper.getJSONString(dto));
+			if(ret > 0){
+				return true;
+			}
 		}
+		return false;
 	}
 	
-	public void addTerminalDetailOffline(String mac, String hd_mac, TerminalDetailDTO dto){
+	public boolean addTerminalDetailOffline(String mac, String hd_mac, TerminalDetailDTO dto){
 		String key = generateKey(mac, hd_mac);
-		super.zadd(key, dto.getSnifftime(), JsonHelper.getJSONString(dto));
+		long ret = super.zadd(key, dto.getSnifftime(), JsonHelper.getJSONString(dto));
 		
 		TerminalDetailDTO online_dto = new TerminalDetailDTO();
 		online_dto.setSnifftime(dto.getSnifftime());
 		super.zrem(key, JsonHelper.getJSONString(online_dto));
+		if(ret > 0){
+			return true;
+		}
+		return false;
 	}
 	
 	public Set<String> fetchTerminalDetailRecent(String mac, String hd_mac, int start,int size){
@@ -83,7 +102,9 @@ public class TerminalDetailRecentSortedSetService extends AbstractRelationSorted
 		return super.pipelineZRevrange_DiffKeyWithSameOffset(keys, start, (start+size-1));
 	}
 	
-
+	public void dels(String mac, String... hd_macs){
+		super.del(generateKeys(mac, hd_macs));
+	}
 	
 	@Override
 	public String getRedisKey() {
