@@ -21,6 +21,7 @@ import com.bhu.jorion.util.StringHelper;
 public class MqWorker implements Runnable{
     private final static Logger LOGGER = LoggerFactory.getLogger(MqWorker.class);
 	private Session session;
+	private Session mngSession;
 	private Map<String, MessageConsumer> consumerMap;
 	private Map<String, MessageProducer> publisherMap;
 	private MessageProducer mangQueueProducer;
@@ -120,17 +121,35 @@ public class MqWorker implements Runnable{
 	
 	public void run(){
 		try {
-	    	LOGGER.info("Mq Server:" + JOrionConfig.MQ_URL);
+	    	LOGGER.info("Mq Mng Server:" + JOrionConfig.MQ_MNG_URL);
 
-	       ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JOrionConfig.MQ_URL);
-	       factory.setUseAsyncSend(true);
+			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JOrionConfig.MQ_MNG_URL);
+			factory.setUseAsyncSend(true);
+	        Connection connection;
+				connection = factory.createConnection("admin", "admin");
+	        connection.start();
+	        LOGGER.info("Mq mng connected!");
+	        mngSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+	        mangQueueProducer = mngSession.createProducer(mngSession.createQueue(JOrionConfig.MANAGEMENT_MQ_NAME));
+	        LOGGER.info("Mq managemnet queue created!");
+		} catch (JMSException e) {
+			LOGGER.error(StringHelper.getStackTrace(e));
+			e.printStackTrace();
+		}
+		
+		try {
+	    	LOGGER.info("Mq Server:" + JOrionConfig.MQ_URL);
+	    	String mq_url = JOrionConfig.MQ_URL.replaceAll("%host", JOrionConfig.MQ_BUSINESS_HOST).replaceAll("%port", JOrionConfig.MQ_BUSINESS_PORT);
+
+			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(mq_url);
+			factory.setUseAsyncSend(true);
 	        Connection connection;
 				connection = factory.createConnection("admin", "admin");
 	        connection.start();
 	        LOGGER.info("Mq connected!");
 	        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-	        mangQueueProducer = session.createProducer(session.createQueue(JOrionConfig.MANAGEMENT_MQ_NAME));
-	        LOGGER.info("Mq managemnet queue created!");
+//	        mangQueueProducer = session.createProducer(session.createQueue(JOrionConfig.MANAGEMENT_MQ_NAME));
+//	        LOGGER.info("Mq managemnet queue created!");
 		} catch (JMSException e) {
 			LOGGER.error(StringHelper.getStackTrace(e));
 			e.printStackTrace();

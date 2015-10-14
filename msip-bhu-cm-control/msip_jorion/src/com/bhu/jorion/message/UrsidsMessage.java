@@ -42,7 +42,7 @@ public class UrsidsMessage {
 		
 		return new UrsidsMessage(hdr, content);
 	}
-	public static UrsidsMessage composeUrsidsMessage(int mtype, int stype, String mac, long taskid, byte[] content){
+	public static UrsidsMessage composeUrsidsMessage(int mtype, int stype, String mac, int rev, long taskid, byte[] content){
 		UrsidsHeader hdr = new UrsidsHeader();
 		byte[] body = new byte[content.length + 2 + 6 + 4];//2reserved + 6 mac + 4 taskid
 		hdr.setVer(0);
@@ -52,9 +52,8 @@ public class UrsidsMessage {
 		
 		IoBuffer ib = IoBuffer.wrap(body);
 		ib.order(ByteOrder.BIG_ENDIAN);
-		//reserved
-		ib.put((byte)0);
-		ib.put((byte)0);
+		//reserved,now used to extend taskid from mq.
+		ib.putUnsignedShort(rev);
 		//mac
 		StringHelper.hexStringToByte(mac, ib);
 		ib.putUnsignedInt(taskid);

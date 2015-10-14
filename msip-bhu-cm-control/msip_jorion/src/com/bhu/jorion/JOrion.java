@@ -204,9 +204,10 @@ public class JOrion implements JOrionMBean{
 			//task execute result
 			long taskid = ib.getUnsignedInt();
 			int result = ib.getUnsignedShort();
+			int rev = ib.getUnsignedShort();
 			if(taskid != 0){
 				if(result != 0){
-					s.removeTask(mac, taskid);
+					s.removeTask(mac, rev, taskid);
 					pushUrsidsMessage(s, mac);
 				}
 			}
@@ -221,11 +222,11 @@ public class JOrion implements JOrionMBean{
 	
 	public void sendXmlApply(UrsidsSession s, PendingTask t) throws JMSException{
 		LOGGER.info("sending xml reply");
-		String xml = t.getMessage().getText().substring(42);
+		String xml = t.getMessage().getText().substring(45);
 		byte[] xmlbytes = xml.getBytes();
 		String mac = t.getMessage().getText().substring(8, 20).toLowerCase();
-		int mtype = Integer.parseInt(t.getMessage().getText().substring(30, 34));
-		int stype = Integer.parseInt(t.getMessage().getText().substring(34, 42));
+		int mtype = Integer.parseInt(t.getMessage().getText().substring(33, 37));
+		int stype = Integer.parseInt(t.getMessage().getText().substring(37, 45));
 		IoBuffer ib = IoBuffer.allocate(xmlbytes.length + 1 + DevHeader.DEV_HDR_LEN);
 		DevHeader dev_hdr = new DevHeader();
 		dev_hdr.setVer(0);
@@ -237,7 +238,7 @@ public class JOrion implements JOrionMBean{
 		ib.put(xmlbytes);
 		ib.put((byte)0);
 			
-		UrsidsMessage xml_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, t.getTaskid(), ib.array());
+		UrsidsMessage xml_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, t.getRev(), t.getTaskid(), ib.array());
 		try {
 			t.setStatus(PendingTask.STATUS_SENDING);
 			xml_rsp.setMqMessage(true);
@@ -264,7 +265,7 @@ public class JOrion implements JOrionMBean{
 		ib.put(xmlbytes);
 		ib.put((byte)0);
 			
-		UrsidsMessage join_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, 0, ib.array());
+		UrsidsMessage join_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, 0, 0, ib.array());
 		try {
 			join_rsp.setMqMessage(false);
 			ursidsWorker.sendMessage(s.getSession(), join_rsp);
@@ -296,7 +297,7 @@ public class JOrion implements JOrionMBean{
 		ib.put(xmlbytes);
 		ib.put((byte)0);
 			
-		UrsidsMessage redirect_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, 0, ib.array());
+		UrsidsMessage redirect_rsp = UrsidsMessage.composeUrsidsMessage(1, 3, mac, 0, 0, ib.array());
 		try {
 			redirect_rsp.setMqMessage(false);
 			ursidsWorker.sendMessage(s.getSession(), redirect_rsp);
@@ -326,13 +327,13 @@ public class JOrion implements JOrionMBean{
 		IoBuffer ib = IoBuffer.wrap(msg.getBody());
 		ib.order(ByteOrder.BIG_ENDIAN);
 		sb.append(JOrionConfig.MSG_DEV_MSG_FORWARD);
-		ib.getUnsignedShort(); //reserved
+		int rev = ib.getUnsignedShort(); //reserved
 		String mac = StringHelper.byteToHexString(ib, 6).toLowerCase();
 		long taskid = ib.getUnsignedInt();
 		if(taskid != 0){
-			s.removeTask(mac, taskid);
+			s.removeTask(mac, rev, taskid);
 		}
-		LOGGER.debug("mac:" + mac + "  taskid:" + taskid);
+		LOGGER.debug("mac:" + mac + "  taskid:" + taskid + " rev:" + rev);
 		DevHeader header = new DevHeader(ib);
 		if(header.getMtype() == 0 && header.getStype() == 1){
 			String redirect = s.getRedirectUrl();
@@ -345,6 +346,7 @@ public class JOrion implements JOrionMBean{
 			s.clearDeviceTasks(mac);
 		}
 		sb.append(mac);
+		sb.append(String.format("%1$03d", rev));
 		sb.append(String.format("%1$010d", taskid));
 		sb.append(String.format("%1$04d", header.getMtype()));
 		sb.append(String.format("%1$08d", header.getStype()));
@@ -384,6 +386,8 @@ public class JOrion implements JOrionMBean{
 			sb.append(JOrionConfig.MSG_URSIDS_OFFLINE);
 			m.put("name", id.substring(0, pos));
 			m.put("process_seq", id.substring(pos + 1));
+			m.put("mq_host", JOrionConfig.MQ_BUSINESS_HOST);
+			m.put("mq_port", JOrionConfig.MQ_BUSINESS_PORT);
 			sb.append(writer.write(m));
 			mqWorker.publishManagementMessage(sb.toString());
 			mqWorker.ursidsLeave(id);
@@ -402,6 +406,12 @@ public class JOrion implements JOrionMBean{
 		String name = (String)m.get("name");
 		String seq = (String)m.get("process_seq");
 		String id = name + "_" + seq;
+		
+		m.put("mq_host", JOrionConfig.MQ_BUSINESS_HOST);
+		m.put("mq_port", JOrionConfig.MQ_BUSINESS_PORT);
+		
+		String new_content = (new JSONWriter()).write(m);
+
 		is.setAttribute(SESSION_KEY, id);
 		synchronized(this){
 			try{
@@ -437,7 +447,7 @@ public class JOrion implements JOrionMBean{
 			if(mqWorker.ursidsJoin(id)){
 				StringBuffer sb = new StringBuffer();
 				sb.append(JOrionConfig.MSG_URSIDS_ONLINE);
-				sb.append(content);
+				sb.append(new_content);
 				mqWorker.publishManagementMessage(sb.toString());
 			} else {
 				LOGGER.error("Ursids join failed!");
@@ -530,7 +540,7 @@ public class JOrion implements JOrionMBean{
 			PendingTask p = s.getNextTask(mac);
 			if(p == null)
 				return;
-			LOGGER.debug("Msg in queue head, mac:" + mac + " taskid:"+ p.getTaskid());
+			LOGGER.debug("Msg in queue head, mac:" + mac + " taskid:"+ p.getTaskid() + " rev:" + p.getRev());
 			if(p.getStatus() != PendingTask.STATUS_PENDING){
 				LOGGER.debug("previous message is waiting for response from dev");
 				return;
@@ -539,7 +549,7 @@ public class JOrion implements JOrionMBean{
 				sendXmlApply(s, p);
 				if(p.getTaskid() != 0)
 					return;
-				s.removeTask(mac, p.getTaskid());
+				s.removeTask(mac, p.getRev(), p.getTaskid());
 			} catch (JMSException e) {
 				LOGGER.error(StringHelper.getStackTrace(e));
 				e.printStackTrace();
@@ -567,15 +577,16 @@ public class JOrion implements JOrionMBean{
 				return;
 			}
 			String text = m.getText();
-			if(text.length() < 42){
+			if(text.length() < 45){
 				LOGGER.error("Wrong Message length, drop message");
 				return;
 			}
 			String type = text.substring(0, 8);
 			if(type.equals(JOrionConfig.MSG_DEV_XML_APPLY)){
 				String mac = text.substring(8, 20).toLowerCase();
-				long taskid = Long.parseLong(text.substring(20, 30));
-				s.addTask(mac, taskid, m);
+				int	rev = Integer.parseInt(text.substring(20, 23));
+				long taskid = Long.parseLong(text.substring(23, 33));
+				s.addTask(mac, rev, taskid, m);
 				pushUrsidsMessage(s, mac);
 			} else {
 				LOGGER.error("UnSupported Message type:" + type);

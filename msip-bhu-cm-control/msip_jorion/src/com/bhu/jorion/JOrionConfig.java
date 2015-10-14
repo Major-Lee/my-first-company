@@ -27,6 +27,9 @@ public class JOrionConfig {
 	public static Integer URSIDS_READ_BUFFER_SIZE = 1024*16;
 	public static Integer URSIDS_THREADS_NUMBER	= 64;
 	public static String MQ_URL = "";
+	public static String MQ_MNG_URL = "";
+	public static String MQ_BUSINESS_HOST = "";
+	public static String MQ_BUSINESS_PORT = "";
 	public static String MANAGEMENT_MQ_NAME = "mng_queue";
 	public static String ZOO_NAME				= "";
 	public static String ZOO_URL				= "";

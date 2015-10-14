@@ -136,33 +136,33 @@ public class UrsidsSession {
 	}
 
 
-	public synchronized void addTask(String mac, long taskid, TextMessage msg){
+	public synchronized void addTask(String mac, int rev, long taskid, TextMessage msg){
 		Queue<PendingTask> q = pendingTask.get(mac);
 		if(q == null){
 			q = new ConcurrentLinkedQueue<PendingTask>();
 			pendingTask.put(mac, q);
 		}
-		PendingTask task = new PendingTask(taskid, msg);
+		PendingTask task = new PendingTask(rev, taskid, msg);
 		q.add(task);
 		LOGGER.debug("Queue size now:" + q.size());
 	}
 	
-	public synchronized void removeTask(String mac, long taskid){
+	public synchronized void removeTask(String mac, int rev, long taskid){
 		Queue<PendingTask> q = pendingTask.get(mac);
 		if(q == null){
 			return;
 		}
 		PendingTask t = q.peek();
 		if(t != null){
-			if(t.getTaskid() == taskid){
+			if(t.getTaskid() == taskid && t.getRev() == rev){
 				if(t.getStatus() == PendingTask.STATUS_PENDING){
 					LOGGER.error("remove task error, message has not been sent, mac:" + mac + " taskid:" + taskid);
 					return;
 				}
 				q.remove();
-				LOGGER.debug("mac:" + mac + "  taskid:" + taskid + " removed");
+				LOGGER.debug("mac:" + mac + "  taskid:" + taskid + ", rev:" + rev + " removed");
 			} else {
-				LOGGER.error("mac:" + mac + "  taskid:" + taskid + "doesn't match the head of queue");
+				LOGGER.error("mac:" + mac + "  taskid:" + taskid + ", rev:" + rev + " doesn't match the head of queue");
 			}
 		}
 		if(q.isEmpty()){

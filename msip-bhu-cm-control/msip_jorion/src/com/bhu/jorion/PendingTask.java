@@ -10,10 +10,18 @@ public class PendingTask {
 	public final static int STATUS_SENT = 2;
 	
 	private long taskid;
+	private int rev;
 	private TextMessage message;
 	private int status;
 	private UUID msgid;
 
+	
+	public int getRev() {
+		return rev;
+	}
+	public void setRev(int rev) {
+		this.rev = rev;
+	}
 	public UUID getMsgid() {
 		return msgid;
 	}
@@ -39,9 +47,10 @@ public class PendingTask {
 		this.message = message;
 	}
 	
-	public PendingTask(long taskid,
+	public PendingTask(int rev, long taskid,
 			TextMessage message) {
 		super();
+		this.rev = rev;
 		this.taskid = taskid;
 		this.message = message;
 		this.status = PendingTask.STATUS_PENDING;
