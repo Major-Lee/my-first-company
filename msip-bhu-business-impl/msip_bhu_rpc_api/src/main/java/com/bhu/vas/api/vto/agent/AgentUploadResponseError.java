@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 9/29/15.
  */
+@SuppressWarnings("serial")
 public class AgentUploadResponseError extends Response implements Serializable {
 
     public AgentUploadResponseError(boolean success, String message, Object result) {

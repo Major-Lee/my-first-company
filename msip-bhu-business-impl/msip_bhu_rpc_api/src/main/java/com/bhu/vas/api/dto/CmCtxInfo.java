@@ -8,6 +8,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
 public class CmCtxInfo implements java.io.Serializable{
+	//private String _mq_host;
+	//activemq host
+	private String mq_host;
+	//activemq port
+	private int mq_port;
 	private String name;
 	private String process_seq;
 	private String max_client;
@@ -56,10 +61,10 @@ public class CmCtxInfo implements java.io.Serializable{
 		this.last_frag = last_frag;
 	}
 	public String toUpQueueString(){
-		return "up_".concat(toString());
+		return UpPrefix.concat(toString());
 	}
 	public String toDownQueueString(){
-		return "down_".concat(toString());
+		return DownPrefix.concat(toString());
 	}
 	public String toString(){
 		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(process_seq);
@@ -77,6 +82,38 @@ public class CmCtxInfo implements java.io.Serializable{
 		return new CmCtxInfo(split[0],split[1]);
 	}
 	public static String builderDownQueueName(String ctx_name){
-		return "down_".concat(ctx_name);
+		return DownPrefix.concat(ctx_name);
 	}
+	
+	public String getMq_host() {
+		return mq_host;
+	}
+	public void setMq_host(String mq_host) {
+		this.mq_host = mq_host;
+	}
+	public int getMq_port() {
+		return mq_port;
+	}
+	public void setMq_port(int mq_port) {
+		this.mq_port = mq_port;
+	}
+
+	/*public String get_mq_host() {
+		return _mq_host;
+	}
+	public void set_mq_host(String _mq_host) {
+		this._mq_host = _mq_host;
+	}*/
+
+	public static final String DownPrefix = "down_";
+	public static final String UpPrefix = "up_";
+	
+	/*public static void main(String[] argv){
+		CmCtxInfo info = new CmCtxInfo();
+		info.set_mq_host("1234");
+		String json = (JsonHelper.getJSONString(info));
+		
+		CmCtxInfo dto = JsonHelper.getDTO(json, CmCtxInfo.class);
+		System.out.println(dto.get_mq_host());
+	}*/
 }

@@ -2,6 +2,8 @@ package com.smartwork.msip.jdo;
 
 import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 
@@ -9,6 +11,7 @@ public class ResponseSuccess extends Response{
 	public static final Response BUSINESS_SUCCESS = new ResponseSuccess("操作成功",ResponseSuccessCode.COMMON_BUSINESS_SUCCESS);
 	private String code;
     private String codemsg;
+    @JsonInclude(Include.NON_NULL)
     Object result;
 	public ResponseSuccess() {
 		super();

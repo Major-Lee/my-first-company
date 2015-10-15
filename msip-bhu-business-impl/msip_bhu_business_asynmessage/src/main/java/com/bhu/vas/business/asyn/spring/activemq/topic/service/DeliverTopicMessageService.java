@@ -24,6 +24,8 @@ public class DeliverTopicMessageService {
 
 	public void sendCmJoinMessage(CmCtxInfo ctxInfo){
 		CmJoinNotifyDTO dto = new CmJoinNotifyDTO();
+		dto.setHost(ctxInfo.getMq_host());
+		dto.setPort(ctxInfo.getMq_port());
 		dto.setName(ctxInfo.getName());
 		dto.setProcess_seq(ctxInfo.getProcess_seq());
 		dto.setTs(System.currentTimeMillis());
@@ -33,6 +35,8 @@ public class DeliverTopicMessageService {
 	
 	public void sendCmLeaveMessage(CmCtxInfo ctxInfo){
 		CmLeaveNotifyDTO dto = new CmLeaveNotifyDTO();
+		dto.setHost(ctxInfo.getMq_host());
+		dto.setPort(ctxInfo.getMq_port());
 		dto.setName(ctxInfo.getName());
 		dto.setProcess_seq(ctxInfo.getProcess_seq());
 		dto.setTs(System.currentTimeMillis());

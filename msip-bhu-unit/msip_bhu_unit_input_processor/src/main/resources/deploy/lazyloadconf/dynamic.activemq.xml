@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<dynamic>
+    <mqservers>
+        <server host="192.168.66.7" port="61616" url="failover:(tcp://192.168.66.7:61616?tcpNoDelay=true)">
+            <queues>hello-ursids-201_0</queues>
+            <queues>hello-ursids-201_1</queues>
+        </server>
+    </mqservers>
+</dynamic>

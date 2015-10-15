@@ -4,6 +4,8 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class CmLeaveNotifyDTO extends NotifyDTO {
+	private String host;
+	private int port;
 	private String name;
 	private String process_seq;
 
@@ -34,4 +36,21 @@ public class CmLeaveNotifyDTO extends NotifyDTO {
 	public String toString(){
 		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(process_seq);
 	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
 }

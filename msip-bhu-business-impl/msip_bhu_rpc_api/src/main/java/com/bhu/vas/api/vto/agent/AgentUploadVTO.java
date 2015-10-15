@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 9/29/15.
  */
+@SuppressWarnings("serial")
 public class AgentUploadVTO implements Serializable{
     private int uid;
     private int aid;

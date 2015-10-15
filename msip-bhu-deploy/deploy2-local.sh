@@ -6,6 +6,7 @@ echo $Current_DIR
 #Deploy2Server=$1
 Deploy2Server0=192.168.66.162
 Deploy2Server1=192.168.66.188
+Deploy2Server2=192.168.66.155
 Deploy2ServerWeb=192.168.66.7
 ##if read -t 5 -p "Confirm to deploy 2 $Deploy2Server(Local Test):(yes/no)"
 #then
@@ -131,6 +132,11 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server1
 
+echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
+echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server2
 
 echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2Server0
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/spring*.RELEASE.jar	root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/

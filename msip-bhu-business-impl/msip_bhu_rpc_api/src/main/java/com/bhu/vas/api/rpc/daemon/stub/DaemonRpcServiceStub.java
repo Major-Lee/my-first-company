@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -45,7 +44,7 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		return daemonRpcService.wifiDeviceCmdsDown(ctx,mac,cmds);
 	}
 	
-	@Override
+/*	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
@@ -57,7 +56,7 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.cmLeave(info);
-	}
+	}*/
 
 	/*@Override
 	public boolean wifiDeviceSerialTaskComming(String ctx, String payload, ParserHeader parserHeader){//String mac,QuerySerialReturnDTO dto) {

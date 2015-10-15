@@ -14,10 +14,12 @@
 	<!-- 
 	<context:component-scan base-package="com.bhu.vas.business.processor"/>-->
 	<context:component-scan base-package="com.bhu.vas.processor"/>
-	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-server.xml"/> 
-	<import resource="classpath*:springmq/applicationContext-activemq-dynamic-consumer.xml"/> 
+	<import resource="classpath*:springmq/applicationContext-activemq-dynamics-server.xml"/> 
+	<import resource="classpath*:springmq/applicationContext-activemq-dynamics-consumer.xml"/> 
 	
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/>
+	
+	<import resource="classpath*:springmq/applicationContext-activemq-topic-server.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-topic-producer.xml"/>
 </beans>

@@ -1,4 +1,4 @@
-package com.bhu.vas.business.asyn.normal.activemq;
+package com.bhu.vas.business.asyn.normal.activemq.single;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

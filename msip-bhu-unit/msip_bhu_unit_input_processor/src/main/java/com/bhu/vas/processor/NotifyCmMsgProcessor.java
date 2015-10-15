@@ -17,7 +17,8 @@ import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
-import com.bhu.vas.business.asyn.normal.activemq.ActiveMQConnectionManager;
+import com.bhu.vas.business.asyn.normal.activemq.model.QueueInfo;
+import com.bhu.vas.business.asyn.normal.activemq.multi.ActiveMQConnectionsManager;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -63,7 +64,8 @@ public class NotifyCmMsgProcessor implements SpringQueueMessageListener{
 					if(ParserHeader.Online_Prefix == type){
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						String ctx = cmInfo.toString();
-						ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
+						//ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
+						ActiveMQConnectionsManager.getInstance().createNewConsumerQueues(QueueInfo.build(cmInfo.getMq_host(),cmInfo.getMq_port(), cmInfo.toString()),true);
 						if(cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){
 							List<String> macs = new ArrayList<String>();
 							for(WifiDeviceDTO dto:cmInfo.getClient()){

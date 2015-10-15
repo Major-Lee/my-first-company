@@ -1,4 +1,4 @@
-package com.bhu.vas.business.asyn.normal.activemq;
+package com.bhu.vas.business.asyn.normal.activemq.single;
 
 import javax.annotation.PostConstruct;
 import javax.jms.JMSException;
@@ -37,7 +37,7 @@ public class ActiveMQDynamicProducer{
 		Session des_session = ActiveMQConnectionManager.getInstance().getSession(Sender_KEY);
 		MessageProducer des_producer = ActiveMQConnectionManager.getInstance().getProducer(Sender_KEY);
 		if(des_session == null){
-			String errorMsg = "ActiveMQConnectionManager could not fetch the session named:"+Sender_KEY;
+			String errorMsg = "ActiveMQConnectionsManager could not fetch the session named:"+Sender_KEY;
 			logger.error(errorMsg, new RuntimeException("errorMsg"));
 			return;
 		}
@@ -88,7 +88,7 @@ public class ActiveMQDynamicProducer{
 			return;
 		}
 		//String jsonMsg = JsonHelper.getJSONString(message);
-		logger.info(String.format("Destination[%s] Msg[%s]", "Sender_KEY",message));
+		logger.info(String.format("Destination[%s] Msg[%s]", Sender_KEY,message));
 		try {
 			Message replyMessage = des_session.createTextMessage(message);
 			//replyMessage.setStringProperty("selector-receiver", String.valueOf(new Random().nextInt(5)));

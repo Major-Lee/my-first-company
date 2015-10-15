@@ -1,20 +1,17 @@
 package com.bhu.vas.business.processor;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.business.asyn.normal.activemq.single.ActiveMQDynamicProducer;
+import com.bhu.vas.business.asyn.normal.activemq.multi.ActiveMQDynamicsProducer;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.localunit.RandomData;
-import com.smartwork.msip.localunit.RandomPicker;
 
-public class WifiSimulateProducerTest {
+public class WifiSimulateMultiProducerTest {
 	
 	public static void main(String[] argv){
 		String[] locations = {
@@ -22,8 +19,8 @@ public class WifiSimulateProducerTest {
 							  "classpath*:spring/applicationContextCore-resource.xml",
 							 // "classpath*:springmq/applicationContext-activemq-server.xml",
 							  //"classpath*:springmq/applicationContext-activemq-deliver-producer.xml",
-							  "classpath*:springmq/applicationContext-activemq-dynamic-server.xml",
-							  "classpath*:springmq/applicationContext-activemq-dynamic-producer.xml"/*,
+							  "classpath*:springmq/applicationContext-activemq-dynamics-server.xml",
+							  "classpath*:springmq/applicationContext-activemq-dynamics-producer.xml"/*,
 							  "classpath*:springmq/applicationContext-activemq-dynamic-consumer.xml"*/
 		};
 		ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
@@ -43,22 +40,33 @@ public class WifiSimulateProducerTest {
 		deliverMessageService.sendPureText("00010000"+JsonHelper.getJSONString(cinfo));
 		deliverMessageService.sendPureText("00010001"+JsonHelper.getJSONString(cinfo));
 		*/
-		ActiveMQDynamicProducer activeMQDynamicProducer =(ActiveMQDynamicProducer) ctx.getBean("activeMQDynamicProducer");
+		ActiveMQDynamicsProducer activeMQDynamicsProducer =(ActiveMQDynamicsProducer) ctx.getBean("activeMQDynamicsProducer");
 		//for Input Queue Create test Producers
-		activeMQDynamicProducer.initTestProducers();
+		activeMQDynamicsProducer.initTestProducers();
 		for(int i=0;i<online_devices.size();i++){
 			WifiInfo winfo = online_devices.get(i);
-			String Queue_Key = activeMQDynamicProducer.randomTestProducerKey();
+			String Queue_Key = activeMQDynamicsProducer.randomTestProducerKey();
 			System.out.println(Queue_Key);
 			//wifi上线消息
-			activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
+			activeMQDynamicsProducer.deliverTestMessage(Queue_Key, 
 					String.format(wifi_online_msg_template,
 							StringHelper.unformatMacAddress(winfo.getMac()), winfo.getSn(),winfo.getMac(),winfo.getIp()));
 			//wifi下线消息
 			//activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
 			//		String.format(wifi_offline_msg_template, winfo.getMac(),winfo.getIp()));
 		}
-		
+		for(int i=0;i<online_devices.size();i++){
+			WifiInfo winfo = online_devices.get(i);
+			String Queue_Key = activeMQDynamicsProducer.randomProducerKey();
+			System.out.println(Queue_Key);
+			//wifi上线消息
+			activeMQDynamicsProducer.deliverMessage(Queue_Key,  
+					String.format(wifi_online_msg_template,
+							StringHelper.unformatMacAddress(winfo.getMac()), winfo.getSn(),winfo.getMac(),winfo.getIp()));
+			//wifi下线消息
+			//activeMQDynamicProducer.deliverTestMessage(Queue_Key, 
+			//		String.format(wifi_offline_msg_template, winfo.getMac(),winfo.getIp()));
+		}
 		
 	}
 	private static String[] devices_sn = {"BN009BI112190AA","BN002BI112190AA","BN008BI112190AA","BN019BI112190AA","BN000BI112190AA"};
@@ -70,7 +78,7 @@ public class WifiSimulateProducerTest {
 	static{
 		online_devices.add(new WifiInfo("34:36:3b:d0:4b:ac","BN001BI112190AA","192.168.0.1"));
 		online_devices.add(new WifiInfo("72:00:08:75:ef:c0","BN002BI112190AA","192.168.0.2"));
-		/*online_devices.add(new WifiInfo("72:00:08:75:ef:c1","BN003BI112190AA","192.168.0.3"));
+		online_devices.add(new WifiInfo("72:00:08:75:ef:c1","BN003BI112190AA","192.168.0.3"));
 		online_devices.add(new WifiInfo("06:36:3b:d0:4b:ac","BN004BI112190AA","192.168.0.4"));
 		online_devices.add(new WifiInfo("8a:48:9b:16:97:0f","BN005BI112190AA","192.168.0.5"));
 		online_devices.add(new WifiInfo("36:36:3b:0d:18:00","BN006BI112190AA","192.168.0.6"));
@@ -88,9 +96,9 @@ public class WifiSimulateProducerTest {
 		online_devices.add(new WifiInfo("8a:48:9b:16:97:9f","BN019BI112190AA","192.168.0.18"));
 		online_devices.add(new WifiInfo("8a:48:1b:16:07:7f","BN019BI112190AA","192.168.0.19"));
 		online_devices.add(new WifiInfo("8a:48:2b:16:17:6f","BN020BI112190AA","192.168.0.20"));
-		online_devices.add(new WifiInfo("8a:48:3b:16:27:5f","BN000BI112190AA","192.168.0.21"));*/
+		online_devices.add(new WifiInfo("8a:48:3b:16:27:5f","BN000BI112190AA","192.168.0.21"));/**/
 		
-		long ts = System.currentTimeMillis();
+		/*long ts = System.currentTimeMillis();
 		Set<WifiInfo> tmps = new HashSet<WifiInfo>();
 		int size = 0;
 		while(true){
@@ -105,7 +113,7 @@ public class WifiSimulateProducerTest {
 				System.out.println(size);
 		}
 		online_devices.addAll(tmps);
-		System.out.println("init 10000 unique devices cost:"+(System.currentTimeMillis()-ts)/1000+"s");
+		System.out.println("init 10000 unique devices cost:"+(System.currentTimeMillis()-ts)/1000+"s");*/
 	}
 	private static String randomMacAddress(){
 		return String.format(macAddress_template, formatRandom(), formatRandom(), formatRandom(), formatRandom(), formatRandom(), formatRandom());
