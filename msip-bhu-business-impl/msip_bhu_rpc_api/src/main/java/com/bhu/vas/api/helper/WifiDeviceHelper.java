@@ -2,6 +2,7 @@ package com.bhu.vas.api.helper;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 
@@ -21,8 +22,40 @@ public class WifiDeviceHelper {
 	
 	
 	public final static String WIFI_URouter_DEVICE_ORIGIN_MODEL = "uRouter";
-	public static boolean isURooterDeviceWithOrigModel(String orig_model) {
+	public static boolean isURooterDevice(String orig_model) {
+		/*DeviceVersion ver = DeviceVersion.parser(orig_swver);
+		if(ver == null) return false;
+		return ver.wasDstURouter();*/
 		return WIFI_URouter_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
+	}
+	
+	/**
+	 * 比较两个设备的软件版本号
+	 * 返回 1 表示 orig_swver1 大于 orig_swver2
+	 * 返回 0 表示 orig_swver1 等于 orig_swver2
+	 * 返回 -1 表示 orig_swver1 小于 orig_swver2
+	 * @param orig_swver1
+	 * @param orig_swver2
+	 * @return
+	 */
+	public static int compareDeviceVersions(String orig_swver1, String orig_swver2){
+		if(StringUtils.isEmpty(orig_swver1) || StringUtils.isEmpty(orig_swver2)) 
+			throw new RuntimeException("param validate empty");
+		DeviceVersion ver1 = DeviceVersion.parser(orig_swver1);
+		String[] orig_swver1_versions = ver1.parseDeviceSwverVersion();
+		if(orig_swver1_versions == null) return -1;
+		DeviceVersion ver2 = DeviceVersion.parser(orig_swver1);
+		String[] orig_swver2_versions = ver2.parseDeviceSwverVersion();
+		if(orig_swver2_versions == null) return 1;
+		//判断大版本号
+		int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
+		//System.out.println("top ret " + top_ret);
+		if(top_ret != 0) return top_ret;
+		
+		//判断小版本号
+		int bottom_ret = StringHelper.compareVersion(orig_swver1_versions[1], orig_swver2_versions[1]);
+		//System.out.println("bottom ret " + bottom_ret);
+		return bottom_ret;
 	}
 	
 	public static boolean isLocationCMDSupported(){

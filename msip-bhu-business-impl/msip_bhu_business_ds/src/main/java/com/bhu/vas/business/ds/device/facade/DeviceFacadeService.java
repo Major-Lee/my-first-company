@@ -451,7 +451,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		if(StringUtils.isEmpty(mac)) return false;
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 		if(wifiDevice == null) return false;
-		return WifiDeviceHelper.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+		return WifiDeviceHelper.isURooterDevice(wifiDevice.getOrig_model());
 	}
 	
 

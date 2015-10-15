@@ -53,7 +53,7 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
 		RpcResponseDTO<Map<String, Object>> rpcResponse = deviceURouterRestRpcService.urouterWSRecent(uid, 
-				mac, start, size);
+				mac.toLowerCase(), start, size);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
