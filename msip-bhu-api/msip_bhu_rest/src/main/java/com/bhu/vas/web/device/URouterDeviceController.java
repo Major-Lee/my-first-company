@@ -345,7 +345,7 @@ public class URouterDeviceController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
-		RpcResponseDTO<DeviceUsedStatisticsDTO> rpcResponse = deviceURouterRestRpcService.urouterDeviceUsedStatusQuery(uid, mac);
+		RpcResponseDTO<DeviceUsedStatisticsDTO> rpcResponse = deviceURouterRestRpcService.urouterDeviceUsedStatusQuery(uid, mac.toLowerCase());
 		if(!rpcResponse.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{

@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
@@ -64,7 +64,7 @@ public class DeviceUpgradeFacadeService {
 		}else{
 			WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
 			if(versionb == null) return new UpgradeDTO(isFirstGray,false);
-			int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
+			int ret = WifiDeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
 			if(versionb.isForce_device_update() && ret == -1){
 				resultDto = new UpgradeDTO(isFirstGray,true,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
 			}else{
@@ -127,7 +127,7 @@ public class DeviceUpgradeFacadeService {
 			boolean needAppUpdate = false;
 			try{
 				int clientver_ret = VersionHelper.compareVersion(appVer,versionb.getMin_adr_version());
-				int devicever_ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
+				int devicever_ret = WifiDeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
 				if(clientver_ret >= 0){
 					if(devicever_ret < 0){
 						needDeviceUpdate = true;

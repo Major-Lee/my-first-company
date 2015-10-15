@@ -38,6 +38,7 @@ public class UserDeviceController extends BaseController {
     public void bindDevice(HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
                            @RequestParam(required = true, value = "uid") int uid) throws Exception{
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
@@ -65,6 +66,7 @@ public class UserDeviceController extends BaseController {
                              @RequestParam(required = true, value = "mac") String mac,
                              @RequestParam(required = true, value = "uid") int uid
     ) {
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
@@ -95,6 +97,7 @@ public class UserDeviceController extends BaseController {
     @RequestMapping(value="/validate",method={RequestMethod.POST})
     public void validateDevice(HttpServletResponse response,
                                @RequestParam(required = true, value = "mac") String mac) {
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
@@ -118,7 +121,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = true) Integer uid,
                                  @RequestParam(required = true) String mac,
                                  @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
-
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
@@ -144,6 +147,7 @@ public class UserDeviceController extends BaseController {
                                @RequestParam(required = true) String mac,
                                @RequestParam(required = true) String appver
                                ) {
+    	mac = mac.toLowerCase();
     	if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
@@ -162,6 +166,7 @@ public class UserDeviceController extends BaseController {
                                @RequestParam(required = true, value = "uid") int uid,
                                @RequestParam(required = true) String mac
                                ) {
+    	mac = mac.toLowerCase();
     	if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;

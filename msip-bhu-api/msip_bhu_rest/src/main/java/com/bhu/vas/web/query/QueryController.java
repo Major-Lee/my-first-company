@@ -33,7 +33,7 @@ public class QueryController extends BaseController {
     		@RequestParam(required = false) String jsonpcallback,
             @RequestParam(required = true) String mac) {
 
-
+		mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;

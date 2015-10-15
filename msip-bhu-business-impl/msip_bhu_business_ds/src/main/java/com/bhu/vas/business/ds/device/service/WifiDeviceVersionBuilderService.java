@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceVersionBuilderDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
@@ -31,7 +31,7 @@ public class WifiDeviceVersionBuilderService extends AbstractCoreService<String,
 	public boolean deviceVersionUpdateCheck(boolean isFirstGray,String currentDeviceVB){
 		WifiDeviceVersionBuilder versionb = this.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
 		if(versionb == null || StringUtils.isEmpty(currentDeviceVB)) return false;
-		int ret = DeviceHelper.compareDeviceVersions(currentDeviceVB,versionb.getD_firmware_name());
+		int ret = WifiDeviceHelper.compareDeviceVersions(currentDeviceVB,versionb.getD_firmware_name());
 		if(versionb.isForce_device_update() && ret == -1 ){
 			return true;
 		}else{

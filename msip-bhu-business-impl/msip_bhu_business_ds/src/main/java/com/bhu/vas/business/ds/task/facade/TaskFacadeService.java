@@ -310,7 +310,7 @@ public class TaskFacadeService {
 				String url = dto.getUrl();
 				if (url != null) {
 					String deviceVersion = url.substring(url.lastIndexOf("/") + 1);
-					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(), deviceVersion);
+					int ret = WifiDeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(), deviceVersion);
 					if (ret >= 0) {
 						// 设备版本高于需要升级的版本，不升级
 						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);
@@ -470,7 +470,7 @@ public class TaskFacadeService {
 				String url = dto.getUrl();
 				if (url != null) {
 					String deviceVersion = url.substring(url.lastIndexOf("/")+1);
-					int ret = DeviceHelper.compareDeviceVersions("AP106P06V1.2.15Build8105", deviceVersion);
+					int ret = WifiDeviceHelper.compareDeviceVersions("AP106P06V1.2.15Build8105", deviceVersion);
 					System.out.println(ret);
 					if (ret >= 0) {
 						// 设备版本高于需要升级的版本，不升级

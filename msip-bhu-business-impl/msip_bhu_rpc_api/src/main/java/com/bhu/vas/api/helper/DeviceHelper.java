@@ -435,63 +435,6 @@ public class DeviceHelper {
 	}
 	
 	/**
-	 * 比较两个设备的软件版本号
-	 * 返回 1 表示 orig_swver1 大于 orig_swver2
-	 * 返回 0 表示 orig_swver1 等于 orig_swver2
-	 * 返回 -1 表示 orig_swver1 小于 orig_swver2
-	 * @param orig_swver1
-	 * @param orig_swver2
-	 * @return
-	 */
-	public static int compareDeviceVersions(String orig_swver1, String orig_swver2){
-		if(StringUtils.isEmpty(orig_swver1) || StringUtils.isEmpty(orig_swver2)) 
-			throw new RuntimeException("param validate empty");
-		
-		String[] orig_swver1_versions = parseDeviceSwverVersion(orig_swver1);
-		if(orig_swver1_versions == null) return -1;
-		String[] orig_swver2_versions = parseDeviceSwverVersion(orig_swver2);
-		if(orig_swver2_versions == null) return 1;
-		//判断大版本号
-		int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
-		//System.out.println("top ret " + top_ret);
-		if(top_ret != 0) return top_ret;
-		
-		//判断小版本号
-		int bottom_ret = StringHelper.compareVersion(orig_swver1_versions[1], orig_swver2_versions[1]);
-		//System.out.println("bottom ret " + bottom_ret);
-		return bottom_ret;
-	}
-	
-	/**
-	 * 解析设备的软件版本
-	 * 返回数组 0 大版本号 1 小版本号
-	 * @param orig_swver
-	 * @return
-	 */
-	public static String[] parseDeviceSwverVersion(String orig_swver){
-		try{
-	    	Pattern p = Pattern.compile("V(.*)(B|r)");
-	    	Matcher m = p.matcher(orig_swver);
-	    	String top_version = null;
-	    	while(m.find()){  
-	    		top_version = m.group(1);  
-	    	}
-	    	
-	    	p = Pattern.compile("Build(\\d+)");
-	    	m = p.matcher(orig_swver);
-	    	String bottom_version = null;
-	    	while(m.find()){  
-	    		bottom_version = m.group(1);  
-	    	}
-	    	System.out.println(top_version + "-" + bottom_version);
-	    	return new String[]{top_version, bottom_version};
-		}catch(Exception ex){
-			
-		}
-		return null;
-	}
-	
-	/**
 	 * 验证urouter设备的vap黑名单列表配置是否正确
 	 * 1:验证黑名单列表是有包含约定名称的列表
 	 * 2:验证vap是否都关联到此黑名单
@@ -1346,6 +1289,39 @@ public class DeviceHelper {
 	}
 	
 	
+	
+	/**
+	 * 解析设备的软件版本
+	 * 返回数组 0 大版本号 1 小版本号
+	 * AP106P06V1.3.2Build8606
+	 * AP106P07V1.3.2r1_TU
+	 * AP106P06V1.3.2Build8606_TU
+	 * @param orig_swver
+	 * @return
+	 */
+	/*public static String[] parseDeviceSwverVersion(String orig_swver){
+		try{
+	    	Pattern p = Pattern.compile("V(.*)(B|r)");
+	    	Matcher m = p.matcher(orig_swver);
+	    	String top_version = null;
+	    	while(m.find()){  
+	    		top_version = m.group(1);  
+	    	}
+	    	
+	    	p = Pattern.compile("Build(\\d+)");
+	    	m = p.matcher(orig_swver);
+	    	String bottom_version = null;
+	    	while(m.find()){  
+	    		bottom_version = m.group(1);  
+	    	}
+	    	System.out.println(top_version + "-" + bottom_version);
+	    	return new String[]{top_version, bottom_version};
+		}catch(Exception ex){
+			
+		}
+		return null;
+	}*/
+	
 	public static void main(String[] args){
 //		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
 //		v1.setName("v1");
@@ -1420,13 +1396,87 @@ public class DeviceHelper {
 				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 
 
-		System.out.println(item);
+/*		System.out.println(item);
 		
 		
 		System.out.println(isNewOrigSwverDevice("AP104P06V1.2.12r2"));
 		
-		parseDeviceSwverVersion("AP106P06V1.2.15BuildYt");
+		String[] parseDeviceSwverVersion = parseDeviceSwverVersion("AP106P06V1.3.2Build8606_TU");
+		for(String aa:parseDeviceSwverVersion){
+			System.out.println("---:"+aa);
+		}
 		compareDeviceVersions("AP106P06V1.2.16Build8057", "AP106P06V1.2.15Build8057");
+		*/
+		
+		String[] array = {"AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		
+		/*
+		 * AP106P06V1.3.2Build8606
+		 * AP106P07V1.3.2r1_TU
+		 * AP106P06V1.3.2Build8606_TU*/
+		for(String orig:array){
+			Pattern p = Pattern.compile("V(.*)(B|r|_T|_N)");
+	    	Matcher m = p.matcher(orig);
+	    	String top_version = null;
+	    	while(m.find()){  
+	    		top_version = m.group(1);  
+	    	}
+	    	
+	    	p = Pattern.compile("Build(\\d+)|r(\\d+)");
+	    	m = p.matcher(orig);
+	    	String bottom_version = null;
+	    	while(m.find()){  
+	    		bottom_version = m.group();  
+	    	}
+	    	
+	    	p = Pattern.compile("_T(.*)");
+	    	m = p.matcher(orig);
+	    	String flag_version = null;
+	    	while(m.find()){  
+	    		flag_version = m.group(1);  
+	    	}
+	    	System.out.println("   :"+top_version +"   :"+bottom_version +"  :"+flag_version);
+		}
+		
+		System.out.println("~~~~~~~~~~~~~");
+		String Common_Spliter_Patterns = "[V|_]+";
+		for(String orig:array){
+			System.out.println(orig);
+			String[] split = orig.split(Common_Spliter_Patterns);
+			for(String s:split){
+				System.out.println(s);
+			}
+			System.out.println(split.length);
+		}
+		/*Pattern p = Pattern.compile("V(.*)(B|r)");
+    	Matcher m = p.matcher(array[0]);
+    	String top_version = null;
+    	while(m.find()){  
+    		top_version = m.group(1);  
+    	}
+    	
+    	p = Pattern.compile("Build|r(\\d+)");
+    	m = p.matcher(array[0]);
+    	String bottom_version = null;
+    	while(m.find()){  
+    		bottom_version = m.group();  
+    	}
+    	
+    	p = Pattern.compile("_(.*)");
+    	m = p.matcher(array[0]);
+    	String flag_version = null;
+    	while(m.find()){  
+    		flag_version = m.group(1);  
+    	}*/
+		String str = "one123";  
+        String regex = "(?<=one)(?=123)";  
+        String[] strs = str.split(regex);  
+        for(int i = 0; i < strs.length; i++) {  
+            System.out.printf("strs[%d] = %s%n", i, strs[i]);  
+        } 
+    	
+    	
+    	
 	}
 
 }
