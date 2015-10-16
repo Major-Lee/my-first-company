@@ -15,6 +15,8 @@ public class QueryWifiTimerSerialReturnDTO extends QuerySerialReturnDTO{
 	
 
 	private String enable;
+	//设备的 "18:00:00-on,05:00:00-off"
+	//设备的 "18:00:00-on,05:00:00-off,-days" 
 	//设备的 "18:00:00-on,05:00:00-off,1234-days" 
 	private String rule;
 	
