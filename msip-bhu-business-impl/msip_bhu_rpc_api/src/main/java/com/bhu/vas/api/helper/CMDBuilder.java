@@ -334,8 +334,17 @@ public class CMDBuilder {
 					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
 					String days = timerDto.getDays();
 					StringBuilder daysParam = new StringBuilder();
-					if(StringUtils.isNotEmpty(days))
+					//区分空字符串和不空字符串以及null代表不通意义
+					if(days != null){
 						daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+						/*if(StringUtils.isNotEmpty(days))
+							daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+						else
+							daysParam.append(StringHelper.COMMA_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);*/
+					}
+					/*if(StringUtils.isNotEmpty(days))
+						daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+					*/	
 						//daysParam = ;//days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Default_Days);
 						//daysParam = days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Days);
 					resultCmd = String.format(opt.getCmdtpl(), 
