@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -848,7 +848,7 @@ public class DeviceBusinessFacadeService {
 				//获取设备配置之后的指令分发
 				List<String> afterQueryPayloads = null;
 				//只有URouter的设备才需进行此操作
-				if(WifiDeviceHelper.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model())){
+				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_model())){
 					//验证URouter设备配置是否符合约定
 					if(!DeviceHelper.validateURouterBlackList(dto)){
 						if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();

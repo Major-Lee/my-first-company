@@ -22,7 +22,7 @@ public class WifiDeviceHelper {
 	
 	
 	public final static String WIFI_URouter_DEVICE_ORIGIN_MODEL = "uRouter";
-	public static boolean isURooterDevice(String orig_model) {
+	public static boolean isURouterDevice(String orig_model) {
 		/*DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null) return false;
 		return ver.wasDstURouter();*/
@@ -31,9 +31,11 @@ public class WifiDeviceHelper {
 	
 	/**
 	 * 比较两个设备的软件版本号
+	 * 备注：只针对大版本号不一致或者 大版本一致情况下的小版本都存在Build情况
 	 * 返回 1 表示 orig_swver1 大于 orig_swver2
 	 * 返回 0 表示 orig_swver1 等于 orig_swver2
 	 * 返回 -1 表示 orig_swver1 小于 orig_swver2
+	 * 小版本号的前缀不一致的情况下都返回 0 eg：build或r
 	 * @param orig_swver1
 	 * @param orig_swver2
 	 * @return
@@ -44,7 +46,7 @@ public class WifiDeviceHelper {
 		DeviceVersion ver1 = DeviceVersion.parser(orig_swver1);
 		String[] orig_swver1_versions = ver1.parseDeviceSwverVersion();
 		if(orig_swver1_versions == null) return -1;
-		DeviceVersion ver2 = DeviceVersion.parser(orig_swver1);
+		DeviceVersion ver2 = DeviceVersion.parser(orig_swver2);
 		String[] orig_swver2_versions = ver2.parseDeviceSwverVersion();
 		if(orig_swver2_versions == null) return 1;
 		//判断大版本号
@@ -52,10 +54,18 @@ public class WifiDeviceHelper {
 		//System.out.println("top ret " + top_ret);
 		if(top_ret != 0) return top_ret;
 		
-		//判断小版本号
+		if(orig_swver1_versions[1] != null &&  orig_swver2_versions[1] != null){
+			if(orig_swver1_versions[1].startsWith(DeviceVersion.Build_Normal_Prefix) && orig_swver2_versions[1].startsWith(DeviceVersion.Build_Normal_Prefix)){
+				int bottom_ret = StringHelper.compareVersion(
+						orig_swver1_versions[1].substring(DeviceVersion.Build_Normal_Prefix.length()), orig_swver2_versions[1].substring(DeviceVersion.Build_Normal_Prefix.length()));
+				return bottom_ret;
+			}
+		}
+		return 0;
+		/*//判断小版本号
 		int bottom_ret = StringHelper.compareVersion(orig_swver1_versions[1], orig_swver2_versions[1]);
 		//System.out.println("bottom ret " + bottom_ret);
-		return bottom_ret;
+		return bottom_ret;*/
 	}
 	
 	public static boolean isLocationCMDSupported(){
@@ -229,5 +239,13 @@ public class WifiDeviceHelper {
 		return persistenceKey.split(StringHelper.MINUS_STRING_GAP);
 	}
 	
-	
+	public static void main(String[] argv){
+		String current = "AP106P06V1.3.2Build8606_TC";
+		String[] array = {"AP106P06V1.3.2Build8606","AP106P06V1.3.2Build8677","AP106P06V1.3.2Build8600","AP106P07V1.3.3r1_TU","AP106P07V1.3.1r1_TU","AP106P06V1.3.0Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		for(String orig:array){
+			int compareDeviceVersions = compareDeviceVersions(current, orig);
+			System.out.println(compareDeviceVersions);
+		}
+		
+	}
 }

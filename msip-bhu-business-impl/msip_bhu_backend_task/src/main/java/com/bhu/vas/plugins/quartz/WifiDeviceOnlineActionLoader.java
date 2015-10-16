@@ -55,7 +55,7 @@ public class WifiDeviceOnlineActionLoader {
 				for(WifiDevice device:next){
 					{
 						Set<String> payloads =  new HashSet<String>();
-						if(WifiDeviceHelper.isURooterDeviceWithOrigModel(device.getOrig_model())){
+						if(WifiDeviceHelper.isURouterDevice(device.getOrig_model())){
 							//确定是否需要下发指令
 							boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(device.getId(),false);
 							if(needDeviceUsedQuery){

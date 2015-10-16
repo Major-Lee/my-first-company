@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 public class DeviceVersion {
+	public static final String Build_Normal_Prefix = "Build";
+	public static final String Build_R_Prefix = "r";
 	//version prefix
 	private String vp;
 	//版本号1.3.0、1.3.0r1、1.3.2Build8606、1.2.16Buildwaip
@@ -118,5 +120,8 @@ public class DeviceVersion {
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
 			System.out.println(orig+"   "+parser.wasDstURouter()  +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]);
 		}
+		
+		String ss = "Build8606";
+		System.out.println(ss.substring(5));
 	}
 }
