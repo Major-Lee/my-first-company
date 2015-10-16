@@ -143,7 +143,7 @@ public class AsyncMsgHandleService {
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
-			boolean isRouter = WifiDeviceHelper.isURooterDevice(wifiDevice.getOrig_model());
+			boolean isRouter = WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_model());
 			//boolean needWiffsniffer = false;
 			List<String> payloads = new ArrayList<String>();
 			//boolean forceFirmwareUpdate = false;
