@@ -147,9 +147,17 @@ public class JOrion implements JOrionMBean{
 			m.put("param", pm);
 		}
 		String rstr = writer.write(m);
+		
+		m.clear();
+		m.put("name", "balancer");
+		m.put("enable", en);
+		String strEmpty = writer.write(m);
 
 		UrsidsMessage redirect = UrsidsMessage.composeUrsidsMessage(0, 1, rstr.getBytes());
 		redirect.setMqMessage(false);
+
+		UrsidsMessage redirectEmpty = UrsidsMessage.composeUrsidsMessage(0, 1, strEmpty.getBytes());
+		redirectEmpty.setMqMessage(false);
 
 		synchronized(this){
 			try {
@@ -162,6 +170,14 @@ public class JOrion implements JOrionMBean{
 							continue;
 						ursidsWorker.sendMessage(s.getSession(), redirect);
 						s.setRedirectUrl(url);
+					} else {
+						//if I'm the redirect target, then clear my target
+						if(url != null && !url.isEmpty() && s.getBalanceUrl() != null){
+							if(s.getBalanceUrl().equals(url)){
+								ursidsWorker.sendMessage(s.getSession(), redirectEmpty);
+								s.setRedirectUrl(null);
+							}
+						}
 					}
 				}
 			} catch (Exception e) {
