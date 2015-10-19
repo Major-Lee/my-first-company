@@ -105,8 +105,10 @@ public class AgentUserUnitFacadeService {
 		user.setCountrycode(countrycode);
 		user.setMobileno(acc);
 		//user.addSafety(SafetyBitMarkHelper.mobileno);
-		if(StringUtils.isEmpty(pwd)) user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
-		user.setPlainpwd(pwd);
+		if(StringUtils.isEmpty(pwd)) 
+			user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
+		else
+			user.setPlainpwd(pwd);
 		user.setNick(nick);
 		user.setSex(sex);
 		

@@ -12,7 +12,9 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	
 	public static final int Normal_User = 1;
 	public static final int Agent_User = 10;
-	
+	public static final int Finance_User = 15;
+	public static final int WarehouseManager_User = 20;
+	public static final int Sellor_User = 30;
 	//电话号码国家区号
 	private int countrycode = 86;
 	private String mobileno;
