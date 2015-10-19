@@ -414,7 +414,7 @@ public class AgentFacadeService {
         }
 
         //异步处理代理商
-        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, aid, wid, inputPath, outputPath, originName);
+        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
         return vto;
 
     }
