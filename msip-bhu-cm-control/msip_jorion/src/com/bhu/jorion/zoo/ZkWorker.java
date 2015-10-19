@@ -132,12 +132,21 @@ public class ZkWorker implements Watcher {
 			if(s < e && ((ZkUrsids)za[e]).getBalanceUrl() != null){
 				LOGGER.info("balance result:" + ((ZkUrsids)za[s]).getJorionId() + "^" + ((ZkUrsids)za[s]).getId() + " will redirect to " 
 						+ ((ZkUrsids)za[e]).getJorionId() + ((ZkUrsids)za[e]).getId());
-				//disalbe target's redirect func
+
+				jorion.setBalanceTarget(((ZkUrsids)za[e]).getId(), null);
+				jorion.setBalanceTarget(((ZkUrsids)za[s]).getId(), ((ZkUrsids)za[e]).getBalanceUrl());
+
+/*				//disalbe target's redirect func
 				if(((ZkUrsids)za[e]).getJorionId().equals(JOrionConfig.ZOO_NAME))
 					jorion.setBalanceTarget(((ZkUrsids)za[e]).getId(), null);
 				
 				if(((ZkUrsids)za[s]).getJorionId().equals(JOrionConfig.ZOO_NAME))
 					jorion.setBalanceTarget(((ZkUrsids)za[s]).getId(), ((ZkUrsids)za[e]).getBalanceUrl());
+*/
+			}
+			for(int i = 0; i < za.length; i ++){
+				//clear redirect 
+				
 			}
 			s++;
 			e--;
