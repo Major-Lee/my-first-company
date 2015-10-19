@@ -39,7 +39,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	private boolean locked = false;
 	/*private String avatar;
 	private String cover;*/
+	//公司名称
 	private String org;
+	//营业执照号Business license number
+	private String bln;
+	//注册地址
 	private String addr1;
 	private String addr2;
 	private String memo;
@@ -230,5 +234,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	}
 	public void setAddr2(String addr2) {
 		this.addr2 = addr2;
+	}
+	public String getBln() {
+		return bln;
+	}
+	public void setBln(String bln) {
+		this.bln = bln;
 	}
 }

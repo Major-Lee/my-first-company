@@ -92,6 +92,7 @@ public class AgentUserUnitFacadeService {
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,String pwd,
 			String nick, String sex,
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo,
@@ -104,11 +105,13 @@ public class AgentUserUnitFacadeService {
 		user.setCountrycode(countrycode);
 		user.setMobileno(acc);
 		//user.addSafety(SafetyBitMarkHelper.mobileno);
+		if(StringUtils.isEmpty(pwd)) user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
 		user.setPlainpwd(pwd);
 		user.setNick(nick);
 		user.setSex(sex);
 		
 		user.setOrg(org);
+		user.setBln(bln);
 		user.setAddr1(addr1);
 		user.setAddr2(addr2);
 		user.setMemo(memo);
@@ -280,7 +283,7 @@ public class AgentUserUnitFacadeService {
 	}
 
 	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid, String nick,
-			String org, String addr1, String addr2, String memo) {
+			String org,String bln, String addr1, String addr2, String memo) {
 		try{
 			User user  = userService.getById(tid);
 			if(user == null){
@@ -293,7 +296,9 @@ public class AgentUserUnitFacadeService {
 			if(StringUtils.isNotEmpty(org)){
 				user.setOrg(org);
 			}
-			
+			if(StringUtils.isNotEmpty(bln)){
+				user.setOrg(bln);
+			}
 			if(StringUtils.isNotEmpty(addr1)){
 				user.setAddr1(addr1);
 			}

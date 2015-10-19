@@ -31,6 +31,7 @@ public interface IAgentUserRpcService {
 			String sex,
 			
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo,
@@ -79,6 +80,7 @@ public interface IAgentUserRpcService {
 	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid,
 			String nick,
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo

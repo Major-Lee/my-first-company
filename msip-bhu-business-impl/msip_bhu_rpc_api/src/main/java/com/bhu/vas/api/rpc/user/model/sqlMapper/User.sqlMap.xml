@@ -20,6 +20,7 @@
     <result property="birthday" column="birthday"/>
     
     <result property="org" column="org"/>
+    <result property="bln" column="bln"/>
     <result property="addr1" column="addr1"/>
     <result property="addr2" column="addr2"/>
     <result property="memo" column="memo"/> 
@@ -50,6 +51,7 @@
 	    	sex,
 	    	birthday,
 	    	org,
+	    	bln,
 	    	addr1,
 	    	addr2,
 	    	memo,
@@ -73,6 +75,7 @@
 	    	sex,
 	    	birthday,
 	    	org,
+	    	bln,
 	    	addr1,
 	    	addr2,
 	    	memo,
@@ -97,6 +100,7 @@
 	    	#{sex},
 	    	#{birthday},
 	    	#{org},
+	    	#{bln},
 	    	#{addr1},
 	    	#{addr2},
 	    	#{memo},
@@ -119,6 +123,7 @@
 	    	sex = #{sex},
 	    	birthday = #{birthday},
 	    	org = #{org},
+	    	bln = #{bln},
 	    	addr1 = #{addr1},
 	    	addr2 = #{addr2},
 	    	memo = #{memo},
