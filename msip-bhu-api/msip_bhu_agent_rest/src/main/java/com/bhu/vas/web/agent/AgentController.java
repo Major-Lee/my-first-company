@@ -261,7 +261,9 @@ public class AgentController {
             vto.setUid(uid);
             vto.setAid(aid);
 
-            agentRpcService.importAgentDeviceClaim(uid, aid,wid, inputPath, outputPath, originName);
+            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
+
+            vto.setLog(log);
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 

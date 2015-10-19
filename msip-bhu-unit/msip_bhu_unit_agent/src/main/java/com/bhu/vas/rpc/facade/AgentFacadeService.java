@@ -412,6 +412,8 @@ public class AgentFacadeService {
         if (wuser != null) {
             vto.setWnick(wuser.getNick() == null ? "" : wuser.getNick());
         }
+
+        //异步处理代理商
         deliverMessageService.sendAgentDeviceClaimImportMessage(uid, aid, wid, inputPath, outputPath, originName);
         return vto;
 

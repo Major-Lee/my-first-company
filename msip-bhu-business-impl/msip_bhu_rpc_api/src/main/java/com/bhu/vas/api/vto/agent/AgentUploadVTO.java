@@ -10,6 +10,7 @@ public class AgentUploadVTO implements Serializable{
     private int uid;
     private int aid;
     private String filename;
+    private AgentDeviceImportLogVTO log;
 
     public int getUid() {
         return uid;
@@ -33,5 +34,13 @@ public class AgentUploadVTO implements Serializable{
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public AgentDeviceImportLogVTO getLog() {
+        return log;
+    }
+
+    public void setLog(AgentDeviceImportLogVTO log) {
+        this.log = log;
     }
 }
