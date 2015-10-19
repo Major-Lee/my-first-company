@@ -11,10 +11,18 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenceGenable {
 
+    public final static int IMPORT_DOING = 0;
+    public final static int IMPORT_DONE = 1;
+    public final static int IMPORT_ERROR = 2;
     /**
      * 代理商id
      */
     private int aid;
+
+    /**
+     * 销售人员id
+     */
+    private int wid;
 
     /**
      * 创建日期
@@ -26,12 +34,25 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
      */
     private int count;
 
+    /**
+     * 导入状态 0:正在导入 1:导入完毕 2:导入失败
+     */
+    private int status;
+
     public int getAid() {
         return aid;
     }
 
     public void setAid(int aid) {
         this.aid = aid;
+    }
+
+    public int getWid() {
+        return wid;
+    }
+
+    public void setWid(int wid) {
+        this.wid = wid;
     }
 
     public Date getCreated_at() {
@@ -48,6 +69,14 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override

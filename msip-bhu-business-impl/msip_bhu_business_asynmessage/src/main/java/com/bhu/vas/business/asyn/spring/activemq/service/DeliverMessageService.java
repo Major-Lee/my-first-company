@@ -349,7 +349,7 @@ public class DeliverMessageService {
 	}
 
 
-	public void sendAgentDeviceClaimImportMessage(Integer uid, Integer aid, String inputPath, String outputPath, String originName) {
+	public void sendAgentDeviceClaimImportMessage(Integer uid, Integer aid, Integer wid, String inputPath, String outputPath, String originName) {
 		AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
 		dto.setUid(uid);
 		dto.setAid(aid);

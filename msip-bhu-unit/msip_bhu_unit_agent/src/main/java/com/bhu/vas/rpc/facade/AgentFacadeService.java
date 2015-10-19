@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -386,8 +387,34 @@ public class AgentFacadeService {
 
 
 
-    public void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName) {
-        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, aid, inputPath, outputPath, originName);
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid, String inputPath, String outputPath, String originName) {
+        //代理商导入记录
+        AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
+        agentDeviceImportLog.setAid(aid);
+        agentDeviceImportLog.setWid(wid);
+        agentDeviceImportLog.setCreated_at(new Date());
+        agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DOING);
+        agentDeviceImportLog = agentDeviceImportLogService.insert(agentDeviceImportLog);
+
+        AgentDeviceImportLogVTO vto = new AgentDeviceImportLogVTO();
+        vto.setId(agentDeviceImportLog.getId());
+        vto.setAid(aid);
+        vto.setWid(wid);
+        vto.setCount(agentDeviceImportLog.getCount());
+        vto.setStatus(agentDeviceImportLog.getStatus());
+        vto.setCreated_at(agentDeviceImportLog.getCreated_at());
+        User agent = userService.getById(aid);
+        if (agent != null) {
+            vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+        }
+
+        User wuser = userService.getById(wid);
+        if (wuser != null) {
+            vto.setWnick(wuser.getNick() == null ? "" : wuser.getNick());
+        }
+        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, aid, wid, inputPath, outputPath, originName);
+        return vto;
+
     }
 
     public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
@@ -404,8 +431,10 @@ public class AgentFacadeService {
                 vto = new AgentDeviceImportLogVTO();
                 vto.setId(log.getId());
                 vto.setAid(log.getAid());
+                vto.setWid(log.getWid());
                 vto.setCount(log.getCount());
                 vto.setCreated_at(log.getCreated_at());
+                vto.setStatus(log.getStatus());
 
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {

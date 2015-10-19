@@ -65,10 +65,10 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public void importAgentDeviceClaim(int uid,int aid, String inputPath, String outputPath, String originName) {
-        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s orginName:%s inputpath:%s outputPath:%s",
-                uid, aid, originName, inputPath, outputPath));
-        agentFacadeService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid,int aid, int wid, String inputPath, String outputPath, String originName) {
+        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s",
+                uid, aid, wid, originName, inputPath, outputPath));
+        return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
     }
 
     @Override
