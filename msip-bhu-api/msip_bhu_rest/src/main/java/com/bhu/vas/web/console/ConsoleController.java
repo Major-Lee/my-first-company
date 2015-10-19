@@ -195,8 +195,8 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = true, value = "wid") String wifiId,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-
-        TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
+    	
+        TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevices(wifiId!=null?wifiId.toLowerCase():wifiId, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 
@@ -405,7 +405,7 @@ public class ConsoleController extends BaseController {
         if (StringUtils.isEmpty(mac)) {
         	throw new BusinessException(ResponseStatus.Forbidden, ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
         }
-        RpcResponseDTO<List<PersistenceCMDDetailDTO>> resp = deviceRestRpcService.fetchDevicePersistenceDetailCMD(mac);//.fetchUserUrlStatistics(date);
+        RpcResponseDTO<List<PersistenceCMDDetailDTO>> resp = deviceRestRpcService.fetchDevicePersistenceDetailCMD(mac.toLowerCase());//.fetchUserUrlStatistics(date);
 
 		if(!resp.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));

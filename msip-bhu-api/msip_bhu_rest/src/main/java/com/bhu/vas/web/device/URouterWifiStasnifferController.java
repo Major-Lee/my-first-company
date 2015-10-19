@@ -81,7 +81,7 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		RpcResponseDTO<Map<String, Object>> rpcResponse = deviceURouterRestRpcService.urouterWSNeighbour(uid, mac, 
+		RpcResponseDTO<Map<String, Object>> rpcResponse = deviceURouterRestRpcService.urouterWSNeighbour(uid, mac.toLowerCase(), 
 				start, size);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
@@ -106,7 +106,7 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = true) String hd_mac,
 			@RequestParam(required = false, defaultValue="true") boolean focus) {
 		
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSFocus(uid, hd_mac, focus);
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSFocus(uid, hd_mac.toLowerCase(), focus);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
@@ -131,7 +131,7 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = true) String hd_mac,
 			@RequestParam(required = false) String nick) {
 		
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSNick(uid, hd_mac, nick);
+		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterWSNick(uid, hd_mac.toLowerCase(), nick);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
@@ -160,8 +160,8 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterWSDetails(uid, mac, 
-				hd_mac, start, size);
+		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterWSDetails(uid, mac.toLowerCase(), 
+				hd_mac.toLowerCase(), start, size);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
@@ -184,7 +184,7 @@ public class URouterWifiStasnifferController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterWSCommunityVTO> rpcResponse = deviceURouterRestRpcService.urouterWSCommunity(uid, mac);
+		RpcResponseDTO<URouterWSCommunityVTO> rpcResponse = deviceURouterRestRpcService.urouterWSCommunity(uid, mac.toLowerCase());
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
