@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -197,7 +198,7 @@ public class AgentStatisticsUnitFacadeService {
 			SettlementStatisticsVTO statistics = this.statistics(-1);
 			//获取主界面显示结构 agents 列表
 			ModelCriteria mc_user = new ModelCriteria();
-			mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+			mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 			mc_user.setPageNumber(pageNo);
 			mc_user.setPageSize(pageSize);
 			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
@@ -355,7 +356,7 @@ public class AgentStatisticsUnitFacadeService {
 	private SettlementStatisticsVTO statistics(int agent){
 		SettlementStatisticsVTO result = agentSettlementsRecordMService.statistics(agent);
 		ModelCriteria mc_user = new ModelCriteria();
-		mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		int total = userService.countByModelCriteria(mc_user);
 		result.setTs(total);
 		return result;

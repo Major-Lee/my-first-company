@@ -61,10 +61,10 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode,
-			String acc, String pwd, String device, String remoteIp) {
-		logger.info(String.format("userLogin with countrycode[%s] acc[%s] pwd[%s] device[%s] remoteIp[%s]",
-				countrycode,acc,pwd,device,remoteIp));
-		return agentUserUnitFacadeService.userLogin(countrycode, acc, pwd, device, remoteIp);
+			String acc, String pwd, String ut, String device, String remoteIp) {
+		logger.info(String.format("userLogin with countrycode[%s] acc[%s] pwd[%s] utype[%s]device[%s] remoteIp[%s]",
+				countrycode,acc,pwd,ut,device,remoteIp));
+		return agentUserUnitFacadeService.userLogin(countrycode, acc, pwd,ut, device, remoteIp);
 	}
 
 	@Override

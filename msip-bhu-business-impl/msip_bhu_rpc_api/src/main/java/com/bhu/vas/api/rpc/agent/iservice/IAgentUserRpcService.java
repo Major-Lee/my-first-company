@@ -73,7 +73,7 @@ public interface IAgentUserRpcService {
 	 * @param remoteIp
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
+	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String ut,String device,String remoteIp);
 	
 	
 	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid,int tid);
