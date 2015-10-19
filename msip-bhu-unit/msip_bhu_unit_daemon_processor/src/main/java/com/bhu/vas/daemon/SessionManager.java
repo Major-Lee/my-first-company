@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.smartwork.msip.cores.cache.entitycache.impl.local.DefaultCacheImpl;
 
 public class SessionManager {
@@ -30,11 +31,21 @@ public class SessionManager {
 	
 	private Map<String,SerialTask> serialTaskmap = new ConcurrentHashMap<String,SerialTask>();
 	public SessionInfo getSession(String wifi_mac) {
-		return sessions.get(wifi_mac);
+		SessionInfo ret = sessions.get(wifi_mac);
+		if(ret == null){
+			String present_ctx = WifiDevicePresentCtxService.getInstance().getPresent(wifi_mac);
+			if(present_ctx != null){
+				ret = addSession(wifi_mac, present_ctx);
+				System.out.println(String.format("SessionManager 未发现【%s】状态，但 RedisPresent存在此状态【%s】 更新SessionManager成功！", wifi_mac,present_ctx));
+			}
+		}
+		return ret;
     }
 	
-	public void addSession(String wifi_mac, String ctx) {
-		sessions.put(wifi_mac, new SessionInfo(wifi_mac,ctx));
+	public SessionInfo addSession(String wifi_mac, String ctx) {
+		SessionInfo info = new SessionInfo(wifi_mac,ctx);
+		sessions.put(wifi_mac, info);
+		return info;
     }
 
 	public void removeSession(String wifi_mac) {
