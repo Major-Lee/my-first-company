@@ -16,9 +16,19 @@ public class AgentDeviceImportLogVTO implements Serializable {
     private int aid;
 
     /**
+     * 销售id
+     */
+    private int wid;
+
+    /**
      * 代理商名称
      */
     private String nick;
+
+    /**
+     * 销售名称
+     */
+    private String wnick;
 
     /**
      * 创建日期
@@ -29,6 +39,12 @@ public class AgentDeviceImportLogVTO implements Serializable {
      * 导入数量
      */
     private int count;
+
+    /**
+     * 导入状态
+     * @return
+     */
+    private int status;
 
     public long getId() {
         return id;
@@ -46,12 +62,28 @@ public class AgentDeviceImportLogVTO implements Serializable {
         this.aid = aid;
     }
 
+    public int getWid() {
+        return wid;
+    }
+
+    public void setWid(int wid) {
+        this.wid = wid;
+    }
+
     public String getNick() {
         return nick;
     }
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public String getWnick() {
+        return wnick;
+    }
+
+    public void setWnick(String wnick) {
+        this.wnick = wnick;
     }
 
     public Date getCreated_at() {
@@ -68,5 +100,13 @@ public class AgentDeviceImportLogVTO implements Serializable {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

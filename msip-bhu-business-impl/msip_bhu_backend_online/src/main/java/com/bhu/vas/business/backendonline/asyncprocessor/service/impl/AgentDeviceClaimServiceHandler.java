@@ -191,6 +191,7 @@ public class AgentDeviceClaimServiceHandler {
 //            agentDeviceImportLog.setCreated_at(new Date());
 //            agentDeviceImportLogService.insert(agentDeviceImportLog);
             agentDeviceImportLog.setCount(totalCount);
+            agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
 
 

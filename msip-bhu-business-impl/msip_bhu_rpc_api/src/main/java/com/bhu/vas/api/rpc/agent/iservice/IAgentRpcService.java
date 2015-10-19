@@ -85,7 +85,7 @@ public interface IAgentRpcService {
      * @param outputPath excel文件位置
      * @param originName 文件原始名称
      */
-    void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName);
+    AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid, String inputPath, String outputPath, String originName);
 
 
     /**

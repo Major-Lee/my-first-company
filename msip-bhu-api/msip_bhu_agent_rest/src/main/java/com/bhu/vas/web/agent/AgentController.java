@@ -213,7 +213,9 @@ public class AgentController {
             HttpServletResponse response,
             @RequestParam("file") CommonsMultipartFile file,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) Integer aid) {
+            @RequestParam(required = true) Integer aid,
+            @RequestParam(required = true) Integer wid
+            ) {
 
         AgentUploadVTO vto = new AgentUploadVTO();
         String originName = file.getOriginalFilename();
@@ -259,8 +261,9 @@ public class AgentController {
             vto.setUid(uid);
             vto.setAid(aid);
 
+            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
 
-            agentRpcService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
+            vto.setLog(log);
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 
