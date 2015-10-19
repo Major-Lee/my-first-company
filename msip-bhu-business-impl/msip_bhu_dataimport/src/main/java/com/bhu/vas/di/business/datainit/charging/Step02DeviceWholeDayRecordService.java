@@ -1,5 +1,6 @@
 package com.bhu.vas.di.business.datainit.charging;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,12 +9,20 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.LineRecord;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 @Service
 public class Step02DeviceWholeDayRecordService {
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
 	@Resource
 	private WifiDeviceWholeDayMService wifiDeviceWholeDayMService;
 	public void deviceRecord2Mongo(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
@@ -62,6 +71,14 @@ public class Step02DeviceWholeDayRecordService {
 			dto.setHod(h_od);
 			dto.setHrx_bytes(h_rx_bytes);
 			dto.setHtx_bytes(h_tx_bytes);
+			dto.setCashback(AgentHelper.validateCashback(dto));
+			WifiDevice device = wifiDeviceService.getById(key);
+			if(device != null){
+				Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
+				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate));
+			}else{
+				dto.setSameday(false);
+			}
 			//TODO:获取此日的设备使用情况流量
 			wifiDeviceWholeDayMService.save(dto);
 			//System.out.println(dto.getId());

@@ -149,7 +149,7 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
 				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod()))));
-				vto.setC("+13.7%");
+				//vto.setC("+13.7%");
 				items.add(vto);
 			}
 			TailPage<DailyRevenueRecordVTO> result_pages = new CommonPage<DailyRevenueRecordVTO>(pageNo, pageSize,page.getTotalItemsCount(), items);
