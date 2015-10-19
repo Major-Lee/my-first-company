@@ -9,6 +9,7 @@
 	  <result property="aid" column="aid"/>
 	  <result property="wid" column="wid"/>
 	  <result property="count" column="count"/>
+	  <result property="status" column="status"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -24,6 +25,7 @@
 	    	aid,
 	    	wid,
 	    	count,
+	    	status,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -33,6 +35,7 @@
 	    	aid,
 	    	wid,
 	    	count,
+	    	status,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -43,6 +46,7 @@
 			#{aid},
 			#{wid},
 			#{count},
+			#{status},
 			#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -51,6 +55,7 @@
 	    	aid = #{aid},
 	    	wid = #{wid},
 	    	count = #{count},
+	    	status = #{status},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
