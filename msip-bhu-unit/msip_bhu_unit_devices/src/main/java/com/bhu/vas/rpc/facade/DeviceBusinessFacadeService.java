@@ -140,26 +140,27 @@ public class DeviceBusinessFacadeService {
 		//1:wifi设备基础信息更新
 		WifiDevice wifi_device_entity = wifiDeviceService.getById(wifiId);
 		WifiDeviceModule wifi_device_module = wifiDeviceModuleService.getOrCreateById(wifiId);
+		Date reged_at = new Date();
 		if(wifi_device_entity == null){
 			wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 			wifi_device_entity.setOnline(true);
-			wifi_device_entity.setLast_logout_at(new Date());
+			wifi_device_entity.setLast_logout_at(reged_at);
 			wifiDeviceService.insert(wifi_device_entity);
-			wifi_device_module.setOnline(true);
 			newWifi = true;
 			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
-			wifi_device_entity.setLast_reged_at(new Date());
+			wifi_device_entity.setLast_reged_at(reged_at);
 			wifi_device_entity.setOnline(true);
 			wifiDeviceService.update(wifi_device_entity);
-			wifi_device_module.setOnline(true);
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
 				wanIpChanged = true;
 			}
 		}
+		wifi_device_module.setOnline(true);
+		wifi_device_module.setLast_module_reged_at(reged_at);
 		wifiDeviceModuleService.update(wifi_device_module);
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
@@ -207,8 +208,9 @@ public class DeviceBusinessFacadeService {
 			WifiDeviceModule exist_wifi_device_module = wifiDeviceModuleService.getOrCreateById(lowercase_wifi_id);
 			
 			if(exist_wifi_device_entity != null){
+				Date logoutDate =new Date(); 
 				exist_wifi_device_entity.setOnline(false);
-				exist_wifi_device_entity.setLast_logout_at(new Date());
+				exist_wifi_device_entity.setLast_logout_at(logoutDate);
 				//wifi设备上次登录的时间
 				long last_login_at = exist_wifi_device_entity.getLast_reged_at().getTime();
 				long current_at = System.currentTimeMillis();
@@ -232,6 +234,7 @@ public class DeviceBusinessFacadeService {
 				
 				exist_wifi_device_module.setOnline(false);
 				exist_wifi_device_module.setModule_online(false);
+				exist_wifi_device_module.setLast_module_logout_at(logoutDate);
 				wifiDeviceModuleService.update(exist_wifi_device_module);
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
 				WifiDevicePresentCtxService.getInstance().removePresent(lowercase_wifi_id);

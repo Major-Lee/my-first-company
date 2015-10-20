@@ -28,7 +28,6 @@
 		<typeAlias alias="userSettingState" 				type="com.bhu.vas.api.rpc.user.model.UserSettingState"/>
 		<typeAlias alias="userCaptchaCode" 				type="com.bhu.vas.api.rpc.user.model.UserCaptchaCode"/>
 		<typeAlias alias="userDevice" 					type="com.bhu.vas.api.rpc.user.model.UserDevice"/>
-		<typeAlias alias="userDeviceModule" 					type="com.bhu.vas.api.rpc.user.model.UserDeviceModule"/>
 		<typeAlias alias="userDevicePK" 				type="com.bhu.vas.api.rpc.user.model.pk.UserDevicePK"/>
 		<typeAlias alias="userAccessStatistics" 		type="com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics"/>
 		<typeAlias alias="userBrandStatistics" 			type="com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics"/>
@@ -36,6 +35,7 @@
 		<typeAlias alias="userDatePK" 					type="com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK"/>
 		<typeAlias alias="wifiDeviceStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus"/>
 		<typeAlias alias="wifiDevice" 					type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
+		<typeAlias alias="wifiDeviceModule" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceModule"/>
 		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
 		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation"/>
 		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK"/>
