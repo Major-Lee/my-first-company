@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
@@ -33,6 +34,8 @@ public class BuilderWifiDeviceIndexOp {
 	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	public static DeviceFacadeService deviceFacadeService = null;
 	public static WifiDeviceService wifiDeviceService = null;
+	
+	public static WifiDeviceModuleService wifiDeviceModuleService;
 	public static WifiDeviceGroupRelationService wifiDeviceGroupRelationService = null;
 	
 	public static void main(String[] argv) throws IOException, ParseException{
@@ -59,6 +62,7 @@ public class BuilderWifiDeviceIndexOp {
 			wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
 			
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
+			wifiDeviceModuleService= (WifiDeviceModuleService)ctx.getBean("wifiDeviceModuleService");
 			deviceFacadeService = (DeviceFacadeService)ctx.getBean("deviceFacadeService");
 			wifiDeviceGroupRelationService = (WifiDeviceGroupRelationService)ctx.getBean("wifiDeviceGroupRelationService");
 			
@@ -95,7 +99,7 @@ public class BuilderWifiDeviceIndexOp {
 					List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
 					//System.out.println(wifi_mac+"-"+count);
 					//indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device, groupids);
-					doc = WifiDeviceDocumentHelper.fromWifiDevice(device, groupids);
+					doc = WifiDeviceDocumentHelper.fromWifiDevice(device,wifiDeviceModuleService.getById(device.getId()), groupids);
 					doc.setCount((int)count);
 					//indexDto.setOnline(device.isOnline() ? 1 : 0);
 					//indexDto.setCount((int)count);

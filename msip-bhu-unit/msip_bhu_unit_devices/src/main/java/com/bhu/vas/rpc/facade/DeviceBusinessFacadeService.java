@@ -35,7 +35,6 @@ import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -44,6 +43,7 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
@@ -59,6 +59,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
@@ -81,6 +82,9 @@ public class DeviceBusinessFacadeService {
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceModuleService wifiDeviceModuleService;
 	
 	@Resource
 	private WifiDeviceAlarmService wifiDeviceAlarmService;
@@ -135,10 +139,13 @@ public class DeviceBusinessFacadeService {
 		WifiDevicePresentCtxService.getInstance().addPresent(wifiId, ctx);
 		//1:wifi设备基础信息更新
 		WifiDevice wifi_device_entity = wifiDeviceService.getById(wifiId);
+		WifiDeviceModule wifi_device_module = wifiDeviceModuleService.getOrCreateById(wifiId);
 		if(wifi_device_entity == null){
 			wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
+			wifi_device_entity.setOnline(true);
 			wifi_device_entity.setLast_logout_at(new Date());
 			wifiDeviceService.insert(wifi_device_entity);
+			wifi_device_module.setOnline(true);
 			newWifi = true;
 			wanIpChanged = true;
 		}else{
@@ -148,10 +155,12 @@ public class DeviceBusinessFacadeService {
 			wifi_device_entity.setLast_reged_at(new Date());
 			wifi_device_entity.setOnline(true);
 			wifiDeviceService.update(wifi_device_entity);
+			wifi_device_module.setOnline(true);
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
 				wanIpChanged = true;
 			}
 		}
+		wifiDeviceModuleService.update(wifi_device_module);
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
@@ -195,6 +204,8 @@ public class DeviceBusinessFacadeService {
 		if(ctx.equals(ctx_present)){
 			//1:wifi设备基础信息表中的在线状态更新
 			WifiDevice exist_wifi_device_entity = wifiDeviceService.getById(lowercase_wifi_id);
+			WifiDeviceModule exist_wifi_device_module = wifiDeviceModuleService.getOrCreateById(lowercase_wifi_id);
+			
 			if(exist_wifi_device_entity != null){
 				exist_wifi_device_entity.setOnline(false);
 				exist_wifi_device_entity.setLast_logout_at(new Date());
@@ -219,9 +230,11 @@ public class DeviceBusinessFacadeService {
 				}
 				wifiDeviceService.update(exist_wifi_device_entity);
 				
+				exist_wifi_device_module.setOnline(false);
+				exist_wifi_device_module.setModule_online(false);
+				wifiDeviceModuleService.update(exist_wifi_device_module);
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
 				WifiDevicePresentCtxService.getInstance().removePresent(lowercase_wifi_id);
-				
 				/*
 				 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
 				 * 4:wifi设备对应handset在线列表redis清除 (backend)
@@ -961,7 +974,7 @@ public class DeviceBusinessFacadeService {
 					}
 				}
 
-				List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
+				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
 
 
 			}
@@ -1083,12 +1096,13 @@ public class DeviceBusinessFacadeService {
 			if(vapDTO.getRegister() != null){
 				List<String> cmdPayloads = new ArrayList<>();
 				//module 版本信息，判定是否需要升级
-				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-				if(wifiDevice != null){
+				WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
+				if(wifiDeviceModule != null){
 					//if(!vapDTO.getRegister().getVersion().equals(wifiDevice.getOrig_vap_module())){//不同则覆盖
-					wifiDevice.setOrig_vap_module(vapDTO.getRegister().getVersion());
-					wifiDevice.setModule_online(true);
-					wifiDeviceService.update(wifiDevice);
+					wifiDeviceModule.setOrig_vap_module(vapDTO.getRegister().getVersion());
+					wifiDeviceModule.setOnline(true);
+					wifiDeviceModule.setModule_online(true);
+					wifiDeviceModuleService.update(wifiDeviceModule);
 					//}
 				}
 				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));

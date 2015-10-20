@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
@@ -32,6 +33,9 @@ public class WifiDeviceIndexIncrementService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceModuleService wifiDeviceModuleService;
 	
 	@Resource
 	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
@@ -90,7 +94,7 @@ public class WifiDeviceIndexIncrementService {
 			indexDto.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
 			indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 			indexDtos.add(indexDto);*/
-			doc = WifiDeviceDocumentHelper.fromWifiDevice(entity, groupids);
+			doc = WifiDeviceDocumentHelper.fromWifiDevice(entity,wifiDeviceModuleService.getById(entity.getId()), groupids);
 			doc.setOnline(Boolean.TRUE);
 			doc.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
 			docs.add(doc);
@@ -145,7 +149,7 @@ public class WifiDeviceIndexIncrementService {
 				indexDto.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
 			}
 			wifiDeviceIndexService.createIndexComponent(indexDto);*/
-			WifiDeviceDocument doc = WifiDeviceDocumentHelper.fromWifiDevice(entity, groupids);
+			WifiDeviceDocument doc = WifiDeviceDocumentHelper.fromWifiDevice(entity,wifiDeviceModuleService.getById(entity.getId()), groupids);
 			if(entity.isOnline()){
 				doc.setCount(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(entity.getId()).intValue());
 			}
@@ -172,7 +176,7 @@ public class WifiDeviceIndexIncrementService {
 			//List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
 			int cursor = 0;
 			for(WifiDevice entity : entitys){
-				doc = WifiDeviceDocumentHelper.fromWifiDevice(entity, groupids_list.get(cursor));
+				doc = WifiDeviceDocumentHelper.fromWifiDevice(entity,wifiDeviceModuleService.getById(entity.getId()), groupids_list.get(cursor));
 				docs.add(doc);
 				cursor++;
 			}

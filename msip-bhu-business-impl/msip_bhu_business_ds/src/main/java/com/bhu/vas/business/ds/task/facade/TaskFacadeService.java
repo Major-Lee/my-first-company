@@ -20,6 +20,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
@@ -27,6 +28,7 @@ import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
@@ -56,6 +58,10 @@ public class TaskFacadeService {
 	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private WifiDeviceModuleService wifiDeviceModuleService;
+
 	/**
 	 * 任务执行callback通知
 	 * @param taskid
@@ -330,12 +336,23 @@ public class TaskFacadeService {
 			/*if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_VERSIONBUILD_NOT_SUPPORTED);
 			}*/
-			if(!WifiDeviceHelper.isDeviceVapModuleSupported(wifiDevice.getOrig_vap_module())){
-				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED);
-			}
-			if(!WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
+			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
+			if(wifiDeviceModule == null  
+					|| !WifiDeviceHelper.isDeviceVapModuleSupported(wifiDeviceModule.getOrig_vap_module())
+					|| !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
 			}
+			/*if(wifiDeviceModule != null){
+				if(!WifiDeviceHelper.isDeviceVapModuleSupported(wifiDeviceModule.getOrig_vap_module())){
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED);
+				}
+				if(!WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
+				}
+			}else{
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED);
+			}*/
+			
 		}
 		//判定是否是增值指令
 		if(WifiDeviceHelper.isVapCmd(opt_cmd,ods_cmd)){
@@ -347,13 +364,16 @@ public class TaskFacadeService {
 		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
 		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
-		if(!wifiDevice.isOnline()){
+		/*if(!wifiDevice.isOnline()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
-		}
+		}*/
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
-		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) && !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDevice.isOnline(),wifiDevice.isModule_online())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
+		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) ){
+			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
+			if(wifiDeviceModule == null || !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
+			}
 		}
 
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());

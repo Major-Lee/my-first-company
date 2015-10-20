@@ -19,7 +19,7 @@ public class WifiDevice extends BaseStringModel{
 	//原始软件版本号
 	private String orig_swver;
 	//原始软件vapmodule版本号
-	private String orig_vap_module;
+	//private String orig_vap_module;
 	//oem厂商
 	private String oem_vendor;
 	//oem后设备型号
@@ -45,7 +45,7 @@ public class WifiDevice extends BaseStringModel{
 	private String work_mode;
 	//wifi设备是否在线
 	private boolean online;
-	private boolean module_online;
+	//private boolean module_online;
 	//下行流量
 	private String rx_bytes;
 	//上行流量
@@ -238,9 +238,9 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setOnline(boolean online) {
 		this.online = online;
-		if(!online){
+		/*if(!online){
 			this.module_online = false;
-		}
+		}*/
 	}
 	
 	public String getRx_bytes() {
@@ -407,7 +407,7 @@ public class WifiDevice extends BaseStringModel{
 		this.carrier = carrier;
 	}
 
-	public String getOrig_vap_module() {
+	/*public String getOrig_vap_module() {
 		return orig_vap_module;
 	}
 
@@ -421,7 +421,7 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setModule_online(boolean module_online) {
 		this.module_online = module_online;
-	}
+	}*/
 
 	public int getAgentuser() {
 		return agentuser;

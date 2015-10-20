@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -13,17 +14,24 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class WifiDeviceDocumentHelper {
-	public static WifiDeviceDocument fromWifiDevice(WifiDevice wifiDevice,List<Long> groupids){
+	public static WifiDeviceDocument fromWifiDevice(WifiDevice wifiDevice,WifiDeviceModule deviceModule,List<Long> groupids){
 		WifiDeviceDocument doc1 = new WifiDeviceDocument();
 		doc1.setId(wifiDevice.getId());
 		doc1.setSn(wifiDevice.getSn());
 		doc1.setAddress(wifiDevice.getFormatted_address());
 		doc1.setOnline(wifiDevice.isOnline()?Boolean.TRUE:Boolean.FALSE);
-		doc1.setModuleonline(wifiDevice.isModule_online()?Boolean.TRUE:Boolean.FALSE);
+		if(deviceModule != null){
+			doc1.setModuleonline(deviceModule.isModule_online()?Boolean.TRUE:Boolean.FALSE);
+			doc1.setOrigvapmodule(deviceModule.getOrig_vap_module());
+		}else{
+			doc1.setModuleonline(false);
+			doc1.setOrigvapmodule(null);
+		}
+		
 		doc1.setConfigmodel(wifiDevice.getConfig_mode());
 		doc1.setWorkmodel(wifiDevice.getWork_mode());
 		doc1.setOrigswver(wifiDevice.getOrig_swver());
-		doc1.setOrigvapmodule(wifiDevice.getOrig_vap_module());
+		
 		doc1.setDevicetype(wifiDevice.getHdtype());
 		doc1.setNvd(DeviceHelper.isNewOrigSwverDevice(wifiDevice.getOrig_swver()) ? 1 : 0);
 		if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){

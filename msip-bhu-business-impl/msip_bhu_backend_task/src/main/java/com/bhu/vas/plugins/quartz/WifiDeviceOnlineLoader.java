@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
@@ -36,6 +37,9 @@ public class WifiDeviceOnlineLoader {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceModuleService wifiDeviceModuleService;
 	//@Resource
 	//private WifiDeviceIndexService wifiDeviceIndexService;
 	@Resource
@@ -100,7 +104,7 @@ public class WifiDeviceOnlineLoader {
 				long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifi_mac);
 				List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
 				
-				doc = WifiDeviceDocumentHelper.fromWifiDevice(device, groupids);
+				doc = WifiDeviceDocumentHelper.fromWifiDevice(device,wifiDeviceModuleService.getById(device.getId()), groupids);
 				//indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device, groupids);
 				//indexDto.setOnline(WifiDeviceIndexDTO.Online_Status);
 				//indexDto.setCount((int)count);
