@@ -517,7 +517,7 @@ public class AgentFacadeService {
     public TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.WarehouseManager.getIndex());
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.Sellor.getIndex());
         int total = userService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
