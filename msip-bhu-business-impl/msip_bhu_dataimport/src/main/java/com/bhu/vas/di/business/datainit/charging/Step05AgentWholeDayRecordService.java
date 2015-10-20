@@ -1,5 +1,6 @@
 package com.bhu.vas.di.business.datainit.charging;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.agent.dto.RecordDeviceWholeDaySummaryDTO;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
@@ -61,13 +63,14 @@ public class Step05AgentWholeDayRecordService {
 			List<Integer> uids = it_user.nextKeys();
 			for(Integer uid:uids){
 				//agentDeviceClaimService.findModelPageByModelCriteria(mc);
-				doAgentWholeDay(date,uid,lineDeviceRecordsMap,lineHandsetRecordsMap);
+				//doAgentWholeDay(date,uid,lineDeviceRecordsMap,lineHandsetRecordsMap);
+				doAgentWholeDay(date,uid);
 			}
 			doAgentWholeCurrentMonth(date,uids);
 		}
 	}
 	
-	private void doAgentWholeDay(String date,Integer uid,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
+	private void doAgentWholeDayWithCache(String date,Integer uid,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
 		int user_devices_hit = 0;
 		RecordSummaryDTO summary = new RecordSummaryDTO();
 		summary.setId(uid.toString());
@@ -124,6 +127,7 @@ public class Step05AgentWholeDayRecordService {
 				//lineHandsetRecordsMap.remove(device.getMac());
 			}
 		}
+		if(user_devices_hit == 0) return;
 		//System.out.println("uid:"+uid+summary);
 		AgentWholeDayMDTO mdto = new AgentWholeDayMDTO();
 		mdto.setId(AgentWholeDayMDTO.generateId(date, uid));
@@ -146,6 +150,57 @@ public class Step05AgentWholeDayRecordService {
 		//System.out.println("~~~~~~~size:"+lineHandsetRecordsMap.size());
 	}
 	
+	
+	private void doAgentWholeDay(String date,Integer uid){
+		//int user_devices_hit = 0;
+		RecordDeviceWholeDaySummaryDTO summary = new RecordDeviceWholeDaySummaryDTO();
+		summary.setId(uid.toString());
+		ModelCriteria mc_claim = new ModelCriteria();
+		mc_claim.createCriteria().andColumnEqualTo("uid", uid).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		mc_claim.setPageNumber(1);
+		mc_claim.setPageSize(100);
+		EntityIterator<String, AgentDeviceClaim> it_claim = new KeyBasedEntityBatchIterator<String,AgentDeviceClaim>(String.class,AgentDeviceClaim.class, agentDeviceClaimService.getEntityDao(), mc_claim);
+		while(it_claim.hasNext()){
+			List<AgentDeviceClaim> devices = it_claim.next();
+			//List<String> stringIds = IdHelper.getPKs(devices, String.class);
+			List<String> macs = new ArrayList<String>();
+			for(AgentDeviceClaim device:devices){
+				macs.add(device.getMac());
+			}
+			if(!macs.isEmpty()){
+				//List<RecordSummaryDTO> summaryAggregationWith = wifiDeviceWholeDayMService.summaryAggregationWith(macs, date);
+				//从mongo中获取汇总数据
+				List<RecordDeviceWholeDaySummaryDTO> summaryAggregation = wifiDeviceWholeDayMService.summaryAggregationWith(macs,date,Boolean.TRUE);
+				for(RecordDeviceWholeDaySummaryDTO dto:summaryAggregation){
+					summary.incr(dto);
+					//System.out.println(String.format("B mac[%s] total_onlineduration[%s] total_connecttimes[%s]",dto.getId(), dto.getTotal_onlineduration(),dto.getTotal_connecttimes()));
+				}
+			}
+			
+		}
+		if(summary.getT_cashback() == 0) return;
+		//System.out.println("uid:"+uid+summary);
+		AgentWholeDayMDTO mdto = new AgentWholeDayMDTO();
+		mdto.setId(AgentWholeDayMDTO.generateId(date, uid));
+		mdto.setDate(date);
+		mdto.setUser(uid);
+		mdto.setDct(summary.getT_dct());
+		mdto.setDod(summary.getT_dod());
+		mdto.setDevices(summary.getT_cashback());
+		mdto.setNewdevices(summary.getT_sameday());
+		mdto.setDtx_bytes(summary.getT_dtx_bytes());
+		mdto.setDrx_bytes(summary.getT_drx_bytes());
+		
+		mdto.setHandsets(summary.getT_handsets());
+		mdto.setHct(summary.getT_hct());
+		mdto.setHod(summary.getT_hod());
+		mdto.setHtx_bytes(summary.getT_htx_bytes());
+		mdto.setHrx_bytes(summary.getT_hrx_bytes());
+		mdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
+		agentWholeDayMService.save(mdto);
+		
+		//System.out.println("~~~~~~~size:"+lineHandsetRecordsMap.size());
+	}
 	private void doAgentWholeCurrentMonth(String date,List<Integer> users){
 		Date certainDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
 		Date monthStartDate = DateTimeExtHelper.getFirstDateOfMonth(certainDate);

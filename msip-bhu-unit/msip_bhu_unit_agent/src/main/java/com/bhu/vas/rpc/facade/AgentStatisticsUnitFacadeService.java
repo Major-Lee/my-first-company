@@ -148,6 +148,9 @@ public class AgentStatisticsUnitFacadeService {
 				vto.setDate(dto.getDate());
 				vto.setOd(dto.getDevices());
 				vto.setOh(dto.getHandsets());
+				
+				vto.setCd(dto.getDevices());
+				vto.setCsd(dto.getNewdevices());
 				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod()))));
 				//vto.setC("+13.7%");
 				items.add(vto);

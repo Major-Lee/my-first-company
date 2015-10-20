@@ -115,9 +115,13 @@ public class WifiDeviceWholeDayMService {
 	 * @param date
 	 * @return
 	 */
-	public List<RecordSummaryDTO> summaryAggregationWith(List<String> macs,String date){
+	public List<RecordDeviceWholeDaySummaryDTO> summaryAggregationWith(List<String> macs,String date,Boolean validateCashBack){
+		Criteria cri = Criteria.where("mac").in(macs).and("date").is(date);
+		if(validateCashBack != null){
+			cri.and("cashback").is(validateCashBack?1:0);
+		}
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
-				match(Criteria.where("mac").in(macs).and("date").is(date)),
+				match(cri),
 			    group("date")
 			    	.sum("dod").as("t_dod")
 			    	.sum("dct").as("t_dct")
@@ -128,10 +132,12 @@ public class WifiDeviceWholeDayMService {
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")
 			    	.sum("hrx_bytes").as("t_hrx_bytes")
+			    	.sum("cashback").as("t_cashback")
+			    	.sum("sameday").as("t_sameday")
 			    	.avg("handsets").as("t_handsets"),
 			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
-		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
+		List<RecordDeviceWholeDaySummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordDeviceWholeDaySummaryDTO.class);
 		return aggregate;
 	}
 	
