@@ -420,6 +420,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
+        mc.setOrderByClause("id asc");
         mc.createCriteria().andSimpleCaulse(" 1=1 ");
         int total = agentDeviceImportLogService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);

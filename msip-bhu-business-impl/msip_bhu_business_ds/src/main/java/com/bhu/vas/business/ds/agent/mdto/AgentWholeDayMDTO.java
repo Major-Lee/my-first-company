@@ -22,8 +22,11 @@ public class AgentWholeDayMDTO {
 	private long dod;
 	//当天连接次数
 	private int dct;
-	//在线设备数
+	//在线设备数（可返现）
 	private int devices;
+	//在线新设备数（可返现）
+	private int newdevices;
+	
 	private long dtx_bytes;
 	private long drx_bytes;
 	
@@ -123,6 +126,13 @@ public class AgentWholeDayMDTO {
 	}
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
+	}
+	
+	public int getNewdevices() {
+		return newdevices;
+	}
+	public void setNewdevices(int newdevices) {
+		this.newdevices = newdevices;
 	}
 	public static String generateId(String date, int user){
 		StringBuffer idstring = new StringBuffer();

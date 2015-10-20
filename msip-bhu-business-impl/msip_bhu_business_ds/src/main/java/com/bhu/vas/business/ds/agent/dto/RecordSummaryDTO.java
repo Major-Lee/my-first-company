@@ -8,7 +8,6 @@ public class RecordSummaryDTO {
 	private long t_dtx_bytes;
 	private long t_drx_bytes;
 	
-	
 	private int  t_handsets;
 	//终端连接次数 
 	private int  t_hct;

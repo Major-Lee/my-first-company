@@ -91,13 +91,37 @@ public class Step02DeviceWholeDayRecordService {
 			wifiDeviceWholeDayMService.save(dto);*/
 			//System.out.println(dto.getId());
 		}
-		
+		int total = dtos.size();
+		int count = 0;
+		System.out.println("total:"+total);
+		Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
 		if(!dtos.isEmpty()){
-			int total = dtos.size();
 			int pagesize = 50;
-			int computeLastPageNumber = PageHelper.computeLastPageNumber(total, pagesize);
+			int pageno_max = PageHelper.computeLastPageNumber(total, pagesize);
+			for(int i = 1;i<= pageno_max;i++){
+				List<WifiDeviceWholeDayMDTO> page = PageHelper.pageList(dtos, i, pagesize);
+				List<String> macs = new ArrayList<String>();
+				for(WifiDeviceWholeDayMDTO dto:page){
+					macs.add(dto.getMac());
+				}
+				if(!macs.isEmpty()){
+					List<WifiDevice> devices = wifiDeviceService.findByIds(macs, true, true);
+					int index = 0;
+					for(WifiDeviceWholeDayMDTO dto:page){
+						WifiDevice device = devices.get(index);
+						if(device != null){
+							dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
+						}else{
+							dto.setSameday(0);
+						}
+						wifiDeviceWholeDayMService.save(dto);
+						index++;
+						count++;
+					}
+				}
+			}
 		}
-		
+		System.out.println("count:"+count);
 	}
 	
 	public void deviceRecord2Mongoaaa(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){

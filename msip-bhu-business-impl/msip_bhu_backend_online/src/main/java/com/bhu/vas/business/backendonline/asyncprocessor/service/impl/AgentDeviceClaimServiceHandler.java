@@ -85,12 +85,7 @@ public class AgentDeviceClaimServiceHandler {
             is = new FileInputStream(dto.getInputPath());
             out = new FileOutputStream(dto.getOutputPath());
             hssfWorkbook = new HSSFWorkbook(is);
-
-
-
             //代理商导入记录
-
-
             Long import_id = agentDeviceImportLog.getId();
 
             for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
@@ -211,6 +206,7 @@ public class AgentDeviceClaimServiceHandler {
 
         //更新导入记录
         agentDeviceImportLog.setSuccess_count(successCount);
+        agentDeviceImportLog.setFail_count(failCount);
         agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
         agentDeviceImportLogService.update(agentDeviceImportLog);
 

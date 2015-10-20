@@ -36,6 +36,9 @@ public class WifiDeviceWholeMonthMDTO {
 	private long htx_bytes;
 	//handsets 下行流量
 	private long hrx_bytes;
+	
+	private int cashbacks;
+	private int samedays;
 	private String updated_at;
 	public String getId() {
 		return id;
@@ -118,6 +121,18 @@ public class WifiDeviceWholeMonthMDTO {
 		this.updated_at = updated_at;
 	}
 	
+	public int getCashbacks() {
+		return cashbacks;
+	}
+	public void setCashbacks(int cashbacks) {
+		this.cashbacks = cashbacks;
+	}
+	public int getSamedays() {
+		return samedays;
+	}
+	public void setSamedays(int samedays) {
+		this.samedays = samedays;
+	}
 	public static String generateId(String date, String mac){
 		StringBuffer idstring = new StringBuffer();
 		idstring.append(date).append(StringHelper.UNDERLINE_STRING_GAP).append(mac);

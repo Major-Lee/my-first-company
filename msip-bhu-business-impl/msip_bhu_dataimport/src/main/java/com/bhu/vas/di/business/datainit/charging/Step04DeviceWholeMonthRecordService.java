@@ -83,6 +83,8 @@ public class Step04DeviceWholeMonthRecordService {
 			monthdto.setHod(dto.getT_hod());
 			monthdto.setHtx_bytes(dto.getT_htx_bytes());
 			monthdto.setHrx_bytes(dto.getT_hrx_bytes());
+			monthdto.setCashbacks(dto.getT_cashback());
+			monthdto.setSamedays(dto.getT_sameday());
 			monthdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 			wifiDeviceWholeMonthMService.save(monthdto);
 		}
