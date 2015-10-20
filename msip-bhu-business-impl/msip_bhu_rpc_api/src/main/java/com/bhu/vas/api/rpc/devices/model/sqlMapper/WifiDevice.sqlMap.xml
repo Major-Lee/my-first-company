@@ -11,7 +11,6 @@
     <result property="orig_model" column="orig_model"/>
     <result property="orig_hdver" column="orig_hdver"/>
     <result property="orig_swver" column="orig_swver"/>
-    <result property="orig_vap_module" column="orig_vap_module"/>
     
     <result property="oem_vendor" column="oem_vendor"/>
     <result property="oem_model" column="oem_model"/>
@@ -26,7 +25,6 @@
     <result property="config_mode" column="config_mode"/>
     <result property="work_mode" column="work_mode"/>
     <result property="online" column="online"/>
-    <result property="module_online" column="module_online"/>
     
     <result property="agentuser" column="agentuser"/>
     
@@ -66,7 +64,6 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
-	    	orig_vap_module,
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -80,7 +77,6 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
-	    	module_online,
 	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
@@ -112,7 +108,6 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
-	    	orig_vap_module
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -126,7 +121,6 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
-	    	module_online,
 	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
@@ -159,7 +153,6 @@
 	    	#{orig_model},
 	    	#{orig_hdver},
 	    	#{orig_swver},
-	    	#{orig_vap_module},
 	    	#{oem_vendor},
 	    	#{oem_model},
 	    	#{oem_hdver},
@@ -173,7 +166,6 @@
 	    	#{config_mode},
 	    	#{work_mode},
 	    	#{online},
-	    	#{module_online},
 	    	#{agentuser},
 	    	#{rx_bytes},
 	    	#{tx_bytes},
@@ -204,7 +196,6 @@
 	    	orig_model = #{orig_model},
 	    	orig_hdver = #{orig_hdver},
 	    	orig_swver = #{orig_swver},
-	    	orig_vap_module = #{orig_vap_module},
 	    	oem_vendor = #{oem_vendor},
 	    	oem_model = #{oem_model},
 	    	oem_hdver = #{oem_hdver},
@@ -218,7 +209,6 @@
 	    	config_mode = #{config_mode},
 	    	work_mode = #{work_mode},
 	    	online = #{online},
-	    	module_online = #{module_online},
 	    	agentuser = #{agentuser},
 	    	rx_bytes = #{rx_bytes},
 	    	tx_bytes = #{tx_bytes},
