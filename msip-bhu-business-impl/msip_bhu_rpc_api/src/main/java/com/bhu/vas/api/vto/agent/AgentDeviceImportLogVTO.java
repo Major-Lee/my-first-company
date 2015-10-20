@@ -21,6 +21,11 @@ public class AgentDeviceImportLogVTO implements Serializable {
     private int wid;
 
     /**
+     * 公告id
+     */
+    private long bid;
+
+    /**
      * 代理商名称
      */
     private String nick;
@@ -38,7 +43,12 @@ public class AgentDeviceImportLogVTO implements Serializable {
     /**
      * 导入数量
      */
-    private int count;
+    private int scount;
+
+    /**
+     * 失败数量
+     */
+    private int fcount;
 
     /**
      * 导入状态
@@ -70,6 +80,14 @@ public class AgentDeviceImportLogVTO implements Serializable {
         this.wid = wid;
     }
 
+    public long getBid() {
+        return bid;
+    }
+
+    public void setBid(long bid) {
+        this.bid = bid;
+    }
+
     public String getNick() {
         return nick;
     }
@@ -94,12 +112,20 @@ public class AgentDeviceImportLogVTO implements Serializable {
         this.created_at = created_at;
     }
 
-    public int getCount() {
-        return count;
+    public int getScount() {
+        return scount;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setScount(int scount) {
+        this.scount = scount;
+    }
+
+    public int getFcount() {
+        return fcount;
+    }
+
+    public void setFcount(int fcount) {
+        this.fcount = fcount;
     }
 
     public int getStatus() {

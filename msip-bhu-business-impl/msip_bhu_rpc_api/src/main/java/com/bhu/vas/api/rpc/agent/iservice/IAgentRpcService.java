@@ -150,7 +150,18 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize);
+    TailPage<UserVTO> pageWarehouseManagerVTO(int pageNo, int pageSize);
+
+    /**
+     * 获取代理商
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<UserVTO> pageAgentUserVTO(int pageNo, int pageSize);
+
+
+
 
 
 }
