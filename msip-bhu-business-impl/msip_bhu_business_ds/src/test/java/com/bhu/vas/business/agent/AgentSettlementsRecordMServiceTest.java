@@ -41,7 +41,7 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
 		agents.add(100094);
     }
     
-    @Test
+    //@Test
     public void statisticsTest(){
     	SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(0);
     	System.out.println(statistics.getTs());
@@ -51,7 +51,7 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
     	System.out.println(statistics.getC_at());
     }
     
-    @Test
+   // @Test
     public void summartAggregationBetweenTest(){
     	List<Integer> agents = new ArrayList<Integer>();
     	agents.add(100093);
@@ -68,7 +68,7 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
     	System.out.println(statistics.getC_at());*/
     }
     
-    //@Test
+    @Test
     public void batchCreate() {
     	Date current = new Date();
     	AgentSettlementsRecordMDTO record = null;
