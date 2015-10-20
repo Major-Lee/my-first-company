@@ -5,12 +5,11 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 10/20/15.
  */
-public class WarehouseManagerVTO implements Serializable {
+public class UserVTO implements Serializable {
 
     private long id;
 
     private String n;
-
 
     public long getId() {
         return id;

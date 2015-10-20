@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
@@ -78,12 +79,14 @@ public class AgentDeviceClaimServiceHandler {
 
         AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(dto.getLogId());
 
+        int successCount = 0;
+        int failCount = 0;
         try{
             is = new FileInputStream(dto.getInputPath());
             out = new FileOutputStream(dto.getOutputPath());
             hssfWorkbook = new HSSFWorkbook(is);
 
-            int totalCount = 0;
+
 
             //代理商导入记录
 
@@ -152,6 +155,8 @@ public class AgentDeviceClaimServiceHandler {
                     agentDeviceClaim.setImport_id(import_id);
                    if (agentDeviceClaimService.getById(agentDeviceClaim.getId()) == null) {
                        agentDeviceClaimService.insert(agentDeviceClaim);
+                   } else {
+                       failCount ++;
                    }
                     
                     HSSFRow outRow  = outSheet.createRow(rowNum);
@@ -165,7 +170,7 @@ public class AgentDeviceClaimServiceHandler {
                     outSN.setCellValue(sn.getStringCellValue());
                     HSSFCell outMAC = outRow.createCell(4);
                     outMAC.setCellValue(mac.getStringCellValue());
-                    totalCount ++;
+                    successCount ++;
 
                 }
             }
@@ -178,23 +183,12 @@ public class AgentDeviceClaimServiceHandler {
             agentOutputDTO.setName(dto.getOriginName());
 
             //发布公告给代理商
-            agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
+            AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
                     JsonHelper.getJSONString(agentOutputDTO));
 
-//            //代理商导入记录
-//            AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
-//            agentDeviceImportLog.setCount(totalCount);
-//            agentDeviceImportLog.setAid(dto.getAid());
-//            agentDeviceImportLog.setCreated_at(new Date());
-//            agentDeviceImportLogService.insert(agentDeviceImportLog);
-            agentDeviceImportLog.setCount(totalCount);
-            agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
-            agentDeviceImportLogService.update(agentDeviceImportLog);
-
-
+            agentDeviceImportLog.setBid(agentBulltinBoard.getId());
 
         }catch(Exception ex){
-
         	ex.printStackTrace(System.out);
         }finally{
         	if(hssfWorkbook != null){
@@ -214,6 +208,11 @@ public class AgentDeviceClaimServiceHandler {
                 out = null;
             }
         }
+
+        //更新导入记录
+        agentDeviceImportLog.setSuccess_count(successCount);
+        agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
+        agentDeviceImportLogService.update(agentDeviceImportLog);
 
     }
 
