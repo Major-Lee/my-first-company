@@ -95,6 +95,9 @@ public class RecordDeviceWholeDaySummaryDTO {
 		t_hct += dto.getT_hct();
 		t_htx_bytes += dto.getT_htx_bytes();
 		t_hrx_bytes += dto.getT_hrx_bytes();
+		t_cashback+=dto.getT_cashback();
+		t_sameday += dto.getT_sameday();
+		
 	}
 	
 	public int getT_devices() {

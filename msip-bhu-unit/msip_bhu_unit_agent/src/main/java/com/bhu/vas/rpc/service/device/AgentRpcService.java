@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.service.device;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.vto.agent.*;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +97,7 @@ public class AgentRpcService implements IAgentRpcService {
 	@Override
 	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,int pageNo, int pageSize) {
 		logger.info(String.format("pageSettlements operator_user[%s]", operator_user));
-		return agentStatisticsUnitFacadeService.pageSettlements(operator_user,viewstatus, pageNo, pageSize);
+		return agentStatisticsUnitFacadeService.pageSettlements(operator_user, viewstatus, pageNo, pageSize);
 	}
 	
     @Override
@@ -112,8 +113,14 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
     @Override
-    public TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
+    public TailPage<UserVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
         logger.info(String.format("pageWarehouseManagerVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageWarehouseManagerVTO(pageNo, pageSize);
+        return agentFacadeService.pageUserVTO(UserType.WarehouseManager.getIndex(), pageNo, pageSize);
+    }
+
+    @Override
+    public TailPage<UserVTO> pageAgentUserVTO(int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentUserVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(UserType.Agent.getIndex(), pageNo, pageSize);
     }
 }

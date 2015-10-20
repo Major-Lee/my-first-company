@@ -25,19 +25,34 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
     private int wid;
 
     /**
-     * 创建日期
+     * 公告id，如果导入成功的话，会发布一条公告
      */
-    private Date created_at;
-
-    /**
-     * 导入数量
-     */
-    private int count;
+    private long bid;
 
     /**
      * 导入状态 0:正在导入 1:导入完毕 2:导入失败
      */
     private int status;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 创建日期
+     */
+    private Date created_at;
+
+    /**
+     * 导入成功数量
+     */
+    private int success_count;
+
+    /**
+     * 导入失败数量
+     */
+    private int fail_count;
 
     public int getAid() {
         return aid;
@@ -55,20 +70,12 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
         this.wid = wid;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public long getBid() {
+        return bid;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
+    public void setBid(long bid) {
+        this.bid = bid;
     }
 
     public int getStatus() {
@@ -77,6 +84,38 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public int getSuccess_count() {
+        return success_count;
+    }
+
+    public void setSuccess_count(int success_count) {
+        this.success_count = success_count;
+    }
+
+    public int getFail_count() {
+        return fail_count;
+    }
+
+    public void setFail_count(int fail_count) {
+        this.fail_count = fail_count;
     }
 
     @Override
