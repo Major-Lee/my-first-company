@@ -56,6 +56,9 @@ public class AgentDeviceImportLogVTO implements Serializable {
      */
     private int status;
 
+
+    private String filename;
+
     public long getId() {
         return id;
     }
@@ -134,5 +137,13 @@ public class AgentDeviceImportLogVTO implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

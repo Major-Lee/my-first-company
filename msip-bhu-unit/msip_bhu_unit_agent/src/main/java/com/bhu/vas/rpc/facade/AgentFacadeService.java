@@ -7,7 +7,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.vto.agent.*;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -434,16 +436,24 @@ public class AgentFacadeService {
                 vto.setId(log.getId());
                 vto.setAid(log.getAid());
                 vto.setWid(log.getWid());
-                vto.setBid(log.getBid());
                 vto.setScount(log.getSuccess_count());
                 vto.setFcount(log.getFail_count());
                 vto.setCreated_at(log.getCreated_at());
                 vto.setStatus(log.getStatus());
-
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
                     vto.setNick(agent.getNick() == null ? "" : agent.getNick());
                 }
+
+                long bid  = log.getBid();
+                vto.setBid(bid);
+                AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
+                if (agentBulltinBoard != null && agentBulltinBoard.getType().equals(AgentBulltinType.BatchImport.getKey())) {
+                    String content = agentBulltinBoard.getContent();
+                    AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
+                    vto.setFilename(outputDTO.getName());
+                }
+
                 vtos.add(vto);
             }
         }
