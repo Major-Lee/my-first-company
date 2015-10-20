@@ -5,10 +5,7 @@ import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.*;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -145,6 +142,15 @@ public interface IAgentRpcService {
      * @return
      */
     TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize);
+
+
+    /**
+     * 获取仓库管理员
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize);
 
 
 }
