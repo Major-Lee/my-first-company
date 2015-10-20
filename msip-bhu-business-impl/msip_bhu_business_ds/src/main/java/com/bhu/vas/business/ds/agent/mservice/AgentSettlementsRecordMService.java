@@ -12,6 +12,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -73,8 +74,24 @@ public class AgentSettlementsRecordMService {
 		return mdto != null;
 	}
 	
-	public List<SettlementSummaryDTO> fetchBillsByAgent(int agent,int status){
-		return null;
+	/**
+	 * 对指定代理商进行结算 指定金额 对未结算的bills列表进行结算
+	 * @param agent
+	 * @param price
+	 */
+	public void settleBills(int agent,double price){
+		
+	}
+	
+	/**
+	 * 获取指定代理商指定状态的所有bills列表
+	 * @param agent
+	 * @param status
+	 * @return
+	 */
+	public List<AgentSettlementsRecordMDTO> fetchBillsByAgent(int agent,int status){
+		Query query = Query.query(Criteria.where("agent").is(agent).and("status").is(status)).with(new Sort(Direction.ASC,"date"));
+		return agentSettlementsRecordMDao.find(query);
 	}
 	
 	/**
