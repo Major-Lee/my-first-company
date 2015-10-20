@@ -398,7 +398,8 @@ public class AgentFacadeService {
         vto.setId(agentDeviceImportLog.getId());
         vto.setAid(aid);
         vto.setWid(wid);
-        vto.setCount(agentDeviceImportLog.getCount());
+        vto.setScount(agentDeviceImportLog.getSuccess_count());
+        vto.setFcount(agentDeviceImportLog.getFail_count());
         vto.setStatus(agentDeviceImportLog.getStatus());
         vto.setCreated_at(agentDeviceImportLog.getCreated_at());
         User agent = userService.getById(aid);
