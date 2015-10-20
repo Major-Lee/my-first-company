@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.vto.agent.*;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -17,10 +19,6 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
@@ -513,6 +511,29 @@ public class AgentFacadeService {
             }
         }
         return new CommonPage<AgentBulltinBoardVTO>(pageNo, pageSize, total, vtos);
+    }
+
+
+    public TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
+
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.WarehouseManager.getIndex());
+        int total = userService.countByCommonCriteria(mc);
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+
+        List<User> users = userService.findModelByCommonCriteria(mc);
+        List<WarehouseManagerVTO> vtos = new ArrayList<WarehouseManagerVTO>();
+        if (users != null) {
+            WarehouseManagerVTO vto = null;
+            for (User user : users) {
+                vto = new WarehouseManagerVTO();
+                vto.setId(user.getId());
+                vto.setN(user.getNick());
+                vtos.add(vto);
+            }
+        }
+        return new CommonPage<WarehouseManagerVTO>(pageNo, pageSize, total, vtos);
     }
 
 }
