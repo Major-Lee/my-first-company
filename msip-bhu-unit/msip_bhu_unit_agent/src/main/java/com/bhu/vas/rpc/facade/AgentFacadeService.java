@@ -432,7 +432,9 @@ public class AgentFacadeService {
                 vto.setId(log.getId());
                 vto.setAid(log.getAid());
                 vto.setWid(log.getWid());
-                vto.setCount(log.getCount());
+                vto.setBid(log.getBid());
+                vto.setScount(log.getSuccess_count());
+                vto.setFcount(log.getFail_count());
                 vto.setCreated_at(log.getCreated_at());
                 vto.setStatus(log.getStatus());
 
@@ -514,26 +516,26 @@ public class AgentFacadeService {
     }
 
 
-    public TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
+    public TailPage<UserVTO> pageUserVTO(int utype, int pageNo, int pageSize) {
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.WarehouseManager.getIndex());
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", utype);
         int total = userService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
 
         List<User> users = userService.findModelByCommonCriteria(mc);
-        List<WarehouseManagerVTO> vtos = new ArrayList<WarehouseManagerVTO>();
+        List<UserVTO> vtos = new ArrayList<UserVTO>();
         if (users != null) {
-            WarehouseManagerVTO vto = null;
+            UserVTO vto = null;
             for (User user : users) {
-                vto = new WarehouseManagerVTO();
+                vto = new UserVTO();
                 vto.setId(user.getId());
                 vto.setN(user.getNick());
                 vtos.add(vto);
             }
         }
-        return new CommonPage<WarehouseManagerVTO>(pageNo, pageSize, total, vtos);
+        return new CommonPage<UserVTO>(pageNo, pageSize, total, vtos);
     }
 
 }

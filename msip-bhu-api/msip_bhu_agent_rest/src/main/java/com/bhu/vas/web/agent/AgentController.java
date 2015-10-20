@@ -7,10 +7,8 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
 
 import com.bhu.vas.api.vto.agent.*;
-import com.smartwork.msip.jdo.ResponseSuccessCode;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -351,16 +349,31 @@ public class AgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
         try {
-            TailPage<WarehouseManagerVTO> vtos = agentRpcService.pageWarehouseManagerVTO(pageNo, pageSize);
+            TailPage<UserVTO> vtos = agentRpcService.pageWarehouseManagerVTO(pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+        }
+    }
+
+    @ResponseBody()
+    @RequestMapping(value="/agentlist")
+    public void pageAgentUserList(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+
+        try {
+            TailPage<UserVTO> vtos = agentRpcService.pageAgentUserVTO(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
         } catch (Exception e) {
             e.printStackTrace();
             SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 
         }
-
-
-
     }
 
 
