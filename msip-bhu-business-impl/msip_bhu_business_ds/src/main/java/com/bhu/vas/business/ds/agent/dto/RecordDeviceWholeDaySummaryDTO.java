@@ -1,6 +1,6 @@
 package com.bhu.vas.business.ds.agent.dto;
 
-public class RecordSummaryDTO {
+public class RecordDeviceWholeDaySummaryDTO {
 	private String id;
 	private int t_devices;
 	private long t_dod;
@@ -19,8 +19,8 @@ public class RecordSummaryDTO {
 	//handsets 下行流量
 	private long t_hrx_bytes;
 	
-/*	private int t_cashback;
-	private int t_sameday;*/
+	private int t_cashback;
+	private int t_sameday;
 	public String getId() {
 		return id;
 	}
@@ -83,7 +83,7 @@ public class RecordSummaryDTO {
 	public void setT_hrx_bytes(long t_hrx_bytes) {
 		this.t_hrx_bytes = t_hrx_bytes;
 	}
-	public void incr(RecordSummaryDTO dto){
+	public void incr(RecordDeviceWholeDaySummaryDTO dto){
 		if(dto == null) return;
 		t_dod += dto.getT_dod();
 		t_dct += dto.getT_dct();
@@ -107,7 +107,7 @@ public class RecordSummaryDTO {
 		return String.format("id[%s] onlineduration[%s] connecttimes[%s] handsets[%s] tx_bytes[%s] rx_bytes[%s]", 
 				id,t_dod,t_dct,t_handsets,t_dtx_bytes,t_drx_bytes);
 	}
-	/*public int getT_cashback() {
+	public int getT_cashback() {
 		return t_cashback;
 	}
 	public void setT_cashback(int t_cashback) {
@@ -118,5 +118,5 @@ public class RecordSummaryDTO {
 	}
 	public void setT_sameday(int t_sameday) {
 		this.t_sameday = t_sameday;
-	}*/
+	}
 }
