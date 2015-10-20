@@ -62,6 +62,7 @@ public class UserController extends BaseController{
 			@RequestParam(required = true) String pwd,
 			@RequestParam(required = false) String sex,
 			@RequestParam(required = false) String org,
+			@RequestParam(required = false) String bln,
 			@RequestParam(required = false) String addr1,
 			@RequestParam(required = false) String addr2,
 			@RequestParam(required = false) String memo,
@@ -81,6 +82,7 @@ public class UserController extends BaseController{
 			System.out.println(countrycode+" "+acc+" "+pwd+" "+nick+" "+sex+" "+from_device+" "+remoteIp);
 			RpcResponseDTO<Map<String, Object>> rpcResult = agentUserRpcService.createNewUser(countrycode, acc,pwd, nick, sex,
 					org,
+					bln,
 					addr1,
 					addr2,
 					memo,
@@ -179,12 +181,13 @@ public class UserController extends BaseController{
 			@RequestParam(required = true) Integer tid,
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = false) String org,
+			@RequestParam(required = false) String bln,
 			@RequestParam(required = false) String addr1,
 			@RequestParam(required = false) String addr2,
 			@RequestParam(required = false) String memo
 			) {
 		try{
-			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid,tid, nick, org, addr1, addr2, memo);
+			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid,tid, nick, org,bln, addr1, addr2, memo);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else

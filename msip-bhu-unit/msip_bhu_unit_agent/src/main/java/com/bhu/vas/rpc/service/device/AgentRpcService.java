@@ -2,7 +2,7 @@ package com.bhu.vas.rpc.service.device;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.*;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -13,9 +13,6 @@ import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.rpc.facade.AgentFacadeService;
 import com.bhu.vas.rpc.facade.AgentStatisticsUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -65,10 +62,10 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public void importAgentDeviceClaim(int uid,int aid, String inputPath, String outputPath, String originName) {
-        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s orginName:%s inputpath:%s outputPath:%s",
-                uid, aid, originName, inputPath, outputPath));
-        agentFacadeService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid,int aid, int wid, String inputPath, String outputPath, String originName) {
+        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s",
+                uid, aid, wid, originName, inputPath, outputPath));
+        return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
     }
 
     @Override
@@ -113,4 +110,10 @@ public class AgentRpcService implements IAgentRpcService {
 		logger.info(String.format("fetchAgentDeviceStatistics agentuser[%s]", agentuser));
 		return agentStatisticsUnitFacadeService.fetchAgentDeviceStatistics(agentuser);
 	}
+
+    @Override
+    public TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
+        logger.info(String.format("pageWarehouseManagerVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageWarehouseManagerVTO(pageNo, pageSize);
+    }
 }

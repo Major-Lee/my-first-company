@@ -76,6 +76,7 @@ public class AgentDeviceClaimServiceHandler {
         HSSFWorkbook outWorkbook = new HSSFWorkbook();
         OutputStream out = null;
 
+        AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(dto.getLogId());
 
         try{
             is = new FileInputStream(dto.getInputPath());
@@ -85,11 +86,7 @@ public class AgentDeviceClaimServiceHandler {
             int totalCount = 0;
 
             //代理商导入记录
-            AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
-            //agentDeviceImportLog.setCount(totalCount);
-            agentDeviceImportLog.setAid(dto.getAid());
-            agentDeviceImportLog.setCreated_at(new Date());
-            agentDeviceImportLog = agentDeviceImportLogService.insert(agentDeviceImportLog);
+
 
             Long import_id = agentDeviceImportLog.getId();
 
@@ -142,7 +139,7 @@ public class AgentDeviceClaimServiceHandler {
                     Date date = new Date();
                     agentDeviceClaim.setSold_at(date);
 
-                    agentDeviceClaim.setUid(dto.getAid());
+                    agentDeviceClaim.setUid(agentDeviceImportLog.getAid());
 
                     logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
 
@@ -159,7 +156,7 @@ public class AgentDeviceClaimServiceHandler {
                     
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
-                    outUid.setCellValue(dto.getAid());
+                    outUid.setCellValue(agentDeviceImportLog.getAid());
                     HSSFCell outStockCode = outRow.createCell(1);
                     outStockCode.setCellValue(String.valueOf((int)stock_code.getNumericCellValue()));
                     HSSFCell outStockName = outRow.createCell(2);
@@ -176,12 +173,12 @@ public class AgentDeviceClaimServiceHandler {
             outWorkbook.write(out);
 
             AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
-            agentOutputDTO.setAid(dto.getAid());
+            agentOutputDTO.setAid(agentDeviceImportLog.getAid());
             agentOutputDTO.setPath(dto.getOutputPath());
             agentOutputDTO.setName(dto.getOriginName());
 
             //发布公告给代理商
-            agentBulltinBoardService.bulltinPublish(dto.getUid(), dto.getAid(), AgentBulltinType.BatchImport,
+            agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
                     JsonHelper.getJSONString(agentOutputDTO));
 
 //            //代理商导入记录
@@ -191,11 +188,13 @@ public class AgentDeviceClaimServiceHandler {
 //            agentDeviceImportLog.setCreated_at(new Date());
 //            agentDeviceImportLogService.insert(agentDeviceImportLog);
             agentDeviceImportLog.setCount(totalCount);
+            agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
 
 
 
         }catch(Exception ex){
+
         	ex.printStackTrace(System.out);
         }finally{
         	if(hssfWorkbook != null){
@@ -221,7 +220,6 @@ public class AgentDeviceClaimServiceHandler {
 
     public static void main(String[] args) throws  Exception{
         AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
-        dto.setAid(1000023);
         dto.setUid(6);
         dto.setInputPath("/Users/bluesand/Downloads/山西岩涛网络NMAC对应代理商.xls");
         dto.setOriginName("山西岩涛网络NMAC对应代理商.xls");

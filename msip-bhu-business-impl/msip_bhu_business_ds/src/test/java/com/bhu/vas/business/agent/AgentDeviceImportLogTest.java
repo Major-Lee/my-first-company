@@ -21,6 +21,7 @@ public class AgentDeviceImportLogTest extends BaseTest {
         AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
         agentDeviceImportLog.setAid(123);
         agentDeviceImportLog.setCount(2);
+        agentDeviceImportLog.setStatus(0);
         agentDeviceImportLog.setCreated_at(new Date());
         agentDeviceImportLogService.insert(agentDeviceImportLog);
     }

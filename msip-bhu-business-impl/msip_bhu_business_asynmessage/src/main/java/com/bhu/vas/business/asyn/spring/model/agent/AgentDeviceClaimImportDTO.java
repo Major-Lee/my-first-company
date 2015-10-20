@@ -8,7 +8,11 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
  */
 public class AgentDeviceClaimImportDTO extends ActionDTO {
 
-    private int aid;
+//    private int aid;
+//
+//    private int wid;
+
+    private long logId;
 
     private String inputPath;
 
@@ -17,12 +21,12 @@ public class AgentDeviceClaimImportDTO extends ActionDTO {
     private String originName;
 
 
-    public int getAid() {
-        return aid;
+    public long getLogId() {
+        return logId;
     }
 
-    public void setAid(int aid) {
-        this.aid = aid;
+    public void setLogId(long logId) {
+        this.logId = logId;
     }
 
     public String getInputPath() {

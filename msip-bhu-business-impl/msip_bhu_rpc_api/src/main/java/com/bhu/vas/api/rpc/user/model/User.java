@@ -4,15 +4,18 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.UserType;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 @SuppressWarnings("serial")
 public class User extends BaseIntModel{// implements ISequenceGenable,TableSplitable<Integer>{
 	
-	public static final int Normal_User = 1;
+	/*public static final int Normal_User = 1;
 	public static final int Agent_User = 10;
-	
+	public static final int Finance_User = 15;
+	public static final int WarehouseManager_User = 20;
+	public static final int Sellor_User = 30;*/
 	//电话号码国家区号
 	private int countrycode = 86;
 	private String mobileno;
@@ -39,7 +42,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	private boolean locked = false;
 	/*private String avatar;
 	private String cover;*/
+	//公司名称
 	private String org;
+	//营业执照号Business license number
+	private String bln;
+	//注册地址
 	private String addr1;
 	private String addr2;
 	private String memo;
@@ -59,7 +66,7 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	
 
 	private String lastlogindevice_uuid;
-	private int utype = Normal_User;//用户类型
+	private int utype = UserType.Normal.getIndex();//用户类型
 	
 	/*private Date lastlogin_at;
 	private String channel;
@@ -230,5 +237,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	}
 	public void setAddr2(String addr2) {
 		this.addr2 = addr2;
+	}
+	public String getBln() {
+		return bln;
+	}
+	public void setBln(String bln) {
+		this.bln = bln;
 	}
 }

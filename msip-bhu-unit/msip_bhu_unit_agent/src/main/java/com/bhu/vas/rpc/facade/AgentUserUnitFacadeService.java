@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
@@ -48,7 +49,7 @@ public class AgentUserUnitFacadeService {
 					if(user == null){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST,Boolean.FALSE);
 					}
-					if(UserTypeValidateService.validConsoleOrAgentUser(user)){
+					if(UserTypeValidateService.validNotNormalUser(user)){
 						return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 					}else{
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_CONSOLEORAGENT,Boolean.FALSE);
@@ -92,6 +93,7 @@ public class AgentUserUnitFacadeService {
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,String pwd,
 			String nick, String sex,
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo,
@@ -104,11 +106,15 @@ public class AgentUserUnitFacadeService {
 		user.setCountrycode(countrycode);
 		user.setMobileno(acc);
 		//user.addSafety(SafetyBitMarkHelper.mobileno);
-		user.setPlainpwd(pwd);
+		if(StringUtils.isEmpty(pwd)) 
+			user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
+		else
+			user.setPlainpwd(pwd);
 		user.setNick(nick);
 		user.setSex(sex);
 		
 		user.setOrg(org);
+		user.setBln(bln);
 		user.setAddr1(addr1);
 		user.setAddr2(addr2);
 		user.setMemo(memo);
@@ -118,7 +124,7 @@ public class AgentUserUnitFacadeService {
 		user.setRegdevice(device);
 		//标记用户最后登录设备，缺省为DeviceEnum.PC
 		user.setLastlogindevice(device);
-		user.setUtype(User.Agent_User);
+		user.setUtype(UserType.Agent.getIndex());
 		user = this.userService.insert(user);
 		UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		// token validate code
@@ -133,26 +139,31 @@ public class AgentUserUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
-	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
+	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String ut,String device,String remoteIp) {
 		try{
+			if(ut == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_PARAM_VALIDATE_EMPTY);
+			}
+			
 			//step 2.生产环境下的手机号验证码验证
 			Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
 			if(uid == null || uid.intValue() == 0){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
 			User user = this.userService.getById(uid);
-			if(user == null){//存在不干净的数据，需要清理数据
+			
+			UserTypeValidateService.validUserType(user, ut);
+			/*if(user == null){//存在不干净的数据，需要清理数据
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-			}
+			}*/
 			if(!BCryptHelper.checkpw(pwd,user.getPassword())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
 			}
-			
 			//管理账户或者代理商账户才能继续
 			/*if(!RuntimeConfiguration.isConsoleUser(uid) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
 			}*/
-			UserTypeValidateService.validConsoleOrAgentUser(user);
+			//UserTypeValidateService.validConsoleOrAgentUser(user);
 			if(StringUtils.isEmpty(user.getRegip())){
 				user.setRegip(remoteIp);
 			}
@@ -198,7 +209,7 @@ public class AgentUserUnitFacadeService {
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
-			UserTypeValidateService.validConsoleOrAgentUser(user);
+			UserTypeValidateService.validNotNormalUser(user);//validConsoleOrAgentUser(user);
 			//管理账户或者代理商账户才能继续
 			/*if(!RuntimeConfiguration.isConsoleUser(user.getId()) && User.Agent_User != user.getUtype()){//管理员账户直接通过验证
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
@@ -232,10 +243,12 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_TYPE_WASNOT_AGENT);
 		}*/
 		try{
-			UserTypeValidateService.validConsoleUser(uid);
+			//UserTypeValidateService.validConsoleUser(uid);
+			User user  = userService.getById(uid);
+			UserTypeValidateService.validNotNormalUser(user);
 			ModelCriteria mc = new ModelCriteria();
 			Criteria cri = mc.createCriteria();
-			cri.andColumnEqualTo("utype", User.Agent_User);
+			cri.andColumnEqualTo("utype", UserType.Agent.getIndex());
 
 			if(keywords!=null && StringUtils.isNotEmpty(keywords.trim())){
 				cri.andColumnLike("org", "%"+keywords+"%");
@@ -245,8 +258,8 @@ public class AgentUserUnitFacadeService {
 			mc.setPageSize(pagesize);
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
 			List<AgentUserDetailVTO> vtos = new ArrayList<>();
-			for(User user:tailusers.getItems()){
-				vtos.add(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
+			for(User _user:tailusers.getItems()){
+				vtos.add(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(_user, false));
 			}
 			TailPage<AgentUserDetailVTO> pages = new CommonPage<AgentUserDetailVTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
@@ -265,10 +278,10 @@ public class AgentUserUnitFacadeService {
 	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid,int tid) {
 		try{
 			User user  = userService.getById(tid);
-			if(user == null){
+			/*if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
-			}
-			UserTypeValidateService.validConsoleOrAgentUser(user);
+			}*/
+			UserTypeValidateService.validNotNormalUser(user);//.validConsoleOrAgentUser(user);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
@@ -280,20 +293,23 @@ public class AgentUserUnitFacadeService {
 	}
 
 	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid, String nick,
-			String org, String addr1, String addr2, String memo) {
+			String org,String bln, String addr1, String addr2, String memo) {
 		try{
 			User user  = userService.getById(tid);
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 			}
-			UserTypeValidateService.validConsoleOrAgentUser(user);
+			//UserTypeValidateService.validConsoleOrAgentUser(user);
+			UserTypeValidateService.validNotNormalUser(user);
 			if(StringUtils.isNotEmpty(nick)){
 				user.setNick(nick);;
 			}
 			if(StringUtils.isNotEmpty(org)){
 				user.setOrg(org);
 			}
-			
+			if(StringUtils.isNotEmpty(bln)){
+				user.setOrg(bln);
+			}
 			if(StringUtils.isNotEmpty(addr1)){
 				user.setAddr1(addr1);
 			}

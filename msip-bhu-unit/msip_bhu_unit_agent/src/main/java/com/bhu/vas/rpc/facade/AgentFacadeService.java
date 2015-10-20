@@ -1,10 +1,13 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.vto.agent.*;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -16,10 +19,6 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
@@ -386,8 +385,36 @@ public class AgentFacadeService {
 
 
 
-    public void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName) {
-        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, aid, inputPath, outputPath, originName);
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid, String inputPath, String outputPath, String originName) {
+        //代理商导入记录
+        AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
+        agentDeviceImportLog.setAid(aid);
+        agentDeviceImportLog.setWid(wid);
+        agentDeviceImportLog.setCreated_at(new Date());
+        agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DOING);
+        agentDeviceImportLog = agentDeviceImportLogService.insert(agentDeviceImportLog);
+
+        AgentDeviceImportLogVTO vto = new AgentDeviceImportLogVTO();
+        vto.setId(agentDeviceImportLog.getId());
+        vto.setAid(aid);
+        vto.setWid(wid);
+        vto.setCount(agentDeviceImportLog.getCount());
+        vto.setStatus(agentDeviceImportLog.getStatus());
+        vto.setCreated_at(agentDeviceImportLog.getCreated_at());
+        User agent = userService.getById(aid);
+        if (agent != null) {
+            vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+        }
+
+        User wuser = userService.getById(wid);
+        if (wuser != null) {
+            vto.setWnick(wuser.getNick() == null ? "" : wuser.getNick());
+        }
+
+        //异步处理代理商
+        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
+        return vto;
+
     }
 
     public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
@@ -404,8 +431,10 @@ public class AgentFacadeService {
                 vto = new AgentDeviceImportLogVTO();
                 vto.setId(log.getId());
                 vto.setAid(log.getAid());
+                vto.setWid(log.getWid());
                 vto.setCount(log.getCount());
                 vto.setCreated_at(log.getCreated_at());
+                vto.setStatus(log.getStatus());
 
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
@@ -482,6 +511,29 @@ public class AgentFacadeService {
             }
         }
         return new CommonPage<AgentBulltinBoardVTO>(pageNo, pageSize, total, vtos);
+    }
+
+
+    public TailPage<WarehouseManagerVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
+
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.WarehouseManager.getIndex());
+        int total = userService.countByCommonCriteria(mc);
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+
+        List<User> users = userService.findModelByCommonCriteria(mc);
+        List<WarehouseManagerVTO> vtos = new ArrayList<WarehouseManagerVTO>();
+        if (users != null) {
+            WarehouseManagerVTO vto = null;
+            for (User user : users) {
+                vto = new WarehouseManagerVTO();
+                vto.setId(user.getId());
+                vto.setN(user.getNick());
+                vtos.add(vto);
+            }
+        }
+        return new CommonPage<WarehouseManagerVTO>(pageNo, pageSize, total, vtos);
     }
 
 }

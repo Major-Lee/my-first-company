@@ -52,6 +52,7 @@ public class LoginSessionController extends BaseController{
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = true) String pwd,
+			@RequestParam(required = false) String ut,
 			@RequestParam(required = false, value="d",defaultValue="R") String device) {
 		
 		//step 1.手机号正则验证
@@ -63,7 +64,7 @@ public class LoginSessionController extends BaseController{
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
-		RpcResponseDTO<Map<String, Object>> rpcResult = agentUserRpcService.userLogin(countrycode, acc, pwd, from_device, remoteIp);
+		RpcResponseDTO<Map<String, Object>> rpcResult = agentUserRpcService.userLogin(countrycode, acc, pwd,ut, from_device, remoteIp);
 		if(!rpcResult.hasError()){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 			//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

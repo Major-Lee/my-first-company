@@ -106,7 +106,7 @@ public class AgentController {
     		/*if(StringUtils.isEmpty(date)){
     			date = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5);
     		}*/
-			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid,status, pageNo, pageSize);
+			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid, status, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
@@ -213,7 +213,9 @@ public class AgentController {
             HttpServletResponse response,
             @RequestParam("file") CommonsMultipartFile file,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) Integer aid) {
+            @RequestParam(required = true) Integer aid,
+            @RequestParam(required = true) Integer wid
+            ) {
 
         AgentUploadVTO vto = new AgentUploadVTO();
         String originName = file.getOriginalFilename();
@@ -259,8 +261,9 @@ public class AgentController {
             vto.setUid(uid);
             vto.setAid(aid);
 
+            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
 
-            agentRpcService.importAgentDeviceClaim(uid, aid, inputPath, outputPath, originName);
+            vto.setLog(log);
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
 
@@ -333,8 +336,30 @@ public class AgentController {
         } catch (Exception e) {
             e.printStackTrace();
             SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+        }
+
+    }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/warelist")
+    public void pageWarehouseManagerList(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+
+        try {
+            TailPage<WarehouseManagerVTO> vtos = agentRpcService.pageWarehouseManagerVTO(pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 
         }
+
+
 
     }
 

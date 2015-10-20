@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.ds.agent.dto.RecordDeviceWholeDaySummaryDTO;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdao.WifiDeviceWholeDayMDao;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
@@ -78,11 +79,17 @@ public class WifiDeviceWholeDayMService {
 	 * @param mac
 	 * @param dateStart
 	 * @param dateEnd
+	 * @param validateCashBack 
 	 * @return
 	 */
-	public List<RecordSummaryDTO> summaryAggregationBetween(List<String> macs,String dateStart,String dateEnd){
+	public List<RecordDeviceWholeDaySummaryDTO> summaryAggregationBetween(List<String> macs,String dateStart,String dateEnd,Boolean validateCashBack){
+		
+		Criteria cri = Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd);
+		if(validateCashBack != null){
+			cri.and("cashback").is(validateCashBack?1:0);
+		}
 		TypedAggregation<WifiDeviceWholeDayMDTO> aggregation = newAggregation(WifiDeviceWholeDayMDTO.class,
-				match(Criteria.where("mac").in(macs).and("date").gte(dateStart).lte(dateEnd)),
+				match(cri),
 			    group("mac")
 			    	.sum("dod").as("t_dod")
 			    	.sum("dct").as("t_dct")
@@ -93,10 +100,12 @@ public class WifiDeviceWholeDayMService {
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")
 			    	.sum("hrx_bytes").as("t_hrx_bytes")
+			    	.sum("cashback").as("t_cashback")
+			    	.sum("sameday").as("t_sameday")
 			    	.avg("handsets").as("t_handsets"),
 			    sort(Direction.ASC, "t_dod", "t_dct")
 			);
-		List<RecordSummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordSummaryDTO.class);
+		List<RecordDeviceWholeDaySummaryDTO> aggregate = wifiDeviceWholeDayMDao.aggregate(aggregation, RecordDeviceWholeDaySummaryDTO.class);
 		return aggregate;
 	}
 	

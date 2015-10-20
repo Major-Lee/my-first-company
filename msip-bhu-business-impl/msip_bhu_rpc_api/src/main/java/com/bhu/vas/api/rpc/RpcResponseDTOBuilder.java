@@ -71,6 +71,7 @@ public class RpcResponseDTOBuilder {
 	public static AgentUserDetailVTO builderAgentUserDetailVTOFromUser(User user,boolean isReg){
 		AgentUserDetailVTO ret = new AgentUserDetailVTO(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(),
 				user.getOrg(),
+				user.getBln(),
 				user.getAddr1(),
 				user.getAddr2(),
 				user.getMemo(),

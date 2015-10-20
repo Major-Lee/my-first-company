@@ -40,6 +40,8 @@ public class WifiDeviceWholeDayMDTO {
 	private long htx_bytes;
 	//handsets 下行流量
 	private long hrx_bytes;
+	private int cashback;
+	private int sameday;
 	//上下线连接记录
 	private List<LineRecord> records;
 	public String getId() {
@@ -126,6 +128,18 @@ public class WifiDeviceWholeDayMDTO {
 	}
 	public void setHrx_bytes(long hrx_bytes) {
 		this.hrx_bytes = hrx_bytes;
+	}
+	public int getCashback() {
+		return cashback;
+	}
+	public void setCashback(int cashback) {
+		this.cashback = cashback;
+	}
+	public int getSameday() {
+		return sameday;
+	}
+	public void setSameday(int sameday) {
+		this.sameday = sameday;
 	}
 	
 }

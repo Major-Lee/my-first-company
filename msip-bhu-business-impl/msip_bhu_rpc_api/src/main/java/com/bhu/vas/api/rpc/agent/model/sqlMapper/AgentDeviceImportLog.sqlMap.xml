@@ -7,7 +7,9 @@
   <resultMap id="modelResult" type="agentDeviceImportLog">
     <id property="id" column="id"/>
 	  <result property="aid" column="aid"/>
+	  <result property="wid" column="wid"/>
 	  <result property="count" column="count"/>
+	  <result property="status" column="status"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -21,7 +23,9 @@
 	    <![CDATA[
 	    	id,
 	    	aid,
+	    	wid,
 	    	count,
+	    	status,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -29,7 +33,9 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	aid,
+	    	wid,
 	    	count,
+	    	status,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -38,14 +44,18 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{aid},
+			#{wid},
 			#{count},
+			#{status},
 			#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 	    	aid = #{aid},
+	    	wid = #{wid},
 	    	count = #{count},
+	    	status = #{status},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
