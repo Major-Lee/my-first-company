@@ -72,7 +72,11 @@ public class AgentSettlementsRecordMService {
 		AgentSettlementsRecordMDTO mdto = this.getSettlement(date, agent);
 		return mdto != null;
 	}
-		
+	
+	public List<SettlementSummaryDTO> fetchBillsByAgent(int agent,int status){
+		return null;
+	}
+	
 	/**
 	 * 统计指定时间段区间内结算列表 
 	 * @param mac
@@ -108,6 +112,7 @@ public class AgentSettlementsRecordMService {
 		TypedAggregation<AgentSettlementsRecordMDTO> aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				match(criteria),
 			    group("agent")
+			    	.sum("sdPrice").as("sdmoney")
 			    	.sum("iSVPrice").as("money"),
 			    sort(Direction.ASC, "money"),
 			    skip(startIndex),
