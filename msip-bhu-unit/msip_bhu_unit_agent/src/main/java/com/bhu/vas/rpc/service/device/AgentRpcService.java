@@ -63,10 +63,10 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid,int aid, int wid, String inputPath, String outputPath, String originName) {
-        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s",
-                uid, aid, wid, originName, inputPath, outputPath));
-        return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid,int aid, int wid, String inputPath, String outputPath, String originName, String remark) {
+        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s remark:%s",
+                uid, aid, wid, originName, inputPath, outputPath, remark));
+        return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName, remark);
     }
 
     @Override
@@ -113,9 +113,9 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
     @Override
-    public TailPage<UserVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
-        logger.info(String.format("pageWarehouseManagerVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageUserVTO(UserType.WarehouseManager.getIndex(), pageNo, pageSize);
+    public TailPage<UserVTO> pageSellorVTO(int pageNo, int pageSize) {
+        logger.info(String.format("pageSellorVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(UserType.Sellor.getIndex(), pageNo, pageSize);
     }
 
     @Override

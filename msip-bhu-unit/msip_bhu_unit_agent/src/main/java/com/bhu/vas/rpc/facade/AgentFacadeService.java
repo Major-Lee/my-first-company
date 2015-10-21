@@ -387,13 +387,16 @@ public class AgentFacadeService {
 
 
 
-    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid, String inputPath, String outputPath, String originName) {
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
+                                                          String inputPath, String outputPath,
+                                                          String originName, String remark) {
         //代理商导入记录
         AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
         agentDeviceImportLog.setAid(aid);
         agentDeviceImportLog.setWid(wid);
         agentDeviceImportLog.setCreated_at(new Date());
         agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DOING);
+        agentDeviceImportLog.setRemark(remark);
         agentDeviceImportLog = agentDeviceImportLogService.insert(agentDeviceImportLog);
 
         AgentDeviceImportLogVTO vto = new AgentDeviceImportLogVTO();
@@ -404,6 +407,8 @@ public class AgentFacadeService {
         vto.setFcount(agentDeviceImportLog.getFail_count());
         vto.setStatus(agentDeviceImportLog.getStatus());
         vto.setCreated_at(agentDeviceImportLog.getCreated_at());
+        vto.setRemark(remark);
+        vto.setFilename(originName);
         User agent = userService.getById(aid);
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());

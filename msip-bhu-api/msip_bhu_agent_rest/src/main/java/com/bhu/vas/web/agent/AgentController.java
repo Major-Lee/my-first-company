@@ -212,7 +212,8 @@ public class AgentController {
             @RequestParam("file") CommonsMultipartFile file,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = true) Integer aid,
-            @RequestParam(required = true) Integer wid
+            @RequestParam(required = true) Integer wid,
+            @RequestParam(required = false) String remark
             ) {
 
         AgentUploadVTO vto = new AgentUploadVTO();
@@ -259,7 +260,8 @@ public class AgentController {
             vto.setUid(uid);
             vto.setAid(aid);
 
-            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
+            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath,
+                    outputPath, originName, remark);
 
             vto.setLog(log);
 
@@ -340,8 +342,8 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/warelist")
-    public void pageWarehouseManagerList(
+    @RequestMapping(value="/sellorlist")
+    public void pageSellorList(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
@@ -349,7 +351,7 @@ public class AgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
         try {
-            TailPage<UserVTO> vtos = agentRpcService.pageWarehouseManagerVTO(pageNo, pageSize);
+            TailPage<UserVTO> vtos = agentRpcService.pageSellorVTO(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
         } catch (Exception e) {
             e.printStackTrace();
