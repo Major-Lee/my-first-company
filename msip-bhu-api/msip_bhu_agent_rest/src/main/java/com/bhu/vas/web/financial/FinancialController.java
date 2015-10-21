@@ -107,7 +107,7 @@ public class FinancialController {
             AgentFinancialUploadVTO vto = new AgentFinancialUploadVTO();
             vto.setUid(uid);
             vto.setAid(aid);
-            vto.setUrl(URL_PREFIX + uploadType + File.separator + date.getTime() + ext);
+            vto.setUrl(URL_PREFIX + uploadType + File.separator + aid  + File.separator +  date.getTime() + ext);
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
         } catch (Exception e) {
