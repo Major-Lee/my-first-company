@@ -343,7 +343,7 @@ public class AgentController {
 
     @ResponseBody()
     @RequestMapping(value="/sellorlist")
-    public void pageWarehouseManagerList(
+    public void pageSellorList(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
@@ -351,7 +351,7 @@ public class AgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
         try {
-            TailPage<UserVTO> vtos = agentRpcService.pageWarehouseManagerVTO(pageNo, pageSize);
+            TailPage<UserVTO> vtos = agentRpcService.pageSellorVTO(pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
         } catch (Exception e) {
             e.printStackTrace();
