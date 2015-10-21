@@ -562,7 +562,16 @@ public class AgentFacadeService {
     }
 
 
-    public boolean updateAgentImportImport(int uid, int logId) {
+    public boolean updateAgentImportImport(int uid, long logId) {
+
+
+        AgentDeviceImportLog agentDeviceImportLog =  agentDeviceImportLogService.getById(logId);
+        if (agentDeviceImportLog != null) {
+            agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
+            agentDeviceImportLogService.update(agentDeviceImportLog);
+        }
+
+
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", logId);
 

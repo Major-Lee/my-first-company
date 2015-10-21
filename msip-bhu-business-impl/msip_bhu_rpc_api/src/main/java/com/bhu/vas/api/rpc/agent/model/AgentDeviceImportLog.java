@@ -13,7 +13,7 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
 
     public final static int IMPORT_DOING = 0;
     public final static int IMPORT_DONE = 1;
-    public final static int IMPORT_ERROR = 2;
+    public final static int CONFIRM_DONE = 2;
     /**
      * 代理商id
      */
@@ -30,7 +30,7 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
     private long bid;
 
     /**
-     * 导入状态 0:正在导入 1:导入完毕 2:导入失败
+     * 导入状态 0:正在导入 1:导入完毕 2:确认完毕
      */
     private int status;
 
