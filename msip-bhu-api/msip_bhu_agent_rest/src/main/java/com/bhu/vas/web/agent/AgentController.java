@@ -342,7 +342,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/warelist")
+    @RequestMapping(value="/sellorlist")
     public void pageWarehouseManagerList(
             HttpServletRequest request,
             HttpServletResponse response,
