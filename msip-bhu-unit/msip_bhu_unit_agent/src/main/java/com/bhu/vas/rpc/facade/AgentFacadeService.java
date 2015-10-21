@@ -7,7 +7,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.vto.agent.*;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -385,13 +387,16 @@ public class AgentFacadeService {
 
 
 
-    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid, String inputPath, String outputPath, String originName) {
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
+                                                          String inputPath, String outputPath,
+                                                          String originName, String remark) {
         //代理商导入记录
         AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
         agentDeviceImportLog.setAid(aid);
         agentDeviceImportLog.setWid(wid);
         agentDeviceImportLog.setCreated_at(new Date());
         agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DOING);
+        agentDeviceImportLog.setRemark(remark);
         agentDeviceImportLog = agentDeviceImportLogService.insert(agentDeviceImportLog);
 
         AgentDeviceImportLogVTO vto = new AgentDeviceImportLogVTO();
@@ -402,6 +407,8 @@ public class AgentFacadeService {
         vto.setFcount(agentDeviceImportLog.getFail_count());
         vto.setStatus(agentDeviceImportLog.getStatus());
         vto.setCreated_at(agentDeviceImportLog.getCreated_at());
+        vto.setRemark(remark);
+        vto.setFilename(originName);
         User agent = userService.getById(aid);
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
@@ -420,7 +427,7 @@ public class AgentFacadeService {
 
     public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.setOrderByClause("id asc");
+        mc.setOrderByClause("id desc");
         mc.createCriteria().andSimpleCaulse(" 1=1 ");
         int total = agentDeviceImportLogService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
@@ -434,16 +441,24 @@ public class AgentFacadeService {
                 vto.setId(log.getId());
                 vto.setAid(log.getAid());
                 vto.setWid(log.getWid());
-                vto.setBid(log.getBid());
                 vto.setScount(log.getSuccess_count());
                 vto.setFcount(log.getFail_count());
                 vto.setCreated_at(log.getCreated_at());
                 vto.setStatus(log.getStatus());
-
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
                     vto.setNick(agent.getNick() == null ? "" : agent.getNick());
                 }
+
+                long bid  = log.getBid();
+                vto.setBid(bid);
+                AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
+                if (agentBulltinBoard != null && agentBulltinBoard.getType().equals(AgentBulltinType.BatchImport.getKey())) {
+                    String content = agentBulltinBoard.getContent();
+                    AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
+                    vto.setFilename(outputDTO.getName());
+                }
+
                 vtos.add(vto);
             }
         }

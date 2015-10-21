@@ -77,7 +77,7 @@ public class AgentDeviceClaimTest extends BaseTest {
             for (AgentDeviceImportLog log : logs) {
                 vto = new AgentDeviceImportLogVTO();
                 vto.setAid(log.getAid());
-                vto.setCount(log.getCount());
+                vto.setScount(log.getSuccess_count());
                 vto.setCreated_at(log.getCreated_at());
 
                 User agent = userService.getById(log.getAid());
