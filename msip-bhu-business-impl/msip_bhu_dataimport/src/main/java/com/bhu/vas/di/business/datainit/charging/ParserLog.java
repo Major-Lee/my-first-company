@@ -31,7 +31,7 @@ public class ParserLog{
 	//private Map<String,Set<String>> device_handset_records = new HashMap<>();
 	//终端 在线区间段dmac -> <hmac -》LineRecords>
 	private Map<String,Map<String,LineRecords>> device_handset_records = new HashMap<>();
-	
+	//private Set<String> hmacs  = new HashSet<>();
 	public void reset(){
 		device_records.clear();
 		device_handset_records.clear();
@@ -154,6 +154,7 @@ public class ParserLog{
 	private void processHandsetSync(String message){
 		HandsetSyncAction dto = JsonHelper.getDTO(message, HandsetSyncAction.class);
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
+		//hmacs.addAll(dto.getHmacs());
 		if(handset_records.isEmpty()){
 			for(String hmac:dto.getHmacs()){
 				LineRecords records = new LineRecords();
@@ -224,6 +225,7 @@ public class ParserLog{
 		//handsetComming(dto.getMac(),dto.getHmac());
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
 		LineRecords records = handset_records.get(dto.getHmac());
+		//hmacs.add(dto.getHmac());
 		if(records == null){
 			records = new LineRecords();
 			handset_records.put(dto.getHmac(), records);
@@ -252,6 +254,7 @@ public class ParserLog{
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
 		LineRecords records = handset_records.get(dto.getHmac());
+		//hmacs.add(dto.getHmac());
 		if(records == null){
 			records = new LineRecords();
 			device_records.put(dto.getHmac(), records);
@@ -291,10 +294,24 @@ public class ParserLog{
 		}
 	}
 	
-	
+	private void processDeviceSimulateOnline(DeviceOnlineAction dto){
+		//DeviceOnlineAction dto = JsonHelper.getDTO(message, DeviceOnlineAction.class);
+		LineRecords records = device_records.get(dto.getMac());
+		if(records == null){
+			records = new LineRecords();
+			device_records.put(dto.getMac(), records);
+		}
+		LineRecord record = new LineRecord();
+		record.setUts(DateTimeHelper.getDateStart(currentDate).getTime());
+		records.setCurrent(record);
+	}
 	
 	private void processDeviceOnline(String message){
 		DeviceOnlineAction dto = JsonHelper.getDTO(message, DeviceOnlineAction.class);
+		if(dto.isSm()){
+			processDeviceSimulateOnline(dto);
+			return;
+		}
 		LineRecords records = device_records.get(dto.getMac());
 		if(records == null){
 			records = new LineRecords();
@@ -490,6 +507,19 @@ public class ParserLog{
 			}
 		}
 	}
+	/**
+	 * 过滤掉不存在终端登录的设备
+	 */
+	public void filter(){
+		Iterator<Entry<String, LineRecords>> iter = device_records.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, LineRecords> next = iter.next();
+			String key = next.getKey();
+			if(!device_handset_records.containsKey(key)){
+				iter.remove();
+			}
+		}
+	}
 	
 	public Map<String, LineRecords> getDevice_records() {
 		return device_records;
@@ -507,6 +537,5 @@ public class ParserLog{
 	public void setCurrentDate(Date currentDate) {
 		this.currentDate = currentDate;
 	}
-	
 	
 }

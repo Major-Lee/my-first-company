@@ -44,6 +44,7 @@ public class Step00ReadLogService {
 	//终端 在线区间段dmac -> <hmac -》LineRecords>
 	private Map<String,Map<String,LineRecords>> device_handset_records = new HashMap<>();
 	
+	private Set<String> hmacs  = new HashSet<>();
 	public void reset(){
 		device_records.clear();
 		device_handset_records.clear();
@@ -166,6 +167,7 @@ public class Step00ReadLogService {
 	private void processHandsetSync(String message){
 		HandsetSyncAction dto = JsonHelper.getDTO(message, HandsetSyncAction.class);
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
+		hmacs.addAll(dto.getHmacs());
 		if(handset_records.isEmpty()){
 			for(String hmac:dto.getHmacs()){
 				LineRecords records = new LineRecords();
@@ -235,6 +237,7 @@ public class Step00ReadLogService {
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
 		//handsetComming(dto.getMac(),dto.getHmac());
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
+		hmacs.add(dto.getHmac());
 		LineRecords records = handset_records.get(dto.getHmac());
 		if(records == null){
 			records = new LineRecords();
@@ -264,6 +267,7 @@ public class Step00ReadLogService {
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
 		LineRecords records = handset_records.get(dto.getHmac());
+		hmacs.add(dto.getHmac());
 		if(records == null){
 			records = new LineRecords();
 			device_records.put(dto.getHmac(), records);
@@ -516,4 +520,8 @@ public class Step00ReadLogService {
 			Map<String, Map<String, LineRecords>> device_handset_records) {
 		this.device_handset_records = device_handset_records;
 	}
+	public Set<String> getHmacs() {
+		return hmacs;
+	}
+	
 }
