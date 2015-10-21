@@ -380,7 +380,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/agentlist")
+    @RequestMapping(value="/update_import")
     public void updateImport(
             HttpServletRequest request,
             HttpServletResponse response,
