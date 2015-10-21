@@ -182,8 +182,8 @@ public class AgentSettlementsRecordMService {
 	 */
 	public SettlementStatisticsVTO statistics(int agent){
 		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
-		Criteria unsettled_criteria = Criteria.where("status").in(new int[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted});
-		Criteria settled_criteria = Criteria.where("status").in(new int[]{AgentSettlementsRecordMDTO.Settlement_Bill_Done});
+		Criteria unsettled_criteria = Criteria.where("status").in(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted});
+		Criteria settled_criteria = Criteria.where("status").in(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Done});
 		if(agent>0){
 			unsettled_criteria.and("agent").is(agent);
 			settled_criteria.and("agent").is(agent);
