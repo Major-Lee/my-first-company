@@ -212,7 +212,8 @@ public class AgentController {
             @RequestParam("file") CommonsMultipartFile file,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = true) Integer aid,
-            @RequestParam(required = true) Integer wid
+            @RequestParam(required = true) Integer wid,
+            @RequestParam(required = false) String remark
             ) {
 
         AgentUploadVTO vto = new AgentUploadVTO();
