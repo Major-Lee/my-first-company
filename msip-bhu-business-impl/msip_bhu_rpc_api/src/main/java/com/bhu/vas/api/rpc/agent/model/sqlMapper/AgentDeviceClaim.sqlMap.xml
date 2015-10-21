@@ -12,6 +12,7 @@
 	  <result property="stock_name" column="stock_name"/>
 	  <result property="status" column="status"/>
 	  <result property="import_id" column="import_id"/>
+	  <result property="import_status" column="import_status"/>
 	  <result property="sold_at" column="sold_at"/>
 	  <result property="claim_at" column="claim_at"/>
 	  <result property="updated_at" column="updated_at"/>
@@ -31,6 +32,7 @@
 	    	stock_name,
 	    	status,
 	    	import_id,
+	    	import_status,
 	    	sold_at,
 	    	claim_at,
 	    	updated_at
@@ -44,6 +46,7 @@
 	    	stock_name,
 	    	status,
 	    	import_id,
+	    	import_status,
 	    	sold_at,
 	    	claim_at,
 	    	updated_at
@@ -58,6 +61,7 @@
 			#{stock_name},
 			#{status},
 			#{import_id},
+			#{import_status},
 			#{sold_at},
 			#{claim_at},
 	    	#{updated_at}
@@ -70,6 +74,7 @@
 	    	stock_name = #{stock_name},
 	    	status = #{status},
 	    	import_id = #{import_id},
+	    	import_status = #{import_status},
 	    	sold_at = #{sold_at},
 	    	claim_at = #{claim_at},
 	    	updated_at = #{updated_at}

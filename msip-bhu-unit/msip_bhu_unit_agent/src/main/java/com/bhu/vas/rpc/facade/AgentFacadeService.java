@@ -445,6 +445,7 @@ public class AgentFacadeService {
                 vto.setFcount(log.getFail_count());
                 vto.setCreated_at(log.getCreated_at());
                 vto.setStatus(log.getStatus());
+                vto.setRemark(log.getRemark());
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
                     vto.setNick(agent.getNick() == null ? "" : agent.getNick());
@@ -553,6 +554,24 @@ public class AgentFacadeService {
             }
         }
         return new CommonPage<UserVTO>(pageNo, pageSize, total, vtos);
+    }
+
+
+    public boolean updateAgentImportImport(int uid, int logId) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", logId);
+
+        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
+
+        if (agentDeviceClaims != null) {
+            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
+                agentDeviceClaim.setImport_status(1);
+            }
+        }
+        agentDeviceClaimService.updateAll(agentDeviceClaims);
+
+        return true;
+
     }
 
 }
