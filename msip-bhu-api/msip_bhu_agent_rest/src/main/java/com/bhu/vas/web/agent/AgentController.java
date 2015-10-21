@@ -269,7 +269,6 @@ public class AgentController {
 
         } catch (Exception e) {
             e.printStackTrace();
-
             SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"error",vto));
 
         }

@@ -13,8 +13,11 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  */
 public interface IAgentRpcService {
 
-      String PATH_INPUT_PREFIX = "/BHUData/agent/input";
-      String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+    String PATH_INPUT_PREFIX = "/BHUData/agent/input";
+    String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+    String PATH_INVOICE_PREFIX = "/BHUData/agent/invoice";
+    String PATH_RECEIPT_PREFIX = "/BHUData/agent/receipt";
+
 
 //    /**
 //     * 生成代理商
