@@ -113,9 +113,9 @@ public class AgentRpcService implements IAgentRpcService {
 	}
 
     @Override
-    public TailPage<UserVTO> pageWarehouseManagerVTO(int pageNo, int pageSize) {
-        logger.info(String.format("pageWarehouseManagerVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageUserVTO(UserType.WarehouseManager.getIndex(), pageNo, pageSize);
+    public TailPage<UserVTO> pageSellorVTO(int pageNo, int pageSize) {
+        logger.info(String.format("pageSellorVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(UserType.Sellor.getIndex(), pageNo, pageSize);
     }
 
     @Override

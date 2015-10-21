@@ -260,7 +260,8 @@ public class AgentController {
             vto.setUid(uid);
             vto.setAid(aid);
 
-            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName);
+            AgentDeviceImportLogVTO log = agentRpcService.importAgentDeviceClaim(uid, aid, wid, inputPath,
+                    outputPath, originName, remark);
 
             vto.setLog(log);
 
@@ -341,7 +342,7 @@ public class AgentController {
 
 
     @ResponseBody()
-    @RequestMapping(value="/warelist")
+    @RequestMapping(value="/sellorlist")
     public void pageWarehouseManagerList(
             HttpServletRequest request,
             HttpServletResponse response,
