@@ -270,7 +270,9 @@ public class AgentStatisticsUnitFacadeService {
 			settleVtos = new ArrayList<SettlementVTO>();
 			SettlementStatisticsVTO statistics = this.statistics(-1);
 			//去所有已结清按agent group by的记录
-			List<SettlementSummaryDTO> settledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_Done, null, null, pageNo, pageSize);
+			List<SettlementSummaryDTO> settledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, 
+					new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Done},
+					null, null, pageNo, pageSize);
 			List<Integer> agents = new ArrayList<Integer>();
 			for(SettlementSummaryDTO summaryDTO:settledSummaryMain){
 				agents.add(Integer.parseInt(summaryDTO.getId()));
@@ -278,8 +280,13 @@ public class AgentStatisticsUnitFacadeService {
 			result_page = new SettlementPageVTO();
 			result_page.setStatistics(statistics);
 			if(!agents.isEmpty()){
-				//取未结清记录汇总
-				List<SettlementSummaryDTO> unsettledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Created, null, null, 1, agents.size());
+				//取未结清和部分结清记录汇总
+				List<SettlementSummaryDTO> settledSummary = agentSettlementsRecordMService.summaryAggregationBetween(null, 
+						new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Done,AgentSettlementsRecordMDTO.Settlement_Bill_Parted},
+						null, null, pageNo, pageSize);
+				List<SettlementSummaryDTO> unsettledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, 
+						new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted},
+						null, null, 1, agents.size());
 				List<User> users = userService.findByIds(agents, true, true);
 				SettlementVTO vto = null;
 				int index = 0;
@@ -290,14 +297,14 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
 					vto.setUid(user.getId());
 					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
-					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
 					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
 					if(previosMonth_settlement != null)
 						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
 					else
-						vto.setLsr("0.00");
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummaryMain),2))));
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummary),2))));
+						vto.setLsr("0.00");*/
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(summaryDTO.getId(),settledSummary),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(summaryDTO.getId(),unsettledSummary),2))));
 					settleVtos.add(vto);
 					index++;
 				}
@@ -321,8 +328,10 @@ public class AgentStatisticsUnitFacadeService {
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
 			SettlementStatisticsVTO statistics = this.statistics(-1);
-			//去所有已结清按agent group by的记录
-			List<SettlementSummaryDTO> unsettledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_Created, null, null, pageNo, pageSize);
+			//去所有已结清和部分结清按agent group by的记录
+			List<SettlementSummaryDTO> unsettledSummaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, 
+					new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted}, 
+					null, null, pageNo, pageSize);
 			List<Integer> agents = new ArrayList<Integer>();
 			for(SettlementSummaryDTO summaryDTO:unsettledSummaryMain){
 				agents.add(Integer.parseInt(summaryDTO.getId()));
@@ -331,7 +340,9 @@ public class AgentStatisticsUnitFacadeService {
 			result_page.setStatistics(statistics);
 			if(!agents.isEmpty()){
 				//取未结清记录汇总
-				List<SettlementSummaryDTO> settledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, AgentSettlementsRecordMDTO.Settlement_Done, null, null, 1, agents.size());
+				List<SettlementSummaryDTO> settledSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, 
+						new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Done,AgentSettlementsRecordMDTO.Settlement_Bill_Parted}, 
+						null, null, 1, agents.size());
 				List<User> users = userService.findByIds(agents, true, true);
 				SettlementVTO vto = null;
 				int index = 0;
@@ -342,14 +353,14 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
 					vto.setUid(user.getId());
 					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
-					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
 					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
 					if(previosMonth_settlement != null)
 						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
 					else
-						vto.setLsr("0.00");
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),settledSummary),2))));
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummary(summaryDTO.getId(),unsettledSummaryMain),2))));
+						vto.setLsr("0.00");*/
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(summaryDTO.getId(),settledSummary),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(summaryDTO.getId(),unsettledSummaryMain),2))));
 					settleVtos.add(vto);
 					index++;
 				}
