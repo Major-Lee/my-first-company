@@ -126,7 +126,15 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Override
     public boolean updateAgentImportImport(int uid, int logId) {
-        logger.info(String.format("updateAgentImportImport uid[%s] logId", uid, logId));
+        logger.info(String.format("updateAgentImportImport uid[%s] logId[%s]", uid, logId));
         return agentFacadeService.updateAgentImportImport(uid, logId);
+    }
+
+
+    @Override
+    public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
+        logger.info(String.format("postAgentFinancialSettlement uid[%s] aid[%s] account[%s] invoice[%s] receipt[%s] remark[%s]",
+                uid, aid, account,invoice, receipt,remark));
+        return agentFacadeService.postAgentFinancialSettlement(uid, aid, account, invoice, receipt, remark);
     }
 }
