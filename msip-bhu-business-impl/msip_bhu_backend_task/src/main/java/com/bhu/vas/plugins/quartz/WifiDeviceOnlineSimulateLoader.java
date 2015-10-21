@@ -1,18 +1,16 @@
 package com.bhu.vas.plugins.quartz;
 
-import java.util.List;
-
-import javax.annotation.Resource;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.logger.BusinessStatisticsLogger;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 /**
  * 每天零点开始执行
  * 对所有零点在线设备进行模拟登录指令日志，保证代理商统计日志的完整性
@@ -24,17 +22,13 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class WifiDeviceOnlineSimulateLoader {
 	private static Logger logger = LoggerFactory.getLogger(WifiDeviceOnlineSimulateLoader.class);
 	
-	public int bulk_success = 0;
-	public int bulk_fail = 0;
-	public int index_count = 0;
-	
-	@Resource
-	private WifiDeviceService wifiDeviceService;
+	//@Resource
+	//private WifiDeviceService wifiDeviceService;
 	
 	public void execute() {
 		logger.info("WifiDeviceOnlineSimulateLoader starting...");
-		int total = 0;
-		try{
+		//int total = 0;
+		/*try{
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("online", 1);//.andColumnNotEqualTo("orig_model", WifiDeviceHelper.WIFI_URouter_DEVICE_ORIGIN_MODEL);
 	    	mc.setPageNumber(1);
@@ -51,7 +45,29 @@ public class WifiDeviceOnlineSimulateLoader {
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);
 		}finally{
-		}
-		logger.info(String.format("WifiDeviceOnlineSimulateLoader ended, total devices [%s]", total));
+		}*/
+		
+		final AtomicInteger atomic = new AtomicInteger(0);
+		//System.out.println("~~~~~~~~~~ gogogo:");
+		WifiDevicePresentCtxService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
+			@Override
+			public void notifyComming(Map<String, String> onlineMap) {
+				//System.out.println("~~~~~~~~~~:"+onlineMap);
+				Iterator<Entry<String, String>> iter = onlineMap.entrySet().iterator();
+				while(iter.hasNext()){
+					Entry<String, String> next = iter.next();
+					String key = next.getKey();//mac
+					//String value = next.getValue();//ctx
+					BusinessStatisticsLogger.doSimulateLoginActionLog(key);
+					//SessionManager.getInstance().addSession(key, value);
+					atomic.incrementAndGet();
+					//System.out.println(String.format("Online device[%s] ctx[%s]", key,value));
+				}
+				//System.out.println(t);
+			}
+		});
+		//System.out.println(String.format("Init Online count[%s] Ok~~~~~~",atomic.get()));
+		
+		logger.info(String.format("WifiDeviceOnlineSimulateLoader ended, total devices [%s]", atomic.get()));
 	}
 }

@@ -1,40 +1,28 @@
 package com.bhu.vas.di.business.datainit.charging;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import org.springframework.stereotype.Service;
+import java.util.Set;
 
 import com.bhu.vas.api.dto.charging.ActionBuilder;
+import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
+import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.bhu.vas.api.dto.charging.DeviceNotExistAction;
 import com.bhu.vas.api.dto.charging.DeviceOfflineAction;
 import com.bhu.vas.api.dto.charging.DeviceOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetOfflineAction;
 import com.bhu.vas.api.dto.charging.HandsetOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetSyncAction;
-import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
-import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.bhu.vas.business.ds.agent.mdto.LineRecord;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
-@Service
-public class Step00ParserLogService {
+public class ParserLog{
 	private Date currentDate;
 	
 	//设备 在线区间段 dmac -》LineRecords
@@ -52,7 +40,7 @@ public class Step00ParserLogService {
 	 * 分析指定日期的日志
 	 * @param date yyyy-MM-dd
 	 */
-	public void parser(String date){
+/*	public void parser(String date){
 		this.currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.shortDateFormat);
 		File[] files = FileHelper.getFilesFilterName("/BHUData/bulogs/charginglogs/", date);//"2012-08-01""2012-07-31"
 		if(files != null && files.length != 0){
@@ -100,7 +88,7 @@ public class Step00ParserLogService {
 				}
 			}
 		}
-	}
+	}*/
 	
 	public void processBackendActionMessage(String messagejsonHasPrefix) throws Exception{
 		//System.out.println(messagejsonHasPrefix);
@@ -516,4 +504,9 @@ public class Step00ParserLogService {
 			Map<String, Map<String, LineRecords>> device_handset_records) {
 		this.device_handset_records = device_handset_records;
 	}
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+	
+	
 }

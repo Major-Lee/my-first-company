@@ -107,6 +107,8 @@ public class AgentDeviceClaimServiceHandler {
                 firstcell[2].setCellValue("序列号");
                 firstcell[2] = outputFirstRow.createCell(4);
                 firstcell[2].setCellValue("MAC");
+                firstcell[2] = outputFirstRow.createCell(5);
+                firstcell[2].setCellValue("导入结果");
 
                 for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
                     HSSFRow hssfRow = hssfSheet.getRow(rowNum);
@@ -147,25 +149,31 @@ public class AgentDeviceClaimServiceHandler {
                         agentDeviceClaim.setStatus(1);
                     }
 
-                    agentDeviceClaim.setImport_id(import_id);
-                   if (agentDeviceClaimService.getById(agentDeviceClaim.getId()) == null) {
-                       agentDeviceClaimService.insert(agentDeviceClaim);
-                   } else {
-                       failCount ++;
-                   }
+
                     
                     HSSFRow outRow  = outSheet.createRow(rowNum);
                     HSSFCell outUid = outRow.createCell(0);
                     outUid.setCellValue(agentDeviceImportLog.getAid());
                     HSSFCell outStockCode = outRow.createCell(1);
-                    outStockCode.setCellValue(String.valueOf((int)stock_code.getNumericCellValue()));
+                    outStockCode.setCellValue(String.valueOf((int) stock_code.getNumericCellValue()));
                     HSSFCell outStockName = outRow.createCell(2);
                     outStockName.setCellValue(stock_name.getStringCellValue());
                     HSSFCell outSN = outRow.createCell(3);
                     outSN.setCellValue(sn.getStringCellValue());
                     HSSFCell outMAC = outRow.createCell(4);
                     outMAC.setCellValue(mac.getStringCellValue());
-                    successCount ++;
+
+                    HSSFCell outResult = outRow.createCell(5);
+                    agentDeviceClaim.setImport_id(import_id);
+                    if (agentDeviceClaimService.getById(agentDeviceClaim.getId()) == null) {
+                        agentDeviceClaimService.insert(agentDeviceClaim);
+                        successCount ++;
+                        outResult.setCellValue("success");
+                    } else {
+                        failCount ++;
+                        outResult.setCellValue("fail");
+                    }
+
 
                 }
             }
