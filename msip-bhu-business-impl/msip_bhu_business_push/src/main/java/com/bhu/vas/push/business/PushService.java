@@ -357,7 +357,8 @@ public class PushService{
 			HandsetDeviceOnlinePushDTO hd_push_dto){
 		if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
 			//构造payload
-			String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+//			String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
+			String aliasName = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(presentDto.getUid(), hd_push_dto.getHd_mac());
 			//如果终端有别名 则不显示终端厂商短名称
 			if(!StringUtils.isEmpty(aliasName)){
 				hd_push_dto.setN(aliasName);
