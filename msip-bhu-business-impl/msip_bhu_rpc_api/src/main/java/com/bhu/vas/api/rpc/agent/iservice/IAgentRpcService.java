@@ -171,5 +171,15 @@ public interface IAgentRpcService {
     boolean updateAgentImportImport(int uid, int logId);
 
 
-
+    /**
+     *
+     * @param uid
+     * @param aid
+     * @param account
+     * @param invoice
+     * @param receipt
+     * @param remark
+     * @return
+     */
+    boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark);
 }

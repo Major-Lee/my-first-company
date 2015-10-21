@@ -8,7 +8,9 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
 import com.bhu.vas.api.vto.agent.*;
+import com.bhu.vas.business.ds.agent.service.AgentFinancialSettlementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,9 @@ public class AgentFacadeService {
     
     @Resource
     private WifiDeviceWholeMonthMService wifiDeviceWholeMonthMService;
+
+    @Resource
+    private AgentFinancialSettlementService agentFinancialSettlementService;
 
     public int claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
@@ -569,9 +574,19 @@ public class AgentFacadeService {
             }
         }
         agentDeviceClaimService.updateAll(agentDeviceClaims);
-
         return true;
+    }
 
+    public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
+        AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
+        agentFinancialSettlement.setUid(uid);
+        agentFinancialSettlement.setAid(aid);
+        agentFinancialSettlement.setAmount(account);
+        agentFinancialSettlement.setInvoice_fid(invoice);
+        agentFinancialSettlement.setReceipt_fid(receipt);
+        agentFinancialSettlement.setRemark(remark);
+        agentFinancialSettlementService.insert(agentFinancialSettlement);
+        return true;
     }
 
 }
