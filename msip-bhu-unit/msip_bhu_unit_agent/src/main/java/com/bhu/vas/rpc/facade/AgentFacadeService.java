@@ -8,7 +8,9 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
 import com.bhu.vas.api.vto.agent.*;
+import com.bhu.vas.business.ds.agent.service.AgentFinancialSettlementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,9 @@ public class AgentFacadeService {
     
     @Resource
     private WifiDeviceWholeMonthMService wifiDeviceWholeMonthMService;
+
+    @Resource
+    private AgentFinancialSettlementService agentFinancialSettlementService;
 
     public int claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
@@ -445,6 +450,7 @@ public class AgentFacadeService {
                 vto.setFcount(log.getFail_count());
                 vto.setCreated_at(log.getCreated_at());
                 vto.setStatus(log.getStatus());
+                vto.setRemark(log.getRemark());
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
                     vto.setNick(agent.getNick() == null ? "" : agent.getNick());
@@ -553,6 +559,43 @@ public class AgentFacadeService {
             }
         }
         return new CommonPage<UserVTO>(pageNo, pageSize, total, vtos);
+    }
+
+
+    public boolean updateAgentImportImport(int uid, long logId) {
+
+
+        AgentDeviceImportLog agentDeviceImportLog =  agentDeviceImportLogService.getById(logId);
+        if (agentDeviceImportLog != null) {
+            agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
+            agentDeviceImportLogService.update(agentDeviceImportLog);
+        }
+
+
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", logId);
+
+        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
+
+        if (agentDeviceClaims != null) {
+            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
+                agentDeviceClaim.setImport_status(1);
+            }
+        }
+        agentDeviceClaimService.updateAll(agentDeviceClaims);
+        return true;
+    }
+
+    public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
+        AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
+        agentFinancialSettlement.setUid(uid);
+        agentFinancialSettlement.setAid(aid);
+        agentFinancialSettlement.setAmount(account);
+        agentFinancialSettlement.setInvoice_fid(invoice);
+        agentFinancialSettlement.setReceipt_fid(receipt);
+        agentFinancialSettlement.setRemark(remark);
+        agentFinancialSettlementService.insert(agentFinancialSettlement);
+        return true;
     }
 
 }

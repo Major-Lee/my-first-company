@@ -269,7 +269,6 @@ public class AgentController {
 
         } catch (Exception e) {
             e.printStackTrace();
-
             SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"error",vto));
 
         }
@@ -378,6 +377,25 @@ public class AgentController {
         }
     }
 
+
+    @ResponseBody()
+    @RequestMapping(value="/update_import")
+    public void updateImport(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer logid
+            ) {
+
+        try {
+             boolean ret  = agentRpcService.updateAgentImportImport(uid, logid);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+    }
 
 
 }

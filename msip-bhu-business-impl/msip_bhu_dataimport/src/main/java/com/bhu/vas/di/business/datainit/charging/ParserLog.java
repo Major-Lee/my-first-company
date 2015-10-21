@@ -1,40 +1,28 @@
 package com.bhu.vas.di.business.datainit.charging;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import org.springframework.stereotype.Service;
+import java.util.Set;
 
 import com.bhu.vas.api.dto.charging.ActionBuilder;
+import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
+import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.bhu.vas.api.dto.charging.DeviceNotExistAction;
 import com.bhu.vas.api.dto.charging.DeviceOfflineAction;
 import com.bhu.vas.api.dto.charging.DeviceOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetOfflineAction;
 import com.bhu.vas.api.dto.charging.HandsetOnlineAction;
 import com.bhu.vas.api.dto.charging.HandsetSyncAction;
-import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
-import com.bhu.vas.api.dto.charging.ActionBuilder.Hint;
 import com.bhu.vas.business.ds.agent.mdto.LineRecord;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
-@Service
-public class Step00ParserLogService {
+public class ParserLog{
 	private Date currentDate;
 	
 	//设备 在线区间段 dmac -》LineRecords
@@ -43,7 +31,7 @@ public class Step00ParserLogService {
 	//private Map<String,Set<String>> device_handset_records = new HashMap<>();
 	//终端 在线区间段dmac -> <hmac -》LineRecords>
 	private Map<String,Map<String,LineRecords>> device_handset_records = new HashMap<>();
-	
+	//private Set<String> hmacs  = new HashSet<>();
 	public void reset(){
 		device_records.clear();
 		device_handset_records.clear();
@@ -52,7 +40,7 @@ public class Step00ParserLogService {
 	 * 分析指定日期的日志
 	 * @param date yyyy-MM-dd
 	 */
-	public void parser(String date){
+/*	public void parser(String date){
 		this.currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.shortDateFormat);
 		File[] files = FileHelper.getFilesFilterName("/BHUData/bulogs/charginglogs/", date);//"2012-08-01""2012-07-31"
 		if(files != null && files.length != 0){
@@ -100,7 +88,7 @@ public class Step00ParserLogService {
 				}
 			}
 		}
-	}
+	}*/
 	
 	public void processBackendActionMessage(String messagejsonHasPrefix) throws Exception{
 		//System.out.println(messagejsonHasPrefix);
@@ -166,6 +154,7 @@ public class Step00ParserLogService {
 	private void processHandsetSync(String message){
 		HandsetSyncAction dto = JsonHelper.getDTO(message, HandsetSyncAction.class);
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
+		//hmacs.addAll(dto.getHmacs());
 		if(handset_records.isEmpty()){
 			for(String hmac:dto.getHmacs()){
 				LineRecords records = new LineRecords();
@@ -236,6 +225,7 @@ public class Step00ParserLogService {
 		//handsetComming(dto.getMac(),dto.getHmac());
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
 		LineRecords records = handset_records.get(dto.getHmac());
+		//hmacs.add(dto.getHmac());
 		if(records == null){
 			records = new LineRecords();
 			handset_records.put(dto.getHmac(), records);
@@ -264,6 +254,7 @@ public class Step00ParserLogService {
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
 		Map<String, LineRecords> handset_records = handsetRecordGetOrCreate(dto.getMac());
 		LineRecords records = handset_records.get(dto.getHmac());
+		//hmacs.add(dto.getHmac());
 		if(records == null){
 			records = new LineRecords();
 			device_records.put(dto.getHmac(), records);
@@ -303,10 +294,24 @@ public class Step00ParserLogService {
 		}
 	}
 	
-	
+	private void processDeviceSimulateOnline(DeviceOnlineAction dto){
+		//DeviceOnlineAction dto = JsonHelper.getDTO(message, DeviceOnlineAction.class);
+		LineRecords records = device_records.get(dto.getMac());
+		if(records == null){
+			records = new LineRecords();
+			device_records.put(dto.getMac(), records);
+		}
+		LineRecord record = new LineRecord();
+		record.setUts(DateTimeHelper.getDateStart(currentDate).getTime());
+		records.setCurrent(record);
+	}
 	
 	private void processDeviceOnline(String message){
 		DeviceOnlineAction dto = JsonHelper.getDTO(message, DeviceOnlineAction.class);
+		if(dto.isSm()){
+			processDeviceSimulateOnline(dto);
+			return;
+		}
 		LineRecords records = device_records.get(dto.getMac());
 		if(records == null){
 			records = new LineRecords();
@@ -502,6 +507,19 @@ public class Step00ParserLogService {
 			}
 		}
 	}
+	/**
+	 * 过滤掉不存在终端登录的设备
+	 */
+	public void filter(){
+		Iterator<Entry<String, LineRecords>> iter = device_records.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, LineRecords> next = iter.next();
+			String key = next.getKey();
+			if(!device_handset_records.containsKey(key)){
+				iter.remove();
+			}
+		}
+	}
 	
 	public Map<String, LineRecords> getDevice_records() {
 		return device_records;
@@ -516,4 +534,8 @@ public class Step00ParserLogService {
 			Map<String, Map<String, LineRecords>> device_handset_records) {
 		this.device_handset_records = device_handset_records;
 	}
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+	
 }

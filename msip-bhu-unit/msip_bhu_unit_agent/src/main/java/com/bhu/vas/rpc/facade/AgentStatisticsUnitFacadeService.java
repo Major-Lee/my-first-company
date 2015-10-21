@@ -105,7 +105,9 @@ public class AgentStatisticsUnitFacadeService {
 			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
 				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				charts.put(String.format("%02d日", whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				//ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod())))
+				//charts.put(String.format("%02d日", whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
+				charts.put(String.format("%02d日", whichday), ChargingCurrencyHelper.currency(dto.getDod()));
 				if(whichday>max){
 					max = whichday;
 				}

@@ -13,8 +13,11 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  */
 public interface IAgentRpcService {
 
-      String PATH_INPUT_PREFIX = "/BHUData/agent/input";
-      String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+    String PATH_INPUT_PREFIX = "/BHUData/agent/input";
+    String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+    String PATH_INVOICE_PREFIX = "/BHUData/agent/invoice";
+    String PATH_RECEIPT_PREFIX = "/BHUData/agent/receipt";
+
 
 //    /**
 //     * 生成代理商
@@ -163,7 +166,23 @@ public interface IAgentRpcService {
     TailPage<UserVTO> pageAgentUserVTO(int pageNo, int pageSize);
 
 
+    /**
+     * 确定导入完毕
+     * @param uid
+     * @param logId
+     */
+    boolean updateAgentImportImport(int uid, int logId);
 
 
-
+    /**
+     *
+     * @param uid
+     * @param aid
+     * @param account
+     * @param invoice
+     * @param receipt
+     * @param remark
+     * @return
+     */
+    boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark);
 }
