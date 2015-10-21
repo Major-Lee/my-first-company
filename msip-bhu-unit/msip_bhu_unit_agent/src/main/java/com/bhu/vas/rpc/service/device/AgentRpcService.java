@@ -123,4 +123,10 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("pageAgentUserVTO pageNo[%s] pageSize", pageNo, pageSize));
         return agentFacadeService.pageUserVTO(UserType.Agent.getIndex(), pageNo, pageSize);
     }
+
+    @Override
+    public boolean updateAgentImportImport(int uid, int logId) {
+        logger.info(String.format("updateAgentImportImport uid[%s] logId", uid, logId));
+        return agentFacadeService.updateAgentImportImport(uid, logId);
+    }
 }

@@ -63,6 +63,7 @@
 		<typeAlias alias="agentDeviceClaim"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim"/>
 		<typeAlias alias="agentBulltinBoard"  type="com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard"/>
 		<typeAlias alias="agentDeviceImportLog"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog"/>
+		<typeAlias alias="agentFinancialSettlement"  type="com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement"/>
 	</typeAliases>
 	
 	<!-- 
@@ -112,6 +113,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceClaim.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBulltinBoard.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceImportLog.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentFinancialSettlement.sqlMap.xml"/>
 	</mappers>
 	
 </configuration>

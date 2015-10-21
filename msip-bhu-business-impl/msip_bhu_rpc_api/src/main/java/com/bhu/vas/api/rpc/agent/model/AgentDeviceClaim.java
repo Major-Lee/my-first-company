@@ -43,6 +43,12 @@ public class AgentDeviceClaim extends BaseStringModel {
      */
     private long import_id;
 
+
+    /**
+     * 导入状态 0:未确认 1:已确认
+     */
+    private int import_status;
+
     /**
      * 设备售出日期
      */
@@ -99,6 +105,14 @@ public class AgentDeviceClaim extends BaseStringModel {
 
     public void setImport_id(long import_id) {
         this.import_id = import_id;
+    }
+
+    public int getImport_status() {
+        return import_status;
+    }
+
+    public void setImport_status(int import_status) {
+        this.import_status = import_status;
     }
 
     public Date getSold_at() {

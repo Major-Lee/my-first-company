@@ -2,53 +2,50 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim">
+<mapper namespace="com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement">
 
-  <resultMap id="modelResult" type="agentDeviceClaim">
+  <resultMap id="modelResult" type="agentFinancialSettlement">
     <id property="id" column="id"/>
 	  <result property="uid" column="uid"/>
-	  <result property="mac" column="mac"/>
-	  <result property="stock_code" column="stock_code"/>
-	  <result property="stock_name" column="stock_name"/>
-	  <result property="status" column="status"/>
-	  <result property="import_id" column="import_id"/>
-	  <result property="import_status" column="import_status"/>
-	  <result property="sold_at" column="sold_at"/>
-	  <result property="claim_at" column="claim_at"/>
+	  <result property="aid" column="aid"/>
+	  <result property="amount" column="amount"/>
+	  <result property="invoice_fid" column="invoice_fid"/>
+	  <result property="receipt_fid" column="receipt_fid"/>
+	  <result property="remark" column="remark"/>
+	  <result property="detail" column="detail"/>
+	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_agents_devices_claim
+	    	t_agents_financial_settlement
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
 	    	uid,
-	    	mac,
-	    	stock_code,
-	    	stock_name,
-	    	status,
-	    	import_id,
-	    	import_status,
-	    	sold_at,
-	    	claim_at,
+	    	aid,
+	    	amount,
+	    	invoice_fid,
+	    	receipt_fid,
+	    	remark,
+	    	detail,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
-	    	mac,
-	    	stock_code,
-	    	stock_name,
-	    	status,
-	    	import_id,
-	    	import_status,
-	    	sold_at,
-	    	claim_at,
+	    	aid,
+	    	amount,
+	    	invoice_fid,
+	    	receipt_fid,
+	    	remark,
+	    	detail,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>   
@@ -56,27 +53,25 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{uid},
-			#{mac},
-			#{stock_code},
-			#{stock_name},
-			#{status},
-			#{import_id},
-			#{import_status},
-			#{sold_at},
-			#{claim_at},
+			#{aid},
+			#{amount},
+			#{invoice_fid},
+			#{receipt_fid},
+			#{remark},
+			#{detail},
+			#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 	    	uid = #{uid},
-	    	mac = #{mac},
-	    	stock_code = #{stock_code},
-	    	stock_name = #{stock_name},
-	    	status = #{status},
-	    	import_id = #{import_id},
-	    	import_status = #{import_status},
-	    	sold_at = #{sold_at},
-	    	claim_at = #{claim_at},
+	    	aid = #{aid},
+	    	amount = #{amount},
+	    	invoice_fid = #{invoice_fid},
+	    	receipt_fid = #{receipt_fid},
+	    	remark = #{remark},
+	    	detail = #{detail},
+	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -131,7 +126,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="agentDeviceClaim">
+	<delete id="delete" parameterType="agentDeviceImportLog">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -139,7 +134,7 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="agentDeviceClaim">
+	<insert id="insert" parameterType="agentDeviceImportLog">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 		<!-- 
 		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
@@ -148,7 +143,7 @@
 		 -->
 	</insert>
  
-	<update id="update" parameterType="agentDeviceClaim">
+	<update id="update" parameterType="agentDeviceImportLog">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -172,7 +167,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="string">
+	<select id="pkSelectByModelCriteria" resultType="long">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />

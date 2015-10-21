@@ -163,6 +163,12 @@ public interface IAgentRpcService {
     TailPage<UserVTO> pageAgentUserVTO(int pageNo, int pageSize);
 
 
+    /**
+     * 确定导入完毕
+     * @param uid
+     * @param logId
+     */
+    boolean updateAgentImportImport(int uid, int logId);
 
 
 

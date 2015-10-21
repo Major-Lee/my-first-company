@@ -14,8 +14,14 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class AgentSettlementsRecordMDTO {
 	public static final int Settlement_Illegal = -1000;
 	public static final int Settlement_View_All = -1;
-	public static final int Settlement_Created = 0;
-	public static final int Settlement_Done = 1;
+	//public static final int Settlement_Created = 0;
+	//public static final int Settlement_Done = 1;
+	
+	public static final int Settlement_Bill_Created = 0;
+	public static final int Settlement_Bill_Parted = 1;
+	public static final int Settlement_Bill_Done = 2;
+	
+	
 	@Id
 	private String id;//2015-09_user
 	//yyyyMMdd
