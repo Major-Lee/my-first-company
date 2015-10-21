@@ -41,7 +41,7 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
 		agents.add(100094);
     }
     
-    @Test
+    //@Test
     public void statisticsTest(){
     	SettlementStatisticsVTO statistics = agentSettlementsRecordMService.statistics(0);
     	System.out.println(statistics.getTs());
@@ -51,7 +51,7 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
     	System.out.println(statistics.getC_at());
     }
     
-    @Test
+   // @Test
     public void summartAggregationBetweenTest(){
     	List<Integer> agents = new ArrayList<Integer>();
     	agents.add(100093);
@@ -68,28 +68,42 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
     	System.out.println(statistics.getC_at());*/
     }
     
-    //@Test
+    @Test
     public void batchCreate() {
     	Date current = new Date();
     	AgentSettlementsRecordMDTO record = null;
     	//创建3年的数据
-    	for(int daysAgo=0;daysAgo<=36;daysAgo++){
-    		Date monthAgo = DateTimeHelper.getDateFirstDayOfMonthAgo(current,daysAgo);
+    	for(int ago=0;ago<=36;ago++){
+    		Date monthAgo = DateTimeHelper.getDateFirstDayOfMonthAgo(current,ago);
     		String monthly = DateTimeHelper.formatDate(monthAgo, DateTimeHelper.FormatPattern11);
     		for(Integer agent:agents){
     			record = new AgentSettlementsRecordMDTO();
     			record.setId(AgentSettlementsRecordMDTO.generateId(monthly, agent));
     			record.setAgent(agent);
     			record.setDate(monthly);
-    			record.setiSVPrice(ArithHelper.round(RandomData.floatNumber(1500,5000), 2));
-    			if(daysAgo == 0){
+    			record.setiSVPrice(ArithHelper.round(RandomData.floatNumber(800,2000), 2));
+    			if(ago == 0){
     				record.setStatus(AgentSettlementsRecordMDTO.Settlement_Created);
     				record.setCreated_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
     			}else{
-    				record.setStatus(AgentSettlementsRecordMDTO.Settlement_Done);
-    				record.setReckoner(3);
-    				record.setCreated_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
-    				record.setSettled_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
+    				if(RandomData.flag()){//此种情况下结算一部分或者不结算
+    					if(RandomData.flag()){//结算一部分
+    						record.setSdPrice(ArithHelper.div(record.getiSVPrice(), 2, 2));//都结算清楚了 sdPrice = iSVPrice
+        					record.setStatus(AgentSettlementsRecordMDTO.Settlement_Created);
+    						record.setReckoner(3);
+            				record.setCreated_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
+            				record.setSettled_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
+    					}else{//不结算
+    						record.setStatus(AgentSettlementsRecordMDTO.Settlement_Created);
+    	    				record.setCreated_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
+    					}
+    				}else{
+    					record.setSdPrice(record.getiSVPrice());//都结算清楚了 sdPrice = iSVPrice
+    					record.setStatus(AgentSettlementsRecordMDTO.Settlement_Done);
+        				record.setReckoner(3);
+        				record.setCreated_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
+        				record.setSettled_at(DateTimeHelper.formatDate(monthAgo,DateTimeHelper.FormatPattern1));
+    				}
     			}
     			agentSettlementsRecordMService.save(record);
     		}
