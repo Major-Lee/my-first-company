@@ -6,35 +6,39 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
-import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
-import com.bhu.vas.api.vto.agent.*;
-import com.bhu.vas.business.ds.agent.service.AgentFinancialSettlementService;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.helper.ChargingCurrencyHelper;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
+import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeMonthMService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
+import com.bhu.vas.business.ds.agent.service.AgentFinancialSettlementService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.IdHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -75,6 +79,9 @@ public class AgentFacadeService {
     @Resource
     private AgentFinancialSettlementService agentFinancialSettlementService;
 
+    @Resource
+    private AgentSettlementsRecordMService agentSettlementsRecordMService;
+    
     public int claimAgentDevice(String sn) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
         return agentDeviceClaimService.claimAgentDevice(sn);
@@ -594,6 +601,9 @@ public class AgentFacadeService {
         agentFinancialSettlement.setInvoice_fid(invoice);
         agentFinancialSettlement.setReceipt_fid(receipt);
         agentFinancialSettlement.setRemark(remark);
+        String result = agentSettlementsRecordMService.iterateSettleBills(uid, aid, account);
+        agentFinancialSettlement.setDetail(result);
+        
         agentFinancialSettlementService.insert(agentFinancialSettlement);
         return true;
     }
