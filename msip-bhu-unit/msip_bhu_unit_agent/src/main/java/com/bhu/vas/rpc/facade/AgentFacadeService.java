@@ -627,10 +627,12 @@ public class AgentFacadeService {
                     vto.setName(user.getNick());
                 }
                 vto.setUid(uid);
-                User agent = userService.getById(agentFinancialSettlement.getAid());
+                int aid = agentFinancialSettlement.getAid();
+                User agent = userService.getById(aid);
                 if (agent != null) {
                     vto.setAname(agent.getNick());
                 }
+                vto.setAid(aid);
                 vto.setAmount(agentFinancialSettlement.getAmount());
                 vto.setDetail(agentFinancialSettlement.getDetail());
                 vto.setInvoice(agentFinancialSettlement.getInvoice_fid());
