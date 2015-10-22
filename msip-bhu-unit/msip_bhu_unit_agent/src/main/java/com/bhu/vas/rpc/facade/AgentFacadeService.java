@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.agent.*;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -19,11 +20,6 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
-import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
@@ -621,15 +617,15 @@ public class AgentFacadeService {
         List<AgentFinancialSettlement> agentFinancialSettlements = agentFinancialSettlementService.findModelByCommonCriteria(mc);
         List<AgentFinancialSettlementVTO> vtos = new ArrayList<AgentFinancialSettlementVTO>();
 
+        User user = userService.getById(uid);
         if (agentFinancialSettlements != null) {
             AgentFinancialSettlementVTO vto = null;
 
-            User user = userService.getById(uid);
-            if (user != null) {
-                vto.setName(user.getNick());
-            }
-
             for (AgentFinancialSettlement agentFinancialSettlement : agentFinancialSettlements) {
+                vto = new AgentFinancialSettlementVTO();
+                if (user != null) {
+                    vto.setName(user.getNick());
+                }
                 vto.setUid(uid);
                 User agent = userService.getById(agentFinancialSettlement.getAid());
                 if (agent != null) {
