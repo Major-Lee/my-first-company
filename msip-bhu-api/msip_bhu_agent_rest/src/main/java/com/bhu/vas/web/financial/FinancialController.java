@@ -1,8 +1,11 @@
 package com.bhu.vas.web.financial;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
 import com.bhu.vas.api.vto.agent.AgentFinancialUploadVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Controller;
@@ -64,10 +67,18 @@ public class FinancialController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) Integer aid
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+
 
     ) {
-
+        try {
+            TailPage<AgentFinancialSettlementVTO> vtos = agentRpcService.pageAgentFinancialSettlementVTO(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+        }
     }
 
 
