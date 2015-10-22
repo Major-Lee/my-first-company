@@ -31,29 +31,30 @@ public class WifiDeviceHelper {
 	
 	/**
 	 * 比较两个设备的软件版本号
+	 * 前置条件：版本号不包括
 	 * 备注：只针对大版本号不一致或者 大版本一致情况下的小版本都存在Build情况
-	 * 返回 1 表示 orig_swver1 大于 orig_swver2
-	 * 返回 0 表示 orig_swver1 等于 orig_swver2
-	 * 返回 -1 表示 orig_swver1 小于 orig_swver2
+	 * 返回 1 表示 device_orig_swver 大于 gray_orig_swver
+	 * 返回 0 表示 device_orig_swver 等于 gray_orig_swver
+	 * 返回 -1 表示 device_orig_swver 小于 gray_orig_swver 可以升级
 	 * 小版本号的前缀不一致的情况下都返回 0 eg：build或r
 	 * @param orig_swver1
 	 * @param orig_swver2
 	 * @return
 	 */
-	public static int compareDeviceVersions(String orig_swver1, String orig_swver2){
-		if(StringUtils.isEmpty(orig_swver1) || StringUtils.isEmpty(orig_swver2)) 
+	public static int compareDeviceVersions(String device_orig_swver, String gray_defined_orig_swver){
+		if(StringUtils.isEmpty(device_orig_swver) || StringUtils.isEmpty(gray_defined_orig_swver)) 
 			throw new RuntimeException("param validate empty");
-		DeviceVersion ver1 = DeviceVersion.parser(orig_swver1);
+		DeviceVersion ver1 = DeviceVersion.parser(device_orig_swver);
+		if(ver1 == null || !ver1.canExecuteUpgrade()) return 0;
 		String[] orig_swver1_versions = ver1.parseDeviceSwverVersion();
 		if(orig_swver1_versions == null) return -1;
-		DeviceVersion ver2 = DeviceVersion.parser(orig_swver2);
+		DeviceVersion ver2 = DeviceVersion.parser(gray_defined_orig_swver);
 		String[] orig_swver2_versions = ver2.parseDeviceSwverVersion();
 		if(orig_swver2_versions == null) return 1;
 		//判断大版本号
 		int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
 		//System.out.println("top ret " + top_ret);
 		if(top_ret != 0) return top_ret;
-		
 		if(orig_swver1_versions[1] != null &&  orig_swver2_versions[1] != null){
 			if(orig_swver1_versions[1].startsWith(DeviceVersion.Build_Normal_Prefix) && orig_swver2_versions[1].startsWith(DeviceVersion.Build_Normal_Prefix)){
 				int bottom_ret = StringHelper.compareVersion(
@@ -240,7 +241,7 @@ public class WifiDeviceHelper {
 	}
 	
 	public static void main(String[] argv){
-		String current = "AP106P06V1.3.2Build8606_TC";
+		String current = "AP106P06V1.3.2Build8606_TU";
 		String[] array = {"AP106P06V1.3.2Build8606","AP106P06V1.3.2Build8677","AP106P06V1.3.2Build8600","AP106P07V1.3.3r1_TU","AP106P07V1.3.1r1_TU","AP106P06V1.3.0Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array){
 			int compareDeviceVersions = compareDeviceVersions(current, orig);

@@ -112,6 +112,9 @@ public class DeviceVersion {
 		return dv;
 	}
 	
+	public boolean canExecuteUpgrade(){
+		return StringUtils.isEmpty(dst) || wasDstURouter();
+	}
 	
 	public static void main(String[] argv){
 		String[] array = {"AP106P06V1.3.2Build8606","AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
