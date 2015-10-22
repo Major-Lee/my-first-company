@@ -137,4 +137,11 @@ public class AgentRpcService implements IAgentRpcService {
                 uid, aid, account,invoice, receipt,remark));
         return agentFacadeService.postAgentFinancialSettlement(uid, aid, account, invoice, receipt, remark);
     }
+
+    @Override
+    public TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentFinancialSettlementVTO uid[%s]  pageNo[%s] pageSize[%s]",
+                uid, pageNo, pageSize));
+        return agentFacadeService.pageAgentFinancialSettlementVTO(uid,  pageNo, pageSize);
+    }
 }

@@ -185,4 +185,14 @@ public interface IAgentRpcService {
      * @return
      */
     boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark);
+
+
+    /**
+     * 获取结算记录列表
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize);
 }
