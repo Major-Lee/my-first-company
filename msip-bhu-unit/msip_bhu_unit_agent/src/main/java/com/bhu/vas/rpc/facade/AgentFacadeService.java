@@ -608,4 +608,43 @@ public class AgentFacadeService {
         return true;
     }
 
+
+    public TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize) {
+
+        ModelCriteria mc = new ModelCriteria();
+        mc.setOrderByClause("updated_at desc");
+        mc.createCriteria().andSimpleCaulse("1=1");
+        int total = agentFinancialSettlementService.countByCommonCriteria(mc);
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+
+        List<AgentFinancialSettlement> agentFinancialSettlements = agentFinancialSettlementService.findModelByCommonCriteria(mc);
+        List<AgentFinancialSettlementVTO> vtos = new ArrayList<AgentFinancialSettlementVTO>();
+
+        if (agentFinancialSettlements != null) {
+            AgentFinancialSettlementVTO vto = null;
+
+            User user = userService.getById(uid);
+            if (user != null) {
+                vto.setName(user.getNick());
+            }
+
+            for (AgentFinancialSettlement agentFinancialSettlement : agentFinancialSettlements) {
+                vto.setUid(uid);
+                User agent = userService.getById(agentFinancialSettlement.getAid());
+                if (agent != null) {
+                    vto.setAname(agent.getNick());
+                }
+                vto.setAmount(agentFinancialSettlement.getAmount());
+                vto.setDetail(agentFinancialSettlement.getDetail());
+                vto.setInvoice(agentFinancialSettlement.getInvoice_fid());
+                vto.setReceipt(agentFinancialSettlement.getReceipt_fid());
+                vto.setRemark(agentFinancialSettlement.getRemark());
+                vto.setUpdated_at(agentFinancialSettlement.getUpdated_at());
+                vtos.add(vto);
+            }
+        }
+        return new CommonPage<AgentFinancialSettlementVTO>(pageNo, pageSize, total, vtos);
+    }
+
 }

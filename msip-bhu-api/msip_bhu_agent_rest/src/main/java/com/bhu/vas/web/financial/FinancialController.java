@@ -58,6 +58,18 @@ public class FinancialController {
 
     }
 
+    @ResponseBody()
+    @RequestMapping(value="/list")
+    public void listFinanical(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer aid
+
+    ) {
+
+    }
+
 
     @ResponseBody()
     @RequestMapping(value="/upload")
