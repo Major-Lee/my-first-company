@@ -38,7 +38,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
@@ -1364,7 +1363,7 @@ public class DeviceBusinessFacadeService {
 		}
 	}*/
 	
-	public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, long taskid){
+	/*public void taskTriggerHttpPortalProcessor(String ctx, String response, String mac, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				QuerySerialReturnDTO.class);
@@ -1376,13 +1375,13 @@ public class DeviceBusinessFacadeService {
 		try{
 			WifiDeviceDownTask downTask = this.taskFacadeService.findWifiDeviceDownTaskById(taskid);
 			WifiDeviceDownTask newdownTask = taskFacadeService.systemTaskGenerate(0, mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_Portal_Start.getNo(), downTask.getContext_var());
-			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*taskid, OperationCMD.ModifyDeviceSetting.getNo(),*/ newdownTask.getPayload());
+			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, taskid, OperationCMD.ModifyDeviceSetting.getNo(), newdownTask.getPayload());
 		}catch(BusinessI18nCodeException ex){
 			ex.printStackTrace(System.out);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
-	}
+	}*/
 	
 	public void taskCommonProcessor(String ctx, String response, String mac, long taskid){
 		Document doc = RPCMessageParseHelper.parserMessage(response);

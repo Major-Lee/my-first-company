@@ -174,7 +174,7 @@ public class AsyncMsgHandleService {
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}*/
-				//ss
+				
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
 				if(upgrade.isForceDeviceUpgrade()){
 					long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
