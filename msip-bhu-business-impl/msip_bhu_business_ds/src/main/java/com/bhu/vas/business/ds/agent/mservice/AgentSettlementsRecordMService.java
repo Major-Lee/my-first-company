@@ -81,7 +81,7 @@ public class AgentSettlementsRecordMService {
 	 * @param agent
 	 * @param price
 	 */
-	public String iterateSettleBills(int operator,int agent,double price){
+	public String iterateSettleBills(int operator,String operNick,int agent,double price){
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("结算总金额[%s]\n", price));
 		if(agent >0 && price>0){
@@ -109,7 +109,7 @@ public class AgentSettlementsRecordMService {
 						price = 0;
 					}
 					sb.append(String.format("明细 流水[%s] 结算人[%s] 金额[%s] 曾经结算[%s] 当前结算[%s] 最后结算日期[%s] 状态[%s]\n", 
-								bill.getId(),operator,bill.getiSVPrice(),old_sdPrice,ArithHelper.sub(bill.getSdPrice(),old_sdPrice),settled_at,bill.getStatus()));
+								bill.getId(),operNick,bill.getiSVPrice(),old_sdPrice,ArithHelper.sub(bill.getSdPrice(),old_sdPrice),settled_at,bill.getStatus()));
 					save(bill);
 				}
 				if(price <= 0) break;

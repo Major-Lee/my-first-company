@@ -7,10 +7,12 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.vto.agent.*;
+
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
@@ -590,14 +592,16 @@ public class AgentFacadeService {
     }
 
     public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
-        AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
+    	User operUser = userService.getById(uid);
+    	UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
+    	AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
         agentFinancialSettlement.setUid(uid);
         agentFinancialSettlement.setAid(aid);
         agentFinancialSettlement.setAmount(account);
         agentFinancialSettlement.setInvoice_fid(invoice);
         agentFinancialSettlement.setReceipt_fid(receipt);
         agentFinancialSettlement.setRemark(remark);
-        String result = agentSettlementsRecordMService.iterateSettleBills(uid, aid, account);
+        String result = agentSettlementsRecordMService.iterateSettleBills(uid,operUser.getNick(), aid, account);
         agentFinancialSettlement.setDetail(result);
         
         agentFinancialSettlementService.insert(agentFinancialSettlement);
