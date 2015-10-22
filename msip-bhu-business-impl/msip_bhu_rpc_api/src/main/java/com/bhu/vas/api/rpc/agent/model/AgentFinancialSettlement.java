@@ -8,6 +8,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 10/21/15.
  */
+@SuppressWarnings("serial")
 public class AgentFinancialSettlement extends BaseLongModel implements IRedisSequenceGenable {
 
 
