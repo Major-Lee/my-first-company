@@ -308,7 +308,7 @@ public class AgentUserUnitFacadeService {
 				user.setOrg(org);
 			}
 			if(StringUtils.isNotEmpty(bln)){
-				user.setOrg(bln);
+				user.setBln(bln);
 			}
 			if(StringUtils.isNotEmpty(addr1)){
 				user.setAddr1(addr1);
