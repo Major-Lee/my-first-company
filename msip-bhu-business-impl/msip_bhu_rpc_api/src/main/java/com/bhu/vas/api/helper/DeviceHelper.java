@@ -647,7 +647,7 @@ public class DeviceHelper {
 	
 	//TODO:待完善
 	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
-	public static final String DeviceSetting_Start_HttpPortalItem =  	
+/*	public static final String DeviceSetting_Start_HttpPortalItem =  	
      "<net>"+
           "<interface>"+
                "<ITEM name=\"wlan3\" enable=\"enable\" if_tx_rate=\"512\" if_rx_rate=\"512\" />"+
@@ -677,7 +677,25 @@ public class DeviceHelper {
      "<wifi>"+
           "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"7\" /></vap>"+
      "</wifi>"+
-     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";
+     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";*/
+	
+	
+	public static final String DeviceSetting_Start_VisitorWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys></dev>"+
+			"<dev>"+
+				"<net>"+
+				"<interface><ITEM name=\"wlan3\" enable=\"enable\" if_tx_rate=\"512\" if_rx_rate=\"512\" /></interface>"+
+				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"+
+				"<webportal>"+
+					"<setting>"+
+						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"-30\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   redirect_url=\"http://after.login.page\"  max_clients=\"256\" idle_timeout=\"1200\" force_timeout=\"21600\" open_resource=\"http://openurl2.org/,http://openurl1.org/\" />"+
+					"</setting>"+
+				"</webportal>"+
+				"</net>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"helloWorld\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
+			"</dev>";
+	
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" />";
