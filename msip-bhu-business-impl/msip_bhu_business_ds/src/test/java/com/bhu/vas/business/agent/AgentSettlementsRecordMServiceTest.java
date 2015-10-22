@@ -78,7 +78,7 @@ public class AgentSettlementsRecordMServiceTest extends BaseTest {
     public void B_iterateSettleBills(){
     	A_fetchBillsByAgent();
     	
-    	String result = agentSettlementsRecordMService.iterateSettleBills(3,100084,2000);//ArithHelper.sub(1891.85,80.49));
+    	String result = agentSettlementsRecordMService.iterateSettleBills(3,"李文华",100084,2000);//ArithHelper.sub(1891.85,80.49));
 		System.out.println(result);
 		
 		A_fetchBillsByAgent();

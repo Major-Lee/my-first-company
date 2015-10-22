@@ -211,6 +211,7 @@ public class AgentStatisticsUnitFacadeService {
 			//获取主界面显示结构 agents 列表
 			ModelCriteria mc_user = new ModelCriteria();
 			mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+			mc_user.setOrderByClause(" id desc ");
 			mc_user.setPageNumber(pageNo);
 			mc_user.setPageSize(pageSize);
 			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
