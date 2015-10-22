@@ -124,8 +124,8 @@ public class WifiDeviceHelper {
 			return (OperationDS.DS_Http_404_Start == subopt || OperationDS.DS_Http_404_Stop == subopt
 					|| 	OperationDS.DS_Http_Ad_Start == subopt || OperationDS.DS_Http_Ad_Stop == subopt
 					|| OperationDS.DS_Http_Redirect_Start == subopt || OperationDS.DS_Http_Redirect_Stop == subopt
-					|| OperationDS.DS_Http_Portal_Start == subopt || OperationDS.DS_Http_Portal_Stop == subopt
-					|| OperationDS.DS_Http_Portal_Start == subopt || OperationDS.DS_Http_Portal_Stop == subopt
+					//|| OperationDS.DS_Http_Portal_Start == subopt || OperationDS.DS_Http_Portal_Stop == subopt
+					|| OperationDS.DS_VistorWifi_Start == subopt || OperationDS.DS_VistorWifi_Stop == subopt
 					|| OperationDS.DS_Http_VapModuleCMD_Start == subopt || OperationDS.DS_Http_VapModuleCMD_Stop == subopt
 					);
 		}else{

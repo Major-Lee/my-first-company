@@ -849,10 +849,16 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams);
 			case DS_Http_404_Stop:
 				return DeviceHelper.builderDSHttp404StopOuter(config_sequence);
-			case DS_Http_Portal_Start:
+			/*case DS_Http_Portal_Start:
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
-				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);
+				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);*/
+			
+			case DS_VistorWifi_Start:
+				return DeviceHelper.builderDSStartVisitorWifiOuter(extparams);
+			case DS_VistorWifi_Stop:
+				return DeviceHelper.builderDSStopVisitorWifiOuter();
+				
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_RealChannel:

@@ -207,9 +207,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					/*case TriggerHttp404ResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
 						break;	*/
-					case TriggerHttpPortalResourceUpdate:
+					/*case TriggerHttpPortalResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-						break;
+						break;*/
 					case DeviceUpgrade:
 						deviceBusinessFacadeService.taskDeviceUpgrade(ctx, payload, mac, taskid);
 						break;
@@ -309,9 +309,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
 					}
-					else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
+					/*else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-					}
+					}*/
 				}
 			}else{
 				char first = serial.charAt(0);

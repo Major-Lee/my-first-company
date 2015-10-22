@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.task.facade;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -25,7 +27,10 @@ import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
+import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
+import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
@@ -407,12 +412,39 @@ public class TaskFacadeService {
 				}
 			}else{
 				switch(ods_cmd){
-					case DS_Http_Portal_Start:
+					/*case DS_Http_Portal_Start:
 						downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
-						break;
+						break;*/
 					case DS_Http_VapModuleCMD_Stop:
 						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
 						break;	
+					case DS_VistorWifi_Start:
+						{
+							ParamVapVistorWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
+							ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
+							UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
+							vistorwifi.setOn(true);
+							vistorwifi.setDs(false);
+							vistorwifi.setVw(ad_dto);
+							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
+							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+						}
+						break;
+					case DS_VistorWifi_Stop:
+						{
+							UserSettingState settingState = userSettingStateService.getById(mac);
+							if(settingState != null){
+								UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+								if(vistorwifi != null && vistorwifi.isOn()){
+									vistorwifi.setOn(false);
+									vistorwifi.setDs(false);
+									vistorwifi.setVw(null);
+									userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
+								}
+							}
+							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+						}
+						break;
 					/*case DS_Http_404_Start:
 					case DS_Http_404_Stop:
 					case DS_Http_Redirect_Start:

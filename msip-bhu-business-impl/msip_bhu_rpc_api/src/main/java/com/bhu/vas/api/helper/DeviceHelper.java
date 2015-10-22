@@ -14,8 +14,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -28,7 +28,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -679,23 +678,37 @@ public class DeviceHelper {
      "</wifi>"+
      "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";*/
 	
-	
+	//开启访客网络指令
+	//参数顺序 users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static final String DeviceSetting_Start_VisitorWifi =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys></dev>"+
 			"<dev>"+
 				"<net>"+
-				"<interface><ITEM name=\"wlan3\" enable=\"enable\" if_tx_rate=\"512\" if_rx_rate=\"512\" /></interface>"+
+				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
 				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"+
 				"<webportal>"+
 					"<setting>"+
-						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"-30\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   redirect_url=\"http://after.login.page\"  max_clients=\"256\" idle_timeout=\"1200\" force_timeout=\"21600\" open_resource=\"http://openurl2.org/,http://openurl1.org/\" />"+
+						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"%s\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   "
+						+ "redirect_url=\"%s\"  max_clients=\"256\" idle_timeout=\"%s\" force_timeout=\"%s\" "
+						+ "open_resource=\"%s/\" />"+
 					"</setting>"+
 				"</webportal>"+
 				"</net>"+
-				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"helloWorld\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
 			"</dev>";
-	
+	public static final String DeviceSetting_Stop_VisitorWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys></dev>"+
+				"<dev>"+
+			     "<net>"+
+			          "<interface><ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/></interface>"+
+			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
+			     "</net>"+
+			     "<wifi>"+
+			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"7\" /></vap>"+
+			     "</wifi>"+
+			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
+		    "</dev>";
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" />";
@@ -926,22 +939,24 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
 	}
 	
-	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams){
-		ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
-		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
-		if(ad_dto == null)
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
+	public static String builderDSStartVisitorWifiOuter(String extparams){
+		ParamVapVistorWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
+		ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
+		//if(ad_dto == null)
+		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi,ad_dto.builderProperties());
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
+		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	
-	public static String builderDSStopHttpPortalOuter(String config_sequence){
+	public static String builderDSStopVisitorWifiOuter(){
+		return DeviceSetting_Stop_VisitorWifi;
 		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
 		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
 		//if(ad_dto == null)
 		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Stop_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, DeviceSetting_Stop_HttpPortalItem);
+		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, DeviceSetting_Stop_HttpPortalItem);
 	}
 	/**
 	 * 构建信号强度配置数据

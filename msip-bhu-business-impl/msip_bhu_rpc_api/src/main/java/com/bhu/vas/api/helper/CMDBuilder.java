@@ -349,7 +349,6 @@ public class CMDBuilder {
 						//daysParam = days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Days);
 					resultCmd = String.format(opt.getCmdtpl(), 
 								StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1],daysParam);
-						
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
