@@ -25,8 +25,9 @@
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
-        
+        <!--
         <module>msip-bhu-business-impl/msip_bhu_business_search</module>
+    -->
         <module>msip-bhu-business-impl/msip_bhu_business_springdata_search</module>
         
         <!--
@@ -47,7 +48,9 @@
         <module>msip-bhu-api/msip_bhu_rest</module>
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
+        <!--
         <module>msip-bhu-business-impl/msip_bhu_spark_task</module>
+    -->
         <!--
         
         <module>msip-wecite-business/msip_wecite_business_ds</module>
@@ -181,13 +184,13 @@
                 <artifactId>msip_core_lucene_es</artifactId>
                 <version>3.0-SNAPSHOT</version>
             </dependency>
-
+<!--
 			<dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_search</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+            -->
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_dataimport</artifactId>
@@ -217,18 +220,12 @@
                 <artifactId>msip_core_plugins_shardbatis</artifactId>
                 <version>2.0.0B</version>
             </dependency>
-
+<!--
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_spark_task</artifactId>
                 <version>${project.version}</version>
             </dependency>                    
-<!--
-            <dependency>
-                <groupId>msip</groupId>
-                <artifactId>msip_ninemiles_rest</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 -->
             <dependency>
                 <groupId>commons-lang</groupId>
