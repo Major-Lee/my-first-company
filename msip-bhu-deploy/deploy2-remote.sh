@@ -65,8 +65,8 @@ echo '拷贝文件 msip_bhu_unit_agent-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_agent/target/msip_bhu_unit_agent-bin.zip ./$CuDateDir
 
 
-echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
-cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_task-bin.zip到'$CuDateDir
@@ -92,8 +92,8 @@ unzip -qo msip_bhu_unit_vas/bin/msip_bhu_unit_vas.jar -d msip_bhu_unit_vas/class
 unzip -q msip_bhu_unit_agent-bin.zip
 unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent/classes/
 
-unzip -q msip_bhu_spark_task-bin.zip
-unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
+#unzip -q msip_bhu_spark_task-bin.zip
+#unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
 
 unzip -q msip_bhu_backend_online-bin.zip
 unzip -qo msip_bhu_backend_online/bin/msip_bhu_backend_online.jar -d msip_bhu_backend_online/classes/
