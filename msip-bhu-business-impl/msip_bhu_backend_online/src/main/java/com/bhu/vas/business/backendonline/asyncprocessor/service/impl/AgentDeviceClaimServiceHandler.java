@@ -81,22 +81,20 @@ public class AgentDeviceClaimServiceHandler {
 
         if (agentDeviceClaims != null) {
             for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
-                agentDeviceClaim.setImport_status(1);
 
-                
-                List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
-                if (ids != null && ids.size()>0) {
-                    String id = ids.get(0);
-                    WifiDevice wifiDevice = wifiDeviceService.getById(id);
-                    if (wifiDevice != null) {
-                        wifiDevice.setAgentuser(dto.getUid());
-                        wifiDeviceService.update(wifiDevice);
+                if (agentDeviceClaim.getStatus() != 1) {
+                    agentDeviceClaim.setImport_status(1);
+                    List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
+                    if (ids != null && ids.size()>0) {
+                        String id = ids.get(0);
+                        WifiDevice wifiDevice = wifiDeviceService.getById(id);
+                        if (wifiDevice != null) {
+                            wifiDevice.setAgentuser(dto.getUid());
+                            wifiDeviceService.update(wifiDevice);
+                        }
+                        logger.info("wifiDeviceService.update" + wifiDevice.getSn());
                     }
-
-                    logger.info("wifiDeviceService.update" + wifiDevice.getSn());
                 }
-
-
             }
             agentDeviceClaimService.updateAll(agentDeviceClaims);
         }
