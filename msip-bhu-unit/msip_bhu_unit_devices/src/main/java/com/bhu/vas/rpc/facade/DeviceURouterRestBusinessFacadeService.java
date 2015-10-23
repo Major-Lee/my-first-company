@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -43,6 +42,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
@@ -67,6 +67,7 @@ import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
@@ -973,6 +974,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		WifiSinfferSettingVTO uws_vto = new WifiSinfferSettingVTO();
 		UserWifiSinfferSettingDTO uws_dto = user_setting_entity.getUserSetting(UserWifiSinfferSettingDTO.
 				Setting_Key, UserWifiSinfferSettingDTO.class);
+		
 		if(uws_dto != null){
 			uws_vto.setOn(uws_dto.isOn());
 			//获取最近12小时出现的终端数量
@@ -982,6 +984,8 @@ public class DeviceURouterRestBusinessFacadeService {
 					hours12ago_ts, current_ts);
 			uws_vto.setRecent_c(recent12hours_count);
 		}
+		UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
+				Setting_Key, UserVistorWifiSettingDTO.class);
 		/*if(uto_dto == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		}*/
@@ -991,7 +995,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			ret.put(UserWifiTimerSettingDTO.Setting_Key, uwt_dto);
 		if(uws_dto != null)
 			ret.put(UserWifiSinfferSettingDTO.Setting_Key, uws_vto);
-		
+		if(uvw_dto != null)
+			ret.put(UserVistorWifiSettingDTO.Setting_Key, uvw_dto);
 	}
 	
 	/**
