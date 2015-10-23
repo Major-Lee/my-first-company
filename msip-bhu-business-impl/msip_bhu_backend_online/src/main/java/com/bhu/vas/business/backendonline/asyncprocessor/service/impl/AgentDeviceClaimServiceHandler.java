@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -13,10 +14,12 @@ import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import org.apache.poi.hssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +67,46 @@ public class AgentDeviceClaimServiceHandler {
             e.printStackTrace();
 
         }
+    }
+
+
+    public void updateAgentDeviceClaim(String message) {
+
+        logger.info(String.format("AgentDeviceClaimServiceHandler updateAgentDeviceClaim message[%s]", message));
+        AgentDeviceClaimUpdateDTO dto = JsonHelper.getDTO(message, AgentDeviceClaimUpdateDTO.class);
+
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", dto.getLogId());
+        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
+
+        if (agentDeviceClaims != null) {
+            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
+                agentDeviceClaim.setImport_status(1);
+
+                
+                List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
+                if (ids != null && ids.size()>0) {
+                    String id = ids.get(0);
+                    WifiDevice wifiDevice = wifiDeviceService.getById(id);
+                    if (wifiDevice != null) {
+                        wifiDevice.setAgentuser(dto.getUid());
+                        wifiDeviceService.update(wifiDevice);
+                    }
+
+                    logger.info("wifiDeviceService.update" + wifiDevice.getSn());
+                }
+
+
+            }
+            agentDeviceClaimService.updateAll(agentDeviceClaims);
+        }
+
+
+
 
     }
+
+
 
 
     private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
@@ -87,9 +128,12 @@ public class AgentDeviceClaimServiceHandler {
             hssfWorkbook = new HSSFWorkbook(is);
             //代理商导入记录
             Long import_id = agentDeviceImportLog.getId();
-
+            logger.info(String.format("sheets size ===" + hssfWorkbook.getNumberOfSheets()));
             for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
+                logger.info(String.format("numSheet ===" + numSheet));
                 HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+
+                logger.info(String.format("hssfSheet ===" + hssfSheet));
                 if (hssfSheet == null) {
                     continue;
                 }
@@ -110,30 +154,40 @@ public class AgentDeviceClaimServiceHandler {
                 firstcell[2] = outputFirstRow.createCell(5);
                 firstcell[2].setCellValue("导入结果");
 
+                logger.info(String.format("row size ===" + hssfSheet.getLastRowNum()));
+
                 for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+                    logger.info(String.format("row num ===" + rowNum));
                     HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+                    logger.info(String.format("hssfRow" + hssfRow));
                     if (hssfRow == null) {
                         continue;
                     }
                     agentDeviceClaim = new AgentDeviceClaim();
 
                     HSSFCell stock_code = hssfRow.getCell(0);
+                    if (stock_code == null) {
+                        continue;
+                    }
                     agentDeviceClaim.setStock_code(String.valueOf((int) stock_code.getNumericCellValue()));
 
                     HSSFCell stock_name = hssfRow.getCell(1);
+                    if (stock_name == null || StringHelper.isEmpty(stock_name.getStringCellValue())) {
+                        continue;
+                    }
                     agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
 
                     HSSFCell sn = hssfRow.getCell(2);
-                    if (StringHelper.isEmpty(sn.getStringCellValue())) {
+                    if (sn == null || StringHelper.isEmpty(sn.getStringCellValue())) {
                         continue;
                     }
                     agentDeviceClaim.setId(sn.getStringCellValue());
 
                     HSSFCell mac = hssfRow.getCell(3);
-                    if (StringHelper.isEmpty(mac.getStringCellValue())) {
-                        continue;
+                    String macStr = "";
+                    if (mac != null && !StringHelper.isEmpty(mac.getStringCellValue())) {
+                        macStr = StringHelper.formatMacAddress(mac.getStringCellValue());
                     }
-                    String macStr = StringHelper.formatMacAddress(mac.getStringCellValue());
                     agentDeviceClaim.setMac(macStr);
 
                     Date date = new Date();
@@ -161,7 +215,7 @@ public class AgentDeviceClaimServiceHandler {
                     HSSFCell outSN = outRow.createCell(3);
                     outSN.setCellValue(sn.getStringCellValue());
                     HSSFCell outMAC = outRow.createCell(4);
-                    outMAC.setCellValue(mac.getStringCellValue());
+                    outMAC.setCellValue(macStr);
 
                     HSSFCell outResult = outRow.createCell(5);
                     agentDeviceClaim.setImport_id(import_id);
@@ -169,6 +223,7 @@ public class AgentDeviceClaimServiceHandler {
                         agentDeviceClaimService.insert(agentDeviceClaim);
                         successCount ++;
                         outResult.setCellValue("success");
+
                     } else {
                         failCount ++;
                         outResult.setCellValue("fail");
@@ -191,8 +246,11 @@ public class AgentDeviceClaimServiceHandler {
 
             agentDeviceImportLog.setBid(agentBulltinBoard.getId());
 
-        }catch(Exception ex){
-        	ex.printStackTrace(System.out);
+            logger.info("agent excel over..... ");
+
+        }catch(Exception ex) {
+            logger.error(String.format("ex[%s]", ex.getStackTrace()));
+        	ex.printStackTrace();
         }finally{
         	if(hssfWorkbook != null){
         		hssfWorkbook.close();
