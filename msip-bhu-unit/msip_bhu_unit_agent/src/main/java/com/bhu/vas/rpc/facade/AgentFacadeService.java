@@ -573,10 +573,8 @@ public class AgentFacadeService {
         if (agentDeviceImportLog != null) {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
+            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
         }
-
-        deliverMessageService.sendAgentDeviceClaimUpdateMessage(uid, logId);
-
         return true;
     }
 
