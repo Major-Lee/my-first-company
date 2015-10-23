@@ -1,6 +1,5 @@
 package com.bhu.vas.business.ds.task.facade;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
-import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
@@ -239,12 +237,11 @@ public class TaskFacadeService {
 			String channel, String channel_taskid) throws Exception{
 		
 		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
-		if(opt_cmd == null){
+		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
+		if(opt_cmd == null || ods_cmd == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 
-		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
-		
 		//如果是管理员用户 不进行用户所属设备的验证
 		WifiDevice wifiDevice = null;
 		if(RuntimeConfiguration.isConsoleUser(uid)){
@@ -359,8 +356,8 @@ public class TaskFacadeService {
 			}*/
 			
 		}
-		//判定是否是增值指令
-		if(WifiDeviceHelper.isVapCmd(opt_cmd,ods_cmd)){
+		//判定是定义出的特殊指令 广告注入、增值指令、访客网络
+		if(WifiDeviceHelper.isDeviceSpecialCmd(opt_cmd,ods_cmd)){
 			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
