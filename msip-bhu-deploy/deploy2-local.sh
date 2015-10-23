@@ -76,8 +76,8 @@ echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_dataimport-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-bin.zip ./$CuDateDir
-echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
-cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_spark_task-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_rest.war到'$CuDateDir
 cp ../../msip-bhu-api/msip_bhu_rest/target/msip_bhu_rest.war ./$CuDateDir
 echo '拷贝文件 msip_bhu_agent_rest.war到'$CuDateDir
@@ -111,8 +111,8 @@ unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.ja
 unzip -q msip_bhu_dataimport-bin.zip
 unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport/classes/
 
-unzip -q msip_bhu_spark_task-bin.zip
-unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
+#unzip -q msip_bhu_spark_task-bin.zip
+#unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
 
 unzip -qo msip_bhu_rest.war -d msip_bhu_rest
 unzip -qo msip_bhu_agent_rest.war -d msip_bhu_agent_rest
@@ -191,9 +191,9 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar  		roo
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/ 		root@$Deploy2Server0:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server0
 
-echo 'deploy msip_bhu_spark_task to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/lib/msip_*.jar  		root@$Deploy2Server0:/BHUData/apps/msip_bhu_spark_task/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/classes/com/ 		root@$Deploy2Server0:/BHUData/apps/msip_bhu_spark_task/bin/com/
+#echo 'deploy msip_bhu_spark_task to ...@'$Deploy2Server0
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/lib/msip_*.jar  		root@$Deploy2Server0:/BHUData/apps/msip_bhu_spark_task/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/classes/com/ 		root@$Deploy2Server0:/BHUData/apps/msip_bhu_spark_task/bin/com/
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/bin/msip_bhu_spark_task.jar  		root@$Deploy2Server:/BHUData/apps/msip_bhu_spark_task/applications/
 
 echo 'deploy msip_bhu_spark_task successfully @'$Deploy2Server0
