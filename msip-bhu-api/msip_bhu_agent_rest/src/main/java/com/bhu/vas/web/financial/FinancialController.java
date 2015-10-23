@@ -28,7 +28,8 @@ import java.util.Date;
 public class FinancialController {
 
 
-    private final static String URL_PREFIX = "http://192.168.66.7/agent/" ;
+    //private final static String URL_PREFIX = "http://192.168.66.7/agent/" ;
+    private final static String URL_PREFIX = "http://agent.bhunetworks.com/" ;
 
     private final static int UPLOAD_TYPE_INVOICE = 1;
     private final static int UPLOAD_TYPE_RECEIPT = 2;
