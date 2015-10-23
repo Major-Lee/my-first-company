@@ -569,25 +569,14 @@ public class AgentFacadeService {
 
     public boolean updateAgentImportImport(int uid, long logId) {
 
-
         AgentDeviceImportLog agentDeviceImportLog =  agentDeviceImportLogService.getById(logId);
         if (agentDeviceImportLog != null) {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
         }
 
+        deliverMessageService.sendAgentDeviceClaimUpdateMessage(uid, logId);
 
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", logId);
-
-        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
-
-        if (agentDeviceClaims != null) {
-            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
-                agentDeviceClaim.setImport_status(1);
-            }
-        }
-        agentDeviceClaimService.updateAll(agentDeviceClaims);
         return true;
     }
 

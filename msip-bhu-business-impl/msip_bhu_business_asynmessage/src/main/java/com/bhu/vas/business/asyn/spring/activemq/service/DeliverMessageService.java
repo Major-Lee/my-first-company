@@ -12,6 +12,7 @@ import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQu
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.*;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
 
 
 public class DeliverMessageService {
@@ -356,6 +357,15 @@ public class DeliverMessageService {
 		dto.setInputPath(inputPath);
 		dto.setOutputPath(outputPath);
 		dto.setOriginName(originName);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+
+	}
+
+	public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId) {
+		AgentDeviceClaimUpdateDTO dto = new AgentDeviceClaimUpdateDTO();
+		dto.setUid(uid);
+		dto.setLogId(logId);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 

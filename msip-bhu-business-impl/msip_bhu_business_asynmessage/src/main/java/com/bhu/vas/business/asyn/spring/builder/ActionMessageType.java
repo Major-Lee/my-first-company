@@ -48,6 +48,7 @@ public enum ActionMessageType {
 
 
 	AgentDeviceClaimImport("代理商设备导入","agent device claim import","AI"),
+	AgentDeviceClaimUpdate("代理商导入更新", "agent device update ", "AU"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

@@ -146,6 +146,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case AgentDeviceClaimImport:
 							agentDeviceClaimServiceHandler.importAgentDeviceClaim(message);
 							break;
+						case AgentDeviceClaimUpdate:
+							agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
