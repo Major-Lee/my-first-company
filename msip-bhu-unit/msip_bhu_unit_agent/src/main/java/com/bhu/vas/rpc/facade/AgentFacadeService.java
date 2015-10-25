@@ -80,9 +80,9 @@ public class AgentFacadeService {
     @Resource
     private AgentSettlementsRecordMService agentSettlementsRecordMService;
     
-    public int claimAgentDevice(String sn) {
-        logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s]", sn));
-        return agentDeviceClaimService.claimAgentDevice(sn);
+    public int claimAgentDevice(String sn, String mac) {
+        logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s] mac[%s]", sn, mac));
+        return agentDeviceClaimService.claimAgentDevice(sn, mac);
     }
 
 
