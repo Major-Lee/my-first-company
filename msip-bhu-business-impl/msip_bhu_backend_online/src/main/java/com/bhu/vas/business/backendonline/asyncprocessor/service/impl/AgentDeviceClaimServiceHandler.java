@@ -89,9 +89,10 @@ public class AgentDeviceClaimServiceHandler {
                         WifiDevice wifiDevice = wifiDeviceService.getById(id);
                         if (wifiDevice != null) {
                             wifiDevice.setAgentuser(dto.getUid());
+                            agentDeviceClaim.setMac(wifiDevice.getId());
                             wifiDeviceService.update(wifiDevice);
                         }
-                        logger.info("wifiDeviceService.update" + wifiDevice.getSn());
+                        //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
                     }
                 }
 

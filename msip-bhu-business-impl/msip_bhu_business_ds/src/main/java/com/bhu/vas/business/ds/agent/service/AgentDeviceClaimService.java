@@ -30,13 +30,14 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
      * -1 认领库中不存在此设备
      * >0 认领库中的agentuser id
      */
-    public int claimAgentDevice(String sn) {
+    public int claimAgentDevice(String sn, String mac) {
         AgentDeviceClaim agentDeviceClaim = this.getById(sn);
         if (agentDeviceClaim != null) {
             int status = agentDeviceClaim.getStatus();
             if (status == 0) { //如果未认领过需要认领
                 agentDeviceClaim.setClaim_at(new Date());
                 agentDeviceClaim.setStatus(1);
+                agentDeviceClaim.setMac(mac);
                 this.update(agentDeviceClaim);
             }
             return agentDeviceClaim.getUid(); //不管认领未认领返回uid
