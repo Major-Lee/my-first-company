@@ -840,7 +840,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSHttpAdStartOuter(config_sequence, extparams);
 			case DS_Http_Ad_Stop:
 				return DeviceHelper.builderDSHttpAdStopOuter(config_sequence);	
-			case DS_Http_Redirect_Start:
+			/*case DS_Http_Redirect_Start:
 				return DeviceHelper.builderDSHttpRedirectStartOuter(config_sequence, extparams);
 			case DS_Http_Redirect_Stop:
 				return DeviceHelper.builderDSHttpRedirectStopOuter(config_sequence);
@@ -848,7 +848,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			case DS_Http_404_Start:
 				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams);
 			case DS_Http_404_Stop:
-				return DeviceHelper.builderDSHttp404StopOuter(config_sequence);
+				return DeviceHelper.builderDSHttp404StopOuter(config_sequence);*/
 			/*case DS_Http_Portal_Start:
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
@@ -925,15 +925,13 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 					}
 				}
 			}
+			/*//取消老的增值指令下发数据 20151023
 			if(vap_module_ds != null && !vap_module_ds.isEmpty()){
-				/*if(vap_module_ds.contains(OperationDS.DS_Http_VapModuleCMD_Start)){
-					vap_module_ds
-				}*/
 				String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
 						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));
 				if(StringUtils.isNotEmpty(cmd))
 					payloads.add(cmd);
-			}
+			}*/
 			return payloads;
 		}finally{
 			if(vap_module_ds != null){

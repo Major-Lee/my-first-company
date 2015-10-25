@@ -6,19 +6,13 @@ import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  *  上端下发消息：
@@ -304,7 +298,13 @@ public class CMDBuilder {
 			}
 			switch(opt){
 				case ModifyDeviceSetting:
-					//新版本增值模块指令构造 目前支持增值指令 404 redirect
+					try{
+						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+					/*//新版本增值模块指令构造 目前支持增值指令 404 redirect
 					if(WifiDeviceHelper.isVapCmdModuleSupported(opt,subopt)){// && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
 						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{subopt},wifi_mac,taskid,new String[]{extparams});
 					}else{
@@ -314,7 +314,7 @@ public class CMDBuilder {
 						}catch(Exception ex){
 							ex.printStackTrace(System.out);
 						}
-					}
+					}*/
 					break;
 				case TurnOnDeviceDPINotify:
 					String dpiServerIp = extparams;
@@ -361,7 +361,8 @@ public class CMDBuilder {
 		return resultCmd;
 	}
 	
-	public static String autoBuilderVapCMD4Opt(OperationCMD opt,OperationDS[] subopts,String wifi_mac,long taskid,String[] extparams){
+	
+	/*public static String autoBuilderVapCMD4Opt(OperationCMD opt,OperationDS[] subopts,String wifi_mac,long taskid,String[] extparams){
 		if(subopts == null || subopts.length==0) return null;
 		StringBuilder innercmd = new StringBuilder();
 		int index = 0;
@@ -399,7 +400,7 @@ public class CMDBuilder {
 			return resultCmd.toString();
 		}
 		return null;
-	}
+	}*/
 	
 	public static String autoBuilderVapFullCMD4Opt(String wifi_mac,long taskid,String template){
 		StringBuilder resultCmd = new StringBuilder(
