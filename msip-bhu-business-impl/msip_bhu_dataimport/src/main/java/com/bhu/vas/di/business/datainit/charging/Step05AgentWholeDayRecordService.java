@@ -61,6 +61,7 @@ public class Step05AgentWholeDayRecordService {
 		EntityIterator<Integer, User> it_user = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userSerivce.getEntityDao(), mc_user);
 		while(it_user.hasNext()){
 			List<Integer> uids = it_user.nextKeys();
+			System.out.println(String.format("agentDailyRecord2Mongo date[%s] uids[%s]", date,uids));
 			for(Integer uid:uids){
 				//agentDeviceClaimService.findModelPageByModelCriteria(mc);
 				//doAgentWholeDay(date,uid,lineDeviceRecordsMap,lineHandsetRecordsMap);
@@ -167,6 +168,7 @@ public class Step05AgentWholeDayRecordService {
 			for(AgentDeviceClaim device:devices){
 				macs.add(device.getMac());
 			}
+			System.out.println(String.format("doAgentWholeDay date[%s] uid[%s] macs[%s]", date,uid,macs));
 			if(!macs.isEmpty()){
 				//List<RecordSummaryDTO> summaryAggregationWith = wifiDeviceWholeDayMService.summaryAggregationWith(macs, date);
 				//从mongo中获取汇总数据

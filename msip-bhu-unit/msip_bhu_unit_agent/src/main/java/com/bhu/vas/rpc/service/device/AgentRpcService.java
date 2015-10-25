@@ -33,9 +33,9 @@ public class AgentRpcService implements IAgentRpcService {
     private AgentStatisticsUnitFacadeService agentStatisticsUnitFacadeService;
     
     @Override
-    public int claimAgentDevice(String sn) {
-        logger.info(String.format("claimAgentDevice sn[%s]", sn));
-        return agentFacadeService.claimAgentDevice(sn);
+    public int claimAgentDevice(String sn, String mac) {
+        logger.info(String.format("claimAgentDevice sn[%s] mac[%s]", sn, mac));
+        return agentFacadeService.claimAgentDevice(sn, mac);
     }
 
     @Override
