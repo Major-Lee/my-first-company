@@ -32,13 +32,13 @@ public class DailyChargingDataParserOper {
 		String chargingsimulogs = argv[1];//BHUData/bulogs/copylogs/%s/chargingsimulogs/
 		String charginglogs = argv[2];//BHUData/bulogs/copylogs/%s/charginglogs/
 		
-		System.out.println("----------Params------------");
+		System.out.println("----------ParamsStart------------");
 		for(String date:dates){
-			System.out.println("日期:"+date);
+			System.out.println("日期参数:"+date);
 		}
-		System.out.println("模拟登录日志:"+chargingsimulogs);
-		System.out.println("登录登出日志:"+charginglogs);
-		System.out.println("----------Params End------------");
+		System.out.println("模拟登录日志参数:"+chargingsimulogs);
+		System.out.println("登录登出日志参数:"+charginglogs);
+		System.out.println("----------ParamsEnd------------");
 		
 		//String date = "2015-09-10";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
@@ -60,6 +60,12 @@ public class DailyChargingDataParserOper {
 		//String[] dates = new String[]{"2015-09-22"};
 		
 		for(String date:dates){
+			
+			System.out.println("----------开始导入------------");
+			System.out.println("日期:"+date);
+			System.out.println("模拟登录日志:"+String.format(chargingsimulogs, date));
+			System.out.println("登录登出日志:"+String.format(charginglogs, date));
+			
 			final ParserLog parser = new ParserLog();
 			parser.setCurrentDate(DateTimeHelper.parseDate(date, DateTimeHelper.shortDateFormat));
 			step00ReadSimulateLogService.parser(date, new IteratorNotify<String>(){
