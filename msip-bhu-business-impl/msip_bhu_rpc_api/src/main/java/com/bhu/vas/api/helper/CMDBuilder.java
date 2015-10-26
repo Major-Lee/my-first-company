@@ -10,7 +10,6 @@ import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -436,38 +435,6 @@ public class CMDBuilder {
 				urlprefix,
 				retry_count, 
 				retry_interval);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
-	}
-	
-	
-	private static String[] genParserParams(String wifi_mac,String opt,long taskid,String extparams){
-		String[] params = new String[3];
-		params[0] = StringHelper.unformatMacAddress(wifi_mac);
-		params[1] = opt;
-		params[2] = builderTaskidFormat(taskid);
-		String[] split = extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);
-		if(split != null && split.length>0)
-			return ArrayHelper.join(params, split);
-		else{
-			return params;
-		}
-		/*for(int i=3;i<10;i++){
-			
-		}*/
-		/*if(StringUtils.isEmpty(extparams)) {
-			params = new String[3];
-			params[0] = StringHelper.unformatMacAddress(wifi_mac);
-			params[1] = opt;
-			params[2] = String.format(SuffixTemplete,taskid);
-			return params;
-		}else{
-			
-			params = new String[3+split.length];
-			params[0] = StringHelper.unformatMacAddress(wifi_mac);
-			params[1] = opt;
-			params[2] = String.format(SuffixTemplete,taskid);
-			
-		}
-		return extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);*/
 	}
 	
 	public static String builderCMDSerial(String opt, String taskid_format){
