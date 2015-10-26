@@ -48,4 +48,14 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         mc.createCriteria().andColumnEqualTo("uid", uid);
         this.deleteByCommonCriteria(mc);
     }
+    
+    /**
+     * 清除设备mac的绑定信息
+     * @param mac
+     */
+    public void clearDeviceBinded(String mac){
+    	ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        this.deleteByCommonCriteria(mc);
+    }
 }

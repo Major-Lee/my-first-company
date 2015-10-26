@@ -72,6 +72,12 @@ public class CMDBuilder {
 		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid));
 	}
+	
+	public static String builderClearDeviceBootReset(String wifi_mac){
+		return String.format(OperationCMD.ClearDeviceBootReset.getCmdtpl(), 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()));
+	}
+	
 	public static String builderDeviceStatusQuery(String wifi_mac,long taskid){
 		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),builderTaskidFormat(taskid));
