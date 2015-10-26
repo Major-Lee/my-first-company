@@ -796,6 +796,7 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s]", message));
 		
 		WifiDeviceSettingQueryDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingQueryDTO.class);
+		List<String> cmdPayloads = dto.getPayloads();
 		//配置状态如果为恢复出厂 则清空设备的相关业务数据
 		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
 			//只有urouter设备才会执行
@@ -803,6 +804,8 @@ public class AsyncMsgHandleService {
 				try{
 					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
 					backendBusinessService.deviceRestoreFactory(dto.getMac());
+					//解绑后需要发送指令通知设备
+					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 					logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
 				}catch(Exception ex){
 					//ex.printStackTrace();
@@ -810,7 +813,7 @@ public class AsyncMsgHandleService {
 				}
 			}
 		}
-		List<String> cmdPayloads = dto.getPayloads();
+		
 		if(DeviceHelper.RefreashDeviceSetting_Normal == dto.getRefresh_status()){
 			//判断周边探测是否开启 如果开启 再次下发开启指令
 			UserSettingState settingState = userSettingStateService.getById(dto.getMac());

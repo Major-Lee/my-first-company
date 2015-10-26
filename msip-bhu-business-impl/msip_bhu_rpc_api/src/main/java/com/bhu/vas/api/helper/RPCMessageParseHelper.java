@@ -587,6 +587,11 @@ public class RPCMessageParseHelper {
 			Element config_element = Dom4jHelper.select(doc, "dev/sys/config/ITEM");
 			if(config_element != null){
 				dto.setSequence(config_element.attributeValue("sequence"));
+				String boot_on_reset = config_element.attributeValue("boot_on_reset");
+				if(StringUtils.isEmpty(boot_on_reset))
+					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_NotHappen);
+				else
+					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_Happen);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

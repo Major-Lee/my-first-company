@@ -15,6 +15,9 @@ public class WifiDeviceSettingDTO {
 	public static final String Mode_Pppoe = "pppoe";
 	public static final String Mode_Pppol2tp = "pppol2tp";
 	
+	public static final int Boot_On_Reset_Happen = 1;
+	public static final int Boot_On_Reset_NotHappen = 0;
+	
 	//信号强度
 //	private String power;
 	//信号强度 多频设备会有多个dto
@@ -24,6 +27,8 @@ public class WifiDeviceSettingDTO {
 	private WifiDeviceSettingLinkModeDTO mode;
 	//配置流水号
 	private String sequence;
+	//取值0和1， 1 表示设备做过reset后重启进行的上报数据。
+	private int boot_on_reset;
 	//VAP列表
 	private List<WifiDeviceSettingVapDTO> vaps;
 	//黑白名单列表
@@ -127,4 +132,14 @@ public class WifiDeviceSettingDTO {
 	public void setAd(WifiDeviceSettingVapAdDTO ad) {
 		this.ad = ad;
 	}
+
+	public int getBoot_on_reset() {
+		return boot_on_reset;
+	}
+
+	public void setBoot_on_reset(int boot_on_reset) {
+		this.boot_on_reset = boot_on_reset;
+	}
+	
+	
 }

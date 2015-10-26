@@ -20,6 +20,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHot
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 
 /**
@@ -36,6 +37,8 @@ public class BackendBusinessService {
 	@Resource
 	private UserSettingStateService userSettingStateService;
 	
+	@Resource
+	private UserDeviceService userDeviceService;
 	/**********************************     清除设备数据业务 start   *****************************************/
 	
 	/**
@@ -59,10 +62,12 @@ public class BackendBusinessService {
 		clearRealtimeSpeedData(mac);
 		//6:终端列表清除离线终端数据
 		clearTerminalOfflineListData(mac);
-		//TODO:7流量统计数据清除
+		//7流量统计数据清除
 		clearDeviceUsedStatisticsData(mac);
-		//TODO:8终端详情数据清除
+		//8终端详情数据清除
 		clearDeviceHandsetData(mac);
+		//9清除设备和用户的绑定关系
+		clearDeviceBindedRelation(mac);
 	}
 	
 	
@@ -71,20 +76,32 @@ public class BackendBusinessService {
 	 * @param mac
 	 */
 	public void clearTerminalOfflineListData(String mac){
-		WifiDeviceHandsetPresentSortedSetService.getInstance().clearOfflinePresents(mac);
+		try{
+			WifiDeviceHandsetPresentSortedSetService.getInstance().clearOfflinePresents(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 	
 	public void clearDeviceUsedStatisticsData(String mac){
-		BusinessMarkerService.getInstance().deviceUsedStatisticsClear(mac);
+		try{
+			BusinessMarkerService.getInstance().deviceUsedStatisticsClear(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 
 	public void clearDeviceHandsetData(String mac) {
+		try{
+			Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_WIFIID).is(mac));
+			Update update = new Update();
+			update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
+			update.set(WifiHandsetDeviceRelationMDao.M_LOGS, new ArrayList<WifiHandsetDeviceItemLogMDTO>());
+			wifiHandsetDeviceRelationMDao.updateMulti(query, update);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 
-		Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_WIFIID).is(mac));
-		Update update = new Update();
-		update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
-		update.set(WifiHandsetDeviceRelationMDao.M_LOGS, new ArrayList<WifiHandsetDeviceItemLogMDTO>());
-		wifiHandsetDeviceRelationMDao.updateMulti(query, update);
 
 	}
 
@@ -93,11 +110,16 @@ public class BackendBusinessService {
 	 * 1:定时开关
 	 * 2:终端上线通知开关
 	 * 3:周边探测开关
+	 * 4:访客网络开关
 	 * @param mac
 	 */
 	public void initUserSettingData(String mac){
-		userSettingStateService.deleteById(mac);
-		userSettingStateService.initUserSettingState(mac);
+		try{
+			userSettingStateService.deleteById(mac);
+			userSettingStateService.initUserSettingState(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 	
 	
@@ -106,39 +128,59 @@ public class BackendBusinessService {
 	 * @param mac
 	 */
 	public void clearWifistasnifferData(String mac){
-		int start = 0;
-		int size = 100;
-		int count = 0;
-		//遍历获取recent探测数据
-		do{
-			Set<String> recent_set = TerminalRecentSortedSetService.getInstance().fetchTerminalRecent(mac, start, size);
-			if(recent_set == null || recent_set.isEmpty()){
-				count = 0;
-			}else{
-				count = recent_set.size();
-				
-				String[] recent_array = recent_set.toArray(new String[]{});
-				//删除最后一次探测上线时间数据
-				TerminalLastTimeStringService.getInstance().dels(mac, recent_array);
-				//删除终端探测细节数据
-				TerminalDetailRecentSortedSetService.getInstance().dels(mac, recent_array);
-				//删除终端探测隔壁老王数据
-				TerminalHotSortedSetService.getInstance().del(mac);
-				//删除社区类型数据
-				TerminalDeviceTypeCountHashService.getInstance().del(mac);
-			}
-			start = start + size;
-		}while(count == size);
-		
-		//删除recent探测数据
-		TerminalRecentSortedSetService.getInstance().del(mac);
+		try{
+			int start = 0;
+			int size = 100;
+			int count = 0;
+			//遍历获取recent探测数据
+			do{
+				Set<String> recent_set = TerminalRecentSortedSetService.getInstance().fetchTerminalRecent(mac, start, size);
+				if(recent_set == null || recent_set.isEmpty()){
+					count = 0;
+				}else{
+					count = recent_set.size();
+					
+					String[] recent_array = recent_set.toArray(new String[]{});
+					//删除最后一次探测上线时间数据
+					TerminalLastTimeStringService.getInstance().dels(mac, recent_array);
+					//删除终端探测细节数据
+					TerminalDetailRecentSortedSetService.getInstance().dels(mac, recent_array);
+					//删除终端探测隔壁老王数据
+					TerminalHotSortedSetService.getInstance().del(mac);
+					//删除社区类型数据
+					TerminalDeviceTypeCountHashService.getInstance().del(mac);
+				}
+				start = start + size;
+			}while(count == size);
+			
+			//删除recent探测数据
+			TerminalRecentSortedSetService.getInstance().del(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 	
 	/**
 	 * 清除设备的测速数据和实时速率残留数据
 	 */
 	public void clearRealtimeSpeedData(String mac){
-		WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearAll(mac);
+		try{
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearAll(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+	}
+	
+	/**
+	 * 清除设备和用户绑定关系
+	 * @param mac
+	 */
+	public void clearDeviceBindedRelation(String mac){
+		try{
+			userDeviceService.clearDeviceBinded(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 	
 	/**********************************     清除设备数据业务 end   *****************************************/

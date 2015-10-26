@@ -48,7 +48,7 @@ public class DeviceHelper {
 	
 	//获取配置数据正常
 	public static final int RefreashDeviceSetting_Normal = 0;
-	//获取配置数据序列号比当前小 认为是恢复出厂
+	//获取配置数据序列号比当前小 认为是恢复出厂 或者 通过配置中的 dev.sys.config boot_on_reset属性来判定
 	public static final int RefreashDeviceSetting_RestoreFactory = 1;
 	
 	/**

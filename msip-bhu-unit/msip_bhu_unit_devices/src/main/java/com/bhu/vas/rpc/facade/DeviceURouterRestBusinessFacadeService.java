@@ -22,6 +22,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -986,9 +987,11 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 		UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
 				Setting_Key, UserVistorWifiSettingDTO.class);
-		/*if(uto_dto == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
-		}*/
+		if(uvw_dto == null){
+			uvw_dto = new UserVistorWifiSettingDTO();
+			uvw_dto.setVw(ParamVapVistorWifiDTO.builderDefault());
+			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+		}
 		if(uto_dto != null)
 			ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
 		if(uwt_dto != null)

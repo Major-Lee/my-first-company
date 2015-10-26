@@ -955,10 +955,8 @@ public class DeviceBusinessFacadeService {
 			}
 		}*/
 		int state = DeviceHelper.RefreashDeviceSetting_Normal;
-
-
+		if(dto.getBoot_on_reset() == WifiDeviceSettingDTO.Boot_On_Reset_Happen) state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
 		//todo(bluesand)新增&&更新 配置
-
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity == null){
 			entity = new WifiDeviceSetting();
@@ -975,15 +973,11 @@ public class DeviceBusinessFacadeService {
 						state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
 					}
 				}
-
 				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
-
-
 			}
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
-		
 		//如果不符合urouter的配置约定 则下发指定修改配置
 /*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
