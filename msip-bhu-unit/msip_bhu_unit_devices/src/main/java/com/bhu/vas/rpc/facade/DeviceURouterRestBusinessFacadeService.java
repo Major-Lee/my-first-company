@@ -5,8 +5,8 @@ import java.util.*;
 import javax.annotation.Resource;
 
 
-import com.bhu.vas.api.vto.guest.URouterGuestDetailVTO;
-import com.bhu.vas.api.vto.guest.URouterGuestListVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceGuestService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.slf4j.Logger;
@@ -66,7 +66,6 @@ import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
@@ -1472,9 +1471,9 @@ public class DeviceURouterRestBusinessFacadeService {
 
 
 
-	public RpcResponseDTO<URouterGuestListVTO> urouterGuestList(Integer uid, String wifiId, int start, int size) {
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String wifiId, int start, int size) {
 
-		URouterGuestListVTO vto = new URouterGuestListVTO();
+		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 
 		Set<Tuple> presents = WifiDeviceGuestService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
 
@@ -1489,11 +1488,11 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		if(!presents.isEmpty()) {
 			vto.setMac(wifiId);
-			List<URouterGuestDetailVTO> vtos = new ArrayList<URouterGuestDetailVTO>();
+			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
 
-			URouterGuestDetailVTO detailVTO = null;
+			URouterVisitorDetailVTO detailVTO = null;
 			for (Tuple tuple : presents) {
-				detailVTO = new URouterGuestDetailVTO();
+				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
 				String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_mac, wifiId);
@@ -1506,7 +1505,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 
 
-	public RpcResponseDTO<Boolean> urouterGuestRemoveHandset(Integer uid, String wifiId, String hd_mac) {
+	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String wifiId, String hd_mac) {
 
 		WifiDeviceGuestService.getInstance().removePresent(wifiId,hd_mac);
 

@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.List;
 import java.util.Map;
 
-import com.bhu.vas.api.vto.guest.URouterGuestListVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -269,13 +269,13 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 
 
 	@Override
-	public RpcResponseDTO<URouterGuestListVTO> urouterGuestList(Integer uid, String mac) {
-		return deviceURouterRestRpcService.urouterGuestList(uid, mac);
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String mac) {
+		return deviceURouterRestRpcService.urouterVisitorList(uid, mac);
 
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean>  urouterGuestRemoveHandset(Integer uid, String mac, String hd_mac) {
-		return deviceURouterRestRpcService.urouterGuestRemoveHandset(uid, mac, hd_mac);
+	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac) {
+		return deviceURouterRestRpcService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
 	}
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.guest.URouterGuestListVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -561,16 +561,16 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 
 
 	@Override
-	public RpcResponseDTO<URouterGuestListVTO> urouterGuestList(Integer uid, String mac) {
-		logger.info(String.format("DeviceURouterRestRPC urouterGuestList invoke uid [%s] mac [%s]",
-				uid, mac));
-		return null;
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterVisitorList invoke uid [%s] mac [%s] start[%s] size[%s]",
+				uid, mac, start, size));
+		return deviceURouterRestBusinessFacadeService.urouterVisitorList(uid, mac, start, size);
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> urouterGuestRemoveHandset(Integer uid, String mac, String hd_mac) {
-		logger.info(String.format("DeviceURouterRestRPC urouterGuestRemoveHandset invoke uid[%s] mac[%s] hd_mac[%s]",
+	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac) {
+		logger.info(String.format("DeviceURouterRestRPC urouterVisitorRemoveHandset invoke uid[%s] mac[%s] hd_mac[%s]",
 				uid, mac, hd_mac));
-		return null;
+		return deviceURouterRestBusinessFacadeService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
 	}
 }

@@ -2,8 +2,7 @@ package com.bhu.vas.web.device;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.guest.URouterGuestListVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -23,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 @Controller
-@RequestMapping("/urouter/guest")
-public class URouterGuestController extends BaseController {
+@RequestMapping("/urouter/visitor")
+public class URouterVisitorController extends BaseController {
 
     @Resource
     private IDeviceURouterRestRpcService deviceURouterRestRpcService;
@@ -42,9 +41,12 @@ public class URouterGuestController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) String mac) {
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+            ) {
 
-        RpcResponseDTO<URouterGuestListVTO> rpcResponse = deviceURouterRestRpcService.urouterGuestList(uid, mac);
+        RpcResponseDTO<URouterVisitorListVTO> rpcResponse = deviceURouterRestRpcService.urouterVisitorList(uid, mac,start, size);
         if(rpcResponse.getErrorCode() == null){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
         }else{
@@ -69,7 +71,7 @@ public class URouterGuestController extends BaseController {
             @RequestParam(required = true) String mac,
             @RequestParam(required = true) String hd_mac
     ) {
-        RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterGuestRemoveHandset(uid, mac, hd_mac);
+        RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
         if(rpcResponse.getErrorCode() == null){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
         }else{
