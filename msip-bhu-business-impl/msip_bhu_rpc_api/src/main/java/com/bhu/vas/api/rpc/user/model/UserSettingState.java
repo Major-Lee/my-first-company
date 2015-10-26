@@ -1,7 +1,5 @@
 package com.bhu.vas.api.rpc.user.model;
 
-import org.springframework.util.StringUtils;
-
 import com.bhu.vas.api.rpc.user.dto.UserSettingDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtStringModel;
