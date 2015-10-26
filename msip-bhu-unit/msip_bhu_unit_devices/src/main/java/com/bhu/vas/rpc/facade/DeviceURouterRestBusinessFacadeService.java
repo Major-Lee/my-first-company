@@ -1,16 +1,14 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+
+import com.bhu.vas.api.vto.guest.URouterGuestDetailVTO;
+import com.bhu.vas.api.vto.guest.URouterGuestListVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceGuestService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -927,7 +925,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deliverMessageService.sendWifiCmdsCommingNotifyMessage(
 					wifiId,/*0,OperationCMD.ParamWifiSinffer.getNo(),*/
 					CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,
-							on ? WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer:WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
+							on ? WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer : WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
@@ -1470,6 +1468,49 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 
+	}
+
+
+
+	public RpcResponseDTO<URouterGuestListVTO> urouterGuestList(Integer uid, String wifiId, int start, int size) {
+
+		URouterGuestListVTO vto = new URouterGuestListVTO();
+
+		Set<Tuple> presents = WifiDeviceGuestService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
+
+		UserSettingState settingState = userSettingStateService.getById(wifiId);
+
+		if (settingState != null) {
+			UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+			if (vistorwifi != null) {
+				vto.setN(vistorwifi.getVw().getSsid());
+			}
+		}
+
+		if(!presents.isEmpty()) {
+			vto.setMac(wifiId);
+			List<URouterGuestDetailVTO> vtos = new ArrayList<URouterGuestDetailVTO>();
+
+			URouterGuestDetailVTO detailVTO = null;
+			for (Tuple tuple : presents) {
+				detailVTO = new URouterGuestDetailVTO();
+				String hd_mac = tuple.getElement();
+				detailVTO.setHd_mac(hd_mac);
+				String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_mac, wifiId);
+				detailVTO.setN(hostname);
+				vtos.add(detailVTO);
+			}
+		}
+
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+	}
+
+
+	public RpcResponseDTO<Boolean> urouterGuestRemoveHandset(Integer uid, String wifiId, String hd_mac) {
+
+		WifiDeviceGuestService.getInstance().removePresent(wifiId,hd_mac);
+
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 
 }
