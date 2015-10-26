@@ -805,7 +805,7 @@ public class AsyncMsgHandleService {
 					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
 					backendBusinessService.deviceRestoreFactory(dto.getMac());
 					//解绑后需要发送指令通知设备
-					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac()));
+					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 					logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
 				}catch(Exception ex){
 					//ex.printStackTrace();
