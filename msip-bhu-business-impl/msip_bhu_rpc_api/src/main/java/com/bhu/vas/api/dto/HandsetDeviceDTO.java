@@ -16,6 +16,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public static final String Action_Offline = "offline";
 	public static final String Action_Sync = "sync";
 	public static final String Action_Update = "update";
+	public static final String Action_Authorize = "authorize";
 	
 	private String action;
 	//移动设备mac
@@ -66,6 +67,16 @@ public class HandsetDeviceDTO implements Serializable{
 	private String last_wifi_id;
 	//记录生成或更新时间
 	private long ts;
+
+	/**
+	 * 终端是否来自于有线口
+	 */
+	private boolean ethernet;
+	/**
+	 * 对于来自开启portal的接口上的终端,表明终端是否认证通过
+	 */
+	private boolean authorized;
+
 	public String getAction() {
 		return action;
 	}
@@ -247,5 +258,21 @@ public class HandsetDeviceDTO implements Serializable{
 			return 0;
 		}
 		return Double.parseDouble(data_rx_rate);
+	}
+
+	public boolean isEthernet() {
+		return ethernet;
+	}
+
+	public void setEthernet(boolean ethernet) {
+		this.ethernet = ethernet;
+	}
+
+	public boolean isAuthorized() {
+		return authorized;
+	}
+
+	public void setAuthorized(boolean authorized) {
+		this.authorized = authorized;
 	}
 }
