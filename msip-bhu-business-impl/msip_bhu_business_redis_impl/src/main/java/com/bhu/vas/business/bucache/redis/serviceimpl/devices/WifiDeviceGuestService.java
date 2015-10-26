@@ -1,0 +1,107 @@
+package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
+
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
+import com.smartwork.msip.cores.helper.StringHelper;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Tuple;
+
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Created by bluesand on 10/26/15.
+ */
+public class WifiDeviceGuestService extends AbstractRelationSortedSetCache {
+
+
+    private static class ServiceHolder{
+        private static WifiDeviceGuestService instance =new WifiDeviceGuestService();
+    }
+    /**
+     * 获取工厂单例
+     * @return
+     */
+    public static WifiDeviceGuestService getInstance() {
+        return ServiceHolder.instance;
+    }
+
+    private WifiDeviceGuestService() {}
+
+    private static String generateKey(String wifiId){
+        StringBuilder sb = new StringBuilder(BusinessKeyDefine.WifiDeviceGuest.Guest);
+        sb.append(StringHelper.POINT_CHAR_GAP).append(wifiId);
+        return sb.toString();
+    }
+
+    @Override
+    public JedisPool getRedisPool() {
+        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
+    }
+
+    @Override
+    public String getRedisKey() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return WifiDeviceGuestService.class.getName();
+    }
+
+
+    /**
+     * 访客上线
+     * @param wifiId
+     * @param handsetId
+     * @return
+     */
+    public long addGuestOnlinePresent(String wifiId, String handsetId){
+        return super.zadd(generateKey(wifiId), 0, handsetId);
+    }
+
+    public long addAuthOnlinePresent(String wifiId, long socre, String handsetId) {
+        return super.zadd(generateKey(wifiId), socre, handsetId);
+    }
+
+    public long removePresent(String wifiId, String handsetId) {
+        return super.zrem(generateKey(wifiId), handsetId);
+    }
+
+    public long countAuthPresent(String wifiId) {
+        return super.zcount(generateKey(wifiId), 1, Long.MAX_VALUE);
+    }
+
+    public Set<Tuple> fetchAuthOnlinePresent(String wifiId, int start, int size) {
+        return super.zrangeByScoreWithScores(generateKey(wifiId),1, Long.MAX_VALUE, start, (start+size-1));
+    }
+
+
+
+    public static void main(String args[]) {
+        System.out.println(WifiDeviceGuestService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "6c:e8:73:c2:4b:3c"));
+
+        System.out.println(WifiDeviceGuestService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
+
+        System.out.println(WifiDeviceGuestService.getInstance().addGuestOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+
+        System.out.println(WifiDeviceGuestService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+
+        System.out.println(WifiDeviceGuestService.getInstance().countAuthPresent("84:82:f4:19:01:0c"));
+
+
+        Set<Tuple> presents = WifiDeviceGuestService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c", 0, 100);
+
+
+        for(Tuple tuple : presents){
+            System.out.println(tuple.getElement());
+        }
+
+
+        System.out.println();
+
+    }
+
+}

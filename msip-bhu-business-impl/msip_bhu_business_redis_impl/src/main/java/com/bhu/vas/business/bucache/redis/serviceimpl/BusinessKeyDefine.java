@@ -86,4 +86,8 @@ public class BusinessKeyDefine {
 	public static class UserWifiDeviceHandset {
 		public static final String Nick = "UDHN";
 	}
+
+	public static class WifiDeviceGuest {
+		public static final String Guest = "WDG";
+	}
 }
