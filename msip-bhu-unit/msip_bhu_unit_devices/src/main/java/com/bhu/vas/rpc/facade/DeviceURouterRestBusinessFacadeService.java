@@ -1477,8 +1477,6 @@ public class DeviceURouterRestBusinessFacadeService {
 		vto.setMac(wifiId);
 
 		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
-
-		System.out.println("presents size ====" + presents.size());
 		UserSettingState settingState = userSettingStateService.getById(wifiId);
 
 		if (settingState != null) {
