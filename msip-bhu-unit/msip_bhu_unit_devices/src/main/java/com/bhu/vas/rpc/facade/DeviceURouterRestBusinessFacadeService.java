@@ -1474,6 +1474,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String wifiId, int start, int size) {
 
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
+		vto.setMac(wifiId);
 
 		Set<Tuple> presents = WifiDeviceGuestService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
 
@@ -1483,13 +1484,13 @@ public class DeviceURouterRestBusinessFacadeService {
 			UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
 			if (vistorwifi != null) {
 				vto.setN(vistorwifi.getVw().getSsid());
+				vto.setRx_rate(vistorwifi.getVw().getUsers_rx_rate());
 			}
 		}
 
 		if(!presents.isEmpty()) {
-			vto.setMac(wifiId);
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
-
+			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			for (Tuple tuple : presents) {
 				detailVTO = new URouterVisitorDetailVTO();
@@ -1499,6 +1500,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO.setN(hostname);
 				vtos.add(detailVTO);
 			}
+			vto.setItems(vtos);
 		}
 
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);

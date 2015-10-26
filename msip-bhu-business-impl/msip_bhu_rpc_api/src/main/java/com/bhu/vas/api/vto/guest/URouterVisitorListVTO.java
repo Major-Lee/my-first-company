@@ -14,7 +14,7 @@ public class URouterVisitorListVTO implements Serializable {
 
     private int ohd_count;
 
-    private int limit_rate;
+    private int rx_rate;
 
     private List<URouterVisitorDetailVTO> items;
 
@@ -42,12 +42,12 @@ public class URouterVisitorListVTO implements Serializable {
         this.ohd_count = ohd_count;
     }
 
-    public int getLimit_rate() {
-        return limit_rate;
+    public int getRx_rate() {
+        return rx_rate;
     }
 
-    public void setLimit_rate(int limit_rate) {
-        this.limit_rate = limit_rate;
+    public void setRx_rate(int rx_rate) {
+        this.rx_rate = rx_rate;
     }
 
     public List<URouterVisitorDetailVTO> getItems() {
