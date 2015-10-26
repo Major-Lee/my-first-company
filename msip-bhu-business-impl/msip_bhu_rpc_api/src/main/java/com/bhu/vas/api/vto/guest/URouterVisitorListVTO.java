@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by bluesand on 10/26/15.
  */
-public class URouterGuestListVTO implements Serializable {
+public class URouterVisitorListVTO implements Serializable {
 
     private String mac;
 
@@ -16,7 +16,7 @@ public class URouterGuestListVTO implements Serializable {
 
     private int limit_rate;
 
-    private List<URouterGuestDetailVTO> items;
+    private List<URouterVisitorDetailVTO> items;
 
     public String getMac() {
         return mac;
@@ -50,11 +50,11 @@ public class URouterGuestListVTO implements Serializable {
         this.limit_rate = limit_rate;
     }
 
-    public List<URouterGuestDetailVTO> getItems() {
+    public List<URouterVisitorDetailVTO> getItems() {
         return items;
     }
 
-    public void setItems(List<URouterGuestDetailVTO> items) {
+    public void setItems(List<URouterVisitorDetailVTO> items) {
         this.items = items;
     }
 }

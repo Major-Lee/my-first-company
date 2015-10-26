@@ -16,7 +16,7 @@ import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
-import com.bhu.vas.api.vto.guest.URouterGuestListVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 
 
 public interface IDeviceURouterRestRpcService {
@@ -72,9 +72,9 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterWSCommunityVTO> urouterWSCommunity(Integer uid, String mac);
 
 
-	RpcResponseDTO<URouterGuestListVTO> urouterGuestList(Integer uid, String mac);
+	RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String mac, int start, int size);
 
-	RpcResponseDTO<Boolean> urouterGuestRemoveHandset(Integer uid, String mac, String hd_mac);
+	RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac);
 
 
 
