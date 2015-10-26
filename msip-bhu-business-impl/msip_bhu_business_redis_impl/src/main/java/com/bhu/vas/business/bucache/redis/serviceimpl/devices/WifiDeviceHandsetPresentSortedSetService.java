@@ -277,19 +277,24 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		String wifiId = "tt:tt:tt:tt:tt:t";
 		String wirelessHandsetMacPrefix = "hh:hh:hh:hh:hh:h";
 		String wireledHandsetMacPrefix  = "oo:oo:oo:oo:oo:o";
-		for(int i = 0;i<10;i++){
+		for(int i = 0;i<5;i++){
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
 					wirelessHandsetMacPrefix.concat(String.valueOf(i)), 1024+i,Boolean.TRUE);
 		}
 		
-		/*for(int i = 10;i<20;i++){
+		for(int i = 5;i<10;i++){
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(wifiId, 
-					wireledHandsetMacPrefix.concat(String.valueOf(i)), 1024+i,Boolean.FALSE);
-		}*/
+					wireledHandsetMacPrefix.concat(String.valueOf(i)), 1024+i);
+		}
 		
-		for(int i = 0;i<10;i++){
+		for(int i = 0;i<5;i++){
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
 					wireledHandsetMacPrefix.concat(String.valueOf(i)), 1024+i,Boolean.FALSE);
+		}
+		
+		for(int i = 5;i<10;i++){
+			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(wifiId, 
+					wireledHandsetMacPrefix.concat(String.valueOf(i)), 1024+i);
 		}
 		
 		/*for(int i = 0;i<10;i++){
@@ -306,6 +311,8 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		for(Tuple tuple : result){
 			System.out.println("wired online="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore() - Online_WiredMinScore));
 		}
+		
+		
 		
 		result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, 0, 10);
 		for(Tuple tuple : result){
