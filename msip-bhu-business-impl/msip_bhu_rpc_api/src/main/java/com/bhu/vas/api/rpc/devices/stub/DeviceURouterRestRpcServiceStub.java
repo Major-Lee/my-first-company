@@ -269,8 +269,8 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 
 
 	@Override
-	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String mac) {
-		return deviceURouterRestRpcService.urouterVisitorList(uid, mac);
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String mac, int start, int size) {
+		return deviceURouterRestRpcService.urouterVisitorList(uid, mac, start, size);
 
 	}
 
