@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceGuestService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1476,8 +1476,9 @@ public class DeviceURouterRestBusinessFacadeService {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
 
-		Set<Tuple> presents = WifiDeviceGuestService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
+		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
 
+		System.out.println("presents size ====" + presents.size());
 		UserSettingState settingState = userSettingStateService.getById(wifiId);
 
 		if (settingState != null) {
@@ -1509,7 +1510,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String wifiId, String hd_mac) {
 
-		WifiDeviceGuestService.getInstance().removePresent(wifiId,hd_mac);
+		WifiDeviceVisitorService.getInstance().removePresent(wifiId,hd_mac);
 
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}

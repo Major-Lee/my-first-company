@@ -8,27 +8,26 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Tuple;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by bluesand on 10/26/15.
  */
-public class WifiDeviceGuestService extends AbstractRelationSortedSetCache {
+public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
 
 
     private static class ServiceHolder{
-        private static WifiDeviceGuestService instance =new WifiDeviceGuestService();
+        private static WifiDeviceVisitorService instance =new WifiDeviceVisitorService();
     }
     /**
      * 获取工厂单例
      * @return
      */
-    public static WifiDeviceGuestService getInstance() {
+    public static WifiDeviceVisitorService getInstance() {
         return ServiceHolder.instance;
     }
 
-    private WifiDeviceGuestService() {}
+    private WifiDeviceVisitorService() {}
 
     private static String generateKey(String wifiId){
         StringBuilder sb = new StringBuilder(BusinessKeyDefine.WifiDeviceGuest.Guest);
@@ -48,7 +47,7 @@ public class WifiDeviceGuestService extends AbstractRelationSortedSetCache {
 
     @Override
     public String getName() {
-        return WifiDeviceGuestService.class.getName();
+        return WifiDeviceVisitorService.class.getName();
     }
 
 
@@ -81,20 +80,20 @@ public class WifiDeviceGuestService extends AbstractRelationSortedSetCache {
 
 
     public static void main(String args[]) {
-        System.out.println(WifiDeviceGuestService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "6c:e8:73:c2:4b:3c"));
+        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "6c:e8:73:c2:4b:3c"));
 
-        System.out.println(WifiDeviceGuestService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
+        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
 
-        System.out.println(WifiDeviceGuestService.getInstance().addGuestOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+        System.out.println(WifiDeviceVisitorService.getInstance().addGuestOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
 
-        System.out.println(WifiDeviceGuestService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+        System.out.println(WifiDeviceVisitorService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
 
-        System.out.println(WifiDeviceGuestService.getInstance().countAuthPresent("84:82:f4:19:01:0c"));
-
-
-        Set<Tuple> presents = WifiDeviceGuestService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c", 0, 100);
+        System.out.println(WifiDeviceVisitorService.getInstance().countAuthPresent("84:82:f4:19:01:0c"));
 
 
+        Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c", 0, 5);
+
+        System.out.println(!presents.isEmpty());
         for(Tuple tuple : presents){
             System.out.println(tuple.getElement());
         }
