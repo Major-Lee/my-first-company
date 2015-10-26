@@ -690,7 +690,7 @@ public class DeviceHelper {
 					"<setting>"+
 						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"%s\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   "
 						+ "redirect_url=\"%s\"  max_clients=\"256\" idle_timeout=\"%s\" force_timeout=\"%s\" "
-						+ "open_resource=\"%s/\" />"+
+						+ "open_resource=\"%s/\" forbid_management=\"enable\"/>"+
 					"</setting>"+
 				"</webportal>"+
 				"</net>"+

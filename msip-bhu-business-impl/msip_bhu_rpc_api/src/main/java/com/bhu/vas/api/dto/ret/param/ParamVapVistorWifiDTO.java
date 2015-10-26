@@ -111,8 +111,8 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		dto.setUsers_rx_rate(128);
 		dto.setSignal_limit(-30);
 		dto.setRedirect_url(Default_Redirect_url);
-		dto.setIdle_timeout(1200);
-		dto.setForce_timeout(21600);
+		dto.setIdle_timeout(3*60*60);//
+		dto.setForce_timeout(12*60*60);
 		dto.setOpen_resource(Default_Open_resource);
 		dto.setSsid(Default_SSID);
 		return dto;
