@@ -266,6 +266,7 @@ public class BusinessModelBuilder {
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
+		
 //		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
 		vto.setN(getHandsetDeviceAlias(uid, hd_mac));
 		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
@@ -292,6 +293,7 @@ public class BusinessModelBuilder {
 
 			vto.setRx_bytes(hd_entity.getTx_bytes());
 			vto.setTx_bytes(hd_entity.getRx_bytes());
+			vto.setEthernet(hd_entity.isEthernet());
 		}
 		return vto;
 	}

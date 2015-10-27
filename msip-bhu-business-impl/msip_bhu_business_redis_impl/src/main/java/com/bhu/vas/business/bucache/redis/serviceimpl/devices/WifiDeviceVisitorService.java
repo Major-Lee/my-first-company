@@ -57,7 +57,7 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
      * @param handsetId
      * @return
      */
-    public long addGuestOnlinePresent(String wifiId, String handsetId){
+    public long addVisitorOnlinePresent(String wifiId, String handsetId){
         return super.zadd(generateKey(wifiId), 0, handsetId);
     }
 
@@ -84,7 +84,7 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
 
         System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
 
-        System.out.println(WifiDeviceVisitorService.getInstance().addGuestOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
 
         System.out.println(WifiDeviceVisitorService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
 
