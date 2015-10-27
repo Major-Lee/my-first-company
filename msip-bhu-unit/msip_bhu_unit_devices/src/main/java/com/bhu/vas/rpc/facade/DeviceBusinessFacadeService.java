@@ -342,7 +342,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		return dto.getVapname().equals("waln3") && dto.getPortal().equals("local");
+		return dto.getVapname().equals("wlan3") && dto.getPortal().equals("local");
 	}
 
 
