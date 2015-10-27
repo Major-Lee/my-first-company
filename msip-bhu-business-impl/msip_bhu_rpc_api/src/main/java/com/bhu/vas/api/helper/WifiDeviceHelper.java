@@ -155,7 +155,7 @@ public class WifiDeviceHelper {
 		return OperationCMD.DeviceModuleUpgrade == opt;
 	}*/
 	public static boolean isAutoCompletedTask(String optno){
-		return OperationCMD.DeviceModuleUpgrade.getNo().equals(optno);
+		return OperationCMD.DeviceModuleUpgrade.getNo().equals(optno) || OperationCMD.RemoteDeviceControlTransfer.getNo().equals(optno);
 	}
 	/**
 	 * opt = OperationCMD.ModifyDeviceSetting

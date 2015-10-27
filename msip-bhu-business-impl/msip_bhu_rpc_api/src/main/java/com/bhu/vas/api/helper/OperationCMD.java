@@ -23,6 +23,9 @@ public enum OperationCMD {
 	//3. 查询当前在线终端以sync的方式报到服务器
 	ParamQuerySyncDeviceOnlineTeminals("003","查询当前在线终端","param","00001001%s0010000000000"+"000000000006"+"<param><ITEM  wlan_user_notify=\"disable\" wlan_user_sync=\"1\" /></param>"),		
 	
+	//远端设备透传指令
+	RemoteDeviceControlTransfer("004","远端设备透传指令","remote","00001002%s%s%s"+"%s"),
+	
 	//1. 查询cpu,内存利用率
 	QueryDeviceStatus("100","查询设备cpu,内存利用率","sysperf",
 			"00001001%s%s%s"+"000100000001"+"<cmd><ITEM index=\"1\" cmd=\"sysperf\"/></cmd>"),

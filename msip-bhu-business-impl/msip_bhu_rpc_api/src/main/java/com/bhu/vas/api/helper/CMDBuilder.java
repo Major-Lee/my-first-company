@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.bhu.vas.api.dto.ret.transfer.ParamDeviceRemoteControlDTO;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -350,6 +351,11 @@ public class CMDBuilder {
 					resultCmd = String.format(opt.getCmdtpl(), 
 								StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1],daysParam);
 						
+					break;
+				case RemoteDeviceControlTransfer:
+					ParamDeviceRemoteControlDTO paramDto = JsonHelper.getDTO(extparams, ParamDeviceRemoteControlDTO.class);
+					resultCmd = String.format(opt.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),JsonHelper.getJSONString(paramDto));
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
