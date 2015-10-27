@@ -1,5 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -8,6 +10,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Tuple;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -100,6 +103,18 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
 
 
         System.out.println();
+
+        String payload = "<event>\n" +
+                "        <wlan>\n" +
+                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-哈哈\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
+                "        </wlan>\n" +
+                "</event>";
+
+        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
+                HandsetDeviceDTO.class);
+
+        System.out.println(dtos.get(0).getPortal());
+        System.out.println(dtos.get(0).getVapname());
 
     }
 

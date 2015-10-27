@@ -302,6 +302,9 @@ public class DeviceBusinessFacadeService {
 		HandsetDeviceDTO fristDto = dtos.get(0);
 		if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
 			//date: 2015-10-27 新增访客网络认证
+
+			System.out.println("====" + fristDto.getPortal() + ":" + fristDto.getVapname());
+			System.out.println("====" + isVisitorWifi(ctx, fristDto));
 			if(isVisitorWifi(ctx, fristDto)) { //访客网络
 				handsetDeviceVisitorOnline(ctx, fristDto, parserHeader.getMac());
 			} else {
