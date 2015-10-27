@@ -436,6 +436,7 @@ public class DeviceBusinessFacadeService {
 			handset.setVapname(dto.getVapname());
 			handset.setRssi(dto.getRssi());
 			handset.setSnr(dto.getSnr());
+			handset.setEthernet(dto.isEthernet());
 			HandsetStorageFacadeService.handsetComming(handset);
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
