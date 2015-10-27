@@ -540,10 +540,10 @@ public class DeviceBusinessFacadeService {
 		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新移动设备的online状态为false
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
-		if(handset == null) {
+		/*if(handset == null) {
 			//TODO:是否需要补齐数据
 			return;
-		}
+		}*/
 		
 		/*if(handset != null){
 			dto.setVapname(handset.getVapname());
@@ -552,10 +552,13 @@ public class DeviceBusinessFacadeService {
 			dto.setData_rx_rate(handset.getData_rx_rate());
 			//String old_Last_wifi_id = handset.getLast_wifi_id();
 		}*/
-		dto.setVapname(handset.getVapname());
-		dto.setDhcp_name(handset.getDhcp_name());
-		dto.setData_tx_rate(handset.getData_tx_rate());
-		dto.setData_rx_rate(handset.getData_rx_rate());
+		if(handset != null){
+			dto.setVapname(handset.getVapname());
+			dto.setDhcp_name(handset.getDhcp_name());
+			dto.setData_tx_rate(handset.getData_tx_rate());
+			dto.setData_rx_rate(handset.getData_rx_rate());
+		}
+
 		//handset.setAction(HandsetDeviceDTO.Action_Offline);
 		//handset.setLast_wifi_id(dto.getLast_wifi_id());
 
