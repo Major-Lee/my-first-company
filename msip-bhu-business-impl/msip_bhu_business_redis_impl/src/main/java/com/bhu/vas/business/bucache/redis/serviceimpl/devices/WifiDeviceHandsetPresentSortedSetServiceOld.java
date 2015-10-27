@@ -28,22 +28,22 @@ import com.smartwork.msip.cores.orm.support.page.PageHelper;
  * @author lawliet
  *
  */
-public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSortedSetCache{
+public class WifiDeviceHandsetPresentSortedSetServiceOld extends AbstractRelationSortedSetCache{
 	
 	private static class ServiceHolder{ 
-		private static WifiDeviceHandsetPresentSortedSetService instance =new WifiDeviceHandsetPresentSortedSetService(); 
+		private static WifiDeviceHandsetPresentSortedSetServiceOld instance =new WifiDeviceHandsetPresentSortedSetServiceOld(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static WifiDeviceHandsetPresentSortedSetService getInstance() { 
+	public static WifiDeviceHandsetPresentSortedSetServiceOld getInstance() { 
 		return ServiceHolder.instance; 
 	}
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
 	
-	private WifiDeviceHandsetPresentSortedSetService(){
+	private WifiDeviceHandsetPresentSortedSetServiceOld(){
 	}
 	
 	private static String generateKey(String wifiId){
@@ -221,23 +221,22 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	public static void main(String[] args){
 		String wifiId = "tt:tt:tt:tt:tt:t";
 		for(int i = 0;i<20;i++){
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
+			WifiDeviceHandsetPresentSortedSetServiceOld.getInstance().addOnlinePresent(wifiId, 
 					"hh:hh:hh:hh:hh:h".concat(String.valueOf(i)), 1024+i);
 		}
-		
 		for(int i = 0;i<20;i++){
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(wifiId, 
+			WifiDeviceHandsetPresentSortedSetServiceOld.getInstance().addOfflinePresent(wifiId, 
 					"oo:oo:oo:oo:oo:o".concat(String.valueOf(i)), 1024+i);
 		}
-		Set<Tuple> result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, 0, 10);
+		Set<Tuple> result = WifiDeviceHandsetPresentSortedSetServiceOld.getInstance().fetchOnlinePresentWithScores(wifiId, 0, 10);
 		for(Tuple tuple : result){
 			System.out.println("online="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore() - OnlineBaseScore));
 		}
-		result = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, 0, 10);
+		result = WifiDeviceHandsetPresentSortedSetServiceOld.getInstance().fetchOfflinePresentWithScores(wifiId, 0, 10);
 		for(Tuple tuple : result){
 			System.out.println("offline="+tuple.getElement() + "=" + tuple.getScore()+"="+(tuple.getScore()));
 		}
-		System.out.println("online:"+WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
-		System.out.println("offline:"+WifiDeviceHandsetPresentSortedSetService.getInstance().presentOfflineSize(wifiId));
+		System.out.println("online:"+WifiDeviceHandsetPresentSortedSetServiceOld.getInstance().presentOnlineSize(wifiId));
+		System.out.println("offline:"+WifiDeviceHandsetPresentSortedSetServiceOld.getInstance().presentOfflineSize(wifiId));
 	}
 }

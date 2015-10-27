@@ -4,11 +4,11 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-
 import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -178,10 +178,12 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param wifiId
 	 * @param start
 	 * @param size
+	 * @param filterWiredHandset 是否过滤掉有线的终端设备 由于有分页机制，按分页提取的数据如果移除部分元素可能导致分页的相关参数和结果集不符合，但是客户端由于没有传递分页，所以可以忽略
+	 * //@param wireless wireless null 不区分有线无线  true 无线  false 有线
 	 * @return
 	 * modified by Edmond Lee for handset storage
 	 */
-	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size){
+	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size,Boolean filterWiredHandset){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
@@ -190,7 +192,6 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(wifiId)){
 				deliverMessageService.sendDeviceHDRateFetchActionMessage(wifiId);
 			}
-			
 			List<URouterHdVTO> vtos = null;
 			long total = 0;
 			Set<Tuple> presents = null;
@@ -230,6 +231,15 @@ public class DeviceURouterRestBusinessFacadeService {
 						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, hd_entity, setting_dto);
 						vtos.add(vto);
 						cursor++;
+					}
+					{//根据参数过滤掉有线终端业务
+						if(filterWiredHandset){
+							Iterator<URouterHdVTO> iter = vtos.iterator();
+							while(iter.hasNext()){
+								URouterHdVTO rv = iter.next();
+								if(rv.isEthernet()) iter.remove();
+							}
+						}
 					}
 				}
 			}

@@ -27,6 +27,11 @@ public class URouterHdVTO implements Serializable{
 	private String tx_bytes;
 	//是否在线
 	private boolean online;
+	
+	/**
+	 * 终端是否来自于有线口
+	 */
+	private boolean ethernet;
 	//是否是访客网络的
 	private boolean guest;
 	
@@ -95,4 +100,11 @@ public class URouterHdVTO implements Serializable{
 	public void setGuest(boolean guest) {
 		this.guest = guest;
 	}
+	public boolean isEthernet() {
+		return ethernet;
+	}
+	public void setEthernet(boolean ethernet) {
+		this.ethernet = ethernet;
+	}
+	
 }
