@@ -305,6 +305,7 @@ public class DeviceBusinessFacadeService {
 
 			System.out.println("====" + fristDto.getPortal() + ":" + fristDto.getVapname());
 			System.out.println("====" + isVisitorWifi(ctx, fristDto));
+			System.out.println("====" + fristDto.isAuthorized());
 			if(isVisitorWifi(ctx, fristDto)) { //访客网络
 				handsetDeviceVisitorOnline(ctx, fristDto, parserHeader.getMac());
 			} else {
