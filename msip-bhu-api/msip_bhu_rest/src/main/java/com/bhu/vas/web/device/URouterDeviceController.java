@@ -74,7 +74,7 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterHdList(uid, mac.toLowerCase(), status, start, size);
+		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterHdList(uid, mac.toLowerCase(), status, start, size,Boolean.TRUE);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
