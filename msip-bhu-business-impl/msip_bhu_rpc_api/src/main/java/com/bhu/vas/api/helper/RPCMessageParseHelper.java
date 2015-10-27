@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ScoreDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -588,10 +588,10 @@ public class RPCMessageParseHelper {
 			if(config_element != null){
 				dto.setSequence(config_element.attributeValue("sequence"));
 				String boot_on_reset = config_element.attributeValue("boot_on_reset");
-				if(StringUtils.isEmpty(boot_on_reset))
-					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_NotHappen);
-				else
+				if(StringUtils.isNotEmpty(boot_on_reset) && Integer.parseInt(boot_on_reset) == WifiDeviceSettingDTO.Boot_On_Reset_Happen)
 					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_Happen);
+				else
+					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_NotHappen);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
