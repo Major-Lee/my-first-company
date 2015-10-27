@@ -238,7 +238,7 @@ public class TaskFacadeService {
 		
 		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
-		if(opt_cmd == null || ods_cmd == null){
+		if(opt_cmd == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 
