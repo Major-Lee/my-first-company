@@ -184,6 +184,9 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 								hmacs.clear();
 								hmacs = null;
 							}
+							else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())) {
+
+							}
 						}
 					}
 					/*if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理

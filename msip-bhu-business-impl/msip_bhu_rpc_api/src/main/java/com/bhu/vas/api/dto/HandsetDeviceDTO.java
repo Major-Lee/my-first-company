@@ -77,6 +77,11 @@ public class HandsetDeviceDTO implements Serializable{
 	 */
 	private boolean authorized;
 
+	/**
+	 * 老版本固件没有portal，新版本wlan0:none, wlan3:local
+	 */
+	private String portal;
+
 	public String getAction() {
 		return action;
 	}
@@ -274,5 +279,13 @@ public class HandsetDeviceDTO implements Serializable{
 
 	public void setAuthorized(boolean authorized) {
 		this.authorized = authorized;
+	}
+
+	public String getPortal() {
+		return portal;
+	}
+
+	public void setPortal(String portal) {
+		this.portal = portal;
 	}
 }

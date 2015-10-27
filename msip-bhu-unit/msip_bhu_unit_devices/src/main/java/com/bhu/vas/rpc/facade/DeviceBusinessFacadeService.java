@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -300,10 +301,21 @@ public class DeviceBusinessFacadeService {
 		}
 		HandsetDeviceDTO fristDto = dtos.get(0);
 		if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
-			handsetDeviceOnline(ctx, fristDto, parserHeader.getMac());
+			//date: 2015-10-27 新增访客网络认证
+			if(isVisitorWifi(ctx, fristDto)) { //访客网络
+				handsetDeviceVisitorOnline(ctx, fristDto, parserHeader.getMac());
+			} else {
+				handsetDeviceOnline(ctx, fristDto, parserHeader.getMac());
+			}
+
 		}
 		else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-			handsetDeviceOffline(ctx, fristDto, parserHeader.getMac());
+			if(isVisitorWifi(ctx, fristDto)) { //访客网络
+				handsetDeviceVisitorOffline(ctx, fristDto, parserHeader.getMac());
+			} else {
+				handsetDeviceOffline(ctx, fristDto, parserHeader.getMac());
+			}
+
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
 			handsetDeviceSync(ctx, parserHeader.getMac(), dtos);
@@ -311,11 +323,65 @@ public class DeviceBusinessFacadeService {
 		else if(HandsetDeviceDTO.Action_Update.equals(fristDto.getAction())){
 			handsetDeviceUpdate(ctx, fristDto, parserHeader.getMac());
 		}
+		else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())){
+			//todo(bluesand)
+			handsetDeviceVisitorAuthorize(ctx, fristDto, parserHeader.getMac());
+		}
 		else{
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
 		}
 	}
-	
+
+	/**
+	 * 是否访客网络
+	 * @param dto
+	 * @return
+	 */
+	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
+		if(dto == null)
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		return dto.getVapname().equals("waln3") && dto.getPortal().equals("local");
+	}
+
+
+	/**
+	 * 访客网络终端上线
+	 * @param ctx
+	 * @param dto
+	 * @param wifiId
+	 */
+	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
+		String wifiId_lowerCase = wifiId.toLowerCase();
+		WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+	}
+
+	/**
+	 * 访客网络终端下线
+	 * @param ctx
+	 * @param dto
+	 * @param wifiId
+	 */
+	private void handsetDeviceVisitorOffline(String ctx, HandsetDeviceDTO dto, String wifiId) {
+		String wifiId_lowerCase = wifiId.toLowerCase();
+		WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+	}
+
+	private void handsetDeviceVisitorAuthorize(String ctx, HandsetDeviceDTO dto, String wifiId) {
+		if(dto == null)
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+
+		String wifiId_lowerCase = wifiId.toLowerCase();
+		if (dto.isAuthorized()) {
+			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(),dto.getMac());
+		} else { //踢掉
+			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+		}
+	}
+
 	/**
 	 * 移动设备上线
 	 * 1:移动设备基础信息更新
