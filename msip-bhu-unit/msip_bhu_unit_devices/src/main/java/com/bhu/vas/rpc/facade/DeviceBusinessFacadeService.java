@@ -383,7 +383,7 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorAuthorize(String ctx, HandsetDeviceDTO dto, String wifiId) {
 		if(dto == null)
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
