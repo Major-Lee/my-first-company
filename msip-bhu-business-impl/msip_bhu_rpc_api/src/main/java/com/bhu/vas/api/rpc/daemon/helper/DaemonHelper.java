@@ -39,12 +39,12 @@ public class DaemonHelper {
 			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 		}
 		//开启或关闭wiffsinffer
-		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
+		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)));
 /*		if(needWiffsniffer){
 			//开启wiffsinffer
-			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
+			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)
 			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
-			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
+			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)));
 		}*/
 		
 //		if(StringUtils.isNotEmpty(dhcpcStatusQuery_interface)){
@@ -84,7 +84,7 @@ public class DaemonHelper {
 		//可能需要用户登录后根据其个人绑定的设备，下发配置开启wifi探测
 		/*if(needWiffsniffer){
 			//开启wiffsinffer
-			CMDBuilder.builderDeviceWifiSnifferSetting(mac,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
+			CMDBuilder.builderDeviceWifiSnifferSetting(mac,on?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)
 		}*/
 		
 		//获取设备测速
