@@ -62,6 +62,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param status 1:在线 2:离线 0:所有
 	 * @param start
 	 * @param size
+	 * @param filterWiredHandset true 结果集中过滤了有线终端  false不过滤
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/hd_list",method={RequestMethod.POST})
@@ -72,9 +73,12 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = false, defaultValue="1") int status,
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
-			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size,
+			@RequestParam(required = false, defaultValue="true", value = "fw") boolean filterWiredHandset
+			) {
 		
-		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterHdList(uid, mac.toLowerCase(), status, start, size,Boolean.TRUE);
+		RpcResponseDTO<Map<String,Object>> rpcResponse = 
+				deviceURouterRestRpcService.urouterHdList(uid, mac.toLowerCase(), status, start, size,filterWiredHandset?Boolean.TRUE:Boolean.FALSE);
 		if(rpcResponse.getErrorCode() == null){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
 		}else{
