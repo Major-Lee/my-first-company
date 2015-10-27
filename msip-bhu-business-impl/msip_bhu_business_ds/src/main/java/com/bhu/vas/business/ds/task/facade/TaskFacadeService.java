@@ -251,6 +251,9 @@ public class TaskFacadeService {
 		}
 
 		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {
+			if(ods_cmd == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
 			if (OperationDS.DS_VapPassword.getNo().equals(subopt)) {
 				WifiDeviceSettingVapDTO wifiDeviceSettingVapDTO =
 						JsonHelper.getDTO(extparams, WifiDeviceSettingVapDTO.class);
