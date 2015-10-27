@@ -22,7 +22,7 @@ import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId);
 	
-	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size);
+	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size,Boolean filterWiredHandset);
 
 	RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac);
 

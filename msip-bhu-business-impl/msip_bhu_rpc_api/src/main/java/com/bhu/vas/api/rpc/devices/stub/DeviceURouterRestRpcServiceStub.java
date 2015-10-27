@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
+
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -43,11 +44,11 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 
 	@Override
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status,
-			int start, int size) {
+			int start, int size,Boolean filterWiredHandset) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceURouterRestRpcService.urouterHdList(uid, wifiId, status, start, size);
+		return deviceURouterRestRpcService.urouterHdList(uid, wifiId, status, start, size,filterWiredHandset);
 	}
 
 	@Override

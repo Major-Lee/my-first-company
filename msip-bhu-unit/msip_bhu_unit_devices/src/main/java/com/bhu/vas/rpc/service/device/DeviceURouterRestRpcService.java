@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -65,12 +66,12 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 
 	@Override
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status,
-			int start, int size) {
-		logger.info(String.format("DeviceURouterRestRPC urouterHdOnlineList invoke uid [%s] mac [%s] st [%s] ps [%s]", 
-				uid, wifiId, start, size));
+			int start, int size,Boolean filterWiredHandset) {
+		logger.info(String.format("DeviceURouterRestRPC urouterHdOnlineList invoke uid [%s] mac [%s] st [%s] ps [%s] filterWiredHandset[%s]", 
+				uid, wifiId, start, size,filterWiredHandset));
 		
 		try{
-			return deviceURouterRestBusinessFacadeService.urouterHdList(uid, wifiId.toLowerCase(), status, start, size);
+			return deviceURouterRestBusinessFacadeService.urouterHdList(uid, wifiId.toLowerCase(), status, start, size,filterWiredHandset);
 		}
 		catch(RpcBusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterHdOnlineList failed uid [%s] mac [%s] st [%s] ps [%s]",
