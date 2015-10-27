@@ -345,7 +345,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		return dto.getVapname().equals("wlan3") && dto.getPortal().equals("local");
+		return "wlan3".equals(dto.getVapname()) && "local".equals(dto.getPortal());
 	}
 
 
@@ -356,8 +356,16 @@ public class DeviceBusinessFacadeService {
 	 * @param wifiId
 	 */
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
+
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+		if (dto.isAuthorized()) {
+			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+		} else {
+			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+		}
+
+
+
 	}
 
 	/**
