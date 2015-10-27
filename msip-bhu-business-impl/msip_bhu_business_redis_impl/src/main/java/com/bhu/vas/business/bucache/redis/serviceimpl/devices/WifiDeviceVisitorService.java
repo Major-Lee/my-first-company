@@ -94,27 +94,29 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         System.out.println(WifiDeviceVisitorService.getInstance().countAuthPresent("84:82:f4:19:01:0c"));
 
 
-        Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c", 0, 5);
+        Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:23:06:68", 0, 5);
 
         System.out.println(!presents.isEmpty());
+        System.out.println(presents.size());
         for(Tuple tuple : presents){
+            System.out.println(tuple.getScore());
             System.out.println(tuple.getElement());
         }
 
 
-        System.out.println();
-
-        String payload = "<event>\n" +
-                "        <wlan>\n" +
-                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-哈哈\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
-                "        </wlan>\n" +
-                "</event>";
-
-        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
-                HandsetDeviceDTO.class);
-
-        System.out.println(dtos.get(0).getPortal());
-        System.out.println(dtos.get(0).getVapname());
+//        System.out.println();
+//
+//        String payload = "<event>\n" +
+//                "        <wlan>\n" +
+//                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-哈哈\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
+//                "        </wlan>\n" +
+//                "</event>";
+//
+//        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
+//                HandsetDeviceDTO.class);
+//
+//        System.out.println(dtos.get(0).getPortal());
+//        System.out.println(dtos.get(0).getVapname());
 
     }
 
