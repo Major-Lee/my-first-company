@@ -681,8 +681,7 @@ public class DeviceHelper {
 	//开启访客网络指令
 	//参数顺序 users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static final String DeviceSetting_Start_VisitorWifi =
-			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys></dev>"+
-			"<dev>"+
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 				"<net>"+
 				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
 				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"+
@@ -698,8 +697,7 @@ public class DeviceHelper {
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
 			"</dev>";
 	public static final String DeviceSetting_Stop_VisitorWifi =
-			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys></dev>"+
-				"<dev>"+
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 			     "<net>"+
 			          "<interface><ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/></interface>"+
 			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+

@@ -16,6 +16,7 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.DailyUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.HourUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
+import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDevicePeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
@@ -765,5 +766,33 @@ public class RPCMessageParseHelper {
         
         System.out.println(generateVapDTOFromMessage);
         
+        
+        String text2 = "<return>\n"+
+	"<ITEM result=\"ok\" config_sequence=\"241\" />"+
+"</return>";
+        
+        String payload = "000010018482F42306E81510001003151000100000001"+
+        		"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"
+        		+ "<net>"
+	        		+ "<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"220\" users_rx_rate=\"220\" /></interface>"
+	        		+ "<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"
+	        		+ "<webportal>"
+	        		+ "<setting><ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"-30\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   redirect_url=\"www.bhuwifi.com\"  max_clients=\"256\" idle_timeout=\"1200\" force_timeout=\"21600\" open_resource=\"/\" forbid_management=\"enable\"/></setting>"
+	        		+ "</webportal>"
+        		+ "</net>"
+        		+ "<wifi><vap><ITEM name=\"wlan3\" ssid=\"BhuWIFI-访客test\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"
+        		+ "<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"
+        		+ "</dev>";
+        String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+        System.out.println(cmdWithoutHeader);
+        if(!StringUtils.isEmpty(cmdWithoutHeader)){
+			WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+					cmdWithoutHeader);
+        }
+        /*for(int i=0;i<100;i++){
+        	 ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(text2, ModifyDeviceSettingDTO.class);
+             System.out.println(dto.getConfig_sequence());
+        }*/
+       
 	}
 }
