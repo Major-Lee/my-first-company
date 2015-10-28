@@ -359,6 +359,7 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
+		System.out.println("handsetDeviceVisitorOnline isAuthorized" + dto.isAuthorized());
 		if (dto.isAuthorized()) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
@@ -387,7 +388,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("isAuthorized" + dto.isAuthorized());
+		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + dto.isAuthorized());
 		if (dto.isAuthorized()) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(),dto.getMac());
 		} else { //踢掉
