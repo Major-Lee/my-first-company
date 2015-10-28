@@ -1,5 +1,6 @@
 package com.bhu.vas.api.helper;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.VapModeDefined;
@@ -59,13 +60,13 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceWifiSnifferSetting(String wifi_mac,String sta_sniffer){
-		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),sta_sniffer,RuntimeConfiguration.Vap_Wifistasniffer_Batch_Num,RuntimeConfiguration.Vap_Wifistasniffer_Delay,RuntimeConfiguration.Vap_Wifistasniffer_Url);
+		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac), sta_sniffer, RuntimeConfiguration.Vap_Wifistasniffer_Batch_Num, RuntimeConfiguration.Vap_Wifistasniffer_Delay, RuntimeConfiguration.Vap_Wifistasniffer_Url);
 	}
 	
 	public static String builderDeviceUsedStatusQuery(String wifi_mac){
 		//return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
 		//		StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, query_device_used_status.getNextSequence()));
-		return builderDeviceUsedStatusQuery(wifi_mac,auto_taskid_fragment.getNextSequence());
+		return builderDeviceUsedStatusQuery(wifi_mac, auto_taskid_fragment.getNextSequence());
 	}
 	public static String builderDeviceUsedStatusQuery(String wifi_mac,long taskid){
 		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
@@ -131,6 +132,15 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSysinfo.getNo(),
 				builderTaskidFormat(taskid));
 	}
+
+	public static String builderCMDKickOffVisitorDeviceWifiHandset(String wifi_mac, String hd_mac, long taskid) {
+		return String.format(OperationCMD.KickOffVisitorDeviceWifiHandset.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.KickOffVisitorDeviceWifiHandset.getNo(),
+				builderTaskidFormat(taskid), hd_mac);
+	}
+
+
+
 	
 	/**
 	 * 查询设备实时速率指令
@@ -360,6 +370,16 @@ public class CMDBuilder {
 					resultCmd = String.format(opt.getCmdtpl(), 
 								StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1],daysParam);
 					break;
+				case RemoteDeviceControlTransfer:
+					ParamDeviceRemoteControlDTO paramDto = JsonHelper.getDTO(extparams, ParamDeviceRemoteControlDTO.class);
+					resultCmd = String.format(opt.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),JsonHelper.getJSONString(paramDto));
+					break;
+				case KickOffVisitorDeviceWifiHandset:
+					WifiDeviceVisitorKickoffDTO dto = JsonHelper.getDTO(extparams, WifiDeviceVisitorKickoffDTO.class);
+					resultCmd = String.format(opt.getCmdtpl(),
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),dto.getHd_mac());
+					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
 					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
@@ -428,12 +448,12 @@ public class CMDBuilder {
 		String taskid_format = builderTaskidFormat(taskid);
 		
 		return String.format(OperationCMD.DeviceModuleUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), 
-				builder8LenFormat(ParserHeader.Vap_Module_Upgrade_REQ_S2D), 
+				StringHelper.unformatMacAddress(wifi_mac),
+				builder8LenFormat(ParserHeader.Vap_Module_Upgrade_REQ_S2D),
 				OperationCMD.DeviceModuleUpgrade.getNo(),
 				taskid_format,//builderTaskidFormat(auto_taskid_fragment.getNextSequence()), 
 				urlprefix,
-				retry_count, 
+				retry_count,
 				retry_interval);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
 	}
 	
