@@ -477,7 +477,7 @@ public class TaskFacadeService {
 					break;
 				case KickOffVisitorDeviceWifiHandset:
 					WifiDeviceVisitorKickoffDTO dto = JsonHelper.getDTO(extparams, WifiDeviceVisitorKickoffDTO.class);
-					WifiDeviceVisitorService.getInstance().removePresent(dto.getMac(),dto.getHd_mac());
+					WifiDeviceVisitorService.getInstance().removePresent(mac,dto.getHd_mac());
 					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
 					break;
 				default:
