@@ -367,8 +367,6 @@ public class DeviceBusinessFacadeService {
 			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
 		}
 
-
-
 	}
 
 	/**

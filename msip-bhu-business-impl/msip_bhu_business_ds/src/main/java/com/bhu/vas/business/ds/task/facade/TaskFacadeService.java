@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -360,7 +362,7 @@ public class TaskFacadeService {
 			
 		}
 		//判定是定义出的特殊指令 广告注入、增值指令、访客网络
-		if(WifiDeviceHelper.isDeviceSpecialCmd(opt_cmd,ods_cmd)){
+		if(WifiDeviceHelper.isDeviceSpecialCmd(opt_cmd, ods_cmd)){
 			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
@@ -461,16 +463,29 @@ public class TaskFacadeService {
 				}
 			}
 		}else{
-			if(OperationCMD.DeviceWifiTimerStart == opt_cmd){//需要先增加到个人配置表中
-				ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
-				UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
-				innerDTO.setOn(true);
-				innerDTO.setDs(false);
-				innerDTO.setTimeslot(param_dto.getTimeslot());
-				innerDTO.setDays(param_dto.getDays());
-				userSettingStateService.updateUserSetting(mac, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
+
+			switch (opt_cmd) {
+				case DeviceWifiTimerStart:
+					ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
+					UserWifiTimerSettingDTO innerDTO = new UserWifiTimerSettingDTO();
+					innerDTO.setOn(true);
+					innerDTO.setDs(false);
+					innerDTO.setTimeslot(param_dto.getTimeslot());
+					innerDTO.setDays(param_dto.getDays());
+					userSettingStateService.updateUserSetting(mac, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
+					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
+					break;
+				case KickOffVisitorDeviceWifiHandset:
+					WifiDeviceVisitorKickoffDTO dto = JsonHelper.getDTO(extparams, WifiDeviceVisitorKickoffDTO.class);
+					WifiDeviceVisitorService.getInstance().removePresent(dto.getMac(),dto.getHd_mac());
+					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
+					break;
+				default:
+					break;
+
 			}
-			downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(),extparams));
+
+
 		}
 		this.taskComming(downTask);
 		return downTask;
