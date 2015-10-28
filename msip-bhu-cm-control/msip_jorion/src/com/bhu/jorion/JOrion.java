@@ -236,8 +236,43 @@ public class JOrion implements JOrionMBean{
 		}
 	}
 	
+	public void sendFileReq(UrsidsSession s, PendingTask t) throws JMSException{
+		LOGGER.info("sending file req");
+		String jstr = t.getMessage().getText().substring(33);
+		String mac = t.getMessage().getText().substring(8, 20).toLowerCase();
+		LOGGER.info("jstr:\n" + jstr);
+		Map m;
+		
+		try{
+			m = (Map)(new JSONReader()).read(jstr);
+			m.put("mac",  StringHelper.formatMacAddress(mac));
+			m.put("task_id", String.valueOf(t.getTaskid()));
+		}catch(Exception e){
+			LOGGER.error(StringHelper.getStackTrace(e));
+			e.printStackTrace();
+			s.removeTask(mac, t.getRev(), t.getTaskid());
+			return;
+		}
+		
+		String new_content = (new JSONWriter()).write(m);
+		byte[] jb = new_content.getBytes();
+		IoBuffer ib = IoBuffer.allocate(jb.length + 1);
+		ib.put(jb);
+		ib.put((byte)0);
+			
+		UrsidsMessage xml_rsp = UrsidsMessage.composeUrsidsMessage(1, 5, ib.array());
+		try {
+			t.setStatus(PendingTask.STATUS_SENDING);
+			xml_rsp.setMqMessage(true);
+			ursidsWorker.sendMessage(s.getSession(), xml_rsp);
+		} catch (Exception e) {
+			LOGGER.error(StringHelper.getStackTrace(e));
+			e.printStackTrace();
+		}
+	}
+	
 	public void sendXmlApply(UrsidsSession s, PendingTask t) throws JMSException{
-		LOGGER.info("sending xml reply");
+		LOGGER.info("sending xml apply");
 		String xml = t.getMessage().getText().substring(45);
 		byte[] xmlbytes = xml.getBytes();
 		String mac = t.getMessage().getText().substring(8, 20).toLowerCase();
@@ -562,7 +597,11 @@ public class JOrion implements JOrionMBean{
 				return;
 			}
 			try {
-				sendXmlApply(s, p);
+				if(p.getType() == PendingTask.TASK_TYPE_XML){
+					sendXmlApply(s, p);
+				} else if(p.getType() == PendingTask.TASK_TYPE_FILE){
+					sendFileReq(s, p);
+				}
 				if(p.getTaskid() != 0)
 					return;
 				s.removeTask(mac, p.getRev(), p.getTaskid());
@@ -598,13 +637,16 @@ public class JOrion implements JOrionMBean{
 				return;
 			}
 			String type = text.substring(0, 8);
-			if(type.equals(JOrionConfig.MSG_DEV_XML_APPLY)){
+			if(type.equals(JOrionConfig.MSG_DEV_XML_APPLY) || type.equals(JOrionConfig.MSG_FILE_TRANSFER)){
 				String mac = text.substring(8, 20).toLowerCase();
 				int	rev = Integer.parseInt(text.substring(20, 23));
 				long taskid = Long.parseLong(text.substring(23, 33));
-				s.addTask(mac, rev, taskid, m);
+				s.addTask(mac, rev, taskid, 
+						type.equals(JOrionConfig.MSG_DEV_XML_APPLY)?PendingTask.TASK_TYPE_XML:PendingTask.TASK_TYPE_FILE, 
+						m);
 				pushUrsidsMessage(s, mac);
-			} else {
+			} else if(type.equals(JOrionConfig.MSG_FILE_TRANSFER)){
+				
 				LOGGER.error("UnSupported Message type:" + type);
 			}
 		} catch (JMSException e) {

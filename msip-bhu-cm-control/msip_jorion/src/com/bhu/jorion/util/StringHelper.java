@@ -10,6 +10,31 @@ import org.slf4j.LoggerFactory;
 public class StringHelper {
     private final static Logger LOGGER = LoggerFactory.getLogger(StringHelper.class);
 
+	public static String formatMacAddress(String mac){
+		StringBuffer sb = new StringBuffer();
+		if(mac == null || mac.length() != 12)
+			return "";
+		sb.append(mac.charAt(0));
+		sb.append(mac.charAt(1));
+		sb.append(':');
+		sb.append(mac.charAt(2));
+		sb.append(mac.charAt(3));
+		sb.append(':');
+		sb.append(mac.charAt(4));
+		sb.append(mac.charAt(5));
+		sb.append(':');
+		sb.append(mac.charAt(6));
+		sb.append(mac.charAt(7));
+		sb.append(':');
+		sb.append(mac.charAt(8));
+		sb.append(mac.charAt(9));
+		sb.append(':');
+		sb.append(mac.charAt(10));
+		sb.append(mac.charAt(11));
+		return sb.toString();
+	}
+
+	
 	public static String byteToHexString(IoBuffer ib, int len){
 		StringBuffer sb = new StringBuffer();
 		for(int i = 0; i < len; i ++){
