@@ -3,6 +3,7 @@ package com.bhu.vas.business.ds.agent.helper;
 import java.util.Date;
 
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class AgentHelper {
@@ -22,8 +23,24 @@ public class AgentHelper {
 		return DateTimeHelper.isSameDay(device_reg_date, currentDate);
 	}
 	
+	private static long KB = 1024*8;
+	private static long MB = 1024*KB;
+	private static long GB = 1024*MB;
+	private static long TB = 1024*GB;
+	static java.text.DecimalFormat format = new java.text.DecimalFormat("0.00");
+	public static double flowByte2Megabyte(long x_byte){
+		return ArithHelper.round(ArithHelper.div(x_byte*8, MB),2);///format.format(x_byte*8/MB);
+	}
+	
+	public static double millisecond2Minute(long ms){
+		return ArithHelper.round(ArithHelper.div(ms, 1000*60),2);
+	}
 	public static void main(String[] argv){
 		
 		System.out.println(DateTimeHelper.getTimeDiff(2*60*60*1000));
+		
+		System.out.println(AgentHelper.flowByte2Megabyte(188322));
+		
+		System.out.println(AgentHelper.millisecond2Minute(188322));
 	}
 }

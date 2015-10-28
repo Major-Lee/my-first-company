@@ -24,7 +24,7 @@ public class WifiDeviceWholeDayMDTO {
 	//yyyyMMdd
 	private String date;
 	private String mac;
-	//当天在线时长device onlineduration
+	//当天在线时长device onlineduration 单位为分钟（日志的数据需要转换）
 	private long dod;//;
 	//当天连接次数device connect times
 	private int  dct;
@@ -34,11 +34,11 @@ public class WifiDeviceWholeDayMDTO {
 	private int handsets;
 	//当日终端连接次数 
 	private int  hct;
-	//当日在线设备的连接终端的在线时长总和handset onlineduration
+	//当日在线设备的连接终端的在线时长总和handset onlineduration 单位为分钟（日志的数据需要转换）
 	private long hod;
-	//handsets 上行流量
+	//handsets 上行流量 单位为Mb（日志的数据需要转换）
 	private long htx_bytes;
-	//handsets 下行流量
+	//handsets 下行流量 单位为Mb（日志的数据需要转换）
 	private long hrx_bytes;
 	private int cashback;
 	private int sameday;
