@@ -9,10 +9,11 @@ public class ChargingCurrencyHelper {
 	
 	/**
 	 * 在线时长24小时块钱
-	 * @param onlineduration
+	 * @param onlineduration 分钟
 	 * @return
 	 */
-	public static double currency(long onlineduration){
-		return ArithHelper.div(onlineduration*2, (10*3600*1000), 2);//onlineduration/(10*3600*1000)*2;
+	public static double currency(double onlineduration){
+		//return ArithHelper.div(onlineduration*2, (10*60*60*1000), 2);//onlineduration/(10*3600*1000)*2;
+		return ArithHelper.div(onlineduration*2, (10*60), 2);//onlineduration/(10*3600*1000)*2;
 	}
 }

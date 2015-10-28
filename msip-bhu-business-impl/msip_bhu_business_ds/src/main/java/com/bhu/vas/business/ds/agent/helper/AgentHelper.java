@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.ConvertHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class AgentHelper {
@@ -14,7 +15,8 @@ public class AgentHelper {
 	 * @return
 	 */
 	public static boolean validateCashback(WifiDeviceWholeDayMDTO dto){
-		if(dto.getDod()>=2*60*60*1000 && dto.getHandsets()>=3 && dto.getHod() >=4*60*60*1000)
+		//if(dto.getDod()>=2*60*60*1000 && dto.getHandsets()>=3 && dto.getHod() >=4*60*60*1000)
+		if(dto.getDod()>=2*60 && dto.getHandsets()>=3 && dto.getHod() >=4*60)
 			return true;
 		return false;
 	}
@@ -35,6 +37,16 @@ public class AgentHelper {
 	public static double millisecond2Minute(long ms){
 		return ArithHelper.round(ArithHelper.div(ms, 1000*60),2);
 	}
+	
+	/**
+	 * 获取时间区间时长
+	 * @param diff 单位分钟
+	 * @return
+	 */
+	public static String getTimeDiff(double diff){
+		return ConvertHelper.timeFormat((long)(diff*1000*60));
+	}
+	
 	public static void main(String[] argv){
 		
 		System.out.println(DateTimeHelper.getTimeDiff(2*60*60*1000));
