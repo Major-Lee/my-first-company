@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Tuple;
@@ -293,7 +294,7 @@ public class BusinessModelBuilder {
 
 			vto.setRx_bytes(hd_entity.getTx_bytes());
 			vto.setTx_bytes(hd_entity.getRx_bytes());
-			vto.setEthernet(hd_entity.isEthernet());
+			vto.setEthernet(StringHelper.TRUE.equals(hd_entity.getEthernet()));
 		}
 		return vto;
 	}

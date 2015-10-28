@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -305,7 +306,7 @@ public class DeviceBusinessFacadeService {
 
 			System.out.println("====" + fristDto.getPortal() + ":" + fristDto.getVapname());
 			System.out.println("====" + isVisitorWifi(ctx, fristDto));
-			System.out.println("====" + fristDto.isAuthorized());
+			System.out.println("====" + fristDto.getAuthorized());
 			if(isVisitorWifi(ctx, fristDto)) { //访客网络
 				handsetDeviceVisitorOnline(ctx, fristDto, parserHeader.getMac());
 			} else {
@@ -346,7 +347,7 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		return "wlan3".equals(dto.getVapname()) && "local".equals(dto.getPortal());
+		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
 
@@ -359,8 +360,8 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline isAuthorized" + dto.isAuthorized());
-		if (dto.isAuthorized()) {
+		System.out.println("handsetDeviceVisitorOnline isAuthorized" + dto.getAuthorized());
+		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
 			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
@@ -388,8 +389,8 @@ public class DeviceBusinessFacadeService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + dto.isAuthorized());
-		if (dto.isAuthorized()) {
+		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
+		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(),dto.getMac());
 		} else { //踢掉
 			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
@@ -439,7 +440,7 @@ public class DeviceBusinessFacadeService {
 			handset.setVapname(dto.getVapname());
 			handset.setRssi(dto.getRssi());
 			handset.setSnr(dto.getSnr());
-			handset.setEthernet(dto.isEthernet());
+			handset.setEthernet(dto.getEthernet());
 			HandsetStorageFacadeService.handsetComming(handset);
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
