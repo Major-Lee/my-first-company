@@ -43,7 +43,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 */
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
+		logger.info(String.format("messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
 		
 		try{
 			int type = parserHeader.getType();
@@ -61,16 +61,15 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
-			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
-					ctx, payload, parserHeader));
+			//logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",ctx, payload, parserHeader));
 			//logger.info("1");
 		}catch(RpcBusinessI18nCodeException ex){
-			logger.info(String.format("DeviceMessageRPC messageDispatch failed ctx [%s] payload [%s] header[%s]", 
+			logger.info(String.format("messageDispatch failed ctx [%s] payload [%s] header[%s]", 
 					ctx, payload, parserHeader));
 			throw ex;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceMessageRPC messageDispatch exception ctx [%s] payload [%s] header[%s] exmsg[%s]",
+			logger.error(String.format("messageDispatch exception ctx [%s] payload [%s] header[%s] exmsg[%s]",
 					ctx, payload, parserHeader, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
@@ -375,17 +374,17 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	@Override
 	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
 		try{
-			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines invoke ctx [%s] ", ctx));
+			logger.info(String.format("cmupWithWifiDeviceOnlines invoke ctx [%s] ", ctx));
 			
 			deviceBusinessFacadeService.cmupWithWifiDeviceOnlines(ctx, dtos);
 			
-			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines successful ctx [%s] ",ctx));
+			//logger.info(String.format("cmupWithWifiDeviceOnlines successful ctx [%s] ",ctx));
 		}catch(RpcBusinessI18nCodeException ex){
-			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines failed ctx [%s] ", ctx));
+			logger.info(String.format("cmupWithWifiDeviceOnlines failed ctx [%s] ", ctx));
 			throw ex;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines exception ctx [%s] exmsg[%s]",
+			logger.error(String.format("cmupWithWifiDeviceOnlines exception ctx [%s] exmsg[%s]",
 					ctx, ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
