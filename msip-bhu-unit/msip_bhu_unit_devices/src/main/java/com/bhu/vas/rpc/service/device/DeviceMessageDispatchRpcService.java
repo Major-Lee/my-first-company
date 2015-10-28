@@ -217,7 +217,8 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						deviceBusinessFacadeService.taskQuerySysinfoSpeed(ctx, payload, mac, taskid);
 						break;
 					default:
-						messageDispatchUnsupport(ctx, payload, parserHeader);
+						deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+						//messageDispatchUnsupport(ctx, payload, parserHeader);
 						break;
 				}
 			}else{
