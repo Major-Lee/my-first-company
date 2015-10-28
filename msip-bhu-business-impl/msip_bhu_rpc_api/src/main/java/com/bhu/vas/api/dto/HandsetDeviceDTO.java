@@ -17,7 +17,13 @@ public class HandsetDeviceDTO implements Serializable{
 	public static final String Action_Sync = "sync";
 	public static final String Action_Update = "update";
 	public static final String Action_Authorize = "authorize";
-	
+
+	public static final String VAPNAME_WLAN0 = "wlan0";
+	public static final String VAPNAME_WLAN3 = "wlan3";
+
+	public static final String PORTAL_LOCAL = "local";
+
+
 	private String action;
 	//移动设备mac
 	private String mac;
@@ -71,11 +77,11 @@ public class HandsetDeviceDTO implements Serializable{
 	/**
 	 * 终端是否来自于有线口
 	 */
-	private boolean ethernet;
+	private String ethernet;
 	/**
 	 * 对于来自开启portal的接口上的终端,表明终端是否认证通过
 	 */
-	private boolean authorized;
+	private String authorized;
 
 	/**
 	 * 老版本固件没有portal，新版本wlan0:none, wlan3:local
@@ -265,19 +271,19 @@ public class HandsetDeviceDTO implements Serializable{
 		return Double.parseDouble(data_rx_rate);
 	}
 
-	public boolean isEthernet() {
+	public String getEthernet() {
 		return ethernet;
 	}
 
-	public void setEthernet(boolean ethernet) {
+	public void setEthernet(String ethernet) {
 		this.ethernet = ethernet;
 	}
 
-	public boolean isAuthorized() {
+	public String getAuthorized() {
 		return authorized;
 	}
 
-	public void setAuthorized(boolean authorized) {
+	public void setAuthorized(String authorized) {
 		this.authorized = authorized;
 	}
 

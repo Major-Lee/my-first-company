@@ -1,6 +1,8 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
@@ -104,19 +106,33 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         }
 
 
-//        System.out.println();
-//
-//        String payload = "<event>\n" +
-//                "        <wlan>\n" +
-//                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-哈哈\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
-//                "        </wlan>\n" +
-//                "</event>";
-//
-//        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
-//                HandsetDeviceDTO.class);
-//
-//        System.out.println(dtos.get(0).getPortal());
-//        System.out.println(dtos.get(0).getVapname());
+        System.out.println();
+
+        String payload = "<event>\n" +
+                "        <wlan>\n" +
+                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-啊\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
+                "        </wlan>\n" +
+                "</event>";
+
+
+
+        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
+                HandsetDeviceDTO.class);
+
+        System.out.println(dtos.get(0).getPortal());
+        System.out.println(dtos.get(0).getVapname());
+        System.out.println(dtos.get(0).getAuthorized());
+
+
+
+        String text2 = "<return>\n" +
+                "        <ITEM result=\"ok\" config_sequence=\"247\" />\n" +
+                "</return>";
+        for(int i=0;i<100;i++){
+            WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+                    text2);
+            System.out.println(dto.getSequence());
+        }
 
     }
 
