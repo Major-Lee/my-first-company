@@ -371,11 +371,6 @@ public class CMDBuilder {
 					resultCmd = String.format(opt.getCmdtpl(), 
 								StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1],daysParam);
 					break;
-				case RemoteDeviceControlTransfer:
-					ParamDeviceRemoteControlDTO paramDto = JsonHelper.getDTO(extparams, ParamDeviceRemoteControlDTO.class);
-					resultCmd = String.format(opt.getCmdtpl(), 
-							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),JsonHelper.getJSONString(paramDto));
-					break;
 				case KickOffVisitorDeviceWifiHandset:
 					WifiDeviceVisitorKickoffDTO dto = JsonHelper.getDTO(extparams, WifiDeviceVisitorKickoffDTO.class);
 					resultCmd = String.format(opt.getCmdtpl(),
