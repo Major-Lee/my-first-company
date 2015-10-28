@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.agent.*;
-
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -22,9 +20,16 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
+import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
+import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeMonthMService;
@@ -188,10 +193,10 @@ public class AgentFacadeService {
         vto.setSn(wifiDevice.getSn());
         vto.setMac(wifiDevice.getId());
         vto.setOnline(wifiDevice.isOnline());
-        long total_dod =  summaryDTO != null?summaryDTO.getT_dod():0l;
-        vto.setUptime(DateTimeHelper.getTimeDiff(total_dod));
+        double total_dod =  summaryDTO != null?summaryDTO.getT_dod():0d;
+        vto.setUptime(AgentHelper.getTimeDiff(total_dod));
         vto.setTotal_income(ChargingCurrencyHelper.currency(total_dod));
-        long previous_dod = wholeMonthDTO !=null ?wholeMonthDTO.getDod():0l;
+        double previous_dod = wholeMonthDTO !=null ?wholeMonthDTO.getDod():0d;
         vto.setMonth_income(ChargingCurrencyHelper.currency(previous_dod));
         long total_handsets =  summaryDTO != null?summaryDTO.getT_handsets():0l;
         vto.setHd_count(total_handsets);

@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
- * 每日必须进行状态保活，每天凌晨需要把在线的设备重新写入到日志中，作为模拟登录，模拟登录的时间缺省为当日的起始时间，防止漏算了长时间在线的设备
+ * 每月1号进行上月数据结算，并生成代理商结算记录到AgentSettlementsRecordMDTO
  * 对于终端则无需这样
  * @author Edmond
  *

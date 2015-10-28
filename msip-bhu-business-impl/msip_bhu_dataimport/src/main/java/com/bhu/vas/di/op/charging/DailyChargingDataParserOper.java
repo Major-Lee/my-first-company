@@ -23,7 +23,8 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  */
 public class DailyChargingDataParserOper {
 
-	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
+	public static void main(String[] argc) throws UnsupportedEncodingException, IOException{
+		String[] argv = {"2015-10-17,2015-10-18,2015-10-19,2015-10-20,2015-10-21,2015-10-22,2015-10-23,2015-10-24,2015-10-25,2015-10-26,2015-10-27","/BHUData/bulogs/copylogs/%s/chargingsimulogs/","/BHUData/bulogs/copylogs/%s/charginglogs/"};
 		if(argv == null || argv.length < 3){
 			System.out.println("参数不全 $dates(yyyy-MM-dd) $simulatelogpath $charginglogpath ");
 			return;

@@ -21,21 +21,21 @@ public class WifiDeviceWholeMonthMDTO {
 	private String date;
 	private String mac;
 	//当月在线时长device onlineduration
-	private long dod;//;
+	private double dod;//;
 	//当月连接次数device connect times
 	private int  dct;
-	private long dtx_bytes;
-	private long drx_bytes;
+	private double dtx_bytes;
+	private double drx_bytes;
 	//终端数
 	private int handsets;
 	//当月终端连接次数 
 	private int  hct;
 	//当月在线设备的连接终端的在线时长总和handset onlineduration
-	private long hod;
+	private double hod;
 	//handsets 上行流量
-	private long htx_bytes;
+	private double htx_bytes;
 	//handsets 下行流量
-	private long hrx_bytes;
+	private double hrx_bytes;
 	
 	private int cashbacks;
 	private int samedays;
@@ -59,29 +59,11 @@ public class WifiDeviceWholeMonthMDTO {
 		this.mac = mac;
 	}
 	
-	public long getDod() {
-		return dod;
-	}
-	public void setDod(long dod) {
-		this.dod = dod;
-	}
 	public int getDct() {
 		return dct;
 	}
 	public void setDct(int dct) {
 		this.dct = dct;
-	}
-	public long getDtx_bytes() {
-		return dtx_bytes;
-	}
-	public void setDtx_bytes(long dtx_bytes) {
-		this.dtx_bytes = dtx_bytes;
-	}
-	public long getDrx_bytes() {
-		return drx_bytes;
-	}
-	public void setDrx_bytes(long drx_bytes) {
-		this.drx_bytes = drx_bytes;
 	}
 	public int getHandsets() {
 		return handsets;
@@ -94,24 +76,6 @@ public class WifiDeviceWholeMonthMDTO {
 	}
 	public void setHct(int hct) {
 		this.hct = hct;
-	}
-	public long getHod() {
-		return hod;
-	}
-	public void setHod(long hod) {
-		this.hod = hod;
-	}
-	public long getHtx_bytes() {
-		return htx_bytes;
-	}
-	public void setHtx_bytes(long htx_bytes) {
-		this.htx_bytes = htx_bytes;
-	}
-	public long getHrx_bytes() {
-		return hrx_bytes;
-	}
-	public void setHrx_bytes(long hrx_bytes) {
-		this.hrx_bytes = hrx_bytes;
 	}
 	
 	public String getUpdated_at() {
@@ -132,6 +96,43 @@ public class WifiDeviceWholeMonthMDTO {
 	}
 	public void setSamedays(int samedays) {
 		this.samedays = samedays;
+	}
+	
+	public double getDod() {
+		return dod;
+	}
+	public void setDod(double dod) {
+		this.dod = dod;
+	}
+	public double getDtx_bytes() {
+		return dtx_bytes;
+	}
+	public void setDtx_bytes(double dtx_bytes) {
+		this.dtx_bytes = dtx_bytes;
+	}
+	public double getDrx_bytes() {
+		return drx_bytes;
+	}
+	public void setDrx_bytes(double drx_bytes) {
+		this.drx_bytes = drx_bytes;
+	}
+	public double getHod() {
+		return hod;
+	}
+	public void setHod(double hod) {
+		this.hod = hod;
+	}
+	public double getHtx_bytes() {
+		return htx_bytes;
+	}
+	public void setHtx_bytes(double htx_bytes) {
+		this.htx_bytes = htx_bytes;
+	}
+	public double getHrx_bytes() {
+		return hrx_bytes;
+	}
+	public void setHrx_bytes(double hrx_bytes) {
+		this.hrx_bytes = hrx_bytes;
 	}
 	public static String generateId(String date, String mac){
 		StringBuffer idstring = new StringBuffer();

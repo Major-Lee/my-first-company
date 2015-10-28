@@ -59,8 +59,10 @@ public class Step02DeviceWholeDayRecordService {
 					for(LineRecord record:h_records.getRecords()){
 						h_ct++;
 						h_od += record.gaps();
-						h_rx_bytes += record.getRx_bytes();
-						h_tx_bytes += record.getTx_bytes();
+						if(record.getRx_bytes()>0)
+							h_rx_bytes += record.getRx_bytes();
+						if(record.getTx_bytes() >0)
+							h_tx_bytes += record.getTx_bytes();
 					}
 				}
 			}
@@ -69,14 +71,14 @@ public class Step02DeviceWholeDayRecordService {
 			dto.setMac(key);
 			dto.setDate(date);
 			dto.setDct(times);//.setConnecttimes(times);
-			dto.setDod(total_online_duration);//.setOnlineduration(total_online_duration);
+			dto.setDod(AgentHelper.millisecond2Minute(total_online_duration));//.setOnlineduration(total_online_duration);
 			dto.setRecords(val.getRecords());
 			
 			dto.setHandsets(handsets);
 			dto.setHct(h_ct);
-			dto.setHod(h_od);
-			dto.setHrx_bytes(h_rx_bytes);
-			dto.setHtx_bytes(h_tx_bytes);
+			dto.setHod(AgentHelper.millisecond2Minute(h_od));
+			dto.setHrx_bytes(AgentHelper.flowByte2Megabyte(h_rx_bytes));
+			dto.setHtx_bytes(AgentHelper.flowByte2Megabyte(h_tx_bytes));
 			dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
 			dtos.add(dto);
 			
