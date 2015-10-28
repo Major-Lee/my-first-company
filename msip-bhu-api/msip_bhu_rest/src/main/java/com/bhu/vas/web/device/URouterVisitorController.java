@@ -55,29 +55,29 @@ public class URouterVisitorController extends BaseController {
     }
 
 
-    /**
-     * 踢出终端
-     * @param request
-     * @param response
-     * @param uid
-     * @param mac
-     */
-    @ResponseBody()
-    @RequestMapping(value="/remove",method={RequestMethod.POST})
-    public void remove(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) String mac,
-            @RequestParam(required = true) String hd_mac
-    ) {
-        RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
-        if(rpcResponse.getErrorCode() == null){
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
-        }else{
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
-        }
-    }
+//    /**
+//     * 踢出终端
+//     * @param request
+//     * @param response
+//     * @param uid
+//     * @param mac
+//     */
+//    @ResponseBody()
+//    @RequestMapping(value="/remove",method={RequestMethod.POST})
+//    public void remove(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            @RequestParam(required = true) Integer uid,
+//            @RequestParam(required = true) String mac,
+//            @RequestParam(required = true) String hd_mac
+//    ) {
+//        RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
+//        if(rpcResponse.getErrorCode() == null){
+//            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+//        }else{
+//            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+//        }
+//    }
 
 
 //    /**
