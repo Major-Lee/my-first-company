@@ -481,6 +481,7 @@ public class TaskFacadeService {
 					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
 					break;
 				default:
+					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
 					break;
 
 			}
