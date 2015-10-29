@@ -998,6 +998,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			uvw_dto = new UserVistorWifiSettingDTO();
 			uvw_dto.setVw(ParamVapVistorWifiDTO.builderDefault());
 			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+		}else{
+			uvw_dto.setC(WifiDeviceVisitorService.getInstance().countAuthPresent(user_setting_entity.getId()));
 		}
 		if(uto_dto != null)
 			ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
