@@ -1350,7 +1350,11 @@ public class DeviceURouterRestBusinessFacadeService {
 						if(WifistasnifferItemRddto.State_Offline_TimeoutMs - life_time <= 0){
 							dto.setState(WifistasnifferItemRddto.State_Offline);
 						}
+						if (dto.getDuration() == 0) { //处理1s内的上下线为1s
+							dto.setDuration(1);
+						}
 					}
+
 					dtos.add(dto);
 				}
 				index++;

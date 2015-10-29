@@ -371,7 +371,7 @@ public class DeviceBusinessFacadeService {
 		String wifiId_lowerCase = wifiId.toLowerCase();
 		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
-			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(),dto.getMac());
+			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else { //踢掉
 			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
 		}
@@ -651,12 +651,23 @@ public class DeviceBusinessFacadeService {
 		deviceFacadeService.allHandsetDoOfflines(mac);
 		
 		if(dtos != null && !dtos.isEmpty()){
-			List<String> ids = new ArrayList<String>();
+			List<String> allIds = new ArrayList<String>();
+
+			//过滤访客网络，默认网络下的终端
+			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
+
 			for(HandsetDeviceDTO dto : dtos){
-				ids.add(dto.getMac().toLowerCase());
+				String lowerCaseMac = dto.getMac().toLowerCase();
+				allIds.add(lowerCaseMac);
+
+				if(!isVisitorWifi(ctx, dto)) {
+					defaultWlanDTOs.add(dto);
+				}
+
 			}
-			
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(ids);
+
+			//1
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(allIds);
 			int cursor = 0;
 			for(HandsetDeviceDTO handset : handsets){
 				HandsetDeviceDTO dto = dtos.get(cursor);
@@ -665,6 +676,7 @@ public class DeviceBusinessFacadeService {
 					dto.setDhcp_name(handset.getDhcp_name());
 					dto.setData_tx_rate(handset.getData_tx_rate());
 					dto.setData_rx_rate(handset.getData_rx_rate());
+					dto.setAuthorized(handset.getAuthorized());
 					data_rx_rate = handset.fetchData_rx_rate_double();
 				}
 				String handsetId = dto.getMac().toLowerCase();
@@ -674,8 +686,9 @@ public class DeviceBusinessFacadeService {
 
 			}
 			HandsetStorageFacadeService.handsetsComming(dtos);
-			//相关统计数据，业务日志，终端接入流水日志
-			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, dtos);
+
+			//相关统计数据，业务日志，终端接入流水日志，访客网络不统计
+			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, defaultWlanDTOs);
 
 
 		}
