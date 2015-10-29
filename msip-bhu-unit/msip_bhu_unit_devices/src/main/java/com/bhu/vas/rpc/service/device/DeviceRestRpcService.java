@@ -190,7 +190,14 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 
 	@Override
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
-		return null;
+		logger.info(String.format("DeviceRestRPC fetchDevicePresent invoke wifiId [%s]", wifiId));
+		try{
+			return deviceRestBusinessFacadeService.fetchDevicePresent(wifiId);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
 	}
 	
 	/*@Override
