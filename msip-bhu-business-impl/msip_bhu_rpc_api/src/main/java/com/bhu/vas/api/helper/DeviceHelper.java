@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
@@ -696,6 +697,13 @@ public class DeviceHelper {
 				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
 			"</dev>";
+	//访客网络单独限速指令
+	public static final String DeviceSetting_Limit_VisitorWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<net>"+
+				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
+				"</net>"+
+			"</dev>";
 	public static final String DeviceSetting_Stop_VisitorWifi =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 			     "<net>"+
@@ -946,7 +954,15 @@ public class DeviceHelper {
 		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
 		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
-	
+	public static String builderDSLimitVisitorWifiOuter(String extparams){
+		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+		//if(ad_dto == null)
+		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		return builderDeviceSettingItem(DeviceSetting_Limit_VisitorWifi,ad_dto.builderProperties());
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
+		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
+	}
 	public static String builderDSStopVisitorWifiOuter(){
 		return DeviceSetting_Stop_VisitorWifi;
 		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);

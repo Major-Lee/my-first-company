@@ -28,7 +28,7 @@ public enum OperationDS {
 	
 	//DS_Http_Portal_Start("17","开启http portal"),
 	//DS_Http_Portal_Stop("18","关闭http portal"),
-	
+	DS_VistorWifi_Limit("16","访客网络限速"),
 	DS_VistorWifi_Start("17","开启访客网络"),
 	DS_VistorWifi_Stop("18" ,"关闭访客网络"),
 	

@@ -853,7 +853,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
 				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);*/
-			
+			case DS_VistorWifi_Limit:
+				return DeviceHelper.builderDSLimitVisitorWifiOuter(extparams);
 			case DS_VistorWifi_Start:
 				return DeviceHelper.builderDSStartVisitorWifiOuter(extparams);
 			case DS_VistorWifi_Stop:

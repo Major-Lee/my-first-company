@@ -5,18 +5,18 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -31,6 +31,7 @@ import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
@@ -420,6 +421,25 @@ public class TaskFacadeService {
 					case DS_Http_VapModuleCMD_Stop:
 						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
 						break;	
+					case DS_VistorWifi_Limit:
+						//需要判定访客网络是否开启
+						UserSettingState user_setting_entity = userSettingStateService.getById(mac);
+						if(user_setting_entity != null){
+							UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
+									Setting_Key, UserVistorWifiSettingDTO.class);
+							//如果开启则把limit的限速值写入到访客网络plugin配置里
+							if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getVw() != null){//访客网络是开启
+								ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+								ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+								uvw_dto.getVw().setUsers_rx_rate(ad_dto.getUsers_rx_rate());
+								uvw_dto.getVw().setUsers_tx_rate(ad_dto.getUsers_tx_rate());
+								userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(uvw_dto));
+								downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+								break;
+							}
+						}
+						//如果未开启，则重新构建访客网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
+						ods_cmd = OperationDS.DS_VistorWifi_Start;
 					case DS_VistorWifi_Start:
 						{
 							ParamVapVistorWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
