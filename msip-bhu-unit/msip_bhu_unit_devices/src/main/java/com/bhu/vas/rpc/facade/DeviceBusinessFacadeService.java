@@ -1228,6 +1228,7 @@ public class DeviceBusinessFacadeService {
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			//uptime
 			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
+			wifiDevice.setTfcard_usage(serialDto.getTfcard_usage());
 			try {
 				String[] uptime = serialDto.getUptime().split(":");
 				long last_start_at = System.currentTimeMillis() -

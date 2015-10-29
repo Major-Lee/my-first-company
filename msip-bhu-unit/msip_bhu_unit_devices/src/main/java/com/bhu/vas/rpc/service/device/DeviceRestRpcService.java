@@ -187,6 +187,11 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
+
+	@Override
+	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
+		return null;
+	}
 	
 	/*@Override
 	public Collection<GeoMapVTO> fetchGeoMap(){
