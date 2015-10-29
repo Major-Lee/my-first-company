@@ -27,5 +27,6 @@ public interface IDeviceRestRpcService {
 	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId);
+	public RpcResponseDTO<String> fetchDevicePresent(String wifiId);
 	//public Collection<GeoMapVTO> fetchGeoMap();
 }

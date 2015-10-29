@@ -100,6 +100,13 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.fetchDevicePersistenceDetailCMD(wifiId);
 	}
 
+	@Override
+	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
+		if(StringUtils.isEmpty(wifiId)) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		return deviceRestRpcService.fetchDevicePresent(wifiId);
+	}
+
 	/*@Override
 	public Collection<GeoMapVTO> fetchGeoMap() {
 		return deviceRestRpcService.fetchGeoMap();
