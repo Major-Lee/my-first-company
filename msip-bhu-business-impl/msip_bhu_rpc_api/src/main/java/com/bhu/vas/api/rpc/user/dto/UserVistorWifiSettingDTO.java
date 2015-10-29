@@ -18,6 +18,8 @@ public class UserVistorWifiSettingDTO extends UserSettingDTO{
 	private boolean on = false;
 	//device response ok 时 为true
 	private boolean ds = false;
+	//此值作为返给客户端需要设置的 在线授权的访客网络终端的数量
+	private long c = 0;
 	private ParamVapVistorWifiDTO vw;
 	//users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	
@@ -42,6 +44,12 @@ public class UserVistorWifiSettingDTO extends UserSettingDTO{
 	}
 	public void setDs(boolean ds) {
 		this.ds = ds;
+	}
+	public long getC() {
+		return c;
+	}
+	public void setC(long c) {
+		this.c = c;
 	}
 	
 }
