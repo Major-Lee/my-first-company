@@ -62,7 +62,7 @@ public class DeviceUpgradeFacadeService {
 			System.out.println(String.format("-----checkDeviceUpgrade step10 [%s] [%s] ",mac,wifiDevice.getOrig_swver()));
 			resultDto = new UpgradeDTO(false,false);
 		}else{
-			System.out.println(String.format("-----checkDeviceUpgrade step20 [%s] [%s] ",mac,wifiDevice.getOrig_swver()));
+			//System.out.println(String.format("-----checkDeviceUpgrade step20 [%s] [%s] ",mac,wifiDevice.getOrig_swver()));
 			boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
 			System.out.println(String.format("-----checkDeviceUpgrade step21 [%s] isFirstGray[%s] ",mac,isFirstGray));
 			WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
