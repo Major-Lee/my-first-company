@@ -34,7 +34,7 @@ public enum ActionMessageType {
 	
 	USERREGISTERED("用户注册成功","registered","UR"),//用户注册成功
 	USERSIGNEDON("用户登陆","signedon","US"),//用户登陆成功动作
-	USERRESETPWD("用户重置密码","userresetpwd","UR"),
+	USERRESETPWD("用户重置密码","userresetpwd","UP"),
 	USERFETCHCAPTCHACODE("请求验证码","fetchcaptchacode","FC"),//请求验证码动作
 	USERDEVICEREGISTER("用户设备注册","user device register","DR"),
 	USERDEVICEDESTORY("用户设备注销","user device destory","DD"),
