@@ -218,17 +218,20 @@ public class DeviceURouterRestBusinessFacadeService {
 					hd_macs.add(tuple.getElement());
 				}
 				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
+				List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(hd_macs);
 				//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				//List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 				if(!handsets.isEmpty()){
 					vtos = new ArrayList<URouterHdVTO>();
 					int cursor = 0;
 					HandsetDeviceDTO hd_entity = null;
+					String alia = null;
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 					for(Tuple tuple : presents){
 						hd_entity = handsets.get(cursor);
+						alia = handsetAlias.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, hd_entity, setting_dto);
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, hd_entity, setting_dto,alia);
 						vtos.add(vto);
 						cursor++;
 					}
@@ -789,13 +792,15 @@ public class DeviceURouterRestBusinessFacadeService {
 //					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
 					//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
 					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(block_hd_macs);
+					List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(block_hd_macs);
 					if(!block_hd_macs.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
 //						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 						WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
-							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, block_hd_mac, false, handsets.get(cursor), setting_dto);
+							String alia = block_hd_macs.get(cursor);
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, block_hd_mac, false, handsets.get(cursor), setting_dto,alia);
 							vtos.add(vto);
 							cursor++;
 						}
@@ -1505,16 +1510,24 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 
 		if(!presents.isEmpty()) {
+			List<String> hd_macs = new ArrayList<String>();
+			for(Tuple tuple : presents){
+				hd_macs.add(tuple.getElement());
+			}
+
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
+			List<String> handsets = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(hd_macs);
 			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
+			int cursor = 0;
 			for (Tuple tuple : presents) {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = getHandsetName(uid, hd_mac);
+				String hostname = handsets.get(cursor);
 				detailVTO.setN(hostname);
 				vtos.add(detailVTO);
+				cursor++;
 			}
 			vto.setItems(vtos);
 		}
@@ -1522,14 +1535,14 @@ public class DeviceURouterRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 
-	private String getHandsetName(int uid, String hd_mac) {
-		String name = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
-		if (StringUtils.isEmpty(name)) {
-			HandsetDeviceDTO dto = HandsetStorageFacadeService.handset(hd_mac);
-			name = dto.getDhcp_name();
-		}
-		return name;
-	}
+//	private String getHandsetName(int uid, String hd_mac) {
+//		String name = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
+//		if (StringUtils.isEmpty(name)) {
+//			HandsetDeviceDTO dto = HandsetStorageFacadeService.handset(hd_mac);
+//			name = dto.getDhcp_name();
+//		}
+//		return name;
+//	}
 
 
 	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String wifiId, String hd_mac) {

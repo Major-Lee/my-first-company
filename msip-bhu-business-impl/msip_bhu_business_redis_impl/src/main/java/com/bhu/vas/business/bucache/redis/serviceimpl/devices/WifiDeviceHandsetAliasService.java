@@ -1,11 +1,16 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import redis.clients.jedis.JedisPool;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 获取用户设备终端别名
@@ -62,5 +67,40 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
 
     public boolean hexistsHandsetAlias(int uid, String handsetMac) {
         return this.hexists(generateKey(String.valueOf(uid)), handsetMac);
+    }
+
+    private String[][] generateKeyAndFields(List<String> macs){
+        if(macs == null || macs.isEmpty()) return null;
+        int size = macs.size();
+        String[][] result = new String[2][size];
+        String[] keys = new String[size];
+        String[] fields = new String[size];
+        int cursor = 0;
+        for(String mac : macs){
+            keys[cursor] = generateKey(mac);
+            fields[cursor] = mac;
+            cursor++;
+        }
+        result[0] = keys;
+        result[1] = fields;
+        return result;
+    }
+
+    public List<String> pipelineHandsetAlias(List<String> macs) {
+        String[][] keyAndFields = generateKeyAndFields(macs);
+        List<Object> values = null;
+        List<String> result = new ArrayList<String>();
+        try{
+            values = this.pipelineHGet_diffKeyWithDiffFieldValue(keyAndFields[0],keyAndFields[1]);
+            for(Object obj :values){
+                result.add(obj.toString());
+            }
+        }finally{
+            if(values != null){
+                values.clear();
+                values = null;
+            }
+        }
+        return result;
     }
 }
