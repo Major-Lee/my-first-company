@@ -299,7 +299,7 @@ public class BusinessModelBuilder {
 		return vto;
 	}
 
-	public static String getHandsetDeviceAlias(int uid, String hd_mac){
+	private static String getHandsetDeviceAlias(int uid, String hd_mac){
 		return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
 	}
 

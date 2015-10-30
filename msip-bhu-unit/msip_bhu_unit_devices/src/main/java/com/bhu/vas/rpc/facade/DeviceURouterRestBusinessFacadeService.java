@@ -1212,7 +1212,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 			//System.out.println("step3:"+count);
-			Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac, 
+			Set<Tuple> tuples = TerminalRecentSortedSetService.getInstance().fetchTerminalRecentByScoreWithScores(mac,
 					hours12_ago_ts, current_ts, start, size);
 			
 			vto_list = new ArrayList<URouterWSRecentVTO>();
@@ -1250,7 +1250,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(count == 0){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
-			Set<Tuple> tuples = TerminalHotSortedSetService.getInstance().fetchTerminalHotWithScores(mac, 
+			Set<Tuple> tuples = TerminalHotSortedSetService.getInstance().fetchTerminalHotWithScores(mac,
 					start, size);
 			
 			List<URouterWSHotVTO> vto_list = new ArrayList<URouterWSHotVTO>();
@@ -1494,8 +1494,6 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
 
-		System.out.println("presents===" + presents);
-		System.out.println("presents===" + presents.isEmpty());
 		UserSettingState settingState = userSettingStateService.getById(wifiId);
 
 		if (settingState != null) {
@@ -1514,7 +1512,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = BusinessModelBuilder.getHandsetDeviceAlias(uid, hd_mac);
+				String hostname = getHandsetName(uid, hd_mac);
 				detailVTO.setN(hostname);
 				vtos.add(detailVTO);
 			}
@@ -1522,6 +1520,15 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+	}
+
+	private String getHandsetName(int uid, String hd_mac) {
+		String name = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
+		if (StringUtils.isEmpty(name)) {
+			HandsetDeviceDTO dto = HandsetStorageFacadeService.handset(hd_mac);
+			name = dto.getDhcp_name();
+		}
+		return name;
 	}
 
 
