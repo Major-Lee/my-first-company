@@ -1514,7 +1514,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = deviceFacadeService.queryPushHandsetDeviceHostname(hd_mac, wifiId);
+				String hostname = BusinessModelBuilder.getHandsetDeviceAlias(uid, hd_mac);
 				detailVTO.setN(hostname);
 				vtos.add(detailVTO);
 			}
