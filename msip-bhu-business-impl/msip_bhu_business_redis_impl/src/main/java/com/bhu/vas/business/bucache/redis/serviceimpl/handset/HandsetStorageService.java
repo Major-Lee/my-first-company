@@ -208,8 +208,11 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	
 	public static void main(String[] argv){
 
-		System.out.println(HandsetStorageService.generateKey("20:68:9d:93:93:bd"));
-		System.out.println(HandsetStorageService.generateKey("cc:af:78:29:f1:3f"));
+		System.out.println(HandsetStorageService.generateKey("18:00:2d:91:57:8b"));
+		System.out.println(HandsetStorageService.generateKey("f0:25:b7:93:d9:e9"));
+		System.out.println(HandsetStorageService.generateKey("60:f8:1d:a2:b2:a7"));
+
+		System.out.println(HandsetStorageService.getInstance().handset("18:00:2d:91:57:8b").getDhcp_name());
 
 
 //		List<String> macs = new ArrayList<String>();
