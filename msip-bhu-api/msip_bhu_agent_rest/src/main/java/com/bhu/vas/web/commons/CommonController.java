@@ -18,7 +18,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 @Controller
 public class CommonController extends BaseController{
 
-	
 	@ResponseBody()
 	@RequestMapping(value = {"/commons/{commonCode}"},method={RequestMethod.POST})
 	public void commons(HttpServletRequest request,
@@ -29,7 +28,6 @@ public class CommonController extends BaseController{
 		loggingWarn(commonCode, request);
 		if(StringUtils.isNotEmpty(commonCode)){
 			if(commonCode.equals("404")){
-				
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_404_ERROR));
 				return;
 			}
@@ -44,37 +42,11 @@ public class CommonController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_UNKNOW_ERROR));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_UNKNOW_ERROR));
-/*		try{
-			User user = this.userService.getById(id);
-			validateUserNotNull(user);
-			User fuser = this.userService.getById(fid);
-			validateUserNotNull(fuser);
-			
-			this.userFriendsService.addToFriend(id, fid.toString());
-			UserFriendsState state = this.userFriendsStateService.getOrCreateById(id);
-			UserFriendDTO dto = new UserFriendDTO();
-			dto.setId(fid.toString());
-			dto.setNickname(fuser.getNickname());
-			dto.setFromsns(FriendOriginType.LOCAL.getShortname());
-			state.addFriendTags(dto);
-			this.userFriendsStateService.update(state);
-			SpringMVCHelper.renderJson(response, Response.SUCCESS);
-		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, Response.ERROR);
-		}*/
+
 		}catch (Exception e) {
 			e.printStackTrace(System.out);
 		}
 	}
 	
-/*	 @RequestMapping(value = {"/commons/{commonCode}.html"})
-	 public ModelAndView common(
-			 ModelAndView mv, 
-			 HttpServletRequest request,
-			 @PathVariable String commonCode) {
-		 //this.prepareModelAndView(mv);
-		 //mv.setViewName("/commons/"+commonPage);
-		 return mv;
-	 }*/
 
 }

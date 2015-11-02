@@ -1,7 +1,6 @@
-package com.bhu.vas.web.financial;
+package com.bhu.vas.web.manager;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
 import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
 import com.bhu.vas.api.vto.agent.AgentFinancialUploadVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
