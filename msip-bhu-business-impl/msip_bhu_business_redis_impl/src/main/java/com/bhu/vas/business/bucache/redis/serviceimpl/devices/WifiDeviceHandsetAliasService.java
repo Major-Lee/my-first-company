@@ -93,7 +93,12 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
         try{
             values = this.pipelineHGet_diffKeyWithDiffFieldValue(keyAndFields[0],keyAndFields[1]);
             for(Object obj :values){
-                result.add(obj.toString());
+                if (obj == null) {
+                    result.add("");
+                } else {
+                    result.add(obj.toString());
+                }
+
             }
         }finally{
             if(values != null){
