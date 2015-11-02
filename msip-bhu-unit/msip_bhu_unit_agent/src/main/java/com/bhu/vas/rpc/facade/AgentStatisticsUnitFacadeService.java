@@ -22,7 +22,6 @@ import com.bhu.vas.api.rpc.agent.vto.SettlementStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
-import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.dto.SettlementSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
@@ -43,7 +42,6 @@ import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.filterhelper.StringHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-import com.smartwork.msip.localunit.RandomData;
 
 @Service
 public class AgentStatisticsUnitFacadeService {
@@ -92,11 +90,12 @@ public class AgentStatisticsUnitFacadeService {
 			String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?ChargingCurrencyHelper.currency(yesterday_data.getDod()):0.00d)));
-			//曾经上线终端数  
-			//总收入(元)
-			RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
+			//结算过的总收入(元)
+			//待结算的总数 
+			/*RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
 			vto.setOd(ArithHelper.getFormatter(String.valueOf(summary.getT_devices())));
-			vto.setRtl(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(summary.getT_dod()))));
+			vto.setRtl(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(summary.getT_dod()))));*/
+			pageTotalSettlements4Agent(user,vto);
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(user, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
@@ -127,6 +126,25 @@ public class AgentStatisticsUnitFacadeService {
 		}
 	}
 
+	/**
+	 * 获取指定代理商 的所有 已结算的金额和待结算的金额
+	 * @param agent
+	 * @param vto
+	 */
+	private void pageTotalSettlements4Agent(int agent,AgentRevenueStatisticsVTO vto) {
+		List<Integer> agents = new ArrayList<Integer>();
+			agents.add(agent);
+		if(!agents.isEmpty()){
+				//取所有记录汇总
+			List<SettlementSummaryDTO> mainSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, 
+						null, 
+						null, null, 1, agents.size());
+			vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
+			vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(String.valueOf(agent),mainSummary),2))));
+		}
+	}
+	
+	
 	/**
 	 * 分页取enddate包括enddate前90天的数据，构建出60条数据
 	 * 临时实现 只分页，返回数据中没有相较同月的比较值
