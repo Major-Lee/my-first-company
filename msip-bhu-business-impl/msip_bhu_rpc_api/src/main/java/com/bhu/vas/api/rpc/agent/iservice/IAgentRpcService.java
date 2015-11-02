@@ -18,27 +18,11 @@ public interface IAgentRpcService {
     String PATH_INVOICE_PREFIX = "/BHUData/agent/invoice";
     String PATH_RECEIPT_PREFIX = "/BHUData/agent/receipt";
 
-
-//    /**
-//     * 生成代理商
-//     * @param agentDeviceClaim
-//     */
-//    void createAgent(AgentDeviceClaim agentDeviceClaim);
-//
     /**
      * 设备认领代理商
      * @param sn
      */
     int claimAgentDevice(String sn, String mac);
-
-//    /**
-//     * 代理商设备列表
-//     * @param uid
-//     * @param pageNo
-//     * @param pageSize
-//     * @return
-//     */
-//    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize);
 
 
     /**
@@ -58,7 +42,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    AgentDeviceVTO pageClaimedAgentDevice(int status, int pageNo, int pageSize);
+    AgentDeviceVTO pageClaimedAgentDevice(int uid, int status, int pageNo, int pageSize);
 
     /**
      * 获取具体代理商未认领的设备
@@ -96,7 +80,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize);
+    TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int uid, int pageNo, int pageSize);
 
     /**
      * 代理商首页面的统计数据，包括本月收入，上月收入，昨日收入，总上线设备数，总收入数以及图表数据
@@ -104,7 +88,7 @@ public interface IAgentRpcService {
      * @param enddate 截止日期
      * @return
      */
-    public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate);
+    RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate);
     
     /**
      * 代理商首页面首页面 每日历史收益列表
@@ -114,7 +98,7 @@ public interface IAgentRpcService {
      * @param pageSize 
      * @return
      */
-    public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);
+    RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);
 
     /**
      * 代理商结算列表页面
@@ -124,20 +108,20 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,int pageNo, int pageSize);
+    RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,int pageNo, int pageSize);
     
     /**
      * 获取代理商代理设备的所有数量、在线数量、离线数量
      * @param agentuser
      * @return
      */
-    public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser);
+    RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser);
     /**
      * 获取公告
      * @param bid
      * @return
      */
-    AgentBulltinBoardVTO findAgentBulltinBoardById(long bid);
+    AgentBulltinBoardVTO findAgentBulltinBoardById(int uid, long bid);
 
     /**
      * 获取代理商公告
@@ -151,19 +135,21 @@ public interface IAgentRpcService {
 
     /**
      * 获取仓库管理员
+     * @param uid
      * @param pageNo
      * @param pageSize
      * @return
      */
-    TailPage<UserVTO> pageSellorVTO(int pageNo, int pageSize);
+    TailPage<UserVTO> pageSellorVTO(int uid, int pageNo, int pageSize);
 
     /**
      * 获取代理商
+     * @param uid
      * @param pageNo
      * @param pageSize
      * @return
      */
-    TailPage<UserVTO> pageAgentUserVTO(int pageNo, int pageSize);
+    TailPage<UserVTO> pageAgentUserVTO(int uid, int pageNo, int pageSize);
 
 
     /**

@@ -91,7 +91,10 @@ public class AgentFacadeService {
     }
 
 
-    public AgentDeviceVTO pageClaimedAgentDeviceById(int uid, int status, int pageNo, int pageSize) {
+    public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid);
@@ -228,11 +231,12 @@ public class AgentFacadeService {
         return vto;
     }
 
-    
-    
-    
 
-    public AgentDeviceVTO pageClaimedAgentDeviceById(int status, int pageNo, int pageSize) {
+    public AgentDeviceVTO pageClaimedAgentDevice(int uid, int status, int pageNo, int pageSize) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0);
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
@@ -405,6 +409,10 @@ public class AgentFacadeService {
     public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
                                                           String inputPath, String outputPath,
                                                           String originName, String remark) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
         //代理商导入记录
         AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
         agentDeviceImportLog.setAid(aid);
@@ -440,7 +448,11 @@ public class AgentFacadeService {
 
     }
 
-    public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
+    public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int uid, int pageNo, int pageSize) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
         ModelCriteria mc = new ModelCriteria();
         mc.setOrderByClause("id desc");
         mc.createCriteria().andSimpleCaulse(" 1=1 ");
@@ -481,9 +493,12 @@ public class AgentFacadeService {
         return new CommonPage<AgentDeviceImportLogVTO>(pageNo, pageSize, total, vtos);
     }
 
-    public AgentBulltinBoardVTO findAgentBulltinBoardById(long bid) {
-        AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
+    public AgentBulltinBoardVTO findAgentBulltinBoardById(int uid, long bid) {
 
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
+        AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
         AgentBulltinBoardVTO vto = null;
         if (agentBulltinBoard != null) {
             vto = new AgentBulltinBoardVTO();
@@ -511,6 +526,10 @@ public class AgentFacadeService {
     }
 
     public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("consumer", uid);
         int total = agentBulltinBoardService.countByCommonCriteria(mc);
@@ -549,7 +568,10 @@ public class AgentFacadeService {
     }
 
 
-    public TailPage<UserVTO> pageUserVTO(int utype, int pageNo, int pageSize) {
+    public TailPage<UserVTO> pageUserVTO(int uid, int utype, int pageNo, int pageSize) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", utype);
@@ -573,6 +595,10 @@ public class AgentFacadeService {
 
 
     public boolean updateAgentImportImport(int uid, long logId) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
 
         AgentDeviceImportLog agentDeviceImportLog =  agentDeviceImportLogService.getById(logId);
         if (agentDeviceImportLog != null) {
@@ -602,6 +628,9 @@ public class AgentFacadeService {
 
 
     public TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.setOrderByClause("updated_at desc");
