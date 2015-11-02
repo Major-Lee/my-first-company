@@ -1,5 +1,8 @@
 package com.bhu.vas.api.helper;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.DeviceVersion;
@@ -22,6 +25,11 @@ public class WifiDeviceHelper {
 	
 	
 	public final static String WIFI_URouter_DEVICE_ORIGIN_MODEL = "uRouter";
+	
+	private static Set<String> vapExceptDevices = new HashSet<String>();
+	static{
+		vapExceptDevices.add("84:82:f4:23:06:68");
+	}
 	public static boolean isURouterDevice(String orig_model) {
 		/*DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null) return false;
@@ -148,6 +156,10 @@ public class WifiDeviceHelper {
 		}
 	}
 	
+	
+	public static boolean isVapCmdExceptDevice(String mac){
+		return vapExceptDevices.contains(mac);
+	}
 	
 	/**
 	 * 有些指令发送下去后设备端没有响应结果，此类指令下发后会自动进入完成任务表中
