@@ -71,6 +71,10 @@ public class AgentStatisticsUnitFacadeService {
 	 */
 	public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int user, String dateEndStr) {
 		try{
+
+			User operUser = userService.getById(user);
+			UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+
 			AgentRevenueStatisticsVTO vto = new AgentRevenueStatisticsVTO();
 			//vto.setRcm(ArithHelper.getFormatter(String.valueOf(76696999l)));
 			//vto.setRlm(ArithHelper.getFormatter(String.valueOf(977906l)));
@@ -154,6 +158,10 @@ public class AgentStatisticsUnitFacadeService {
 	 */
 	public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize) {
 		try{
+
+			User operUser = userService.getById(uid);
+			UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+
 			Date currentDate = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			//String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
 			Date dateEnd = DateTimeHelper.getDateDaysAgo(currentDate,1);//DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
@@ -344,6 +352,10 @@ public class AgentStatisticsUnitFacadeService {
 	}
 	
 	private RpcResponseDTO<SettlementPageVTO> pageUnSettledSettlements(int operator_user,int pageNo, int pageSize) {
+
+		User operUser = userService.getById(operator_user);
+		UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -496,6 +508,11 @@ public class AgentStatisticsUnitFacadeService {
 		if(agentuser <= 0){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
+
+		User operUser = userService.getById(agentuser);
+		UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
+
 		AgentDeviceStatisticsVTO statistics = businessCacheService.getAgentDSCacheByUser(agentuser);
 		if(statistics == null){
 			ModelCriteria mc_total = new ModelCriteria();

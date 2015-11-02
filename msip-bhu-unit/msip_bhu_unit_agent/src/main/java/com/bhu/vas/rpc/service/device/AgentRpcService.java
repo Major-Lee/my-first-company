@@ -31,23 +31,12 @@ public class AgentRpcService implements IAgentRpcService {
 
     @Resource
     private AgentStatisticsUnitFacadeService agentStatisticsUnitFacadeService;
-    
+
+    /* 公共 start*/
     @Override
     public int claimAgentDevice(String sn, String mac) {
         logger.info(String.format("claimAgentDevice sn[%s] mac[%s]", sn, mac));
         return agentFacadeService.claimAgentDevice(sn, mac);
-    }
-
-    @Override
-    public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
-        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] status[%s] pageNo[%s] pageSize[%s]",uid, status, pageNo, pageSize));
-        return agentFacadeService.pageClaimedAgentDeviceById(uid, status, pageNo, pageSize);
-    }
-
-    @Override
-    public AgentDeviceVTO pageClaimedAgentDevice(int status, int pageNo, int pageSize) {
-        logger.info(String.format("pageClaimedAgentDeviceByUid status[%s], pageNo[%s] pageSize[%s]", status, pageNo, pageSize));
-        return agentFacadeService.pageClaimedAgentDeviceById(status, pageNo, pageSize);
     }
 
     @Override
@@ -61,25 +50,15 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("pageUnClaimAgentDevice pageNo:%s pageSize:%s", pageNo, pageSize));
         return agentFacadeService.pageUnClaimAgentDevice(pageNo, pageSize);
     }
+    /* 公共 end*/
 
+
+
+    /* 代理商 start*/
     @Override
-    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid,int aid, int wid, String inputPath, String outputPath, String originName, String remark) {
-        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s remark:%s",
-                uid, aid, wid, originName, inputPath, outputPath, remark));
-        return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName, remark);
-    }
-
-    @Override
-    public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize) {
-        logger.info(String.format("pageAgentDeviceImportLog pageNo:%s pageSize:%s", pageNo, pageSize));
-        return agentFacadeService.pageAgentDeviceImportLog(pageNo, pageSize);
-    }
-
-
-    @Override
-    public AgentBulltinBoardVTO findAgentBulltinBoardById(long bid) {
-        logger.info(String.format("findAgentBulltinBoardById bid:%s", bid));
-        return agentFacadeService.findAgentBulltinBoardById(bid);
+    public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
+        logger.info(String.format("pageClaimedAgentDeviceByUid uid[%s] status[%s] pageNo[%s] pageSize[%s]",uid, status, pageNo, pageSize));
+        return agentFacadeService.pageClaimedAgentDeviceByUid(uid, status, pageNo, pageSize);
     }
 
 	@Override
@@ -99,7 +78,7 @@ public class AgentRpcService implements IAgentRpcService {
 		logger.info(String.format("pageSettlements operator_user[%s]", operator_user));
 		return agentStatisticsUnitFacadeService.pageSettlements(operator_user, viewstatus, pageNo, pageSize);
 	}
-	
+
     @Override
     public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
         logger.info(String.format("pageAgentBulltinBoardByUid uid:%s pageNo:%s pageSize:%s", uid, pageNo, pageSize));
@@ -112,16 +91,20 @@ public class AgentRpcService implements IAgentRpcService {
 		return agentStatisticsUnitFacadeService.fetchAgentDeviceStatistics(agentuser);
 	}
 
+    /* 代理商 end*/
+
+
+    /* 仓储管理员 start */
     @Override
-    public TailPage<UserVTO> pageSellorVTO(int pageNo, int pageSize) {
-        logger.info(String.format("pageSellorVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageUserVTO(UserType.Sellor.getIndex(), pageNo, pageSize);
+    public AgentDeviceVTO pageClaimedAgentDevice(int uid, int status, int pageNo, int pageSize) {
+        logger.info(String.format("pageClaimedAgentDeviceByUid status[%s], pageNo[%s] pageSize[%s]", status, pageNo, pageSize));
+        return agentFacadeService.pageClaimedAgentDevice(uid, status, pageNo, pageSize);
     }
 
     @Override
-    public TailPage<UserVTO> pageAgentUserVTO(int pageNo, int pageSize) {
-        logger.info(String.format("pageAgentUserVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageUserVTO(UserType.Agent.getIndex(), pageNo, pageSize);
+    public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentDeviceImportLog pageNo:%s pageSize:%s", pageNo, pageSize));
+        return agentFacadeService.pageAgentDeviceImportLog(uid, pageNo, pageSize);
     }
 
     @Override
@@ -130,7 +113,23 @@ public class AgentRpcService implements IAgentRpcService {
         return agentFacadeService.updateAgentImportImport(uid, logId);
     }
 
+    @Override
+    public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid,int aid, int wid, String inputPath, String outputPath, String originName, String remark) {
+        logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s remark:%s",
+                uid, aid, wid, originName, inputPath, outputPath, remark));
+        return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName, remark);
+    }
 
+    @Override
+    public AgentBulltinBoardVTO findAgentBulltinBoardById(int uid, long bid) {
+        logger.info(String.format("findAgentBulltinBoardById bid:%s", bid));
+        return agentFacadeService.findAgentBulltinBoardById(uid, bid);
+    }
+
+    /* 仓储管理员 end */
+
+
+    /* 财务 start */
     @Override
     public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
         logger.info(String.format("postAgentFinancialSettlement uid[%s] aid[%s] account[%s] invoice[%s] receipt[%s] remark[%s]",
@@ -142,6 +141,20 @@ public class AgentRpcService implements IAgentRpcService {
     public TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize) {
         logger.info(String.format("pageAgentFinancialSettlementVTO uid[%s]  pageNo[%s] pageSize[%s]",
                 uid, pageNo, pageSize));
-        return agentFacadeService.pageAgentFinancialSettlementVTO(uid,  pageNo, pageSize);
+        return agentFacadeService.pageAgentFinancialSettlementVTO(uid, pageNo, pageSize);
     }
+
+    @Override
+    public TailPage<UserVTO> pageSellorVTO(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageSellorVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(uid, UserType.Sellor.getIndex(), pageNo, pageSize);
+    }
+
+    @Override
+    public TailPage<UserVTO> pageAgentUserVTO(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentUserVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(uid, UserType.Agent.getIndex(), pageNo, pageSize);
+    }
+
+    /* 财务 end */
 }

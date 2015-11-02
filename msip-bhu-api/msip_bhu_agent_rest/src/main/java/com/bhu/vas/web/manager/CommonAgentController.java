@@ -43,7 +43,7 @@ public class CommonAgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
         try {
-            TailPage<UserVTO> vtos = agentRpcService.pageSellorVTO(pageNo, pageSize);
+            TailPage<UserVTO> vtos = agentRpcService.pageSellorVTO(uid, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,7 +61,7 @@ public class CommonAgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
         try {
-            TailPage<UserVTO> vtos = agentRpcService.pageAgentUserVTO(pageNo, pageSize);
+            TailPage<UserVTO> vtos = agentRpcService.pageAgentUserVTO(uid, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
         } catch (Exception e) {
             e.printStackTrace();

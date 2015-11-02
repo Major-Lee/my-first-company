@@ -55,7 +55,7 @@ public class WarehouseManagerController {
                                @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDevice(status, pageNo, pageSize);
+            AgentDeviceVTO dtos = agentRpcService.pageClaimedAgentDevice(uid,status, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class WarehouseManagerController {
                                    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceImportLogVTO> dtos = agentRpcService.pageAgentDeviceImportLog(pageNo, pageSize);
+            TailPage<AgentDeviceImportLogVTO> dtos = agentRpcService.pageAgentDeviceImportLog(uid, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,7 +218,7 @@ public class WarehouseManagerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-        AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(bid);
+        AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(uid, bid);
         if (vto != null) {
             String content = vto.getM();
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
