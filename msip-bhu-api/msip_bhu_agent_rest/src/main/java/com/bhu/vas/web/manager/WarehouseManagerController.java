@@ -94,6 +94,33 @@ public class WarehouseManagerController {
 
 
     /**
+     * 确认导入结果
+     * @param request
+     * @param response
+     * @param uid
+     * @param logid
+     */
+    @ResponseBody()
+    @RequestMapping(value="/log/update")
+    public void updateImport(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer logid
+    ) {
+
+        try {
+            boolean ret  = agentRpcService.updateAgentImportImport(uid, logid);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+    }
+
+
+    /**
      * 上传代理商Excel
      * @param request
      * @param response
@@ -206,4 +233,6 @@ public class WarehouseManagerController {
         return null;
 
     }
+
+
 }
