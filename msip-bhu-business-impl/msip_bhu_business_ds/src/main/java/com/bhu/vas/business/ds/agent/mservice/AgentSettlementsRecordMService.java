@@ -146,7 +146,7 @@ public class AgentSettlementsRecordMService {
 			criteria.and("agent").in(agents);
 		}
 		//Criteria criteria = Criteria.where("agent").in(agents);//.and("date").gte(dateStart).lte(dateEnd);
-		if(status != null)
+		if(status != null && status.length >0)
 			criteria.and("status").in(status);
 		
 		boolean isStartNotEmpty = StringUtils.isNotEmpty(dateStart);
@@ -175,7 +175,7 @@ public class AgentSettlementsRecordMService {
 		return aggregate;
 	}
 	/**
-	 * 统计代理商管理页面中的 所有、未结算、已经结算的统计数据
+	 * 统计代理商管理页面中的 所有、未结算、已经结算的统计数量数据
 	 * 如果agent>0 则是所有用户汇总统计
 	 * @param agent
 	 * @return
@@ -188,17 +188,6 @@ public class AgentSettlementsRecordMService {
 			unsettled_criteria.and("agent").is(agent);
 			settled_criteria.and("agent").is(agent);
 		}
-		/*TypedAggregation<AgentSettlementsRecordMDTO> total_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
-				group("agent"),//.count().as("count1"),
-				group().count().as("count")
-			    //group("status","agent")
-			    	//.count().as("count")
-			);
-		List<SettlementCountDTO> total_aggregate = agentSettlementsRecordMDao.aggregate(total_aggregation, SettlementCountDTO.class);
-		if(total_aggregate != null && !total_aggregate.isEmpty()){
-			long total = total_aggregate.get(0).getCount();
-			result.setTs(total);
-		}*/
 		TypedAggregation<AgentSettlementsRecordMDTO> unsettled_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				match(unsettled_criteria),
 				group("agent"),//.count().as("count1"),

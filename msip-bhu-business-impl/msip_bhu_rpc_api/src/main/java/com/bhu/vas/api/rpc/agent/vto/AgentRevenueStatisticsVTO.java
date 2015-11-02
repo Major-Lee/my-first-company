@@ -11,17 +11,22 @@ public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	//revenueyesterday
 	private String ryd;
 	//onlinedevices
-	private String od;
+	//private String od;
 	//revenuetotal
-	private String rtl;
+	//private String rtl;
+	//Total Revenue 除去当月之外的所有被结算金额
+	private String tr;
+	//unsettle Revenue 除去当月之外的未结算金额 
+	private String ur;
+	
 	private Map<String,Double> charts;
 	
-	public String getOd() {
+	/*public String getOd() {
 		return od;
 	}
 	public void setOd(String od) {
 		this.od = od;
-	}
+	}*/
 	public Map<String, Double> getCharts() {
 		return charts;
 	}
@@ -46,11 +51,23 @@ public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	public void setRyd(String ryd) {
 		this.ryd = ryd;
 	}
-	public String getRtl() {
+	/*public String getRtl() {
 		return rtl;
 	}
 	public void setRtl(String rtl) {
 		this.rtl = rtl;
+	}*/
+	public String getTr() {
+		return tr;
+	}
+	public void setTr(String tr) {
+		this.tr = tr;
+	}
+	public String getUr() {
+		return ur;
+	}
+	public void setUr(String ur) {
+		this.ur = ur;
 	}
 	
 	
