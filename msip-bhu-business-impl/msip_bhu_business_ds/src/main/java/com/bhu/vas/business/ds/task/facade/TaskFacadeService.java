@@ -369,8 +369,6 @@ public class TaskFacadeService {
 			}
 		}
 		
-		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
-		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
 		/*if(!wifiDevice.isOnline()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
@@ -378,11 +376,17 @@ public class TaskFacadeService {
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
 		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) ){
-			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
-			if(wifiDeviceModule == null || !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
-				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
+			if(WifiDeviceHelper.isVapCmdExceptDevice(mac)){//如果是黑名单列表里存在的mac
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_EXCEPT);
+			}else{
+				WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
+				if(wifiDeviceModule == null || !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
+					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
+				}
 			}
 		}
+		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
+		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		
@@ -483,7 +487,6 @@ public class TaskFacadeService {
 				}
 			}
 		}else{
-
 			switch (opt_cmd) {
 				case DeviceWifiTimerStart:
 					ParamCmdWifiTimerStartDTO param_dto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
