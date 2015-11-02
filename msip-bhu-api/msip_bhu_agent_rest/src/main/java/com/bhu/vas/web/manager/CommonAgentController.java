@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/common")
-public class CommonController {
+public class CommonAgentController {
 
     @Resource
     private IAgentRpcService agentRpcService;
