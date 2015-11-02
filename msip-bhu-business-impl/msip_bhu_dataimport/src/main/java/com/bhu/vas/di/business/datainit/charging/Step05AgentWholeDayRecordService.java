@@ -40,7 +40,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class Step05AgentWholeDayRecordService {
 	
 	@Resource
-	private UserService userSerivce;
+	private UserService userService;
 	@Resource
 	private AgentDeviceClaimService agentDeviceClaimService;
 	
@@ -58,7 +58,7 @@ public class Step05AgentWholeDayRecordService {
 		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		mc_user.setPageNumber(1);
 		mc_user.setPageSize(100);
-		EntityIterator<Integer, User> it_user = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userSerivce.getEntityDao(), mc_user);
+		EntityIterator<Integer, User> it_user = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userService.getEntityDao(), mc_user);
 		while(it_user.hasNext()){
 			List<Integer> uids = it_user.nextKeys();
 			System.out.println(String.format("agentDailyRecord2Mongo date[%s] uids[%s]", date,uids));
