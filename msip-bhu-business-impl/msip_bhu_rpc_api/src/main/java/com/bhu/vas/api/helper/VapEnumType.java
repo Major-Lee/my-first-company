@@ -1,6 +1,8 @@
 package com.bhu.vas.api.helper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -64,22 +66,34 @@ public class VapEnumType {
 				allGrayLevels.put(level.getIndex(), level);
 			}
 		}
+		public static GrayLevel fromIndex(int index){
+			GrayLevel dType = allGrayLevels.get(index); 
+			return dType;
+		}
 	}
 	
 	
-	public enum UserType{
-		NormalUser("普通用户", 0),
-		SystemRobotUser("系统机器人用户", 1),
-		SystemNotifyUser("系统消息用户", 2),
-		SystemArtificialUser("系统人工用户", 3),
-		StarUser("明星用户", 8),
+	public enum DeviceUnitType{
+		uRouterRoot(100,"uRouter", 0),
+		SOCRoot(200,"SOC", 0),
+		
+		uRouterTU(101,"uRouter",100),
+		
+		MassAP(201,"MassAP",200),
+		MassAP_Pro(202,"MassAP Pro",200),
+		MicroStation_2_2U(203,"MicroStation 2\2U",200),
+		MicorStation_5(204,"MicorStation 5",200),
+		uRouterTC(205,"uRouter",200),
 		;
-		static Map<Integer, UserType> allUserTypes;
+		static Map<Integer, DeviceUnitType> allDeviceUnitTypes;
+		static Map<Integer, List<DeviceUnitType>> allRootDeviceUnitTypes;
+		private int index;
 		private String name;
-		private int type;
-		private UserType(String name, int type){
+		private int parent;
+		private DeviceUnitType(int index,String name, int parent){
+			this.index = index;
 			this.name = name;
-			this.type = type;
+			this.parent = parent;
 		}
 		public String getName() {
 			return name;
@@ -87,72 +101,37 @@ public class VapEnumType {
 		public void setName(String name) {
 			this.name = name;
 		}
-		public int getType() {
-			return type;
-		}
-		public void setType(int type) {
-			this.type = type;
-		}
 		
-		public static UserType fromType(int type){
-			UserType userType = allUserTypes.get(type); 
-			if(userType == null){
-				userType = NormalUser;
-			}
-			return userType;
+		public int getIndex() {
+			return index;
 		}
-		
-		public static boolean isSystemArtificialUser(int type) {
-			if(SystemArtificialUser.getType() == type) return true;
-			return false;
+		public void setIndex(int index) {
+			this.index = index;
+		}
+		public int getParent() {
+			return parent;
+		}
+		public void setParent(int parent) {
+			this.parent = parent;
+		}
+		public static DeviceUnitType fromIndex(int index){
+			DeviceUnitType dType = allDeviceUnitTypes.get(index); 
+			return dType;
 		}
 		
 		static {
-			allUserTypes = new HashMap<Integer,UserType>();
-			UserType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (UserType type : types){
-				allUserTypes.put(type.getType(), type);
-			}
-		}
-	}
-	
-	public enum UserSex{
-		Male("男"),
-		Female("女"),
-		Neutral("中性"),
-		;
-		static Map<String, UserSex> allUserSexs;
-		private String name;
-		private UserSex(String name){
-			this.name = name;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public static UserSex fromType(String name){
-			UserSex userSex = allUserSexs.get(name); 
-			if(userSex == null){
-				userSex = Female;
-			}
-			return userSex;
-		}
-		
-		public static boolean isMale(String name){
-			UserSex userSex = fromType(name);
-			if(userSex == Male){
-				return true;
-			}
-			return false;
-		}
-		
-		static {
-			allUserSexs = new HashMap<String, UserSex>();
-			UserSex[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (UserSex type : types){
-				allUserSexs.put(type.getName(), type);
+			allDeviceUnitTypes = new HashMap<Integer,DeviceUnitType>();
+			allRootDeviceUnitTypes = new HashMap<Integer,List<DeviceUnitType>>();
+			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (DeviceUnitType type : types){
+				allDeviceUnitTypes.put(type.getIndex(), type);
+				if(type.parent == 0){//root
+					allRootDeviceUnitTypes.put(type.getIndex(), new ArrayList<DeviceUnitType>());
+				}else{
+					List<DeviceUnitType> list = allRootDeviceUnitTypes.get(type.getParent());
+					if(list != null)
+						list.add(type);
+				}
 			}
 		}
 	}
