@@ -263,13 +263,13 @@ public class BusinessModelBuilder {
 	}*/
 	
 	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
-			WifiDeviceSettingDTO setting_dto){
+			WifiDeviceSettingDTO setting_dto, String alia){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
 		
 //		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
-		vto.setN(getHandsetDeviceAlias(uid, hd_mac));
+		vto.setN(alia);
 		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
 		WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
 				setting_dto, hd_mac);
