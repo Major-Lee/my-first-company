@@ -41,16 +41,11 @@ public class UserController extends BaseController{
 	 * 3、支持注册是填写 sex，lang，region
 	 * @param request
 	 * @param response
-	 * @param deviceuuid 设备uuid
 	 * @param acc 登录帐号指email或者mobileno
 	 * @param nick 昵称
 	 * @param pwd 密码 在acc不为空的情况下 pwd必须不为空
-	 * @param lang 语言
-	 * @param region 区域
 	 * @param device 设备类型
-	 * @param itoken 注册邀请码
-	 * @param token  渠道邀请码
-	 * 
+	 *
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.GET,RequestMethod.POST})
@@ -102,8 +97,14 @@ public class UserController extends BaseController{
 			
 		}
 	}
-	
-	
+
+	/**
+	 * 检查手机号是否合法
+	 * @param response
+	 * @param countrycode
+	 * @param acc
+	 * @param oldacc
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/check_mobileno",method={RequestMethod.POST})
 	public void check_unique(
@@ -133,7 +134,15 @@ public class UserController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
-	
+
+	/**
+	 * 代理商用户列表
+	 * @param response
+	 * @param uid
+	 * @param keywords
+	 * @param pageNo
+	 * @param pageSize
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/pages",method={RequestMethod.POST})
 	public void pages(
@@ -153,8 +162,14 @@ public class UserController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
-	
-	
+
+
+	/**
+	 * 代理商信息详情
+	 * @param response
+	 * @param uid
+	 * @param tid
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/detail",method={RequestMethod.POST})
 	public void detail(
@@ -172,7 +187,19 @@ public class UserController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
-	
+
+	/**
+	 * 代理商信息修改
+	 * @param response
+	 * @param uid
+	 * @param tid
+	 * @param nick
+	 * @param org
+	 * @param bln
+	 * @param addr1
+	 * @param addr2
+	 * @param memo
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/modify",method={RequestMethod.POST})
 	public void modify(
@@ -185,7 +212,7 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String addr1,
 			@RequestParam(required = false) String addr2,
 			@RequestParam(required = false) String memo
-			) {
+	) {
 		try{
 			RpcResponseDTO<AgentUserDetailVTO> rpcResult = agentUserRpcService.userModify(uid,tid, nick, org,bln, addr1, addr2, memo);
 			if(!rpcResult.hasError())

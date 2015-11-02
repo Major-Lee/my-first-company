@@ -41,8 +41,7 @@ public class LoginSessionController extends BaseController{
 	 * @param response
 	 * @param acc email或者 mobileno
 	 * @param pwd 登录密码
-	 * @param lang 区域
-	 * @param device 设备 
+	 * @param device 设备
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.POST})
