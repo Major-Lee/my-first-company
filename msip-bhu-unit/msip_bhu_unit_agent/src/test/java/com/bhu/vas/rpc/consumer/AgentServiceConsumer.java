@@ -24,7 +24,7 @@ public class AgentServiceConsumer {
 
         IAgentUserRpcService agentUserRpcService = (IAgentUserRpcService)context.getBean("agentUserRpcService");
 
-        System.out.println(JsonHelper.getJSONString(agentRpcService.pageUnClaimAgentDevice(1, 5)));
+        System.out.println(JsonHelper.getJSONString(agentRpcService.pageUnClaimAgentDevice(10016,1, 5)));
 
         System.out.println(agentUserRpcService.tokenValidate("6","NTtMV1JXARFBSENdXVYN").getPayload().booleanValue());
 
