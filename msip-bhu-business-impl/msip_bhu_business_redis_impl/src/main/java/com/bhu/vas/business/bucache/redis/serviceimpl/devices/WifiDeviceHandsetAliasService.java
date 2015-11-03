@@ -69,7 +69,7 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
         return this.hexists(generateKey(String.valueOf(uid)), handsetMac);
     }
 
-    private String[][] generateKeyAndFields(List<String> macs){
+    private String[][] generateKeyAndFields(int uid, List<String> macs){
         if(macs == null || macs.isEmpty()) return null;
         int size = macs.size();
         String[][] result = new String[2][size];
@@ -77,7 +77,7 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
         String[] fields = new String[size];
         int cursor = 0;
         for(String mac : macs){
-            keys[cursor] = generateKey(mac);
+            keys[cursor] = generateKey(String.valueOf(uid));
             fields[cursor] = mac;
             cursor++;
         }
@@ -86,8 +86,8 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
         return result;
     }
 
-    public List<String> pipelineHandsetAlias(List<String> macs) {
-        String[][] keyAndFields = generateKeyAndFields(macs);
+    public List<String> pipelineHandsetAlias(int uid, List<String> macs) {
+        String[][] keyAndFields = generateKeyAndFields(uid, macs);
         List<Object> values = null;
         List<String> result = new ArrayList<String>();
         try{

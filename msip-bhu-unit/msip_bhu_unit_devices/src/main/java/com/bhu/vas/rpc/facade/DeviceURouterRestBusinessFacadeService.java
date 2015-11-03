@@ -218,7 +218,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					hd_macs.add(tuple.getElement());
 				}
 				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
-				List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(hd_macs);
+				List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
 				//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				//List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 				if(!handsets.isEmpty()){
@@ -792,7 +792,7 @@ public class DeviceURouterRestBusinessFacadeService {
 //					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
 					//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
 					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(block_hd_macs);
-					List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(block_hd_macs);
+					List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, block_hd_macs);
 					if(!block_hd_macs.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
 //						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
@@ -1516,7 +1516,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
-			List<String> handsets = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(hd_macs);
+			List<String> handsets = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
 			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
