@@ -15,18 +15,11 @@ public class UserDeviceDTO implements Serializable {
 
     private long ohd_count;
 
-    //设备的固件版本号
-    private String dversion;
     
-    public String getDversion() {
-		return dversion;
-	}
+	//设备的固件版本号
+    private String ver;
 
-	public void setDversion(String dversion) {
-		this.dversion = dversion;
-	}
-
-	public String getMac() {
+    public String getMac() {
         return mac;
     }
 
@@ -64,5 +57,13 @@ public class UserDeviceDTO implements Serializable {
 
     public void setOhd_count(long ohd_count) {
         this.ohd_count = ohd_count;
+    }
+
+    public String getVer() {
+        return ver;
+    }
+
+    public void setVer(String ver) {
+        this.ver = ver;
     }
 }
