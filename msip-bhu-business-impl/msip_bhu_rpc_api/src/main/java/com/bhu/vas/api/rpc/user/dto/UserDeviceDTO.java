@@ -15,7 +15,18 @@ public class UserDeviceDTO implements Serializable {
 
     private long ohd_count;
 
-    public String getMac() {
+    //设备的固件版本号
+    private String dversion;
+    
+    public String getDversion() {
+		return dversion;
+	}
+
+	public void setDversion(String dversion) {
+		this.dversion = dversion;
+	}
+
+	public String getMac() {
         return mac;
     }
 

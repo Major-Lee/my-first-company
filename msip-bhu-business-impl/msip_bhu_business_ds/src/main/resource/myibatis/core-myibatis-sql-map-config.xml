@@ -25,7 +25,7 @@
   		<typeAlias alias="user" 						type="com.bhu.vas.api.rpc.user.model.User"/>
 		<typeAlias alias="userToken" 					type="com.bhu.vas.api.rpc.user.model.UserToken"/>
 		<typeAlias alias="userLoginState" 				type="com.bhu.vas.api.rpc.user.model.UserLoginState"/>
-		<typeAlias alias="userSettingState" 				type="com.bhu.vas.api.rpc.user.model.UserSettingState"/>
+		<typeAlias alias="userSettingState" 			type="com.bhu.vas.api.rpc.user.model.UserSettingState"/>
 		<typeAlias alias="userCaptchaCode" 				type="com.bhu.vas.api.rpc.user.model.UserCaptchaCode"/>
 		<typeAlias alias="userDevice" 					type="com.bhu.vas.api.rpc.user.model.UserDevice"/>
 		<typeAlias alias="userDevicePK" 				type="com.bhu.vas.api.rpc.user.model.pk.UserDevicePK"/>
@@ -44,6 +44,12 @@
 		
 		<typeAlias alias="wifiDevicePersistenceCMDState" 	type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
 		<typeAlias alias="wifiDeviceVersionBuilder" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder"/>
+		
+		<typeAlias alias="wifiDeviceGray" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray"/>
+		<typeAlias alias="wifiDeviceGrayVersion" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion"/>
+		<typeAlias alias="wifiDeviceVersionFW" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW"/>
+		<typeAlias alias="wifiDeviceVersionOM" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM"/>
+		
 		
 		<typeAlias alias="wifiDeviceDownTaskCompleted" 	type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
 		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
@@ -99,6 +105,12 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml"/>
+		
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGray.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGrayVersion.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionFW.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionOM.sqlMap.xml"/>
+		
 		<!--
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiHandsetDeviceMark.sqlMap.xml"/>
 		-->
