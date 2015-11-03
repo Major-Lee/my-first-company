@@ -1,5 +1,8 @@
 package com.bhu.vas.business.search;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface BusinessIndexDefine {
 	
 	interface WifiDevice{
@@ -26,6 +29,37 @@ public interface BusinessIndexDefine {
 			public static final String COUNT 		= "count";
 			public static final String REGISTEREDAT 		= "registeredat";
 			public static final String UPDATEDAT 		= "updatedat";
+		}
+		enum Field1{
+			ID("id", null),
+			Unkown(null, null),
+			;
+			//基本索引字段名称
+			String name;
+			//权重得分，排序，计算专用字段名称
+			String score_name;
+			
+			Field1(String name, String score_name){
+				this.name = name;
+				this.score_name = score_name;
+			}
+			
+			private static Map<String, Field1> wifiDeviceFieldMaps;
+			
+			static {
+				wifiDeviceFieldMaps = new HashMap<String, Field1>();
+				Field1[] items = values();//new ThumbType[] {SMALL, MIDDLE, LARGE, ORIGINAL};
+				for (Field1 item : items){
+					wifiDeviceFieldMaps.put(item.name, item);
+				}
+			}
+			
+			public static Field1 getByName(String name) {
+				Field1 ret = wifiDeviceFieldMaps.get(name);
+				if(ret == null) return Field1.Unkown;
+				return ret;
+			}
+			
 		}
 	}
 }

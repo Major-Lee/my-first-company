@@ -1,5 +1,7 @@
 package com.bhu.vas.business.search.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -8,7 +10,9 @@ import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
@@ -17,7 +21,11 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.SearchCondition;
+import com.bhu.vas.api.dto.search.SearchConditionPattern;
+import com.bhu.vas.api.dto.search.SearchConditionSortPattern;
 import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.BusinessIndexDefine.WifiDevice.Field1;
 import com.bhu.vas.business.search.SortBuilderHelper;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
@@ -316,6 +324,109 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 				WifiDeviceDocument.class);*/
         return wifiDeviceDocumentRepository.search(searchQuery);
 	}
+	
+	public Page<WifiDeviceDocument> searchByCondition(List<SearchCondition> conditions,int page,int pagesize) {
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+		QueryBuilder query = null;
+		try{
+			BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+			for(SearchCondition condition : conditions){
+				if(condition == null || StringUtils.isEmpty(condition.getKey()) 
+						|| StringUtils.isEmpty(condition.getPattern())) continue;
+			
+				Field1 field = BusinessIndexDefine.WifiDevice.Field1.getByName(condition.getKey());
+				if(Field1.Unkown != field){
+					//判断是否是匹配条件
+					SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
+					if(SearchConditionPattern.Unkown != conditionPattern){
+						QueryBuilder conditionQueryBuilder = null;
+						int method = conditionPattern.getMethod();
+						switch(method){
+							case SearchConditionPattern.Method_Wildcard:
+								conditionQueryBuilder = QueryBuilders.wildcardQuery(condition.getKey(), 
+										StringHelper.ASTERISK_STRING_GAP.concat(condition.getValue()).
+										concat(StringHelper.ASTERISK_STRING_GAP));
+								break;
+							case SearchConditionPattern.Method_Term:
+								conditionQueryBuilder = QueryBuilders.termQuery(condition.getKey(), condition.getValue());
+								break;
+							case SearchConditionPattern.Method_Prefix:
+								conditionQueryBuilder = QueryBuilders.prefixQuery(condition.getKey(), condition.getValue());
+								break;
+							case SearchConditionPattern.Method_Range:
+								conditionQueryBuilder = QueryBuilders.prefixQuery(condition.getKey(), condition.getValue());
+								break;
+							default:
+								break;
+						}
+						
+						if(conditionQueryBuilder != null){
+							int necessity = conditionPattern.getNecessity();
+							switch(necessity){
+								case SearchConditionPattern.Necessity_Must:
+									boolQuery.must(conditionQueryBuilder);
+									break;
+								case SearchConditionPattern.Necessity_MustNot:
+									boolQuery.mustNot(conditionQueryBuilder);
+									break;
+								case SearchConditionPattern.Necessity_Should:
+									boolQuery.should(conditionQueryBuilder);
+									break;
+								default:
+									break;
+							}
+						}
+					}
+					//判断是否是排序条件
+					SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(condition.getPattern());
+					if(SearchConditionSortPattern.Unkown != conditionSortPattern){
+						SortBuilder conditionSortBuilder = null;
+						int method = conditionPattern.getMethod();
+						switch(method){
+							//正常排序
+							case SearchConditionSortPattern.Method_Sort:
+								conditionSortBuilder = SortBuilderHelper.builderSort(condition.getKey(), 
+										conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+								break;
+							//距离排序
+							case SearchConditionSortPattern.Method_DistanceSort:
+								String conditionValue = condition.getValue();
+								if(!StringUtils.isEmpty(conditionValue)){
+									String[] geopoint_str_array = conditionValue.split(StringHelper.COMMA_STRING_GAP);
+									if(geopoint_str_array.length == 2){
+										double lat = Double.parseDouble(geopoint_str_array[0]);
+										double lon = Double.parseDouble(geopoint_str_array[1]);
+										conditionSortBuilder = SortBuilderHelper.builderDistanceSort(condition.getKey(), 
+												lat, lon, conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+									}
+								}
+								break;
+							default:
+								break;
+						}
+						
+						if(conditionSortBuilder != null){
+							nativeSearchQueryBuilder.withSort(conditionSortBuilder);
+						}
+					}
+				}
+			}
+			query = boolQuery;
+		}catch(Exception ex){
+			query = QueryBuilders.matchAllQuery();
+			ex.printStackTrace(System.out);
+		}
+		//使用es原生方式进行查询
+        SearchQuery searchQuery = nativeSearchQueryBuilder
+        		.withQuery(query)
+                .withPageable(new PageRequest(page,pagesize))
+                .build();
+        
+        return wifiDeviceDocumentRepository.search(searchQuery);
+	}
+	
+	
+	
 	
 	/*@Override
 	public ElasticsearchTemplate getElasticsearchTemplate(){
