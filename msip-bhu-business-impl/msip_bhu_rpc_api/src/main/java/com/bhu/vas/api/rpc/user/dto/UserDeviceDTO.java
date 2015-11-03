@@ -15,6 +15,8 @@ public class UserDeviceDTO implements Serializable {
 
     private long ohd_count;
 
+    private String ver;
+
     public String getMac() {
         return mac;
     }
@@ -53,5 +55,13 @@ public class UserDeviceDTO implements Serializable {
 
     public void setOhd_count(long ohd_count) {
         this.ohd_count = ohd_count;
+    }
+
+    public String getVer() {
+        return ver;
+    }
+
+    public void setVer(String ver) {
+        this.ver = ver;
     }
 }
