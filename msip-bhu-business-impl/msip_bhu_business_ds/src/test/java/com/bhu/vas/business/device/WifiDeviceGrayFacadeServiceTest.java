@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
+import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -81,9 +82,16 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 		secondGray.add("84:82:f4:23:06:68");
 		wifiDeviceGrayFacadeService.saveMacs2Gray(VapEnumType.DeviceUnitType.uRouterTU,VapEnumType.GrayLevel.Second,secondGray);
 	}
+
+	@Test
+	public void test002MainPageLeftData(){
+		List<DeviceUnitTypeVTO> deviceUnitTypes = wifiDeviceGrayFacadeService.deviceUnitTypes();
+		System.out.println(JsonHelper.getJSONString(deviceUnitTypes));
+	}
+
 	
 	@Test
-	public void test002MainPageData(){
+	public void test003MainPageRightData(){
 		CurrentGrayUsageVTO currentGrays = wifiDeviceGrayFacadeService.currentGrays(VapEnumType.DeviceUnitType.uRouterTU);
 		System.out.println(JsonHelper.getJSONString(currentGrays));
 	}
