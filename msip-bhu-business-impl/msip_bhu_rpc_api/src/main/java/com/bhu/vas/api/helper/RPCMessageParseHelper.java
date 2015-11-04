@@ -16,7 +16,6 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.DailyUsedStatisticsDTO;
 import com.bhu.vas.api.dto.redis.element.HourUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
-import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceFlowDTO;
 import com.bhu.vas.api.dto.ret.WifiDevicePeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRateDTO;
@@ -768,8 +767,8 @@ public class RPCMessageParseHelper {
         
         
         String text2 = "<return>\n"+
-	"<ITEM result=\"ok\" config_sequence=\"241\" />"+
-"</return>";
+			"<ITEM result=\"ok\" config_sequence=\"241\" />"+
+		"</return>";
         
         String payload = "000010018482F42306E81510001003151000100000001"+
         		"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"
