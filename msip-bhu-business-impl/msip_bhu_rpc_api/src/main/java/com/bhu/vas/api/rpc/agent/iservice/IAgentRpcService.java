@@ -60,7 +60,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize);
+    AgentDeviceVTO pageUnClaimAgentDevice(int pageNo, int pageSize);
 
     /**
      * 代理商导入设备

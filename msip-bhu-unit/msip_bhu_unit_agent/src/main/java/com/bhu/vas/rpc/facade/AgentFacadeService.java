@@ -157,9 +157,16 @@ public class AgentFacadeService {
         List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices,monthlyDtos,summaryDtos);
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
-        agentDeviceVTO.setTotal_count(total_count);
+
+
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 0);
+        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+
+        agentDeviceVTO.setTotal_count(total_count + yetTotal);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
+        agentDeviceVTO.setYet_count(yetTotal);
 
         return agentDeviceVTO;
 
@@ -299,13 +306,14 @@ public class AgentFacadeService {
 
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
-        agentDeviceVTO.setTotal_count(total_count);
-        agentDeviceVTO.setOnline_count(online_count);
-        agentDeviceVTO.setOffline_count(offline_count);
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 0);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+
+        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setOnline_count(online_count);
+        agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
 
         return agentDeviceVTO;
@@ -346,7 +354,7 @@ public class AgentFacadeService {
         offline_count = total_count - online_count;
 
 
-        agentDeviceVTO.setTotal_count(total_count);
+        agentDeviceVTO.setTotal_count(total_count + yetTotal);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
@@ -355,10 +363,10 @@ public class AgentFacadeService {
         return agentDeviceVTO;
     }
 
-    public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize) {
+    public AgentDeviceVTO pageUnClaimAgentDevice(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnNotEqualTo("status", 0);
-        int total = agentDeviceClaimService.countByCommonCriteria(mc);
+        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
@@ -370,7 +378,31 @@ public class AgentFacadeService {
                 vtos.add(vto);
             }
         }
-        return new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total,vtos);
+        AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
+        agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, yetTotal, vtos));
+
+
+        int online_count = 0;
+        int offline_count = 0;
+
+
+        ModelCriteria totalmc = new ModelCriteria();
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0);
+        int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
+
+        ModelCriteria onlinemc = new ModelCriteria();
+        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true);
+        online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
+        offline_count = total_count - online_count;
+
+
+        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setOnline_count(online_count);
+        agentDeviceVTO.setOffline_count(offline_count);
+        agentDeviceVTO.setYet_count(yetTotal);
+
+
+        return agentDeviceVTO;
     }
 
 

@@ -46,7 +46,7 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize) {
+    public AgentDeviceVTO pageUnClaimAgentDevice(int pageNo, int pageSize) {
         logger.info(String.format("pageUnClaimAgentDevice pageNo:%s pageSize:%s", pageNo, pageSize));
         return agentFacadeService.pageUnClaimAgentDevice(pageNo, pageSize);
     }
