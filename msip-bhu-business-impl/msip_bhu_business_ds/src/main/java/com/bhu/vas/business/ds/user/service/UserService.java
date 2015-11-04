@@ -9,6 +9,9 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.user.dao.UserDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+
+import java.util.List;
+
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
@@ -59,7 +62,21 @@ public class UserService extends AbstractCoreService<Integer,User, UserDao>{//En
 			return Integer.class.cast(obj).intValue();
 		}
 	}
-	
+
+	/**
+	 * 检查是否有相同的公司名称 true:无 false:有
+	 * @param org
+	 * @return
+	 */
+	public boolean checkOrg(String org) {
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("org", org);
+		List<Integer> ids = this.findIdsByCommonCriteria(mc);
+		return ids == null || ids.isEmpty();
+
+	}
+
+
 //	public void deleteAndCount(){
 //		//System.out.println(this.countByCommonCriteria(new CommonCriteria()));
 ////    	int ret = this.deleteById(100023);

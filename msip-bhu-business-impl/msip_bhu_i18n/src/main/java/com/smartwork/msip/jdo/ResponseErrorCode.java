@@ -119,6 +119,9 @@ public enum ResponseErrorCode {
     AUTH_EMAIL_INVALID_FORMAT("261","auth.email.format.invalid"),
     AUTH_EMAIL_DATA_EXIST("262","auth.email.data.exist"),
     AUTH_EMAIL_EMPTY("263","auth.email.empty"),
+
+	AUTH_ORG_DATA_EXIST("264","auth.org.data.exist"),
+
 	AUTH_UUID_INVALID_FORMAT("265","auth.uuid.format.invalid"),
 	AUTH_UUID_DATA_EXIST("266","auth.uuid.data.exist"),
 	AUTH_UUID_INVALID_LENGTH("267","auth.uuid.length.invalid"),
