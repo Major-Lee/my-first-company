@@ -58,10 +58,14 @@ public class DeviceVersion {
 	 * @return
 	 */
 	public boolean wasDstURouter(){
-		if(StringUtils.isEmpty(dst)) return true;
+		if(StringUtils.isEmpty(dst)) return false;
 		return DST_uRouter.equals(dst);
 	}
 	
+	public boolean wasDstSoc(){
+		if(StringUtils.isEmpty(dst)) return false;
+		return DST_soc.equals(dst);
+	}
 	/**
 	 * 解析设备的软件版本
 	 * 返回数组 0 大版本号 1 小版本号

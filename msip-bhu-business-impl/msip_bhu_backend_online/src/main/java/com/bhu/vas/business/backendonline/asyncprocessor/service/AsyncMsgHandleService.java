@@ -148,11 +148,8 @@ public class AsyncMsgHandleService {
 			List<String> payloads = new ArrayList<String>();
 			//boolean forceFirmwareUpdate = false;
 			if(isRouter){
-				//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
-				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
 				//获取设备系统信息
 				payloads.add(CMDBuilder.builderSysinfoQuery(dto.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
-				
 				//用户登录后 给其绑定的设备mac地址发送设备使用情况
 				boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(dto.getMac(),false);
 				if(needDeviceUsedQuery)
@@ -184,6 +181,12 @@ public class AsyncMsgHandleService {
 	        				upgrade.getUpgradeurl());
 					payloads.add(cmdPayload);
 				}
+			}
+			
+			//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
+			if(WifiDeviceHelper.isDeviceNeedOnlineTeminalQuery(wifiDevice.getOrig_model(), wifiDevice.getOrig_swver())){
+				//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
+				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
 			}
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.version.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 
@@ -34,6 +35,24 @@ public class WifiDeviceHelper {
 		if(ver == null) return false;
 		return ver.wasDstURouter();*/
 		return WIFI_URouter_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
+	}
+	
+	/**
+	 * uRouter 设备 或者SOC设备
+	 * 开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC ） ）支持
+	 * @param orig_model
+	 * @return
+	 */
+	public static boolean isDeviceNeedOnlineTeminalQuery(String orig_model,String orig_swver){
+		if(isURouterDevice(orig_model)){
+			return true;
+		}else{
+			DeviceVersion parser = DeviceVersion.parser(orig_swver);
+			if(parser.wasDstURouter() || parser.wasDstSoc()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static boolean isLocationCMDSupported(){
