@@ -83,12 +83,12 @@ public class AgentSettlementsRecordMService {
 	 */
 	public String iterateSettleBills(int operator,String operNick,int agent,double price){
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("结算总金额[%s]\n", price));
+		sb.append(String.format("结算总金额[%s]<BR/>\n", price));
 		if(agent >0 && price>0){
 			List<AgentSettlementsRecordMDTO> fetchBillsByAgent = fetchBillsByAgent(agent, AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted);
 			Iterator<AgentSettlementsRecordMDTO> iter = fetchBillsByAgent.iterator();
 			String settled_at =  DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1);
-			sb.append(String.format("结算日期[%s]\n", settled_at));
+			sb.append(String.format("结算日期[%s]<BR/>\n", settled_at));
 			while(iter.hasNext()){//逐条进行结算
 				AgentSettlementsRecordMDTO bill = iter.next();
 				double takeoff = ArithHelper.sub(bill.getiSVPrice(),bill.getSdPrice()); 
@@ -108,14 +108,14 @@ public class AgentSettlementsRecordMService {
 						bill.setSettled_at(settled_at);
 						price = 0;
 					}
-					sb.append(String.format("明细 流水[%s] 结算人[%s] 金额[%s] 曾经结算[%s] 当前结算[%s] 最后结算日期[%s] 状态[%s]\n", 
+					sb.append(String.format("明细 流水[%s] 结算人[%s] 金额[%s] 曾经结算[%s] 当前结算[%s] 最后结算日期[%s] 状态[%s]<BR/>\n", 
 								bill.getId(),operNick,bill.getiSVPrice(),old_sdPrice,ArithHelper.sub(bill.getSdPrice(),old_sdPrice),settled_at,bill.getStatus()));
 					save(bill);
 				}
 				if(price <= 0) break;
 			}
 		}
-		sb.append(String.format("剩余金额[%s]\n", price));
+		sb.append(String.format("剩余金额[%s]<BR/>\n", price));
 		return sb.toString();
 	}
 	
