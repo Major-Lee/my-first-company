@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.dto.version.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 

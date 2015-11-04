@@ -2,8 +2,10 @@ package com.bhu.vas.api.vto.device;
 
 @SuppressWarnings("serial")
 public class GrayUsageVTO implements java.io.Serializable{
+	//device unit type
+	private int dut;
 	//gray index
-	private int index;
+	private int gl;
 	//gray name
 	private String n;
 	//统计数量 多少设备使用当前灰度等级
@@ -12,12 +14,6 @@ public class GrayUsageVTO implements java.io.Serializable{
 	private String fwid;
 	//增值模块 版本id
 	private String omid;
-	public int getIndex() {
-		return index;
-	}
-	public void setIndex(int index) {
-		this.index = index;
-	}
 	public String getN() {
 		return n;
 	}
@@ -41,6 +37,18 @@ public class GrayUsageVTO implements java.io.Serializable{
 	}
 	public void setOmid(String omid) {
 		this.omid = omid;
+	}
+	public int getDut() {
+		return dut;
+	}
+	public void setDut(int dut) {
+		this.dut = dut;
+	}
+	public int getGl() {
+		return gl;
+	}
+	public void setGl(int gl) {
+		this.gl = gl;
 	}
 	
 }

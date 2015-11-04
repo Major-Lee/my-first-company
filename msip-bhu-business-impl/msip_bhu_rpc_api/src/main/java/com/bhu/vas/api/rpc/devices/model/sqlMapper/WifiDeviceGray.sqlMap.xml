@@ -6,7 +6,8 @@
 
   <resultMap id="modelResult" type="wifiDeviceGray">
     <id property="id" column="id"/>
-    <result property="gray" column="gray"/>
+    <result property="dut" column="dut"/>
+    <result property="gl" column="gl"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -19,14 +20,16 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	gray,
+	    	dut,
+	    	gl,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-			gray,
+	    	dut,
+			gl,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -34,13 +37,15 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{gray},
+	    	#{dut},
+	    	#{gl},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	gray = #{gray},
+	    	dut = #{dut},
+	    	gl = #{gl},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
