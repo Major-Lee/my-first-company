@@ -19,6 +19,8 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	private String name;
 	//固件文件下载url
 	private String upgrade_url;
+	//适用的产品类型
+	private int dut;
 	//当前灰度中被引用
 	private boolean related;
 	private Date created_at;
@@ -62,10 +64,19 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		super.preInsert();
 	}
 	
+	public int getDut() {
+		return dut;
+	}
+
+	public void setDut(int dut) {
+		this.dut = dut;
+	}
+
 	public VersionVTO toVersionVTO(){
 		VersionVTO vto = new VersionVTO();
 		vto.setId(id);
 		vto.setN(name);
+		vto.setDut(dut);
 		vto.setT(VersionVTO.VersionType_FW);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
 		return vto;

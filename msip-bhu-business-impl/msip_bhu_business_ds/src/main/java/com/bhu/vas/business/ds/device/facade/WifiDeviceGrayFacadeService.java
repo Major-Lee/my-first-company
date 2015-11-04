@@ -22,6 +22,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionFWService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionOMService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * Created by bluesand on 8/4/15.
@@ -46,7 +47,6 @@ public class WifiDeviceGrayFacadeService {
     @Resource
     private WifiDeviceVersionOMService wifiDeviceVersionOMService;
 
-
     /**
      * 返回设备型号列表 root，root里面带有childen
      * 用于运营平台设备信息-左栏-产品类型列表
@@ -69,7 +69,7 @@ public class WifiDeviceGrayFacadeService {
     	ModelCriteria mc_dgv = new ModelCriteria();
     	mc_dgv.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
     	mc_dgv.setPageNumber(1);
-    	mc_dgv.setPageSize(100);
+    	mc_dgv.setPageSize(20);
     	mc_dgv.setOrderByClause(" gl asc ");
     	List<WifiDeviceGrayVersion> deviceGrayVersions = wifiDeviceGrayVersionService.findModelByModelCriteria(mc_dgv);
     	for(WifiDeviceGrayVersion dgv:deviceGrayVersions){
@@ -78,27 +78,31 @@ public class WifiDeviceGrayFacadeService {
     	ModelCriteria mc_fw = new ModelCriteria();
     	mc_fw.createCriteria().andSimpleCaulse(" 1=1 ");
     	mc_fw.setPageNumber(1);
-    	mc_fw.setPageSize(100);
+    	mc_fw.setPageSize(50);
     	mc_fw.setOrderByClause(" created_at desc ");
     	List<WifiDeviceVersionFW> versionfws = wifiDeviceVersionFWService.findModelByModelCriteria(mc_fw);
     	for(WifiDeviceVersionFW fw:versionfws){
     		vto.getFws().add(fw.toVersionVTO());
     	}
-    	
     	ModelCriteria mc_om = new ModelCriteria();
     	mc_om.createCriteria().andSimpleCaulse(" 1=1 ");
     	mc_om.setPageNumber(1);
-    	mc_om.setPageSize(100);
+    	mc_om.setPageSize(50);
     	mc_om.setOrderByClause(" created_at desc ");
     	List<WifiDeviceVersionOM> versionoms = wifiDeviceVersionOMService.findModelByModelCriteria(mc_om);
     	for(WifiDeviceVersionOM om:versionoms){
     		vto.getFws().add(om.toVersionVTO());
     	}
-    	//List<GrayUsageVTO> guvs
     	return vto;
     }
     
+    public TailPage<VersionVTO> pagesFW(VapEnumType.DeviceUnitType dut){
+    	return null;
+    }
     
+    public TailPage<VersionVTO> pagesOM(VapEnumType.DeviceUnitType dut){
+    	return null;
+    }
     
     public void addMacs2Gray(VapEnumType.GrayLevel gray,List<String> macs){
     	
