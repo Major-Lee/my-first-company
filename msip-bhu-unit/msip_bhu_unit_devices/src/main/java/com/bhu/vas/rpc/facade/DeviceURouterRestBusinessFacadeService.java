@@ -1516,7 +1516,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
-			List<String> handsets = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
+			List<String> handsetIds = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
+
 			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
@@ -1524,7 +1526,11 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = handsets.get(cursor);
+				String hostname = handsetIds.get(cursor);
+				if (StringUtils.isEmpty(hostname)) {
+					HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+					hostname = handsetDeviceDTO.getDhcp_name();
+				}
 				detailVTO.setN(hostname);
 				vtos.add(detailVTO);
 				cursor++;
