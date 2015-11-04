@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.dto.version.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
@@ -70,7 +70,7 @@ public class DeviceUpgradeFacadeService {
 				System.out.println(String.format("-----checkDeviceUpgrade step22 [%s] isFirstGray[%s] versionb is null ",mac,isFirstGray));
 				return new UpgradeDTO(isFirstGray,false);
 			}
-			int ret = WifiDeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
+			int ret = DeviceVersion.compareVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
 			System.out.println(String.format("-----checkDeviceUpgrade step23 [%s] isFirstGray[%s] compareret[%s]",mac,isFirstGray,ret));
 			if(versionb.isForce_device_update() && ret == -1){
 				System.out.println(String.format("-----checkDeviceUpgrade step24 [%s] isFirstGray[%s] ",mac,isFirstGray));
@@ -136,7 +136,7 @@ public class DeviceUpgradeFacadeService {
 			boolean needAppUpdate = false;
 			try{
 				int clientver_ret = VersionHelper.compareVersion(appVer,versionb.getMin_adr_version());
-				int devicever_ret = WifiDeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
+				int devicever_ret = DeviceVersion.compareVersions(wifiDevice.getOrig_swver(),versionb.getD_firmware_name());
 				if(clientver_ret >= 0){
 					if(devicever_ret < 0){
 						needDeviceUpdate = true;

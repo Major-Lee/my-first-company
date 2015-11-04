@@ -15,6 +15,8 @@ public class UserDeviceDTO implements Serializable {
 
     private long ohd_count;
 
+    
+	//设备的固件版本号
     private String ver;
 
     public String getMac() {

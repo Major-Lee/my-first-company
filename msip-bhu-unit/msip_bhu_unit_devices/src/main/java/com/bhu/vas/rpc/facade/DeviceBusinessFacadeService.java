@@ -543,6 +543,7 @@ public class DeviceBusinessFacadeService {
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
 		if(handset != null) {
 			dto.setVapname(handset.getVapname());
+			dto.setIp(handset.getIp());
 			dto.setDhcp_name(handset.getDhcp_name());
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
@@ -600,7 +601,7 @@ public class DeviceBusinessFacadeService {
 	}
 	
 	/**
-	 * 更新终端的hostname
+	 * 更新终端的hostname和ip地址
 	 * @param ctx
 	 * @param dto
 	 * @param wifiId
@@ -617,7 +618,9 @@ public class DeviceBusinessFacadeService {
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
 		if(handset != null){
 			handset.setDhcp_name(dto.getDhcp_name());
+			handset.setIp(dto.getIp());
 			handset.setLast_wifi_id(dto.getLast_wifi_id());
+			
 			HandsetStorageFacadeService.handsetComming(handset);
 		}
 		/*HandsetDevice exist_handset_device_entity = handsetDeviceService.getById(lowercase_d_mac);
@@ -674,6 +677,7 @@ public class DeviceBusinessFacadeService {
 				double data_rx_rate = 0d;
 				if(handset != null){
 					dto.setDhcp_name(handset.getDhcp_name());
+					dto.setIp(handset.getIp());
 					dto.setData_tx_rate(handset.getData_tx_rate());
 					dto.setData_rx_rate(handset.getData_rx_rate());
 					dto.setAuthorized(handset.getAuthorized());

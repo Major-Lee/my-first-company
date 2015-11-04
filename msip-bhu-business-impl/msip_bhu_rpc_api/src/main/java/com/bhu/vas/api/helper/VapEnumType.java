@@ -2,8 +2,12 @@ package com.bhu.vas.api.helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 
 
 
@@ -87,6 +91,7 @@ public class VapEnumType {
 		;
 		static Map<Integer, DeviceUnitType> allDeviceUnitTypes;
 		static Map<Integer, List<DeviceUnitType>> allRootDeviceUnitTypes;
+		static List<DeviceUnitTypeVTO> allDeviceUnitTypeVTO;
 		private int index;
 		private String name;
 		private int parent;
@@ -122,17 +127,41 @@ public class VapEnumType {
 		static {
 			allDeviceUnitTypes = new HashMap<Integer,DeviceUnitType>();
 			allRootDeviceUnitTypes = new HashMap<Integer,List<DeviceUnitType>>();
+			allDeviceUnitTypeVTO = new ArrayList<>();
 			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (DeviceUnitType type : types){
 				allDeviceUnitTypes.put(type.getIndex(), type);
 				if(type.parent == 0){//root
 					allRootDeviceUnitTypes.put(type.getIndex(), new ArrayList<DeviceUnitType>());
+					//allDeviceUnitTypeVTO.add(new DeviceUnitTypeVTO(type.getIndex(),type.getName()));
 				}else{
 					List<DeviceUnitType> list = allRootDeviceUnitTypes.get(type.getParent());
 					if(list != null)
 						list.add(type);
 				}
 			}
+			Iterator<Entry<Integer, List<DeviceUnitType>>> iter = allRootDeviceUnitTypes.entrySet().iterator();
+			while(iter.hasNext()){
+				Entry<Integer, List<DeviceUnitType>> next = iter.next();
+				Integer index = next.getKey();
+				List<DeviceUnitType> children = next.getValue();
+				DeviceUnitType parent = DeviceUnitType.fromIndex(index);
+				DeviceUnitTypeVTO parentVTO = new DeviceUnitTypeVTO(parent.getIndex(),parent.getName());
+				for(DeviceUnitType child:children){
+					if(parentVTO.getC() == null) parentVTO.setC(new ArrayList<DeviceUnitTypeVTO>());
+					parentVTO.getC().add(new DeviceUnitTypeVTO(child.getIndex(),child.getName()));
+				}
+				allDeviceUnitTypeVTO.add(parentVTO);
+			}
 		}
+
+		public static List<DeviceUnitTypeVTO> getAllDeviceUnitTypeVTO() {
+			return allDeviceUnitTypeVTO;
+		}
+		public static void setAllDeviceUnitTypeVTO(
+				List<DeviceUnitTypeVTO> allDeviceUnitTypeVTO) {
+			DeviceUnitType.allDeviceUnitTypeVTO = allDeviceUnitTypeVTO;
+		}
+		
 	}
 }

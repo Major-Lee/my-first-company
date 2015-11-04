@@ -348,7 +348,6 @@ public class UserUnitFacadeService {
 								.presentOnlineSize(userDevice.getMac()));
 					}
 					userDeviceDTO.setVer(wifiDevice.getOrig_swver());
-
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}

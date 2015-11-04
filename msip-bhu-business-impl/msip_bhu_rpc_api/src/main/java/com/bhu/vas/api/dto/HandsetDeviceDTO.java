@@ -68,6 +68,8 @@ public class HandsetDeviceDTO implements Serializable{
 	private String dhcp_name;
 	//终端连接的设备vapname
 	private String vapname;
+	//终端地址ip
+	private String ip;
 	private String data_tx_rate;
 	private String data_rx_rate;
 	private String last_wifi_id;
@@ -294,4 +296,11 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setPortal(String portal) {
 		this.portal = portal;
 	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
 }

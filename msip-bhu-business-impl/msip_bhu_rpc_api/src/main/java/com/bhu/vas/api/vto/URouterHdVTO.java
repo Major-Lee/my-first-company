@@ -17,6 +17,9 @@ public class URouterHdVTO implements Serializable{
 	private String rx_rate;
 	//昵称
 	private String n;
+	//TODO:数据待加入
+	//终端IP地址
+	private String ip;
 	//终端的下行限速 bps
 	private String rx_limit;
 	//终端的上行限速 bps
@@ -108,4 +111,11 @@ public class URouterHdVTO implements Serializable{
 	public void setEthernet(boolean ethernet) {
 		this.ethernet = ethernet;
 	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
 }

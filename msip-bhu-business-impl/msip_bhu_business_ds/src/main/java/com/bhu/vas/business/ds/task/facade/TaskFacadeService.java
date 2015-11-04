@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
+import com.bhu.vas.api.dto.version.DeviceVersion;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -324,7 +325,7 @@ public class TaskFacadeService {
 				String url = dto.getUrl();
 				if (url != null) {
 					String deviceVersion = url.substring(url.lastIndexOf("/") + 1);
-					int ret = WifiDeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(), deviceVersion);
+					int ret = DeviceVersion.compareVersions(wifiDevice.getOrig_swver(), deviceVersion);
 					if (ret >= 0) {
 						// 设备版本高于需要升级的版本，不升级
 						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);
@@ -550,8 +551,7 @@ public class TaskFacadeService {
 		return downTask;
 	}
 
-	public static void main(String[] args){
-
+	/*public static void main(String[] args){
 
 			String extparams = "{\"url\":\"http://7xl3iu.dl1.z0.glb.clouddn.com/device/build/AP106P06V1.3.0Build8328\",\"upgrade_begin\":\"\",\"upgrade_end\":\"\",\"ctrl_version\":true}";
 
@@ -561,7 +561,7 @@ public class TaskFacadeService {
 				String url = dto.getUrl();
 				if (url != null) {
 					String deviceVersion = url.substring(url.lastIndexOf("/")+1);
-					int ret = WifiDeviceHelper.compareDeviceVersions("AP106P06V1.2.15Build8105", deviceVersion);
+					int ret = DeviceVersion.compareVersions("AP106P06V1.2.15Build8105", deviceVersion);
 					System.out.println(ret);
 					if (ret >= 0) {
 						// 设备版本高于需要升级的版本，不升级
@@ -577,6 +577,6 @@ public class TaskFacadeService {
 			} else {
 				//升级
 			}
-		}
+		}*/
 
 }
