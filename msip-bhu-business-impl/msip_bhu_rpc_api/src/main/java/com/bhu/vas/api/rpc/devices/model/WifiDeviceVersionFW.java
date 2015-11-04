@@ -2,8 +2,6 @@ package com.bhu.vas.api.rpc.devices.model;
 
 import java.util.Date;
 
-import com.bhu.vas.api.helper.VapEnumType;
-import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;

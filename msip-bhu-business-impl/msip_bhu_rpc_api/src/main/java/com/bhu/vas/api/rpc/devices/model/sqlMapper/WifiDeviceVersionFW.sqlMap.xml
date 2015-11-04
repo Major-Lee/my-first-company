@@ -15,7 +15,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_device_versions_fw
+	    	t_wifi_devices_versions_fw
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
