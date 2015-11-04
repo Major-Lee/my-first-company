@@ -4,11 +4,15 @@ import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 /*
+<<<<<<< Updated upstream
  * wifi设备增值模块在线标记表
  * 此表为wifidevice扩展表
  * 初始数据迁移可以通过sql实现
  * 
  * insert into 
+=======
+ * wifi设备基础信息
+>>>>>>> Stashed changes
  */
 @SuppressWarnings("serial")
 public class WifiDeviceModule extends BaseStringModel{
