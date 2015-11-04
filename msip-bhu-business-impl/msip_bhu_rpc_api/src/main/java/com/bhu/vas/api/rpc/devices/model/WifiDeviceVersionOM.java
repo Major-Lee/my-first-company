@@ -19,6 +19,8 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 	private String name;
 	//固件文件下载url
 	private String upgrade_url;
+	//适用的产品类型
+	private int dut;
 	//当前灰度中被引用
 	private boolean related;
 	private Date created_at;
@@ -55,6 +57,14 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 		this.related = related;
 	}
 
+	public int getDut() {
+		return dut;
+	}
+
+	public void setDut(int dut) {
+		this.dut = dut;
+	}
+
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
@@ -65,6 +75,7 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 		VersionVTO vto = new VersionVTO();
 		vto.setId(id);
 		vto.setN(name);
+		vto.setDut(dut);
 		vto.setT(VersionVTO.VersionType_OM);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
 		return vto;

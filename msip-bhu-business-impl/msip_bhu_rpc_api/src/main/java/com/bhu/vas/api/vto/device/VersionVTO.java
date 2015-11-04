@@ -12,6 +12,8 @@ public class VersionVTO implements java.io.Serializable{
 	private String n;
 	//VersionType VersionType_FW or VersionType_OM
 	private String t;
+	//device unit type
+	private int dut;
 	//上传日期 yyyy-MM-dd hh:mm:ss
 	private String d;
 	public String getId() {
@@ -32,18 +34,17 @@ public class VersionVTO implements java.io.Serializable{
 	public void setT(String t) {
 		this.t = t;
 	}
-	public static String getVersiontypeFw() {
-		return VersionType_FW;
-	}
-	public static String getVersiontypeOm() {
-		return VersionType_OM;
-	}
 	public String getD() {
 		return d;
 	}
 	public void setD(String d) {
 		this.d = d;
 	}
-	
+	public int getDut() {
+		return dut;
+	}
+	public void setDut(int dut) {
+		this.dut = dut;
+	}
 	
 }
