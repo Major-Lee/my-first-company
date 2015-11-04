@@ -160,7 +160,7 @@ public class AgentFacadeService {
 
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
 
         agentDeviceVTO.setTotal_count(total_count + yetTotal);
@@ -308,7 +308,7 @@ public class AgentFacadeService {
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
 
         agentDeviceVTO.setTotal_count(total_count + yetTotal);
@@ -365,13 +365,11 @@ public class AgentFacadeService {
 
     public AgentDeviceVTO pageUnClaimAgentDevice(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnNotEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
-        System.out.println("yetTotal" + yetTotal);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
         List<AgentDeviceClaim> agents = agentDeviceClaimService.findModelByModelCriteria(mc);
-        System.out.println("agents" + agents);
         List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
