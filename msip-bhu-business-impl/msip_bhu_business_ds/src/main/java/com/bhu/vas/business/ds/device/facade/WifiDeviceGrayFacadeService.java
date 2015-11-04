@@ -57,17 +57,22 @@ public class WifiDeviceGrayFacadeService {
     }
     
     /**
-     * 返回当前的灰度列表 及具体灰度的应用固件版本号和增值运营版本号
+     * 返回当前产品类型的灰度列表 及具体灰度的应用固件版本号和增值运营版本号
      * 用于运营平台设备信息-右栏-当前灰度列表及固件版本列表和运营版本列表
      * @return
      */
-    public CurrentGrayUsageVTO currentGrays(){
+    public CurrentGrayUsageVTO currentGrays(VapEnumType.DeviceUnitType dut){
     	CurrentGrayUsageVTO vto = new CurrentGrayUsageVTO();
     	vto.setGuvs(new ArrayList<GrayUsageVTO>());
     	vto.setFws(new ArrayList<VersionVTO>());
     	vto.setOms(new ArrayList<VersionVTO>());
-    	List<WifiDeviceGrayVersion> allDeviceGrayVersions = wifiDeviceGrayVersionService.findAll();
-    	for(WifiDeviceGrayVersion dgv:allDeviceGrayVersions){
+    	ModelCriteria mc_dgv = new ModelCriteria();
+    	mc_dgv.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
+    	mc_dgv.setPageNumber(1);
+    	mc_dgv.setPageSize(100);
+    	mc_dgv.setOrderByClause(" gl asc ");
+    	List<WifiDeviceGrayVersion> deviceGrayVersions = wifiDeviceGrayVersionService.findModelByModelCriteria(mc_dgv);
+    	for(WifiDeviceGrayVersion dgv:deviceGrayVersions){
     		vto.getGuvs().add(dgv.toGrayUsageVTO());
     	}
     	ModelCriteria mc_fw = new ModelCriteria();

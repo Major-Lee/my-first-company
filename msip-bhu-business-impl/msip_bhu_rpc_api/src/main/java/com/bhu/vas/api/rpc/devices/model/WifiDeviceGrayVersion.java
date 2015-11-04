@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.devices.model;
 import java.util.Date;
 
 import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
@@ -101,7 +102,9 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 		vto.setOmid(d_omid);
 		vto.setDevices(devices);
 		GrayLevel fromIndex = VapEnumType.GrayLevel.fromIndex(vto.getGl());
-		vto.setN(fromIndex!=null?fromIndex.getName():VapEnumType.GrayLevel.Unknow.getName());
+		vto.setGn(fromIndex!=null?fromIndex.getName():VapEnumType.GrayLevel.Unknow.getName());
+		DeviceUnitType dut = VapEnumType.DeviceUnitType.fromIndex(vto.getDut());
+		vto.setDun(dut!=null?dut.getName():"");
 		return vto;
 	}
 
