@@ -234,5 +234,32 @@ public class WarehouseManagerController {
 
     }
 
+    /**
+     * 还未认领的设备
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
+    @ResponseBody()
+    @RequestMapping(value="/yet/list", method={RequestMethod.POST})
+    public void agentDeviceYetList(HttpServletRequest request, HttpServletResponse response,
+                               @RequestParam(required = true) Integer uid,
+                               @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                               @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+
+        try {
+            AgentDeviceVTO  dto = agentRpcService.pageUnClaimAgentDeviceByUid(uid,pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dto));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
+
 
 }
