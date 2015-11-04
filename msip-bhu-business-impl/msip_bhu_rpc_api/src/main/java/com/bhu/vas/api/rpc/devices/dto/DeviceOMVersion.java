@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.version;
+package com.bhu.vas.api.rpc.devices.dto;
 
 import org.apache.commons.lang.StringUtils;
 

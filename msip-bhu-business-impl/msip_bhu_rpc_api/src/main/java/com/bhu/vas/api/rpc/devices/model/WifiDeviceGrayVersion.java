@@ -4,18 +4,19 @@ import java.util.Date;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
-import com.smartwork.msip.cores.orm.model.BaseIntModel;
+import com.smartwork.msip.cores.orm.model.BasePKModel;
 
 
 /**
  * 灰度关联固件版本及增值组件版本表
+ * 主键为	  产品类型编号-灰度编号
  * @author Edmond
  *
  */
 @SuppressWarnings("serial")
-public class WifiDeviceGrayVersion extends BaseIntModel{
-	
+public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	//冗余字段关联使用灰度的设备数量，定时30分钟更新一次
 	private int devices;
 	//固件版本号id
@@ -31,6 +32,35 @@ public class WifiDeviceGrayVersion extends BaseIntModel{
 		super.preInsert();
 	}
 
+	
+    public int getDut() {
+    	if (this.getId() == null) {
+            return 0;
+        }
+        return this.getId().getDut();
+	}
+
+	public void setDut(int dut) {
+	 	if (this.getId() == null) {
+            this.setId(new WifiDeviceGrayVersionPK());
+        }
+	    this.getId().setDut(dut);
+	}
+
+	public int getGl() {
+		if (this.getId() == null) {
+            return 0;
+        }
+        return this.getId().getGl();
+	}
+
+	public void setGl(int gl) {
+		if (this.getId() == null) {
+            this.setId(new WifiDeviceGrayVersionPK());
+        }
+	    this.getId().setGl(gl);
+	}
+	
 	public int getDevices() {
 		return devices;
 	}
@@ -65,12 +95,18 @@ public class WifiDeviceGrayVersion extends BaseIntModel{
 	
 	public GrayUsageVTO toGrayUsageVTO(){
 		GrayUsageVTO vto = new GrayUsageVTO();
-		vto.setIndex(id);
+		vto.setDut(id.getDut());
+		vto.setGl(getGl());
 		vto.setFwid(d_fwid);
 		vto.setOmid(d_omid);
 		vto.setDevices(devices);
-		GrayLevel fromIndex = VapEnumType.GrayLevel.fromIndex(id);
+		GrayLevel fromIndex = VapEnumType.GrayLevel.fromIndex(vto.getGl());
 		vto.setN(fromIndex!=null?fromIndex.getName():VapEnumType.GrayLevel.Unknow.getName());
 		return vto;
+	}
+
+	@Override
+	protected Class<WifiDeviceGrayVersionPK> getPKClass() {
+		return WifiDeviceGrayVersionPK.class;
 	}
 }

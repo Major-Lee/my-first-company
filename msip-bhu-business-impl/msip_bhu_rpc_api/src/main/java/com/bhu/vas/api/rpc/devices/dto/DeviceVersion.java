@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.version;
+package com.bhu.vas.api.rpc.devices.dto;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -109,11 +109,11 @@ public class WifiDeviceGrayFacadeService {
      * @return null情况下属于未知
      */
     public VapEnumType.GrayLevel deviceGray(String mac){
-    	WifiDeviceGray gray = wifiDeviceGrayService.getById(mac);
-    	if(gray == null){
+    	WifiDeviceGray deviceGray = wifiDeviceGrayService.getById(mac);
+    	if(deviceGray == null){
     		return VapEnumType.GrayLevel.Unknow;
     	}else{
-    		return VapEnumType.GrayLevel.fromIndex(gray.getGray());
+    		return VapEnumType.GrayLevel.fromIndex(deviceGray.getGl());
     	}
     }
 

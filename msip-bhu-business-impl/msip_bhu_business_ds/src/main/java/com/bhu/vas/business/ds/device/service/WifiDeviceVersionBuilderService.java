@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.dto.version.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceVersionBuilderDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;

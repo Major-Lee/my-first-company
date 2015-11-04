@@ -45,10 +45,11 @@
 		<typeAlias alias="wifiDevicePersistenceCMDState" 	type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
 		<typeAlias alias="wifiDeviceVersionBuilder" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder"/>
 		
-		<typeAlias alias="wifiDeviceGray" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray"/>
+		<typeAlias alias="wifiDeviceGray" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray"/>
+		<typeAlias alias="wifiDeviceGrayVersionPK" 	type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK"/>
 		<typeAlias alias="wifiDeviceGrayVersion" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion"/>
-		<typeAlias alias="wifiDeviceVersionFW" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW"/>
-		<typeAlias alias="wifiDeviceVersionOM" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM"/>
+		<typeAlias alias="wifiDeviceVersionFW" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW"/>
+		<typeAlias alias="wifiDeviceVersionOM" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM"/>
 		
 		
 		<typeAlias alias="wifiDeviceDownTaskCompleted" 	type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
