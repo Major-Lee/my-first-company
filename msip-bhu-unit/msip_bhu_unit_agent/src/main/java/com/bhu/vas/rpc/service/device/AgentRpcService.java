@@ -126,6 +126,18 @@ public class AgentRpcService implements IAgentRpcService {
         return agentFacadeService.findAgentBulltinBoardById(uid, bid);
     }
 
+    @Override
+    public TailPage<UserVTO> pageSellorVTO(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageSellorVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(uid, UserType.Sellor.getIndex(), pageNo, pageSize);
+    }
+
+    @Override
+    public TailPage<UserVTO> pageAgentUserVTO(int uid, int pageNo, int pageSize) {
+        logger.info(String.format("pageAgentUserVTO pageNo[%s] pageSize", pageNo, pageSize));
+        return agentFacadeService.pageUserVTO(uid, UserType.Agent.getIndex(), pageNo, pageSize);
+    }
+
     /* 仓储管理员 end */
 
 
@@ -144,17 +156,7 @@ public class AgentRpcService implements IAgentRpcService {
         return agentFacadeService.pageAgentFinancialSettlementVTO(uid, pageNo, pageSize);
     }
 
-    @Override
-    public TailPage<UserVTO> pageSellorVTO(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageSellorVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageUserVTO(uid, UserType.Sellor.getIndex(), pageNo, pageSize);
-    }
 
-    @Override
-    public TailPage<UserVTO> pageAgentUserVTO(int uid, int pageNo, int pageSize) {
-        logger.info(String.format("pageAgentUserVTO pageNo[%s] pageSize", pageNo, pageSize));
-        return agentFacadeService.pageUserVTO(uid, UserType.Agent.getIndex(), pageNo, pageSize);
-    }
 
     /* 财务 end */
 }

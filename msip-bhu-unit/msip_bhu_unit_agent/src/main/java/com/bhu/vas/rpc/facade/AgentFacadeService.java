@@ -600,7 +600,7 @@ public class AgentFacadeService {
     public TailPage<UserVTO> pageUserVTO(int uid, int utype, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", utype);
