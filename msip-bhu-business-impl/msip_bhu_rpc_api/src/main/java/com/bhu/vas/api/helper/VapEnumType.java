@@ -18,26 +18,27 @@ public class VapEnumType {
 	 *
 	 */
 	public enum GrayLevel{
-		First(1,"一级灰度","一级灰度",true),
-		Second(2,"二级灰度","二级灰度",true),
-		Third(3,"三级灰度","三级灰度",true),
-		Fourth(4,"四级灰度","四级灰度",false),
-		Fifth(5,"五级灰度","五级灰度",false),
-		None(90,"无灰度","指定的部分设备，无需进行增值运营操作，例如广告配置等",true),
-		Unknow(100,"其他或未知","除去所有之外的设备属于Unknow",true),
+		First(1,"一级灰度","一级灰度",true,true),
+		Second(2,"二级灰度","二级灰度",true,true),
+		Third(3,"三级灰度","三级灰度",true,true),
+		Fourth(4,"四级灰度","四级灰度",false,false),
+		Fifth(5,"五级灰度","五级灰度",false,false),
+		None(90,"无灰度","指定的部分设备，无需进行增值运营操作，例如广告配置等",true,false),
+		Unknow(100,"其他或未知","除去所有之外的设备属于Unknow",true,false),
 		;
 		private int index;//序号
 		private String name;//灰度名称
 		private String desc;//描述
 		private boolean enable;//当前系统运行中是否有效
-		
+		private boolean visible;
 		static Map<Integer, GrayLevel> allGrayLevels;
 		
-		private GrayLevel(int index,String name, String desc,boolean enable){
+		private GrayLevel(int index,String name, String desc,boolean enable,boolean visible){
 			this.index = index;
 			this.name = name;
 			this.desc = desc;
 			this.enable = enable;
+			this.visible = visible;
 		}
 		public String getName() {
 			return name;
@@ -63,6 +64,14 @@ public class VapEnumType {
 		public void setEnable(boolean enable) {
 			this.enable = enable;
 		}
+		
+		public boolean isVisible() {
+			return visible;
+		}
+		public void setVisible(boolean visible) {
+			this.visible = visible;
+		}
+
 		static {
 			allGrayLevels = new HashMap<Integer,GrayLevel>();
 			GrayLevel[] levels = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};

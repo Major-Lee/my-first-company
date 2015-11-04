@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM;
+import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
@@ -81,7 +82,7 @@ public class WifiDeviceGrayFacadeService {
     	ModelCriteria mc_fw = new ModelCriteria();
     	mc_fw.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
     	mc_fw.setPageNumber(1);
-    	mc_fw.setPageSize(50);
+    	mc_fw.setPageSize(20);
     	mc_fw.setOrderByClause(" created_at desc ");
     	List<WifiDeviceVersionFW> versionfws = wifiDeviceVersionFWService.findModelByModelCriteria(mc_fw);
     	for(WifiDeviceVersionFW fw:versionfws){
@@ -90,11 +91,11 @@ public class WifiDeviceGrayFacadeService {
     	ModelCriteria mc_om = new ModelCriteria();
     	mc_om.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
     	mc_om.setPageNumber(1);
-    	mc_om.setPageSize(50);
+    	mc_om.setPageSize(20);
     	mc_om.setOrderByClause(" created_at desc ");
     	List<WifiDeviceVersionOM> versionoms = wifiDeviceVersionOMService.findModelByModelCriteria(mc_om);
     	for(WifiDeviceVersionOM om:versionoms){
-    		vto.getFws().add(om.toVersionVTO());
+    		vto.getOms().add(om.toVersionVTO());
     	}
     	return vto;
     }
@@ -147,14 +148,24 @@ public class WifiDeviceGrayFacadeService {
     			wdg.setDut(dut.getIndex());
     			wdg.setGl(gray.getIndex());
     			wifiDeviceGrayService.insert(wdg);
+    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+    			dgv.setDevices(dgv.getDevices()+1);
+    			wifiDeviceGrayVersionService.update(dgv);
     		}else{
     			if(wdg.getDut() == dut.getIndex() && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
     				;
     			}else{
     				if(wdg.getDut() == dut.getIndex()){
-    					wdg.setDut(dut.getIndex());
+    	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
+    	    			dgv.setDevices(dgv.getDevices()-1);
+    	    			wifiDeviceGrayVersionService.update(dgv);
+    	    			wdg.setDut(dut.getIndex());
     	    			wdg.setGl(gray.getIndex());
     	    			wifiDeviceGrayService.update(wdg);
+    	    			dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+    	    			dgv.setDevices(dgv.getDevices()+1);
+    	    			wifiDeviceGrayVersionService.update(dgv);
+    	    			
     				}else{
     					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
     				}
@@ -186,9 +197,27 @@ public class WifiDeviceGrayFacadeService {
     	}
     }
 
+	public WifiDeviceService getWifiDeviceService() {
+		return wifiDeviceService;
+	}
+
+	public WifiDeviceGrayService getWifiDeviceGrayService() {
+		return wifiDeviceGrayService;
+	}
+
+	public WifiDeviceGrayVersionService getWifiDeviceGrayVersionService() {
+		return wifiDeviceGrayVersionService;
+	}
+
+	public WifiDeviceVersionFWService getWifiDeviceVersionFWService() {
+		return wifiDeviceVersionFWService;
+	}
+
+	public WifiDeviceVersionOMService getWifiDeviceVersionOMService() {
+		return wifiDeviceVersionOMService;
+	}
+
     /*public void updateRelatedFieldAction(){
     	
     }*/
-    
-    
 }

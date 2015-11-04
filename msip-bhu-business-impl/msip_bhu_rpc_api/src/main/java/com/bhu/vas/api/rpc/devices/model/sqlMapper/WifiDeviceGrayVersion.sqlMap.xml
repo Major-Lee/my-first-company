@@ -10,7 +10,6 @@
         <result property="devices" 	column="devices"/>
         <result property="d_fwid" 	column="d_fwid"/>
         <result property="d_omid" 	column="d_omid"/>
-        
         <result property="created_at" column="created_at"/>
         <result property="updated_at" column="updated_at"/>
     </resultMap>
@@ -143,14 +142,6 @@
         WHERE dut = #{dut} and gl = #{gl}
     </update>
 
-    <update id="increaseUpdate" parameterType="wifiDeviceGroupRelation">
-        update
-        <include refid="modelTableName"/>
-        set
-        <include refid="modelIncreaseUpdateValues"/>
-        WHERE dut = #{dut} and gl = #{gl}
-    </update>
-
     <select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">
         select
         <include refid="modelColumns"/>
@@ -173,7 +164,7 @@
         </where>
     </delete>
 
-    <select id="pkSelectByModelCriteria" resultType="wifiDeviceGroupRelationPK">
+    <select id="pkSelectByModelCriteria" resultType="wifiDeviceGrayVersionPK">
         select dut, gl from
         <include refid="modelTableName"/>
         <if test="_parameter != null">
