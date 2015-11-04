@@ -13,7 +13,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_device_gray
+	    	t_wifi_devices_grays
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
