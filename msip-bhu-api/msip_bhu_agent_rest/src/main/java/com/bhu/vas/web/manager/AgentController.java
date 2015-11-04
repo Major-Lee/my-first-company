@@ -165,6 +165,32 @@ public class AgentController {
     }
 
     /**
+     * 代理商设备列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
+    @ResponseBody()
+    @RequestMapping(value="/yet/list", method={RequestMethod.POST})
+    public void agentYetList(HttpServletRequest request, HttpServletResponse response,
+                          @RequestParam(required = true) Integer uid,
+                          @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                          @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+
+        try {
+            AgentDeviceVTO dtos = agentRpcService.pageUnClaimAgentDeviceByUid(uid, pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
+    /**
      * 获取公告列表
      * @param request
      * @param response
