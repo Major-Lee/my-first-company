@@ -240,7 +240,7 @@ public class AgentUserUnitFacadeService {
 			if(keywords!=null && StringUtils.isNotEmpty(keywords.trim())){
 				cri.andColumnLike("org", "%"+keywords+"%");
 			}
-			mc.setOrderByClause("id");
+			mc.setOrderByClause(" id ");
 			mc.setPageNumber(pageno);
 			mc.setPageSize(pagesize);
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
