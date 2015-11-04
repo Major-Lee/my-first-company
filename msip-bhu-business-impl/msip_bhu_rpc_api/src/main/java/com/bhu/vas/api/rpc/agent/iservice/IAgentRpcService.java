@@ -52,7 +52,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize);
+    AgentDeviceVTO pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize);
 
     /**
      * 获取未认领的设备
@@ -60,7 +60,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int uid, int pageNo, int pageSize);
+    TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize);
 
     /**
      * 代理商导入设备

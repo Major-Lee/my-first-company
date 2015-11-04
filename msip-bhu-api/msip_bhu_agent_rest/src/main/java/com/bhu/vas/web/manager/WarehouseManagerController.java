@@ -250,8 +250,8 @@ public class WarehouseManagerController {
                                @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
 
         try {
-            TailPage<AgentDeviceClaimVTO>  dtos = agentRpcService.pageUnClaimAgentDeviceByUid(uid,pageNo, pageSize);
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));
+            AgentDeviceVTO  dto = agentRpcService.pageUnClaimAgentDeviceByUid(uid,pageNo, pageSize);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dto));
         } catch (Exception e) {
             e.printStackTrace();
             SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);

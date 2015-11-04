@@ -18,6 +18,9 @@ public class AgentDeviceVTO implements Serializable {
 
     private int offline_count;
 
+    //从未上线
+    private int yet_count;
+
 
     public TailPage<AgentDeviceClaimVTO> getVtos() {
         return vtos;
@@ -49,5 +52,13 @@ public class AgentDeviceVTO implements Serializable {
 
     public void setOffline_count(int offline_count) {
         this.offline_count = offline_count;
+    }
+
+    public int getYet_count() {
+        return yet_count;
+    }
+
+    public void setYet_count(int yet_count) {
+        this.yet_count = yet_count;
     }
 }
