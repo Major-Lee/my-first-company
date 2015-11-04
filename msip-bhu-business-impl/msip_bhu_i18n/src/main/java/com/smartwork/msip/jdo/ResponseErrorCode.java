@@ -82,13 +82,15 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_GROUP_ONLINE_DEVICES_EMPTY("753","wifidevice.group.devices.online.empty"),
 	WIFIDEVICE_GROUP_TOO_LONG("754","wifidevice.group.devices.too.long"),
 	WIFIDEVICE_GROUP_EXIST_CHILDREN("755", "wifidevice.group.devices.exist.children"),
-	WIFIDEVICE_GROUP_NOTEXIST_PARENT("766", "wifidevice.group.devices.notexist.parent"),
+	WIFIDEVICE_GROUP_NOTEXIST_PARENT("756", "wifidevice.group.devices.notexist.parent"),
 
-	WIFIDEVICE_VERSION_TOO_HIGH("770", "wifidevice.version.too.high"),
+	WIFIDEVICE_VERSION_TOO_HIGH("760", "wifidevice.version.too.high"),
 
+	WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED("770", "wifidevice.gray.deviceunittype.notmatched"),
+	
 	WIFISTASNIFFER_NICK_LENGTH_INVALID("781", "wifistasniffer.nick.length.invalid"),
 
-
+	
 	
 	//WIFIDEVICE_GROUP_REMOVE_NOTEXIST("711","wifidevice.group.notexist"),
 //	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
@@ -146,7 +148,6 @@ public enum ResponseErrorCode {
 	AUTH_PARAM_SYSTEM_WORD_FORBIDDEN("292","auth.param.system.wordforbidden"),
 	
 	
-
 	
 	USER_DATA_NOT_EXIST("301","user.data.notexist"),
 	USER_TOKENS_GEN_ALREADY_FULL("310","user.tokens.gen.already.full"),
@@ -172,14 +173,7 @@ public enum ResponseErrorCode {
 	DEVICE_NOT_BINDED("345","device.not.binded"),
 	DEVICE_NOT_UROOTER("346", "device.not.urooter"),
 	
-	/*USER_FRIEND_COUNT_OVER_MAX("315","user.friend.count.over.max"),
-	USER_PERSONAL_INVALID("316","user.personal.invalid"),
-	USER_FRIEND_PERSONAL_INVALID("317","user.friend.personal.invalid"),
-	USER_FORGOTPWD_TIMES_REACHLIMIT("318","user.forgotpwd.times.reachlimit"),
-	USER_TICKER_COLLECT_EXIST("319","user.ticker.collect.exist"),
-	USER_KEYS_NOT_ENOUGH("320","user.keys.notenough"),
-	USER_SHARE_SAME_ARTICLE_TIMES_REACHLIMIT("321","user.share.same.article.times.reachlimit"),
-	USER_EXIST_SUBJECT_ESTIMATE("322","user.exist.subject.estimate"),*/
+	
 	
 	UPLOAD_FILE_FORMAT_INVALID("360","upload.file.format.invalid"),
 	UPLOAD_FILE_FID_GEN_ERROR("361","upload.file.fid.gen.error"),

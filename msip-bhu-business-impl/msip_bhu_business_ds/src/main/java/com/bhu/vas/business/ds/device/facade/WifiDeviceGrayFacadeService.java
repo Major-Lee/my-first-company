@@ -22,7 +22,10 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionFWService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionOMService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * Created by bluesand on 8/4/15.
@@ -76,7 +79,7 @@ public class WifiDeviceGrayFacadeService {
     		vto.getGuvs().add(dgv.toGrayUsageVTO());
     	}
     	ModelCriteria mc_fw = new ModelCriteria();
-    	mc_fw.createCriteria().andSimpleCaulse(" 1=1 ");
+    	mc_fw.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
     	mc_fw.setPageNumber(1);
     	mc_fw.setPageSize(50);
     	mc_fw.setOrderByClause(" created_at desc ");
@@ -85,7 +88,7 @@ public class WifiDeviceGrayFacadeService {
     		vto.getFws().add(fw.toVersionVTO());
     	}
     	ModelCriteria mc_om = new ModelCriteria();
-    	mc_om.createCriteria().andSimpleCaulse(" 1=1 ");
+    	mc_om.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
     	mc_om.setPageNumber(1);
     	mc_om.setPageSize(50);
     	mc_om.setOrderByClause(" created_at desc ");
@@ -96,20 +99,77 @@ public class WifiDeviceGrayFacadeService {
     	return vto;
     }
     
-    public TailPage<VersionVTO> pagesFW(VapEnumType.DeviceUnitType dut){
-    	return null;
+    public TailPage<VersionVTO> pagesFW(VapEnumType.DeviceUnitType dut,int pn,int ps){
+    	ModelCriteria mc_fw = new ModelCriteria();
+    	mc_fw.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
+    	mc_fw.setPageNumber(pn);
+    	mc_fw.setPageSize(ps);
+    	mc_fw.setOrderByClause(" created_at desc ");
+		TailPage<WifiDeviceVersionFW> pages = this.wifiDeviceVersionFWService.findModelTailPageByModelCriteria(mc_fw);
+		List<VersionVTO> vtos = new ArrayList<>();
+		for(WifiDeviceVersionFW fm:pages.getItems()){
+			vtos.add(fm.toVersionVTO());
+		}
+		TailPage<VersionVTO> result_pages = new CommonPage<VersionVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+    	return result_pages;
     }
     
-    public TailPage<VersionVTO> pagesOM(VapEnumType.DeviceUnitType dut){
-    	return null;
+    public TailPage<VersionVTO> pagesOM(VapEnumType.DeviceUnitType dut,int pn,int ps){
+    	ModelCriteria mc_om = new ModelCriteria();
+    	mc_om.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
+    	mc_om.setPageNumber(pn);
+    	mc_om.setPageSize(ps);
+    	mc_om.setOrderByClause(" created_at desc ");
+		TailPage<WifiDeviceVersionOM> pages = this.wifiDeviceVersionOMService.findModelTailPageByModelCriteria(mc_om);
+		List<VersionVTO> vtos = new ArrayList<>();
+		for(WifiDeviceVersionOM om:pages.getItems()){
+			vtos.add(om.toVersionVTO());
+		}
+		TailPage<VersionVTO> result_pages = new CommonPage<VersionVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+    	return result_pages;
     }
     
-    public void addMacs2Gray(VapEnumType.GrayLevel gray,List<String> macs){
-    	
+    /**
+     * 增加指定的macs 到相对应的产品类型中的灰度中
+     * 如果某个mac已经在灰度中，则需要判定 其本身的原来的灰度产品类型是否和新的灰度产品类型匹配 
+     * 			匹配则强制更改其灰度等级
+     * 			否则抛出异常灰度的产品类型不匹配
+     * @param dut
+     * @param gray
+     * @param macs
+     */
+    public void saveMacs2Gray(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,List<String> macs){
+    	for(String mac:macs){
+    		WifiDeviceGray wdg = wifiDeviceGrayService.getById(mac);
+    		if(wdg == null){
+    			wdg = new WifiDeviceGray();
+    			wdg.setId(mac);
+    			wdg.setDut(dut.getIndex());
+    			wdg.setGl(gray.getIndex());
+    			wifiDeviceGrayService.insert(wdg);
+    		}else{
+    			if(wdg.getDut() == dut.getIndex() && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
+    				;
+    			}else{
+    				if(wdg.getDut() == dut.getIndex()){
+    					wdg.setDut(dut.getIndex());
+    	    			wdg.setGl(gray.getIndex());
+    	    			wifiDeviceGrayService.update(wdg);
+    				}else{
+    					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
+    				}
+    			}
+    		}
+    	}
     }
     
-    public void cleanMacsInGray(VapEnumType.GrayLevel gray,List<String> macs){
-    	
+    /**
+     * 清除macs 从灰度列表中
+     * @param macs
+     */
+    public void cleanMacsFromAnyGray(List<String> macs){
+    	if(macs != null && !macs.isEmpty())
+    		wifiDeviceGrayService.deleteByIds(macs);
     }
     
     /**
@@ -126,4 +186,9 @@ public class WifiDeviceGrayFacadeService {
     	}
     }
 
+    /*public void updateRelatedFieldAction(){
+    	
+    }*/
+    
+    
 }
