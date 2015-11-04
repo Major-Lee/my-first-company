@@ -6,20 +6,16 @@ public class GrayUsageVTO implements java.io.Serializable{
 	private int dut;
 	//gray index
 	private int gl;
+	//device unit name
+	private String dun;
 	//gray name
-	private String n;
+	private String gn;
 	//统计数量 多少设备使用当前灰度等级
 	private int devices;
 	//固件版本号id
 	private String fwid;
 	//增值模块 版本id
 	private String omid;
-	public String getN() {
-		return n;
-	}
-	public void setN(String n) {
-		this.n = n;
-	}
 	public int getDevices() {
 		return devices;
 	}
@@ -49,6 +45,18 @@ public class GrayUsageVTO implements java.io.Serializable{
 	}
 	public void setGl(int gl) {
 		this.gl = gl;
+	}
+	public String getDun() {
+		return dun;
+	}
+	public void setDun(String dun) {
+		this.dun = dun;
+	}
+	public String getGn() {
+		return gn;
+	}
+	public void setGn(String gn) {
+		this.gn = gn;
 	}
 	
 }
