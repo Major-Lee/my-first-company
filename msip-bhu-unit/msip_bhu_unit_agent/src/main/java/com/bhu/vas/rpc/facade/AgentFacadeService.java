@@ -322,7 +322,7 @@ public class AgentFacadeService {
     
     public AgentDeviceVTO pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnNotEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
