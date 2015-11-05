@@ -491,6 +491,7 @@ public class AgentFacadeService {
         User agent = userService.getById(aid);
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+            vto.setOrg(agent.getOrg() == null ? "" : agent.getOrg());
         }
 
         User sellor = userService.getById(wid);

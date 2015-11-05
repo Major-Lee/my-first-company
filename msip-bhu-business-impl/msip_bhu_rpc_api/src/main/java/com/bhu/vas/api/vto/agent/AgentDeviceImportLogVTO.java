@@ -30,6 +30,8 @@ public class AgentDeviceImportLogVTO implements Serializable {
      */
     private String nick;
 
+    private String org;
+
     /**
      * 销售名称
      */
@@ -99,6 +101,14 @@ public class AgentDeviceImportLogVTO implements Serializable {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
     }
 
     public String getSnick() {
