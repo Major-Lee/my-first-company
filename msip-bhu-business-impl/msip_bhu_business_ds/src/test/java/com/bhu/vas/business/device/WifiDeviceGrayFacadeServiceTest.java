@@ -91,8 +91,24 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 
 	
 	@Test
-	public void test003MainPageRightData(){
+	public void test003MainPageRightTopData(){
 		CurrentGrayUsageVTO currentGrays = wifiDeviceGrayFacadeService.currentGrays(VapEnumType.DeviceUnitType.uRouterTU);
 		System.out.println(JsonHelper.getJSONString(currentGrays));
+	}
+	
+	@Test
+	public void test004MainPageRightBottomData(){
+		TailPage<VersionVTO> pagesFW = wifiDeviceGrayFacadeService.pagesFW(VapEnumType.DeviceUnitType.uRouterTU,1,10);
+		System.out.println(JsonHelper.getJSONString(pagesFW));
+		
+		TailPage<VersionVTO> pagesOM = wifiDeviceGrayFacadeService.pagesOM(VapEnumType.DeviceUnitType.uRouterTU,1,10);
+		System.out.println(JsonHelper.getJSONString(pagesOM));
+		
+	}
+	
+	@Test
+	public void test005deviceUnitGrayTest(){
+		System.out.println(wifiDeviceGrayFacadeService.deviceUnitGray("84:82:f4:19:01:0c"));
+		System.out.println(wifiDeviceGrayFacadeService.deviceUnitGray("84:82:f4:23:06:68"));
 	}
 }

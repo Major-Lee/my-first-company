@@ -1,15 +1,26 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
+import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
+import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
+import com.bhu.vas.api.vto.device.VersionVTO;
+import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.rpc.facade.VapFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * Created by bluesand on 5/26/15.
@@ -20,6 +31,9 @@ public class VapRpcService  implements IVapRpcService{
 
     @Resource
     private VapFacadeService vapFacadeService;
+    
+    @Resource
+    private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
 
     @Override
     public RpcResponseDTO<VapModeUrlViewCountDTO> urlView(String key, String field) {
@@ -27,5 +41,48 @@ public class VapRpcService  implements IVapRpcService{
         return vapFacadeService.urlView(key.toLowerCase(), field);
     }
 
+	@Override
+	public RpcResponseDTO<List<DeviceUnitTypeVTO>> deviceUnitTypes(int uid) {
+		logger.info(String.format("deviceUnitTypes uid[%s]",uid));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(wifiDeviceGrayFacadeService.deviceUnitTypes());
+	}
+
+	@Override
+	public RpcResponseDTO<CurrentGrayUsageVTO> currentGrays(int uid, int dut) {
+		logger.info(String.format("currentGrays uid[%s] dut[%s]",uid,dut));
+		try{
+			DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex(dut);
+			if(unitType != null)
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(wifiDeviceGrayFacadeService.currentGrays(unitType));
+			else
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<VersionVTO>> pagesDeviceVersions(int uid,int dut,boolean fw,int pn,int ps) {
+		logger.info(String.format("pagesDeviceVersions uid[%s] dut[%s] fw[%s] pn[%s] ps[%s]",uid,dut,fw,pn,ps));
+		try{
+			DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex(dut);
+			if(unitType != null){
+				TailPage<VersionVTO> pages = null;
+				if(fw){
+					pages = wifiDeviceGrayFacadeService.pagesFW(unitType, pn, ps);
+				}else{
+					pages = wifiDeviceGrayFacadeService.pagesOM(unitType, pn, ps);
+				}
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+			}else
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+    
 
 }
