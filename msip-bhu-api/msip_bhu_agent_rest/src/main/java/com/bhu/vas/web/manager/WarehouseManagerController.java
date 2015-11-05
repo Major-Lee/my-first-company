@@ -143,6 +143,12 @@ public class WarehouseManagerController {
         AgentUploadVTO vto = new AgentUploadVTO();
         String originName = file.getOriginalFilename();
         vto.setFilename(originName);
+
+        String ext = originName.substring(originName.lastIndexOf("."));
+
+        if (!"xls".equals(ext) && "xlsx".equals(ext)) {
+            SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"not excel",vto));
+        }
         try {
             String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
             String outputDirPath = IAgentRpcService.PATH_OUTPUT_PREFIX + File.separator + aid;
@@ -151,27 +157,8 @@ public class WarehouseManagerController {
 //            FileHelper.makeDirectory(inputDirPath);
 //            FileHelper.makeDirectory(outputDirPath);
 
-            File dirFile = new File(inputDirPath);
-            if (dirFile.exists()) {
-                if (!dirFile.isDirectory()) {
-                    dirFile.delete();
-                    dirFile = new File(inputDirPath);
-                    dirFile.mkdirs();
-                }
-            } else {
-                dirFile.mkdirs();
-            }
-
-            File outDirFile = new File(outputDirPath);
-            if (outDirFile.exists()) {
-                if (!outDirFile.isDirectory()) {
-                    outDirFile.delete();
-                    outDirFile = new File(outputDirPath);
-                    outDirFile.mkdirs();
-                }
-            } else {
-                outDirFile.mkdirs();
-            }
+            makeDirs(inputDirPath);
+            makeDirs(outputDirPath);
 
             Date date = new Date();
             String inputPath = inputDirPath + File.separator + date.getTime() + ".xls";
@@ -179,7 +166,6 @@ public class WarehouseManagerController {
 
             File newFile = new File(inputPath);
             file.transferTo(newFile);
-
 
             vto.setUid(uid);
             vto.setAid(aid);
@@ -195,6 +181,21 @@ public class WarehouseManagerController {
             e.printStackTrace();
             SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"error",vto));
 
+        }
+    }
+
+
+
+    private void makeDirs(String path) {
+        File dirFile = new File(path);
+        if (dirFile.exists()) {
+            if (!dirFile.isDirectory()) {
+                dirFile.delete();
+                dirFile = new File(path);
+                dirFile.mkdirs();
+            }
+        } else {
+            dirFile.mkdirs();
         }
     }
 
