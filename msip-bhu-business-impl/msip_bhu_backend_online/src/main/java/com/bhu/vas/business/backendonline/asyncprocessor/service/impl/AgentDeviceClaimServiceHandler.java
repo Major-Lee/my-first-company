@@ -238,6 +238,8 @@ public class AgentDeviceClaimServiceHandler {
             agentOutputDTO.setAid(agentDeviceImportLog.getAid());
             agentOutputDTO.setPath(dto.getOutputPath());
             agentOutputDTO.setName(dto.getOriginName());
+            agentOutputDTO.setFail_count(failCount);
+            agentOutputDTO.setSuccess_count(successCount);
 
             //发布公告给代理商
             AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
