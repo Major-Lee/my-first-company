@@ -146,8 +146,10 @@ public class WarehouseManagerController {
 
         String ext = originName.substring(originName.lastIndexOf("."));
 
+        System.out.println("ext===" + ext);
         if (!"xls".equals(ext) && "xlsx".equals(ext)) {
             SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"not excel",vto));
+            return ;
         }
         try {
             String inputDirPath = IAgentRpcService.PATH_INPUT_PREFIX + File.separator + aid;
