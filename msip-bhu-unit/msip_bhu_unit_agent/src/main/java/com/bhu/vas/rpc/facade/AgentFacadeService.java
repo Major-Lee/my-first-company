@@ -668,7 +668,7 @@ public class AgentFacadeService {
                 vto = new UserAgentVTO();
                 vto.setId(user.getId());
                 vto.setN(user.getNick());
-                vto.setN(user.getOrg());
+                vto.setOrg(user.getOrg());
                 vtos.add(vto);
             }
         }
