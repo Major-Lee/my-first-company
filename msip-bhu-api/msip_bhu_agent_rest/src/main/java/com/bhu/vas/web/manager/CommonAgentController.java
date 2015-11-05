@@ -1,6 +1,7 @@
 package com.bhu.vas.web.manager;
 
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -61,7 +62,7 @@ public class CommonAgentController {
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
         try {
-            TailPage<UserVTO> vtos = agentRpcService.pageAgentUserVTO(uid, pageNo, pageSize);
+            TailPage<UserAgentVTO> vtos = agentRpcService.pageUserAgentVTO(uid, pageNo, pageSize);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
         } catch (Exception e) {
             e.printStackTrace();

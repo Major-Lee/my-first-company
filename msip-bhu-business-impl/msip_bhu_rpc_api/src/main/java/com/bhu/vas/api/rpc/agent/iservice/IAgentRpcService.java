@@ -150,7 +150,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<UserVTO> pageAgentUserVTO(int uid, int pageNo, int pageSize);
+    TailPage<UserAgentVTO> pageUserAgentVTO(int uid, int pageNo, int pageSize);
 
 
     /**
