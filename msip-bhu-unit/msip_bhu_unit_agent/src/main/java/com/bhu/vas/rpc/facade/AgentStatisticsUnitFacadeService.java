@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
@@ -23,6 +22,7 @@ import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.SettlementSummaryDTO;
+import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
@@ -85,15 +85,15 @@ public class AgentStatisticsUnitFacadeService {
 			//本月收入(元)  
 			String currentMonth = DateTimeHelper.formatDate(currentDate, DateTimeHelper.FormatPattern11);
 			AgentWholeMonthMDTO currentmonth_data = agentWholeMonthMService.getWholeMonth(currentMonth, user);
-			vto.setRcm(ArithHelper.getFormatter(String.valueOf(currentmonth_data!=null?ChargingCurrencyHelper.currency(currentmonth_data.getDod()):0.00d)));
+			vto.setRcm(ArithHelper.getFormatter(String.valueOf(currentmonth_data!=null?AgentHelper.currency(currentmonth_data.getDod()):0.00d)));
 			//上月收入(元)  
 			String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1), DateTimeHelper.FormatPattern11);
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
-			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?ChargingCurrencyHelper.currency(previosmonth_data.getDod()):0.00d)));
+			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod()):0.00d)));
 			//昨日收入(元)  
 			String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
-			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?ChargingCurrencyHelper.currency(yesterday_data.getDod()):0.00d)));
+			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod()):0.00d)));
 			//结算过的总收入(元)
 			//待结算的总数 
 			/*RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
@@ -110,7 +110,7 @@ public class AgentStatisticsUnitFacadeService {
 				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
 				//ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod())))
 				//charts.put(String.format("%02d日", whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
-				charts.put(String.format("%02d日", whichday), ChargingCurrencyHelper.currency(dto.getDod()));
+				charts.put(String.format("%02d日", whichday), AgentHelper.currency(dto.getDod()));
 				if(whichday>max){
 					max = whichday;
 				}
@@ -179,7 +179,7 @@ public class AgentStatisticsUnitFacadeService {
 				
 				vto.setCd(dto.getDevices());
 				vto.setCsd(dto.getNewdevices());
-				vto.setR(ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod()))));
+				vto.setR(ArithHelper.getCurrency(String.valueOf(AgentHelper.currency(dto.getDod()))));
 				//vto.setC("+13.7%");
 				items.add(vto);
 			}

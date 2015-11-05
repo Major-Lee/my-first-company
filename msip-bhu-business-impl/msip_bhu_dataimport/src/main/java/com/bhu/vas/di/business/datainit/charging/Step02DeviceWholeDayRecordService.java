@@ -173,15 +173,20 @@ public class Step02DeviceWholeDayRecordService {
 			dto.setHod(h_od);
 			dto.setHrx_bytes(h_rx_bytes);
 			dto.setHtx_bytes(h_tx_bytes);
-			dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+			
 			WifiDevice device = wifiDeviceService.getById(key);
 			if(device != null){
 				Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
 				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
+				if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
+					dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+				}else{
+					dto.setCashback(0);
+				}
 			}else{
 				dto.setSameday(0);
+				dto.setCashback(0);
 			}
-			
 			//TODO:获取此日的设备使用情况流量
 			wifiDeviceWholeDayMService.save(dto);
 			//System.out.println(dto.getId());

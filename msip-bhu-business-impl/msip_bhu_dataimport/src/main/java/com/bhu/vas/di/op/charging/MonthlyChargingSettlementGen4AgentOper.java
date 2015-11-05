@@ -10,8 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
@@ -76,7 +76,7 @@ public class MonthlyChargingSettlementGen4AgentOper {
 				if(wholeMonth != null){
 					AgentSettlementsRecordMDTO settlement = agentSettlementsRecordMService.getSettlement(date, user);
 					if(settlement != null){//已经存在的单据，覆盖部分值
-						settlement.setiSVPrice(ChargingCurrencyHelper.currency(wholeMonth.getDod()));
+						settlement.setiSVPrice(AgentHelper.currency(wholeMonth.getDod()));
 					}else{
 						settlement = new AgentSettlementsRecordMDTO();
 						settlement.setId(AgentSettlementsRecordMDTO.generateId(date, user));
