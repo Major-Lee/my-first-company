@@ -102,7 +102,7 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 		vto.setOmid(d_omid);
 		vto.setDevices(devices);
 		GrayLevel fromIndex = VapEnumType.GrayLevel.fromIndex(vto.getGl());
-		vto.setGn(fromIndex!=null?fromIndex.getName():VapEnumType.GrayLevel.Unknow.getName());
+		vto.setGn(fromIndex!=null?fromIndex.getName():VapEnumType.GrayLevel.Other.getName());
 		DeviceUnitType dut = VapEnumType.DeviceUnitType.fromIndex(vto.getDut());
 		vto.setDun(dut!=null?dut.getName():"");
 		return vto;

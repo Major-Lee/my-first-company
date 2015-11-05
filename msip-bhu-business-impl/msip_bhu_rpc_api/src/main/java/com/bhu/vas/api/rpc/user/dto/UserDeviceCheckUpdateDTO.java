@@ -9,7 +9,9 @@ import java.io.Serializable;
 public class UserDeviceCheckUpdateDTO implements Serializable {
 	private int uid;
 	private String mac;
-	private boolean gray;
+	private int dut;
+	private int gray;
+	
     //wifi设备是否在线
     private boolean online;
     private boolean forceDeviceUpdate;
@@ -60,11 +62,19 @@ public class UserDeviceCheckUpdateDTO implements Serializable {
 		this.forceAppUpdate = forceAppUpdate;
 	}
 
-	public boolean isGray() {
+	public int getDut() {
+		return dut;
+	}
+
+	public void setDut(int dut) {
+		this.dut = dut;
+	}
+
+	public int getGray() {
 		return gray;
 	}
 
-	public void setGray(boolean gray) {
+	public void setGray(int gray) {
 		this.gray = gray;
 	}
 

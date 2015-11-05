@@ -104,15 +104,21 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	private final static String Default_Redirect_url = "www.bhuwifi.com";
 	private final static String Default_Open_resource = "";
 	private final static String Default_SSID = "BhuWiFi-访客";
+	
+	private final static int Default_Users_tx_rate= 128;
+	private final static int Default_Users_rx_rate= 128;
+	private final static int Default_Signal_limit= -30;
+	private final static int Default_Idle_timeout= 3*60*60;
+	private final static int Default_Force_timeout= 12*60*60;
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static ParamVapVistorWifiDTO builderDefault(){
 		ParamVapVistorWifiDTO dto = new ParamVapVistorWifiDTO();
-		dto.setUsers_tx_rate(128);
-		dto.setUsers_rx_rate(128);
-		dto.setSignal_limit(-30);
+		dto.setUsers_tx_rate(Default_Users_tx_rate);
+		dto.setUsers_rx_rate(Default_Users_rx_rate);
+		dto.setSignal_limit(Default_Signal_limit);
 		dto.setRedirect_url(Default_Redirect_url);
-		dto.setIdle_timeout(3*60*60);//
-		dto.setForce_timeout(12*60*60);
+		dto.setIdle_timeout(Default_Idle_timeout);//
+		dto.setForce_timeout(Default_Force_timeout);
 		dto.setOpen_resource(Default_Open_resource);
 		dto.setSsid(Default_SSID);
 		return dto;
@@ -120,13 +126,13 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	
 	public static ParamVapVistorWifiDTO fufillWithDefault(ParamVapVistorWifiDTO param){
 		if(param == null) return builderDefault();
-		if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(128);
-		if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(128);
+		if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(Default_Users_tx_rate);
+		if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(Default_Users_rx_rate);
 		
-		if(param.getSignal_limit() == 0) param.setSignal_limit(-30);
+		if(param.getSignal_limit() == 0) param.setSignal_limit(Default_Signal_limit);
 		if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(Default_Redirect_url);
-		if(param.getIdle_timeout() == 0) param.setIdle_timeout(1200);
-		if(param.getForce_timeout() == 0) param.setForce_timeout(21600);
+		if(param.getIdle_timeout() == 0) param.setIdle_timeout(Default_Idle_timeout);
+		if(param.getForce_timeout() == 0) param.setForce_timeout(Default_Force_timeout);
 		if(StringUtils.isEmpty(param.getOpen_resource())) param.setOpen_resource(Default_Open_resource);
 		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(Default_SSID);
 		return param;

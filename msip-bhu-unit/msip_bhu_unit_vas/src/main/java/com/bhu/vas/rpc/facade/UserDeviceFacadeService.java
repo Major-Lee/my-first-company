@@ -159,9 +159,9 @@ public class UserDeviceFacadeService {
         	//发送异步Device升级指令，指定立刻升级
         	{
         		//boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
-        		UpgradeDTO upgrade = deviceUpgradeFacadeService.fetchForceDeviceUpgrade(mac);
+        		UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
         		//UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
-	        	if(upgrade.isForceDeviceUpgrade()){
+	        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 	        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
 	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
@@ -191,7 +191,7 @@ public class UserDeviceFacadeService {
         	}
         	
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
-        	if(upgrade.isForceDeviceUpgrade()){
+        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
         		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
         		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
         				WifiDeviceHelper.Upgrade_Default_BeginTime, 
@@ -203,11 +203,12 @@ public class UserDeviceFacadeService {
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
         	retDTO.setOnline(wifiDevice.isOnline());
-        	retDTO.setGray(upgrade.isGray());
-        	retDTO.setForceDeviceUpdate(upgrade.isForceDeviceUpgrade());
-        	retDTO.setForceAppUpdate(upgrade.isForceAppUpgrade());
-        	retDTO.setCurrentDVB(upgrade.getCurrentDVB());
-        	retDTO.setCurrentAVB(upgrade.getCurrentAVB());
+        	retDTO.setDut(upgrade!=null?upgrade.getDut():0);
+        	retDTO.setGray(upgrade!=null?upgrade.getGl():0);
+        	retDTO.setForceDeviceUpdate(upgrade!=null?upgrade.isForceDeviceUpgrade():false);
+        	retDTO.setForceAppUpdate(upgrade!=null?upgrade.isForceAppUpgrade():false);
+        	retDTO.setCurrentDVB(wifiDevice.getOrig_swver());
+        	retDTO.setCurrentAVB(upgrade!=null?upgrade.getCurrentAVB():null);
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
         }
     }

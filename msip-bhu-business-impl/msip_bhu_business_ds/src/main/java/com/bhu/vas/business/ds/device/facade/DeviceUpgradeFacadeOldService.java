@@ -1,11 +1,5 @@
 package com.bhu.vas.business.ds.device.facade;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 /**
  * 前置条件 当前设备版本如果低于服务端指定的设备最新版本，则会自动进行升级，当然不是实时的
  * 支持规则
@@ -26,31 +20,30 @@ import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
  * @author Edmond
  *
  */
-@Service
-public class DeviceUpgradeFacadeService {
-	//@Resource
-	//private WifiDeviceService wifiDeviceService;
+//@Service
+public class DeviceUpgradeFacadeOldService {
+	/*@Resource
+	private WifiDeviceService wifiDeviceService;
+	
 	@Resource
-	private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
-	//@Resource
-	//private WifiDeviceGroupFacadeService wifiDeviceGroupFacadeService;
+	private WifiDeviceGroupService wifiDeviceGroupService;
+
+	@Resource
+	private WifiDeviceGroupFacadeService wifiDeviceGroupFacadeService;
 	
-	//@Resource
-    //private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
+	@Resource
+    private WifiDeviceVersionBuilderService wifiDeviceVersionBuilderService;
 	
 	
-	/*public UpgradeDTO fetchForceDeviceUpgrade(String dmac,String d_orig_swver){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, d_orig_swver);
+	public UpgradeDTO fetchForceDeviceUpgrade(String mac){
 		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
 		WifiDeviceVersionBuilder versionb = wifiDeviceVersionBuilderService.getById(isFirstGray?WifiDeviceVersionBuilder.VersionBuilder_FirstGray:WifiDeviceVersionBuilder.VersionBuilder_Normal);
 		if(versionb == null) return new UpgradeDTO(isFirstGray,false);
 		return new UpgradeDTO(isFirstGray,true,versionb.getD_firmware_name(),versionb.getFirmware_upgrade_url());
-		
-	}*/
+	}
 	
-	public UpgradeDTO checkDeviceUpgrade(String dmac,WifiDevice wifiDevice){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, wifiDevice.getOrig_swver());
-		/*UpgradeDTO resultDto = null;
+	public UpgradeDTO checkDeviceUpgrade(String mac,WifiDevice wifiDevice){
+		UpgradeDTO resultDto = null;
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver())){
 			System.out.println(String.format("-----checkDeviceUpgrade step10 [%s] [%s] ",mac,wifiDevice.getOrig_swver()));
 			resultDto = new UpgradeDTO(false,false);
@@ -75,12 +68,11 @@ public class DeviceUpgradeFacadeService {
 			resultDto.setCurrentDVB(wifiDevice.getOrig_swver());
 			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
 		}
-		return resultDto;*/
+		return resultDto;
 	}
 	
-	public UpgradeDTO checkDeviceUpgradeWithClientVer(String dmac,WifiDevice wifiDevice,String handset_device,String appVer){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, wifiDevice.getOrig_swver());
-		/*UpgradeDTO resultDto = null;
+	public UpgradeDTO checkDeviceUpgradeWithClientVer(String mac,WifiDevice wifiDevice,String handset_device,String appVer){
+		UpgradeDTO resultDto = null;
 		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver()) || StringUtils.isEmpty(handset_device) || StringUtils.isEmpty(appVer)){
 			resultDto = new UpgradeDTO(isFirstGray,false);
@@ -96,14 +88,10 @@ public class DeviceUpgradeFacadeService {
 					if(devicever_ret < 0){
 						needDeviceUpdate = true;
 					}
-				}else(clientver_ret < 0){
+				}else{
 					if(devicever_ret >=0 ){
 						needDeviceUpdate = false;
 						needAppUpdate = true;
-					}else if(devicever_ret == 0){
-						needDeviceUpdate = false;
-						needAppUpdate = true;
-					}
 				}
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
@@ -134,6 +122,6 @@ public class DeviceUpgradeFacadeService {
 			System.out.println(String.format("-----checkDeviceUpgrade [%s] upgradeDTO[%s]",mac,resultDto.toString()));
 		}
 		
-		return resultDto;*/
-	}
+		return resultDto;
+	}*/
 }

@@ -20,7 +20,7 @@ public class DeviceVersion {
 	//版本号1.3.0、1.3.0r1、1.3.2Build8606、1.2.16Buildwaip
 	private String ver;
 	//Device software type T：设备软件类型， 取值： U(家用版本，urouter), C(商业wifi版本), S(soc版本) 
-	private String dst;
+	private String dut;
 	//Manufacturer name N：厂家名称，在属性T取值为C(商业wifi)时，存在此属性项. 该属性的取值为各个商业wifi厂家的缩写.
 	private String mn;
 	
@@ -36,11 +36,12 @@ public class DeviceVersion {
 	public void setVer(String ver) {
 		this.ver = ver;
 	}
-	public String getDst() {
-		return dst;
+
+	public String getDut() {
+		return dut;
 	}
-	public void setDst(String dst) {
-		this.dst = dst;
+	public void setDut(String dut) {
+		this.dut = dut;
 	}
 	public String getMn() {
 		return mn;
@@ -49,22 +50,22 @@ public class DeviceVersion {
 		this.mn = mn;
 	}
 	// U(家用版本，urouter), C(商业wifi版本), S(soc版本)
-	public static final String DST_uRouter = "TU";
-	public static final String DST_CWifi = "TC";
-	public static final String DST_soc = "TS";
+	public static final String DUT_uRouter = "TU";
+	public static final String DUT_CWifi = "TC";
+	public static final String DUT_soc = "TS";
 	
 	/**
-	 * dst == null || dst = DST_uRouter
+	 * dut == null || dut = DST_uRouter
 	 * @return
 	 */
 	public boolean wasDstURouter(){
-		if(StringUtils.isEmpty(dst)) return false;
-		return DST_uRouter.equals(dst);
+		if(StringUtils.isEmpty(dut)) return false;
+		return DUT_uRouter.equals(dut);
 	}
 	
 	public boolean wasDstSoc(){
-		if(StringUtils.isEmpty(dst)) return false;
-		return DST_soc.equals(dst);
+		if(StringUtils.isEmpty(dut)) return false;
+		return DUT_soc.equals(dut);
 	}
 	/**
 	 * 解析设备的软件版本
@@ -113,7 +114,7 @@ public class DeviceVersion {
 			if(index > 1){
 				char prefix = s.charAt(0);
 				if(prefix == 'T'){
-					dv.setDst(s);
+					dv.setDut(s);
 				}else if(prefix == 'N'){
 					dv.setMn(s);
 				}
@@ -164,7 +165,7 @@ public class DeviceVersion {
 	}
 	
 	public boolean canExecuteUpgrade(){
-		return StringUtils.isEmpty(dst) || wasDstURouter();
+		return StringUtils.isEmpty(dut) || wasDstURouter();
 	}
 	
 	public static void main(String[] argv){

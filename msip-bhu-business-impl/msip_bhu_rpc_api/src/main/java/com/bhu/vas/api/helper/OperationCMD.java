@@ -90,7 +90,7 @@ public enum OperationCMD {
 	
 	DeviceCurrentConfigSave("200", "通知设备存储设备当前运行配置","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"save\" /></cmd>"),
 
-	ClearDeviceBootReset("250","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><cmd><ITEM cmd=\"clear_reset_flag\" /></cmd></cmd>"),
+	ClearDeviceBootReset("250","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"clear_reset_flag\" /></cmd>"),
 
 	//<cmd><ITEM cmd="clear_reset_flag" /></cmd>
 	;
