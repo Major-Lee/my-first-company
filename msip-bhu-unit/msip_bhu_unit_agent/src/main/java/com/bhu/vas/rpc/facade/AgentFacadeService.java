@@ -472,7 +472,7 @@ public class AgentFacadeService {
         //代理商导入记录
         AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
         agentDeviceImportLog.setAid(aid);
-        agentDeviceImportLog.setWid(wid);
+        agentDeviceImportLog.setSid(wid);
         agentDeviceImportLog.setCreated_at(new Date());
         agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DOING);
         agentDeviceImportLog.setRemark(remark);
@@ -481,7 +481,7 @@ public class AgentFacadeService {
         AgentDeviceImportLogVTO vto = new AgentDeviceImportLogVTO();
         vto.setId(agentDeviceImportLog.getId());
         vto.setAid(aid);
-        vto.setWid(wid);
+        vto.setSid(wid);
         vto.setScount(agentDeviceImportLog.getSuccess_count());
         vto.setFcount(agentDeviceImportLog.getFail_count());
         vto.setStatus(agentDeviceImportLog.getStatus());
@@ -493,9 +493,9 @@ public class AgentFacadeService {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
         }
 
-        User wuser = userService.getById(wid);
-        if (wuser != null) {
-            vto.setWnick(wuser.getNick() == null ? "" : wuser.getNick());
+        User sellor = userService.getById(wid);
+        if (sellor != null) {
+            vto.setSnick(sellor.getNick() == null ? "" : sellor.getNick());
         }
 
         //异步处理代理商
@@ -523,7 +523,7 @@ public class AgentFacadeService {
                 vto = new AgentDeviceImportLogVTO();
                 vto.setId(log.getId());
                 vto.setAid(log.getAid());
-                vto.setWid(log.getWid());
+                vto.setSid(log.getSid());
                 vto.setScount(log.getSuccess_count());
                 vto.setFcount(log.getFail_count());
                 vto.setCreated_at(log.getCreated_at());
@@ -532,6 +532,11 @@ public class AgentFacadeService {
                 User agent = userService.getById(log.getAid());
                 if (agent != null) {
                     vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+                }
+
+                User sellor = userService.getById(log.getSid());
+                if (sellor != null) {
+                    vto.setSnick(sellor.getNick() == null ? "" : sellor.getNick());
                 }
 
                 long bid  = log.getBid();
@@ -668,7 +673,7 @@ public class AgentFacadeService {
                 vto = new UserAgentVTO();
                 vto.setId(user.getId());
                 vto.setN(user.getNick());
-                vto.setN(user.getOrg());
+                vto.setOrg(user.getOrg());
                 vtos.add(vto);
             }
         }

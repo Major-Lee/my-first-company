@@ -7,7 +7,7 @@
   <resultMap id="modelResult" type="agentDeviceImportLog">
     <id property="id" column="id"/>
 	  <result property="aid" column="aid"/>
-	  <result property="wid" column="wid"/>
+	  <result property="sid" column="sid"/>
 	  <result property="bid" column="bid"/>
 	  <result property="success_count" column="success_count"/>
 	  <result property="fail_count" column="fail_count"/>
@@ -26,7 +26,7 @@
 	    <![CDATA[
 	    	id,
 	    	aid,
-	    	wid,
+	    	sid,
 	    	bid,
 	    	success_count,
 	    	fail_count,
@@ -39,7 +39,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	aid,
-	    	wid,
+	    	sid,
 	    	bid,
 	    	success_count,
 	    	fail_count,
@@ -53,7 +53,7 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{aid},
-			#{wid},
+			#{sid},
 			#{bid},
 			#{success_count},
 			#{fail_count},
@@ -65,7 +65,7 @@
 	
 	<sql id="modelUpdateValues">
 	    	aid = #{aid},
-	    	wid = #{wid},
+	    	sid = #{sid},
 	    	bid = #{bid},
 	    	success_count = #{success_count},
 	    	fail_count = #{fail_count},

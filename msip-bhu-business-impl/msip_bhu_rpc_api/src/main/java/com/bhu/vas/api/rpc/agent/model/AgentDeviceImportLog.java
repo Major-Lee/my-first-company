@@ -22,7 +22,7 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
     /**
      * 销售人员id
      */
-    private int wid;
+    private int sid;
 
     /**
      * 公告id，如果导入成功的话，会发布一条公告
@@ -62,12 +62,12 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
         this.aid = aid;
     }
 
-    public int getWid() {
-        return wid;
+    public int getSid() {
+        return sid;
     }
 
-    public void setWid(int wid) {
-        this.wid = wid;
+    public void setSid(int sid) {
+        this.sid = sid;
     }
 
     public long getBid() {
