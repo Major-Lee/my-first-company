@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.search;
+package com.bhu.vas.api.dto.search.condition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,19 +9,26 @@ import java.util.Map;
  */
 public enum SearchConditionPattern {
 	
-	Contain("ctn",1,1,"包含匹配条件","模糊匹配字段包含某些关键词,支持输入空格自动分词"),
-	NotContain("nctn",1,2,"非包含匹配条件","模糊匹配字段不包含某些关键词,支持输入空格自动分词"),
-	Equal("eq",2,1,"完全匹配条件","完全匹配字段等于某些关键词,支持输入空格自动分词"),
-	NotEqual("neq",2,2,"非完全匹配条件","完全匹配字段不等于某些关键词,支持输入空格自动分词"),
-	GreaterThan("gt",3,1,"大于匹配条件","匹配字段大于该项"),
-	GreaterThanEqual("gte",3,1,"大于等于匹配条件","匹配字段大于等于该项"),
-	LessThan("lt",3,1,"小于匹配条件","匹配字段小于该项"),
-	LessThanEqual("lte",3,1,"小于等于匹配条件","匹配字段小于等于该项"),
-	PrefixContain("pctn",4,1,"前缀包含匹配条件","前缀匹配字段包含某个关键词"),
-	NotPrefixContain("npctn",4,2,"前缀非包含匹配条件","前缀匹配字段不包含某个关键词"),
-	Range("rge",3,1,"范围匹配条件","范围匹配字段大于并且小于条件"),
-	NotRange("nrge",3,2,"非范围匹配条件","范围匹配字段非大于并且小于条件"),
-	Unkown("Unkown",99,1,"未知条件","未知条件"),
+	Contain("ctn",1,0,1,"包含匹配条件","模糊匹配字段包含某些关键词,支持输入空格自动分词"),
+	NotContain("nctn",1,0,2,"非包含匹配条件","模糊匹配字段不包含某些关键词,支持输入空格自动分词"),
+	Equal("eq",2,0,1,"完全匹配条件","完全匹配字段等于某些关键词,不支持输入分词"),
+	NotEqual("neq",2,0,2,"非完全匹配条件","完全匹配字段不等于某些关键词,不支持输入分词"),
+	StringEqual("seq",5,0,1,"完全匹配条件","完全匹配字段等于某些关键词,不支持输入分词"),
+	NotStringEqual("nseq",5,0,2,"非完全匹配条件","完全匹配字段不等于某些关键词,不支持输入分词"),
+	PrefixContain("pctn",4,0,1,"前缀包含匹配条件","前缀匹配字段包含某个关键词"),
+	NotPrefixContain("npctn",4,0,2,"前缀非包含匹配条件","前缀匹配字段不包含某个关键词"),
+	
+	GreaterThan("gt",3,31,1,"大于匹配条件","匹配字段大于该项"),
+	GreaterThanEqual("gte",3,32,1,"大于等于匹配条件","匹配字段大于等于该项"),
+	LessThan("lt",3,33,1,"小于匹配条件","匹配字段小于该项"),
+	LessThanEqual("lte",3,34,1,"小于等于匹配条件","匹配字段小于等于该项"),
+	Between("btn",3,30,1,"范围匹配条件","范围匹配字段大于并且小于条件"),
+	NotBetween("nbtn",3,30,2,"非范围匹配条件","范围匹配字段非大于并且小于条件"),
+	
+	Missing("miss",6,0,1,"不存在的匹配条件","不存在的匹配条件"),
+	Existing("exist",7,0,1,"存在的匹配条件","存在的匹配条件"),
+	
+	Unkown("Unkown",99,0,0,"未知条件","未知条件"),
 	;
 	
 	
@@ -29,6 +36,8 @@ public enum SearchConditionPattern {
 	String pattern;
 	//条件对应的搜索方式
 	int method;
+	//条件对应的搜索方式的扩展子方式
+	int method_ext;
 	//条件的必要性类型
 	int necessity;
 	String name;
@@ -39,10 +48,30 @@ public enum SearchConditionPattern {
 	public static final int Method_Wildcard = 1;
 	//搜索方式为项匹配
 	public static final int Method_Term = 2;
-	//搜索方式为范围匹配
+	
+	
+	//搜索方式为范围匹配 
 	public static final int Method_Range = 3;
+	//搜索方式为特殊范围匹配 大于条件和小于条件同时存在
+	public static final int MethodExt_Range_Between = 30;
+	//搜索方式为特殊范围匹配 大于条件
+	public static final int MethodExt_Range_GreaterThan = 31;
+	//搜索方式为特殊范围匹配 大于等于条件
+	public static final int MethodExt_Range_GreaterThanEqual = 32;
+	//搜索方式为特殊范围匹配 小于条件
+	public static final int MethodExt_Range_LessThan = 33;
+	//搜索方式为特殊范围匹配 小于等于条件
+	public static final int MethodExt_Range_LessThanEqual = 34;
+	
+	
 	//搜索方式为前缀匹配
 	public static final int Method_Prefix = 4;
+	//搜索方式为字符串匹配(支持搜索分词多项匹配)
+	public static final int Method_String = 5;
+	//搜索方式为空匹配
+	public static final int Method_Missing = 6;
+	//搜索方式为存在匹配
+	public static final int Method_Existing = 7;
 	
 	/************************   Necessity   ***************************/
 	//必要性为必须
@@ -52,9 +81,10 @@ public enum SearchConditionPattern {
 	//必要性为可以有
 	public static final int Necessity_Should = 3;
 	
-	SearchConditionPattern(String pattern, int method, int necessity, String name, String desc){
+	SearchConditionPattern(String pattern, int method, int method_ext, int necessity, String name, String desc){
 		this.pattern = pattern;
 		this.method = method;
+		this.method_ext = method_ext;
 		this.necessity = necessity;
 		this.name = name;
 		this.desc = desc;
@@ -76,6 +106,12 @@ public enum SearchConditionPattern {
 	}
 	public void setMethod(int method) {
 		this.method = method;
+	}
+	public int getMethod_ext() {
+		return method_ext;
+	}
+	public void setMethod_ext(int method_ext) {
+		this.method_ext = method_ext;
 	}
 	public int getNecessity() {
 		return necessity;

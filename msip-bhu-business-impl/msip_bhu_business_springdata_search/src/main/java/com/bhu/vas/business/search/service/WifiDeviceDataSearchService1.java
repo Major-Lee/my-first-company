@@ -1,5 +1,7 @@
 package com.bhu.vas.business.search.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -9,6 +11,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
@@ -17,16 +20,22 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.condition.SearchCondition;
+import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
+import com.bhu.vas.api.dto.search.condition.SearchConditionSortPattern;
+import com.bhu.vas.api.dto.search.condition.payload.SearchConditionRangePayload;
 import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.BusinessIndexDefine.WifiDevice.Field1;
 import com.bhu.vas.business.search.SortBuilderHelper;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
+import com.bhu.vas.business.search.model.WifiDeviceDocument1;
+import com.bhu.vas.business.search.repository.WifiDeviceDocument1Repository;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 @Service
-public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiDeviceDocument>{
+public class WifiDeviceDataSearchService1 extends AbstractDataSearchService<WifiDeviceDocument1>{
     @Resource
-    private WifiDeviceDocumentRepository wifiDeviceDocumentRepository;
+    private WifiDeviceDocument1Repository wifiDeviceDocument1Repository;
 
 	/**
 	 * 搜索注册时间大于此时间的数据
@@ -36,11 +45,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public Page<WifiDeviceDocument> findByRegisteredatGreaterThan(
-			long registeredat,
-			int pageno, int pagesize){
-		return wifiDeviceDocumentRepository.findByRegisteredatGreaterThanOrderByRegisteredatDesc(registeredat, new PageRequest(pageno,pagesize));
-	}
+//	public Page<WifiDeviceDocument1> findByRegisteredatGreaterThan(
+//			long registeredat,
+//			int pageno, int pagesize){
+//		return wifiDeviceDocument1Repository.findByRegisteredatGreaterThanOrderByRegisteredatDesc(registeredat, new PageRequest(pageno,pagesize));
+//	}
 	
 	/**
 	 * 匹配字段address 带分词,搜索不空格分词，匹配中所有的就可以命中
@@ -50,13 +59,13 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @param pagesize
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchByAddressMatchAll(String address,int pageno, int pagesize){
-		return wifiDeviceDocumentRepository.findByAddress(address,new PageRequest(pageno,pagesize));
-	}
-	
-	public Long countByAddressMatchAll(String address){
-		return wifiDeviceDocumentRepository.countByAddress(address);
-	}
+//	public Page<WifiDeviceDocument1> searchByAddressMatchAll(String address,int pageno, int pagesize){
+//		return wifiDeviceDocument1Repository.findByAddress(address,new PageRequest(pageno,pagesize));
+//	}
+//	
+//	public Long countByAddressMatchAll(String address){
+//		return wifiDeviceDocument1Repository.countByAddress(address);
+//	}
 	/**
 	 * 匹配字段address 带分词,搜索进行空格分词，匹配中其中一个就可以命中
 	 * eg。北京市 海淀区 荷清路  三个中任何一个匹配就在结果集中
@@ -65,14 +74,14 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @param pagesize
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchByAddressMatchEach(String address,int pageno, int pagesize){
+	public Page<WifiDeviceDocument1> searchByAddressMatchEach(String address,int pageno, int pagesize){
 	    	BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 	    	queryBuilder.must(QueryBuilders.queryStringQuery(address).field(BusinessIndexDefine.WifiDevice.Field.ADDRESS));
 	        SearchQuery searchQuery = new NativeSearchQueryBuilder()
 	                .withQuery(queryBuilder)
 	                .withPageable(new PageRequest(pageno,pagesize))
 	                .build();
-	        return wifiDeviceDocumentRepository.search(searchQuery);
+	        return wifiDeviceDocument1Repository.search(searchQuery);
 	}
 	
 	/**
@@ -87,7 +96,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public Page<WifiDeviceDocument> searchByKeyword(String keyword, String region,String region_excepts, int pageno, int pagesize){
+	public Page<WifiDeviceDocument1> searchByKeyword(String keyword, String region,String region_excepts, int pageno, int pagesize){
 		FilterBuilder filter;//QueryBuilders.boolQuery();
 		if(StringHelper.hasLeastOneNotEmpty(keyword, region, region_excepts)){
 			BoolFilterBuilder boolfilter = FilterBuilders.boolFilter();
@@ -117,7 +126,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.ONLINE).order(SortOrder.DESC))
 				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.COUNT).order(SortOrder.DESC))
 				.build();
-		return wifiDeviceDocumentRepository.search(searchQuery);
+		return wifiDeviceDocument1Repository.search(searchQuery);
 		
 	}
 	
@@ -141,7 +150,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @return
 	 * @throws ESQueryValidateException
 	 */
-	public Page<WifiDeviceDocument> searchByKeywords(
+	public Page<WifiDeviceDocument1> searchByKeywords(
 			String mac, 
 			String sn, 
 			String orig_swver, 
@@ -235,7 +244,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.ONLINE).order(SortOrder.DESC))
 				.withSort(SortBuilderHelper.builderSort(BusinessIndexDefine.WifiDevice.Field.ONLINE, SortOrder.DESC))//SortBuilders.fieldSort(BusinessIndexDefine.WifiDevice.Field.COUNT).order(SortOrder.DESC))
 				.build();
-		return wifiDeviceDocumentRepository.search(searchQuery);
+		return wifiDeviceDocument1Repository.search(searchQuery);
 	}
 	
 	/**
@@ -251,7 +260,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 	 * @param pagesize
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchGeoInBoundingBox(double[] topLeft,double[] bottomRight,int page,int pagesize) {
+	public Page<WifiDeviceDocument1> searchGeoInBoundingBox(double[] topLeft,double[] bottomRight,int page,int pagesize) {
     	//使用ES原生filter方式
     	SearchQuery searchGeoQuery = new NativeSearchQueryBuilder()
     			.withFilter(FilterBuilders.geoBoundingBoxFilter(BusinessIndexDefine.WifiDevice.Field.GEOPOINT)
@@ -265,7 +274,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 				.bottomRight(bottomRight[0], bottomRight[1])))
 		.withPageable(new PageRequest(0,10))
         .build();*/
-    	return wifiDeviceDocumentRepository.search(searchGeoQuery);
+    	return wifiDeviceDocument1Repository.search(searchGeoQuery);
 		
 		
 		/*CriteriaQuery geoLocationCriteriaQuery3 = new CriteriaQuery(
@@ -296,7 +305,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
     }
 	
 	
-	public Page<WifiDeviceDocument> searchGeoInRangeBox(double[] geopoint,String distance,int page,int pagesize) {
+	public Page<WifiDeviceDocument1> searchGeoInRangeBox(double[] geopoint,String distance,int page,int pagesize) {
 		/*CriteriaQuery geoLocationCriteriaQuery = new CriteriaQuery(
 				new Criteria("geopoint").within(new GeoPoint(geopoint[0], geopoint[1]), "0.5km"))
 				.setPageable(new PageRequest(page,pagesize));*/
@@ -314,8 +323,152 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 		//when
 		/*List<WifiDeviceDocument> geoAuthorsForGeoCriteria = elasticsearchTemplate.queryForList(geoLocationCriteriaQuery, 
 				WifiDeviceDocument.class);*/
-        return wifiDeviceDocumentRepository.search(searchQuery);
+        return wifiDeviceDocument1Repository.search(searchQuery);
 	}
+	
+	public Page<WifiDeviceDocument1> searchByCondition(List<SearchCondition> conditions,int page,int pagesize) {
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+		FilterBuilder filter = null;
+		try{
+			BoolFilterBuilder boolFilter = null;
+			for(SearchCondition condition : conditions){
+				if(condition == null || StringUtils.isEmpty(condition.getKey()) 
+						|| StringUtils.isEmpty(condition.getPattern())) continue;
+			
+				Field1 field = BusinessIndexDefine.WifiDevice.Field1.getByName(condition.getKey());
+				if(Field1.Unkown != field){
+					//判断是否是匹配条件
+					SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
+					if(SearchConditionPattern.Unkown != conditionPattern){
+						FilterBuilder conditionFilterBuilder = null;
+						int method = conditionPattern.getMethod();
+						int method_ext = conditionPattern.getMethod_ext();
+						switch(method){
+							case SearchConditionPattern.Method_Wildcard:
+								conditionFilterBuilder = FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(condition.getKey(), 
+										StringHelper.ASTERISK_STRING_GAP.concat(condition.getPayload()).
+										concat(StringHelper.ASTERISK_STRING_GAP)));
+								break;
+							case SearchConditionPattern.Method_Term:
+								conditionFilterBuilder = FilterBuilders.termFilter(condition.getKey(), condition.getPayload());
+								break;
+							case SearchConditionPattern.Method_Prefix:
+								conditionFilterBuilder = FilterBuilders.prefixFilter(condition.getKey(), condition.getPayload());
+								break;
+							case SearchConditionPattern.Method_Range:
+								SearchConditionRangePayload rangePayload = JsonHelper.getDTO(condition.getPayload(), SearchConditionRangePayload.class);
+								if(rangePayload != null){
+									switch(method_ext){
+										case SearchConditionPattern.MethodExt_Range_Between:
+											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
+												gt(rangePayload.getGreaterThanValue()).lt(rangePayload.getLessThanValue());
+											break;
+										case SearchConditionPattern.MethodExt_Range_GreaterThan:
+											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
+												gt(rangePayload.getGreaterThanValue());
+											break;
+										case SearchConditionPattern.MethodExt_Range_GreaterThanEqual:
+											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
+												gte(rangePayload.getGreaterThanValue());
+											break;
+										case SearchConditionPattern.MethodExt_Range_LessThan:
+											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
+												lt(rangePayload.getLessThanValue());
+											break;
+										case SearchConditionPattern.MethodExt_Range_LessThanEqual:
+											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
+												lte(rangePayload.getLessThanValue());
+											break;
+										default:
+											break;
+									}
+								}
+								break;
+							case SearchConditionPattern.Method_String:
+								conditionFilterBuilder = FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(condition.getPayload())
+										.field(condition.getKey()));
+								break;
+							case SearchConditionPattern.Method_Missing:
+								conditionFilterBuilder = FilterBuilders.missingFilter(condition.getKey());
+								break;
+							case SearchConditionPattern.Method_Existing:
+								conditionFilterBuilder = FilterBuilders.existsFilter(condition.getKey());
+								break;
+							default:
+								break;
+						}
+						
+						if(conditionFilterBuilder != null){
+							if(boolFilter == null) boolFilter = FilterBuilders.boolFilter();;
+							
+							int necessity = conditionPattern.getNecessity();
+							switch(necessity){
+								case SearchConditionPattern.Necessity_Must:
+									boolFilter.must(conditionFilterBuilder);
+									break;
+								case SearchConditionPattern.Necessity_MustNot:
+									boolFilter.mustNot(conditionFilterBuilder);
+									break;
+								case SearchConditionPattern.Necessity_Should:
+									boolFilter.should(conditionFilterBuilder);
+									break;
+								default:
+									break;
+							}
+						}
+					}
+					//判断是否是排序条件
+					SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(condition.getPattern());
+					if(SearchConditionSortPattern.Unkown != conditionSortPattern){
+						SortBuilder conditionSortBuilder = null;
+						int method = conditionSortPattern.getMethod();
+						switch(method){
+							//正常排序
+							case SearchConditionSortPattern.Method_Sort:
+								conditionSortBuilder = SortBuilderHelper.builderSort(condition.getKey(), 
+										conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+								break;
+							//距离排序
+							case SearchConditionSortPattern.Method_DistanceSort:
+								String conditionValue = condition.getPayload();
+								if(!StringUtils.isEmpty(conditionValue)){
+									String[] geopoint_str_array = conditionValue.split(StringHelper.COMMA_STRING_GAP);
+									if(geopoint_str_array.length == 2){
+										double lat = Double.parseDouble(geopoint_str_array[0]);
+										double lon = Double.parseDouble(geopoint_str_array[1]);
+										conditionSortBuilder = SortBuilderHelper.builderDistanceSort(condition.getKey(), 
+												lat, lon, conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+									}
+								}
+								break;
+							default:
+								break;
+						}
+						
+						if(conditionSortBuilder != null){
+							nativeSearchQueryBuilder.withSort(conditionSortBuilder);
+						}
+					}
+				}
+			}
+			filter = boolFilter;
+		}catch(Exception ex){
+			filter = FilterBuilders.matchAllFilter();
+			ex.printStackTrace(System.out);
+		}
+		
+		if(filter == null) filter = FilterBuilders.matchAllFilter();
+		//使用es原生方式进行查询
+        SearchQuery searchQuery = nativeSearchQueryBuilder
+        		//.withQuery(query)
+        		.withFilter(filter)
+                .withPageable(new PageRequest(page,pagesize))
+                .build();
+        
+        return wifiDeviceDocument1Repository.search(searchQuery);
+	}
+	
+	
 	
 	
 	/*@Override
@@ -323,7 +476,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchService<WifiD
 		return elasticsearchTemplate;
 	}*/
 	
-	public WifiDeviceDocumentRepository getRepository(){
-		return wifiDeviceDocumentRepository;
+	public WifiDeviceDocument1Repository getRepository(){
+		return wifiDeviceDocument1Repository;
 	}
 }

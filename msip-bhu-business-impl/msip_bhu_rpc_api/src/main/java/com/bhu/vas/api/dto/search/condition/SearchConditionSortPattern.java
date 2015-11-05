@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.search;
+package com.bhu.vas.api.dto.search.condition;
 
 import java.util.HashMap;
 import java.util.Map;
