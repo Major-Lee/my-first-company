@@ -147,7 +147,7 @@ public class WarehouseManagerController {
         String ext = originName.substring(originName.lastIndexOf("."));
 
         System.out.println("ext===" + ext);
-        if (!".xls".equals(ext) && ".xlsx".equals(ext)) {
+        if (!".xls".equals(ext) && !".xlsx".equals(ext)) {
             SpringMVCHelper.renderJson(response, new AgentUploadResponseError(false,"not excel",vto));
             return ;
         }
