@@ -329,6 +329,9 @@ public class DeviceBusinessFacadeService {
 	 * @return
 	 */
 	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
+
+		System.out.println(dto.getVapname() + ":::::" + dto.getPortal());
+
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
@@ -871,7 +874,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		//2:任务callback
-		doTaskCallback(taskid, dto.getStatus(),response);
+		doTaskCallback(taskid, dto.getStatus(), response);
 	}
 	
 	/**
@@ -1111,7 +1114,7 @@ public class DeviceBusinessFacadeService {
 			BusinessMarkerService.getInstance().deviceUsedStatisticsSet(mac, dto);
 		}*/
 		//ff
-		deliverMessageService.sendWifiDeviceUsedStatusActionMessage(ctx,mac,response,taskid);
+		deliverMessageService.sendWifiDeviceUsedStatusActionMessage(ctx, mac, response, taskid);
 	}
 	
 	public void taskWifiTimerStart(String ctx, String response, String wifiId, long taskid){
