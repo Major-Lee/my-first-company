@@ -6,14 +6,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.agent.*;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.AgentBulltinType;
-import com.bhu.vas.api.helper.ChargingCurrencyHelper;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
@@ -21,6 +19,13 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
@@ -200,9 +205,9 @@ public class AgentFacadeService {
         vto.setOnline(wifiDevice.isOnline());
         double total_dod =  summaryDTO != null?summaryDTO.getT_dod():0d;
         vto.setUptime(AgentHelper.getTimeDiff(total_dod));
-        vto.setTotal_income(ChargingCurrencyHelper.currency(total_dod));
+        vto.setTotal_income(AgentHelper.currency(total_dod));
         double previous_dod = wholeMonthDTO !=null ?wholeMonthDTO.getDod():0d;
-        vto.setMonth_income(ChargingCurrencyHelper.currency(previous_dod));
+        vto.setMonth_income(AgentHelper.currency(previous_dod));
         long total_handsets =  summaryDTO != null?summaryDTO.getT_handsets():0l;
         vto.setHd_count(total_handsets);
         vto.setCreated_at(wifiDevice.getCreated_at());
