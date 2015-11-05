@@ -29,11 +29,17 @@ public class AgentHelper {
 	 * @param dto
 	 * @return
 	 */
-	public static boolean validateCashback(WifiDeviceWholeDayMDTO dto){
+	/*public static boolean validateCashback(WifiDeviceWholeDayMDTO dto){
 		//if(dto.getDod()>=2*60*60*1000 && dto.getHandsets()>=3 && dto.getHod() >=4*60*60*1000)
 		if(dto.getDod()>=2*60 && dto.getHandsets()>=3 && dto.getHod() >=4*60)
 			return true;
 		return false;
+	}*/
+	//TODO:内网测试 此阀值不设置
+	public static boolean validateCashback(WifiDeviceWholeDayMDTO dto){
+		//if(dto.getDod()>=2*60 && dto.getHandsets()>=3 && dto.getHod() >=4*60)
+		//	return true;
+		return true;
 	}
 	
 	public static boolean validateDeviceCashbackSupported(String hd_type){
@@ -42,13 +48,17 @@ public class AgentHelper {
 	}
 	
 	/**
-	 * 在线时长24小时块钱
+	 * 在线时长24小时1块钱
 	 * @param onlineduration 分钟
 	 * @return
 	 */
-	public static double currency(double onlineduration){
+	/*public static double currency(double onlineduration){
 		//return ArithHelper.div(onlineduration*2, (10*60*60*1000), 2);//onlineduration/(10*3600*1000)*2;
 		return ArithHelper.div(onlineduration*2, (10*60), 2);//onlineduration/(10*3600*1000)*2;
+	}*/
+	//内网测试上线4分钟0.01元 
+	public static double currency(double onlineduration){
+		return ArithHelper.div(onlineduration, 4*100, 2);
 	}
 	
 	public static boolean sameday(Date device_reg_date,Date currentDate){
