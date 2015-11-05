@@ -18,7 +18,7 @@ public class AgentDeviceImportLogVTO implements Serializable {
     /**
      * 销售id
      */
-    private int wid;
+    private int sid;
 
     /**
      * 公告id
@@ -33,7 +33,7 @@ public class AgentDeviceImportLogVTO implements Serializable {
     /**
      * 销售名称
      */
-    private String wnick;
+    private String snick;
 
     /**
      * 创建日期
@@ -77,12 +77,12 @@ public class AgentDeviceImportLogVTO implements Serializable {
         this.aid = aid;
     }
 
-    public int getWid() {
-        return wid;
+    public int getSid() {
+        return sid;
     }
 
-    public void setWid(int wid) {
-        this.wid = wid;
+    public void setSid(int sid) {
+        this.sid = sid;
     }
 
     public long getBid() {
@@ -101,12 +101,12 @@ public class AgentDeviceImportLogVTO implements Serializable {
         this.nick = nick;
     }
 
-    public String getWnick() {
-        return wnick;
+    public String getSnick() {
+        return snick;
     }
 
-    public void setWnick(String wnick) {
-        this.wnick = wnick;
+    public void setSnick(String snick) {
+        this.snick = snick;
     }
 
     public Date getCreated_at() {
