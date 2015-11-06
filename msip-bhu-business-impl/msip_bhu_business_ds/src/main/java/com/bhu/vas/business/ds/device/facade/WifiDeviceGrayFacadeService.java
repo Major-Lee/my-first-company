@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
@@ -175,6 +176,81 @@ public class WifiDeviceGrayFacadeService {
     				}
     			}
     		}
+    	}
+    }
+    
+    /**
+     * 变更指定产品类型的灰度关联的固件版本号和增值组件版本号
+     * @param dut
+     * @param gray
+     * @param fwid
+     * @param omid
+     */
+    public GrayUsageVTO modifyRelatedVersion4GrayVersion(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,
+    		String fwid,String omid){
+    	if(dut == null || gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+    	if(dgv == null){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});
+    	}
+    	if(dgv.getD_fwid().equals(fwid) && dgv.getD_omid().equals(omid)){
+    		return dgv.toGrayUsageVTO();
+    	}
+    	if(!dgv.getD_fwid().equals(fwid)){
+    		WifiDeviceVersionFW dvfw = wifiDeviceVersionFWService.getById(fwid);
+        	if(dvfw == null || dvfw.getDut() != dut.getIndex()){
+        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
+        	}
+        	dvfw.setRelated(true);
+        	wifiDeviceVersionFWService.update(dvfw);
+        	dgv.setD_fwid(fwid);
+    	}
+    	
+    	if(!dgv.getD_omid().equals(omid)){
+    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(fwid);
+        	if(dvom == null || dvom.getDut() != dut.getIndex()){
+        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
+        	}
+        	dvom.setRelated(true);
+        	wifiDeviceVersionOMService.update(dvom);
+        	dgv.setD_omid(omid);
+    	}
+    	dgv = wifiDeviceGrayVersionService.update(dgv);
+    	return dgv.toGrayUsageVTO();
+    }
+    
+    /**
+     * 增加指定产品类型的灰度关联的固件版本号和增值组件版本号定义
+     * @param fw
+     * @param dut
+     * @param versionid
+     * @param upgrade_url
+     */
+    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid,String upgrade_url){
+    	if(dut == null || StringUtils.isEmpty(versionid) || StringUtils.isEmpty(versionid)) 
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(fw){
+    		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
+    		if(versionfw != null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST,new String[]{"WifiDeviceVersionFW"});
+    		}
+    		versionfw = new WifiDeviceVersionFW();
+    		versionfw.setId(versionid);
+    		versionfw.setDut(dut.getIndex());
+    		versionfw.setUpgrade_url(upgrade_url);
+    		versionfw = wifiDeviceVersionFWService.insert(versionfw);
+    		return versionfw.toVersionVTO();
+    	}else{
+    		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
+    		if(versionom != null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST,new String[]{"WifiDeviceVersionOM"});
+    		}
+    		versionom = new WifiDeviceVersionOM();
+    		versionom.setId(versionid);
+    		versionom.setDut(dut.getIndex());
+    		versionom.setUpgrade_url(upgrade_url);
+    		versionom = wifiDeviceVersionOMService.insert(versionom);
+    		return versionom.toVersionVTO();
     	}
     }
     
