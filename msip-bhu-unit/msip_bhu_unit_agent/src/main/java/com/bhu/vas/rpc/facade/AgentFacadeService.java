@@ -160,10 +160,10 @@ public class AgentFacadeService {
 
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
 
-        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
@@ -308,10 +308,10 @@ public class AgentFacadeService {
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
 
-        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
@@ -322,7 +322,7 @@ public class AgentFacadeService {
     
     public AgentDeviceVTO pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
@@ -354,7 +354,7 @@ public class AgentFacadeService {
         offline_count = total_count - online_count;
 
 
-        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
@@ -365,7 +365,7 @@ public class AgentFacadeService {
 
     public AgentDeviceVTO pageUnClaimAgentDevice(int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
@@ -385,7 +385,6 @@ public class AgentFacadeService {
         int online_count = 0;
         int offline_count = 0;
 
-
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0);
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
@@ -396,7 +395,7 @@ public class AgentFacadeService {
         offline_count = total_count - online_count;
 
 
-        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
@@ -692,8 +691,6 @@ public class AgentFacadeService {
 
         User operUser = userService.getById(uid);
         UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
-
-
         AgentDeviceImportLog agentDeviceImportLog =  agentDeviceImportLogService.getById(logId);
         if (agentDeviceImportLog != null) {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);

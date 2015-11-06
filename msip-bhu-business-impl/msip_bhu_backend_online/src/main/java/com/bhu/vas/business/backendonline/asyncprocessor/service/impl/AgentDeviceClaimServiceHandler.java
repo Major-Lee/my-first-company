@@ -91,6 +91,7 @@ public class AgentDeviceClaimServiceHandler {
                         if (wifiDevice != null) {
                             wifiDevice.setAgentuser(dto.getUid());
                             agentDeviceClaim.setMac(wifiDevice.getId());
+                            agentDeviceClaim.setStatus(1);
                             wifiDeviceService.update(wifiDevice);
                         }
                         //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
@@ -187,7 +188,7 @@ public class AgentDeviceClaimServiceHandler {
                     if (mac != null && !StringHelper.isEmpty(mac.getStringCellValue())) {
                         macStr = StringHelper.formatMacAddress(mac.getStringCellValue());
                     }
-                    agentDeviceClaim.setMac(macStr);
+                    agentDeviceClaim.setMac(macStr.toLowerCase());
 
                     Date date = new Date();
                     agentDeviceClaim.setSold_at(date);
@@ -196,11 +197,11 @@ public class AgentDeviceClaimServiceHandler {
 
                     logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
 
-                    WifiDevice wifiDevice = wifiDeviceService.getById(macStr);
-                    if (wifiDevice != null) {
-                        agentDeviceClaim.setClaim_at(date);
-                        agentDeviceClaim.setStatus(1);
-                    }
+//                    WifiDevice wifiDevice = wifiDeviceService.getById(macStr);
+//                    if (wifiDevice != null) {
+//                        agentDeviceClaim.setClaim_at(date);
+//                        agentDeviceClaim.setStatus(1);
+//                    }
 
 
                     
