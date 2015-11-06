@@ -1349,14 +1349,14 @@ public class DeviceURouterRestBusinessFacadeService {
 					//设备报送周边探测有可能出现只有上线，无下线消息的情况 此处判断如果不是最新探测到的细节 其他细节均显示为离线
 					if(index > 0){
 						dto.setState(WifistasnifferItemRddto.State_Offline);
+						if (dto.getDuration() == 0) { //处理1s内的上下线为1s
+							dto.setDuration(1);
+						}
 					}else{
 						//针对最新一条数据的无下线消息情况 此处终端探测的上线时间 超过timeout时间 则认为是离线
 						long life_time = System.currentTimeMillis() - dto.getSnifftime();
 						if(WifistasnifferItemRddto.State_Offline_TimeoutMs - life_time <= 0){
 							dto.setState(WifistasnifferItemRddto.State_Offline);
-						}
-						if (dto.getDuration() == 0) { //处理1s内的上下线为1s
-							dto.setDuration(1);
 						}
 					}
 
