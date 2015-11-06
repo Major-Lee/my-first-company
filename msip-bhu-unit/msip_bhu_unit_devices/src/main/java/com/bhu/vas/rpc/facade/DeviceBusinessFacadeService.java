@@ -329,10 +329,12 @@ public class DeviceBusinessFacadeService {
 	 * @return
 	 */
 	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
-
 		System.out.println(dto.getVapname() + ":::::" + dto.getPortal() +
 				( HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal())));
+		return isVisitorWifi(dto);
+	}
 
+	private boolean isVisitorWifi(HandsetDeviceDTO dto) {
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
@@ -825,6 +827,9 @@ public class DeviceBusinessFacadeService {
 					//判断是否在黑名单中
 					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
 						continue;
+					if(isVisitorWifi(handset)) {
+						continue;
+					}
 					if(handset == null){
 						handset = new HandsetDeviceDTO();
 						handset.setMac(terminal.getMac());
@@ -836,10 +841,10 @@ public class DeviceBusinessFacadeService {
 						handset.setData_rx_rate(terminal.getData_rx_rate());
 					}
 					//修改终端的流量
-					logger.info("terminal"+terminal.getMac() + terminal.getRx_bytes() + terminal.getTx_bytes());
+					logger.info("terminal" + terminal.getMac() + terminal.getRx_bytes() + terminal.getTx_bytes());
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
-					logger.info("handset"+ handset.getMac()+handset.getRx_bytes() + handset.getTx_bytes());
+					logger.info("handset" + handset.getMac() + handset.getRx_bytes() + handset.getTx_bytes());
 					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
 							terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 					cursor++;
