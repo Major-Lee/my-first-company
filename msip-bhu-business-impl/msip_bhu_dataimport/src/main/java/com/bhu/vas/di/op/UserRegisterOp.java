@@ -81,6 +81,9 @@ public class UserRegisterOp {
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
 			}
 			System.out.println(String.format("userReg[id:%s mobileno:%s nick:%s] successfully!", user.getId(),user.getMobileno(),user.getNick()));
+		} else if ("Remove".equals(oper)) {
+			userFacadeService.clearUsersMarkByUid(id);
+			userFacadeService.clearUsersMarkByMobileno(86, acc);
 		}else if("RemoveAndADD".equals(oper)){
 			{//empty user mark from system
 				userFacadeService.clearUsersMarkByUid(id);
