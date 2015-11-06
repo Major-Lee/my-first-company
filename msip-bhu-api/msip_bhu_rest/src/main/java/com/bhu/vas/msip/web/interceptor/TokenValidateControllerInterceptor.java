@@ -96,20 +96,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		//System.out.println("---ControllerInterceptor.preHandle() URI:"+request.getRequestURI()+" uid:"+request.getParameter("uid"));
-		//String uri = request.getRequestURI();
 		String uri = request.getServletPath();
-		//boolean output = false;
-		/*if(uri.indexOf("config") != -1){
-			output = true;
-		}*/
 		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
-		logger.info(String.format("Rest Request uri[%s] URL [%s] uid [%s]",uri, request.getRequestURI(), UID));
-		//System.out.println("~~~~~~~~~~~~~"+request.getRequestURI()+"  params:"+request.getParameterMap());
-		//if(output)
-			//System.out.println("~~~~~~~~~~~~~"+uri+"  params:"+request.getParameterMap());
-		/*if(uri.startsWith(NoAuthPrefixUrl) || uri.startsWith(statisticsurl) || uri.startsWith(deviceurl)|| uri.startsWith(commonurl) || uri.startsWith(pingurl))
-	        return true; */ 
+		logger.info(String.format("Req uri[%s] URL[%s] uid [%s]",uri, request.getRequestURI(), UID));
 		if(uriStartWithThenSkip(uri)){
 			return true;
 		}

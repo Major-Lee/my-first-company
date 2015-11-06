@@ -58,12 +58,12 @@ public class DeviceVersion {
 	 * dut == null || dut = DST_uRouter
 	 * @return
 	 */
-	public boolean wasDstURouter(){
+	public boolean wasDutURouter(){
 		if(StringUtils.isEmpty(dut)) return false;
 		return DUT_uRouter.equals(dut);
 	}
 	
-	public boolean wasDstSoc(){
+	public boolean wasDutSoc(){
 		if(StringUtils.isEmpty(dut)) return false;
 		return DUT_soc.equals(dut);
 	}
@@ -165,7 +165,7 @@ public class DeviceVersion {
 	}
 	
 	public boolean canExecuteUpgrade(){
-		return StringUtils.isEmpty(dut) || wasDstURouter();
+		return StringUtils.isEmpty(dut) || wasDutURouter();
 	}
 	
 	public static void main(String[] argv){
@@ -173,7 +173,7 @@ public class DeviceVersion {
 		for(String orig:array){
 			DeviceVersion parser = DeviceVersion.parser(orig);
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
-			System.out.println(orig+"   "+parser.wasDstURouter() + "  "+ parser.getVp() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]);
+			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getVp() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]);
 		}
 		
 		String ss = "Build8606";

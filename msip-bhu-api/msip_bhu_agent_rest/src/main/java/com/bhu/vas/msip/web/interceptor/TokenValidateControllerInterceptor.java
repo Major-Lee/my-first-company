@@ -51,7 +51,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			HttpServletResponse response, Object handler) throws Exception {
 		String uri = request.getServletPath();
 		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
-		logger.info(String.format("Rest Request uri[%s] URL [%s] uid [%s]",uri, request.getRequestURI(), UID));
+		logger.info(String.format("Req uri[%s] URL[%s] uid [%s]",uri, request.getRequestURI(), UID));
 		if(uriStartWithThenSkip(uri)){
 			return true;
 		}
