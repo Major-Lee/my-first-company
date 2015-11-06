@@ -249,7 +249,7 @@ public class WifiDeviceGrayFacadeService {
 			if(ret == -1){
 				WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(grayVersion.getD_fwid());
 				if(versionfw != null){
-					resultDto = new UpgradeDTO(VapEnumType.DeviceUnitType.uRouterTU.getIndex(),VapEnumType.GrayLevel.Other.getIndex(),true,true,
+					resultDto = new UpgradeDTO(dut,gl,true,true,
 							grayVersion.getD_fwid(),versionfw.getUpgrade_url());
 					System.out.println("B1 upgradeDecideAction:"+resultDto);
 				}else{

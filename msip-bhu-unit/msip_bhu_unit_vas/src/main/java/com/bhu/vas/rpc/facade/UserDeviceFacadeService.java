@@ -162,8 +162,9 @@ public class UserDeviceFacadeService {
         		UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
         		//UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
 	        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-	        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-	        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
+	        		//long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+	        		//String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
+	        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING);
 	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
 	        	}
         	}
@@ -192,11 +193,12 @@ public class UserDeviceFacadeService {
         	
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
         	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-        		long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+        		/*long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
         		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
         				WifiDeviceHelper.Upgrade_Default_BeginTime, 
         				WifiDeviceHelper.Upgrade_Default_EndTime, 
-        				upgrade.getUpgradeurl());
+        				upgrade.getUpgradeurl());*/
+        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
         		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
         	}
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();

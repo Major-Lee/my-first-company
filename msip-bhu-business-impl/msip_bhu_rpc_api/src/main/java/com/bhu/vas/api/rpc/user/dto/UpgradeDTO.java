@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import com.bhu.vas.api.helper.CMDBuilder;
+
 public class UpgradeDTO {
 	private int dut;
 	private int gl;
@@ -87,5 +89,13 @@ public class UpgradeDTO {
 	}
 	public void setFw(boolean fw) {
 		this.fw = fw;
+	}
+	
+	public String buildUpgradeCMD(String mac, long taskid,String beginTime,String endTime){
+		if(taskid == 0){
+			taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+		}
+		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
+		return cmdPayload;
 	}
 }
