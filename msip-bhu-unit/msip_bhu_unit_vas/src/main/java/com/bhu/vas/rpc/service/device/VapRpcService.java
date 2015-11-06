@@ -16,10 +16,12 @@ import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
+import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.rpc.facade.VapFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -77,6 +79,40 @@ public class VapRpcService  implements IVapRpcService{
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 			}else
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<GrayUsageVTO> modifyRelatedVersion4GrayVersion(
+			int uid, int dut, int gl, String fwid, String omid) {
+		logger.info(String.format("modifyRelatedVersion4GrayVersion uid[%s] dut[%s] gl[%s] fwid[%s] omid[%s]",uid,dut,gl,fwid,omid));
+		try{
+			 GrayUsageVTO grayUsageVTO = wifiDeviceGrayFacadeService.modifyRelatedVersion4GrayVersion(
+					 VapEnumType.DeviceUnitType.fromIndex(dut), VapEnumType.GrayLevel.fromIndex(gl), fwid, omid);
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(grayUsageVTO);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+		
+	}
+
+	@Override
+	public RpcResponseDTO<VersionVTO> addDeviceVersion(int uid, int dut,
+			boolean fw, String versionid, String upgrade_url) {
+		logger.info(String.format("addDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s] upgrade_url[%s]",uid,dut,fw,versionid,upgrade_url));
+		try{
+			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.addDeviceVersion(VapEnumType.DeviceUnitType.fromIndex(dut), fw, versionid, upgrade_url);
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);

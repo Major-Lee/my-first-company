@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
+import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -87,10 +88,57 @@ public class ConsoleVersionController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-    		RpcResponseDTO<TailPage<VersionVTO>> rpcResult = vapRpcService.pagesDeviceVersions(uid, dut, fw, pageNo, pageSize);
-    		if(!rpcResult.hasError())
-    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-    		else
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		RpcResponseDTO<TailPage<VersionVTO>> rpcResult = vapRpcService.pagesDeviceVersions(uid, dut, fw, pageNo, pageSize);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+    }
+    
+    /**
+     * 变更指定产品类型的灰度关联的固件版本号和增值组件版本号
+     * @param request
+     * @param response
+     * @param uid
+     * @param dut
+     * @param gl
+     * @param fwid
+     * @param omid
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/modifyrv4gv", method = {RequestMethod.POST})
+    public void modifyrv4gv(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) int gl,
+            @RequestParam(required = true) String fwid,
+            @RequestParam(required = true) String omid
+    		) {
+		RpcResponseDTO<GrayUsageVTO> rpcResult = vapRpcService.modifyRelatedVersion4GrayVersion(uid, dut, gl, fwid, omid);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+    }
+    
+    
+    @ResponseBody()
+    @RequestMapping(value = "/adddv", method = {RequestMethod.POST})
+    public void adddv(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) boolean fw,
+            @RequestParam(required = true) String versionid, 
+            @RequestParam(required = true) String upgrade_url
+            ) {
+    	RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, versionid, upgrade_url);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
     }
 }
