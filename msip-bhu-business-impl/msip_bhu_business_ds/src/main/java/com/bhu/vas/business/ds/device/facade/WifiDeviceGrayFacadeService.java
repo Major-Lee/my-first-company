@@ -235,6 +235,7 @@ public class WifiDeviceGrayFacadeService {
     		}
     		versionfw = new WifiDeviceVersionFW();
     		versionfw.setId(versionid);
+    		versionfw.setName(versionid);
     		versionfw.setDut(dut.getIndex());
     		versionfw.setUpgrade_url(upgrade_url);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
@@ -246,6 +247,7 @@ public class WifiDeviceGrayFacadeService {
     		}
     		versionom = new WifiDeviceVersionOM();
     		versionom.setId(versionid);
+    		versionom.setName(versionid);
     		versionom.setDut(dut.getIndex());
     		versionom.setUpgrade_url(upgrade_url);
     		versionom = wifiDeviceVersionOMService.insert(versionom);

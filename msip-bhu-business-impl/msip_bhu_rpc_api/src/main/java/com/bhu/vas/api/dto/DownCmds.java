@@ -50,7 +50,7 @@ public class DownCmds implements java.io.Serializable{
 	public static DownCmds builderDownCmds(String mac,String... cmds){
 		return new DownCmds(mac,cmds);
 	}
-	public static DownCmds builderDownCmds(String ctx,String mac,String... cmds){
+	public static DownCmds builderDownCmdsWithCtx(String ctx,String mac,String... cmds){
 		return new DownCmds(ctx,mac,cmds);
 	}
 }
