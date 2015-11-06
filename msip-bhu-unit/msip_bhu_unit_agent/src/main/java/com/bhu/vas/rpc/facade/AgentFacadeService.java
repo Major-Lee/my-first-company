@@ -163,7 +163,7 @@ public class AgentFacadeService {
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
 
-        agentDeviceVTO.setTotal_count(total_count + yetTotal);
+        agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
