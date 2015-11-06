@@ -205,7 +205,7 @@ public class WifiDeviceGrayFacadeService {
     	}
     	
     	if(!dgv.getD_omid().equals(omid)){
-    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(fwid);
+    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(omid);
         	if(dvom == null || dvom.getDut() != dut.getIndex()){
         		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
         	}
