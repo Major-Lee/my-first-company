@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion;
@@ -236,6 +237,7 @@ public class WifiDeviceGrayFacadeService {
     		}
     		versionfw = new WifiDeviceVersionFW();
     		versionfw.setId(versionid);
+    		versionfw.setName(versionid);
     		versionfw.setDut(dut.getIndex());
     		versionfw.setUpgrade_url(upgrade_url);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
@@ -247,6 +249,7 @@ public class WifiDeviceGrayFacadeService {
     		}
     		versionom = new WifiDeviceVersionOM();
     		versionom.setId(versionid);
+    		versionom.setName(versionid);
     		versionom.setDut(dut.getIndex());
     		versionom.setUpgrade_url(upgrade_url);
     		versionom = wifiDeviceVersionOMService.insert(versionom);
@@ -282,7 +285,8 @@ public class WifiDeviceGrayFacadeService {
      * 用户判定设备是否需要升级的业务
      * TODO：目前先uRouter TU的设备，其他产品型号的稍后支持
      * TODO：目前先考虑设备固件版本，增值模块版本比对升级稍后增加
-     * @param dmac 设备的mac地址
+     * 备注：如果设备属于特殊灰度 
+     * @param dmac 设备的mac地址 UpgradeDTO中的forceDeviceUpgrade强制false
      * @return
      */
     public UpgradeDTO deviceUpgradeAutoAction(String dmac,String d_orig_swver){
@@ -292,24 +296,9 @@ public class WifiDeviceGrayFacadeService {
 		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
 			//获取d_orig_swver中的dut
 			DeviceVersion dvparser = DeviceVersion.parser(d_orig_swver);
-			if(dvparser.wasDstURouter()){
+			if(dvparser.wasDutURouter()){
 				dut = VapEnumType.DeviceUnitType.uRouterTU.getIndex();
 				gl = VapEnumType.GrayLevel.Other.getIndex();
-				//resultDto = upgradeDecideAction(dmac,VapEnumType.DeviceUnitType.uRouterTU.getIndex(),VapEnumType.GrayLevel.Other.getIndex(),d_orig_swver);
-				/*WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(
-						new WifiDeviceGrayVersionPK(VapEnumType.DeviceUnitType.uRouterTU.getIndex(),VapEnumType.GrayLevel.Other.getIndex()));
-				if(grayVersion != null){
-					int ret = DeviceVersion.compareVersions(d_orig_swver, grayVersion.getD_fwid());
-					if(ret == -1){
-						WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(grayVersion.getD_fwid());
-						if(versionfw != null){
-							resultDto = new UpgradeDTO(VapEnumType.DeviceUnitType.uRouterTU.getIndex(),VapEnumType.GrayLevel.Other.getIndex(),true,true,
-									grayVersion.getD_fwid(),versionfw.getUpgrade_url());
-						}else{
-							System.out.println("A deviceUpgradeCheckAction versionfw 未定义！");
-						}
-					}
-				}*/
 			}
 		}else{
 			dut = deviceUnitGrayPk.getDut();
@@ -321,6 +310,13 @@ public class WifiDeviceGrayFacadeService {
     private UpgradeDTO upgradeDecideAction(String dmac,int dut,int gl,String d_orig_swver){
     	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_orig_swver[%s]",dmac,dut,gl,d_orig_swver));
     	UpgradeDTO resultDto = null;
+    	GrayLevel grayLevel = VapEnumType.GrayLevel.fromIndex(gl);
+    	if(grayLevel == null || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
+    		resultDto = new UpgradeDTO(dut,gl,true,false);
+    		resultDto.setDesc("灰度不存在或者属于特殊灰度等级");
+    		return resultDto;
+    	}
+    	
     	WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut,gl));
 		if(grayVersion != null){
 			int ret = DeviceVersion.compareVersions(d_orig_swver, grayVersion.getD_fwid());

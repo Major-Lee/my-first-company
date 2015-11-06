@@ -48,7 +48,7 @@ public class WifiDeviceHelper {
 			return true;
 		}else{
 			DeviceVersion parser = DeviceVersion.parser(orig_swver);
-			if(parser.wasDstURouter() || parser.wasDstSoc()){
+			if(parser.wasDutURouter() || parser.wasDutSoc()){
 				return true;
 			}
 		}

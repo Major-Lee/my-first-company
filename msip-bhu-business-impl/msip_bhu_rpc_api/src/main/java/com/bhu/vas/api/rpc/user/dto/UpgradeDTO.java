@@ -13,11 +13,13 @@ public class UpgradeDTO {
 	private String upgradeurl;
 	private String currentDVB;
     private String currentAVB;
-	/*public UpgradeDTO(int dut,int gl,boolean forceDeviceUpgrade) {
+    private String desc;
+	public UpgradeDTO(int dut,int gl,boolean fw,boolean forceDeviceUpgrade) {
 		this.dut = dut;
 		this.gl = gl;
+		this.fw = fw;
 		this.forceDeviceUpgrade = forceDeviceUpgrade;
-	}*/
+	}
 	public UpgradeDTO(int dut,int gl,boolean fw,boolean forceDeviceUpgrade, String name, String upgradeurl) {
 		this.dut = dut;
 		this.gl = gl;
@@ -60,8 +62,8 @@ public class UpgradeDTO {
 		this.currentAVB = currentAVB;
 	}
 	public String toString(){
-		return String.format("dut[%s] gl[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] currentAVB[%s]", 
-				dut,gl,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,currentAVB);
+		return String.format("dut[%s] gl[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s]", 
+				dut,gl,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/
@@ -90,7 +92,12 @@ public class UpgradeDTO {
 	public void setFw(boolean fw) {
 		this.fw = fw;
 	}
-	
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 	public String buildUpgradeCMD(String mac, long taskid,String beginTime,String endTime){
 		if(taskid == 0){
 			taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
