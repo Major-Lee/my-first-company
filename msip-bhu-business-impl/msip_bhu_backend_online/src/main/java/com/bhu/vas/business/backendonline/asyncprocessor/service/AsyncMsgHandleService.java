@@ -171,15 +171,9 @@ public class AsyncMsgHandleService {
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}*/
-				
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
-				if(upgrade.isForceDeviceUpgrade()){
-					long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-		        	String cmdPayload = CMDBuilder.builderDeviceUpgrade(dto.getMac(), new_taskid, 
-		        			WifiDeviceHelper.Upgrade_Default_BeginTime, 
-	        				WifiDeviceHelper.Upgrade_Default_EndTime, 
-	        				upgrade.getUpgradeurl());
-					payloads.add(cmdPayload);
+				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
+					payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
 			}
 			
