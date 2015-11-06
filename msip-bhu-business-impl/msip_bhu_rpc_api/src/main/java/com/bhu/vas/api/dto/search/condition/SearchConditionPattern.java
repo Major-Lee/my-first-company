@@ -18,15 +18,18 @@ public enum SearchConditionPattern {
 	PrefixContain("pctn",4,0,1,"前缀包含匹配条件","前缀匹配字段包含某个关键词"),
 	NotPrefixContain("npctn",4,0,2,"前缀非包含匹配条件","前缀匹配字段不包含某个关键词"),
 	
-	GreaterThan("gt",3,31,1,"大于匹配条件","匹配字段大于该项"),
-	GreaterThanEqual("gte",3,32,1,"大于等于匹配条件","匹配字段大于等于该项"),
-	LessThan("lt",3,33,1,"小于匹配条件","匹配字段小于该项"),
-	LessThanEqual("lte",3,34,1,"小于等于匹配条件","匹配字段小于等于该项"),
-	Between("btn",3,30,1,"范围匹配条件","范围匹配字段大于并且小于条件"),
-	NotBetween("nbtn",3,30,2,"非范围匹配条件","范围匹配字段非大于并且小于条件"),
+	GreaterThan("gt",3,302,1,"大于匹配条件","匹配字段大于该项"),
+	GreaterThanEqual("gte",3,303,1,"大于等于匹配条件","匹配字段大于等于该项"),
+	LessThan("lt",3,304,1,"小于匹配条件","匹配字段小于该项"),
+	LessThanEqual("lte",3,305,1,"小于等于匹配条件","匹配字段小于等于该项"),
+	Between("btn",3,301,1,"范围匹配条件","范围匹配字段大于并且小于条件"),
+	NotBetween("nbtn",3,301,2,"非范围匹配条件","范围匹配字段非大于并且小于条件"),
 	
 	Missing("miss",6,0,1,"不存在的匹配条件","不存在的匹配条件"),
 	Existing("exist",7,0,1,"存在的匹配条件","存在的匹配条件"),
+	
+	GeopointDistance("gdtc",8,801,1,"坐标点圆心半径","坐标点为圆心半径内匹配"),
+	GeopointRectangle("grte",8,802,1,"坐标点长方形","左上右下2个坐标点构成的长方形内匹配"),
 	
 	Unkown("Unkown",99,0,0,"未知条件","未知条件"),
 	;
@@ -53,15 +56,15 @@ public enum SearchConditionPattern {
 	//搜索方式为范围匹配 
 	public static final int Method_Range = 3;
 	//搜索方式为特殊范围匹配 大于条件和小于条件同时存在
-	public static final int MethodExt_Range_Between = 30;
+	public static final int MethodExt_Range_Between = 301;
 	//搜索方式为特殊范围匹配 大于条件
-	public static final int MethodExt_Range_GreaterThan = 31;
+	public static final int MethodExt_Range_GreaterThan = 302;
 	//搜索方式为特殊范围匹配 大于等于条件
-	public static final int MethodExt_Range_GreaterThanEqual = 32;
+	public static final int MethodExt_Range_GreaterThanEqual = 303;
 	//搜索方式为特殊范围匹配 小于条件
-	public static final int MethodExt_Range_LessThan = 33;
+	public static final int MethodExt_Range_LessThan = 304;
 	//搜索方式为特殊范围匹配 小于等于条件
-	public static final int MethodExt_Range_LessThanEqual = 34;
+	public static final int MethodExt_Range_LessThanEqual = 305;
 	
 	
 	//搜索方式为前缀匹配
@@ -72,6 +75,13 @@ public enum SearchConditionPattern {
 	public static final int Method_Missing = 6;
 	//搜索方式为存在匹配
 	public static final int Method_Existing = 7;
+	
+	//搜索方式为坐标点的方式匹配
+	public static final int Method_Geopoint = 8;
+	//搜索方式为特殊的坐标点为圆心半径内匹配
+	public static final int MethodExt_GeopointDistance = 801;
+	//搜索方式为特殊的左上右下2个坐标点构成的长方形内匹配
+	public static final int MethodExt_GeopointRectangle = 802;
 	
 	/************************   Necessity   ***************************/
 	//必要性为必须

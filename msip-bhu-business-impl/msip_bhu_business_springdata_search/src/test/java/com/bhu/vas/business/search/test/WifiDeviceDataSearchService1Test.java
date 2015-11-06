@@ -15,6 +15,9 @@ import org.springframework.data.domain.Page;
 import com.bhu.vas.api.dto.search.condition.SearchCondition;
 import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
 import com.bhu.vas.api.dto.search.condition.SearchConditionSortPattern;
+import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointDistancePayload;
+import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointPayload;
+import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointRectanglePayload;
 import com.bhu.vas.api.dto.search.condition.payload.SearchConditionRangePayload;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument1;
@@ -231,7 +234,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println(doc.getId());
+    	    System.out.println("test002:"+ doc.getId());
     	}
 	}
 	
@@ -259,7 +262,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println(doc.getId());
+    	    System.out.println("test003:"+ doc.getId());
     	}
 	}
 	
@@ -288,7 +291,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println(doc.getId());
+    	    System.out.println("test004:"+ doc.getId());
     	}
     	
    	
@@ -349,7 +352,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println("实例一:" + doc.getId() + " = " + doc.getD_lastregedat());
+    	    System.out.println("test005:"+ "实例一:" + doc.getId() + " = " + doc.getD_lastregedat());
     	}
     	
     	System.out.println("----------------------------------------------------------------");
@@ -364,7 +367,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println("实例二:" + doc.getId() + " = " + doc.getD_lastregedat());
+    	    System.out.println("test005:"+ "实例二:" + doc.getId() + " = " + doc.getD_lastregedat());
     	}
     	
 	}
@@ -378,7 +381,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 4：导入的批次是20151104开头的
 	 * 5：按照mac地址降序排序
 	 */
-	@Test
+	//@Test
 	public void test006SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -409,6 +412,79 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
     	}
 	}
 	
+	/**
+	 * 满足条件
+	 * 按照设备位置与"广西壮族自治区柳州市柳南区西堤路"{109.407456,24.315300}的距离升序排序
+	 */
+	//@Test
+	public void test007SearchConditionDocument(){
+		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
+		//已经绑定用户的设备
+		SearchConditionGeopointPayload geopointPayload = SearchConditionGeopointPayload.buildPayload(
+				"广西壮族自治区柳州市柳南区西堤路", 24.315300d, 109.407456d);
+//		SearchConditionGeopointPayload geopointPayload = SearchConditionGeopointPayload.buildPayload(
+//				"北京市海淀区双清路", 40.017058d, 116.345581d);
+
+		SearchCondition sc_sortByGeopoint = new SearchCondition(BusinessIndexDefine.WifiDevice.
+				Field1.D_GEOPOINT.getName(), SearchConditionSortPattern.SortGeopointDistanceAsc.getPattern(), 
+				JsonHelper.getJSONString(geopointPayload));
+		
+		searchConditions.add(sc_sortByGeopoint);
+
+		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
+    	for(WifiDeviceDocument1 doc : result){
+    	    System.out.println("test007:"+ doc.getId());
+    	}
+	}
+	
+	/**
+	 * 满足条件
+	 * 按照圆心坐标是"北京市海淀区双清路" {116.345581,40.017058} 半径为30km内的设备
+	 */
+	//@Test
+	public void test008SearchConditionDocument(){
+		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
+		//已经绑定用户的设备
+		SearchConditionGeopointDistancePayload geopointDistancePayload = SearchConditionGeopointDistancePayload.buildPayload(
+				"北京市海淀区双清路", 40.017058d, 116.345581d, "30km");
+
+		SearchCondition sc_geopointDistance = new SearchCondition(BusinessIndexDefine.WifiDevice.
+				Field1.D_GEOPOINT.getName(), SearchConditionPattern.GeopointDistance.getPattern(), 
+				JsonHelper.getJSONString(geopointDistancePayload));
+		
+		searchConditions.add(sc_geopointDistance);
+
+		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
+    	for(WifiDeviceDocument1 doc : result){
+    	    System.out.println("test008:"+ doc.getId());
+    	}
+	}
+	
+	/**
+	 * 满足条件
+	 * 按照长方形坐标为"北京市"的区域查询区域内的设备
+	 * topLeft {116.21520418420414, 40.07323716177983}
+	 * bottomRight {116.5394884295654, 39.75419016772713}
+	 */
+	@Test
+	public void test009SearchConditionDocument(){
+		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
+		//已经绑定用户的设备
+		SearchConditionGeopointRectanglePayload geopointRectanglePayload = SearchConditionGeopointRectanglePayload.buildPayload(
+				"北京市区域", 40.07323716177983d, 116.21520418420414d, 39.75419016772713d, 116.5394884295654d);
+
+		SearchCondition sc_geopointRectangle = new SearchCondition(BusinessIndexDefine.WifiDevice.
+				Field1.D_GEOPOINT.getName(), SearchConditionPattern.GeopointRectangle.getPattern(), 
+				JsonHelper.getJSONString(geopointRectanglePayload));
+		
+		searchConditions.add(sc_geopointRectangle);
+
+		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
+    	for(WifiDeviceDocument1 doc : result){
+    	    System.out.println("test009:"+ doc.getId());
+    	}
+	}
+	
 	
 	/**
 	 * 满足条件
@@ -431,7 +507,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println(doc.getId() + " = " + doc.getD_origswver());
+    	    System.out.println("test0010:"+ doc.getId() + " = " + doc.getD_origswver());
     	}
 	}
 	
@@ -457,7 +533,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByCondition(searchConditions, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
-    	    System.out.println(doc.getId() + " = " + doc.getD_origswver());
+    	    System.out.println("test0011:"+ doc.getId() + " = " + doc.getD_origswver());
     	}
     	
     	

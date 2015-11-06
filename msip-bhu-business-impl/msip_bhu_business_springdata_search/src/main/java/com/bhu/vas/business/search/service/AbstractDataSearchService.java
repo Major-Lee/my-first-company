@@ -85,7 +85,6 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 		}
 	}
 	
-	
 /*	public Map getSetting(){
 		return getElasticsearchTemplate().getSetting(entityClass);
 	}

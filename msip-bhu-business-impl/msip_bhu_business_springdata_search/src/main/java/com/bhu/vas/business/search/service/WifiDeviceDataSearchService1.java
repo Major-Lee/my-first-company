@@ -1,7 +1,5 @@
 package com.bhu.vas.business.search.service;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,7 +9,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
@@ -20,20 +17,15 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.search.condition.SearchCondition;
-import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
-import com.bhu.vas.api.dto.search.condition.SearchConditionSortPattern;
-import com.bhu.vas.api.dto.search.condition.payload.SearchConditionRangePayload;
 import com.bhu.vas.business.search.BusinessIndexDefine;
-import com.bhu.vas.business.search.BusinessIndexDefine.WifiDevice.Field1;
+import com.bhu.vas.business.search.FieldDefine;
 import com.bhu.vas.business.search.SortBuilderHelper;
 import com.bhu.vas.business.search.model.WifiDeviceDocument1;
 import com.bhu.vas.business.search.repository.WifiDeviceDocument1Repository;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 @Service
-public class WifiDeviceDataSearchService1 extends AbstractDataSearchService<WifiDeviceDocument1>{
+public class WifiDeviceDataSearchService1 extends AbstractDataSearchConditionService<WifiDeviceDocument1>{
     @Resource
     private WifiDeviceDocument1Repository wifiDeviceDocument1Repository;
 
@@ -326,150 +318,6 @@ public class WifiDeviceDataSearchService1 extends AbstractDataSearchService<Wifi
         return wifiDeviceDocument1Repository.search(searchQuery);
 	}
 	
-	public Page<WifiDeviceDocument1> searchByCondition(List<SearchCondition> conditions,int page,int pagesize) {
-		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-		FilterBuilder filter = null;
-		try{
-			BoolFilterBuilder boolFilter = null;
-			for(SearchCondition condition : conditions){
-				if(condition == null || StringUtils.isEmpty(condition.getKey()) 
-						|| StringUtils.isEmpty(condition.getPattern())) continue;
-			
-				Field1 field = BusinessIndexDefine.WifiDevice.Field1.getByName(condition.getKey());
-				if(Field1.Unkown != field){
-					//判断是否是匹配条件
-					SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
-					if(SearchConditionPattern.Unkown != conditionPattern){
-						FilterBuilder conditionFilterBuilder = null;
-						int method = conditionPattern.getMethod();
-						int method_ext = conditionPattern.getMethod_ext();
-						switch(method){
-							case SearchConditionPattern.Method_Wildcard:
-								conditionFilterBuilder = FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(condition.getKey(), 
-										StringHelper.ASTERISK_STRING_GAP.concat(condition.getPayload()).
-										concat(StringHelper.ASTERISK_STRING_GAP)));
-								break;
-							case SearchConditionPattern.Method_Term:
-								conditionFilterBuilder = FilterBuilders.termFilter(condition.getKey(), condition.getPayload());
-								break;
-							case SearchConditionPattern.Method_Prefix:
-								conditionFilterBuilder = FilterBuilders.prefixFilter(condition.getKey(), condition.getPayload());
-								break;
-							case SearchConditionPattern.Method_Range:
-								SearchConditionRangePayload rangePayload = JsonHelper.getDTO(condition.getPayload(), SearchConditionRangePayload.class);
-								if(rangePayload != null){
-									switch(method_ext){
-										case SearchConditionPattern.MethodExt_Range_Between:
-											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
-												gt(rangePayload.getGreaterThanValue()).lt(rangePayload.getLessThanValue());
-											break;
-										case SearchConditionPattern.MethodExt_Range_GreaterThan:
-											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
-												gt(rangePayload.getGreaterThanValue());
-											break;
-										case SearchConditionPattern.MethodExt_Range_GreaterThanEqual:
-											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
-												gte(rangePayload.getGreaterThanValue());
-											break;
-										case SearchConditionPattern.MethodExt_Range_LessThan:
-											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
-												lt(rangePayload.getLessThanValue());
-											break;
-										case SearchConditionPattern.MethodExt_Range_LessThanEqual:
-											conditionFilterBuilder = FilterBuilders.rangeFilter(condition.getKey()).
-												lte(rangePayload.getLessThanValue());
-											break;
-										default:
-											break;
-									}
-								}
-								break;
-							case SearchConditionPattern.Method_String:
-								conditionFilterBuilder = FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(condition.getPayload())
-										.field(condition.getKey()));
-								break;
-							case SearchConditionPattern.Method_Missing:
-								conditionFilterBuilder = FilterBuilders.missingFilter(condition.getKey());
-								break;
-							case SearchConditionPattern.Method_Existing:
-								conditionFilterBuilder = FilterBuilders.existsFilter(condition.getKey());
-								break;
-							default:
-								break;
-						}
-						
-						if(conditionFilterBuilder != null){
-							if(boolFilter == null) boolFilter = FilterBuilders.boolFilter();;
-							
-							int necessity = conditionPattern.getNecessity();
-							switch(necessity){
-								case SearchConditionPattern.Necessity_Must:
-									boolFilter.must(conditionFilterBuilder);
-									break;
-								case SearchConditionPattern.Necessity_MustNot:
-									boolFilter.mustNot(conditionFilterBuilder);
-									break;
-								case SearchConditionPattern.Necessity_Should:
-									boolFilter.should(conditionFilterBuilder);
-									break;
-								default:
-									break;
-							}
-						}
-					}
-					//判断是否是排序条件
-					SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(condition.getPattern());
-					if(SearchConditionSortPattern.Unkown != conditionSortPattern){
-						SortBuilder conditionSortBuilder = null;
-						int method = conditionSortPattern.getMethod();
-						switch(method){
-							//正常排序
-							case SearchConditionSortPattern.Method_Sort:
-								conditionSortBuilder = SortBuilderHelper.builderSort(condition.getKey(), 
-										conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
-								break;
-							//距离排序
-							case SearchConditionSortPattern.Method_DistanceSort:
-								String conditionValue = condition.getPayload();
-								if(!StringUtils.isEmpty(conditionValue)){
-									String[] geopoint_str_array = conditionValue.split(StringHelper.COMMA_STRING_GAP);
-									if(geopoint_str_array.length == 2){
-										double lat = Double.parseDouble(geopoint_str_array[0]);
-										double lon = Double.parseDouble(geopoint_str_array[1]);
-										conditionSortBuilder = SortBuilderHelper.builderDistanceSort(condition.getKey(), 
-												lat, lon, conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
-									}
-								}
-								break;
-							default:
-								break;
-						}
-						
-						if(conditionSortBuilder != null){
-							nativeSearchQueryBuilder.withSort(conditionSortBuilder);
-						}
-					}
-				}
-			}
-			filter = boolFilter;
-		}catch(Exception ex){
-			filter = FilterBuilders.matchAllFilter();
-			ex.printStackTrace(System.out);
-		}
-		
-		if(filter == null) filter = FilterBuilders.matchAllFilter();
-		//使用es原生方式进行查询
-        SearchQuery searchQuery = nativeSearchQueryBuilder
-        		//.withQuery(query)
-        		.withFilter(filter)
-                .withPageable(new PageRequest(page,pagesize))
-                .build();
-        
-        return wifiDeviceDocument1Repository.search(searchQuery);
-	}
-	
-	
-	
 	
 	/*@Override
 	public ElasticsearchTemplate getElasticsearchTemplate(){
@@ -478,5 +326,10 @@ public class WifiDeviceDataSearchService1 extends AbstractDataSearchService<Wifi
 	
 	public WifiDeviceDocument1Repository getRepository(){
 		return wifiDeviceDocument1Repository;
+	}
+	
+	@Override
+	public FieldDefine getFieldByName(String fieldName){
+		return BusinessIndexDefine.WifiDevice.Field1.getByName(fieldName);
 	}
 }

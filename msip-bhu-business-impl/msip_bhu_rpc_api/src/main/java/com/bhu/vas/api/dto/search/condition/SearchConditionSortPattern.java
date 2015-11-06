@@ -9,10 +9,10 @@ import java.util.Map;
  */
 public enum SearchConditionSortPattern {
 	
-	SortDesc("desc",10,2,"降序排序","降序排序"),
-	SortAsc("asc",10,1,"升序排序","升序排序"),
-	SortDistanceDesc("dte_desc",11,2,"根据距离降序排序","根据距离降序排序"),
-	SortDistanceAsc("dte_asc",11,1,"根据距离升序排序","根据距离升序排序"),
+	SortDesc("s_desc",10,2,"降序排序","降序排序"),
+	SortAsc("s_asc",10,1,"升序排序","升序排序"),
+	SortGeopointDistanceDesc("gdte_desc",11,2,"根据距离降序排序","根据距离降序排序"),
+	SortGeopointDistanceAsc("gdte_asc",11,1,"根据距离升序排序","根据距离升序排序"),
 	Unkown("Unkown",99,1,"未知条件","未知条件"),
 	;
 	

@@ -31,7 +31,7 @@ public interface BusinessIndexDefine {
 			public static final String REGISTEREDAT 		= "registeredat";
 			public static final String UPDATEDAT 		= "updatedat";
 		}
-		enum Field1{
+		enum Field1 implements FieldDefine{
 			ID("id", null),//设备mac
 			UPDATEDAT("updatedat", null),//索引记录的最后更新时间
 			/**** 设备信息 device ****/
@@ -69,7 +69,6 @@ public interface BusinessIndexDefine {
 			A_NICK("a_nick",null),//代理商的用户名称
 			A_ORG("a_org",null),//代理商的公司名称
 			
-			Unkown(null, null),
 			;
 			//基本索引字段名称
 			String name;
@@ -80,7 +79,7 @@ public interface BusinessIndexDefine {
 				this.name = name;
 				this.score_name = score_name;
 			}
-			
+			@Override
 			public String getName() {
 				return name;
 			}
@@ -88,7 +87,7 @@ public interface BusinessIndexDefine {
 			public void setName(String name) {
 				this.name = name;
 			}
-
+			@Override
 			public String getScore_name() {
 				return score_name;
 			}
@@ -109,9 +108,9 @@ public interface BusinessIndexDefine {
 				}
 			}
 			
+
 			public static Field1 getByName(String name) {
 				Field1 ret = wifiDeviceFieldMaps.get(name);
-				if(ret == null) return Field1.Unkown;
 				return ret;
 			}
 			
