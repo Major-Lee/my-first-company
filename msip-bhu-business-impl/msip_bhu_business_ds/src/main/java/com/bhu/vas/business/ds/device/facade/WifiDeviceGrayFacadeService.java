@@ -188,6 +188,9 @@ public class WifiDeviceGrayFacadeService {
     public GrayUsageVTO modifyRelatedVersion4GrayVersion(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,
     		String fwid,String omid){
     	if(dut == null || gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(!gray.isEnable()){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+    	}
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
     	if(dgv == null){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});
@@ -309,9 +312,9 @@ public class WifiDeviceGrayFacadeService {
     	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_orig_swver[%s]",dmac,dut,gl,d_orig_swver));
     	UpgradeDTO resultDto = null;
     	GrayLevel grayLevel = VapEnumType.GrayLevel.fromIndex(gl);
-    	if(grayLevel == null || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
+    	if(grayLevel == null || !grayLevel.isEnable() || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
     		resultDto = new UpgradeDTO(dut,gl,true,false);
-    		resultDto.setDesc("灰度不存在或者属于特殊灰度等级");
+    		resultDto.setDesc("灰度不存在、无效的灰度或者属于特殊灰度等级");
     		return resultDto;
     	}
     	
