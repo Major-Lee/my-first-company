@@ -338,13 +338,13 @@ public class WifiDeviceGrayFacadeService {
 							grayVersion.getD_fwid(),versionfw.getUpgrade_url());
 					System.out.println("B1 upgradeDecideAction:"+resultDto);
 				}else{
-					System.out.println("B2 upgradeDecideAction versionfw 未定义！");
+					System.out.println("B2 upgradeDecideAction versionfw undefined!");
 				}
 			}else{
-				System.out.println(String.format("B3 upgradeDecideAction 版本比对中设备版本[%s]大于等于灰度定义版本[%s]",d_orig_swver,grayVersion.getD_fwid()));
+				System.out.println(String.format("B3 upgradeDecideAction version compare d_mac_ver[%s] large or equal gray_ver[%s]",d_orig_swver,grayVersion.getD_fwid()));
 			}
 		}else{
-			System.out.println("C upgradeDecideAction grayVersion 未定义！");
+			System.out.println("C upgradeDecideAction grayVersion undefined!");
 		}
 		return resultDto;
     }
