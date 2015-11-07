@@ -55,11 +55,16 @@ public class DeviceVersion {
 	public static final String DUT_soc = "TS";
 	
 	/**
-	 * dut == null || dut = DST_uRouter
+	 * dut = TU为uRouter
+	 * dut = null && vp.startWith("AP106")为uRouter
 	 * @return
 	 */
 	public boolean wasDutURouter(){
-		if(StringUtils.isEmpty(dut)) return false;
+		/*if(StringUtils.isEmpty(dut)) return false;
+		return DUT_uRouter.equals(dut);*/
+		if(StringUtils.isEmpty(dut) && StringUtils.isNotEmpty(vp)){
+			return vp.startsWith("AP106");
+		}
 		return DUT_uRouter.equals(dut);
 	}
 	
