@@ -693,7 +693,15 @@ public class DeviceBusinessFacadeService {
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
-				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
+				//WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
+
+				if(isVisitorWifi(ctx, dto)) { //访客网络
+					handsetDeviceVisitorOffline(ctx, dto, mac);
+				} else {
+					WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(mac,
+							handsetId, dto.fetchData_rx_rate_double());
+				}
+
 				cursor++;
 
 			}
