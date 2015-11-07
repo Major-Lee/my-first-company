@@ -2,6 +2,8 @@ package com.bhu.vas.api.rpc.devices.model;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
@@ -72,6 +74,10 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		this.dut = dut;
 	}
 
+	public boolean valid(){
+		return StringUtils.isNotEmpty(id) && StringUtils.isNotEmpty(upgrade_url);
+	}
+	
 	public VersionVTO toVersionVTO(){
 		VersionVTO vto = new VersionVTO();
 		vto.setId(id);

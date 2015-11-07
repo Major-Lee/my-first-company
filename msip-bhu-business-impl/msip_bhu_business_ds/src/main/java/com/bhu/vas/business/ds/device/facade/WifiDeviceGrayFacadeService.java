@@ -26,6 +26,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceGrayVersionService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionFWService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionOMService;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -338,7 +340,7 @@ public class WifiDeviceGrayFacadeService {
 			int ret = DeviceVersion.compareVersions(d_orig_swver, grayVersion.getD_fwid());
 			if(ret == -1){
 				WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(grayVersion.getD_fwid());
-				if(versionfw != null){
+				if(versionfw != null && versionfw.valid()){
 					resultDto = new UpgradeDTO(dut,gl,true,true,
 							grayVersion.getD_fwid(),versionfw.getUpgrade_url());
 					System.out.println("B1 upgradeDecideAction:"+resultDto);
@@ -354,6 +356,70 @@ public class WifiDeviceGrayFacadeService {
 		return resultDto;
     }
     
+    public void updateRelatedDevice4GrayVersion(){
+    	ModelCriteria mc_gv = new ModelCriteria();
+    	mc_gv.createCriteria().andSimpleCaulse(" 1=1 ");
+    	mc_gv.setPageNumber(1);
+    	mc_gv.setPageSize(100);
+		EntityIterator<WifiDeviceGrayVersionPK, WifiDeviceGrayVersion> it_gv = new KeyBasedEntityBatchIterator<WifiDeviceGrayVersionPK,WifiDeviceGrayVersion>(WifiDeviceGrayVersionPK.class
+				,WifiDeviceGrayVersion.class, wifiDeviceGrayVersionService.getEntityDao(), mc_gv);
+		while(it_gv.hasNext()){
+			List<WifiDeviceGrayVersion> gvs = it_gv.next();
+			for(WifiDeviceGrayVersion gv:gvs){
+				if(VapEnumType.GrayLevel.Other.getIndex() == gv.getGl()){
+					//需要计算出系统总的此种dut的设备总数-在灰度中的数量
+					//或者在索引中搜索
+					;
+				}else{
+					ModelCriteria mc_device_gray = new ModelCriteria();
+					mc_device_gray.createCriteria().andColumnEqualTo("dut", gv.getDut()).andColumnEqualTo("gl", gv.getGl());
+					int relate_count = wifiDeviceGrayService.countByModelCriteria(mc_device_gray);
+					gv.setDevices(relate_count);
+					wifiDeviceGrayVersionService.update(gv);
+				}
+			}
+		}
+    }
+    
+    /**
+     * 固件版本定义表和增值组件版本定义表的关联字段重置
+     */
+    public void updateRelatedFieldAction(){
+    	ModelCriteria mc_fw = new ModelCriteria();
+    	mc_fw.createCriteria().andColumnEqualTo("related", 1);
+    	mc_fw.setPageNumber(1);
+    	mc_fw.setPageSize(100);
+		EntityIterator<String, WifiDeviceVersionFW> it_fw = new KeyBasedEntityBatchIterator<String,WifiDeviceVersionFW>(String.class
+				,WifiDeviceVersionFW.class, wifiDeviceVersionFWService.getEntityDao(), mc_fw);
+		while(it_fw.hasNext()){
+			List<WifiDeviceVersionFW> fws = it_fw.next();
+			for(WifiDeviceVersionFW fw:fws){
+				ModelCriteria mc_grayversion = new ModelCriteria();
+				mc_grayversion.createCriteria().andColumnEqualTo("d_fwid", fw.getId());
+				int relate_count = wifiDeviceGrayVersionService.countByModelCriteria(mc_grayversion);
+				fw.setRelated(relate_count>0);
+				wifiDeviceVersionFWService.update(fw);
+			}
+		}
+		
+    	ModelCriteria mc_om = new ModelCriteria();
+    	mc_om.createCriteria().andColumnEqualTo("related", 1);
+    	mc_om.setPageNumber(1);
+    	mc_om.setPageSize(100);
+		EntityIterator<String, WifiDeviceVersionOM> it_om = new KeyBasedEntityBatchIterator<String,WifiDeviceVersionOM>(String.class
+				,WifiDeviceVersionOM.class, wifiDeviceVersionOMService.getEntityDao(), mc_fw);
+		while(it_om.hasNext()){
+			List<WifiDeviceVersionOM> oms = it_om.next();
+			for(WifiDeviceVersionOM om:oms){
+				ModelCriteria mc_grayversion = new ModelCriteria();
+				mc_grayversion.createCriteria().andColumnEqualTo("d_omid", om.getId());
+				int relate_count = wifiDeviceGrayVersionService.countByModelCriteria(mc_grayversion);
+				om.setRelated(relate_count>0);
+				wifiDeviceVersionOMService.update(om);
+			}
+		}
+		
+    }
     
     private boolean validateDut(VapEnumType.DeviceUnitType dut){
     	if(dut == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);

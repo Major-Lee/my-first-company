@@ -331,12 +331,14 @@ public class DeviceBusinessFacadeService {
 	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
 		System.out.println(dto.getVapname() + ":::::" + dto.getPortal() +
 				( HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal())));
-		return isVisitorWifi(dto);
-	}
-
-	private boolean isVisitorWifi(HandsetDeviceDTO dto) {
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
+
+	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
+		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
+	}
+
+
 
 
 	/**
@@ -827,7 +829,7 @@ public class DeviceBusinessFacadeService {
 					//判断是否在黑名单中
 					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
 						continue;
-					if(isVisitorWifi(handset)) {
+					if(isVisitorWifi(terminal)) {
 						continue;
 					}
 					if(handset == null){
@@ -853,6 +855,9 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 	}
+
+
+
 	
 	/**
 	 * 获取wifi设备的当前状态任务响应处理 (比如cpu,内存利用率)
