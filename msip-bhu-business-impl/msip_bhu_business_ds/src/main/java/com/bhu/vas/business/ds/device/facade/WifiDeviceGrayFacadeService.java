@@ -301,6 +301,9 @@ public class WifiDeviceGrayFacadeService {
 			if(dvparser.wasDutURouter()){
 				dut = VapEnumType.DeviceUnitType.uRouterTU.getIndex();
 				gl = VapEnumType.GrayLevel.Other.getIndex();
+			}else{
+				System.out.println("A deviceUpgradeAutoAction unsupported!");
+				return null;
 			}
 		}else{
 			dut = deviceUnitGrayPk.getDut();
