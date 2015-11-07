@@ -18,13 +18,13 @@ public class VapEnumType {
 	 *
 	 */
 	public enum GrayLevel{
-		First(1,"一级灰度","一级灰度",true,true),
-		Second(2,"二级灰度","二级灰度",true,true),
-		Third(3,"三级灰度","三级灰度",true,true),
-		Fourth(4,"四级灰度","四级灰度",false,false),
-		Fifth(5,"五级灰度","五级灰度",false,false),
+		First(	1,"一级灰度","一级灰度",true,true),
+		Second(	2,"二级灰度","二级灰度",true,true),
+		Third(	3,"三级灰度","三级灰度",true,true),
+		Fourth(	4,"四级灰度","四级灰度",false,false),
+		Fifth(	5,"五级灰度","五级灰度",false,false),
 		Special(90,"特殊灰度","指定的部分设备，无需进行增值运营操作，例如广告配置等",true,true),
-		Other(100,"其他","除去所有之外的设备属于Unknow",true,true),
+		Other(	100,"其他","除去所有之外的设备属于Unknow",true,true),
 		;
 		private int index;//序号
 		private String name;//灰度名称
