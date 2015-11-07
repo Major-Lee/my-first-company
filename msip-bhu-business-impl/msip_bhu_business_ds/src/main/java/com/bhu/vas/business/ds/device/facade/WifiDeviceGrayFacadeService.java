@@ -344,10 +344,10 @@ public class WifiDeviceGrayFacadeService {
 					System.out.println("B2 upgradeDecideAction versionfw undefined!");
 				}
 			}else{
-				System.out.println(String.format("B3 upgradeDecideAction version compare d_mac_ver[%s] large or equal gray_ver[%s]",d_orig_swver,grayVersion.getD_fwid()));
+				System.out.println(String.format("B3 upgradeDecideAction dmac[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,d_orig_swver,grayVersion.getD_fwid()));
 			}
 		}else{
-			System.out.println("C upgradeDecideAction grayVersion undefined!");
+			System.out.println(String.format("C upgradeDecideAction dmac[%s] grayVersion undefined!",dmac));
 		}
 		return resultDto;
     }

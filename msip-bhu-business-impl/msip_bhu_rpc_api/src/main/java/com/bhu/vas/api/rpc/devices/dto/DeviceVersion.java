@@ -13,10 +13,16 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class DeviceVersion {
+	public static final String Prefix_AP = "AP";
+	public static final String Prefix_CPE = "CPE";
 	public static final String Build_Normal_Prefix = "Build";
 	public static final String Build_R_Prefix = "r";
-	//version prefix
-	private String vp;
+	/*//version prefix
+	private String vp;*/
+	private String prefix;
+	private String hdt;
+	private String pno;
+	
 	//版本号1.3.0、1.3.0r1、1.3.2Build8606、1.2.16Buildwaip
 	private String ver;
 	//Device software type T：设备软件类型， 取值： U(家用版本，urouter), C(商业wifi版本), S(soc版本) 
@@ -24,12 +30,12 @@ public class DeviceVersion {
 	//Manufacturer name N：厂家名称，在属性T取值为C(商业wifi)时，存在此属性项. 该属性的取值为各个商业wifi厂家的缩写.
 	private String mn;
 	
-	public String getVp() {
+	/*public String getVp() {
 		return vp;
 	}
 	public void setVp(String vp) {
 		this.vp = vp;
-	}
+	}*/
 	public String getVer() {
 		return ver;
 	}
@@ -49,6 +55,26 @@ public class DeviceVersion {
 	public void setMn(String mn) {
 		this.mn = mn;
 	}
+	
+	public String getPrefix() {
+		return prefix;
+	}
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+	public String getHdt() {
+		return hdt;
+	}
+	public void setHdt(String hdt) {
+		this.hdt = hdt;
+	}
+	public String getPno() {
+		return pno;
+	}
+	public void setPno(String pno) {
+		this.pno = pno;
+	}
+
 	// U(家用版本，urouter), C(商业wifi版本), S(soc版本)
 	public static final String DUT_uRouter = "TU";
 	public static final String DUT_CWifi = "TC";
@@ -62,8 +88,9 @@ public class DeviceVersion {
 	public boolean wasDutURouter(){
 		/*if(StringUtils.isEmpty(dut)) return false;
 		return DUT_uRouter.equals(dut);*/
-		if(StringUtils.isEmpty(dut) && StringUtils.isNotEmpty(vp)){
-			return vp.startsWith("AP106");
+		if(StringUtils.isEmpty(dut) && StringUtils.isNotEmpty(prefix) && StringUtils.isNotEmpty(hdt)){
+			return Prefix_AP.equals(prefix) && hdt.equals("106");
+			//return vp.startsWith("AP106");
 		}
 		return DUT_uRouter.equals(dut);
 	}
@@ -106,21 +133,34 @@ public class DeviceVersion {
 	}
 	
 	//String[] array = {"AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
-	private static final String Swver_Spliter_Patterns = "[V|_]+";
+	private static final String Swver_Spliter_Patterns = "[P|V|_]+";
 	public static DeviceVersion parser(String orig_swver){
 		DeviceVersion dv = null;
 		if(StringUtils.isEmpty(orig_swver)) return dv;
+		String prefix = null;
+		if(orig_swver.startsWith(Prefix_AP)){
+			prefix = Prefix_AP;
+			orig_swver = orig_swver.substring(Prefix_AP.length());
+		}else if(orig_swver.startsWith(Prefix_CPE)){
+			prefix = Prefix_CPE;
+			orig_swver = orig_swver.substring(Prefix_CPE.length());
+		}else{
+			prefix = null;
+		}
+		if(prefix == null) return null;
 		dv = new DeviceVersion();
+		dv.setPrefix(prefix);
 		String[] split = orig_swver.split(Swver_Spliter_Patterns);
 		int index = 0;
 		for(String s:split){
-			if(index == 0) dv.setVp(s);
-			if(index == 1) dv.setVer(s);
-			if(index > 1){
-				char prefix = s.charAt(0);
-				if(prefix == 'T'){
+			if(index == 0) dv.setHdt(s);
+			if(index == 1) dv.setPno(s);
+			if(index == 2) dv.setVer(s);
+			if(index > 2){
+				char _prefix = s.charAt(0);
+				if(_prefix == 'T'){
 					dv.setDut(s);
-				}else if(prefix == 'N'){
+				}else if(_prefix == 'N'){
 					dv.setMn(s);
 				}
 			}
@@ -153,7 +193,8 @@ public class DeviceVersion {
 		String[] orig_swver2_versions = ver2.parseDeviceSwverVersion();
 		if(orig_swver2_versions == null) return 1;
 		//暂时忽略在vp相等的前提下才能允许升级
-		if(true){//{ver1.getVp().equals(ver2.getVp())){
+		//if(true){//{ver1.getVp().equals(ver2.getVp())){
+		if(ver1.getPrefix().equals(ver2.getPrefix()) && ver1.getHdt().equals(ver2.getHdt())){
 			//判断大版本号
 			int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
 			//System.out.println("top ret " + top_ret);
@@ -174,22 +215,28 @@ public class DeviceVersion {
 	}
 	
 	public static void main(String[] argv){
-		String[] array = {"AP106P06V1.3.2Build8606","AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		/*String[] array = {"AP106P06V1.3.2Build8606","AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array){
 			DeviceVersion parser = DeviceVersion.parser(orig);
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
-			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getVp() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]);
+			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getPrefix()+" "+parser.getHdt()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]);
 		}
 		
 		String ss = "Build8606";
-		System.out.println(ss.substring(5));
+		System.out.println(ss.substring(5));*/
 		
-		String current = "AP106P06V1.3.2Build8606_TU";
+		String current = "AP106P06V1.3.2Build8606";
 		String[] array1 = {"AP106P06V1.3.2Build8606","AP106P06V1.3.2Build8677","AP106P06V1.3.2Build8600","AP106P07V1.3.3r1_TU","AP106P07V1.3.1r1_TU","AP106P06V1.3.0Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array1){
 			int compareDeviceVersions = compareVersions(current, orig);
 			System.out.println(compareDeviceVersions);
 		}
 			
+		String Swver_Spliter_Patterns = "[P0|V|_]+";
+		String[] split = "AP106P06V1.3.2Build8606".split(Swver_Spliter_Patterns);
+		//String[] split = "2015-03-18-19:19 Revision: 6926".split(Swver_Spliter_Patterns);
+		for(String orig:split){
+			System.out.println(orig);
+		}
 	}
 }
