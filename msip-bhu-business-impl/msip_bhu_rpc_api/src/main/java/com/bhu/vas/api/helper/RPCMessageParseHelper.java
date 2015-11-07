@@ -627,6 +627,9 @@ public class RPCMessageParseHelper {
 						dto.setData_rx_rate(element.attributeValue("data_rx_rate"));
 						dto.setRx_bytes(element.attributeValue("rx_bytes"));
 						dto.setTx_bytes(element.attributeValue("tx_bytes"));
+						dto.setAuthorized(element.attributeValue("authorized"));
+						dto.setEthernet("ethernet");
+						dto.setPortal("portal");
 						dtos.add(dto);
 					}
 				}
