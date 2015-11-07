@@ -147,8 +147,8 @@ public class DeviceVersion {
 		DeviceVersion ver2 = DeviceVersion.parser(gray_defined_orig_swver);
 		String[] orig_swver2_versions = ver2.parseDeviceSwverVersion();
 		if(orig_swver2_versions == null) return 1;
-		//在vp相等的前提下才能允许升级
-		if(ver1.getVp().equals(ver2.getVp())){
+		//暂时忽略在vp相等的前提下才能允许升级
+		if(true){//{ver1.getVp().equals(ver2.getVp())){
 			//判断大版本号
 			int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
 			//System.out.println("top ret " + top_ret);

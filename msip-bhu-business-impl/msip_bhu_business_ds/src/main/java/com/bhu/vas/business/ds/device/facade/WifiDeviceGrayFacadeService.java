@@ -319,8 +319,9 @@ public class WifiDeviceGrayFacadeService {
     		//灰度不存在或者无效的灰度\特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
     		validateGrayEnalbe4Upgrade(grayLevel);
     	}catch(BusinessI18nCodeException i18nex){
+    		i18nex.printStackTrace(System.out);
     		resultDto = new UpgradeDTO(dut,gl,true,false);
-    		resultDto.setDesc("灰度不存在、无效的灰度或者属于特殊灰度等级");
+    		resultDto.setDesc(i18nex.getMessage());
     		System.out.println("A1 upgradeDecideAction exception:"+resultDto);
     		return resultDto;
     	}
