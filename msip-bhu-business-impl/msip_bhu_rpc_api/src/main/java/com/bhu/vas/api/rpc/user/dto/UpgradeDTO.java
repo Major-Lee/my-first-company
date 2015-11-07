@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.helper.CMDBuilder;
 
 public class UpgradeDTO {
@@ -102,7 +104,9 @@ public class UpgradeDTO {
 		if(taskid == 0){
 			taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 		}
-		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
-		return cmdPayload;
+		//测试时使用，都变成立即升级
+		beginTime = StringUtils.EMPTY;
+		endTime = StringUtils.EMPTY;
+		return CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
 	}
 }
