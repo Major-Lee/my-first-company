@@ -229,7 +229,7 @@ public class AgentController {
      * @throws IOException
      */
     @ResponseBody()
-    @RequestMapping(value="/download")
+    @RequestMapping(value="/download", method={RequestMethod.GET})
     public ResponseEntity<byte[]> downloadClaimAgentDevice (
             HttpServletRequest request,
             HttpServletResponse response,
