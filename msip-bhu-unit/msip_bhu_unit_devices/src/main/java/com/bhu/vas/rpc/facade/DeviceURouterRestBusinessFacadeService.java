@@ -394,6 +394,11 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (HANDSET_LOGIN_TYPE.equals(type)) {
 						flag = true;
 					}
+
+					if (HANDSET_LOGOUT_TYPE.equals(type) && logs.size() == 1) { //仅有一条logout的脏数据
+						break;
+					}
+
 					flag = filterDay(ts, currentTime, type,last_type, rx_bytes, vtos, offset, true, flag);
 
 				} else { //第二条数据开始
