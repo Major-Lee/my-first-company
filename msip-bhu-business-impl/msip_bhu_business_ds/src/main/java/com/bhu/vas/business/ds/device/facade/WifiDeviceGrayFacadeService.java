@@ -144,6 +144,8 @@ public class WifiDeviceGrayFacadeService {
      * @param macs
      */
     public void saveMacs2Gray(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,List<String> macs){
+    	validateDut(dut);
+    	validateGrayEnalbe(gray);
     	for(String mac:macs){
     		WifiDeviceGray wdg = wifiDeviceGrayService.getById(mac);
     		if(wdg == null){
@@ -187,10 +189,8 @@ public class WifiDeviceGrayFacadeService {
      */
     public GrayUsageVTO modifyRelatedVersion4GrayVersion(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,
     		String fwid,String omid){
-    	if(dut == null || gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
-    	if(!gray.isEnable()){
-    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
-    	}
+    	validateDut(dut);
+    	validateGrayEnalbe(gray);
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
     	if(dgv == null){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});
@@ -229,7 +229,8 @@ public class WifiDeviceGrayFacadeService {
      * @param upgrade_url
      */
     public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid,String upgrade_url){
-    	if(dut == null || StringUtils.isEmpty(versionid) || StringUtils.isEmpty(versionid)) 
+    	validateDut(dut);
+    	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(upgrade_url)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
@@ -312,12 +313,20 @@ public class WifiDeviceGrayFacadeService {
     	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_orig_swver[%s]",dmac,dut,gl,d_orig_swver));
     	UpgradeDTO resultDto = null;
     	GrayLevel grayLevel = VapEnumType.GrayLevel.fromIndex(gl);
-    	if(grayLevel == null || !grayLevel.isEnable() || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
+    	try{
+    		//灰度不存在或者无效的灰度\特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
+    		validateGrayEnalbe4Upgrade(grayLevel);
+    	}catch(BusinessI18nCodeException i18nex){
+    		resultDto = new UpgradeDTO(dut,gl,true,false);
+    		resultDto.setDesc("灰度不存在、无效的灰度或者属于特殊灰度等级");
+    		System.out.println("A1 upgradeDecideAction exception:"+resultDto);
+    		return resultDto;
+    	}
+    	/*if(grayLevel == null || !grayLevel.isEnable() || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
     		resultDto = new UpgradeDTO(dut,gl,true,false);
     		resultDto.setDesc("灰度不存在、无效的灰度或者属于特殊灰度等级");
     		return resultDto;
-    	}
-    	
+    	}*/
     	WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut,gl));
 		if(grayVersion != null){
 			int ret = DeviceVersion.compareVersions(d_orig_swver, grayVersion.getD_fwid());
@@ -330,6 +339,8 @@ public class WifiDeviceGrayFacadeService {
 				}else{
 					System.out.println("B2 upgradeDecideAction versionfw 未定义！");
 				}
+			}else{
+				System.out.println(String.format("B3 upgradeDecideAction 版本比对中设备版本[%s]大于等于灰度定义版本[%s]",d_orig_swver,grayVersion.getD_fwid()));
 			}
 		}else{
 			System.out.println("C upgradeDecideAction grayVersion 未定义！");
@@ -337,6 +348,28 @@ public class WifiDeviceGrayFacadeService {
 		return resultDto;
     }
     
+    
+    private boolean validateDut(VapEnumType.DeviceUnitType dut){
+    	if(dut == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	return true;
+    }
+    private boolean validateGrayEnalbe(VapEnumType.GrayLevel gray){
+    	if(gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(!gray.isEnable()){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+    	}
+    	return true;
+    }
+    private boolean validateGrayEnalbe4Upgrade(VapEnumType.GrayLevel gray){
+    	if(gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(!gray.isEnable()){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+    	}
+    	if(gray == VapEnumType.GrayLevel.Special){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+    	}
+    	return true;
+    }
 	public WifiDeviceService getWifiDeviceService() {
 		return wifiDeviceService;
 	}
