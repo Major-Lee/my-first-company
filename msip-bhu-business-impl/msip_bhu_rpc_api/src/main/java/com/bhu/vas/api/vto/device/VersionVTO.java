@@ -16,6 +16,8 @@ public class VersionVTO implements java.io.Serializable{
 	private int dut;
 	//上传日期 yyyy-MM-dd hh:mm:ss
 	private String d;
+	//related
+	private boolean r;
 	public String getId() {
 		return id;
 	}
@@ -45,6 +47,12 @@ public class VersionVTO implements java.io.Serializable{
 	}
 	public void setDut(int dut) {
 		this.dut = dut;
+	}
+	public boolean isR() {
+		return r;
+	}
+	public void setR(boolean r) {
+		this.r = r;
 	}
 	
 }
