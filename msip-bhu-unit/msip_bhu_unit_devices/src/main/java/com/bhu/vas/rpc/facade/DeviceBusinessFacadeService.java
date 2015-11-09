@@ -335,6 +335,8 @@ public class DeviceBusinessFacadeService {
 	}
 
 	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
+		System.out.println("isVisitorWifi WifiDeviceTerminalDTO" + dto.getVapname() + "::" + dto.getPortal() + " :" +
+				(HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal())));
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
@@ -693,7 +695,15 @@ public class DeviceBusinessFacadeService {
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
-				WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
+				//WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
+
+				if(isVisitorWifi(ctx, dto)) { //访客网络
+					handsetDeviceVisitorOffline(ctx, dto, mac);
+				} else {
+					WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(mac,
+							handsetId, dto.fetchData_rx_rate_double());
+				}
+
 				cursor++;
 
 			}
@@ -829,9 +839,7 @@ public class DeviceBusinessFacadeService {
 					//判断是否在黑名单中
 					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
 						continue;
-					if(isVisitorWifi(terminal)) {
-						continue;
-					}
+
 					if(handset == null){
 						handset = new HandsetDeviceDTO();
 						handset.setMac(terminal.getMac());
@@ -847,8 +855,10 @@ public class DeviceBusinessFacadeService {
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
 					logger.info("handset" + handset.getMac() + handset.getRx_bytes() + handset.getTx_bytes());
-					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
-							terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+					if(!isVisitorWifi(terminal)) {
+						WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId,
+								terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+					}
 					cursor++;
 				}
 				HandsetStorageFacadeService.handsetsComming(handsets);
