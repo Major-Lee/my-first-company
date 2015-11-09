@@ -335,6 +335,8 @@ public class DeviceBusinessFacadeService {
 	}
 
 	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
+		System.out.println("isVisitorWifi WifiDeviceTerminalDTO" + dto.getVapname() + "::" + dto.getPortal() + " :" +
+				(HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal())));
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
