@@ -165,13 +165,7 @@ echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2Server2
 
 echo '发布业务组件成功'
 
-echo '准备发布其他服务到'$Deploy2Server
-0
-echo 'deploy msip_bhu_backend_online to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar  	root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar  	root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/ 	root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_online/bin/com/
-echo 'deploy msip_bhu_backend_online successfully @'$Deploy2Server0
+echo '准备发布其他服务到'$Deploy2Server0
 
 echo 'deploy msip_bhu_backend_task to ...@'$Deploy2Server0
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/spring*.RELEASE.jar		root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_task/libs/
@@ -196,6 +190,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.j
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar     root@$Deploy2Server2:/BHUData/apps/msip_bhu_dataimport/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/     root@$Deploy2Server2:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server2
+
+echo 'deploy msip_bhu_backend_online to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar    root@$Deploy2Server2:/BHUData/apps/msip_bhu_backend_online/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar   root@$Deploy2Server2:/BHUData/apps/msip_bhu_backend_online/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/   root@$Deploy2Server2:/BHUData/apps/msip_bhu_backend_online/bin/com/
+echo 'deploy msip_bhu_backend_online successfully @'$Deploy2Server2
 
 echo 'deploy msip_bhu_spark_task successfully @'$Deploy2Server0
 echo '发布其他服务成功'
