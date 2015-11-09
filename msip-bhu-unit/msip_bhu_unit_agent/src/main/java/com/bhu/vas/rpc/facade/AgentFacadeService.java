@@ -174,10 +174,11 @@ public class AgentFacadeService {
 
     private List<AgentDeviceClaimVTO> buildAgentDeviceClaimVTOs(List<WifiDevice> devices,List<WifiDeviceWholeMonthMDTO> monthlyDtos,List<RecordSummaryDTO> summaryDtos){
     	List<AgentDeviceClaimVTO>  results = new ArrayList<AgentDeviceClaimVTO>();
-    	AgentDeviceClaimVTO vto = null;
-    	WifiDeviceWholeMonthMDTO wholeMonthDTO = null;
-    	RecordSummaryDTO summaryDTO = null;
+    	
         for (WifiDevice device : devices) {
+        	AgentDeviceClaimVTO vto = null;
+        	WifiDeviceWholeMonthMDTO wholeMonthDTO = null;
+        	RecordSummaryDTO summaryDTO = null;
         	String mac = device.getId();
         	for(WifiDeviceWholeMonthMDTO dto:monthlyDtos){
         		if(dto.getMac().equals(mac)){
