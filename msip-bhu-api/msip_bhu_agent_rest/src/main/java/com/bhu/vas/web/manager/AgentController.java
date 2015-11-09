@@ -253,44 +253,4 @@ public class AgentController {
         return null;
 
     }
-
-
-    /**
-     * 下载导入记录
-     * @param request
-     * @param response
-     * @param uid
-     * @param bid
-     * @return
-     * @throws IOException
-     */
-    @ResponseBody()
-    @RequestMapping(value="/download")
-    public ResponseEntity<byte[]> downloadClaimAgentDevice (
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) Integer bid) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-
-        AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(uid, bid);
-        if (vto != null) {
-            String content = vto.getM();
-            AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
-            String path = dto.getPath();
-            if (path != null) {
-                headers.setContentDispositionFormData("attachment", dto.getAid() + ".xls");
-                File file = new File(path);
-                return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
-            }
-        }
-
-        return null;
-
-    }
-
-
-
-
 }
