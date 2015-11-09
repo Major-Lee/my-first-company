@@ -39,6 +39,20 @@ public class UserSettingStateService extends AbstractCoreService<String,UserSett
 		return null;
 	}
 	
+	public UserSettingState initUserSettingStateWithoutPush(String mac){
+		if(!StringUtils.isEmpty(mac)){
+			UserSettingState entity = new UserSettingState();
+			entity.setId(mac);
+			UserTerminalOnlineSettingDTO dto = new UserTerminalOnlineSettingDTO();
+			dto.setOn(false);
+			entity.putUserSetting(dto);
+			entity.putUserSetting(new UserWifiTimerSettingDTO());
+			entity.putUserSetting(new UserWifiSinfferSettingDTO());
+			return super.insert(entity);
+		}
+		return null;
+	}
+	
 	/**
 	 * 重新封装
 	 * 如果获取的数据不存在 直接初始化数据

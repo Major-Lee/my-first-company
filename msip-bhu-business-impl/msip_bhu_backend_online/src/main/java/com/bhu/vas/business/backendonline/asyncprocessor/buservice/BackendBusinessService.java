@@ -57,7 +57,7 @@ public class BackendBusinessService {
 		//1:周边探测数据
 		clearWifistasnifferData(mac);
 		//2:周边探测开关是否恢复初始 3:终端上线通知开关是否恢复初始 4:定时开关恢复初始
-		emptyUserSettingData(mac);
+		initUserSettingData(mac);
 		//5:设备测速数据清除
 		clearRealtimeSpeedData(mac);
 		//6:终端列表清除离线终端数据
@@ -116,7 +116,7 @@ public class BackendBusinessService {
 	public void initUserSettingData(String mac){
 		try{
 			userSettingStateService.deleteById(mac);
-			userSettingStateService.initUserSettingState(mac);
+			userSettingStateService.initUserSettingStateWithoutPush(mac);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
