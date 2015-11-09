@@ -142,6 +142,13 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	private long d_lastlogoutat;//设备的最新的上线时间
 	
 	@Field(
+			type = FieldType.Long,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private long d_createdat;//设备的接入时间(入库时间)
+	
+	@Field(
 			type = FieldType.String,
 			searchAnalyzer = "lowercase_whitespace",
 			index = FieldIndex.not_analyzed,
@@ -351,6 +358,14 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 
 	public void setD_lastlogoutat(long d_lastlogoutat) {
 		this.d_lastlogoutat = d_lastlogoutat;
+	}
+	
+	public long getD_createdat() {
+		return d_createdat;
+	}
+
+	public void setD_createdat(long d_createdat) {
+		this.d_createdat = d_createdat;
 	}
 
 	public void setD_dut(String d_dut) {

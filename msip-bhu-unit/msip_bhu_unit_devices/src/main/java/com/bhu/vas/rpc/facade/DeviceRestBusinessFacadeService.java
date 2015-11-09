@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
@@ -25,6 +26,7 @@ import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
@@ -39,8 +41,10 @@ import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateServi
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocument1;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService1;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -75,6 +79,9 @@ public class DeviceRestBusinessFacadeService {
 	private WifiDeviceSearchService wifiDeviceSearchService;*/
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private WifiDeviceDataSearchService1 wifiDeviceDataSearchService1;
 	
 	@Resource
 	private BusinessDeviceCacheService businessDeviceCacheService;
@@ -439,6 +446,47 @@ public class DeviceRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
+
+
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(SearchConditionMessage searchConditionMessage,
+			int pageNo, int pageSize){
+		List<WifiDeviceVTO1> vtos = null;
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		
+		Page<WifiDeviceDocument1> search_result = wifiDeviceDataSearchService1.searchByConditionMessage(
+				searchConditionMessage, searchPageNo, pageSize);
+		
+		int total = (int)search_result.getTotalElements();//.getTotal();
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}
+		List<WifiDeviceDocument1> searchDtos = search_result.getContent();//.getResult();
+		if(searchDtos.isEmpty()) {
+			vtos = Collections.emptyList();
+		}else{
+//			List<String> wifiIds = new ArrayList<String>();
+//			for(WifiDeviceDocument searchDto : searchDtos){
+//				wifiIds.add(searchDto.getId());
+//			}
+//			List<WifiDevice> entitys = wifiDeviceService.findByIds(wifiIds, true, true);
+//			vtos = new ArrayList<WifiDeviceVTO>();
+//			WifiDeviceVTO vto = null;
+//			WifiDeviceDocument searchDto = null;
+//			int cursor = 0;
+//			for(WifiDevice wifiDevice : entitys){
+//				searchDto = searchDtos.get(cursor);
+//				vto = WifiDeviceDocumentHelper.toWifiDeviceVTO(searchDto, wifiDevice);
+//				//vto = BusinessModelBuilder.toWifiDeviceVTO(searchDto, entity);
+//				vtos.add(vto);
+//				cursor++;
+//			}
+			
+		}
+		TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+	}
+	
+	
 /*	public static final int GeoMap_Fetch_Count = 500;
 	public Collection<GeoMapVTO> fetchGeoMap(){// throws ESQueryValidateException{
 		Collection<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
+import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
@@ -16,6 +17,7 @@ import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -191,11 +193,24 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	@Override
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
 		logger.info(String.format("DeviceRestRPC fetchDevicePresent invoke wifiId [%s]", wifiId));
-		try{
+		try {
 			return deviceRestBusinessFacadeService.fetchDevicePresent(wifiId);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD exception exmsg[%s]", ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(SearchConditionMessage searchConditionMessage, 
+			int pageNo, int pageSize) {
+		logger.info("DeviceRestRPC fetchBySearchConditionMessage invoke");
+		try{
+			return deviceRestBusinessFacadeService.fetchBySearchConditionMessage(searchConditionMessage, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD exception exmsg[%s]",ex.getMessage()), ex);
+			logger.error(String.format("DeviceRestRPC fetchBySearchConditionMessage exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}

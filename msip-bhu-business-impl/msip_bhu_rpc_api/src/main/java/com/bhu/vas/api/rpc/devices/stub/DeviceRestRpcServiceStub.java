@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
+import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
@@ -12,6 +13,7 @@ import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -102,9 +104,15 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 
 	@Override
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
-		if(StringUtils.isEmpty(wifiId)) 
+		if (StringUtils.isEmpty(wifiId))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return deviceRestRpcService.fetchDevicePresent(wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(SearchConditionMessage searchConditionMessage,
+			int pageNo, int pageSize) {
+		return deviceRestRpcService.fetchBySearchConditionMessage(searchConditionMessage, pageNo, pageSize);
 	}
 
 	/*@Override

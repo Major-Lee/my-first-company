@@ -50,6 +50,7 @@ public interface BusinessIndexDefine {
 			D_HANDSETONLINECOUNT("d_hoc", null),//设备终端在线数量
 			D_LASTREGEDAT("d_lastregedat", null),//设备的最新的上线时间
 			D_LASTLOGOUTAT("d_lastlogoutat", null),//设备的最新的下线时间
+			D_CREATEDAT("d_createdat", null),//设备的接入时间(入库时间)
 			D_DEVICEUNITTYPE("d_dut", null),//设备的业务线定义
 			
 			/**** 运营信息 operate ****/

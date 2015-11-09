@@ -3,6 +3,8 @@ package com.bhu.vas.business.search.service;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.ElasticsearchIllegalArgumentException;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -15,6 +17,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
 import com.bhu.vas.api.dto.search.condition.SearchCondition;
+import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
 import com.bhu.vas.api.dto.search.condition.SearchConditionSortPattern;
 import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointDistancePayload;
@@ -36,56 +39,70 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public abstract class AbstractDataSearchConditionService<MODEL extends AbstractDocument> extends AbstractDataSearchService<MODEL>{
 	
 	/**
-	 * 使用conditions进行动态多组合条件查询
+	 * 使用search condition message进行搜索
 	 */
-	public Page<MODEL> searchByCondition(List<SearchCondition> conditions, int page, int pagesize) {
-		//解析condition返回原生搜索QueryBuilder
-		NativeSearchQueryBuilder nativeSearchQueryBuilder = parserCondition(conditions);
+	public Page<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) 
+			throws ElasticsearchIllegalArgumentException{
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+		SearchType searchType = SearchType.QUERY_THEN_FETCH;
+		
+		if(searchConditionMessage != null){
+			//解析condition返回原生搜索QueryBuilder
+			parserCondition(nativeSearchQueryBuilder, searchConditionMessage.getSearchConditions());
+	    	searchType = SearchType.fromId(searchConditionMessage.getSearchType());
+		}else{
+			nativeSearchQueryBuilder.withFilter(FilterBuilders.matchAllFilter());
+		}
+		
 		//使用es原生方式进行查询
-        SearchQuery searchQuery = nativeSearchQueryBuilder.withPageable(new PageRequest(page,pagesize)).build();
+        SearchQuery searchQuery = nativeSearchQueryBuilder
+        		.withSearchType(searchType)
+        		.withPageable(new PageRequest(pageNo, pageSize))
+        		.build();
         return getElasticsearchTemplate().queryForPage(searchQuery, entityClass);
 	}
 	
 	/**
 	 * 解析condition条件为ES Search搜索对象
 	 * @param conditions
-	 * @return 返回原生搜索QueryBuilder
+	 * @return FilterBuilder
 	 */
-	private NativeSearchQueryBuilder parserCondition(List<SearchCondition> conditions){
-		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+	private void parserCondition(NativeSearchQueryBuilder nativeSearchQueryBuilder, List<SearchCondition> conditions){
 		FilterBuilder filter = null;
 		try{
-			//以Boolfilter汇总条件列表 暂不初始化 当没有匹配条件存在的时候 会使用全匹配代替
-			BoolFilterBuilder boolFilter = null;
-			for(SearchCondition condition : conditions){
-				if(condition == null || StringUtils.isEmpty(condition.getKey()) || 
-						StringUtils.isEmpty(condition.getPattern())) continue;
-			
-				FieldDefine fieldDefine = getFieldByName(condition.getKey());
-				if(fieldDefine != null){
-					//判断是否是搜索匹配条件
-					SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
-					if(SearchConditionPattern.Unkown != conditionPattern){
-						//解析condition搜索匹配条件
-						FilterBuilder conditionFilterBuilder = parserSearchCondition(condition, conditionPattern, fieldDefine);
-						if(conditionFilterBuilder != null){
-							if(boolFilter == null) boolFilter = FilterBuilders.boolFilter();
-							parserSearchConditionRelationship(conditionFilterBuilder, conditionPattern, boolFilter);
-						}
-					}else{
-						//判断是否是排序条件
-						SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(condition.getPattern());
-						if(SearchConditionSortPattern.Unkown != conditionSortPattern){
-							//解析condition排序条件
-							SortBuilder conditionSortBuilder = parserSortCondition(condition, conditionSortPattern, fieldDefine);
-							if(conditionSortBuilder != null){
-								nativeSearchQueryBuilder.withSort(conditionSortBuilder);
+			if(conditions != null && !conditions.isEmpty()) {
+				//以Boolfilter汇总条件列表 暂不初始化 当没有匹配条件存在的时候 会使用全匹配代替
+				BoolFilterBuilder boolFilter = null;
+				for(SearchCondition condition : conditions){
+					if(condition == null || StringUtils.isEmpty(condition.getKey()) || 
+							StringUtils.isEmpty(condition.getPattern())) continue;
+				
+					FieldDefine fieldDefine = getFieldByName(condition.getKey());
+					if(fieldDefine != null){
+						//判断是否是搜索匹配条件
+						SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
+						if(SearchConditionPattern.Unkown != conditionPattern){
+							//解析condition搜索匹配条件
+							FilterBuilder conditionFilterBuilder = parserSearchCondition(condition, conditionPattern, fieldDefine);
+							if(conditionFilterBuilder != null){
+								if(boolFilter == null) boolFilter = FilterBuilders.boolFilter();
+								parserSearchConditionRelationship(conditionFilterBuilder, conditionPattern, boolFilter);
+							}
+						}else{
+							//判断是否是排序条件
+							SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(condition.getPattern());
+							if(SearchConditionSortPattern.Unkown != conditionSortPattern){
+								//解析condition排序条件
+								SortBuilder conditionSortBuilder = parserSortCondition(condition, conditionSortPattern, fieldDefine);
+								if(conditionSortBuilder != null){
+									nativeSearchQueryBuilder.withSort(conditionSortBuilder);
+								}
 							}
 						}
 					}
 				}
+				filter = boolFilter;
 			}
-			filter = boolFilter;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
@@ -94,8 +111,8 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 			filter = FilterBuilders.matchAllFilter();
 		}
 		nativeSearchQueryBuilder.withFilter(filter);
-		
-		return nativeSearchQueryBuilder;
+//		
+//		return nativeSearchQueryBuilder;
 	}
 	
 	/**
