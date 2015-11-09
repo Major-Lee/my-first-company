@@ -115,20 +115,11 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		switch(method){
 			//正常排序
 			case SearchConditionSortPattern.Method_Sort:
-				conditionSortBuilder = SortBuilderHelper.builderSort(sortFieldName, 
-						conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+				conditionSortBuilder = parserMethodSort(sortFieldName, conditionSortPattern);
 				break;
 			//根据提供的geopoint当原点,按与原点的距离排序
 			case SearchConditionSortPattern.Method_DistanceSort:
-				if(!StringUtils.isEmpty(conditionPayload)){
-					SearchConditionGeopointPayload geopointPayload = JsonHelper.getDTO(conditionPayload,
-							SearchConditionGeopointPayload.class);
-					if(geopointPayload != null){
-						conditionSortBuilder = SortBuilderHelper.builderDistanceSort(sortFieldName, 
-								geopointPayload.getLat(), geopointPayload.getLon(), 
-								conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
-					}
-				}
+				conditionSortBuilder = parserMethodSortDistance(sortFieldName, conditionSortPattern, conditionPayload);
 				break;
 			default:
 				break;
@@ -153,81 +144,28 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		
 		switch(method){
 			case SearchConditionPattern.Method_Wildcard:
-				conditionFilterBuilder = FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(fieldName, 
-						StringHelper.ASTERISK_STRING_GAP.concat(condition.getPayload()).
-						concat(StringHelper.ASTERISK_STRING_GAP)));
+				conditionFilterBuilder = parserMethodWildcard(fieldName, conditionPayload);
 				break;
 			case SearchConditionPattern.Method_Term:
-				conditionFilterBuilder = FilterBuilders.termFilter(fieldName, conditionPayload);
+				conditionFilterBuilder = parserMethodTerm(fieldName, conditionPayload);
 				break;
 			case SearchConditionPattern.Method_Prefix:
-				conditionFilterBuilder = FilterBuilders.prefixFilter(fieldName, conditionPayload);
+				conditionFilterBuilder = parserMethodPrefix(fieldName, conditionPayload);
 				break;
 			case SearchConditionPattern.Method_Range:
-				SearchConditionRangePayload rangePayload = JsonHelper.getDTO(conditionPayload, SearchConditionRangePayload.class);
-				if(rangePayload != null){
-					//Range范围搜索的以下几种情况
-					switch(method_ext){
-						case SearchConditionPattern.MethodExt_Range_Between:
-							conditionFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-								gt(rangePayload.getGreaterThanValue()).lt(rangePayload.getLessThanValue());
-							break;
-						case SearchConditionPattern.MethodExt_Range_GreaterThan:
-							conditionFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-								gt(rangePayload.getGreaterThanValue());
-							break;
-						case SearchConditionPattern.MethodExt_Range_GreaterThanEqual:
-							conditionFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-								gte(rangePayload.getGreaterThanValue());
-							break;
-						case SearchConditionPattern.MethodExt_Range_LessThan:
-							conditionFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-								lt(rangePayload.getLessThanValue());
-							break;
-						case SearchConditionPattern.MethodExt_Range_LessThanEqual:
-							conditionFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-								lte(rangePayload.getLessThanValue());
-							break;
-						default:
-							break;
-					}
-				}
+				conditionFilterBuilder = parserMethodRange(fieldName, conditionPayload, method_ext);
 				break;
 			case SearchConditionPattern.Method_String:
-				conditionFilterBuilder = FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(conditionPayload)
-						.field(fieldName));
+				conditionFilterBuilder = parserMethodString(fieldName, conditionPayload);
 				break;
 			case SearchConditionPattern.Method_Missing:
-				conditionFilterBuilder = FilterBuilders.missingFilter(fieldName);
+				conditionFilterBuilder = parserMethodMissing(fieldName);
 				break;
 			case SearchConditionPattern.Method_Existing:
-				conditionFilterBuilder = FilterBuilders.existsFilter(fieldName);
+				conditionFilterBuilder = parserMethodExisting(fieldName);
 				break;
 			case SearchConditionPattern.Method_Geopoint:
-				//Geopoint坐标搜索的以下几种情况
-				switch(method_ext){
-					case SearchConditionPattern.MethodExt_GeopointDistance:
-						SearchConditionGeopointDistancePayload geopointDistancePayload = JsonHelper.getDTO(
-								conditionPayload, SearchConditionGeopointDistancePayload.class);
-						if(geopointDistancePayload != null){
-							conditionFilterBuilder = FilterBuilders.geoDistanceFilter(fieldName)
-					                .distance(geopointDistancePayload.getDistance())
-					                .point(geopointDistancePayload.getLat(), geopointDistancePayload.getLon());
-						}
-						break;
-					case SearchConditionPattern.MethodExt_GeopointRectangle:
-						SearchConditionGeopointRectanglePayload geopointRectanglePayload = JsonHelper.getDTO(
-								conditionPayload, SearchConditionGeopointRectanglePayload.class);
-						if(geopointRectanglePayload != null){
-							conditionFilterBuilder = FilterBuilders.geoBoundingBoxFilter(fieldName)
-									.topLeft(geopointRectanglePayload.getTopLeft_lat(),geopointRectanglePayload.getTopLeft_lon())
-									.bottomRight(geopointRectanglePayload.getBottomRight_lat(),geopointRectanglePayload.getBottomRight_lon());
-						}
-						break;
-					default:
-						break;
-				}
-				
+				conditionFilterBuilder = parserMethodGeopoint(fieldName, conditionPayload, method_ext);
 				break;
 			default:
 				break;
@@ -258,6 +196,211 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 				break;
 		}
 	}
+	
+	public boolean validateConditionPayloadVaild(String conditionPayload){
+		if(StringUtils.isEmpty(conditionPayload)) return false;
+		return true;
+	}
+	
+	/****************************  Method Parser **********************************/
+	//Method Parser是根据不同的method解析成不同的ES查询或排序对象
+	
+	/**
+	 * 模糊匹配方式转换FilterBuilder
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @return 
+	 */
+	public FilterBuilder parserMethodWildcard(String fieldName, String conditionPayload){
+		if(validateConditionPayloadVaild(conditionPayload)){
+			return FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(fieldName, 
+					StringHelper.ASTERISK_STRING_GAP.concat(conditionPayload).
+					concat(StringHelper.ASTERISK_STRING_GAP)));
+		}
+		return null;
+	}
+	
+	/**
+	 * 项匹配方式转换FilterBuilder
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @return
+	 */
+	public FilterBuilder parserMethodTerm(String fieldName, String conditionPayload){
+		if(validateConditionPayloadVaild(conditionPayload)){
+			return FilterBuilders.termFilter(fieldName, conditionPayload);
+		}
+		return null;
+	}
+	
+	/**
+	 * 前缀匹配方式转换FilterBuilder
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @return
+	 */
+	public FilterBuilder parserMethodPrefix(String fieldName, String conditionPayload){
+		if(validateConditionPayloadVaild(conditionPayload)){
+			return FilterBuilders.prefixFilter(fieldName, conditionPayload);
+		}
+		return null;
+	}
+	
+	/**
+	 * 范围匹配方式转换FilterBuilder
+	 * 范围匹配具体有分为以下几种:
+	 * 1:大于条件和小于条件同时存在
+	   2:大于条件
+	   3:大于等于条件
+	   4:小于条件
+	   5:小于等于条件
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @param method_ext
+	 * @return
+	 */
+	public FilterBuilder parserMethodRange(String fieldName, String conditionPayload, int method_ext){
+		FilterBuilder rangeFilterBuilder = null;
+		if(validateConditionPayloadVaild(conditionPayload)){
+			SearchConditionRangePayload rangePayload = JsonHelper.getDTO(conditionPayload, SearchConditionRangePayload.class);
+			if(rangePayload != null){
+				//Range范围搜索的以下几种情况
+				switch(method_ext){
+					case SearchConditionPattern.MethodExt_Range_Between:
+						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+							gt(rangePayload.getGreaterThanValue()).lt(rangePayload.getLessThanValue());
+						break;
+					case SearchConditionPattern.MethodExt_Range_GreaterThan:
+						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+							gt(rangePayload.getGreaterThanValue());
+						break;
+					case SearchConditionPattern.MethodExt_Range_GreaterThanEqual:
+						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+							gte(rangePayload.getGreaterThanValue());
+						break;
+					case SearchConditionPattern.MethodExt_Range_LessThan:
+						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+							lt(rangePayload.getLessThanValue());
+						break;
+					case SearchConditionPattern.MethodExt_Range_LessThanEqual:
+						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+							lte(rangePayload.getLessThanValue());
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		return rangeFilterBuilder;
+	}
+
+	/**
+	 * 字符串匹配方式转换FilterBuilder
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @return
+	 */
+	public FilterBuilder parserMethodString(String fieldName, String conditionPayload){
+		if(validateConditionPayloadVaild(conditionPayload)){
+			return FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(conditionPayload).field(fieldName));
+		}
+		return null;
+	}
+	
+	/**
+	 * Missing匹配方式转换FilterBuilder
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @return
+	 */
+	public FilterBuilder parserMethodMissing(String fieldName){
+		return FilterBuilders.missingFilter(fieldName);
+	}
+	
+	
+	/**
+	 * Existing匹配方式转换FilterBuilder
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @return
+	 */
+	public FilterBuilder parserMethodExisting(String fieldName){
+		return FilterBuilders.existsFilter(fieldName);
+	}
+	
+	/**
+	 * Geopoint匹配方式转换FilterBuilder
+	 * Geopoint匹配具体有分为以下几种:
+	 * 1:坐标点为圆心半径内匹配
+	   2:左上右下2个坐标点构成的长方形内匹配
+	   TODO:还可以扩展多边形等等 
+	 * @param fieldName
+	 * @param conditionPayload
+	 * @param method_ext
+	 * @return
+	 */
+	public FilterBuilder parserMethodGeopoint(String fieldName, String conditionPayload, int method_ext){
+		FilterBuilder geopointFilterBuilder = null;
+		if(validateConditionPayloadVaild(conditionPayload)){
+			//Geopoint坐标搜索的以下几种情况
+			switch(method_ext){
+				case SearchConditionPattern.MethodExt_GeopointDistance:
+					SearchConditionGeopointDistancePayload geopointDistancePayload = JsonHelper.getDTO(
+							conditionPayload, SearchConditionGeopointDistancePayload.class);
+					if(geopointDistancePayload != null){
+						geopointFilterBuilder = FilterBuilders.geoDistanceFilter(fieldName)
+				                .distance(geopointDistancePayload.getDistance())
+				                .point(geopointDistancePayload.getLat(), geopointDistancePayload.getLon());
+					}
+					break;
+				case SearchConditionPattern.MethodExt_GeopointRectangle:
+					SearchConditionGeopointRectanglePayload geopointRectanglePayload = JsonHelper.getDTO(
+							conditionPayload, SearchConditionGeopointRectanglePayload.class);
+					if(geopointRectanglePayload != null){
+						geopointFilterBuilder = FilterBuilders.geoBoundingBoxFilter(fieldName)
+								.topLeft(geopointRectanglePayload.getTopLeft_lat(), geopointRectanglePayload.getTopLeft_lon())
+								.bottomRight(geopointRectanglePayload.getBottomRight_lat(), geopointRectanglePayload.getBottomRight_lon());
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		return geopointFilterBuilder;
+	}
+	
+	/**
+	 * 正常排序方式转换SortBuilder
+	 * @param sortFieldName
+	 * @param conditionSortPattern
+	 * @return
+	 */
+	public SortBuilder parserMethodSort(String sortFieldName, SearchConditionSortPattern conditionSortPattern){
+		return SortBuilderHelper.builderSort(sortFieldName, 
+					conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+	}
+	
+	/**
+	 * GeopointDistance排序方式转换SortBuilder
+	 * @param sortFieldName
+	 * @param conditionSortPattern
+	 * @param conditionPayload
+	 * @return
+	 */
+	public SortBuilder parserMethodSortDistance(String sortFieldName, SearchConditionSortPattern conditionSortPattern, String conditionPayload){
+		if(validateConditionPayloadVaild(conditionPayload)){
+			SearchConditionGeopointPayload geopointPayload = JsonHelper.getDTO(conditionPayload,
+					SearchConditionGeopointPayload.class);
+			if(geopointPayload != null){
+				return SortBuilderHelper.builderDistanceSort(sortFieldName, 
+							geopointPayload.getLat(), geopointPayload.getLon(), 
+							conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+			}
+		}
+		return null;
+	}
+
+
 	
 	public abstract FieldDefine getFieldByName(String fieldName);
 }

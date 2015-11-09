@@ -391,7 +391,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 4：导入的批次是20151104开头的
 	 * 5：按照mac地址降序排序
 	 */
-	//@Test
+	@Test
 	public void test006SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -482,7 +482,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * topLeft {116.21520418420414, 40.07323716177983}
 	 * bottomRight {116.5394884295654, 39.75419016772713}
 	 */
-	@Test
+	//@Test
 	public void test009SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
