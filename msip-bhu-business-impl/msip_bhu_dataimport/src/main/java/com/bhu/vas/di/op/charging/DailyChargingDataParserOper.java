@@ -9,6 +9,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.bhu.vas.di.business.datainit.charging.ParserLog;
 import com.bhu.vas.di.business.datainit.charging.Step00ReadAndMergeLogService;
 import com.bhu.vas.di.business.datainit.charging.Step00ReadSimulateLogService;
+import com.bhu.vas.di.business.datainit.charging.Step01Result2FileService;
 import com.bhu.vas.di.business.datainit.charging.Step02DeviceWholeDayRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step04DeviceWholeMonthRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step05AgentWholeDayRecordService;
@@ -18,6 +19,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 /**
  * 每日必须进行状态保活，每天凌晨需要把在线的设备重新写入到日志中，作为模拟登录，模拟登录的时间缺省为当日的起始时间，防止漏算了长时间在线的设备
  * 对于终端则无需这样
+ * ./startupbuilder_agentlog_import.sh 2015-11-05,2015-11-06,2015-11-07,2015-11-08 /BHUData/bulogs/copylogs/%s/chargingsimulogs/ /BHUData/bulogs/copylogs/%s/charginglogs/
  * @author Edmond
  *
  */
@@ -47,7 +49,7 @@ public class DailyChargingDataParserOper {
 		//Step00ParserLogService step00ParserLogService = (Step00ParserLogService)ctx.getBean("step00ParserLogService");
 		Step00ReadSimulateLogService step00ReadSimulateLogService = (Step00ReadSimulateLogService)ctx.getBean("step00ReadSimulateLogService");
 		Step00ReadAndMergeLogService step00ReadAndMergeLogService = (Step00ReadAndMergeLogService)ctx.getBean("step00ReadAndMergeLogService");
-		//Step01Result2FileService step01Result2FileService = (Step01Result2FileService)ctx.getBean("step01Result2FileService");
+		Step01Result2FileService step01Result2FileService = (Step01Result2FileService)ctx.getBean("step01Result2FileService");
 		Step02DeviceWholeDayRecordService step02DeviceWholeDayRecordService = (Step02DeviceWholeDayRecordService)ctx.getBean("step02DeviceWholeDayRecordService");
 		
 		Step04DeviceWholeMonthRecordService step04DeviceWholeMonthRecordService = (Step04DeviceWholeMonthRecordService)ctx.getBean("step04DeviceWholeMonthRecordService");
@@ -117,7 +119,7 @@ public class DailyChargingDataParserOper {
 			long ts2 = System.currentTimeMillis();
 			//step10AgentDeviceSimulateDateGenService.deviceDataGen(date, parser.getDevice_records());
 			//System.out.println(String.format("Step1 Completed cost %s ms", ts2-ts1));
-			//step01Result2FileService.records2File(date, parser.getDevice_records(), parser.getDevice_handset_records());
+			step01Result2FileService.records2File(date, parser.getDevice_records(), parser.getDevice_handset_records());
 			long ts3 = System.currentTimeMillis();
 			step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, parser.getDevice_records(), parser.getDevice_handset_records());
 			long ts4 = System.currentTimeMillis();
