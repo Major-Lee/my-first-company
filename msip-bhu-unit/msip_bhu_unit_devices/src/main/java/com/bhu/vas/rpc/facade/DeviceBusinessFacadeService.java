@@ -839,9 +839,7 @@ public class DeviceBusinessFacadeService {
 					//判断是否在黑名单中
 					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
 						continue;
-					if(isVisitorWifi(terminal)) {
-						continue;
-					}
+
 					if(handset == null){
 						handset = new HandsetDeviceDTO();
 						handset.setMac(terminal.getMac());
@@ -857,8 +855,10 @@ public class DeviceBusinessFacadeService {
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
 					logger.info("handset" + handset.getMac() + handset.getRx_bytes() + handset.getTx_bytes());
-					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
-							terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+					if(!isVisitorWifi(terminal)) {
+						WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId,
+								terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+					}
 					cursor++;
 				}
 				HandsetStorageFacadeService.handsetsComming(handsets);
