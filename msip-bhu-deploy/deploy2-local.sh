@@ -156,11 +156,11 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/lib/msip_*.jar  			root
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_vas/classes/com/ 				root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_vas/classes/com/
 echo 'deploy msip_bhu_unit_vas successfully @'$Deploy2Server0
 
-echo 'deploy msip_bhu_unit_agent to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/spring*.RELEASE.jar      root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_agent/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/msip_*.jar       root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_agent/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/classes/com/         root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_agent/classes/com/
-echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2Server0
+echo 'deploy msip_bhu_unit_agent to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/spring*.RELEASE.jar      root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/msip_*.jar       root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/classes/com/         root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/classes/com/
+echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2Server2
 
 
 echo '发布业务组件成功'
@@ -190,6 +190,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.j
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar  		root@$Deploy2Server0:/BHUData/apps/msip_bhu_dataimport/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/ 		root@$Deploy2Server0:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server0
+
+echo 'deploy msip_bhu_dataimport to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar      root@$Deploy2Server2:/BHUData/apps/msip_bhu_dataimport/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar     root@$Deploy2Server2:/BHUData/apps/msip_bhu_dataimport/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/     root@$Deploy2Server2:/BHUData/apps/msip_bhu_dataimport/bin/com/
+echo 'deploy msip_bhu_dataimport successfully @'$Deploy2Server2
 
 echo 'deploy msip_bhu_spark_task to ...@'$Deploy2Server0
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_spark_task/lib/msip_*.jar  		root@$Deploy2Server0:/BHUData/apps/msip_bhu_spark_task/libs/
