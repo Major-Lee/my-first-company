@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
-import com.smartwork.msip.cores.helper.ConvertHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class AgentHelper {
@@ -79,13 +78,33 @@ public class AgentHelper {
 	}
 	
 	/**
-	 * 获取时间区间时长
+	 * 获取时间区间时长(秒的数字不显示)
 	 * @param diff 单位分钟
 	 * @return
 	 */
-	public static String getTimeDiff(double diff){
-		return ConvertHelper.timeFormat((long)(diff*1000*60));
+	public static String getTimeDiff(double diff_double){
+		long diff = (long)(diff_double*1000*60);
+		long day = 0;
+        long hour = 0;
+        long min = 0;
+        //long sec = 0;
+        day = 	diff / Day;
+        hour = 	(diff / Hour - day * 24);
+        min = 	((diff / Min) - day * 24 * 60 - hour * 60);
+        //sec = 	(diff/Sec-day*24*60*60-hour*60*60-min*60);
+        StringBuilder sb = new StringBuilder();
+        if(day>0) sb.append(day).append("天");
+        if(hour>0) sb.append(hour).append("小时");
+        if(min>0) sb.append(min).append("分");
+        //if(sec>0) sb.append(sec).append("秒");
+        return sb.toString();
+		//return ConvertHelper.timeFormat((long)(diff*1000*60));
 	}
+	private static long Day = 	(24 * 60 * 60 * 1000);
+	private static long Hour = (60 * 60 * 1000);
+	private static long Min = 	(60 * 1000);
+	private static long Sec = 	1000;
+	
 	
 	public static void main(String[] argv){
 		

@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.agent.vto.SettlementStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
+import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.dto.SettlementSummaryDTO;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
@@ -95,10 +96,12 @@ public class AgentStatisticsUnitFacadeService {
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod()):0.00d)));
 			//结算过的总收入(元)
-			//待结算的总数 
-			/*RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
-			vto.setOd(ArithHelper.getFormatter(String.valueOf(summary.getT_devices())));
-			vto.setRtl(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(summary.getT_dod()))));*/
+			//所有设备产生收益的总数 -取agentWholeMonth此用户的所有在线时长
+			RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
+			//vto.setOd(ArithHelper.getFormatter(String.valueOf(summary.getT_devices())));
+			//vto.setRtl(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(summary.getT_dod()))));
+			vto.setTr(ArithHelper.getFormatter(String.valueOf(AgentHelper.currency(summary.getT_dod()))));
+			
 			pageTotalSettlements4Agent(user,vto);
 			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
@@ -143,7 +146,7 @@ public class AgentStatisticsUnitFacadeService {
 			List<SettlementSummaryDTO> mainSummary = agentSettlementsRecordMService.summaryAggregationBetween(agents, 
 						null, 
 						null, null, 1, agents.size());
-			vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
+			vto.setSr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
 			vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(String.valueOf(agent),mainSummary),2))));
 		}
 	}

@@ -14,8 +14,10 @@ public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	//private String od;
 	//revenuetotal
 	//private String rtl;
-	//Total Revenue 除去当月之外的所有被结算金额
+	//Total Revenue 所有设备产生的收入
 	private String tr;
+	//settled Revenue 除去当月之外的所有被结算金额
+	private String sr;
 	//unsettle Revenue 除去当月之外的未结算金额 
 	private String ur;
 	
@@ -69,6 +71,11 @@ public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	public void setUr(String ur) {
 		this.ur = ur;
 	}
-	
+	public String getSr() {
+		return sr;
+	}
+	public void setSr(String sr) {
+		this.sr = sr;
+	}
 	
 }
