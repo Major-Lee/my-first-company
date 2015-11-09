@@ -3,7 +3,7 @@ TargetFile=$1
 while read line 
 do
   echo "正下发增值指令...$line"
-  curl -H "A-Token-Header: JTNGUlJXAUNKGxFdWlYM" -d "mac=$line&uid=3&&opt=151&subopt=25&extparams={\"style\":\"style001\"}&channel=VAS" "http://vap.bhunetworks.com/bhu_api/v1/cmd/generate"
+  curl -H "A-Token-Header: JTNGUlJXAUNKGxFdWlYM" -d "mac=$line&uid=3&&opt=151&subopt=25&extparams={\"style\":\"style002\"}&channel=VAS" "http://vap.bhunetworks.com/bhu_api/v1/cmd/generate"
   echo "$line send ok!"
   sleep 3m
 done < $TargetFile
