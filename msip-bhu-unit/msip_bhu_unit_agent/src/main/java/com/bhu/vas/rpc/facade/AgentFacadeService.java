@@ -563,8 +563,8 @@ public class AgentFacadeService {
 
     public AgentBulltinBoardVTO findAgentBulltinBoardById(int uid, long bid) {
 
-        User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+//        User operUser = userService.getById(uid);
+//        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
 
         AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
         AgentBulltinBoardVTO vto = null;
