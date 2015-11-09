@@ -628,8 +628,8 @@ public class RPCMessageParseHelper {
 						dto.setRx_bytes(element.attributeValue("rx_bytes"));
 						dto.setTx_bytes(element.attributeValue("tx_bytes"));
 						dto.setAuthorized(element.attributeValue("authorized"));
-						dto.setEthernet("ethernet");
-						dto.setPortal("portal");
+						dto.setEthernet(element.attributeValue("ethernet"));
+						dto.setPortal(element.attributeValue("portal"));
 						dtos.add(dto);
 					}
 				}
