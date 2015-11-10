@@ -20,13 +20,12 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHot
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
-import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 
 /**
  * backend专属业务service
  * @author tangzichao
- *
+ * @author Edmond Lee 修改设备清除和用户的绑定关系
  */
 @Service
 public class BackendBusinessService {
@@ -34,11 +33,11 @@ public class BackendBusinessService {
 	@Resource
 	private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 	
-	@Resource
-	private UserSettingStateService userSettingStateService;
+	//@Resource
+	//private UserSettingStateService userSettingStateService;
 	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private DeviceFacadeService deviceFacadeService;
 	/**********************************     清除设备数据业务 start   *****************************************/
 	
 	/**
@@ -53,11 +52,11 @@ public class BackendBusinessService {
 		8:终端详情数据清除
 	 * @param mac
 	 */
-	public void deviceRestoreFactory(String mac){
+	public void deviceResetFactory(String mac){
 		//1:周边探测数据
 		clearWifistasnifferData(mac);
 		//2:周边探测开关是否恢复初始 3:终端上线通知开关是否恢复初始 4:定时开关恢复初始
-		emptyUserSettingData(mac);
+		//initUserSettingData(mac);
 		//5:设备测速数据清除
 		clearRealtimeSpeedData(mac);
 		//6:终端列表清除离线终端数据
@@ -113,7 +112,7 @@ public class BackendBusinessService {
 	 * 4:访客网络开关
 	 * @param mac
 	 */
-	public void initUserSettingData(String mac){
+	/*public void initUserSettingData(String mac){
 		try{
 			userSettingStateService.deleteById(mac);
 			userSettingStateService.initUserSettingState(mac);
@@ -128,7 +127,7 @@ public class BackendBusinessService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
-	}
+	}*/
 	
 	/**
 	 * 清除周边探测收集的相关数据
@@ -184,7 +183,8 @@ public class BackendBusinessService {
 	 */
 	public void clearDeviceBindedRelation(String mac){
 		try{
-			userDeviceService.clearDeviceBinded(mac);
+			deviceFacadeService.deviceResetDestory(mac);
+			//userDeviceService.clearDeviceBinded(mac);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
