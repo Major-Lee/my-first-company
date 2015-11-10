@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.agent.dto.AgentSettlementBulltinBoardDTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -725,8 +726,16 @@ public class AgentFacadeService {
         agentBulltinBoard.setPublisher(uid);
         agentBulltinBoard.setConsumer(aid);
         agentBulltinBoard.setType(AgentBulltinType.ArrivalNotice.getKey());
+        
+        AgentSettlementBulltinBoardDTO dto = new AgentSettlementBulltinBoardDTO();
 
-        agentBulltinBoard.setContent(JsonHelper.getJSONString(agentFinancialSettlement));
+        dto.setAid(aid);
+        dto.setAmount(account);
+        dto.setInvoice(invoice);
+        dto.setReceipt(receipt);
+        dto.setRemark(remark);
+
+        agentBulltinBoard.setContent(JsonHelper.getJSONString(dto));
 
         agentBulltinBoardService.insert(agentBulltinBoard);
 

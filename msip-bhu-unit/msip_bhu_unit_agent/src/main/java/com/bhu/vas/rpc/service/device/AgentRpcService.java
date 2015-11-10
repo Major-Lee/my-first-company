@@ -155,8 +155,5 @@ public class AgentRpcService implements IAgentRpcService {
                 uid, pageNo, pageSize));
         return agentFacadeService.pageAgentFinancialSettlementVTO(uid, pageNo, pageSize);
     }
-
-
-
     /* 财务 end */
 }
