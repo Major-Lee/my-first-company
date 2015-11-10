@@ -9,19 +9,9 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.business.ds.agent.helper.AgentHelper;
-import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
-import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
-import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
-import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
-import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.RandomData;
 
 /**
@@ -36,15 +26,16 @@ public class MonthlyChargingSettlementTestGenOper {
 
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
 		
-		List<Integer> agents = new ArrayList<Integer>();
+		/*List<Integer> agents = new ArrayList<Integer>();
     	agents.add(100119);
-		agents.add(100118);
+		agents.add(100118);*/
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-		AgentSettlementsRecordMService agentSettlementsRecordMService = (AgentSettlementsRecordMService)ctx.getBean("agentSettlementsRecordMService");
+		
+		/*AgentSettlementsRecordMService agentSettlementsRecordMService = (AgentSettlementsRecordMService)ctx.getBean("agentSettlementsRecordMService");
 		
     	Date current = new Date();
     	AgentSettlementsRecordMDTO record = null;
-    	//创建3年的数据
+    	//创建1年的数据
     	for(int ago=0;ago<=12;ago++){
     		Date monthAgo = DateTimeHelper.getDateFirstDayOfMonthAgo(current,ago);
     		String monthly = DateTimeHelper.formatDate(monthAgo, DateTimeHelper.FormatPattern11);
@@ -79,6 +70,23 @@ public class MonthlyChargingSettlementTestGenOper {
     			}
     			agentSettlementsRecordMService.save(record);
     		}
+    	}*/
+		AgentBillFacadeService agentBillFacadeService = (AgentBillFacadeService)ctx.getBean("agentBillFacadeService");
+    	
+    	List<Integer> agents = new ArrayList<Integer>();
+    	agents.add(100119);
+		agents.add(100118);
+	   	Date current = new Date();
+    	//创建1年的数据
+    	for(int ago=0;ago<=12;ago++){
+    		Date monthAgo = DateTimeHelper.getDateFirstDayOfMonthAgo(current,ago);
+    		String monthly = DateTimeHelper.formatDate(monthAgo, DateTimeHelper.FormatPattern11);
+    		for(Integer agent:agents){
+    			agentBillFacadeService.newBillCreated(agent, monthly, ArithHelper.round(RandomData.floatNumber(200,500), 2));
+    		}
     	}
+    	for(Integer agent:agents){
+    		agentBillFacadeService.billSummaryViewGen(agent);
+		}
     }
 }

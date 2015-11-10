@@ -2,26 +2,15 @@ package com.bhu.vas.di.op.charging;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
-import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
-import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
-import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
-import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
-import com.smartwork.msip.cores.helper.ArithHelper;
 
 public class ChargingTest {
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+		/*ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		WifiDeviceWholeDayMService wifiDeviceWholeDayMService = (WifiDeviceWholeDayMService)ctx.getBean("wifiDeviceWholeDayMService");
 		AgentWholeDayMService agentWholeDayMService = (AgentWholeDayMService)ctx.getBean("agentWholeDayMService");
 		
 		AgentSettlementsRecordMService agentSettlementsRecordMService = (AgentSettlementsRecordMService)ctx.getBean("agentSettlementsRecordMService");
-		long count = wifiDeviceWholeDayMService.countAll();
+		long count = wifiDeviceWholeDayMService.countAll();*/
 		
 		
 		/*List<AgentSettlementsRecordMDTO> bills = agentSettlementsRecordMService.fetchBillsByAgent(100084, AgentSettlementsRecordMDTO.Settlement_Created);
