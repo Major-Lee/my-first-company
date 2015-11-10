@@ -92,10 +92,9 @@ public class PushService{
 	public boolean pushHandsetDeviceOnline(PushDTO pushDto){
 		boolean ret = false;
 		try{
-			System.out.println("终端上线push1:"+JsonHelper.getJSONString(pushDto));
+			//System.out.println("终端上线push1:"+JsonHelper.getJSONString(pushDto));
 			String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(pushDto.getMac());
-        	System.out.println("终端上线push2：present:"+present);
-			
+        	System.out.println("终端上线push1：present:"+present);
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			System.out.println("终端上线push2:"+presentDto);
 			if(presentDto != null){
