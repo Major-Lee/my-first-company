@@ -235,6 +235,9 @@ public class AgentController {
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = true) Integer bid) throws IOException {
+
+        System.out.println("=============== /agent/download");
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
