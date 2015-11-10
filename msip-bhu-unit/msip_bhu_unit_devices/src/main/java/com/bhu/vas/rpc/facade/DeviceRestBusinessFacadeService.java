@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.ElasticsearchIllegalArgumentException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * device Rest RPC组件的业务service
@@ -450,30 +452,34 @@ public class DeviceRestBusinessFacadeService {
 
 
 	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize){
-		List<WifiDeviceVTO1> vtos = null;
-		
-		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-		Page<WifiDeviceDocument1> search_result = wifiDeviceDataSearchService1.searchByConditionMessage(
-				message, searchPageNo, pageSize);
-		
-		int total = (int)search_result.getTotalElements();//.getTotal();
-		if(total == 0){
-			vtos = Collections.emptyList();
-		}
-		List<WifiDeviceDocument1> searchDocuments = search_result.getContent();//.getResult();
-		if(searchDocuments.isEmpty()) {
-			vtos = Collections.emptyList();
-		}else{
-			vtos = new ArrayList<WifiDeviceVTO1>();
-			WifiDeviceVTO1 vto = null;
-			for(WifiDeviceDocument1 wifiDeviceDocument : searchDocuments){
-				vto = new WifiDeviceVTO1();
-				BeanUtils.copyProperties(wifiDeviceDocument, vto);
-				vtos.add(vto);
+		try{
+			List<WifiDeviceVTO1> vtos = null;
+			
+			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+			Page<WifiDeviceDocument1> search_result = wifiDeviceDataSearchService1.searchByConditionMessage(
+					message, searchPageNo, pageSize);
+			
+			int total = (int)search_result.getTotalElements();//.getTotal();
+			if(total == 0){
+				vtos = Collections.emptyList();
 			}
+			List<WifiDeviceDocument1> searchDocuments = search_result.getContent();//.getResult();
+			if(searchDocuments.isEmpty()) {
+				vtos = Collections.emptyList();
+			}else{
+				vtos = new ArrayList<WifiDeviceVTO1>();
+				WifiDeviceVTO1 vto = null;
+				for(WifiDeviceDocument1 wifiDeviceDocument : searchDocuments){
+					vto = new WifiDeviceVTO1();
+					BeanUtils.copyProperties(wifiDeviceDocument, vto);
+					vtos.add(vto);
+				}
+			}
+			TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(ElasticsearchIllegalArgumentException eiaex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
 		}
-		TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 	}
 	
 	
