@@ -44,7 +44,6 @@ import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
@@ -783,15 +782,19 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
         	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
         	userDeviceService.deleteById(userDevicePK);
         	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
+        	String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+        	System.out.println("~~~~~~~~~~221:清除前：present:"+present);
         	this.removeMobilePresent(uid, mac);
+        	present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+        	System.out.println("~~~~~~~~~~221:清除后：present:"+present);
         	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
 			userSettingStateService.deleteById(mac);
 			System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
-			//如果没有绑定其他设备，删除别名
+			/*//如果没有绑定其他设备，删除别名
 			int count = userDeviceService.countBindDevices(uid);
 			if(count == 0 ){
 				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
-			}
+			}*/
         }
         System.out.println("~~~~~~~~~~3:deviceResetDestory ok!");
 	}
