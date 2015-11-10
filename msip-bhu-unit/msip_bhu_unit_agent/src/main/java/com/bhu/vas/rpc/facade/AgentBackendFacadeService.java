@@ -40,19 +40,9 @@ import java.util.concurrent.Executors;
  * Created by bluesand on 11/10/15.
  */
 @Service
-public class AgentBackendProcessor {
+public class AgentBackendFacadeService {
 
-    private AgentBackendProcessor() {};
-
-    private static class ServiceHolder{
-        private static AgentBackendProcessor instance =new AgentBackendProcessor();
-    }
-
-    public static AgentBackendProcessor getInstance() {
-        return ServiceHolder.instance;
-    }
-
-    private final Logger logger = LoggerFactory.getLogger(AgentBackendProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(AgentBackendFacadeService.class);
     private ExecutorService exec = Executors.newFixedThreadPool(100);
 
     @Resource
