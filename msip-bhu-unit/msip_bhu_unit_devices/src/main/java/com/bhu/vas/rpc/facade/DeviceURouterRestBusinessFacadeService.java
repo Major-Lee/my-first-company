@@ -377,6 +377,7 @@ public class DeviceURouterRestBusinessFacadeService {
 								WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
 								last_dto.setLogin_at(getDateZeroTime(new Date(last_ts - end_offset * DAY_TIME_MILLION_SECOND )).getTime());
 								last_vto.setDetail(last_mdtos);
+								break;
 							}
 
 						}

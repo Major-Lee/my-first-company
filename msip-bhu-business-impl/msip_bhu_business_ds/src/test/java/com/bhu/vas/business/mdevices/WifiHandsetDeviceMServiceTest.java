@@ -49,8 +49,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 
 //        for (WifiHandsetDeviceRelationMDTO dto : results) {
 
-            String wifiId = "84:82:f4:23:06:68";
-            String mac = "38:48:4c:c5:05:6d";
+            String wifiId = "84:82:f4:1c:e8:b8";
+            String mac = "d0:67:e5:40:89:a2";
 
 //            wifiId = dto.getWifiId();
 //            mac = dto.getHandsetId();
@@ -126,7 +126,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                         for (int i=0 ;i <=6 ;i ++) {
                             URouterHdTimeLineVTO vto = vtos.get(i);
                             List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
-                            if ( i ==0 || mdtos_ != null && !mdtos_.isEmpty()) {
+                            if ( i ==0 || (mdtos_ != null && !mdtos_.isEmpty())) {
                                 continue;
                             } else {
                                 URouterHdTimeLineVTO last_vto = vtos.get(i-1);
@@ -134,6 +134,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                                 WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
                                 last_dto.setLogin_at(getDateZeroTime(new Date(last_ts - end_offset * DAY_TIME_MILLION_SECOND )).getTime());
                                 last_vto.setDetail(last_mdtos);
+                                break;
                             }
 
                         }
