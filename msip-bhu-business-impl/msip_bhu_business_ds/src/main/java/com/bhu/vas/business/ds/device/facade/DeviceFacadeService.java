@@ -770,23 +770,30 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 */
 	public void deviceResetDestory(String mac){
+		System.out.println("~~~~~~~~~~1:设备重置解除绑定操作："+mac);
 		//现在一台设备只能被一个客户端绑定。此处考虑冗余兼容可能出现的多个用户绑定单个设备的情况
 		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
 		List<Integer> uids = new ArrayList<Integer>();
         for (UserDevice bindDevice : bindDevices) {
         	uids.add(bindDevice.getUid());
         }
+        System.out.println("~~~~~~~~~~2:设备绑定用户："+uids);
         for(Integer uid :uids){
         	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+        	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
         	userDeviceService.deleteById(userDevicePK);
+        	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
         	this.removeMobilePresent(uid, mac);
+        	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
 			userSettingStateService.deleteById(mac);
+			System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
 			//如果没有绑定其他设备，删除别名
-			List<UserDevicePK> ids = userDeviceService.findAllIds();
-			if (ids == null || ids.size() ==0) {
-				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid.intValue(), mac);
+			int count = userDeviceService.countBindDevices(uid);
+			if(count == 0 ){
+				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
 			}
         }
+        System.out.println("~~~~~~~~~~3:deviceResetDestory ok!");
 	}
 	
 	

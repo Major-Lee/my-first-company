@@ -58,4 +58,11 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         mc.createCriteria().andColumnEqualTo("mac", mac);
         this.deleteByCommonCriteria(mc);
     }
+
+
+    public int countBindDevices(int uid) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("uid", uid);
+        return countByModelCriteria(mc);
+    }
 }
