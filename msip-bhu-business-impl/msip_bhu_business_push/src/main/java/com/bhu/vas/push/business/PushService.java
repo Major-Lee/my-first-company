@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.user.model.*;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -92,6 +93,9 @@ public class PushService{
 		boolean ret = false;
 		try{
 			System.out.println("终端上线push1:"+JsonHelper.getJSONString(pushDto));
+			String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(pushDto.getMac());
+        	System.out.println("终端上线push2：present:"+present);
+			
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			System.out.println("终端上线push2:"+presentDto);
 			if(presentDto != null){

@@ -1235,11 +1235,11 @@ public class AsyncMsgHandleService {
 		
 		userSettingStateService.deleteById(dto.getMac());
 
-		//如果没有绑定其他设备，删除别名
+		/*//如果没有绑定其他设备，删除别名
 		int count = userDeviceService.countBindDevices(dto.getUid());
 		if(count == 0 ){
 			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
-		}
+		}*/
 		/*List<UserDevicePK> ids = userDeviceService.findAllIds();
 		if (ids == null || ids.size() ==0) {
 			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
