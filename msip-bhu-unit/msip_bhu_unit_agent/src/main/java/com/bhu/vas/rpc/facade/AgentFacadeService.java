@@ -719,6 +719,17 @@ public class AgentFacadeService {
         agentFinancialSettlement.setDetail(result);
         
         agentFinancialSettlementService.insert(agentFinancialSettlement);
+
+
+        AgentBulltinBoard agentBulltinBoard = new AgentBulltinBoard();
+        agentBulltinBoard.setPublisher(uid);
+        agentBulltinBoard.setConsumer(aid);
+        agentBulltinBoard.setType(AgentBulltinType.ArrivalNotice.getKey());
+
+        agentBulltinBoard.setContent(JsonHelper.getJSONString(agentFinancialSettlement));
+
+        agentBulltinBoardService.insert(agentBulltinBoard);
+
         return true;
     }
 
