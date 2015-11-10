@@ -41,6 +41,19 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	/**
 	 * 使用search condition message进行搜索
 	 */
+	public Page<MODEL> searchByConditionMessage(String message, int pageNo, int pageSize) 
+			throws ElasticsearchIllegalArgumentException{
+		
+		SearchConditionMessage searchConditionMessage = null;
+		if(!StringUtils.isEmpty(message)){
+			searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
+		}
+		return searchByConditionMessage(searchConditionMessage, pageNo, pageSize);
+	}
+
+	/**
+	 * 使用search condition message进行搜索
+	 */
 	public Page<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) 
 			throws ElasticsearchIllegalArgumentException{
 		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();

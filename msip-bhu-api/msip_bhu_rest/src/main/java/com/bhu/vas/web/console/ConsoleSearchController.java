@@ -1,7 +1,5 @@
 package com.bhu.vas.web.console;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,11 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.search.condition.SearchCondition;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -28,24 +27,32 @@ public class ConsoleSearchController extends BaseController {
 
 
     /**
-     * 获取最繁忙的TOP5wifi设备
-     *
+     * 多条件组合搜索接口
+     * @param uid
+     * @param conditions
+     * @param pageNo
+     * @param pageSize
      * @param request
      * @param response
      */
     @ResponseBody()
-    @RequestMapping(value = "/fetch_by_conditions", method = {RequestMethod.POST})
-    public void fetch_by_conditions(
+    @RequestMapping(value = "/fetch_by_condition_message", method = {RequestMethod.POST})
+    public void fetch_by_condition_message(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = false) int uid,
-            @RequestParam(required = false) List<SearchCondition> conditions,
+            @RequestParam(required = false) String message,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-            @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 
-        List<WifiDeviceMaxBusyVTO> vtos = deviceRestRpcService.fetchWDevicesOrderMaxHandset(pageNo, pageSize);
+/*    	SearchConditionMessage scm = JsonHelper.getDTO(message, SearchConditionMessage.class);
+    	System.out.println(uid + "=" + scm.getSearchType() + "=" +pageNo + "="+pageSize);
+    	for(SearchCondition searchCondition : scm.getSearchConditions()){
+    		System.out.println("for:"+ searchCondition.getKey() + "=" + searchCondition.getPattern() + "=" + searchCondition.getPayload());
+    	}*/
+        RpcResponseDTO<TailPage<WifiDeviceVTO1>> vtos = deviceRestRpcService.fetchBySearchConditionMessage(
+        		message, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
-
     }
 
 }

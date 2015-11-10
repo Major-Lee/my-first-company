@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
-import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
@@ -110,9 +109,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(SearchConditionMessage searchConditionMessage,
-			int pageNo, int pageSize) {
-		return deviceRestRpcService.fetchBySearchConditionMessage(searchConditionMessage, pageNo, pageSize);
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
+		return deviceRestRpcService.fetchBySearchConditionMessage(message, pageNo, pageSize);
+
 	}
 
 	/*@Override

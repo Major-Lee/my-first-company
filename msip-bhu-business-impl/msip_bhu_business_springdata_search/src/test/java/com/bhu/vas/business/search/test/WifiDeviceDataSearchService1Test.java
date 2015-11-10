@@ -47,7 +47,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
     	Thread.sleep(1000);
     }
     
-    //@Test
+    @Test
 	public void test001BatchCreateDocument(){
     	//wifiDeviceDataSearchService.refresh(false);
     	
@@ -64,11 +64,12 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		doc1.setD_geopoint(new double[]{109.407456,24.315300});
 		doc1.setD_address("广西壮族自治区柳州市柳南区西堤路");
 		doc1.setD_online("0");
-		doc1.setD_monline(false);
+		doc1.setD_monline("0");
 		doc1.setD_hoc(0);
 		doc1.setD_lastregedat(0l);
 		doc1.setD_lastlogoutat(0l);
 		doc1.setD_dut("TU");
+		doc1.setD_uptime("3600");
 		doc1.setUpdatedat(DateTimeHelper.getDateTime());
 		doc1.setO_template("style001");
 		doc1.setO_graylevel("gl1");
@@ -95,11 +96,12 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		doc2.setD_geopoint(new double[]{116.40387397,39.91488908});
 		doc2.setD_address("北京市东城区中华路甲10号");
 		doc2.setD_online("1");
-		doc2.setD_monline(true);
+		doc2.setD_monline("1");
 		doc2.setD_hoc(10);
 		doc2.setD_lastregedat(1446311400000l);//2015-11-01 01:10:00
 		doc2.setD_lastlogoutat(1446310920000l);//2015-11-01 01:02:00
 		doc2.setD_dut("TC");
+		doc2.setD_uptime("3600");
 		doc2.setUpdatedat(DateTimeHelper.getDateTime());
 		doc2.setO_template("style002");
 		doc2.setO_graylevel("gl2");
@@ -125,11 +127,12 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		doc3.setD_geopoint(new double[]{116.345581,40.017058});
 		doc3.setD_address("北京市海淀区双清路");
 		doc3.setD_online("2");
-		doc3.setD_monline(false);
+		doc3.setD_monline("2");
 		doc3.setD_hoc(0);
 		doc3.setD_lastregedat(1446311400000l);//2015-11-01 01:10:00
 		doc3.setD_lastlogoutat(1446313800000l);//2015-11-01 01:50:00
 		doc3.setD_dut("TC");
+		doc3.setD_uptime("3600");
 		doc3.setUpdatedat(DateTimeHelper.getDateTime());
 		doc3.setO_template("style002");
 		doc3.setO_graylevel("gl2");
@@ -155,11 +158,12 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		doc4.setD_geopoint(new double[]{116.345581,40.017058});
 		doc4.setD_address("北京市海淀区双清路");
 		doc4.setD_online("1");
-		doc4.setD_monline(true);
+		doc4.setD_monline("1");
 		doc4.setD_hoc(12);
 		doc4.setD_lastregedat(1446312300000l);//2015-11-01 01:25:00
 		doc4.setD_lastlogoutat(1446310800000l);//2015-11-01 01:00:00
 		doc4.setD_dut("TC");
+		doc4.setD_uptime("3600");
 		doc4.setUpdatedat(DateTimeHelper.getDateTime());
 		doc4.setO_template("style002");
 		doc4.setO_graylevel("gl1");
@@ -185,11 +189,12 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		doc5.setD_geopoint(new double[]{116.345581,40.017058});
 		doc5.setD_address("北京市海淀区双清路");
 		doc5.setD_online("1");
-		doc5.setD_monline(true);
+		doc5.setD_monline("1");
 		doc5.setD_hoc(12);
 		doc5.setD_lastregedat(1446312300000l);//2015-11-01 01:25:00
 		doc5.setD_lastlogoutat(1446310800000l);//2015-11-01 01:00:00
 		doc5.setD_dut("TC");
+		doc5.setD_uptime("3600");
 		doc5.setUpdatedat(DateTimeHelper.getDateTime());
 		doc5.setO_template("style002");
 		doc5.setO_graylevel("gl1");
@@ -531,7 +536,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		84:82:f4:0a:64:68 = AP201P07V1.2.14z2
 		84:82:f4:05:52:14 = AP201P07V1.2.14r3
 	 */
-	@Test
+	//@Test
 	public void test0010SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号倒序排序

@@ -98,11 +98,12 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	private String d_online;//设备在线状态 0 从未上线 1 在线 2 离线
 	
 	@Field(
-			type = FieldType.Boolean,
+			type = FieldType.String,
+			searchAnalyzer = "lowercase_whitespace",
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private Boolean d_monline;//设备增值模块是否在线
+	private String d_monline;//设备增值模块在线状态 0 从未上线 1 在线 2 离线
 	
 //	@Field(
 //			type = FieldType.String,
@@ -139,7 +140,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private long d_lastlogoutat;//设备的最新的上线时间
+	private long d_lastlogoutat;//设备的最新的下线时间
 	
 	@Field(
 			type = FieldType.Long,
@@ -155,6 +156,13 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			store = true
 	)
 	private String d_dut;//设备的业务线定义
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_uptime;//设备在线总时长 单位秒
 	
 	@Field(
 			type = FieldType.String,
@@ -328,11 +336,11 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 		this.d_online = d_online;
 	}
 
-	public Boolean getD_monline() {
+	public String getD_monline() {
 		return d_monline;
 	}
 
-	public void setD_monline(Boolean d_monline) {
+	public void setD_monline(String d_monline) {
 		this.d_monline = d_monline;
 	}
 
@@ -374,6 +382,14 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 
 	public String getD_dut() {
 		return d_dut;
+	}
+
+	public String getD_uptime() {
+		return d_uptime;
+	}
+
+	public void setD_uptime(String d_uptime) {
+		this.d_uptime = d_uptime;
 	}
 
 	public String getUpdatedat() {

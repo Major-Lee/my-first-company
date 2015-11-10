@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
-import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
@@ -203,11 +202,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(SearchConditionMessage searchConditionMessage, 
-			int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
 		logger.info("DeviceRestRPC fetchBySearchConditionMessage invoke");
 		try{
-			return deviceRestBusinessFacadeService.fetchBySearchConditionMessage(searchConditionMessage, pageNo, pageSize);
+			return deviceRestBusinessFacadeService.fetchBySearchConditionMessage(message, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchBySearchConditionMessage exception exmsg[%s]",ex.getMessage()), ex);

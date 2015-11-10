@@ -3,7 +3,6 @@ package com.bhu.vas.api.rpc.devices.iservice;
 import java.util.List;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
-import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
@@ -30,7 +29,7 @@ public interface IDeviceRestRpcService {
 	
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId);
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId);
-	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(SearchConditionMessage searchConditionMessage,
-			int pageNo, int pageSize);
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize);
+
 	//public Collection<GeoMapVTO> fetchGeoMap();
 }
