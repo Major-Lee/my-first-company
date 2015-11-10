@@ -39,7 +39,7 @@ public class UserSettingStateService extends AbstractCoreService<String,UserSett
 		return null;
 	}
 	
-	public UserSettingState initUserSettingStateWithoutPush(String mac){
+	/*public UserSettingState initUserSettingStateWithoutPush(String mac){
 		if(!StringUtils.isEmpty(mac)){
 			UserSettingState entity = new UserSettingState();
 			entity.setId(mac);
@@ -51,7 +51,7 @@ public class UserSettingStateService extends AbstractCoreService<String,UserSett
 			return super.insert(entity);
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * 重新封装
