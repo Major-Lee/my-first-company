@@ -361,7 +361,6 @@ public class AgentFacadeService {
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
 
-
         return agentDeviceVTO;
     }
 
@@ -401,7 +400,6 @@ public class AgentFacadeService {
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
-
 
         return agentDeviceVTO;
     }
@@ -465,8 +463,6 @@ public class AgentFacadeService {
         }
         return vto;
     }*/
-
-
 
     public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
                                                           String inputPath, String outputPath,

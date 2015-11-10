@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+
 import com.bhu.vas.api.helper.AgentBulltinType;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
@@ -23,6 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.FileInputStream;
@@ -37,6 +39,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by bluesand on 11/10/15.
  */
+@Service
 public class AgentBackendProcessor {
 
     private AgentBackendProcessor() {};
@@ -51,7 +54,6 @@ public class AgentBackendProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(AgentBackendProcessor.class);
     private ExecutorService exec = Executors.newFixedThreadPool(100);
-
 
     @Resource
     private AgentDeviceClaimService agentDeviceClaimService;
@@ -73,7 +75,6 @@ public class AgentBackendProcessor {
                     String message = ActionMessageFactoryBuilder.determineActionMessage(messagejsonHasPrefix);
                     ActionMessageType type = ActionMessageFactoryBuilder.determineActionType(messagejsonHasPrefix);
                     switch(type){
-
                         case AgentDeviceClaimImport:
                             importAgentDeviceClaim(message);
                             break;
@@ -97,7 +98,7 @@ public class AgentBackendProcessor {
      * @param message
      */
     public void importAgentDeviceClaim(String message) {
-        logger.info(String.format("AgentDeviceClaimServiceHandler importAgentDeviceClaim message[%s]", message));
+        logger.info(String.format("AgentBackendProcessor importAgentDeviceClaim message[%s]", message));
         AgentDeviceClaimImportDTO dto =  JsonHelper.getDTO(message, AgentDeviceClaimImportDTO.class);
 
         //todo(bluesand)：处理POI excel,导入数据
@@ -114,7 +115,7 @@ public class AgentBackendProcessor {
 
     public void updateAgentDeviceClaim(String message) {
 
-        logger.info(String.format("AgentDeviceClaimServiceHandler updateAgentDeviceClaim message[%s]", message));
+        logger.info(String.format("AgentBackendProcessor updateAgentDeviceClaim message[%s]", message));
         AgentDeviceClaimUpdateDTO dto = JsonHelper.getDTO(message, AgentDeviceClaimUpdateDTO.class);
 
         ModelCriteria mc = new ModelCriteria();
@@ -142,13 +143,7 @@ public class AgentBackendProcessor {
             agentDeviceClaimService.updateAll(agentDeviceClaims);
         }
 
-
-
-
     }
-
-
-
 
     private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
 
