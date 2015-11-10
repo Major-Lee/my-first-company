@@ -91,7 +91,9 @@ public class PushService{
 	public boolean pushHandsetDeviceOnline(PushDTO pushDto){
 		boolean ret = false;
 		try{
+			System.out.println("终端上线push1:"+JsonHelper.getJSONString(pushDto));
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			System.out.println("终端上线push2:"+presentDto);
 			if(presentDto != null){
 				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
 				//判断是否是自己
