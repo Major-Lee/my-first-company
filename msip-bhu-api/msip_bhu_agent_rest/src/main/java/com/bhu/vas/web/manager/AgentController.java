@@ -236,22 +236,22 @@ public class AgentController {
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = true) Integer bid) throws IOException {
 
-        System.out.println("=============== /agent/download");
+//        System.out.println("=============== /agent/download");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
         AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(uid, bid);
-        System.out.println("vto =====" + vto );
+//        System.out.println("vto =====" + vto );
         if (vto != null) {
             String content = vto.getM();
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
-            System.out.println("vto =====" + path );
+//            System.out.println("vto =====" + path );
             if (path != null) {
                 headers.setContentDispositionFormData("attachment", dto.getAid() + ".xls");
                 File file = new File(path);
-                System.out.println("file" + file);
+//                System.out.println("file" + file);
                 return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
             }
         }
