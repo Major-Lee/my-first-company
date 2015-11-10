@@ -242,13 +242,16 @@ public class AgentController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
         AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(uid, bid);
+        System.out.println("vto =====" + vto );
         if (vto != null) {
             String content = vto.getM();
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
+            System.out.println("vto =====" + path );
             if (path != null) {
                 headers.setContentDispositionFormData("attachment", dto.getAid() + ".xls");
                 File file = new File(path);
+                System.out.println("file" + file);
                 return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
             }
         }
