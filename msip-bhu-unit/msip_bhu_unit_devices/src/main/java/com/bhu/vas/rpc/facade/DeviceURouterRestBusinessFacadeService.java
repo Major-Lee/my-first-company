@@ -356,30 +356,19 @@ public class DeviceURouterRestBusinessFacadeService {
 				if (offset > 5) {
 					//offset = 5; //7天外的数据直接忽略
 					if (HANDSET_LOGOUT_TYPE.equals(last_type)) { //如果最后一天数据是隔天数据
-//						URouterHdTimeLineVTO vto = vtos.get(6);
-//						List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
-//						if (mdtos_ != null && !mdtos_.isEmpty()) {
-//							WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size()-1);
-//							dto_.setLogin_at(getDateZeroTime(new Date(ts)).getTime());
-//							vto.setDetail(mdtos_);
-//						}
-						long end_space = currentTime - last_ts;
-						int end_offset = (int) (end_space/(DAY_TIME_MILLION_SECOND));
 
-						for (int i=0 ;i <=6 ;i ++) {
+						for (int i=6 ; i >=0 ;i--) {
 							URouterHdTimeLineVTO vto = vtos.get(i);
 							List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
-							if ( i ==0 || mdtos_ != null && !mdtos_.isEmpty()) {
-								continue;
-							} else {
-								URouterHdTimeLineVTO last_vto = vtos.get(i-1);
+							if(mdtos_ != null && !mdtos_.isEmpty()) {
+								URouterHdTimeLineVTO last_vto = vtos.get(i);
 								List<WifiHandsetDeviceItemDetailMDTO> last_mdtos = last_vto.getDetail();
 								WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
-								last_dto.setLogin_at(getDateZeroTime(new Date(last_ts - end_offset * DAY_TIME_MILLION_SECOND )).getTime());
+								last_dto.setLogin_at(getDateZeroTime(
+										DateTimeHelper.parseDate(last_vto.getDate(), DateTimeHelper.shortDateFormat)).getTime());
 								last_vto.setDetail(last_mdtos);
 								break;
 							}
-
 						}
 					}
 					break;
