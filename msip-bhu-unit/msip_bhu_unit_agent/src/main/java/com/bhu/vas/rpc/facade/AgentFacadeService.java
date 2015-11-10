@@ -505,7 +505,10 @@ public class AgentFacadeService {
         }
 
         //异步处理代理商
-        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
+//        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
+
+        AgentBackendProcessor.getInstance().sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
+
         return vto;
 
     }
@@ -696,7 +699,8 @@ public class AgentFacadeService {
         if (agentDeviceImportLog != null) {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
-            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
+//            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
+            AgentBackendProcessor.getInstance().sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
         }
         return true;
     }
