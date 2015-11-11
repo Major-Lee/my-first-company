@@ -91,6 +91,7 @@ public class AgentStatisticsUnitFacadeService {
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
 			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod()):0.00d)));
 			//昨日收入(元)  
+			Date yesterdayMonthDate = DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1);
 			String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod()):0.00d)));
@@ -126,9 +127,13 @@ public class AgentStatisticsUnitFacadeService {
 			
 			Map<String,Object> charts = new HashMap<>();
 			//本月charts
-			charts.put(currentMonth, buildChartsData(user,currentDate,true));
+			String yesterdayMonth = DateTimeHelper.formatDate(yesterdayMonthDate, DateTimeHelper.FormatPattern11);
+			charts.put(yesterdayMonth, buildChartsData(user,yesterdayMonthDate,true));
 			//上月charts
-			charts.put(previosMonth, buildChartsData(user,previousMonthDate,false));
+			//获取yesterdayMonthDate的上一个月的日期
+			Date previousMonthDateOfYesterday = DateTimeHelper.getDateFirstDayOfMonthAgo(yesterdayMonthDate,1);
+			String previousMonthOfYesterday = DateTimeHelper.formatDate(previousMonthDateOfYesterday, DateTimeHelper.FormatPattern11);
+			charts.put(previousMonthOfYesterday, buildChartsData(user,previousMonthDateOfYesterday,false));
 			vto.setCharts(charts);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
@@ -138,6 +143,7 @@ public class AgentStatisticsUnitFacadeService {
 	}
 	
 	private Map<String,List<String>> buildChartsData(int agent,Date date,boolean isSameMonth){
+		
 		Map<String,List<String>> result = new HashMap<>();
 		List<String> days = new ArrayList<String>();
 		List<String> dayvals = new ArrayList<String>();
@@ -161,7 +167,7 @@ public class AgentStatisticsUnitFacadeService {
 				DateTimeHelper.formatDate(lastDate, DateTimeHelper.FormatPattern5));
 		for(AgentWholeDayMDTO dto:results){
 			int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-			dayvals.set(whichday, String.valueOf(AgentHelper.currency(dto.getDod())));
+			dayvals.set(whichday-1, String.valueOf(AgentHelper.currency(dto.getDod())));
 		}
 		result.put("days", days);
 		result.put("dayvals", dayvals);
