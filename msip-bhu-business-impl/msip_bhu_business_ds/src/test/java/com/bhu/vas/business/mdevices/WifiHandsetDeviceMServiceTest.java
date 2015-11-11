@@ -49,8 +49,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 
 //        for (WifiHandsetDeviceRelationMDTO dto : results) {
 
-            String wifiId = "84:82:f4:23:06:68";
-            String mac = "38:48:4c:c5:05:6d";
+            String wifiId = "84:82:f4:1c:e8:b8";
+            String mac = "d0:67:e5:40:89:a2";
 
 //            wifiId = dto.getWifiId();
 //            mac = dto.getHandsetId();
@@ -123,20 +123,21 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                         long end_space = currentTime - last_ts;
                         int end_offset = (int) (end_space/(DAY_TIME_MILLION_SECOND));
 
-                        for (int i=0 ;i <=6 ;i ++) {
-                            URouterHdTimeLineVTO vto = vtos.get(i);
-                            List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
-                            if ( i ==0 || mdtos_ != null && !mdtos_.isEmpty()) {
-                                continue;
-                            } else {
-                                URouterHdTimeLineVTO last_vto = vtos.get(i-1);
-                                List<WifiHandsetDeviceItemDetailMDTO> last_mdtos = last_vto.getDetail();
-                                WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
-                                last_dto.setLogin_at(getDateZeroTime(new Date(last_ts - end_offset * DAY_TIME_MILLION_SECOND )).getTime());
-                                last_vto.setDetail(last_mdtos);
-                            }
-
-                        }
+//                        for (int i=0 ;i <=6 ;i ++) {
+//                            URouterHdTimeLineVTO vto = vtos.get(i);
+//                            List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
+//                            if ( i ==0 || (mdtos_ != null && !mdtos_.isEmpty())) {
+//                                continue;
+//                            } else {
+//                                URouterHdTimeLineVTO last_vto = vtos.get(i-1);
+//                                List<WifiHandsetDeviceItemDetailMDTO> last_mdtos = last_vto.getDetail();
+//                                WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
+//                                last_dto.setLogin_at(getDateZeroTime(new Date(last_ts - end_offset * DAY_TIME_MILLION_SECOND )).getTime());
+//                                last_vto.setDetail(last_mdtos);
+//                                break;
+//                            }
+//
+//                        }
 
 //                        URouterHdTimeLineVTO vto = vtos.get(6);
 //                        List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
@@ -145,6 +146,23 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 //                            dto_.setLogin_at(getDateZeroTime(new Date(ts)).getTime());
 //                            vto.setDetail(mdtos_);
 //                        }
+
+
+                        for (int i=6 ; i >=0 ;i--) {
+                            URouterHdTimeLineVTO vto = vtos.get(i);
+                            List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
+                            if(mdtos_ != null && !mdtos_.isEmpty()) {
+                                URouterHdTimeLineVTO last_vto = vtos.get(i);
+                                List<WifiHandsetDeviceItemDetailMDTO> last_mdtos = last_vto.getDetail();
+                                System.out.println("=====[" + i +  "] ==>" +  last_mdtos.size());
+                                WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
+                                System.out.println("====" + last_dto);
+
+                                last_dto.setLogin_at(getDateZeroTime(DateTimeHelper.parseDate(last_vto.getDate(), DateTimeHelper.shortDateFormat)).getTime());
+                                last_vto.setDetail(last_mdtos);
+                                break;
+                            }
+                        }
 
                     }
 
