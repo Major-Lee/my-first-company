@@ -262,6 +262,40 @@ public class WifiDeviceGrayFacadeService {
     }
     
     /**
+     * 删除指定设备类型的固件或增值组件版本
+     * @param dut
+     * @param fw
+     * @param versionid
+     * @return
+     */
+    public VersionVTO removeDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid){
+    	validateDut(dut);
+    	if(StringUtils.isEmpty(versionid)) 
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(fw){
+    		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
+    		if(versionfw == null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
+    		}
+    		if(versionfw.isRelated()){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_OPERATION_CANNOT_EXECUTE);
+    		}
+    		wifiDeviceVersionFWService.deleteById(versionid);
+    		return versionfw.toVersionVTO();
+    	}else{
+    		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
+    		if(versionom == null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
+    		}
+    		if(versionom.isRelated()){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_OPERATION_CANNOT_EXECUTE);
+    		}
+    		wifiDeviceVersionOMService.deleteById(versionid);
+    		return versionom.toVersionVTO();
+    	}
+    }
+    
+    /**
      * 清除macs 从灰度列表中
      * @param macs
      */

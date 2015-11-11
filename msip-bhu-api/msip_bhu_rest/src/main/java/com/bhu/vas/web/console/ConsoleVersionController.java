@@ -123,7 +123,16 @@ public class ConsoleVersionController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
     }
     
-    
+    /**
+     * 增加固件版本或者增值组件版本信息
+     * @param request
+     * @param response
+     * @param uid
+     * @param dut
+     * @param fw
+     * @param versionid
+     * @param upgrade_url
+     */
     @ResponseBody()
     @RequestMapping(value = "/adddv", method = {RequestMethod.POST})
     public void adddv(
@@ -136,6 +145,24 @@ public class ConsoleVersionController extends BaseController {
             @RequestParam(required = true) String upgrade_url
             ) {
     	RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, versionid, upgrade_url);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+    }
+    
+    
+    @ResponseBody()
+    @RequestMapping(value = "/removedv", method = {RequestMethod.POST})
+    public void removedv(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) boolean fw,
+            @RequestParam(required = true) String versionid
+            ) {
+    	RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, versionid);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

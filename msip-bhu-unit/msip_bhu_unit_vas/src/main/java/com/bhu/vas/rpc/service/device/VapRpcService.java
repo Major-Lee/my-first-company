@@ -119,6 +119,20 @@ public class VapRpcService  implements IVapRpcService{
 		}
 	}
 
-    
+	@Override
+	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, int dut,
+			boolean fw, String versionid) {
+		logger.info(String.format("removeDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s]",uid,dut,fw,versionid));
+		try{
+			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.removeDeviceVersion(VapEnumType.DeviceUnitType.fromIndex(dut), fw, versionid);
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 
 }
