@@ -1,29 +1,26 @@
 package com.bhu.vas.web.manager;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
-import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
-import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
-import com.bhu.vas.api.vto.agent.AgentFinancialUploadVTO;
-import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseSuccess;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import java.io.File;
+import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.File;
-import java.util.Date;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
+import com.bhu.vas.api.vto.agent.AgentFinancialUploadVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
  * Created by bluesand on 10/21/15.

@@ -34,7 +34,6 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -87,7 +86,8 @@ public class AgentStatisticsUnitFacadeService {
 			AgentWholeMonthMDTO currentmonth_data = agentWholeMonthMService.getWholeMonth(currentMonth, user);
 			vto.setRcm(ArithHelper.getFormatter(String.valueOf(currentmonth_data!=null?AgentHelper.currency(currentmonth_data.getDod()):0.00d)));
 			//上月收入(元)  
-			String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1), DateTimeHelper.FormatPattern11);
+			Date previousMonthDate = DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1);
+			String previosMonth = DateTimeHelper.formatDate(previousMonthDate, DateTimeHelper.FormatPattern11);
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
 			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod()):0.00d)));
 			//昨日收入(元)  
@@ -102,7 +102,7 @@ public class AgentStatisticsUnitFacadeService {
 			vto.setTr(ArithHelper.getFormatter(String.valueOf(AgentHelper.currency(summary.getT_dod()))));
 			
 			pageTotalSettlements4Agent(user,vto);
-			Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
+			/*Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 			List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(user, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr);
 			//vto.setCharts(new HashMap<String,Double>());
@@ -110,8 +110,6 @@ public class AgentStatisticsUnitFacadeService {
 			int max = 0;
 			for(AgentWholeDayMDTO dto:results){
 				int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-				//ArithHelper.getCurrency(String.valueOf(ChargingCurrencyHelper.currency(dto.getDod())))
-				//charts.put(String.format("%02d日", whichday), ArithHelper.round((double)RandomData.floatNumber(5000, 20000),2));
 				charts.put(String.format("%02d日", whichday), AgentHelper.currency(dto.getDod()));
 				if(whichday>max){
 					max = whichday;
@@ -124,12 +122,51 @@ public class AgentStatisticsUnitFacadeService {
 					charts.put(indexday, 0d);
 				}
 			}
-			vto.setCharts(SortMapHelper.sortMapByKey(charts));
+			vto.setCharts(SortMapHelper.sortMapByKey(charts));*/
+			
+			Map<String,Object> charts = new HashMap<>();
+			//本月charts
+			charts.put(currentMonth, buildChartsData(user,currentDate,true));
+			//上月charts
+			charts.put(previosMonth, buildChartsData(user,previousMonthDate,false));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+	
+	private Map<String,List<String>> buildChartsData(int agent,Date date,boolean isSameMonth){
+		Map<String,List<String>> result = new HashMap<>();
+		List<String> days = new ArrayList<String>();
+		List<String> dayvals = new ArrayList<String>();
+		{//初始化数据
+			int passDayOfMonth = 0;
+			if(isSameMonth){//当前月
+				passDayOfMonth = DateTimeExtHelper.getPassDayOfMonth(date);
+			}else{
+				passDayOfMonth = DateTimeExtHelper.getDayOfMonth(date);
+			}
+			for(int i=1;i<=passDayOfMonth;i++){
+				days.add(String.format("%02d日", i));
+				dayvals.add(String.valueOf(0d));
+			}
+		}
+		//String dateKey = DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern11);
+		Date firstDate = DateTimeExtHelper.getFirstDateOfMonth(date);
+		Date lastDate = DateTimeExtHelper.getLastDateOfMonth(date);
+		List<AgentWholeDayMDTO> results = agentWholeDayMService.fetchByDateBetween(agent, 
+				DateTimeHelper.formatDate(firstDate, DateTimeHelper.FormatPattern5),
+				DateTimeHelper.formatDate(lastDate, DateTimeHelper.FormatPattern5));
+		for(AgentWholeDayMDTO dto:results){
+			int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
+			dayvals.set(whichday, String.valueOf(AgentHelper.currency(dto.getDod())));
+		}
+		result.put("days", days);
+		result.put("dayvals", dayvals);
+		return result;
+		//Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
+		//Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
 	}
 
 	/**
