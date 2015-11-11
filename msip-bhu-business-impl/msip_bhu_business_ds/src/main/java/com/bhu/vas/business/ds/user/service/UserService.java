@@ -64,15 +64,15 @@ public class UserService extends AbstractCoreService<Integer,User, UserDao>{//En
 	}
 
 	/**
-	 * 检查是否有相同的公司名称 true:无 false:有
+	 * 检查是否有相同的公司名称 true:有 false:无
 	 * @param org
 	 * @return
 	 */
-	public boolean checkOrg(String org) {
+	public boolean isExistsOrg(String org) {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("org", org);
 		List<Integer> ids = this.findIdsByCommonCriteria(mc);
-		return ids == null || ids.isEmpty();
+		return !(ids == null || ids.isEmpty());
 
 	}
 
