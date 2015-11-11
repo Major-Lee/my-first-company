@@ -6,14 +6,16 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.agent.dto.AgentSettlementBulltinBoardDTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.AgentBulltinType;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.dto.AgentSettlementBulltinBoardDTO;
 import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
@@ -30,9 +32,9 @@ import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
+import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
-import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeMonthMService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
@@ -46,6 +48,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * Created by bluesand on 9/7/15.
@@ -84,7 +88,10 @@ public class AgentFacadeService {
     private AgentFinancialSettlementService agentFinancialSettlementService;
 
     @Resource
-    private AgentSettlementsRecordMService agentSettlementsRecordMService;
+	private AgentBillFacadeService agentBillFacadeService;
+    
+    //@Resource
+    //private AgentSettlementsRecordMService agentSettlementsRecordMService;
 
     @Resource
     private AgentBackendFacadeService agentBackendFacadeService;
@@ -705,40 +712,42 @@ public class AgentFacadeService {
         return true;
     }
 
-    public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
-    	User operUser = userService.getById(uid);
-    	UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
-    	AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
-        agentFinancialSettlement.setUid(uid);
-        agentFinancialSettlement.setAid(aid);
-        agentFinancialSettlement.setAmount(account);
-        agentFinancialSettlement.setInvoice_fid(invoice);
-        agentFinancialSettlement.setReceipt_fid(receipt);
-        agentFinancialSettlement.setRemark(remark);
-        String result = agentSettlementsRecordMService.iterateSettleBills(uid,operUser.getNick(), aid, account);
-        agentFinancialSettlement.setDetail(result);
-        
-        agentFinancialSettlementService.insert(agentFinancialSettlement);
-
-
-        AgentBulltinBoard agentBulltinBoard = new AgentBulltinBoard();
-        agentBulltinBoard.setPublisher(uid);
-        agentBulltinBoard.setConsumer(aid);
-        agentBulltinBoard.setType(AgentBulltinType.ArrivalNotice.getKey());
-        
-        AgentSettlementBulltinBoardDTO dto = new AgentSettlementBulltinBoardDTO();
-
-        dto.setAid(aid);
-        dto.setAmount(account);
-        dto.setInvoice(invoice);
-        dto.setReceipt(receipt);
-        dto.setRemark(remark);
-
-        agentBulltinBoard.setContent(JsonHelper.getJSONString(dto));
-
-        agentBulltinBoardService.insert(agentBulltinBoard);
-
-        return true;
+    public  RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
+    	try{
+	    	User operUser = userService.getById(uid);
+	    	UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
+	    	User agentUser = userService.getById(aid);
+	    	UserTypeValidateService.validUserType(agentUser, UserType.Agent.getSname());
+	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, account);
+	    	AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
+	        agentFinancialSettlement.setUid(uid);
+	        agentFinancialSettlement.setAid(aid);
+	        agentFinancialSettlement.setAmount(account);
+	        agentFinancialSettlement.setInvoice_fid(invoice);
+	        agentFinancialSettlement.setReceipt_fid(receipt);
+	        agentFinancialSettlement.setRemark(remark);
+	        agentFinancialSettlement.setDetail(result);
+	        agentFinancialSettlementService.insert(agentFinancialSettlement);
+	        AgentBulltinBoard agentBulltinBoard = new AgentBulltinBoard();
+	        agentBulltinBoard.setPublisher(uid);
+	        agentBulltinBoard.setConsumer(aid);
+	        agentBulltinBoard.setType(AgentBulltinType.ArrivalNotice.getKey());
+	        AgentSettlementBulltinBoardDTO dto = new AgentSettlementBulltinBoardDTO();
+	        dto.setAid(aid);
+	        dto.setAmount(account);
+	        dto.setInvoice(invoice);
+	        dto.setReceipt(receipt);
+	        dto.setRemark(remark);
+	        agentBulltinBoard.setContent(JsonHelper.getJSONString(dto));
+	        agentBulltinBoardService.insert(agentBulltinBoard);
+	        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+    	}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
     }
 
 

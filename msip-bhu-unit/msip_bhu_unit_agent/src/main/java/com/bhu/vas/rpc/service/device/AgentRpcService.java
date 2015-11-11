@@ -143,7 +143,7 @@ public class AgentRpcService implements IAgentRpcService {
 
     /* 财务 start */
     @Override
-    public boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
+    public RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
         logger.info(String.format("postAgentFinancialSettlement uid[%s] aid[%s] account[%s] invoice[%s] receipt[%s] remark[%s]",
                 uid, aid, account,invoice, receipt,remark));
         return agentFacadeService.postAgentFinancialSettlement(uid, aid, account, invoice, receipt, remark);

@@ -19,6 +19,8 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class AgentBillFacadeService {
@@ -90,6 +92,16 @@ public class AgentBillFacadeService {
 	 * @param price
 	 */
 	public String iterateSettleBills(int operator,String operNick,int agent,double price){
+		if(price <= 0)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_LARGERTHENZERO);
+		AgentBillSummaryView sview = agentBillSummaryViewService.getById(agent);
+		if(sview == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+		if(sview.getStatus() == AgentBillSummaryView.SummaryView_Settled)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_SETTLEBILLS_AGENT_ALREADY_SETTLED_DONE);
+		if(price > ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))
+			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_EQUALORLESSTHENSUB);
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("结算总金额[%s]<BR/>\n", price));
 		if(agent >0 && price>0){
@@ -122,6 +134,11 @@ public class AgentBillFacadeService {
 				}
 				if(price <= 0) break;
 			}
+			//重新生成SummaryView
+			//方式1：重新全部计算
+			billSummaryViewGen(agent);
+			//方式2：直接更新SummaryView
+			
 		}
 		sb.append(String.format("剩余金额[%s]<BR/>\n", price));
 		return sb.toString();
