@@ -101,7 +101,7 @@ public class AgentUserUnitFacadeService {
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
-		if (!userService.checkOrg(org)) {
+		if (!userService.isExistsOrg(org)) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 		}
 		
@@ -308,7 +308,7 @@ public class AgentUserUnitFacadeService {
 				user.setNick(nick);;
 			}
 			if(StringUtils.isNotEmpty(org)){
-				if ( !org.equals(user.getOrg()) && !userService.checkOrg(org)) {
+				if ( !org.equals(user.getOrg()) && userService.isExistsOrg(org)) {
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 				}
 				user.setOrg(org);
