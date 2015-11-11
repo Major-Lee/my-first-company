@@ -36,13 +36,12 @@ public enum ResponseErrorCode {
 	COMMON_CONNECT_TIMEOUT_ERROR("992", "common.connect.timeout"),
 	COMMON_DATA_ALREADYEXIST("991", "common.data.alreadyexist"),
 	COMMON_DATA_ALREADYDONE("990", "common.data.alreadydone"),
-
 	COMMON_DATA_VALIDATE_LENGTH_ILEGAL("900","common.data.validate.length.ilegal"),
 		
 	
-	SNS_TYPE_NOT_SUPPORT("801", "sns.type.not.support"), 
-	SNS_DUPLICATE_BIND("806", "sns.duplicate.bind"),
-	SNS_TYPE_QQ_NAME_NOTEXIST("811", "sns.type.qq.name.notexist"), 
+	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_LARGERTHENZERO("801", "agent.settlement.action.settlebills.price.must.largerthenzero"), 
+	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_EQUALORLESSTHENSUB("802", "agent.settlement.action.settlebills.price.must.equalorlessthensub"),
+	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_AGENT_ALREADY_SETTLED_DONE("802", "agent.settlement.action.settlebills.agent.already.settled.done"),
 	
 	SEARCH_FAVSONG_KEYWORDS_PARSER_ATTARGET_EMPTY("799","search.friendfavsong.keywords.parser.attarget.empty"),
 	SEARCH_COMMON_KEYWORDS_PARSER_ILLEGAL("798","search.keywords.parser.illegal"),

@@ -171,7 +171,7 @@ public interface IAgentRpcService {
      * @param remark
      * @return
      */
-    boolean postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark);
+    RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark);
 
 
     /**
