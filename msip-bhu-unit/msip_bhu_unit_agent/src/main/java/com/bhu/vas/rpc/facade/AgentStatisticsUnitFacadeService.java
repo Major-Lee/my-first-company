@@ -91,8 +91,8 @@ public class AgentStatisticsUnitFacadeService {
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
 			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod()):0.00d)));
 			//昨日收入(元)  
-			Date yesterdayMonthDate = DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1);
-			String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
+			Date yesterdayMonthDate = DateTimeHelper.getDateDaysAgo(currentDate, 1);//(currentDate,1);
+			String yesterday = DateTimeHelper.formatDate(yesterdayMonthDate,DateTimeHelper.FormatPattern5);
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
 			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod()):0.00d)));
 			//结算过的总收入(元)
@@ -101,7 +101,6 @@ public class AgentStatisticsUnitFacadeService {
 			//vto.setOd(ArithHelper.getFormatter(String.valueOf(summary.getT_devices())));
 			//vto.setRtl(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(summary.getT_dod()))));
 			vto.setTr(ArithHelper.getFormatter(String.valueOf(AgentHelper.currency(summary.getT_dod()))));
-			
 			pageTotalSettlements4Agent(user,vto);
 			/*Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
