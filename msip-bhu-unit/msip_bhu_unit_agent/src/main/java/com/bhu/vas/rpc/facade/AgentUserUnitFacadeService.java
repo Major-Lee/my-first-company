@@ -305,10 +305,10 @@ public class AgentUserUnitFacadeService {
 			//UserTypeValidateService.validConsoleOrAgentUser(user);
 			UserTypeValidateService.validNotNormalUser(user);
 			if(StringUtils.isNotEmpty(nick)){
-				user.setNick(nick);;
+				user.setNick(nick);
 			}
 			if(StringUtils.isNotEmpty(org)){
-				if ( !org.equals(user.getOrg()) && userService.isExistsOrg(org)) {
+				if (userService.isExistsOrg(uid, org)) {
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 				}
 				user.setOrg(org);
