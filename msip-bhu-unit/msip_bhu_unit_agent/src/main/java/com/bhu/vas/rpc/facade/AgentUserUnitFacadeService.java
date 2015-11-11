@@ -101,7 +101,7 @@ public class AgentUserUnitFacadeService {
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
-		if (!userService.isExistsOrg(org)) {
+		if (userService.isExistsOrg(org)) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 		}
 		
