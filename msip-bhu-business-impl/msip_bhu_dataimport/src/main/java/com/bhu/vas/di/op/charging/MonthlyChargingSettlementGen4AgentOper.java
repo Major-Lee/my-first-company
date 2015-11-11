@@ -3,7 +3,6 @@ package com.bhu.vas.di.op.charging;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -11,18 +10,14 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
-import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
-import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.helper.ArithHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.localunit.RandomData;
 
 /**
  * 对指定月进行结算
@@ -54,7 +49,8 @@ public class MonthlyChargingSettlementGen4AgentOper {
 		UserService userService = (UserService)ctx.getBean("userService");
 		
 		AgentWholeMonthMService agentWholeMonthMService = (AgentWholeMonthMService)ctx.getBean("agentWholeMonthMService");
-		AgentSettlementsRecordMService agentSettlementsRecordMService = (AgentSettlementsRecordMService)ctx.getBean("agentSettlementsRecordMService");
+		AgentBillFacadeService agentBillFacadeService = (AgentBillFacadeService)ctx.getBean("agentBillFacadeService");
+		//AgentSettlementsRecordMService agentSettlementsRecordMService = (AgentSettlementsRecordMService)ctx.getBean("agentSettlementsRecordMService");
 		List<Integer> agentUsers = new ArrayList<Integer>();
 		
 		ModelCriteria mc_user = new ModelCriteria();
@@ -66,7 +62,6 @@ public class MonthlyChargingSettlementGen4AgentOper {
 			List<Integer> uids = it_user.nextKeys();
 			agentUsers.addAll(uids);
 		}
-		
 		if(agentUsers.isEmpty()){
 			System.out.println("没有发现代理商用户");
 		}
@@ -74,7 +69,8 @@ public class MonthlyChargingSettlementGen4AgentOper {
 			for(Integer user:agentUsers){
 				AgentWholeMonthMDTO wholeMonth = agentWholeMonthMService.getWholeMonth(date, user);
 				if(wholeMonth != null){
-					AgentSettlementsRecordMDTO settlement = agentSettlementsRecordMService.getSettlement(date, user);
+					agentBillFacadeService.newBillCreated(user, date, AgentHelper.currency(wholeMonth.getDod()));
+					/*AgentSettlementsRecordMDTO settlement = agentSettlementsRecordMService.getSettlement(date, user);
 					if(settlement != null){//已经存在的单据，覆盖部分值
 						settlement.setiSVPrice(AgentHelper.currency(wholeMonth.getDod()));
 					}else{
@@ -86,7 +82,7 @@ public class MonthlyChargingSettlementGen4AgentOper {
 						settlement.setStatus(AgentSettlementsRecordMDTO.Settlement_Bill_Created);
 					}
 					settlement.setCreated_at(DateTimeHelper.formatDate(new Date(),DateTimeHelper.FormatPattern1));
-					agentSettlementsRecordMService.save(settlement);
+					agentSettlementsRecordMService.save(settlement);*/
 				}
 			}
 			System.out.println(date+" 结算成功");

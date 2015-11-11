@@ -85,6 +85,9 @@ public class AgentFacadeService {
 
     @Resource
     private AgentSettlementsRecordMService agentSettlementsRecordMService;
+
+    @Resource
+    private AgentBackendFacadeService agentBackendFacadeService;
     
     public int claimAgentDevice(String sn, String mac) {
         logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s] mac[%s]", sn, mac));
@@ -361,7 +364,6 @@ public class AgentFacadeService {
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
 
-
         return agentDeviceVTO;
     }
 
@@ -401,7 +403,6 @@ public class AgentFacadeService {
         agentDeviceVTO.setOnline_count(online_count);
         agentDeviceVTO.setOffline_count(offline_count);
         agentDeviceVTO.setYet_count(yetTotal);
-
 
         return agentDeviceVTO;
     }
@@ -466,8 +467,6 @@ public class AgentFacadeService {
         return vto;
     }*/
 
-
-
     public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
                                                           String inputPath, String outputPath,
                                                           String originName, String remark) {
@@ -508,7 +507,7 @@ public class AgentFacadeService {
         //异步处理代理商
 //        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
 
-        AgentBackendProcessor.getInstance().sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
+        agentBackendFacadeService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
 
         return vto;
 
@@ -701,7 +700,7 @@ public class AgentFacadeService {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
 //            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
-            AgentBackendProcessor.getInstance().sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
+            agentBackendFacadeService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
         }
         return true;
     }

@@ -175,7 +175,10 @@ public class AgentSettlementsRecordMService {
 		return aggregate;
 	}
 	/**
-	 * 统计代理商管理页面中的 所有、未结算、已经结算的统计数量数据
+	 * 统计代理商管理页面中的 
+	 * 所有 所有代理商
+	 * 未结算 存在未结算单据的代理商    	所属单据中有状态为 	AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted
+	 * 已经结算 单据都被结算清的代理商   	所属单据中的状态均为	AgentSettlementsRecordMDTO.Settlement_Bill_Done 就是没有单据状态为AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted
 	 * 如果agent>0 则是所有用户汇总统计
 	 * @param agent
 	 * @return
@@ -183,7 +186,7 @@ public class AgentSettlementsRecordMService {
 	public SettlementStatisticsVTO statistics(int agent){
 		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
 		Criteria unsettled_criteria = Criteria.where("status").in(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted});
-		Criteria settled_criteria = Criteria.where("status").in(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Done});
+		Criteria settled_criteria = Criteria.where("status").nin(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted});
 		if(agent>0){
 			unsettled_criteria.and("agent").is(agent);
 			settled_criteria.and("agent").is(agent);

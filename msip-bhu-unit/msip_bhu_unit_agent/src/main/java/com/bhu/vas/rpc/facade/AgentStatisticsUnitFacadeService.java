@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView;
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
@@ -22,12 +23,10 @@ import com.bhu.vas.api.rpc.agent.vto.SettlementVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
-import com.bhu.vas.business.ds.agent.dto.SettlementSummaryDTO;
+import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
-import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
-import com.bhu.vas.business.ds.agent.mservice.AgentSettlementsRecordMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeMonthMService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -35,13 +34,11 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.cores.plugins.filterhelper.StringHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -59,7 +56,9 @@ public class AgentStatisticsUnitFacadeService {
 	private AgentWholeMonthMService agentWholeMonthMService;
 
 	@Resource
-	private AgentSettlementsRecordMService agentSettlementsRecordMService;
+	private AgentBillFacadeService agentBillFacadeService;
+	//@Resource
+	//private AgentSettlementsRecordMService agentSettlementsRecordMService;
 	
 	@Resource
 	private BusinessCacheService businessCacheService;
@@ -139,7 +138,13 @@ public class AgentStatisticsUnitFacadeService {
 	 * @param vto
 	 */
 	private void pageTotalSettlements4Agent(int agent,AgentRevenueStatisticsVTO vto) {
-		List<Integer> agents = new ArrayList<Integer>();
+		AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(agent);
+		vto.setSr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+		vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))));
+		//vto.setSr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
+		//vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(String.valueOf(agent),mainSummary),2))));
+
+		/*List<Integer> agents = new ArrayList<Integer>();
 			agents.add(agent);
 		if(!agents.isEmpty()){
 				//取所有记录汇总
@@ -148,7 +153,7 @@ public class AgentStatisticsUnitFacadeService {
 						null, null, 1, agents.size());
 			vto.setSr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
 			vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(String.valueOf(agent),mainSummary),2))));
-		}
+		}*/
 	}
 	
 	
@@ -193,7 +198,7 @@ public class AgentStatisticsUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	private double fetchSettlementSummarySettled(String agent,List<SettlementSummaryDTO> summary){
+	/*private double fetchSettlementSummarySettled(String agent,List<SettlementSummaryDTO> summary){
 		if(summary != null && !summary.isEmpty()){
 			for(SettlementSummaryDTO summaryDTO:summary){
 				if(agent.equals(summaryDTO.getId())) return summaryDTO.getSdmoney();
@@ -208,7 +213,7 @@ public class AgentStatisticsUnitFacadeService {
 			}
 		}
 		return 0.00d;
-	}
+	}*/
 	/**
 	 * 代理商结算页面列表（管理员可以访问）
 	 * 1、获取代理商列表
@@ -222,16 +227,75 @@ public class AgentStatisticsUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus, int pageNo, int pageSize){
-		if(viewstatus == -1){
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			SettlementStatisticsVTO statistics = this.statistics();
+			//获取主界面显示结构 agents 列表
+			ModelCriteria mc_view = new ModelCriteria();
+			/*if(viewstatus == -1){
+				mc_view.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+			}else */
+			if(viewstatus == 1){
+				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
+			}else if(viewstatus == 0){
+				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled).andSimpleCaulse(" 1=1 ");
+			}else{//viewstatus == -1
+				mc_view.createCriteria().andSimpleCaulse(" 1=1 ");
+			}
+			mc_view.setOrderByClause(" id desc ");
+			mc_view.setPageNumber(pageNo);
+			mc_view.setPageSize(pageSize);
+			TailPage<AgentBillSummaryView> pages = agentBillFacadeService.getAgentBillSummaryViewService().findModelTailPageByModelCriteria(mc_view);
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(statistics);
+			if(!pages.isEmpty()){
+				SettlementVTO vto = null;
+				int index = 0;
+				//for(SettlementSummaryDTO summaryDTO:summaryMain){
+				for(AgentBillSummaryView sview:pages.getItems()){
+					vto = new SettlementVTO();
+					vto.setIndex(index);
+					vto.setOrg("");
+					vto.setUid(sview.getId());
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(sview.getT_price() - sview.getSd_t_price())));
+					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
+					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
+					if(previosMonth_settlement != null)
+						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
+					else
+						vto.setLsr("0.00");
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(user.getId().toString(),settledSummary),2))));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(user.getId().toString(),unsettledSummary),2))));
+					*/
+					settleVtos.add(vto);
+					index++;
+				}
+			}else{
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+			}
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getTs(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+		/*if(viewstatus == -1){
 			return pageTotalSettlements(operator_user,pageNo, pageSize);
 		}else if(viewstatus == 1){
 			return pageSettledSettlements(operator_user,pageNo, pageSize);
 		}else{
 			return pageUnSettledSettlements(operator_user,pageNo, pageSize);
-		}
+		}*/
 	}
 	
-	private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
+	/*private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -246,9 +310,9 @@ public class AgentStatisticsUnitFacadeService {
 			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
 			List<Integer> agents = IdHelper.getPKs(userPages.getItems(), Integer.class);
 			//List<SettlementSummaryDTO> summaryMain = agentSettlementsRecordMService.summaryAggregationBetween(null, AgentSettlementsRecordMDTO.Settlement_View_All, null, null, pageNo, pageSize);
-			/*for(SettlementSummaryDTO summaryDTO:summaryMain){
+			for(SettlementSummaryDTO summaryDTO:summaryMain){
 				agents.add(Integer.parseInt(summaryDTO.getId()));
-			}*/
+			}
 			result_page = new SettlementPageVTO();
 			result_page.setStatistics(statistics);
 			if(!agents.isEmpty()){
@@ -270,12 +334,12 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setOrg(user.getOrg());
 					vto.setUid(user.getId());
 					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
-					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
+					String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
 					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
 					if(previosMonth_settlement != null)
 						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
 					else
-						vto.setLsr("0.00");*/
+						vto.setLsr("0.00");
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(user.getId().toString(),settledSummary),2))));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(user.getId().toString(),unsettledSummary),2))));
 					settleVtos.add(vto);
@@ -293,9 +357,9 @@ public class AgentStatisticsUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 	
-	private RpcResponseDTO<SettlementPageVTO> pageSettledSettlements(int operator_user,int pageNo, int pageSize) {
+	/*private RpcResponseDTO<SettlementPageVTO> pageSettledSettlements(int operator_user,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -328,13 +392,6 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setIndex(index);
 					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
 					vto.setUid(user.getId());
-					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
-					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
-					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
-					if(previosMonth_settlement != null)
-						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
-					else
-						vto.setLsr("0.00");*/
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(summaryDTO.getId(),settledSummary),2))));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(summaryDTO.getId(),unsettledSummary),2))));
 					settleVtos.add(vto);
@@ -352,9 +409,9 @@ public class AgentStatisticsUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 	
-	private RpcResponseDTO<SettlementPageVTO> pageUnSettledSettlements(int operator_user,int pageNo, int pageSize) {
+	/*private RpcResponseDTO<SettlementPageVTO> pageUnSettledSettlements(int operator_user,int pageNo, int pageSize) {
 
 		User operUser = userService.getById(operator_user);
 		UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
@@ -388,13 +445,6 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setIndex(index);
 					vto.setOrg(user != null?user.getOrg():StringHelper.EMPTY_STRING);
 					vto.setUid(user.getId());
-					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
-					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
-					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
-					if(previosMonth_settlement != null)
-						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
-					else
-						vto.setLsr("0.00");*/
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(summaryDTO.getId(),settledSummary),2))));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(summaryDTO.getId(),unsettledSummaryMain),2))));
 					settleVtos.add(vto);
@@ -412,100 +462,16 @@ public class AgentStatisticsUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 	
-	private SettlementStatisticsVTO statistics(int agent){
-		SettlementStatisticsVTO result = agentSettlementsRecordMService.statistics(agent);
-		ModelCriteria mc_user = new ModelCriteria();
+	private SettlementStatisticsVTO statistics(){
+		SettlementStatisticsVTO result = agentBillFacadeService.statistics();
+		/*ModelCriteria mc_user = new ModelCriteria();
 		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		int total = userService.countByModelCriteria(mc_user);
-		result.setTs(total);
+		result.setTs(total);*/
 		return result;
 	}
-	
-	
-/*	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,String dateCurrent,int pageNo, int pageSize) {
-		SettlementPageVTO result_page = null;
-		List<SettlementVTO> settleVtos = null;
-		try{
-			settleVtos = new ArrayList<SettlementVTO>();
-			ModelCriteria mc_user = new ModelCriteria();
-			mc_user.createCriteria().andColumnEqualTo("utype", User.Agent_User).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
-			mc_user.setPageNumber(pageNo);
-			mc_user.setPageSize(pageSize);
-			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
-			if(userPages.getItems().isEmpty()){
-				result_page = new SettlementPageVTO();
-				result_page.setStatistics(fetchAgentSettlementStatistics(0));
-				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, new ArrayList<SettlementVTO>());
-				result_page.setPages(settlement_pages);
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
-			}
-			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
-			Date certainDate = DateTimeHelper.parseDate(dateCurrent, DateTimeHelper.FormatPattern5);
-			String currentMonth = DateTimeHelper.formatDate(certainDate, DateTimeHelper.FormatPattern11);
-			String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(certainDate,1), DateTimeHelper.FormatPattern11);
-			List<Integer> users = IdHelper.getPKs(userPages.getItems(), Integer.class);
-			
-			List<RecordSummaryDTO> summary = agentWholeMonthMService.summaryAggregationBetween(users, null, previosMonth);
-			SettlementVTO vto = null;
-			for(User user:userPages.getItems()){
-				vto = new SettlementVTO();
-				vto.setIndex(++startIndex);
-				vto.setUid(user.getId());
-				vto.setOrg(user.getOrg());
-				RecordSummaryDTO rsd = distillRecordSummaryDTO(summary,user.getId());
-				if(rsd != null){
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(rsd.getT_dod()))));
-				}else{
-					vto.setTr("0.00");
-				}
-				AgentWholeMonthMDTO preMonth = agentWholeMonthMService.getWholeMonth(previosMonth, user.getId());
-				if(preMonth != null)
-					vto.setLsr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(preMonth.getDod()))));
-				else
-					vto.setLsr("0.00");
-				AgentWholeMonthMDTO curMonth = agentWholeMonthMService.getWholeMonth(currentMonth, user.getId());
-				if(curMonth != null)
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(curMonth.getDod()))));
-				else
-					vto.setUr("0.00");
-				settleVtos.add(vto);
-			}
-			
-			result_page = new SettlementPageVTO();
-			result_page.setStatistics(fetchAgentSettlementStatistics(operator_user));
-			
-			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,userPages.getTotalItemsCount(), settleVtos);
-			result_page.setPages(settlement_pages);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-	private SettlementStatisticsVTO fetchAgentSettlementStatistics(int operator_user){
-		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
-		if(operator_user > 0){
-			result.setU(operator_user);
-			int ts = RandomData.intNumber(260,320);
-			int sd = RandomData.intNumber(240,250);
-			int us = ts-sd;
-			result.setTs(ts);
-			result.setSd(sd);
-			result.setUs(us);
-			result.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
-		}
-		return result;
-	}
-	
-	private RecordSummaryDTO distillRecordSummaryDTO(List<RecordSummaryDTO> summary,int user){
-		for(RecordSummaryDTO dto:summary){
-			if(dto.getId().equals(String.valueOf(user)))
-				return dto;
-		}
-		return null;
-	}*/
 	
 	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser){
 		if(agentuser <= 0){
