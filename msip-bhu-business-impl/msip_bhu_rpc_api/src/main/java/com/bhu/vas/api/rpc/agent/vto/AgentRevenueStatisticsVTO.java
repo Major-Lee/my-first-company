@@ -21,7 +21,7 @@ public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	//unsettle Revenue 除去当月之外的未结算金额 
 	private String ur;
 	
-	private Map<String,Double> charts;
+	private Map<String,Object> charts;
 	
 	/*public String getOd() {
 		return od;
@@ -29,14 +29,15 @@ public class AgentRevenueStatisticsVTO implements java.io.Serializable{
 	public void setOd(String od) {
 		this.od = od;
 	}*/
-	public Map<String, Double> getCharts() {
-		return charts;
-	}
-	public void setCharts(Map<String, Double> charts) {
-		this.charts = charts;
-	}
+	
 	public String getRcm() {
 		return rcm;
+	}
+	public Map<String, Object> getCharts() {
+		return charts;
+	}
+	public void setCharts(Map<String, Object> charts) {
+		this.charts = charts;
 	}
 	public void setRcm(String rcm) {
 		this.rcm = rcm;

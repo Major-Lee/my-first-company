@@ -129,6 +129,7 @@ public class AgentStatisticsUnitFacadeService {
 			charts.put(currentMonth, buildChartsData(user,currentDate,true));
 			//上月charts
 			charts.put(previosMonth, buildChartsData(user,previousMonthDate,false));
+			vto.setCharts(charts);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
