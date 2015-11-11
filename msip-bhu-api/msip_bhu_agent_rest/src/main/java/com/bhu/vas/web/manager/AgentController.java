@@ -1,18 +1,13 @@
 package com.bhu.vas.web.manager;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
-import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
-import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
-import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
-import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
-import com.bhu.vas.api.vto.agent.*;
-import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseSuccess;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,14 +19,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
+import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
+import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
  * Created by bluesand on 9/9/15.
