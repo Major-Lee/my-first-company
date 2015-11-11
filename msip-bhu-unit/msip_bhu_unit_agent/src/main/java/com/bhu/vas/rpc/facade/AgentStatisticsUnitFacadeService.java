@@ -257,7 +257,8 @@ public class AgentStatisticsUnitFacadeService {
 				for(AgentBillSummaryView sview:pages.getItems()){
 					vto = new SettlementVTO();
 					vto.setIndex(index);
-					vto.setOrg("");
+					User user = userService.getById(sview.getId());
+					vto.setOrg(user != null?user.getOrg():"未知");
 					vto.setUid(sview.getId());
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(sview.getT_price() - sview.getSd_t_price())));
