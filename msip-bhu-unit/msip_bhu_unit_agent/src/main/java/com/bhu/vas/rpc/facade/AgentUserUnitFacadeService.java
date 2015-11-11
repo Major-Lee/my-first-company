@@ -308,7 +308,7 @@ public class AgentUserUnitFacadeService {
 				user.setNick(nick);
 			}
 			if(StringUtils.isNotEmpty(org)){
-				if (userService.isExistsOrg(uid, org)) {
+				if (userService.isExistsOrg(tid, org)) {
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 				}
 				user.setOrg(org);
