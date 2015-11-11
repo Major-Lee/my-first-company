@@ -1,13 +1,18 @@
 package com.bhu.vas.web.manager;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
+import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
 import com.bhu.vas.api.vto.agent.AgentFinancialUploadVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +21,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.util.Date;
 
@@ -51,14 +57,16 @@ public class FinancialController {
             @RequestParam(required = true) String receipt,
             @RequestParam(required = false) String remark
     ) {
-        try {
-            boolean ret = agentRpcService.postAgentFinancialSettlement(uid, aid, account, invoice, receipt, remark);
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
-        } catch (Exception e) {
-            e.printStackTrace();
-            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
-        }
-
+    	
+    	try{
+			RpcResponseDTO<Boolean> rpcResult = agentRpcService.postAgentFinancialSettlement(uid, aid, account, invoice, receipt, remark);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
     }
 
     @ResponseBody()
