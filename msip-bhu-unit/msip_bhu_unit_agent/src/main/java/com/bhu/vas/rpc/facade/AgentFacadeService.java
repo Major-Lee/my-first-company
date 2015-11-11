@@ -424,6 +424,12 @@ public class AgentFacadeService {
         vto.setSold_at(agentDeviceClaim.getSold_at());
         vto.setClaim_at(agentDeviceClaim.getClaim_at());
         vto.setUid(agentDeviceClaim.getUid());
+        vto.setImport_id(agentDeviceClaim.getImport_id());
+
+        User agent = userService.getById(agentDeviceClaim.getUid());
+        if (agent != null) {
+            vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+        }
 
         WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
         if ( wifiDevice != null){
