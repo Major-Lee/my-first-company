@@ -13,6 +13,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class DeviceVersion {
+	private static DeviceVersion Empty_DeviceVersion = new DeviceVersion();
+	
 	public static final String Prefix_AP = "AP";
 	public static final String Prefix_CPE = "CPE";
 	public static final String Build_Normal_Prefix = "Build";
@@ -136,7 +138,7 @@ public class DeviceVersion {
 	private static final String Swver_Spliter_Patterns = "[P|V|_]+";
 	public static DeviceVersion parser(String orig_swver){
 		DeviceVersion dv = null;
-		if(StringUtils.isEmpty(orig_swver)) return dv;
+		if(StringUtils.isEmpty(orig_swver)) return Empty_DeviceVersion;
 		String prefix = null;
 		if(orig_swver.startsWith(Prefix_AP)){
 			prefix = Prefix_AP;
@@ -147,7 +149,7 @@ public class DeviceVersion {
 		}else{
 			prefix = null;
 		}
-		if(prefix == null) return null;
+		if(prefix == null) return Empty_DeviceVersion;
 		dv = new DeviceVersion();
 		dv.setPrefix(prefix);
 		String[] split = orig_swver.split(Swver_Spliter_Patterns);

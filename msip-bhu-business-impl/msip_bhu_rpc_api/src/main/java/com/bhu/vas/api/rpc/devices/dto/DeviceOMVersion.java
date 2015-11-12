@@ -12,6 +12,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
  *
  */
 public class DeviceOMVersion {
+	private static DeviceOMVersion Empty_DeviceOMVersion = new DeviceOMVersion();
 	//version prefix
 	private String vp;
 	//版本号H108V1.2.10M8299，H106V1.3.2M8888
@@ -48,7 +49,7 @@ public class DeviceOMVersion {
 	private static final String Swver_Spliter_Patterns = "[V|M]+";
 	public static DeviceOMVersion parser(String device_om){
 		DeviceOMVersion dv = null;
-		if(StringUtils.isEmpty(device_om)) return dv;
+		if(StringUtils.isEmpty(device_om)) return Empty_DeviceOMVersion;
 		dv = new DeviceOMVersion();
 		String[] split = device_om.split(Swver_Spliter_Patterns);
 		int index = 0;
