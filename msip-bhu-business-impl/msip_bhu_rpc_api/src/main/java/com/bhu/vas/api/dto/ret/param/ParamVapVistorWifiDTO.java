@@ -126,8 +126,8 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	
 	public static ParamVapVistorWifiDTO fufillWithDefault(ParamVapVistorWifiDTO param){
 		if(param == null) return builderDefault();
-		if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(Default_Users_tx_rate);
-		if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(Default_Users_rx_rate);
+		//if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(Default_Users_tx_rate);
+		//if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(Default_Users_rx_rate);
 		
 		if(param.getSignal_limit() == 0) param.setSignal_limit(Default_Signal_limit);
 		if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(Default_Redirect_url);
