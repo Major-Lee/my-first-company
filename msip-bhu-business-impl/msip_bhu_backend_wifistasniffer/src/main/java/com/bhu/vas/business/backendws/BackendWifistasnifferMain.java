@@ -5,6 +5,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 
 public class BackendWifistasnifferMain {
+	@SuppressWarnings({ "unused", "resource" })
 	public static void main(String[] args) throws InterruptedException {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
 		String[] locations = {"classpath*:spring/appCtxBackend.xml"};

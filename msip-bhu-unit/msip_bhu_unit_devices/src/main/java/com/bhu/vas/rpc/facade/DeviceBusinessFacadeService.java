@@ -553,7 +553,6 @@ public class DeviceBusinessFacadeService {
 			dto.setDhcp_name(handset.getDhcp_name());
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
-			dto.setAuthorized(dto.getAuthorized());
 		}
 
 		HandsetStorageFacadeService.handsetComming(dto);
@@ -680,14 +679,11 @@ public class DeviceBusinessFacadeService {
 			int cursor = 0;
 			for(HandsetDeviceDTO handset : handsets){
 				HandsetDeviceDTO dto = dtos.get(cursor);
-				double data_rx_rate = 0d;
 				if(handset != null){
 					dto.setDhcp_name(handset.getDhcp_name());
 					dto.setIp(handset.getIp());
 					dto.setData_tx_rate(handset.getData_tx_rate());
 					dto.setData_rx_rate(handset.getData_rx_rate());
-					dto.setAuthorized(handset.getAuthorized());
-					data_rx_rate = handset.fetchData_rx_rate_double();
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
@@ -1230,7 +1226,7 @@ public class DeviceBusinessFacadeService {
 					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayloads);
 					//System.out.println("~~~~~~~~~~~~~~~:VapModule persistencePayloads "+cmdPayloads.size());
 				}
-				deliverMessageService.sendWifiDeviceModuleOnlineMessage(mac);
+				deliverMessageService.sendWifiDeviceModuleOnlineMessage(mac,wifiDeviceModule.getOrig_vap_module());
 			}
 		}
 	}

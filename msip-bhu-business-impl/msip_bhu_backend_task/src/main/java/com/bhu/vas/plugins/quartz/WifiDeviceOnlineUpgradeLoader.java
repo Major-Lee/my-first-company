@@ -19,11 +19,12 @@ import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 /**
  * 对于所属灰度的设备 进行定时任务自动升级
+ * 定时任务只对固件进行升级
  * 前置条件：
  * 	1、灰度定义的设备除了特殊灰度外
  * 	2、其他灰度的设备就是除去所有的t_wifi_devices_grays内的设备外的设备
  *  3、所有条件均需加上设备类型dut
- * @author tangzichao
+ * @author Edmond Lee
  *
  */
 public class WifiDeviceOnlineUpgradeLoader {
@@ -51,7 +52,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 			while(it.hasNext()){
 				List<WifiDevice> devices = it.next();
 				for(WifiDevice device:devices){
-					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(device.getId(),device.getOrig_swver());
+					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(device.getId(),device.getOrig_swver(),WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
 					if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 						String payload = upgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
 						downCmds.add(DownCmds.builderDownCmds(device.getId(), payload));

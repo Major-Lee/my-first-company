@@ -20,6 +20,7 @@ public class XMLParserTest extends BaseTest{
 	//@Test
 	public void	xstream_test(){
 		//JoinReqDTO dto = XStreamHelper.fromXML(xml, JoinReqDTO.class);
+		@SuppressWarnings("unused")
 		EventWlanDTO dto = XStreamHelper.fromXML(xml2, EventWlanDTO.class);
 	}
 	
@@ -28,6 +29,7 @@ public class XMLParserTest extends BaseTest{
 		try {
 			Document doc = Dom4jHelper.parseText(xml);
 			Element item_element = (Element)doc.selectSingleNode("//ITEM");
+			@SuppressWarnings("unchecked")
 			List<Attribute> list = item_element.attributes();
 			WifiDeviceDTO dto = WifiDeviceDTO.class.newInstance();
 			for(Attribute attr : list){

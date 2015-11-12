@@ -68,9 +68,10 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}*/
 	
-	public void sendWifiDeviceModuleOnlineMessage(String wifiId){
+	public void sendWifiDeviceModuleOnlineMessage(String wifiId,String orig_vap_module){
 		WifiDeviceModuleOnlineDTO dto = new WifiDeviceModuleOnlineDTO();
 		dto.setMac(wifiId);
+		dto.setOrig_vap_module(orig_vap_module);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

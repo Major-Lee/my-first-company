@@ -29,10 +29,25 @@ public class WifiDeviceHelper {
 	
 	public final static String WIFI_URouter_DEVICE_ORIGIN_MODEL = "uRouter";
 	
+	public final static boolean WIFI_DEVICE_UPGRADE_FW = true;
+	public final static boolean WIFI_DEVICE_UPGRADE_OM = false;
+	
+	private static Set<String> URouter_HdTypes = new HashSet<String>();
+	private static Set<String> Soc_HdTypes = new HashSet<String>();
 	private static Set<String> vapExceptDevices = new HashSet<String>();
 	static{
+		URouter_HdTypes.add("H106");
+		
+		//Mass AP H103 H110
+		Soc_HdTypes.add("H103");
+		Soc_HdTypes.add("H110");
+		//Mass AP Pro H201 H303
+		Soc_HdTypes.add("H201");
+		Soc_HdTypes.add("H303");
+		
 		vapExceptDevices.add("84:82:f4:23:06:68");
 	}
+	
 	public static boolean isURouterDevice(String orig_model) {
 		/*DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null) return false;
@@ -40,6 +55,12 @@ public class WifiDeviceHelper {
 		return WIFI_URouter_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
 	}
 	
+	public static boolean isURouterHdType(String hd_type) {
+		return URouter_HdTypes.contains(hd_type);
+	}
+	public static boolean isSocHdType(String hd_type) {
+		return Soc_HdTypes.contains(hd_type);
+	}
 	/**
 	 * uRouter 设备 或者SOC设备
 	 * 开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC ） ）支持

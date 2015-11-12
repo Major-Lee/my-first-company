@@ -47,6 +47,7 @@ public class WifiDeviceFacadeServiceTest extends BaseTest{
 //		}
 //	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testOnline() {
 

@@ -1519,8 +1519,12 @@ public class DeviceURouterRestBusinessFacadeService {
 		if (settingState != null) {
 			UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
 			if (vistorwifi != null) {
-				vto.setN(vistorwifi.getVw().getSsid());
-				vto.setRx_rate(vistorwifi.getVw().getUsers_rx_rate());
+				if (vistorwifi.getVw() == null ) {
+					vto.setN("");
+				} else {
+					vto.setN(vistorwifi.getVw().getSsid());
+					vto.setRx_rate(vistorwifi.getVw().getUsers_rx_rate());
+				}
 			}
 		}
 

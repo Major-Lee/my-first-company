@@ -9,7 +9,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.rpc.devices.dto.DeviceOMVersion;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion;
@@ -195,6 +198,8 @@ public class WifiDeviceGrayFacadeService {
     		String fwid,String omid){
     	validateDut(dut);
     	validateGrayEnalbe(gray);
+    	this.validateVersionFormat(fwid, true);
+    	this.validateVersionFormat(omid, false);
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
     	if(dgv == null){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});
@@ -236,6 +241,7 @@ public class WifiDeviceGrayFacadeService {
     	validateDut(dut);
     	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(upgrade_url)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	this.validateVersionFormat(versionid, fw);
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
     		if(versionfw != null){
@@ -274,6 +280,7 @@ public class WifiDeviceGrayFacadeService {
     	validateDut(dut);
     	if(StringUtils.isEmpty(versionid)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	this.validateVersionFormat(versionid, fw);
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
     		if(versionfw == null){
@@ -319,7 +326,6 @@ public class WifiDeviceGrayFacadeService {
     		return new WifiDeviceGrayVersionPK(deviceGray.getDut(),deviceGray.getGl());
     	}
     }
-
     /**
      * 设备类型灰度动作定义
      * 用户判定设备是否需要升级的业务
@@ -329,29 +335,62 @@ public class WifiDeviceGrayFacadeService {
      * @param dmac 设备的mac地址 UpgradeDTO中的forceDeviceUpgrade强制false
      * @return
      */
-    public UpgradeDTO deviceUpgradeAutoAction(String dmac,String d_orig_swver){
+    public UpgradeDTO deviceUpgradeAutoAction(String dmac,String d_version,boolean fw){
     	WifiDeviceGrayVersionPK deviceUnitGrayPk = this.deviceUnitGray(dmac);
     	int dut = 0;
     	int gl = 0;
 		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
-			//获取d_orig_swver中的dut
-			DeviceVersion dvparser = DeviceVersion.parser(d_orig_swver);
-			if(dvparser.wasDutURouter()){
-				dut = VapEnumType.DeviceUnitType.uRouterTU.getIndex();
+			//获取d_version中的dut
+			if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw){
+				DeviceVersion dvparser = DeviceVersion.parser(d_version);
+				DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromIndex(Integer.parseInt(dvparser.getHdt()));
+				if(dutype != null){
+					dut = dutype.getIndex();
+				}else{
+					System.out.println(String.format("unable catch the device unitype from:[%s] fw[%s] for[%s]", d_version,fw,dmac));
+					return null;
+				}
 				gl = VapEnumType.GrayLevel.Other.getIndex();
+				/*if(dvparser.wasDutURouter()){
+					dut = VapEnumType.DeviceUnitType.uRouterTU.getIndex();
+					gl = VapEnumType.GrayLevel.Other.getIndex();
+				}else if(dvparser.wasDutSoc()){
+					System.out.println("current only supported uRouter Device deviceUpgradeAutoAction!");
+					return null;
+				}else{
+					System.out.println("current only supported uRouter Device deviceUpgradeAutoAction!");
+					return null;
+				}*/
 			}else{
-				System.out.println("A deviceUpgradeAutoAction unsupported!");
-				return null;
+				DeviceOMVersion dvparser = DeviceOMVersion.parser(d_version);
+				DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromIndex(Integer.parseInt(dvparser.getHdt()));
+				if(dutype != null){
+					dut = dutype.getIndex();
+				}else{
+					System.out.println(String.format("unable catch the device unitype from:[%s] fw[%s] for[%s]", d_version,fw,dmac));
+					return null;
+				}
+				gl = VapEnumType.GrayLevel.Other.getIndex();
+				/*if(dvparser.wasDutURouter()){
+					dut = VapEnumType.DeviceUnitType.uRouterTU.getIndex();
+					gl = VapEnumType.GrayLevel.Other.getIndex();
+				}else if(dvparser.wasDutSoc()){
+					System.out.println("current only supported uRouter Device deviceUpgradeAutoAction!");
+					return null;
+				}else{
+					System.out.println("current only supported uRouter Device deviceUpgradeAutoAction!");
+					return null;
+				}*/
 			}
 		}else{
 			dut = deviceUnitGrayPk.getDut();
 			gl = deviceUnitGrayPk.getGl();
 		}
-    	return upgradeDecideAction(dmac,dut,gl,d_orig_swver);
+    	return upgradeDecideAction(dmac,dut,gl,d_version,fw);
     }
     
-    private UpgradeDTO upgradeDecideAction(String dmac,int dut,int gl,String d_orig_swver){
-    	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_orig_swver[%s]",dmac,dut,gl,d_orig_swver));
+    private UpgradeDTO upgradeDecideAction(String dmac,int dut,int gl,String d_version,boolean fw){
+    	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_version[%s] fw[%s]",dmac,dut,gl,d_version,fw));
     	UpgradeDTO resultDto = null;
     	GrayLevel grayLevel = VapEnumType.GrayLevel.fromIndex(gl);
     	try{
@@ -364,31 +403,45 @@ public class WifiDeviceGrayFacadeService {
     		System.out.println("A1 upgradeDecideAction exception:"+resultDto);
     		return resultDto;
     	}
-    	/*if(grayLevel == null || !grayLevel.isEnable() || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
-    		resultDto = new UpgradeDTO(dut,gl,true,false);
-    		resultDto.setDesc("灰度不存在、无效的灰度或者属于特殊灰度等级");
-    		return resultDto;
-    	}*/
     	WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut,gl));
 		if(grayVersion != null){
-			int ret = DeviceVersion.compareVersions(d_orig_swver, grayVersion.getD_fwid());
-			if(ret == -1){
-				WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(grayVersion.getD_fwid());
-				if(versionfw != null && versionfw.valid()){
-					resultDto = new UpgradeDTO(dut,gl,true,true,
-							grayVersion.getD_fwid(),versionfw.getUpgrade_url());
-					System.out.println("B1 upgradeDecideAction:"+resultDto);
+			if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw){
+				int ret = DeviceVersion.compareVersions(d_version, grayVersion.getD_fwid());
+				if(ret == -1){
+					WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(grayVersion.getD_fwid());
+					if(versionfw != null && versionfw.valid()){
+						resultDto = new UpgradeDTO(dut,gl,fw,true,
+								grayVersion.getD_fwid(),versionfw.getUpgrade_url());
+						resultDto.setCurrentDVB(d_version);
+						System.out.println("B1 upgradeDecideAction:"+resultDto);
+					}else{
+						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined!",dmac,fw));
+					}
 				}else{
-					System.out.println("B2 upgradeDecideAction versionfw undefined!");
+					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_fwid()));
 				}
 			}else{
-				System.out.println(String.format("B3 upgradeDecideAction dmac[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,d_orig_swver,grayVersion.getD_fwid()));
+				int ret = DeviceOMVersion.compareVersions(d_version, grayVersion.getD_omid());
+				if(ret == -1){
+					WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(grayVersion.getD_omid());
+					if(versionom != null && versionom.valid()){
+						resultDto = new UpgradeDTO(dut,gl,fw,true,
+								grayVersion.getD_omid(),versionom.getUpgrade_url());
+						resultDto.setCurrentDVB(d_version);
+						System.out.println("B1 upgradeDecideAction:"+resultDto);
+					}else{
+						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined!",dmac,fw));
+					}
+				}else{
+					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_omid()));
+				}
 			}
 		}else{
 			System.out.println(String.format("C upgradeDecideAction dmac[%s] grayVersion undefined!",dmac));
 		}
 		return resultDto;
     }
+    
     
     public void updateRelatedDevice4GrayVersion(){
     	ModelCriteria mc_gv = new ModelCriteria();
@@ -453,6 +506,22 @@ public class WifiDeviceGrayFacadeService {
 			}
 		}
 		
+    }
+    
+    /**
+     * 验证版本号格式：包括固件的和增值组件的
+     * @param version
+     * @param fw
+     * @return
+     */
+    private boolean validateVersionFormat(String version,boolean fw){
+    	boolean result = false;
+    	if(fw){
+    		result = DeviceVersion.parser(version).valid();
+    	}else
+    		result = DeviceOMVersion.parser(version).valid();
+    	if(!result) throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_INVALID_FORMAT);
+    	return result;
     }
     
     private boolean validateDut(VapEnumType.DeviceUnitType dut){

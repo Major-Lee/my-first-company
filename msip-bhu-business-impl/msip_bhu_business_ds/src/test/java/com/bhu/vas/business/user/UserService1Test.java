@@ -38,6 +38,7 @@ public class UserService1Test extends BaseTest{
 	@Resource
 	UserService userService;
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+	@SuppressWarnings("unused")
 	private static Set<Integer> key_gen = new HashSet<Integer>();
 	@BeforeClass
     public static void setUp() throws Exception {

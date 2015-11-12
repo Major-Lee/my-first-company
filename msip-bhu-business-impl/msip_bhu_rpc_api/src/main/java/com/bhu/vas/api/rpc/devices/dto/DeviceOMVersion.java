@@ -2,6 +2,8 @@ package com.bhu.vas.api.rpc.devices.dto;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -36,6 +38,13 @@ public class DeviceOMVersion {
 	public void setMno(String mno) {
 		this.mno = mno;
 	}
+	
+	public String getHdt(){
+		if(StringUtils.isNotEmpty(vp))
+			return vp.substring(1);
+		return null;
+	}
+	
 	private static final String Swver_Spliter_Patterns = "[V|M]+";
 	public static DeviceOMVersion parser(String device_om){
 		DeviceOMVersion dv = null;
@@ -51,7 +60,9 @@ public class DeviceOMVersion {
 		}
 		return dv;
 	}
-	
+	public boolean valid(){
+		return StringUtils.isNotEmpty(vp) && StringUtils.isNotEmpty(ver) && StringUtils.isNotEmpty(mno);
+	}
 	public boolean canExecuteUpgrade(){
 		return true;
 	}
@@ -86,6 +97,12 @@ public class DeviceOMVersion {
 			return 0;
 		}
 	}
+	public boolean wasDutURouter(){
+		return WifiDeviceHelper.isURouterHdType(vp);
+	}
+	public boolean wasDutSoc(){
+		return WifiDeviceHelper.isSocHdType(vp);
+	}
 	
 	public String toString(){
 		return String.format("vp[%s] ver[%s] mno[%s]", vp,ver,mno);
@@ -95,7 +112,7 @@ public class DeviceOMVersion {
 		String[] array = {"H108V1.2.10M8299","H108V1.2.15M8299","H108V1.2.10M8399","H108V1.3.10M8299"};
 		for(String orig:array){
 			DeviceOMVersion parser = DeviceOMVersion.parser(orig);
-			System.out.println(parser);
+			System.out.println(JsonHelper.getJSONString(parser));
 		}
 		
 		String current = "H108V1.2.16M8399";
