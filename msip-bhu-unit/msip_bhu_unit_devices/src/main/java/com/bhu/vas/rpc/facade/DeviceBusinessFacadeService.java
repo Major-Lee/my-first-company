@@ -329,14 +329,10 @@ public class DeviceBusinessFacadeService {
 	 * @return
 	 */
 	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
-		System.out.println(dto.getVapname() + ":::::" + dto.getPortal() +
-				( HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal())));
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
 	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
-		System.out.println("isVisitorWifi WifiDeviceTerminalDTO" + dto.getVapname() + "::" + dto.getPortal() + " :" +
-				(HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal())));
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
@@ -698,7 +694,7 @@ public class DeviceBusinessFacadeService {
 				//WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
 
 				if(isVisitorWifi(ctx, dto)) { //访客网络
-					handsetDeviceVisitorOffline(ctx, dto, mac);
+					handsetDeviceVisitorOnline(ctx, dto, mac);
 				} else {
 					WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(mac,
 							handsetId, dto.fetchData_rx_rate_double());
