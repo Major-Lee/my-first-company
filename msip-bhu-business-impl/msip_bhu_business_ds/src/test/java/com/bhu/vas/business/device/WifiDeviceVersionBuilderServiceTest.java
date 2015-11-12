@@ -1,7 +1,4 @@
 package com.bhu.vas.business.device;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.Resource;
 
 import org.junit.AfterClass;
@@ -10,9 +7,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionBuilderService;
@@ -46,7 +41,7 @@ public class WifiDeviceVersionBuilderServiceTest extends BaseTest{
 	WifiDeviceService wifiDeviceService;
 	
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
-	private static Set<Integer> key_gen = new HashSet<Integer>();
+	//private static Set<Integer> key_gen = new HashSet<Integer>();
 	@BeforeClass
     public static void setUp() throws Exception {
 		
@@ -99,11 +94,11 @@ public class WifiDeviceVersionBuilderServiceTest extends BaseTest{
     
     @Test
     public void test005DeviceVersionCheck(){
-    	String mac1 = "84:82:f4:19:01:0c";
-    	WifiDevice wifiDevice1 = wifiDeviceService.getById(mac1);
+    	//String mac1 = "84:82:f4:19:01:0c";
+    	//WifiDevice wifiDevice1 = wifiDeviceService.getById(mac1);
     	//UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
     	//System.out.println(mac+"   "+checkDeviceUpgrade);
-    	UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac1, wifiDevice1,"R","1.3.8.5");
+    	//UpgradeDTO checkDeviceUpgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac1, wifiDevice1,"R","1.3.8.5");
     	
     	//String mac2 = "62:68:75:ff:10:80";
     	//WifiDevice wifiDevice2 = wifiDeviceService.getById(mac2);

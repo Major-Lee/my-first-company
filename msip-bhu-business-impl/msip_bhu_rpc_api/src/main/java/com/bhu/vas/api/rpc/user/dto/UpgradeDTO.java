@@ -107,14 +107,14 @@ public class UpgradeDTO {
 		/*//测试时使用，都变成立即升级
 		beginTime = StringUtils.EMPTY;
 		endTime = StringUtils.EMPTY;*/
-		/*String cmd = null;
-		if(fw)
+		String cmd = null;
+		if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw)
 			cmd = CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
 		else
 			cmd = CMDBuilder.builderVapModuleUpgrade(mac, taskid,this.getUpgradeurl(),
 					WifiDeviceHelper.Upgrade_Module_Default_Retry_Count, WifiDeviceHelper.Upgrade_Module_Default_RetryInterval);
-		return cmd;*/
-		return CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
-		
+		return cmd;
+		//return CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
 	}
+	
 }

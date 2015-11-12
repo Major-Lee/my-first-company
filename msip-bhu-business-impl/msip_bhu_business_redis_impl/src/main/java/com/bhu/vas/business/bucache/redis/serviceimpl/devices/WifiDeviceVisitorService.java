@@ -1,7 +1,12 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.util.List;
+import java.util.Set;
+
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Tuple;
+
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.dto.ret.ModifyDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -9,11 +14,6 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 import com.smartwork.msip.cores.helper.StringHelper;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Tuple;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by bluesand on 10/26/15.

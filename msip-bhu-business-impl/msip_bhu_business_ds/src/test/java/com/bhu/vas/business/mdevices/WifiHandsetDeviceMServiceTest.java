@@ -120,8 +120,8 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                     //offset = 5; //7天外的数据直接忽略
                     if (HANDSET_LOGOUT_TYPE.equals(last_type)) { //如果最后一天数据是隔天数据
 
-                        long end_space = currentTime - last_ts;
-                        int end_offset = (int) (end_space/(DAY_TIME_MILLION_SECOND));
+                        //long end_space = currentTime - last_ts;
+                        //int end_offset = (int) (end_space/(DAY_TIME_MILLION_SECOND));
 
 //                        for (int i=0 ;i <=6 ;i ++) {
 //                            URouterHdTimeLineVTO vto = vtos.get(i);

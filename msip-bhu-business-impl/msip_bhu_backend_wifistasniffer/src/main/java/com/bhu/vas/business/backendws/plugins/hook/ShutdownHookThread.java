@@ -41,4 +41,9 @@ public class ShutdownHookThread extends Thread {
 		}*/
 		System.err.println("BackendOnlineMain Server halted");
     }
+
+	public ApplicationContext getCtx() {
+		return ctx;
+	}
+    
 }

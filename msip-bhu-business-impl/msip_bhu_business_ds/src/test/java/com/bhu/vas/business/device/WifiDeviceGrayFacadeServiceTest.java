@@ -39,7 +39,7 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 			String versionfw = String.format(WifiDeviceVersionFW_template, i,String.format("%04d", RandomData.intNumber(100, 9000)));
 			WifiDeviceVersionFW fw = new WifiDeviceVersionFW();
 			fw.setId(versionfw);
-			fw.setDut(VapEnumType.DeviceUnitType.uRouterTU.getIndex());
+			fw.setDut(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex());
 			fw.setName(versionfw);
 			fw.setRelated(false);
 			fw.setUpgrade_url(String.format(fw_upgrade_url_template,versionfw));
@@ -48,7 +48,7 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 			String versionom = String.format(WifiDeviceVersionOM_template, i,String.format("%04d", RandomData.intNumber(100, 9000)));
 			WifiDeviceVersionOM om = new WifiDeviceVersionOM();
 			om.setId(versionom);
-			om.setDut(VapEnumType.DeviceUnitType.uRouterTU.getIndex());
+			om.setDut(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex());
 			om.setName(versionom);
 			om.setRelated(false);
 			om.setUpgrade_url(om_upgrade_url_template);
@@ -56,13 +56,13 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 		}
 		
 		// WifiDeviceGrayVersion Batch create
-		TailPage<VersionVTO> pagesFW = wifiDeviceGrayFacadeService.pagesFW(VapEnumType.DeviceUnitType.uRouterTU, 1, 10);
-		TailPage<VersionVTO> pagesOM = wifiDeviceGrayFacadeService.pagesOM(VapEnumType.DeviceUnitType.uRouterTU, 1, 10);
+		TailPage<VersionVTO> pagesFW = wifiDeviceGrayFacadeService.pagesFW(VapEnumType.DeviceUnitType.uRouterTU_106, 1, 10);
+		TailPage<VersionVTO> pagesOM = wifiDeviceGrayFacadeService.pagesOM(VapEnumType.DeviceUnitType.uRouterTU_106, 1, 10);
 		GrayLevel[] gls = VapEnumType.GrayLevel.values();
 		int index = 0;
 		for(GrayLevel gl:gls){
 			if(!gl.isVisible()) continue;
-			WifiDeviceGrayVersionPK pk = new WifiDeviceGrayVersionPK(VapEnumType.DeviceUnitType.uRouterTU.getIndex(),gl.getIndex());
+			WifiDeviceGrayVersionPK pk = new WifiDeviceGrayVersionPK(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex(),gl.getIndex());
 			WifiDeviceGrayVersion dgv = new WifiDeviceGrayVersion();
 			dgv.setId(pk);
 			dgv.setDevices(0);
@@ -76,11 +76,11 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 		//84:82:f4:19:01:0c 84:82:f4:23:06:68
 		List<String> firstGray = new ArrayList<String>();
 		firstGray.add("84:82:f4:19:01:0c");
-		wifiDeviceGrayFacadeService.saveMacs2Gray(VapEnumType.DeviceUnitType.uRouterTU,VapEnumType.GrayLevel.First,firstGray);
+		wifiDeviceGrayFacadeService.saveMacs2Gray(VapEnumType.DeviceUnitType.uRouterTU_106,VapEnumType.GrayLevel.First,firstGray);
 		
 		List<String> secondGray = new ArrayList<String>();
 		secondGray.add("84:82:f4:23:06:68");
-		wifiDeviceGrayFacadeService.saveMacs2Gray(VapEnumType.DeviceUnitType.uRouterTU,VapEnumType.GrayLevel.Second,secondGray);
+		wifiDeviceGrayFacadeService.saveMacs2Gray(VapEnumType.DeviceUnitType.uRouterTU_106,VapEnumType.GrayLevel.Second,secondGray);
 	}
 
 	@Test
@@ -92,16 +92,16 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 	
 	@Test
 	public void test003MainPageRightTopData(){
-		CurrentGrayUsageVTO currentGrays = wifiDeviceGrayFacadeService.currentGrays(VapEnumType.DeviceUnitType.uRouterTU);
+		CurrentGrayUsageVTO currentGrays = wifiDeviceGrayFacadeService.currentGrays(VapEnumType.DeviceUnitType.uRouterTU_106);
 		System.out.println(JsonHelper.getJSONString(currentGrays));
 	}
 	
 	@Test
 	public void test004MainPageRightBottomData(){
-		TailPage<VersionVTO> pagesFW = wifiDeviceGrayFacadeService.pagesFW(VapEnumType.DeviceUnitType.uRouterTU,1,10);
+		TailPage<VersionVTO> pagesFW = wifiDeviceGrayFacadeService.pagesFW(VapEnumType.DeviceUnitType.uRouterTU_106,1,10);
 		System.out.println(JsonHelper.getJSONString(pagesFW));
 		
-		TailPage<VersionVTO> pagesOM = wifiDeviceGrayFacadeService.pagesOM(VapEnumType.DeviceUnitType.uRouterTU,1,10);
+		TailPage<VersionVTO> pagesOM = wifiDeviceGrayFacadeService.pagesOM(VapEnumType.DeviceUnitType.uRouterTU_106,1,10);
 		System.out.println(JsonHelper.getJSONString(pagesOM));
 		
 	}

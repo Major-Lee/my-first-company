@@ -1,16 +1,15 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import java.util.ArrayList;
+import java.util.List;
+
+import redis.clients.jedis.JedisPool;
+
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import redis.clients.jedis.JedisPool;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 获取用户设备终端别名

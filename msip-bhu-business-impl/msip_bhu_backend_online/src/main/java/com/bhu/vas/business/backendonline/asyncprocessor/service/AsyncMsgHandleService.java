@@ -226,6 +226,13 @@ public class AsyncMsgHandleService {
 	public void wifiDeviceModuleOnlineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s]", message));
 		WifiDeviceModuleOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceModuleOnlineDTO.class);
+		{//组件模块升级指令
+			UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceOMUpgrade(dto.getMac(), dto.getOrig_vap_module());
+			if(upgrade != null && upgrade.isForceDeviceUpgrade() && WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM == upgrade.isFw()){
+				String cmd = upgrade.buildUpgradeCMD(dto.getMac(), 0l, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
+				afterDeviceModuleOnlineThenCmdDown(dto.getMac(),cmd);
+			}
+		}
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
 			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
@@ -251,6 +258,22 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
 	}
 	
+	public void afterDeviceModuleOnlineThenCmdDown(String mac,String cmd){
+		logger.info(String.format("afterDeviceModuleOnlineThenCmdDown [%s]", mac));
+		DaemonHelper.daemonCmdDown(mac, cmd, daemonRpcService);
+		/*//设备持久指令分发
+		try{
+			List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD(mac);
+			if(persistencePayloads != null && !persistencePayloads.isEmpty()){
+				DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
+				System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}*/
+		
+		logger.info(String.format("wifiDeviceOnlineHandle afterDeviceOnlineThenCmdDown message[%s] successful", mac));
+	}
 	
 	/**
 	 *  a:如果设备是新上线的
