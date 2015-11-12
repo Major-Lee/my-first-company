@@ -34,6 +34,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -264,30 +265,24 @@ public class AgentStatisticsUnitFacadeService {
 	 * 3、获取代理商本月的列表记录，作为未结算金额
 	 * 4、获取代理商上月的列表记录，作为上月结算金额
 	 * @param uid
-	 * @param viewstatus -1 所有 1 settled 0 unsettled
+	 * @param viewstatus 
+	 * 			-1 所有			所有代理商列表
+	 * 			 1 settled 		所有已结清的代理商列表
+	 * 			 0 unsettled	所有未结清的代理商列表
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
 	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus, int pageNo, int pageSize){
-		SettlementPageVTO result_page = null;
-		List<SettlementVTO> settleVtos = null;
 		try{
-			settleVtos = new ArrayList<SettlementVTO>();
-			SettlementStatisticsVTO statistics = this.statistics();
 			//获取主界面显示结构 agents 列表
-			ModelCriteria mc_view = new ModelCriteria();
-			/*if(viewstatus == -1){
-				mc_view.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
-			}else */
-			if(viewstatus == 1){
-				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
-			}else if(viewstatus == 0){
-				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled).andSimpleCaulse(" 1=1 ");
-			}else{//viewstatus == -1
-				mc_view.createCriteria().andSimpleCaulse(" 1=1 ");
+			if(viewstatus == -1){
+				return pageTotalSettlements(operator_user, pageNo, pageSize);
+				//mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
+			}else{
+				return pageAgentBillsSettlements(operator_user,viewstatus, pageNo, pageSize);
 			}
-			mc_view.setOrderByClause(" id desc ");
+			/*mc_view.setOrderByClause(" id desc ");
 			mc_view.setPageNumber(pageNo);
 			mc_view.setPageSize(pageSize);
 			TailPage<AgentBillSummaryView> pages = agentBillFacadeService.getAgentBillSummaryViewService().findModelTailPageByModelCriteria(mc_view);
@@ -305,16 +300,57 @@ public class AgentStatisticsUnitFacadeService {
 					vto.setUid(sview.getId());
 					vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(sview.getT_price() - sview.getSd_t_price())));
-					//vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(summaryDTO.getMoney(),2))));
-					/*String previosMonth = DateTimeHelper.formatDate(DateTimeHelper.getDateFirstDayOfMonthAgo(new Date(),1), DateTimeHelper.FormatPattern11);
-					AgentSettlementsRecordMDTO previosMonth_settlement = agentSettlementsRecordMService.getSettlement(previosMonth, user.getId());
-					if(previosMonth_settlement != null)
-						vto.setLsr(ArithHelper.getFormatter(String.valueOf(previosMonth_settlement.getiSVPrice())));
-					else
-						vto.setLsr("0.00");
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(user.getId().toString(),settledSummary),2))));
-					vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(user.getId().toString(),unsettledSummary),2))));
-					*/
+					settleVtos.add(vto);
+					index++;
+				}
+			}else{
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+			}
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getTs(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);*/
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			SettlementStatisticsVTO statistics = this.statistics();
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(statistics);
+			//获取主界面显示结构 agents 列表
+			ModelCriteria mc_user = new ModelCriteria();
+			mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+			mc_user.setOrderByClause(" id desc ");
+			mc_user.setPageNumber(pageNo);
+			mc_user.setPageSize(pageSize);
+			TailPage<User> userPages = userService.findModelTailPageByModelCriteria(mc_user);
+			if(!userPages.isEmpty()){
+				List<Integer> agents = IdHelper.getPKs(userPages.getItems(), Integer.class);
+				List<AgentBillSummaryView> sviews = agentBillFacadeService.getAgentBillSummaryViewService().findByIds(agents, true, true);
+				SettlementVTO vto = null;
+				int index = 0;
+				for(User user:userPages.getItems()){
+					vto = new SettlementVTO();
+					vto.setIndex(index);
+					vto.setOrg(user.getOrg());
+					vto.setUid(user.getId());
+					vto.setOrg(user.getOrg());
+					AgentBillSummaryView sview = sviews.get(index);
+					if(sview != null){
+						vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+						vto.setUr(ArithHelper.getFormatter(String.valueOf(sview.getT_price() - sview.getSd_t_price())));
+					}else{
+						vto.setTr(ArithHelper.getFormatter("0.00"));
+						vto.setUr(ArithHelper.getFormatter("0.00"));
+					}
 					settleVtos.add(vto);
 					index++;
 				}
@@ -330,14 +366,75 @@ public class AgentStatisticsUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		/*if(viewstatus == -1){
-			return pageTotalSettlements(operator_user,pageNo, pageSize);
-		}else if(viewstatus == 1){
-			return pageSettledSettlements(operator_user,pageNo, pageSize);
-		}else{
-			return pageUnSettledSettlements(operator_user,pageNo, pageSize);
-		}*/
 	}
+	
+	/**
+	 * 代理商结算页面列表（管理员可以访问）
+	 * 1、获取代理商列表
+	 * 2、获取代理商本月以前（不包括本月）的列表记录，作为已结算金额
+	 * 3、获取代理商本月的列表记录，作为未结算金额
+	 * 4、获取代理商上月的列表记录，作为上月结算金额
+	 * @param uid
+	 * @param viewstatus 
+	 * 			-1 所有			所有存在过单据的代理商列表
+	 * 			 1 settled 		所有存在过单据的已结清的代理商列表
+	 * 			 0 unsettled	所有存在过单据的未结清的代理商列表
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	private RpcResponseDTO<SettlementPageVTO> pageAgentBillsSettlements(int operator_user,int viewstatus, int pageNo, int pageSize){
+		SettlementPageVTO result_page = null;
+		List<SettlementVTO> settleVtos = null;
+		try{
+			settleVtos = new ArrayList<SettlementVTO>();
+			SettlementStatisticsVTO statistics = this.statistics();
+			result_page = new SettlementPageVTO();
+			result_page.setStatistics(statistics);
+			//获取主界面显示结构 agents 列表
+			ModelCriteria mc_view = new ModelCriteria();
+			if(viewstatus == 1){
+				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
+			}else if(viewstatus == 0){
+				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled).andSimpleCaulse(" 1=1 ");
+			}else{//viewstatus == -1
+				mc_view.createCriteria().andSimpleCaulse(" 1=1 ");
+			}
+			mc_view.setOrderByClause(" id desc ");
+			mc_view.setPageNumber(pageNo);
+			mc_view.setPageSize(pageSize);
+			TailPage<AgentBillSummaryView> pages = agentBillFacadeService.getAgentBillSummaryViewService().findModelTailPageByModelCriteria(mc_view);
+			if(!pages.isEmpty()){
+				List<Integer> agents = IdHelper.getPKs(pages.getItems(), Integer.class);
+				List<User> users = userService.findByIds(agents, true, true);
+				SettlementVTO vto = null;
+				int index = 0;
+				for(AgentBillSummaryView sview:pages.getItems()){
+					vto = new SettlementVTO();
+					vto.setIndex(index);
+					User user = users.get(index);//User user = userService.getById(sview.getId());
+					vto.setOrg(user != null?user.getOrg():"未知");
+					vto.setUid(sview.getId());
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+					vto.setUr(ArithHelper.getFormatter(String.valueOf(sview.getT_price() - sview.getSd_t_price())));
+					settleVtos.add(vto);
+					index++;
+				}
+			}else{
+				TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,0, settleVtos);
+				result_page.setPages(settlement_pages);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+			}
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getTs(), settleVtos);
+			result_page.setPages(settlement_pages);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	
 	
 	/*private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;
@@ -510,10 +607,10 @@ public class AgentStatisticsUnitFacadeService {
 	
 	private SettlementStatisticsVTO statistics(){
 		SettlementStatisticsVTO result = agentBillFacadeService.statistics();
-		/*ModelCriteria mc_user = new ModelCriteria();
+		ModelCriteria mc_user = new ModelCriteria();
 		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		int total = userService.countByModelCriteria(mc_user);
-		result.setTs(total);*/
+		result.setTs(total);
 		return result;
 	}
 	

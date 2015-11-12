@@ -1,9 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 

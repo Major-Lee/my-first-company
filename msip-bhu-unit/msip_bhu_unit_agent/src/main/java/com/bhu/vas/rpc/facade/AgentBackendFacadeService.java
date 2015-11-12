@@ -277,8 +277,8 @@ public class AgentBackendFacadeService {
             logger.info("agent excel over..... ");
 
         }catch(Exception ex) {
-            logger.error(String.format("ex[%s]", ex.getStackTrace()));
-            ex.printStackTrace();
+            //logger.error(String.format("ex[%s]", ex.getStackTrace()));
+            ex.printStackTrace(System.out);
         }finally{
             if(hssfWorkbook != null){
                 hssfWorkbook.close();
