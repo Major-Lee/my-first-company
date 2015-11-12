@@ -97,7 +97,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zadd(generateKey(wifiId), OnlineBaseScore+rx_rate, handsetId);
 	}
 	
-	public long addOfflinePresent(String wifiId, String handsetId, double rx_rate){
+	public long  addOfflinePresent(String wifiId, String handsetId, double rx_rate){
 		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
 	}
 	
