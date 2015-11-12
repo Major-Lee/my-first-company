@@ -9,9 +9,15 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.RandomData;
 
 /**
@@ -25,10 +31,6 @@ import com.smartwork.msip.localunit.RandomData;
 public class MonthlyChargingSettlementTestGenOper {
 
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		
-		/*List<Integer> agents = new ArrayList<Integer>();
-    	agents.add(100119);
-		agents.add(100118);*/
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		
 		/*AgentSettlementsRecordMService agentSettlementsRecordMService = (AgentSettlementsRecordMService)ctx.getBean("agentSettlementsRecordMService");
@@ -72,13 +74,27 @@ public class MonthlyChargingSettlementTestGenOper {
     		}
     	}*/
 		AgentBillFacadeService agentBillFacadeService = (AgentBillFacadeService)ctx.getBean("agentBillFacadeService");
+		UserService userService = (UserService)ctx.getBean("userService");
     	
     	List<Integer> agents = new ArrayList<Integer>();
     	agents.add(100119);
 		agents.add(100118);
+		
+		ModelCriteria mc_user = new ModelCriteria();
+		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		mc_user.setPageNumber(1);
+		mc_user.setPageSize(100);
+		EntityIterator<Integer, User> it_user = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userService.getEntityDao(), mc_user);
+		while(it_user.hasNext()){
+			List<Integer> uids = it_user.nextKeys();
+			agents.addAll(uids);
+		}
+		if(agents.isEmpty()){
+			System.out.println("没有发现代理商用户");
+		}
 	   	Date current = new Date();
-    	//创建1年的数据
-    	for(int ago=0;ago<=12;ago++){
+    	//创建2年的数据
+    	for(int ago=0;ago<=24;ago++){
     		Date monthAgo = DateTimeHelper.getDateFirstDayOfMonthAgo(current,ago);
     		String monthly = DateTimeHelper.formatDate(monthAgo, DateTimeHelper.FormatPattern11);
     		for(Integer agent:agents){
