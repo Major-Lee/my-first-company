@@ -209,21 +209,23 @@ public class DeviceVersion {
 		}
 		return 0;
 	}
-	
+	public boolean valid(){
+		return StringUtils.isNotEmpty(prefix) && StringUtils.isNotEmpty(hdt) && StringUtils.isNotEmpty(pno) && StringUtils.isNotEmpty(ver);
+	}
 	public boolean canExecuteUpgrade(){
 		return StringUtils.isEmpty(dut) || wasDutURouter();
 	}
 	
 	public static void main(String[] argv){
-		/*String[] array = {"AP106P06V1.3.2Build8606","AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		String[] array = {"AP106P06V1.3.2Build8606","AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array){
 			DeviceVersion parser = DeviceVersion.parser(orig);
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
-			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getPrefix()+" "+parser.getHdt()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]);
+			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getPrefix()+" "+parser.getHdt()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]+"  "+parser.getDut()+"  "+parser.getMn());
 		}
 		
 		String ss = "Build8606";
-		System.out.println(ss.substring(5));*/
+		System.out.println(ss.substring(5));
 		
 		String current = "AP106P06V1.3.2Build8606";
 		String[] array1 = {"AP106P06V1.3.2Build8606","AP106P06V1.3.2Build8677","AP106P06V1.3.2Build8600","AP106P07V1.3.3r1_TU","AP106P07V1.3.1r1_TU","AP106P06V1.3.0Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};

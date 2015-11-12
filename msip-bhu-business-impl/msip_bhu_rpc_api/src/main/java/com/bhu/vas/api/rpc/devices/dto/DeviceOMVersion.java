@@ -51,7 +51,9 @@ public class DeviceOMVersion {
 		}
 		return dv;
 	}
-	
+	public boolean valid(){
+		return StringUtils.isNotEmpty(vp) && StringUtils.isNotEmpty(ver) && StringUtils.isNotEmpty(mno);
+	}
 	public boolean canExecuteUpgrade(){
 		return true;
 	}

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.rpc.devices.dto.DeviceOMVersion;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion;
@@ -193,6 +194,8 @@ public class WifiDeviceGrayFacadeService {
     		String fwid,String omid){
     	validateDut(dut);
     	validateGrayEnalbe(gray);
+    	this.validateVersionFormat(fwid, true);
+    	this.validateVersionFormat(omid, false);
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
     	if(dgv == null){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});
@@ -234,6 +237,7 @@ public class WifiDeviceGrayFacadeService {
     	validateDut(dut);
     	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(upgrade_url)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	this.validateVersionFormat(versionid, fw);
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
     		if(versionfw != null){
@@ -272,6 +276,7 @@ public class WifiDeviceGrayFacadeService {
     	validateDut(dut);
     	if(StringUtils.isEmpty(versionid)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	this.validateVersionFormat(versionid, fw);
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
     		if(versionfw == null){
@@ -362,11 +367,6 @@ public class WifiDeviceGrayFacadeService {
     		System.out.println("A1 upgradeDecideAction exception:"+resultDto);
     		return resultDto;
     	}
-    	/*if(grayLevel == null || !grayLevel.isEnable() || grayLevel == VapEnumType.GrayLevel.Special){//灰度不存在或者特殊灰度，UpgradeDTO中的forceDeviceUpgrade强制false
-    		resultDto = new UpgradeDTO(dut,gl,true,false);
-    		resultDto.setDesc("灰度不存在、无效的灰度或者属于特殊灰度等级");
-    		return resultDto;
-    	}*/
     	WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut,gl));
 		if(grayVersion != null){
 			int ret = DeviceVersion.compareVersions(d_orig_swver, grayVersion.getD_fwid());
@@ -451,6 +451,22 @@ public class WifiDeviceGrayFacadeService {
 			}
 		}
 		
+    }
+    
+    /**
+     * 验证版本号格式：包括固件的和增值组件的
+     * @param version
+     * @param fw
+     * @return
+     */
+    private boolean validateVersionFormat(String version,boolean fw){
+    	boolean result = false;
+    	if(fw){
+    		result = DeviceVersion.parser(version).valid();
+    	}else
+    		result = DeviceOMVersion.parser(version).valid();
+    	if(!result) throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_INVALID_FORMAT);
+    	return result;
     }
     
     private boolean validateDut(VapEnumType.DeviceUnitType dut){
