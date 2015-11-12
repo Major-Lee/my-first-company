@@ -142,11 +142,11 @@ public class AgentStatisticsUnitFacadeService {
 		}
 	}
 	
-	private Map<String,List<String>> buildChartsData(int agent,Date date,boolean isSameMonth){
+	private Map<String,List<Object>> buildChartsData(int agent,Date date,boolean isSameMonth){
 		
-		Map<String,List<String>> result = new HashMap<>();
-		List<String> days = new ArrayList<String>();
-		List<String> dayvals = new ArrayList<String>();
+		Map<String,List<Object>> result = new HashMap<>();
+		List<Object> days = new ArrayList<Object>();
+		List<Object> dayvals = new ArrayList<Object>();
 		{//初始化数据
 			int passDayOfMonth = 0;
 			if(isSameMonth){//当前月
@@ -156,7 +156,7 @@ public class AgentStatisticsUnitFacadeService {
 			}
 			for(int i=1;i<=passDayOfMonth;i++){
 				days.add(String.format("%02d日", i));
-				dayvals.add(String.valueOf(0d));
+				dayvals.add(ArithHelper.round(0.00d, 2));
 			}
 		}
 		//String dateKey = DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern11);
@@ -167,7 +167,7 @@ public class AgentStatisticsUnitFacadeService {
 				DateTimeHelper.formatDate(lastDate, DateTimeHelper.FormatPattern5));
 		for(AgentWholeDayMDTO dto:results){
 			int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-			dayvals.set(whichday-1, String.valueOf(AgentHelper.currency(dto.getDod())));
+			dayvals.set(whichday-1, AgentHelper.currency(dto.getDod()));
 		}
 		result.put("days", days);
 		result.put("dayvals", dayvals);
