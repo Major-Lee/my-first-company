@@ -553,7 +553,7 @@ public class DeviceBusinessFacadeService {
 			dto.setDhcp_name(handset.getDhcp_name());
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
-			dto.setAuthorized(dto.getAuthorized());
+			dto.setAuthorized(handset.getAuthorized());
 		}
 
 		HandsetStorageFacadeService.handsetComming(dto);
