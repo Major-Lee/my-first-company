@@ -88,7 +88,16 @@ public class DeviceOMVersion {
 			return 0;
 		}
 	}
-	
+	public boolean wasDutURouter(){
+		if(StringUtils.isNotEmpty(vp)){
+			return "H106".equals(vp);
+		}
+		return false;
+	}
+	/*public boolean wasDutSoc(){
+		if(StringUtils.isEmpty(dut)) return false;
+		return DUT_soc.equals(dut);
+	}*/
 	public String toString(){
 		return String.format("vp[%s] ver[%s] mno[%s]", vp,ver,mno);
 	}

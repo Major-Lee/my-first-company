@@ -343,7 +343,7 @@ public class WifiDeviceGrayFacadeService {
 				dut = VapEnumType.DeviceUnitType.uRouterTU.getIndex();
 				gl = VapEnumType.GrayLevel.Other.getIndex();
 			}else{
-				System.out.println("A deviceUpgradeAutoAction unsupported!");
+				System.out.println("current only supported uRouter Device deviceUpgradeAutoAction!");
 				return null;
 			}
 		}else{
