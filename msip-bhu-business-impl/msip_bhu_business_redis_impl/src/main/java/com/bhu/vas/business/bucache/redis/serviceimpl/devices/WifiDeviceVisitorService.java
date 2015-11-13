@@ -74,6 +74,10 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         return super.zrem(generateKey(wifiId), handsetId);
     }
 
+    public long clearPresent(String wifiId) {
+        return super.del(generateKey(wifiId));
+    }
+
 
     public List<Object> removePresents(String wifiId, String[] handsetIds) {
         return super.pipelineZRem_sameKeyWithDiffMember(generateKey(wifiId), handsetIds);

@@ -368,6 +368,15 @@ public class DeviceBusinessFacadeService {
 		WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
 	}
 
+	/**
+	 * 清除访客网络列表
+	 * @param wifiId
+	 */
+	private void clearDeviceVisitorList(String wifiId) {
+		String wifiId_lowerCase = wifiId.toLowerCase();
+		WifiDeviceVisitorService.getInstance().clearPresent(wifiId_lowerCase);
+	}
+
 	private void handsetDeviceVisitorAuthorize(String ctx, HandsetDeviceDTO dto, String wifiId) {
 		if(dto == null)
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
@@ -657,6 +666,9 @@ public class DeviceBusinessFacadeService {
 		//deliverMessageService.sendHandsetDeviceSyncActionMessage(wifiId.toLowerCase(), dtos);
 		//1:清除wifi设备对应handset在线列表redis
 		deviceFacadeService.allHandsetDoOfflines(mac);
+
+		//清除访客网络列表
+		clearDeviceVisitorList(mac);
 		
 		if(dtos != null && !dtos.isEmpty()){
 			List<String> allIds = new ArrayList<String>();
@@ -812,6 +824,14 @@ public class DeviceBusinessFacadeService {
 			//TODO:特殊处理商业wifi终端在线列表
 			return;
 		}*/
+
+		//1:清除wifi设备对应handset在线列表redis
+		deviceFacadeService.allHandsetDoOfflines(wifiId);
+
+		//清除访客网络列表
+		clearDeviceVisitorList(wifiId);
+
+
 		if(terminals != null && !terminals.isEmpty()){
 			//获取设备的配置的dto
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(wifiId);
