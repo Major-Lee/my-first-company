@@ -336,9 +336,6 @@ public class DeviceBusinessFacadeService {
 		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
 	}
 
-
-
-
 	/**
 	 * 访客网络终端上线
 	 * @param ctx
@@ -348,13 +345,22 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
+		System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
 			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
 		}
+	}
 
+	private void handsetDeviceVisitorOnline(String ctx, WifiDeviceTerminalDTO dto, String wifiId) {
+		String wifiId_lowerCase = wifiId.toLowerCase();
+		System.out.println("handsetDeviceVisitorOnline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
+		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
+			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+		} else {
+			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+		}
 	}
 
 	/**
@@ -867,7 +873,9 @@ public class DeviceBusinessFacadeService {
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
 					logger.info("handset" + handset.getMac() + handset.getRx_bytes() + handset.getTx_bytes());
-					if(!isVisitorWifi(terminal)) {
+					if(isVisitorWifi(terminal)) {
+						handsetDeviceVisitorOnline(ctx, terminal, wifiId);
+					} else {
 						WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId,
 								terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 					}
