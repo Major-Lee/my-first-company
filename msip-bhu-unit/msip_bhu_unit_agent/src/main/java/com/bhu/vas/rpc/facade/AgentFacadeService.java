@@ -96,9 +96,9 @@ public class AgentFacadeService {
     @Resource
     private AgentBackendFacadeService agentBackendFacadeService;
     
-    public int claimAgentDevice(String sn, String mac, String osm) {
-        logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s] mac[%s] osm[%s]", sn, mac, osm));
-        return agentDeviceClaimService.claimAgentDevice(sn, mac, osm);
+    public int claimAgentDevice(String sn, String mac, String hdtype) {
+        logger.info(String.format("AgentFacadeService claimAgentDevice sn[%s] mac[%s] hdtype[%s]", sn, mac, hdtype));
+        return agentDeviceClaimService.claimAgentDevice(sn, mac, hdtype);
     }
 
 

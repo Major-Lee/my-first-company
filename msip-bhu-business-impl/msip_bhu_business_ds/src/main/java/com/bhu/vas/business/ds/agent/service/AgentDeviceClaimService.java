@@ -29,9 +29,9 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
      * @return
      * -1 认领库中不存在此设备
      * >0 认领库中的agentuser id
-     * @param osm 产品型号
+     * @param hdtype 产品型号
      */
-    public int claimAgentDevice(String sn, String mac, String osm) {
+    public int claimAgentDevice(String sn, String mac, String hdtype) {
         AgentDeviceClaim agentDeviceClaim = this.getById(sn);
         if (agentDeviceClaim != null) {
             int status = agentDeviceClaim.getStatus();
@@ -40,7 +40,7 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
                 agentDeviceClaim.setClaim_at(new Date());
                 agentDeviceClaim.setStatus(1);
                 agentDeviceClaim.setMac(mac);
-                agentDeviceClaim.setStock_name(osm);
+                agentDeviceClaim.setStock_name(hdtype);
                 this.update(agentDeviceClaim);
             }
             return agentDeviceClaim.getUid(); //不管认领未认领返回uid
