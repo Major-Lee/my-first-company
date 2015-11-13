@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -36,9 +37,11 @@ import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -269,19 +272,23 @@ public class AgentStatisticsUnitFacadeService {
 	 * 			-1 所有			所有代理商列表
 	 * 			 1 settled 		所有已结清的代理商列表
 	 * 			 0 unsettled	所有未结清的代理商列表
+	 * @param q
+	 * @param q
+	 * @param q
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus, int pageNo, int pageSize){
+	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,String q,String sort_field,boolean desc, int pageNo, int pageSize){
 		try{
+			return pageAgentBillsSettlements(operator_user,viewstatus,q,sort_field,desc, pageNo, pageSize);
 			//获取主界面显示结构 agents 列表
-			if(viewstatus == -1){
+			/*if(viewstatus == -1){
 				return pageTotalSettlements(operator_user, pageNo, pageSize);
 				//mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
 			}else{
 				return pageAgentBillsSettlements(operator_user,viewstatus, pageNo, pageSize);
-			}
+			}*/
 			/*mc_view.setOrderByClause(" id desc ");
 			mc_view.setPageNumber(pageNo);
 			mc_view.setPageSize(pageSize);
@@ -317,7 +324,7 @@ public class AgentStatisticsUnitFacadeService {
 		}
 	}
 	
-	private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
+	/*private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -366,7 +373,7 @@ public class AgentStatisticsUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 	
 	/**
 	 * 代理商结算页面列表（管理员可以访问）
@@ -383,7 +390,7 @@ public class AgentStatisticsUnitFacadeService {
 	 * @param pageSize
 	 * @return
 	 */
-	private RpcResponseDTO<SettlementPageVTO> pageAgentBillsSettlements(int operator_user,int viewstatus, int pageNo, int pageSize){
+	private RpcResponseDTO<SettlementPageVTO> pageAgentBillsSettlements(int operator_user,int viewstatus,String q,String sort_field,boolean desc, int pageNo, int pageSize){
 		SettlementPageVTO result_page = null;
 		List<SettlementVTO> settleVtos = null;
 		try{
@@ -392,7 +399,7 @@ public class AgentStatisticsUnitFacadeService {
 			result_page = new SettlementPageVTO();
 			result_page.setStatistics(statistics);
 			//获取主界面显示结构 agents 列表
-			ModelCriteria mc_view = new ModelCriteria();
+			/*ModelCriteria mc_view = new ModelCriteria();
 			if(viewstatus == 1){
 				mc_view.createCriteria().andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
 			}else if(viewstatus == 0){
@@ -402,7 +409,8 @@ public class AgentStatisticsUnitFacadeService {
 			}
 			mc_view.setOrderByClause(" id desc ");
 			mc_view.setPageNumber(pageNo);
-			mc_view.setPageSize(pageSize);
+			mc_view.setPageSize(pageSize);*/
+			ModelCriteria mc_view = buildBlurModelCriteria(viewstatus,q,sort_field,desc,pageNo,pageSize);
 			TailPage<AgentBillSummaryView> pages = agentBillFacadeService.getAgentBillSummaryViewService().findModelTailPageByModelCriteria(mc_view);
 			if(!pages.isEmpty()){
 				List<Integer> agents = IdHelper.getPKs(pages.getItems(), Integer.class);
@@ -428,13 +436,54 @@ public class AgentStatisticsUnitFacadeService {
 			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getTs(), settleVtos);
 			result_page.setPages(settlement_pages);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	private static final String sortSqlFragmentTemplate = " (%s) %s ";
 	
+	private ModelCriteria buildBlurModelCriteria(int viewstatus,String q,String sort_field,boolean desc,int pageNo, int pageSize){
+		ModelCriteria mc_view = new ModelCriteria();
+		Criteria createCriteria = mc_view.createCriteria();
+		if(viewstatus == 1){
+			createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled);
+		}else if(viewstatus == 0){
+			createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled);
+		}else{//viewstatus == -1
+			createCriteria.andSimpleCaulse(" 1=1 ");
+		}
+		if(StringUtils.isNotEmpty(q)){
+			createCriteria.andColumnLike("org", "%"+q+"%");
+		}
+		validateSortField(sort_field);
+		if(SettlementVTO.Sort_Field_ORG.equals(sort_field)){
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "org",desc));
+		}
+		if(SettlementVTO.Sort_Field_TR.equals(sort_field)){
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "sd_t_price",desc));
+		}
+		if(SettlementVTO.Sort_Field_UR.equals(sort_field)){
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price - sd_t_price",desc));
+		}
+		
+		mc_view.setOrderByClause(" id desc ");
+		mc_view.setPageNumber(pageNo);
+		mc_view.setPageSize(pageSize);
+		return mc_view;
+	}
 	
+	private boolean validateSortField(String sort_field){
+		if(StringUtils.isNotEmpty(sort_field)) sort_field = SettlementVTO.Sort_Field_UR;
+		if(SettlementVTO.Sort_Field_ORG.equals(sort_field) || SettlementVTO.Sort_Field_TR.equals(sort_field) || SettlementVTO.Sort_Field_UR.equals(sort_field)){
+			return true;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_FINANCE_SEARCH_SORTFIELD_PARAM_ERROR);
+		}
+	}
 	
 	/*private RpcResponseDTO<SettlementPageVTO> pageTotalSettlements(int operator_user,int pageNo, int pageSize) {
 		SettlementPageVTO result_page = null;

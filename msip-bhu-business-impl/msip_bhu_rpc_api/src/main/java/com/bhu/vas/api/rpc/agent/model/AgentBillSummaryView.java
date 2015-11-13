@@ -13,6 +13,7 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  */
 @SuppressWarnings("serial")
 public class AgentBillSummaryView extends BaseIntModel{
+	public static final int SummaryView_Empty = -1;//代理商本身没有存在单据，但是AgentBillSummaryView仍然存在代理商的汇总记录，其状态为-1
 	public static final int SummaryView_UnSettled = 0;
 	public static final int SummaryView_Settled = 1;
 	// id agent

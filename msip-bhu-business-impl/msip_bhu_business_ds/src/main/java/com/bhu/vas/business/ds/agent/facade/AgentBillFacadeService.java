@@ -198,12 +198,16 @@ public class AgentBillFacadeService {
 				}
 			}
 		}
+		boolean billsExist = it.getTotalItemsCount()>0;
 		AgentBillSummaryView sview = agentBillSummaryViewService.getById(agent);
 		User agentUser = userService.getById(agent);
 		if(sview != null){
 			sview.setT_price(t_price);
 			sview.setSd_t_price(sd_t_price);
-			sview.setStatus(sd_t_price>=t_price?AgentBillSummaryView.SummaryView_Settled:AgentBillSummaryView.SummaryView_UnSettled);
+			if(billsExist)
+				sview.setStatus(sd_t_price>=t_price?AgentBillSummaryView.SummaryView_Settled:AgentBillSummaryView.SummaryView_UnSettled);
+			else
+				sview.setStatus(AgentBillSummaryView.SummaryView_Empty);
 			sview.setLast_reckoner(last_reckoner);
 			sview.setSettled_at(last_settled_at);
 			sview.setOrg(agentUser!=null?agentUser.getOrg():null);
@@ -213,7 +217,10 @@ public class AgentBillFacadeService {
 			sview.setId(agent);
 			sview.setT_price(t_price);
 			sview.setSd_t_price(sd_t_price);
-			sview.setStatus(sd_t_price>=t_price?AgentBillSummaryView.SummaryView_Settled:AgentBillSummaryView.SummaryView_UnSettled);
+			if(billsExist)
+				sview.setStatus(sd_t_price>=t_price?AgentBillSummaryView.SummaryView_Settled:AgentBillSummaryView.SummaryView_UnSettled);
+			else
+				sview.setStatus(AgentBillSummaryView.SummaryView_Empty);
 			sview.setLast_reckoner(last_reckoner);
 			sview.setSettled_at(last_settled_at);
 			sview.setOrg(agentUser!=null?agentUser.getOrg():null);

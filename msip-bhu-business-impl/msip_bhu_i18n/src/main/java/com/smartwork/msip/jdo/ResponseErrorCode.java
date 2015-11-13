@@ -39,6 +39,7 @@ public enum ResponseErrorCode {
 	COMMON_DATA_VALIDATE_LENGTH_ILEGAL("900","common.data.validate.length.ilegal"),
 		
 	
+	AGENT_SETTLEMENT_ACTION_FINANCE_SEARCH_SORTFIELD_PARAM_ERROR("800", "agent.settlement.action.finance.search.sortfield.param.error"),
 	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_LARGERTHENZERO("801", "agent.settlement.action.settlebills.price.must.largerthenzero"), 
 	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_EQUALORLESSTHENSUB("802", "agent.settlement.action.settlebills.price.must.equalorlessthensub"),
 	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_AGENT_ALREADY_SETTLED_DONE("802", "agent.settlement.action.settlebills.agent.already.settled.done"),
