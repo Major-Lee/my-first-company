@@ -51,8 +51,8 @@ public class ParamVapVistorLimitWifiDTO implements java.io.Serializable{
 	
 	public static ParamVapVistorLimitWifiDTO fufillWithDefault(ParamVapVistorLimitWifiDTO param){
 		if(param == null) return builderDefault();
-		if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(128);
-		if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(128);
+		//if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(128);
+		//if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(128);
 		return param;
 	}
 	/*
