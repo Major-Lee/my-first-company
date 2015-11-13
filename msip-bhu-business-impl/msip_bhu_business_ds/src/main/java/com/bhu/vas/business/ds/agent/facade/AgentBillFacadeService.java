@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.agent.model.AgentBillSettlements;
 import com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView;
 import com.bhu.vas.api.rpc.agent.vto.SettlementStatisticsVTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.service.AgentBillSettlementsService;
 import com.bhu.vas.business.ds.agent.service.AgentBillSummaryViewService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -30,6 +32,9 @@ public class AgentBillFacadeService {
 	@Resource
 	private AgentBillSummaryViewService agentBillSummaryViewService;
 	
+	
+	@Resource
+	private UserService userService;
 	
 	public AgentBillSettlementsService getAgentBillSettlementsService() {
 		return agentBillSettlementsService;
@@ -168,6 +173,7 @@ public class AgentBillFacadeService {
 		double t_price = 0d;
 		double sd_t_price = 0d;
 		int last_reckoner = 0;
+		String last_settled_at = null;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("agent", agent).andSimpleCaulse(" 1=1 ");
 		mc.setOrderByClause(" id asc ");
@@ -182,14 +188,25 @@ public class AgentBillFacadeService {
 				if(bill.getStatus() != AgentBillSettlements.Bill_Created){
 					last_reckoner = bill.getReckoner();
 				}
+				if(last_settled_at == null) last_settled_at = bill.getSettled_at();
+				else{
+					if(bill.getSettled_at() != null) {
+						if(last_settled_at.compareTo(bill.getSettled_at()) < 0){
+							last_settled_at = bill.getSettled_at();
+						}
+					}
+				}
 			}
 		}
 		AgentBillSummaryView sview = agentBillSummaryViewService.getById(agent);
+		User agentUser = userService.getById(agent);
 		if(sview != null){
 			sview.setT_price(t_price);
 			sview.setSd_t_price(sd_t_price);
 			sview.setStatus(sd_t_price>=t_price?AgentBillSummaryView.SummaryView_Settled:AgentBillSummaryView.SummaryView_UnSettled);
 			sview.setLast_reckoner(last_reckoner);
+			sview.setSettled_at(last_settled_at);
+			sview.setOrg(agentUser!=null?agentUser.getOrg():null);
 			agentBillSummaryViewService.update(sview);
 		}else{
 			sview = new AgentBillSummaryView();
@@ -198,6 +215,8 @@ public class AgentBillFacadeService {
 			sview.setSd_t_price(sd_t_price);
 			sview.setStatus(sd_t_price>=t_price?AgentBillSummaryView.SummaryView_Settled:AgentBillSummaryView.SummaryView_UnSettled);
 			sview.setLast_reckoner(last_reckoner);
+			sview.setSettled_at(last_settled_at);
+			sview.setOrg(agentUser!=null?agentUser.getOrg():null);
 			agentBillSummaryViewService.insert(sview);
 		}
 	}

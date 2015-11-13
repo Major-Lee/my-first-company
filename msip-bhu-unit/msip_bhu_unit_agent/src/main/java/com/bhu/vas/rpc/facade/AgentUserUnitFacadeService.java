@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView;
 import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
@@ -37,6 +39,9 @@ public class AgentUserUnitFacadeService {
 	@Resource
 	private UserTokenService userTokenService;
 
+	@Resource
+	private AgentBillFacadeService agentBillFacadeService;
+	
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
 		try{
 				int uid = Integer.parseInt(uidParam); 
@@ -307,11 +312,16 @@ public class AgentUserUnitFacadeService {
 			if(StringUtils.isNotEmpty(nick)){
 				user.setNick(nick);
 			}
+			boolean org_changed = false;
 			if(StringUtils.isNotEmpty(org)){
-				if (userService.isExistsOrg(tid, org)) {
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
+				String old_org = user.getOrg();
+				if(!org.equals(old_org)){
+					if (userService.isExistsOrg(org)) {
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
+					}
+					org_changed = true;
+					user.setOrg(org);
 				}
-				user.setOrg(org);
 			}
 			if(StringUtils.isNotEmpty(bln)){
 				user.setBln(bln);
@@ -326,6 +336,13 @@ public class AgentUserUnitFacadeService {
 				user.setMemo(memo);
 			}
 			this.userService.update(user);
+			if(org_changed){//更新summary相关的容易字段
+				AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(user.getId());
+				if(sview != null){
+					sview.setOrg(org);
+					agentBillFacadeService.getAgentBillSummaryViewService().update(sview);
+				}
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);

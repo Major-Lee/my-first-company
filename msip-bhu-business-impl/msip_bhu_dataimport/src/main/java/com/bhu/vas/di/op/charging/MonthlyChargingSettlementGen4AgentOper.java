@@ -84,6 +84,8 @@ public class MonthlyChargingSettlementGen4AgentOper {
 					settlement.setCreated_at(DateTimeHelper.formatDate(new Date(),DateTimeHelper.FormatPattern1));
 					agentSettlementsRecordMService.save(settlement);*/
 				}
+				//生成summaryView
+				agentBillFacadeService.billSummaryViewGen(user);
 			}
 			System.out.println(date+" 结算成功");
 		}

@@ -77,8 +77,6 @@ public class MonthlyChargingSettlementTestGenOper {
 		UserService userService = (UserService)ctx.getBean("userService");
     	
     	List<Integer> agents = new ArrayList<Integer>();
-    	agents.add(100119);
-		agents.add(100118);
 		
 		ModelCriteria mc_user = new ModelCriteria();
 		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);

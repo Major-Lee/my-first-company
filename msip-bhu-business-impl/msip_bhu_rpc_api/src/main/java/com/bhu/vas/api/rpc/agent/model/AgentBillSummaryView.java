@@ -18,6 +18,8 @@ public class AgentBillSummaryView extends BaseIntModel{
 	public static final int SummaryView_Settled = 1;
 	// id agent
 
+	//冗余字段 存储 分销商 org字段内容 用于支持org排序
+	private String org;
 	//最后结算人
     private int last_reckoner;
     //Summary需要结算的金额
@@ -78,6 +80,14 @@ public class AgentBillSummaryView extends BaseIntModel{
 
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
+	}
+
+	public String getOrg() {
+		return org;
+	}
+
+	public void setOrg(String org) {
+		this.org = org;
 	}
 
 	@Override
