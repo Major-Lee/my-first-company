@@ -134,6 +134,14 @@ public class AgentUserUnitFacadeService {
 		user.setLastlogindevice(device);
 		user.setUtype(UserType.Agent.getIndex());
 		user = this.userService.insert(user);
+		{//更新summary相关的容易字段
+			try{
+				agentBillFacadeService.getAgentBillSummaryViewService().insert(AgentBillSummaryView.buildDefault(user.getId(), org));
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+			}
+			
+		}
 		UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		// token validate code
 		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
@@ -336,12 +344,16 @@ public class AgentUserUnitFacadeService {
 				user.setMemo(memo);
 			}
 			this.userService.update(user);
-			if(org_changed){//更新summary相关的容易字段
-				AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(user.getId());
-				if(sview != null){
-					sview.setOrg(org);
-					agentBillFacadeService.getAgentBillSummaryViewService().update(sview);
+			try{
+				if(org_changed){//更新summary相关的容易字段
+					AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(user.getId());
+					if(sview != null){
+						sview.setOrg(org);
+						agentBillFacadeService.getAgentBillSummaryViewService().update(sview);
+					}
 				}
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
 		}catch(BusinessI18nCodeException bex){
