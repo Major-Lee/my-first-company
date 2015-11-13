@@ -2,7 +2,6 @@ package com.bhu.vas.api.rpc.agent.model;
 
 import java.util.Date;
 
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
 /**
@@ -14,6 +13,7 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  */
 @SuppressWarnings("serial")
 public class AgentBillSummaryView extends BaseIntModel{
+	public static final int SummaryView_Empty = -1;//代理商本身没有存在单据，但是AgentBillSummaryView仍然存在代理商的汇总记录，其状态为-1
 	public static final int SummaryView_UnSettled = 0;
 	public static final int SummaryView_Settled = 1;
 	// id agent
@@ -96,10 +96,14 @@ public class AgentBillSummaryView extends BaseIntModel{
 			this.created_at = new Date();
 		super.preInsert();
 	}
-
-    public static String generateId(String date, int agent){
-		StringBuffer idstring = new StringBuffer();
-		idstring.append(date).append(StringHelper.UNDERLINE_STRING_GAP).append(agent);
-		return idstring.toString();
+	
+	public static AgentBillSummaryView buildDefault(int user,String org){
+		AgentBillSummaryView sview = new AgentBillSummaryView();
+		sview.setId(user);
+		sview.setOrg(org);
+		sview.setStatus(SummaryView_UnSettled);
+		sview.setT_price(0.00d);
+		sview.setSd_t_price(0.00d);
+		return sview;
 	}
 }

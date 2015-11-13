@@ -121,6 +121,9 @@ public class AgentController {
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = false, defaultValue="-1") int status,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false, defaultValue="ur", value = "sortf") String sort_field,
+            @RequestParam(required = false, defaultValue="true") boolean desc,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
     		){
@@ -128,7 +131,7 @@ public class AgentController {
     		/*if(StringUtils.isEmpty(date)){
     			date = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5);
     		}*/
-			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid, status, pageNo, pageSize);
+			RpcResponseDTO<SettlementPageVTO> rpcResult = agentRpcService.pageSettlements(uid, status,q,sort_field,desc, pageNo, pageSize);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else

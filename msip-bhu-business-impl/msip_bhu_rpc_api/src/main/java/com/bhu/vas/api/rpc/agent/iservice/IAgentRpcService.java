@@ -109,7 +109,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,int pageNo, int pageSize);
+    RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,String q,String sort_field,boolean desc,int pageNo, int pageSize);
     
     /**
      * 获取代理商代理设备的所有数量、在线数量、离线数量
