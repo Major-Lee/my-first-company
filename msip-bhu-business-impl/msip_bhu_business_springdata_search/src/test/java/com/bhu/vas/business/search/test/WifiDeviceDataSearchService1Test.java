@@ -276,7 +276,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_graylevel2);
 		
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test003:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test003:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -291,7 +291,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 2：设备业务线为商业wifi
 	 * 3：设备灰度为一级或二级
 	 */
-	//@Test
+	@Test
 	public void test004SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备在线
@@ -308,7 +308,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_graylevel2);
 		
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test004:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test004:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -356,7 +356,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 	上述条件反向
 	 * 
 	 */
-	//@Test
+	@Test
 	public void test005SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		
@@ -372,7 +372,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_betweenAndLastRegedAt);
 		
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test005:"+ "实例一:" + JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test005:"+ "实例一:" + JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -390,7 +390,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_notBetweenAndLastRegedAt);
 		
 		searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test005:"+ "实例二:" + JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test005:"+ "实例二:" + JsonHelper.getJSONString(searchConditionMessage));
 		
 		result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -408,7 +408,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 4：导入的批次是20151104开头的
 	 * 5：按照mac地址降序排序
 	 */
-	//@Test
+	@Test
 	public void test006SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -434,7 +434,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_sortDescById);
 
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test006:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test006:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	System.out.println("test006: total: " + result.getTotalElements() + " total pages: " + result.getTotalPages());
@@ -463,7 +463,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_sortByGeopoint);
 
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test007:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test007:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -489,7 +489,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_geopointDistance);
 
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test008:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test008:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -517,7 +517,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_geopointRectangle);
 
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test009:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test009:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -546,7 +546,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_sortDescByOrigswver);
 		
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test0010:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test0010:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){
@@ -562,7 +562,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 实例二:
 	 * 	满足上述的条件1 只获取数量
 	 */
-	//@Test
+	@Test
 	public void test0011SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号大于AP201P07V1.2.14z2匹配
@@ -578,7 +578,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		searchConditions.add(sc_sortDescByOrigswver);
 		
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
-		System.out.println("JSON test0011 实例一:"+ JsonHelper.getJSONString(searchConditions));
+		System.out.println("JSON test0011 实例一:"+ JsonHelper.getJSONString(searchConditionMessage));
 		
 		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
     	for(WifiDeviceDocument1 doc : result){

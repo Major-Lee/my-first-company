@@ -14,7 +14,8 @@ public class SearchConditionMessage implements java.io.Serializable{
 	/**
 	 * 搜索模式 这个byte值与ES的SearchType类中的定义吻合 具体可查SearchType类 
 	 * 默认为1
-	 * 	0=DFS_QUERY_THEN_FETCH
+	 * 	
+	 	0=DFS_QUERY_THEN_FETCH
 		1=QUERY_THEN_FETCH 
 		2=DFS_QUERY_AND_FETCH
 		3=QUERY_AND_FETCH
