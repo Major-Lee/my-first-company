@@ -179,7 +179,11 @@ public class Step02DeviceWholeDayRecordService {
 				Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
 				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
 				if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
-					dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+					if(device.getAgentuser() > 0){//认领成功的设备
+						dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+					}else{
+						dto.setCashback(0);
+					}
 				}else{
 					dto.setCashback(0);
 				}

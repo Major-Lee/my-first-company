@@ -28,6 +28,7 @@ import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
 import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
 import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -40,7 +41,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
  */
 @Controller
 @RequestMapping("/agent")
-public class AgentController {
+public class AgentController extends BaseController{
     @Resource
     private IAgentRpcService agentRpcService;
 
