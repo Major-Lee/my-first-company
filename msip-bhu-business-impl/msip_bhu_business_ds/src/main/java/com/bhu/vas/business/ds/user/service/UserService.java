@@ -75,12 +75,12 @@ public class UserService extends AbstractCoreService<Integer,User, UserDao>{//En
 		return !(ids == null || ids.isEmpty());
 	}
 
-	public boolean isExistsOrg(int uid, String org) {
+	/*public boolean isExistsOrg(int uid, String org) {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse("1=1").andColumnNotEqualTo("id", uid).andColumnEqualTo("org", org);
 		List<Integer> ids = this.findIdsByCommonCriteria(mc);
 		return !(ids == null || ids.isEmpty());
-	}
+	}*/
 
 
 //	public void deleteAndCount(){

@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="agentBillSummaryView">
     <id property="id" column="id"/>
+    <result property="org" column="org"/>
     <result property="last_reckoner" column="last_reckoner"/>
     <result property="t_price" column="t_price"/>
     <result property="sd_t_price" column="sd_t_price"/>
@@ -23,6 +24,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	org,
 	    	last_reckoner,
 	    	t_price,
 	    	sd_t_price,
@@ -34,6 +36,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	org,
 	    	last_reckoner,
 	    	t_price,
 	    	sd_t_price,
@@ -46,6 +49,7 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{org},
 	    	#{last_reckoner},
 	    	#{t_price},
 	    	#{sd_t_price},
@@ -56,6 +60,7 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			org = #{org},
 	    	last_reckoner = #{last_reckoner},
 	    	t_price = #{t_price},
 	    	sd_t_price = #{sd_t_price},
