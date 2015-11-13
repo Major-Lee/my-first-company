@@ -469,8 +469,6 @@ public class AgentStatisticsUnitFacadeService {
 		if(SettlementVTO.Sort_Field_UR.equals(sort_field)){
 			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price - sd_t_price",desc));
 		}
-		
-		mc_view.setOrderByClause(" id desc ");
 		mc_view.setPageNumber(pageNo);
 		mc_view.setPageSize(pageSize);
 		return mc_view;
