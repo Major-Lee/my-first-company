@@ -6,6 +6,7 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
@@ -32,4 +33,8 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize);
 
 	//public Collection<GeoMapVTO> fetchGeoMap();
+	
+	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid, String message);
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts);
+	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
 }

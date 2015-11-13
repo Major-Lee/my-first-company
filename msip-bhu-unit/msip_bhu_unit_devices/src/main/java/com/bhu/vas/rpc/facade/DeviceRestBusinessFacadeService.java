@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
@@ -32,6 +33,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.search.UserSearchConditionSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCountRegionStatisticsStringService;
@@ -462,17 +464,18 @@ public class DeviceRestBusinessFacadeService {
 			int total = (int)search_result.getTotalElements();//.getTotal();
 			if(total == 0){
 				vtos = Collections.emptyList();
-			}
-			List<WifiDeviceDocument1> searchDocuments = search_result.getContent();//.getResult();
-			if(searchDocuments.isEmpty()) {
-				vtos = Collections.emptyList();
 			}else{
-				vtos = new ArrayList<WifiDeviceVTO1>();
-				WifiDeviceVTO1 vto = null;
-				for(WifiDeviceDocument1 wifiDeviceDocument : searchDocuments){
-					vto = new WifiDeviceVTO1();
-					BeanUtils.copyProperties(wifiDeviceDocument, vto);
-					vtos.add(vto);
+				List<WifiDeviceDocument1> searchDocuments = search_result.getContent();//.getResult();
+				if(searchDocuments.isEmpty()) {
+					vtos = Collections.emptyList();
+				}else{
+					vtos = new ArrayList<WifiDeviceVTO1>();
+					WifiDeviceVTO1 vto = null;
+					for(WifiDeviceDocument1 wifiDeviceDocument : searchDocuments){
+						vto = new WifiDeviceVTO1();
+						BeanUtils.copyProperties(wifiDeviceDocument, vto);
+						vtos.add(vto);
+					}
 				}
 			}
 			TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
@@ -480,6 +483,47 @@ public class DeviceRestBusinessFacadeService {
 		}catch(ElasticsearchIllegalArgumentException eiaex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
 		}
+	}
+	
+	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid, String message){
+		Long result = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, message);
+		if(result != null && result > 0){
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+	}
+	
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts){
+		Long result = UserSearchConditionSortedSetService.getInstance().removeUserSearchCondition(uid, ts);
+		if(result != null && result > 0){
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+	}
+	
+	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+		List<SearchConditionVTO> vtos = null;
+		long total = UserSearchConditionSortedSetService.getInstance().countUserSearchCondition(uid);
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}else{
+			Set<Tuple> tuples = UserSearchConditionSortedSetService.getInstance().fetchUserSearchConditionsByPage(uid, pageNo, pageSize);
+			if(tuples == null || tuples.isEmpty()){
+				vtos = Collections.emptyList();
+			}else{
+				vtos = new ArrayList<SearchConditionVTO>();
+				SearchConditionVTO vto = null;
+				for(Tuple tuple : tuples){
+					vto = new SearchConditionVTO();
+					vto.setTs(Double.valueOf(tuple.getScore()).longValue());
+					vto.setMessage(tuple.getElement());
+					vtos.add(vto);
+				}
+			}
+		}
+		
+		TailPage<SearchConditionVTO> returnRet = new CommonPage<SearchConditionVTO>(pageNo, pageSize, (int)total, vtos);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 	}
 	
 	
