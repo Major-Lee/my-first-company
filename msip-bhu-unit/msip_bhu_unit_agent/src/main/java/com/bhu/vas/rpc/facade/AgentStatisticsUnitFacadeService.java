@@ -395,7 +395,7 @@ public class AgentStatisticsUnitFacadeService {
 		List<SettlementVTO> settleVtos = null;
 		try{
 			settleVtos = new ArrayList<SettlementVTO>();
-			SettlementStatisticsVTO statistics = this.statistics();
+			SettlementStatisticsVTO statistics = this.statistics(q);
 			result_page = new SettlementPageVTO();
 			result_page.setStatistics(statistics);
 			//获取主界面显示结构 agents 列表
@@ -446,6 +446,38 @@ public class AgentStatisticsUnitFacadeService {
 	}
 	private static final String sortSqlFragmentTemplate = " (%s) %s ";
 	
+	private SettlementStatisticsVTO statistics(String q){
+		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
+		ModelCriteria mc_total = new ModelCriteria();
+		Criteria createCriteria = mc_total.createCriteria();
+		if(StringUtils.isNotEmpty(q)){
+			createCriteria.andColumnLike("org", "%"+q+"%");
+		}
+		createCriteria.andSimpleCaulse(" 1=1 ");
+		int total = agentBillFacadeService.getAgentBillSummaryViewService().countByModelCriteria(mc_total);
+		
+		ModelCriteria mc_sd = new ModelCriteria();
+		Criteria createCriteria1 = mc_sd.createCriteria();
+		if(StringUtils.isNotEmpty(q)){
+			createCriteria1.andColumnLike("org", "%"+q+"%");
+		}
+		createCriteria1.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
+		int total_sd = agentBillFacadeService.getAgentBillSummaryViewService().countByModelCriteria(mc_sd); 
+		result.setTs(total);
+		result.setSd(total_sd);
+		result.setUs(total- total_sd);
+		result.setU(-1);
+		result.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
+		return result;
+		
+		
+		//SettlementStatisticsVTO result = agentBillFacadeService.statistics();
+		/*ModelCriteria mc_user = new ModelCriteria();
+		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		int total = userService.countByModelCriteria(mc_user);
+		result.setTs(total);*/
+	}
+	
 	private ModelCriteria buildBlurModelCriteria(int viewstatus,String q,String sort_field,boolean desc,int pageNo, int pageSize){
 		ModelCriteria mc_view = new ModelCriteria();
 		Criteria createCriteria = mc_view.createCriteria();
@@ -461,13 +493,13 @@ public class AgentStatisticsUnitFacadeService {
 		}
 		validateSortField(sort_field);
 		if(SettlementVTO.Sort_Field_ORG.equals(sort_field)){
-			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "org",desc));
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "org",desc?"DESC":"ASC"));
 		}
 		if(SettlementVTO.Sort_Field_TR.equals(sort_field)){
-			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "sd_t_price",desc));
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "sd_t_price",desc?"DESC":"ASC"));
 		}
 		if(SettlementVTO.Sort_Field_UR.equals(sort_field)){
-			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price - sd_t_price",desc));
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price - sd_t_price",desc?"DESC":"ASC"));
 		}
 		mc_view.setPageNumber(pageNo);
 		mc_view.setPageSize(pageSize);
@@ -652,14 +684,7 @@ public class AgentStatisticsUnitFacadeService {
 		}
 	}*/
 	
-	private SettlementStatisticsVTO statistics(){
-		SettlementStatisticsVTO result = agentBillFacadeService.statistics();
-		ModelCriteria mc_user = new ModelCriteria();
-		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
-		int total = userService.countByModelCriteria(mc_user);
-		result.setTs(total);
-		return result;
-	}
+	
 	
 	public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser){
 		if(agentuser <= 0){
