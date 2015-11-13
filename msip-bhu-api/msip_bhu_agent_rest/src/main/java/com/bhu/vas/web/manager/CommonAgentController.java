@@ -3,10 +3,12 @@ package com.bhu.vas.web.manager;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.api.vto.agent.UserVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/common")
-public class CommonAgentController {
+public class CommonAgentController extends BaseController{
 
     @Resource
     private IAgentRpcService agentRpcService;

@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
 import com.bhu.vas.api.vto.agent.AgentFinancialUploadVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
@@ -27,7 +28,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
  */
 @Controller
 @RequestMapping("/financial")
-public class FinancialController {
+public class FinancialController extends BaseController{
 
 
     //private final static String URL_PREFIX = "http://192.168.66.7/agent/" ;
