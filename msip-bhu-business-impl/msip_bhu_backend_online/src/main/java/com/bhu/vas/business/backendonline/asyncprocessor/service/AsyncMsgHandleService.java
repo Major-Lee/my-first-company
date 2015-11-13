@@ -191,7 +191,7 @@ public class AsyncMsgHandleService {
 				boolean needUpdate = false;
 				//设备上线后认领
 				if(wifiDevice.needClaim()){
-					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn(), wifiDevice.getId());
+					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn(), wifiDevice.getId(), wifiDevice.getOrig_model());
 					if(claim_ret != 0){//-1 or >0
 						wifiDevice.setAgentuser(claim_ret);
 						needUpdate = true;
