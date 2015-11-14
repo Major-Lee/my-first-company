@@ -18,6 +18,7 @@ import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 /**
  * 此类用于临时修复设备部分指令的发送
+ * 一般不加在quartz配置文件中，临时加入
  * 目前用于关闭增值指令
  * @author Edmond Lee
  *
