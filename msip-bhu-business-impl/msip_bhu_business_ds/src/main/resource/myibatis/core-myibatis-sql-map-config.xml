@@ -73,6 +73,7 @@
 		<typeAlias alias="agentFinancialSettlement"  type="com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement"/>
 		<typeAlias alias="agentBillSettlements"  type="com.bhu.vas.api.rpc.agent.model.AgentBillSettlements"/>
 		<typeAlias alias="agentBillSummaryView"  type="com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView"/>
+		<typeAlias alias="agentDeviceMark"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceMark"/>
 		
 	</typeAliases>
 	
@@ -132,6 +133,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentFinancialSettlement.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSettlements.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSummaryView.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceMark.sqlMap.xml"/>
 	</mappers>
 	
 </configuration>
