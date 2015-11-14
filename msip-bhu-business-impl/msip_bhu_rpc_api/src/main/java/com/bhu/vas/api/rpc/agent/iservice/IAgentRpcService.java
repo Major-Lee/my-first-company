@@ -22,7 +22,7 @@ public interface IAgentRpcService {
      * 设备认领代理商
      * @param sn
      */
-    int claimAgentDevice(String sn, String mac);
+    int claimAgentDevice(String sn, String mac, String hdtype);
 
 
     /**

@@ -35,9 +35,9 @@ public class AgentRpcService implements IAgentRpcService {
 
     /* 公共 start*/
     @Override
-    public int claimAgentDevice(String sn, String mac) {
-        logger.info(String.format("claimAgentDevice sn[%s] mac[%s]", sn, mac));
-        return agentFacadeService.claimAgentDevice(sn, mac);
+    public int claimAgentDevice(String sn, String mac, String hdtype) {
+        logger.info(String.format("claimAgentDevice sn[%s] mac[%s] hdtype[%s]", sn, mac, hdtype));
+        return agentFacadeService.claimAgentDevice(sn, mac, hdtype);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AgentRpcService implements IAgentRpcService {
 	public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,String q,String sort_field,boolean desc,int pageNo, int pageSize) {
 		logger.info(String.format("pageSettlements operator_user[%s] viewstatus[%s] q[%s] sort_field[%s] desc[%s] pn[%s] ps[%s]", 
 				operator_user,viewstatus,q,sort_field,desc,pageNo,pageSize));
-		return agentStatisticsUnitFacadeService.pageSettlements(operator_user, viewstatus,q,sort_field,desc, pageNo, pageSize);
+		return agentStatisticsUnitFacadeService.pageSettlements(operator_user, viewstatus, q, sort_field, desc, pageNo, pageSize);
 	}
 
     @Override
