@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.agent.model.AgentBillSettlements;
 import com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceMark;
 import com.bhu.vas.api.rpc.agent.vto.SettlementStatisticsVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
 import com.bhu.vas.business.ds.agent.service.AgentBillSettlementsService;
 import com.bhu.vas.business.ds.agent.service.AgentBillSummaryViewService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceMarkService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -32,6 +34,8 @@ public class AgentBillFacadeService {
 	@Resource
 	private AgentBillSummaryViewService agentBillSummaryViewService;
 	
+	@Resource
+	private AgentDeviceMarkService agentDeviceMarkService;
 	
 	@Resource
 	private UserService userService;
@@ -267,4 +271,35 @@ public class AgentBillFacadeService {
 			agentBillSettlementsService.insert(billSettlements);
 		}
 	}
+	
+	
+	/**
+     * 标记设备FirstCashBack状态
+     * 如果表中不存在mac数据，则录入数据firstcb true并标记日期 并返回true
+     * 如果表中存在mac数据，
+     * 		判定firstcb =true 则返回false 
+     * 		判定firstcb = false 则update firstcb true返回true
+     * @param mac
+     * @return
+     */
+    public boolean markFirstCashBack(String mac,String date){
+    	AgentDeviceMark mark = agentDeviceMarkService.getById(mac);
+    	if(mark == null){
+    		mark = new AgentDeviceMark();
+    		mark.setId(mac);
+    		mark.setAfcb(true);;
+    		mark.setAfcb_date(date);
+    		agentDeviceMarkService.insert(mark);
+    		return true;
+    	}else{
+    		if(mark.isAfcb()){
+    			return false;
+    		}else{
+    			mark.setAfcb(true);;
+        		mark.setAfcb_date(date);
+        		agentDeviceMarkService.update(mark);
+        		return true;
+    		}
+    	}
+    }
 }
