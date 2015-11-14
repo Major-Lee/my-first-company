@@ -494,6 +494,19 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		return device_entity;
 	}
+	
+	public WifiDevice validateDeviceIgoneOffline(String mac){
+		//验证设备是否存在
+		WifiDevice device_entity = wifiDeviceService.getById(mac);
+		if(device_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+		}
+		/*//验证设备是否在线
+		if(!device_entity.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}*/
+		return device_entity;
+	}
 	/**
 	 * 验证设备是否加载配置
 	 * @param mac

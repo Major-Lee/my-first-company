@@ -249,7 +249,7 @@ public class TaskFacadeService {
 		//如果是管理员用户 不进行用户所属设备的验证
 		WifiDevice wifiDevice = null;
 		if(RuntimeConfiguration.isConsoleUser(uid)){
-			wifiDevice = deviceFacadeService.validateDevice(mac);
+			wifiDevice = deviceFacadeService.validateDeviceIgoneOffline(mac);
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
@@ -341,26 +341,18 @@ public class TaskFacadeService {
 			}
 		}
 
+		//验证设备是否在线
+		if(!wifiDevice.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}
+		
 		if(OperationCMD.DeviceModuleUpgrade == opt_cmd){//判定设备版本是否兼容
-			/*if(!WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
-				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_VERSIONBUILD_NOT_SUPPORTED);
-			}*/
 			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
 			if(wifiDeviceModule == null  
 					|| !WifiDeviceHelper.isDeviceVapModuleSupported(wifiDeviceModule.getOrig_vap_module())
 					|| !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
 			}
-			/*if(wifiDeviceModule != null){
-				if(!WifiDeviceHelper.isDeviceVapModuleSupported(wifiDeviceModule.getOrig_vap_module())){
-					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED);
-				}
-				if(!WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
-					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
-				}
-			}else{
-				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_SUPPORTED);
-			}*/
 			
 		}
 		//判定是定义出的特殊指令 广告注入、增值指令、访客网络
@@ -370,10 +362,8 @@ public class TaskFacadeService {
 			}
 		}
 		
-		
-		/*if(!wifiDevice.isOnline()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
-		}*/
+		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
+		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
 		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) ){
@@ -386,8 +376,7 @@ public class TaskFacadeService {
 				}
 			}
 		}
-		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
-		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
+
 
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		
