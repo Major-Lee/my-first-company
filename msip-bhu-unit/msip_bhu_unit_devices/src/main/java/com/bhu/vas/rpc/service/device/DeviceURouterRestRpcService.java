@@ -151,8 +151,8 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	
 	@Override
 	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
-		logger.info(String.format("DeviceURouterRestRPC urouterPeakSection invoke uid [%s] mac [%s] ", 
-				uid, wifiId));
+		logger.info(String.format("DeviceURouterRestRPC urouterPeakSection invoke uid [%s] mac [%s] type [%s] period [%s] duration [%s] ",
+				uid, wifiId, type, period, duration ));
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterPeakSection(uid, wifiId.toLowerCase(), type, period, duration);
