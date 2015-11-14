@@ -340,7 +340,8 @@ public class TaskFacadeService {
 				//升级
 			}
 		}
-
+		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
+		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		//验证设备是否在线
 		if(!wifiDevice.isOnline()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
@@ -361,9 +362,6 @@ public class TaskFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
 		}
-		
-		//需要实体化存储的参数存入数据库中，以设备重新上线后继续发送指令
-		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
 		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) ){
