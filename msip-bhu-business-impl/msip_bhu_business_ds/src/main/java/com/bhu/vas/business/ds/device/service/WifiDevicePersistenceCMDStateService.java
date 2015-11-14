@@ -35,16 +35,18 @@ public class WifiDevicePersistenceCMDStateService extends AbstractCoreService<St
 
 	public void filterPersistenceCMD(String mac, OperationCMD opt, OperationDS subopt, String extparams){
 		
-		PersistenceAction action = WifiDeviceHelper.needPersistenceAction(opt, subopt);
-		if(action != null){
+		List<PersistenceAction> actions = WifiDeviceHelper.needPersistenceAction(opt, subopt);
+		if(actions != null && !actions.isEmpty()){
 			WifiDevicePersistenceCMDState persist = this.getOrCreateById(mac);
-			if(PersistenceAction.Oper_Update.equals(action.getOperation())){
-				persist.addOrUpdatePersistence(action.getKey(),new PersistenceCMDDTO(opt.getNo(),subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS,extparams));
-			}else if(PersistenceAction.Oper_Remove.equals(action.getOperation())){
-				persist.removePersistence(action.getKey());
-				//persist.removePersistence(new PersistenceCMDDTO(opt.getNo(),subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS,extparams).toKey());
-			}else{
-				;
+			for(PersistenceAction action:actions){
+				if(PersistenceAction.Oper_Update.equals(action.getOperation())){
+					persist.addOrUpdatePersistence(action.getKey(),new PersistenceCMDDTO(opt.getNo(),subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS,extparams));
+				}else if(PersistenceAction.Oper_Remove.equals(action.getOperation())){
+					persist.removePersistence(action.getKey());
+					//persist.removePersistence(new PersistenceCMDDTO(opt.getNo(),subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS,extparams).toKey());
+				}else{
+					;
+				}
 			}
 			this.update(persist);
 		}

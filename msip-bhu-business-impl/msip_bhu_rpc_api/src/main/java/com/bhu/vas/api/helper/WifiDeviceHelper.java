@@ -1,6 +1,8 @@
 package com.bhu.vas.api.helper;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -191,15 +193,17 @@ public class WifiDeviceHelper {
 	 * @param subopt
 	 * @return
 	 */
-	public static PersistenceAction needPersistenceAction(OperationCMD opt,OperationDS subopt){
-		PersistenceAction result = null;
+	public static List<PersistenceAction> needPersistenceAction(OperationCMD opt,OperationDS subopt){
+		List<PersistenceAction> result = null;
 		if(opt == null) return result;
+		result = new ArrayList<>();
 		switch(opt){
 			case ModifyDeviceSetting:
 				if(subopt == null) return result;
 				switch(subopt){
 					case DS_Http_Ad_Start:
-						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						//result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						result.add(builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update));
 						break;	
 					/*case DS_Http_404_Start:
 						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
@@ -208,7 +212,8 @@ public class WifiDeviceHelper {
 						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
 						break;	*/
 					case DS_Http_Ad_Stop:
-						result = builderPersistenceAction(opt,OperationDS.DS_Http_Ad_Start,PersistenceAction.Oper_Remove);
+						//result = builderPersistenceAction(opt,OperationDS.DS_Http_Ad_Start,PersistenceAction.Oper_Remove);
+						result.add(builderPersistenceAction(opt,OperationDS.DS_Http_Ad_Start,PersistenceAction.Oper_Remove));
 						break;	
 					/*case DS_Http_404_Stop:
 						result = builderPersistenceAction(opt,OperationDS.DS_Http_404_Start,PersistenceAction.Oper_Remove);
@@ -216,22 +221,29 @@ public class WifiDeviceHelper {
 					case DS_Http_Redirect_Stop:
 						result = builderPersistenceAction(opt,OperationDS.DS_Http_Redirect_Start,PersistenceAction.Oper_Remove);
 						break;	*/
-						
 					case DS_Http_VapModuleCMD_Start:
-						result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						//result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+						//移除掉删除指令并增加开启指令
+						result.add(builderPersistenceAction(opt,OperationDS.DS_Http_VapModuleCMD_Stop,PersistenceAction.Oper_Remove));
+						result.add(builderPersistenceAction(opt,OperationDS.DS_Http_VapModuleCMD_Start,PersistenceAction.Oper_Update));
 						break;	
 					case DS_Http_VapModuleCMD_Stop:
-						result = builderPersistenceAction(opt,OperationDS.DS_Http_VapModuleCMD_Start,PersistenceAction.Oper_Remove);
+						//result = builderPersistenceAction(opt,OperationDS.DS_Http_VapModuleCMD_Start,PersistenceAction.Oper_Remove);
+						//移除掉开启指令并增加删除指令
+						result.add(builderPersistenceAction(opt,OperationDS.DS_Http_VapModuleCMD_Start,PersistenceAction.Oper_Remove));
+						result.add(builderPersistenceAction(opt,OperationDS.DS_Http_VapModuleCMD_Stop,PersistenceAction.Oper_Update));
 						break;	
 					default:
 						break;	
 				}
 				break;
 			case TurnOnDeviceDPINotify:
-				result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+				//result = builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update);
+				result.add(builderPersistenceAction(opt,subopt,PersistenceAction.Oper_Update));
 				break;
 			case TurnOffDeviceDPINotify:
-				result = builderPersistenceAction(OperationCMD.TurnOnDeviceDPINotify,subopt,PersistenceAction.Oper_Remove);
+				//result = builderPersistenceAction(OperationCMD.TurnOnDeviceDPINotify,subopt,PersistenceAction.Oper_Remove);
+				result.add(builderPersistenceAction(OperationCMD.TurnOnDeviceDPINotify,subopt,PersistenceAction.Oper_Remove));
 				break;
 			default:
 				break;	
