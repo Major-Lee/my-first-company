@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
 import com.bhu.vas.business.ds.agent.mdto.LineRecord;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
@@ -29,6 +30,8 @@ public class Step02DeviceWholeDayRecordService {
 	@Resource
 	private WifiDeviceWholeDayMService wifiDeviceWholeDayMService;
 	
+	@Resource
+	private AgentBillFacadeService agentBillFacadeService;
 	public void deviceRecord2Mongo(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
 		List<WifiDeviceWholeDayMDTO> dtos = new ArrayList<WifiDeviceWholeDayMDTO>();
 		
@@ -176,20 +179,16 @@ public class Step02DeviceWholeDayRecordService {
 			
 			WifiDevice device = wifiDeviceService.getById(key);
 			if(device != null){
-				Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
-				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
+				/*Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
+				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);*/
 				if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
 					if(device.getAgentuser() > 0){//认领成功的设备
+						if(agentBillFacadeService.markFirstCashBack(key, date)){
+							dto.setSameday(1);
+						}
 						dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
-					}else{
-						dto.setCashback(0);
 					}
-				}else{
-					dto.setCashback(0);
 				}
-			}else{
-				dto.setSameday(0);
-				dto.setCashback(0);
 			}
 			//TODO:获取此日的设备使用情况流量
 			wifiDeviceWholeDayMService.save(dto);
