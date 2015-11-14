@@ -39,6 +39,7 @@ public class WifiDevicePersistenceCMDStateService extends AbstractCoreService<St
 		if(actions != null && !actions.isEmpty()){
 			WifiDevicePersistenceCMDState persist = this.getOrCreateById(mac);
 			for(PersistenceAction action:actions){
+				
 				if(PersistenceAction.Oper_Update.equals(action.getOperation())){
 					persist.addOrUpdatePersistence(action.getKey(),new PersistenceCMDDTO(opt.getNo(),subopt!=null?subopt.getNo():OperationDS.Empty_OperationDS,extparams));
 				}else if(PersistenceAction.Oper_Remove.equals(action.getOperation())){
@@ -47,6 +48,7 @@ public class WifiDevicePersistenceCMDStateService extends AbstractCoreService<St
 				}else{
 					;
 				}
+				
 			}
 			this.update(persist);
 		}
