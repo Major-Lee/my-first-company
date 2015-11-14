@@ -937,7 +937,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
 				PersistenceCMDDTO dto = entry.getValue();
 				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
-				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+				if(opt_cmd == null){// || StringUtils.isEmpty(dto.getExtparams())){
 					continue;
 				}
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
