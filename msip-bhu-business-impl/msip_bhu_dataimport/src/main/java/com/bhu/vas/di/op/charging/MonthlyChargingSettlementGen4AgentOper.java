@@ -69,7 +69,7 @@ public class MonthlyChargingSettlementGen4AgentOper {
 			for(Integer user:agentUsers){
 				AgentWholeMonthMDTO wholeMonth = agentWholeMonthMService.getWholeMonth(date, user);
 				if(wholeMonth != null){
-					agentBillFacadeService.newBillCreated(user, date, AgentHelper.currency(wholeMonth.getDod()));
+					agentBillFacadeService.newBillCreated(user, date, AgentHelper.currency(wholeMonth.getDod(),wholeMonth.getNewdevices()));
 					/*AgentSettlementsRecordMDTO settlement = agentSettlementsRecordMService.getSettlement(date, user);
 					if(settlement != null){//已经存在的单据，覆盖部分值
 						settlement.setiSVPrice(AgentHelper.currency(wholeMonth.getDod()));

@@ -88,23 +88,23 @@ public class AgentStatisticsUnitFacadeService {
 			//本月收入(元)  
 			String currentMonth = DateTimeHelper.formatDate(currentDate, DateTimeHelper.FormatPattern11);
 			AgentWholeMonthMDTO currentmonth_data = agentWholeMonthMService.getWholeMonth(currentMonth, user);
-			vto.setRcm(ArithHelper.getFormatter(String.valueOf(currentmonth_data!=null?AgentHelper.currency(currentmonth_data.getDod()):0.00d)));
+			vto.setRcm(ArithHelper.getFormatter(String.valueOf(currentmonth_data!=null?AgentHelper.currency(currentmonth_data.getDod(),currentmonth_data.getNewdevices()):0.00d)));
 			//上月收入(元)  
 			Date previousMonthDate = DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1);
 			String previosMonth = DateTimeHelper.formatDate(previousMonthDate, DateTimeHelper.FormatPattern11);
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
-			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod()):0.00d)));
+			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod(),currentmonth_data.getNewdevices()):0.00d)));
 			//昨日收入(元)  
 			Date yesterdayMonthDate = DateTimeHelper.getDateDaysAgo(currentDate, 1);//(currentDate,1);
 			String yesterday = DateTimeHelper.formatDate(yesterdayMonthDate,DateTimeHelper.FormatPattern5);
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
-			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod()):0.00d)));
+			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod(),currentmonth_data.getNewdevices()):0.00d)));
 			//结算过的总收入(元)
 			//所有设备产生收益的总数 -取agentWholeMonth此用户的所有在线时长
 			RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
 			//vto.setOd(ArithHelper.getFormatter(String.valueOf(summary.getT_devices())));
 			//vto.setRtl(ArithHelper.getFormatter(String.valueOf(ChargingCurrencyHelper.currency(summary.getT_dod()))));
-			vto.setTr(ArithHelper.getFormatter(String.valueOf(AgentHelper.currency(summary.getT_dod()))));
+			vto.setTr(ArithHelper.getFormatter(String.valueOf(AgentHelper.currency(summary.getT_dod(),summary.getT_newdevices()))));
 			pageTotalSettlements4Agent(user,vto);
 			/*Date dateEnd = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeExtHelper.getFirstDateOfMonth(dateEnd);
@@ -170,7 +170,7 @@ public class AgentStatisticsUnitFacadeService {
 				DateTimeHelper.formatDate(lastDate, DateTimeHelper.FormatPattern5));
 		for(AgentWholeDayMDTO dto:results){
 			int whichday = DateTimeExtHelper.getDay(DateTimeHelper.parseDate(dto.getDate(), DateTimeHelper.FormatPattern5));
-			dayvals.set(whichday-1, AgentHelper.currency(dto.getDod()));
+			dayvals.set(whichday-1, AgentHelper.currency(dto.getDod(),dto.getNewdevices()));
 		}
 		result.put("days", days);
 		result.put("dayvals", dayvals);
@@ -186,8 +186,13 @@ public class AgentStatisticsUnitFacadeService {
 	 */
 	private void pageTotalSettlements4Agent(int agent,AgentRevenueStatisticsVTO vto) {
 		AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(agent);
-		vto.setSr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
-		vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))));
+		if(sview != null){
+			vto.setSr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+			vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))));
+		}else{
+			vto.setSr(ArithHelper.getFormatter("0.00d"));
+			vto.setUr(ArithHelper.getFormatter("0.00d"));
+		}
 		//vto.setSr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
 		//vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(String.valueOf(agent),mainSummary),2))));
 
@@ -234,7 +239,7 @@ public class AgentStatisticsUnitFacadeService {
 				
 				vto.setCd(dto.getDevices());
 				vto.setCsd(dto.getNewdevices());
-				vto.setR(ArithHelper.getCurrency(String.valueOf(AgentHelper.currency(dto.getDod()))));
+				vto.setR(ArithHelper.getCurrency(String.valueOf(AgentHelper.currency(dto.getDod(),dto.getNewdevices()))));
 				//vto.setC("+13.7%");
 				items.add(vto);
 			}

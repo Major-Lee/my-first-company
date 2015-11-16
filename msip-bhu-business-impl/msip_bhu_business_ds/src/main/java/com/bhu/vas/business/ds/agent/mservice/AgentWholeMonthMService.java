@@ -96,6 +96,7 @@ public class AgentWholeMonthMService {
 			    	.sum("dtx_bytes").as("t_dtx_bytes")
 			    	.sum("drx_bytes").as("t_drx_bytes")
 			    	.avg("devices").as("t_devices")
+			    	.sum("newdevices").as("t_newdevices")
 			    	.sum("hod").as("t_hod")
 			    	.sum("hct").as("t_hct")
 			    	.sum("htx_bytes").as("t_htx_bytes")

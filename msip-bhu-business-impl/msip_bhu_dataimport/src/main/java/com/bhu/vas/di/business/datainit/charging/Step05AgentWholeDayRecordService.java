@@ -229,7 +229,7 @@ public class Step05AgentWholeDayRecordService {
 			monthdto.setHod(dto.getT_hod());
 			monthdto.setHtx_bytes(dto.getT_htx_bytes());
 			monthdto.setHrx_bytes(dto.getT_hrx_bytes());
-			
+			monthdto.setNewdevices(dto.getT_newdevices());
 			monthdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 			agentWholeMonthMService.save(monthdto);
 		}
