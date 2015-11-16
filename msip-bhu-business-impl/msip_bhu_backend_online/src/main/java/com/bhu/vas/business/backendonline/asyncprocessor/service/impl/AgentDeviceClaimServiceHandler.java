@@ -91,6 +91,8 @@ public class AgentDeviceClaimServiceHandler {
                             wifiDevice.setAgentuser(dto.getUid());
                             agentDeviceClaim.setMac(wifiDevice.getId());
                             agentDeviceClaim.setStatus(1);
+                            agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
+                            agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
                             wifiDeviceService.update(wifiDevice);
                         }
                         //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
