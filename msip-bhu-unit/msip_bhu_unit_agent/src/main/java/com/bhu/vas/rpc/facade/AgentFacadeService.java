@@ -63,14 +63,14 @@ public class AgentFacadeService {
 
     private final Logger logger = LoggerFactory.getLogger(AgentFacadeService.class);
 
-    List<Integer> massAPList = new ArrayList<Integer>();
+    List<String> massAPList = new ArrayList<String>();
     {
         //todo(bluesand):合并分支后处理
-        massAPList.add(103);
-        massAPList.add(110);
-        massAPList.add(201);
-        massAPList.add(303);
-        massAPList.add(305);
+        massAPList.add("H103");
+        massAPList.add("H110");
+        massAPList.add("H201");
+        massAPList.add("H303");
+        massAPList.add("H305");
     }
 
     @Resource
