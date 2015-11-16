@@ -216,10 +216,13 @@ public class AgentFacadeService {
         vto.setMac(wifiDevice.getId());
         vto.setOnline(wifiDevice.isOnline());
         double total_dod =  summaryDTO != null?summaryDTO.getT_dod():0d;
+        int total_firstcd = summaryDTO != null?summaryDTO.getT_newdevices():0;
         vto.setUptime(AgentHelper.getTimeDiff(total_dod));
-        vto.setTotal_income(AgentHelper.currency(total_dod));
+        vto.setTotal_income(AgentHelper.currency(total_dod,total_firstcd));
+        
         double previous_dod = wholeMonthDTO !=null ?wholeMonthDTO.getDod():0d;
-        vto.setMonth_income(AgentHelper.currency(previous_dod));
+        int previous_firstcd = wholeMonthDTO != null?wholeMonthDTO.getSamedays():0;
+        vto.setMonth_income(AgentHelper.currency(previous_dod,previous_firstcd));
         long total_handsets =  summaryDTO != null?summaryDTO.getT_handsets():0l;
         vto.setHd_count(total_handsets);
         vto.setCreated_at(wifiDevice.getCreated_at());

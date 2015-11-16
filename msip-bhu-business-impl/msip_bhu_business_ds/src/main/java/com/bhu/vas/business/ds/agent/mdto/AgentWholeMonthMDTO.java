@@ -45,6 +45,8 @@ public class AgentWholeMonthMDTO {
 	private double htx_bytes;
 	//handsets 下行流量
 	private double hrx_bytes;
+	
+	private int newdevices;
 	private String updated_at;
 	public String getId() {
 		return id;
@@ -137,5 +139,10 @@ public class AgentWholeMonthMDTO {
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
 	}
-	
+	public int getNewdevices() {
+		return newdevices;
+	}
+	public void setNewdevices(int newdevices) {
+		this.newdevices = newdevices;
+	}
 }

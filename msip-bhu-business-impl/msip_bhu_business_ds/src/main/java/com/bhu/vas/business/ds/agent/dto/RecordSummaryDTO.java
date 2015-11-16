@@ -18,6 +18,8 @@ public class RecordSummaryDTO {
 	//handsets 下行流量
 	private double t_hrx_bytes;
 	
+	private int t_newdevices;
+	
 /*	private int t_cashback;
 	private int t_sameday;*/
 	public String getId() {
@@ -107,6 +109,13 @@ public class RecordSummaryDTO {
 		return String.format("id[%s] onlineduration[%s] connecttimes[%s] handsets[%s] tx_bytes[%s] rx_bytes[%s]", 
 				id,t_dod,t_dct,t_handsets,t_dtx_bytes,t_drx_bytes);
 	}
+	public int getT_newdevices() {
+		return t_newdevices;
+	}
+	public void setT_newdevices(int t_newdevices) {
+		this.t_newdevices = t_newdevices;
+	}
+	
 	/*public int getT_cashback() {
 		return t_cashback;
 	}

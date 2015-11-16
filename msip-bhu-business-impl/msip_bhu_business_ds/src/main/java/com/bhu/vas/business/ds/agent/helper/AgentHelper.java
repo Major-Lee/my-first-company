@@ -55,9 +55,12 @@ public class AgentHelper {
 		//return ArithHelper.div(onlineduration*2, (10*60*60*1000), 2);//onlineduration/(10*3600*1000)*2;
 		return ArithHelper.div(onlineduration*2, (10*60), 2);//onlineduration/(10*3600*1000)*2;
 	}*/
+	private static double Cash4FirstEach = 30.00d;
 	//内网测试上线4分钟0.01元 
-	public static double currency(double onlineduration){
-		return ArithHelper.div(onlineduration, 4*100, 2);
+	public static double currency(double onlineduration,int firstcbs){
+		double extra = ArithHelper.mul(Cash4FirstEach, firstcbs);
+		double normal = ArithHelper.div(onlineduration, 4*100, 2);
+		return ArithHelper.round(ArithHelper.add(extra, normal),2);
 	}
 	
 	public static boolean sameday(Date device_reg_date,Date currentDate){
