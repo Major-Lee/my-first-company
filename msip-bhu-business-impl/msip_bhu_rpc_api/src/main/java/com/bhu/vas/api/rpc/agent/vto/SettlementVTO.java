@@ -5,7 +5,7 @@ public class SettlementVTO implements java.io.Serializable{
 	private int index;
 	private int uid;
 	private String org;
-	//Total Revenue 除去当月之外的所有被结算金额
+	//Total Revenue 除去当月之外的所有需要被结算金额
 	private String tr;
 	//unsettle Revenue 除去当月之外的未结算金额 
 	private String ur;
