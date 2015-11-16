@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
@@ -55,17 +56,19 @@ public class AgentHelper {
 		//return ArithHelper.div(onlineduration*2, (10*60*60*1000), 2);//onlineduration/(10*3600*1000)*2;
 		return ArithHelper.div(onlineduration*2, (10*60), 2);//onlineduration/(10*3600*1000)*2;
 	}*/
-	private static double Cash4FirstEach = 30.00d;
+	//private static double Cash4FirstEach = 30.00d;
 	//内网测试上线4分钟0.01元 
 	public static double currency(double onlineduration,int firstcbs){
-		double extra = ArithHelper.mul(Cash4FirstEach, firstcbs);
-		double normal = ArithHelper.div(onlineduration, 4*100, 2);
+		double extra = ArithHelper.mul(BusinessRuntimeConfiguration.Agent_Charging_Param_CashBackFirstEach, firstcbs);
+		double normal = ArithHelper.div(onlineduration, 
+				ArithHelper.div(BusinessRuntimeConfiguration.Agent_Charging_Param_TimeUnit,BusinessRuntimeConfiguration.Agent_Charging_Param_ValueUnit),
+				2);
 		return ArithHelper.round(ArithHelper.add(extra, normal),2);
 	}
 	
-	public static boolean sameday(Date device_reg_date,Date currentDate){
+	/*public static boolean sameday(Date device_reg_date,Date currentDate){
 		return DateTimeHelper.isSameDay(device_reg_date, currentDate);
-	}
+	}*/
 	
 	private static long KB = 1024*8;
 	private static long MB = 1024*KB;
