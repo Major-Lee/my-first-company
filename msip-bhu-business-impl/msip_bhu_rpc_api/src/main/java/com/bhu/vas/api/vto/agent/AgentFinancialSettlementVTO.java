@@ -26,6 +26,11 @@ public class AgentFinancialSettlementVTO implements Serializable {
     private String aname;
 
     /**
+     *代理商公司名称
+     */
+    private String org;
+
+    /**
      * 结算金额
      */
     private double amount;
@@ -45,10 +50,10 @@ public class AgentFinancialSettlementVTO implements Serializable {
      */
     private String remark;
 
-    /**
-     * 详细
-     */
-    private String detail;
+//    /**
+//     * 详细
+//     */
+//    private String detail;
 
     /**
      * 创建日期
@@ -88,6 +93,14 @@ public class AgentFinancialSettlementVTO implements Serializable {
         this.aname = aname;
     }
 
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
+    }
+
     public double getAmount() {
         return amount;
     }
@@ -120,13 +133,13 @@ public class AgentFinancialSettlementVTO implements Serializable {
         this.remark = remark;
     }
 
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
+//    public String getDetail() {
+//        return detail;
+//    }
+//
+//    public void setDetail(String detail) {
+//        this.detail = detail;
+//    }
 
     public Date getUpdated_at() {
         return updated_at;
