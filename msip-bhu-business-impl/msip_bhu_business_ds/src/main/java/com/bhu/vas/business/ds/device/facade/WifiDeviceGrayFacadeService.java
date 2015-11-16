@@ -78,7 +78,9 @@ public class WifiDeviceGrayFacadeService {
     	CurrentGrayUsageVTO vto = new CurrentGrayUsageVTO();
     	vto.setGuvs(new ArrayList<GrayUsageVTO>());
     	vto.setFws(new ArrayList<VersionVTO>());
+    	vto.getFws().add(WifiDeviceVersionFW.toEmptyVTO());
     	vto.setOms(new ArrayList<VersionVTO>());
+    	vto.getOms().add(WifiDeviceVersionOM.toEmptyVTO());
     	ModelCriteria mc_dgv = new ModelCriteria();
     	mc_dgv.createCriteria().andColumnEqualTo("dut", dut.getIndex()).andSimpleCaulse(" 1=1 ");
     	mc_dgv.setPageNumber(1);
@@ -198,8 +200,10 @@ public class WifiDeviceGrayFacadeService {
     		String fwid,String omid){
     	validateDut(dut);
     	validateGrayEnalbe(gray);
-    	this.validateVersionFormat(fwid, true);
-    	this.validateVersionFormat(omid, false);
+    	if(StringUtils.isNotEmpty(fwid))
+    		this.validateVersionFormat(fwid, true);
+    	if(StringUtils.isNotEmpty(omid))
+    		this.validateVersionFormat(omid, false);
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
     	if(dgv == null){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});

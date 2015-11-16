@@ -85,4 +85,14 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
 		return vto;
 	}
+	
+	public static VersionVTO toEmptyVTO(){
+		VersionVTO vto = new VersionVTO();
+		vto.setId("");
+		vto.setN("无");
+		vto.setDut(0);
+		vto.setR(false);
+		vto.setT(VersionVTO.VersionType_OM);
+		return vto;
+	}
 }
