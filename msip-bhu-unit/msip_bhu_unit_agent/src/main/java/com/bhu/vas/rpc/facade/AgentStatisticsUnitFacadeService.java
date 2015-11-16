@@ -428,7 +428,8 @@ public class AgentStatisticsUnitFacadeService {
 					User user = users.get(index);//User user = userService.getById(sview.getId());
 					vto.setOrg(user != null?user.getOrg():"未知");
 					vto.setUid(sview.getId());
-					vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+					//vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+					vto.setTr(ArithHelper.getFormatter(String.valueOf(sview.getT_price())));
 					vto.setUr(ArithHelper.getFormatter(String.valueOf(sview.getT_price() - sview.getSd_t_price())));
 					settleVtos.add(vto);
 					index++;
@@ -501,7 +502,7 @@ public class AgentStatisticsUnitFacadeService {
 			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "org",desc?"DESC":"ASC"));
 		}
 		if(SettlementVTO.Sort_Field_TR.equals(sort_field)){
-			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "sd_t_price",desc?"DESC":"ASC"));
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price",desc?"DESC":"ASC"));
 		}
 		if(SettlementVTO.Sort_Field_UR.equals(sort_field)){
 			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price - sd_t_price",desc?"DESC":"ASC"));
