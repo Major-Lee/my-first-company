@@ -63,6 +63,16 @@ public class AgentFacadeService {
 
     private final Logger logger = LoggerFactory.getLogger(AgentFacadeService.class);
 
+    List<Integer> massAPList = new ArrayList<Integer>();
+    {
+        //todo(bluesand):合并分支后处理
+        massAPList.add(103);
+        massAPList.add(110);
+        massAPList.add(201);
+        massAPList.add(303);
+        massAPList.add(305);
+    }
+
     @Resource
     private AgentDeviceClaimService agentDeviceClaimService;
 
@@ -104,11 +114,14 @@ public class AgentFacadeService {
 
     public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
 
+
+
+
         User operUser = userService.getById(uid);
         UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", massAPList);
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
@@ -120,7 +133,7 @@ public class AgentFacadeService {
         switch (status) {
             case DEVICE_ONLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -129,7 +142,7 @@ public class AgentFacadeService {
                 break;
             case DEVICE_OFFLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", false);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", false).andColumnIn("hdtype", massAPList);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -137,7 +150,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
                 
@@ -256,11 +269,12 @@ public class AgentFacadeService {
 
     public AgentDeviceVTO pageClaimedAgentDevice(int uid, int status, int pageNo, int pageSize) {
 
+
         User operUser = userService.getById(uid);
         UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", massAPList);
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
@@ -272,7 +286,7 @@ public class AgentFacadeService {
         switch (status) {
             case DEVICE_ONLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -281,7 +295,7 @@ public class AgentFacadeService {
                 break;
             case DEVICE_OFFLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", false);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", false).andColumnIn("hdtype", massAPList);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -289,7 +303,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
 
@@ -360,11 +374,11 @@ public class AgentFacadeService {
 
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", massAPList);
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
-        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true);
+        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
         online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
         offline_count = total_count - online_count;
 
@@ -400,11 +414,11 @@ public class AgentFacadeService {
         int offline_count = 0;
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", massAPList);
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
-        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true);
+        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
         online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
         offline_count = total_count - online_count;
 
