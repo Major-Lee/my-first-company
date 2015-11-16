@@ -13,6 +13,7 @@ import com.bhu.vas.di.business.datainit.charging.Step01Result2FileService;
 import com.bhu.vas.di.business.datainit.charging.Step02DeviceWholeDayRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step04DeviceWholeMonthRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step05AgentWholeDayRecordService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
@@ -55,7 +56,6 @@ public class DailyChargingDataParserOper {
 		Step04DeviceWholeMonthRecordService step04DeviceWholeMonthRecordService = (Step04DeviceWholeMonthRecordService)ctx.getBean("step04DeviceWholeMonthRecordService");
 		Step05AgentWholeDayRecordService step05AgentWholeDayRecordService = (Step05AgentWholeDayRecordService)ctx.getBean("step05AgentWholeDayRecordService");
 		//Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
-		long ts1 = System.currentTimeMillis();
 		//String[] dates = new String[]{"2015-10-17","2015-10-18","2015-10-19","2015-10-20"};
 		//String[] dates = new String[]{"2015-09-10","2015-09-11","2015-09-12","2015-09-13"};
 		//String[] dates = new String[]{"2015-09-14","2015-09-15","2015-09-16","2015-09-17"};
@@ -104,8 +104,9 @@ public class DailyChargingDataParserOper {
 				}
 			},String.format(charginglogs, date));//"/BHUData/bulogs/charginglogs-a/");
 			parser.processEnd(parser.getDevice_records());
-			//TODO:测试时候忽略filter功能
-			//parser.filter();
+			//是否忽略filter功能
+			if(BusinessRuntimeConfiguration.Agent_Charging_Param_Filter)
+				parser.filter();
 			System.out.println("Device_records size:"+parser.getDevice_records().size());
 			System.out.println("Device_handset_records size:"+parser.getDevice_handset_records().size());
 			//System.out.println("Device_handset_records size:"+parser.getHmacs().size());

@@ -124,6 +124,7 @@ public class AgentBackendFacadeService {
                             wifiDevice.setAgentuser(dto.getUid());
                             agentDeviceClaim.setMac(wifiDevice.getId());
                             agentDeviceClaim.setStatus(1);
+                            agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
                             wifiDeviceService.update(wifiDevice);
                         }
                         //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
