@@ -125,6 +125,7 @@ public class AgentBackendFacadeService {
                             agentDeviceClaim.setMac(wifiDevice.getId());
                             agentDeviceClaim.setStatus(1);
                             agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
+                            agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
                             wifiDeviceService.update(wifiDevice);
                         }
                         //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
@@ -253,7 +254,7 @@ public class AgentBackendFacadeService {
 
                     } else {
                         failCount ++;
-                        outResult.setCellValue("fail");
+                        outResult.setCellValue("duplicate imported");
                     }
 
 
