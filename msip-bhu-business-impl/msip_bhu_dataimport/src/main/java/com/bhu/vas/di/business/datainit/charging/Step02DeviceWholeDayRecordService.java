@@ -82,7 +82,7 @@ public class Step02DeviceWholeDayRecordService {
 			dto.setHod(AgentHelper.millisecond2Minute(h_od));
 			dto.setHrx_bytes(AgentHelper.flowByte2Megabyte(h_rx_bytes));
 			dto.setHtx_bytes(AgentHelper.flowByte2Megabyte(h_tx_bytes));
-			dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+			//dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
 			dtos.add(dto);
 			
 			/*WifiDevice device = wifiDeviceService.getById(key);
@@ -115,10 +115,22 @@ public class Step02DeviceWholeDayRecordService {
 					for(WifiDeviceWholeDayMDTO dto:page){
 						WifiDevice device = devices.get(index);
 						if(device != null){
+							if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
+								if(device.getAgentuser() > 0){//认领成功的设备
+									boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
+									//System.out.println(ret);
+									if(ret){
+										dto.setSameday(1);
+									}
+									dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+								}
+							}
+						}
+						/*if(device != null){
 							dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
 						}else{
 							dto.setSameday(0);
-						}
+						}*/
 						wifiDeviceWholeDayMService.save(dto);
 						index++;
 						count++;
@@ -183,7 +195,9 @@ public class Step02DeviceWholeDayRecordService {
 				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);*/
 				if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
 					if(device.getAgentuser() > 0){//认领成功的设备
-						if(agentBillFacadeService.markFirstCashBack(key, date)){
+						boolean ret = agentBillFacadeService.markFirstCashBack(key, date);
+						System.out.println(ret);
+						if(ret){
 							dto.setSameday(1);
 						}
 						dto.setCashback(AgentHelper.validateCashback(dto)?1:0);

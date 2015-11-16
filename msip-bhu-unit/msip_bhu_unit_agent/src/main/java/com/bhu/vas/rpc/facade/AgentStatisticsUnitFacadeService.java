@@ -186,8 +186,13 @@ public class AgentStatisticsUnitFacadeService {
 	 */
 	private void pageTotalSettlements4Agent(int agent,AgentRevenueStatisticsVTO vto) {
 		AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(agent);
-		vto.setSr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
-		vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))));
+		if(sview != null){
+			vto.setSr(ArithHelper.getFormatter(String.valueOf(sview.getSd_t_price())));
+			vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))));
+		}else{
+			vto.setSr(ArithHelper.getFormatter("0.00d"));
+			vto.setUr(ArithHelper.getFormatter("0.00d"));
+		}
 		//vto.setSr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummarySettled(String.valueOf(agent),mainSummary),2))));
 		//vto.setUr(ArithHelper.getFormatter(String.valueOf(ArithHelper.round(fetchSettlementSummaryUnsettled(String.valueOf(agent),mainSummary),2))));
 
