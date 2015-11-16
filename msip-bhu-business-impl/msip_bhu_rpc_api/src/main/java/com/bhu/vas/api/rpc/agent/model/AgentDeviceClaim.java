@@ -34,6 +34,11 @@ public class AgentDeviceClaim extends BaseStringModel {
     private String stock_name;
 
     /**
+     * 设备类型
+     */
+    private String hdtype;
+
+    /**
      * 0:导入 1:认领
      */
     private int status;
@@ -85,6 +90,14 @@ public class AgentDeviceClaim extends BaseStringModel {
 
     public void setStock_code(String stock_code) {
         this.stock_code = stock_code;
+    }
+
+    public String getHdtype() {
+        return hdtype;
+    }
+
+    public void setHdtype(String hdtype) {
+        this.hdtype = hdtype;
     }
 
     public String getStock_name() {

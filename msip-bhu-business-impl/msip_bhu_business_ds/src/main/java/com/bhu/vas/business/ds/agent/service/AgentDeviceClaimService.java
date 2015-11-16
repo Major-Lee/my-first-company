@@ -40,6 +40,7 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
                 agentDeviceClaim.setClaim_at(new Date());
                 agentDeviceClaim.setStatus(1);
                 agentDeviceClaim.setMac(mac);
+                agentDeviceClaim.setHdtype(hdtype);
                 agentDeviceClaim.setStock_name(hdtype);
                 this.update(agentDeviceClaim);
             }
