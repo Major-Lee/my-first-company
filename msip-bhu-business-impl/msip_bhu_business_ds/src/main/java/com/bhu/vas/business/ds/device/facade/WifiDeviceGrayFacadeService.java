@@ -217,22 +217,26 @@ public class WifiDeviceGrayFacadeService {
     		return dgv.toGrayUsageVTO();
     	}
     	if(!dgv.getD_fwid().equals(fwid)){
-    		WifiDeviceVersionFW dvfw = wifiDeviceVersionFWService.getById(fwid);
-        	if(dvfw == null || dvfw.getDut() != dut.getIndex()){
-        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
-        	}
-        	dvfw.setRelated(true);
-        	wifiDeviceVersionFWService.update(dvfw);
+    		if(StringUtils.isNotEmpty(fwid)){
+    			WifiDeviceVersionFW dvfw = wifiDeviceVersionFWService.getById(fwid);
+            	if(dvfw == null || dvfw.getDut() != dut.getIndex()){
+            		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
+            	}
+            	dvfw.setRelated(true);
+            	wifiDeviceVersionFWService.update(dvfw);
+    		}
         	dgv.setD_fwid(fwid);
     	}
     	
     	if(!dgv.getD_omid().equals(omid)){
-    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(omid);
-        	if(dvom == null || dvom.getDut() != dut.getIndex()){
-        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
-        	}
-        	dvom.setRelated(true);
-        	wifiDeviceVersionOMService.update(dvom);
+    		if(StringUtils.isNotEmpty(omid)){
+	    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(omid);
+	        	if(dvom == null || dvom.getDut() != dut.getIndex()){
+	        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
+	        	}
+	        	dvom.setRelated(true);
+	        	wifiDeviceVersionOMService.update(dvom);
+    		}
         	dgv.setD_omid(omid);
     	}
     	dgv = wifiDeviceGrayVersionService.update(dgv);
