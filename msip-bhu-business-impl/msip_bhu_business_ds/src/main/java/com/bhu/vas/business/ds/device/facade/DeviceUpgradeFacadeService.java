@@ -139,6 +139,6 @@ public class DeviceUpgradeFacadeService {
 	}
 	
 	public UpgradeDTO checkDeviceOMUpgrade(String dmac,String orig_vap_module){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, orig_vap_module,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
+		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, orig_vap_module,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM);
 	}
 }
