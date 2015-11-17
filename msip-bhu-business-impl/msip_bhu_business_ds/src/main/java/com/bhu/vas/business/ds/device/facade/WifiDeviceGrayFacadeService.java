@@ -200,13 +200,14 @@ public class WifiDeviceGrayFacadeService {
     	validateDut(dut);
     	validateGrayEnalbe(gray);
     	
-    	if(StringHelper.MINUS_STRING_GAP.equals(fwid)) fwid = StringHelper.EMPTY_STRING_GAP;
-    	if(StringHelper.MINUS_STRING_GAP.equals(omid)) omid = StringHelper.EMPTY_STRING_GAP;
-    	if(StringUtils.isNotEmpty(fwid)){
+    	//if(StringHelper.MINUS_STRING_GAP.equals(fwid)) fwid = StringHelper.EMPTY_STRING_GAP;
+    	//if(StringHelper.MINUS_STRING_GAP.equals(omid)) omid = StringHelper.EMPTY_STRING_GAP;
+    	if(StringUtils.isNotEmpty(fwid) && !StringHelper.MINUS_STRING_GAP.equals(fwid)){
     		this.validateVersionFormat(fwid, true);
     	}
-    	if(StringUtils.isNotEmpty(omid))
+    	if(StringUtils.isNotEmpty(omid) && !StringHelper.MINUS_STRING_GAP.equals(omid))
     		this.validateVersionFormat(omid, false);
+    	
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
     	if(dgv == null){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceGrayVersion"});
@@ -215,7 +216,7 @@ public class WifiDeviceGrayFacadeService {
     		return dgv.toGrayUsageVTO();
     	}
     	if(!dgv.getD_fwid().equals(fwid)){
-    		if(StringUtils.isNotEmpty(fwid)){
+    		if(StringUtils.isNotEmpty(fwid) && !StringHelper.MINUS_STRING_GAP.equals(fwid)){
     			WifiDeviceVersionFW dvfw = wifiDeviceVersionFWService.getById(fwid);
             	if(dvfw == null || dvfw.getDut() != dut.getIndex()){
             		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
@@ -227,7 +228,7 @@ public class WifiDeviceGrayFacadeService {
     	}
     	
     	if(!dgv.getD_omid().equals(omid)){
-    		if(StringUtils.isNotEmpty(omid)){
+    		if(StringUtils.isNotEmpty(omid) && !StringHelper.MINUS_STRING_GAP.equals(omid)){
 	    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(omid);
 	        	if(dvom == null || dvom.getDut() != dut.getIndex()){
 	        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
