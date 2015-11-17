@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 
@@ -91,7 +92,7 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	
 	public static VersionVTO toEmptyVTO(){
 		VersionVTO vto = new VersionVTO();
-		vto.setId("");
+		vto.setId(StringHelper.MINUS_STRING_GAP);
 		vto.setN("无");
 		vto.setDut(0);
 		vto.setR(false);
