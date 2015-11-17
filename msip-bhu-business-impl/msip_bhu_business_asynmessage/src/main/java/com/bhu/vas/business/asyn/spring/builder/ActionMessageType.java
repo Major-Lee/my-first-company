@@ -12,6 +12,7 @@ public enum ActionMessageType {
 	HandsetDeviceOnline("Handset设备上线","hdonline","HN"),
 	HandsetDeviceOffline("Handset设备上线","hdoffline","HF"),
 	HandsetDeviceSync("Handset设备sync","hdsync","HS"),
+	HandsetDeviceVisitorAuthorizeOnline("访客网络设备认证通过","hdvonline", "HV"),
 	WifiDeviceLocation("wifi设备位置回报","wdlocation","WL"),
 	WifiDeviceSettingModify("wifi设备配置下发指令修改","wdsmodify","WM"),
 	WifiDeviceSettingChanged("wifi设备配置变更","wdschanged","WC"),
