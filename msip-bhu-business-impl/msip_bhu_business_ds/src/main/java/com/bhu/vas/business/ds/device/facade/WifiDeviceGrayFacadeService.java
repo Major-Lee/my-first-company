@@ -29,6 +29,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceGrayVersionService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionFWService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionOMService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -200,8 +201,12 @@ public class WifiDeviceGrayFacadeService {
     		String fwid,String omid){
     	validateDut(dut);
     	validateGrayEnalbe(gray);
-    	if(StringUtils.isNotEmpty(fwid))
+    	
+    	if(StringHelper.MINUS_STRING_GAP.equals(fwid)) fwid = StringHelper.EMPTY_STRING_GAP;
+    	if(StringHelper.MINUS_STRING_GAP.equals(omid)) omid = StringHelper.EMPTY_STRING_GAP;
+    	if(StringUtils.isNotEmpty(fwid)){
     		this.validateVersionFormat(fwid, true);
+    	}
     	if(StringUtils.isNotEmpty(omid))
     		this.validateVersionFormat(omid, false);
     	WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
