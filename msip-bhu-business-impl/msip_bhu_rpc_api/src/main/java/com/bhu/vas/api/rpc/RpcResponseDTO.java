@@ -5,6 +5,8 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 @SuppressWarnings("serial")
 public class RpcResponseDTO<T> implements java.io.Serializable{
 	private ResponseErrorCode errorCode;
+	//用于描述errorCode 对应的i18n里面的动态字符{1}-{2}
+	private String[] errorCodeAttach;
 	private T payload;
 	
 	public RpcResponseDTO(){
@@ -13,6 +15,13 @@ public class RpcResponseDTO<T> implements java.io.Serializable{
 	public RpcResponseDTO(ResponseErrorCode errorCode, T payload) {
 		super();
 		this.errorCode = errorCode;
+		this.payload = payload;
+	}
+	
+	public RpcResponseDTO(ResponseErrorCode errorCode,String[] errorCodeAttach, T payload) {
+		super();
+		this.errorCode = errorCode;
+		this.errorCodeAttach = errorCodeAttach;
 		this.payload = payload;
 	}
 	
@@ -37,5 +46,11 @@ public class RpcResponseDTO<T> implements java.io.Serializable{
 	
 	public boolean hasError(){
 		return getErrorCode() != null;
+	}
+	public String[] getErrorCodeAttach() {
+		return errorCodeAttach;
+	}
+	public void setErrorCodeAttach(String[] errorCodeAttach) {
+		this.errorCodeAttach = errorCodeAttach;
 	}
 }

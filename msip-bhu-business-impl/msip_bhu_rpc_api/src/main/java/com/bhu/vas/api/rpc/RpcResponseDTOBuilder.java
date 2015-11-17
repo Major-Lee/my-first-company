@@ -28,6 +28,14 @@ public class RpcResponseDTOBuilder {
 		return res;
 	}
 	
+	public static <T> RpcResponseDTO<T> builderErrorRpcResponse(ResponseErrorCode errorCode,String[] errorCodeAttach,T payload){//,Class<T> classz){
+		RpcResponseDTO<T> res = new RpcResponseDTO<T>();
+		res.setErrorCode(errorCode);
+		res.setErrorCodeAttach(errorCodeAttach);
+		res.setPayload(payload);
+		return res;
+	}
+	
 	public static <T> RpcResponseDTO<T> builderSuccessRpcResponse(T payload){
 		RpcResponseDTO<T> res = new RpcResponseDTO<T>();
 		res.setErrorCode(null);
