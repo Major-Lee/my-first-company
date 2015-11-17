@@ -345,7 +345,7 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
+		System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
@@ -393,6 +393,8 @@ public class DeviceBusinessFacadeService {
 		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+
+			deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
 		} else { //踢掉
 			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
 		}

@@ -75,6 +75,9 @@ public class PushService{
 					case WifiDeviceSettingChanged:
 						push_ret = this.pushWifiDeviceSettingChanged(pushDto);
 						break;
+					case HandsetDeviceVisitorOnline:
+						push_ret = this.pushHandsetDeviceVisitorOnline(pushDto);
+						break;
 					default:
 						break;
 				}
@@ -202,6 +205,64 @@ public class PushService{
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("PushHandsetDeviceOnline exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+
+
+	public boolean pushHandsetDeviceVisitorOnline(PushDTO pushDto) {
+		boolean ret = false;
+		try {
+
+			String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(pushDto.getMac());
+			System.out.println("访客上线push1：present:"+present);
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			System.out.println("访客上线push2:"+presentDto);
+			if(presentDto != null) {
+				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO) pushDto;
+				//判断是否是自己
+				if (hd_push_dto.getHd_mac().equals(presentDto.getDm())) {
+					return false;
+				}
+
+				UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
+				if (userSettingState != null) {
+					UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
+							.Setting_Key, UserTerminalOnlineSettingDTO.class);
+					if (dto != null) {
+						//判断终端上线通知开关
+						if (dto.isOn()) {
+							if(!StringUtils.isEmpty(dto.getTimeslot())){
+								boolean valid_time = false;
+								//正常模式
+								if(UserTerminalOnlineSettingDTO.Timeslot_Mode_Normal == dto.getTimeslot_mode()){
+									valid_time = DateTimeHelper.isInTime(dto.getTimeslot());
+								}else if(UserTerminalOnlineSettingDTO.Timeslot_Mode_Silent == dto.getTimeslot_mode()){
+									valid_time = !DateTimeHelper.isInTime(dto.getTimeslot());
+								}
+
+								if (valid_time) {
+									PushMsg pushMsg = this.generatePushMsg(presentDto);
+									if(pushMsg != null){
+										//构建终端上线通知push内容
+										this.builderHandsetDeviceOnlinePushMsg(pushMsg, presentDto, hd_push_dto);
+										//发送push
+										ret = pushNotification(pushMsg);
+										if(ret){
+											logger.info("pushHandsetDeviceVisitorOnline Successed " + pushMsg.toString());
+										}else{
+											logger.info("pushHandsetDeviceVisitorOnline Failed " + pushMsg.toString());
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return ret;
 	}
