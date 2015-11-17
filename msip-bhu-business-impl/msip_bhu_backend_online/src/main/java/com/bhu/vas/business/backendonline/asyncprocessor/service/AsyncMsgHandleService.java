@@ -630,22 +630,18 @@ public class AsyncMsgHandleService {
 
 		HandsetDeviceVisitorAuthorizeOnlineDTO dto = JsonHelper.getDTO(message, HandsetDeviceVisitorAuthorizeOnlineDTO.class);
 		if(deviceFacadeService.isURooterDevice(dto.getWifiId())){
-			boolean terminal_notify_push_mark = businessCacheService.getQTerminalPushNotifyCacheByQ(dto.getWifiId(), dto.getMac());
-			if(!terminal_notify_push_mark){
-				logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline do Push");
 
-				HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
-				pushDto.setMac(dto.getWifiId());
-				pushDto.setHd_mac(dto.getMac());
-				pushDto.setTs(System.currentTimeMillis());
-				boolean push_successed = pushService.push(pushDto);
-				if(push_successed){
-					logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline push mac[%s] hd_mac[%s] result[%s] ",
-							dto.getWifiId(), dto.getMac(), push_successed));
-					businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
-				}
-			}else{
-				logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline push has mark");
+			logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline do Push");
+
+			HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
+			pushDto.setMac(dto.getWifiId());
+			pushDto.setHd_mac(dto.getMac());
+			pushDto.setTs(System.currentTimeMillis());
+			boolean push_successed = pushService.push(pushDto);
+			if(push_successed){
+				logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline push mac[%s] hd_mac[%s] result[%s] ",
+						dto.getWifiId(), dto.getMac(), push_successed));
+//				businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
 			}
 
 		}
