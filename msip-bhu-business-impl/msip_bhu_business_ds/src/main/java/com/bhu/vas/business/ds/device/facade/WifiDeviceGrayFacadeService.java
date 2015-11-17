@@ -420,6 +420,11 @@ public class WifiDeviceGrayFacadeService {
     	WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut,gl));
 		if(grayVersion != null){
 			if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw){
+				if(StringUtils.isEmpty(grayVersion.getD_fwid()) || StringHelper.MINUS_STRING_GAP.equals(grayVersion.getD_fwid())){
+					System.out.println(String.format("A2 upgradeDecideAction du[%s] gl[%s] fwid[%s],return null", dut,gl,grayVersion.getD_fwid()));
+					return resultDto;
+				}
+				
 				int ret = DeviceVersion.compareVersions(d_version, grayVersion.getD_fwid());
 				if(ret == -1){
 					WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(grayVersion.getD_fwid());
@@ -435,6 +440,10 @@ public class WifiDeviceGrayFacadeService {
 					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_fwid()));
 				}
 			}else{
+				if(StringUtils.isEmpty(grayVersion.getD_omid()) || StringHelper.MINUS_STRING_GAP.equals(grayVersion.getD_omid())){
+					System.out.println(String.format("A3 upgradeDecideAction du[%s] gl[%s] omid[%s],return null", dut,gl,grayVersion.getD_omid()));
+					return resultDto;
+				}
 				int ret = DeviceOMVersion.compareVersions(d_version, grayVersion.getD_omid());
 				if(ret == -1){
 					WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(grayVersion.getD_omid());
