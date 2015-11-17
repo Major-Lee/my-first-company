@@ -769,9 +769,9 @@ public class RPCMessageParseHelper {
         System.out.println(generateVapDTOFromMessage);
         
         
-        String text2 = "<return>\n"+
+        /*String text2 = "<return>\n"+
 			"<ITEM result=\"ok\" config_sequence=\"241\" />"+
-		"</return>";
+		"</return>";*/
         
         String payload = "000010018482F42306E81510001003151000100000001"+
         		"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"
@@ -787,10 +787,9 @@ public class RPCMessageParseHelper {
         		+ "</dev>";
         String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
         System.out.println(cmdWithoutHeader);
-        if(!StringUtils.isEmpty(cmdWithoutHeader)){
-			WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
-					cmdWithoutHeader);
-        }
+        /*if(!StringUtils.isEmpty(cmdWithoutHeader)){
+			WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
+        }*/
         /*for(int i=0;i<100;i++){
         	 ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(text2, ModifyDeviceSettingDTO.class);
              System.out.println(dto.getConfig_sequence());
