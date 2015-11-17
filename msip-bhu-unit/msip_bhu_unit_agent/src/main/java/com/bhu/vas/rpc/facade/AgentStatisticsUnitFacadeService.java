@@ -439,7 +439,7 @@ public class AgentStatisticsUnitFacadeService {
 				result_page.setPages(settlement_pages);
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
 			}
-			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,(int)statistics.getTs(), settleVtos);
+			TailPage<SettlementVTO> settlement_pages = new CommonPage<SettlementVTO>(pageNo, pageSize,pages.getTotalItemsCount(), settleVtos);
 			result_page.setPages(settlement_pages);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_page);
 		}catch(BusinessI18nCodeException i18nex){
@@ -485,6 +485,7 @@ public class AgentStatisticsUnitFacadeService {
 	}
 	
 	private ModelCriteria buildBlurModelCriteria(int viewstatus,String q,String sort_field,boolean desc,int pageNo, int pageSize){
+		System.out.println(String.format("viewstatus[%s] q[%s] sort_field[%s] desc[%s]", viewstatus,q,sort_field,desc));
 		ModelCriteria mc_view = new ModelCriteria();
 		Criteria createCriteria = mc_view.createCriteria();
 		if(viewstatus == 1){
