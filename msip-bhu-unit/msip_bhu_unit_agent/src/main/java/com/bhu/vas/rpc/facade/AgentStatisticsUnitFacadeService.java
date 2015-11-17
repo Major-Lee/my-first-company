@@ -93,12 +93,12 @@ public class AgentStatisticsUnitFacadeService {
 			Date previousMonthDate = DateTimeHelper.getDateFirstDayOfMonthAgo(currentDate,1);
 			String previosMonth = DateTimeHelper.formatDate(previousMonthDate, DateTimeHelper.FormatPattern11);
 			AgentWholeMonthMDTO previosmonth_data = agentWholeMonthMService.getWholeMonth(previosMonth, user);
-			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod(),currentmonth_data.getNewdevices()):0.00d)));
+			vto.setRlm(ArithHelper.getFormatter(String.valueOf(previosmonth_data!=null?AgentHelper.currency(previosmonth_data.getDod(),previosmonth_data.getNewdevices()):0.00d)));
 			//昨日收入(元)  
 			Date yesterdayMonthDate = DateTimeHelper.getDateDaysAgo(currentDate, 1);//(currentDate,1);
 			String yesterday = DateTimeHelper.formatDate(yesterdayMonthDate,DateTimeHelper.FormatPattern5);
 			AgentWholeDayMDTO yesterday_data = agentWholeDayMService.getWholeDay(yesterday, user);
-			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod(),currentmonth_data.getNewdevices()):0.00d)));
+			vto.setRyd(ArithHelper.getFormatter(String.valueOf(yesterday_data!=null?AgentHelper.currency(yesterday_data.getDod(),yesterday_data.getNewdevices()):0.00d)));
 			//结算过的总收入(元)
 			//所有设备产生收益的总数 -取agentWholeMonth此用户的所有在线时长
 			RecordSummaryDTO summary = agentWholeMonthMService.summaryAggregationTotal4User(user);
