@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.push.*;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.business.asyn.spring.model.*;
@@ -22,10 +23,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
-import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
-import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
-import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
-import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -633,7 +630,7 @@ public class AsyncMsgHandleService {
 
 			logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline do Push");
 
-			HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
+			HandsetDeviceVisitorAuthorizeOnlinePushDTO pushDto = new HandsetDeviceVisitorAuthorizeOnlinePushDTO();
 			pushDto.setMac(dto.getWifiId());
 			pushDto.setHd_mac(dto.getMac());
 			pushDto.setTs(System.currentTimeMillis());
