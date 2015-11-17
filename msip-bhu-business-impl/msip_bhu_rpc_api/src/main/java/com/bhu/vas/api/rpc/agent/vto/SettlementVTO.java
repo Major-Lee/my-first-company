@@ -12,7 +12,7 @@ public class SettlementVTO implements java.io.Serializable{
 	
 	
 	public static final String Sort_Field_UR = "ur";
-	public static final String Sort_Field_TR = "TR";
+	public static final String Sort_Field_TR = "tr";
 	public static final String Sort_Field_ORG = "org";
 	public int getIndex() {
 		return index;
