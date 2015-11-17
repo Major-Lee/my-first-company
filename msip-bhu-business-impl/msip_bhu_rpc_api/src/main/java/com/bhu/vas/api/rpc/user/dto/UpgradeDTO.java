@@ -1,7 +1,5 @@
 package com.bhu.vas.api.rpc.user.dto;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 

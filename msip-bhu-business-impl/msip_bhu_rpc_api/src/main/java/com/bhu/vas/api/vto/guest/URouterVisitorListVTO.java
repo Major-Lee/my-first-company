@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Created by bluesand on 10/26/15.
  */
+@SuppressWarnings("serial")
 public class URouterVisitorListVTO implements Serializable {
 
     private String mac;
