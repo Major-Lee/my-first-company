@@ -513,7 +513,7 @@ public class PushService{
 			//如果终端有别名 则不显示终端厂商短名称
 			if(!StringUtils.isEmpty(aliasName)){
 				hd_push_dto.setN(aliasName);
-				pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), StringHelper.EMPTY_STRING_GAP,
+				pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), StringHelper.EMPTY_STRING_GAP,
 						aliasName));
 			}
 			//如果不存在终端别名 显示厂商短名称
@@ -582,7 +582,7 @@ public class PushService{
 			}
 			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), push_deviceName));
 		}else{
-			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), StringHelper.EMPTY_STRING_GAP));
 			pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
 			pushMsg.setPaylod(JsonHelper.getJSONString(hd_push_dto));
 		}
