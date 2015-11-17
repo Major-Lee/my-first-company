@@ -527,7 +527,7 @@ public class PushService{
 				}
 				//根据设备mac匹配终端厂商
 				String scn = MacDictParserFilterHelper.prefixMactch(hd_push_dto.getHd_mac(),true,false);
-				logger.info(String.format("builderHandsetDeviceVisitorAuthorizeOnlinePushMsg scn [%s] hostname [%s]", scn, hostname));
+				logger.info(String.format("builderHandsetDeviceOnlinePushMsg scn [%s] hostname [%s]", scn, hostname));
 				if(!DevicesSet.Unknow.getScn().equals(scn)){
 					exist_scn = true;
 					//scn = "终端";
@@ -580,9 +580,9 @@ public class PushService{
 					push_deviceName = String.format(PushMessageConstant.Android_DeviceName, deviceName);
 				}
 			}
-			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), push_deviceName));
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), "", push_deviceName));
 		}else{
-			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), StringHelper.EMPTY_STRING_GAP));
+			pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
 			pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
 			pushMsg.setPaylod(JsonHelper.getJSONString(hd_push_dto));
 		}
