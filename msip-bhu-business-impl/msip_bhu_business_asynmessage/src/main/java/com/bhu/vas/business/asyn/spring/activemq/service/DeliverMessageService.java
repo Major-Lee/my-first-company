@@ -126,6 +126,15 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+
+	public void sendHandsetDeviceVisitorAuthorizeOnlineMessage(String wifiId, String handsetId, long login_ts) {
+		HandsetDeviceVisitorAuthorizeOnlineDTO dto = new HandsetDeviceVisitorAuthorizeOnlineDTO();
+		dto.setMac(handsetId);
+		dto.setWifiId(wifiId);
+		dto.setLogin_ts(login_ts);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 	
 	public void sendHandsetDeviceOfflineActionMessage(String wifiId, String handsetId, String uptime,
 													  String rx_bytes, String tx_bytes){

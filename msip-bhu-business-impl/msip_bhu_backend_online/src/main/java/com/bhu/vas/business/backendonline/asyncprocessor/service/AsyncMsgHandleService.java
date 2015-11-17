@@ -623,6 +623,36 @@ public class AsyncMsgHandleService {
 
 
 	/**
+	 * 访客终端认证通过
+	 * @param message
+	 */
+	public void handsetDeviceVisitorAuthorizeOnline(String message) {
+
+		HandsetDeviceVisitorAuthorizeOnlineDTO dto = JsonHelper.getDTO(message, HandsetDeviceVisitorAuthorizeOnlineDTO.class);
+		if(deviceFacadeService.isURooterDevice(dto.getWifiId())){
+			boolean terminal_notify_push_mark = businessCacheService.getQTerminalPushNotifyCacheByQ(dto.getWifiId(), dto.getMac());
+			if(!terminal_notify_push_mark){
+				logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline do Push");
+
+				HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
+				pushDto.setMac(dto.getWifiId());
+				pushDto.setHd_mac(dto.getMac());
+				pushDto.setTs(System.currentTimeMillis());
+				boolean push_successed = pushService.push(pushDto);
+				if(push_successed){
+					logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline push mac[%s] hd_mac[%s] result[%s] ",
+							dto.getWifiId(), dto.getMac(), push_successed));
+					businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
+				}
+			}else{
+				logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline push has mark");
+			}
+
+		}
+	}
+
+
+	/**
 	 * 移动设备连接状态sync
 	 * 1:清除wifi设备对应handset在线列表redis 并重新写入 (backend)
 	 * 2:移动设备基础信息更新 (backend)

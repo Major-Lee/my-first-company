@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
@@ -108,9 +110,12 @@ public class UpgradeDTO {
 		beginTime = StringUtils.EMPTY;
 		endTime = StringUtils.EMPTY;*/
 		String cmd = null;
-		if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw)
+		if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw){
+			/*//测试时使用，都变成立即升级*/
+			beginTime = StringUtils.EMPTY;
+			endTime = StringUtils.EMPTY;
 			cmd = CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
-		else
+		}else
 			cmd = CMDBuilder.builderVapModuleUpgrade(mac, taskid,this.getUpgradeurl(),
 					WifiDeviceHelper.Upgrade_Module_Default_Retry_Count, WifiDeviceHelper.Upgrade_Module_Default_RetryInterval);
 		return cmd;
