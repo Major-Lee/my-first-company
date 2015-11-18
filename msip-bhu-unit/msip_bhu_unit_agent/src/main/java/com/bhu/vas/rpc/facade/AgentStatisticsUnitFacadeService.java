@@ -500,7 +500,7 @@ public class AgentStatisticsUnitFacadeService {
 		}
 		validateSortField(sort_field);
 		if(SettlementVTO.Sort_Field_ORG.equals(sort_field)){
-			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "org",desc?"DESC":"ASC"));
+			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, " CONVERT( org USING gbk ) ",desc?"DESC":"ASC"));
 		}
 		if(SettlementVTO.Sort_Field_TR.equals(sort_field)){
 			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price",desc?"DESC":"ASC"));
