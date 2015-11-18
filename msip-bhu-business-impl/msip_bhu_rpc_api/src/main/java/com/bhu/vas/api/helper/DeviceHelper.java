@@ -1439,12 +1439,11 @@ public class DeviceHelper {
 			vap_dto.setAuth_key(auth_key);
 			vap_dto.setAuth_key_rsa("1234567890");
 		}
-		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem,
-				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem,vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 
 
-/*		System.out.println(item);
-		
+		System.out.println(item);
+		/*		
 		
 		System.out.println(isNewOrigSwverDevice("AP104P06V1.2.12r2"));
 		

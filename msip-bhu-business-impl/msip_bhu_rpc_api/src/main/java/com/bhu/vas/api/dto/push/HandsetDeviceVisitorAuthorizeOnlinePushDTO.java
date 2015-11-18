@@ -5,6 +5,7 @@ import com.bhu.vas.api.rpc.user.model.PushType;
 /**
  * Created by bluesand on 11/17/15.
  */
+@SuppressWarnings("serial")
 public class HandsetDeviceVisitorAuthorizeOnlinePushDTO extends PushDTO {
 
     //上线的终端的mac

@@ -21,9 +21,21 @@ public class RpcResponseDTOBuilder {
 		return builderErrorRpcResponse(errorCode,null);
 	}
 	
+	public static <T> RpcResponseDTO<T> builderErrorRpcResponse(ResponseErrorCode errorCode,String[] errorCodeAttach){//,Class<T> classz){
+		return builderErrorRpcResponse(errorCode,errorCodeAttach,null);
+	}
+	
 	public static <T> RpcResponseDTO<T> builderErrorRpcResponse(ResponseErrorCode errorCode,T payload){//,Class<T> classz){
 		RpcResponseDTO<T> res = new RpcResponseDTO<T>();
 		res.setErrorCode(errorCode);
+		res.setPayload(payload);
+		return res;
+	}
+	
+	public static <T> RpcResponseDTO<T> builderErrorRpcResponse(ResponseErrorCode errorCode,String[] errorCodeAttach,T payload){//,Class<T> classz){
+		RpcResponseDTO<T> res = new RpcResponseDTO<T>();
+		res.setErrorCode(errorCode);
+		res.setErrorCodeAttach(errorCodeAttach);
 		res.setPayload(payload);
 		return res;
 	}

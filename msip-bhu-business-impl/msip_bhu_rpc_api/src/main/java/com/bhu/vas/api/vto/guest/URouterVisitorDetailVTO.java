@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 10/26/15.
  */
+@SuppressWarnings("serial")
 public class URouterVisitorDetailVTO implements Serializable {
 
     private String hd_mac;
