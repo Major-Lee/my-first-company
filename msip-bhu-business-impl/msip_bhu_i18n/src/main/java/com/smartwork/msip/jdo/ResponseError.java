@@ -133,4 +133,13 @@ public class ResponseError extends Response{
 		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, result, txts);
 		return re;
 	}
+	
+	public static ResponseError embed(IResponseDTO res){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),res.getErrorCode(),res.getErrorCodeAttach());
+		return re;
+	}
+	public static ResponseError embed(IResponseDTO res, Object result){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),res.getErrorCode(), result, res.getErrorCodeAttach());
+		return re;
+	}
 }

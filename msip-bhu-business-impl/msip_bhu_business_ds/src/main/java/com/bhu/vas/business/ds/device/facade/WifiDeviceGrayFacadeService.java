@@ -296,7 +296,7 @@ public class WifiDeviceGrayFacadeService {
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
     		if(versionfw == null){
-    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW",versionid});
     		}
     		if(versionfw.isRelated()){
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_OPERATION_CANNOT_EXECUTE);
@@ -306,7 +306,7 @@ public class WifiDeviceGrayFacadeService {
     	}else{
     		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
     		if(versionom == null){
-    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM",versionid});
     		}
     		if(versionom.isRelated()){
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_OPERATION_CANNOT_EXECUTE);
