@@ -25,7 +25,9 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
- * Created by bluesand on 5/26/15.
+ * 
+ * @author Edmond
+ *
  */
 @Service("vapRpcService")
 public class VapRpcService  implements IVapRpcService{
@@ -134,5 +136,20 @@ public class VapRpcService  implements IVapRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-
+	@Override
+	public RpcResponseDTO<Boolean> saveMacs2Gray(int uid, int dut, int gl,
+			List<String> macs) {
+		logger.info(String.format("saveMacs2Gray uid[%s] dut[%s] gl[%s] macs[%s]",uid,dut,gl,macs));
+		try{
+			 wifiDeviceGrayFacadeService.saveMacs2Gray(
+					 VapEnumType.DeviceUnitType.fromIndex(dut), VapEnumType.GrayLevel.fromIndex(gl), macs);
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

@@ -11,7 +11,9 @@ import com.bhu.vas.api.vto.device.VersionVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
- * Created by bluesand on 5/26/15.
+ * 
+ * @author Edmond
+ *
  */
 public interface IVapRpcService {
     RpcResponseDTO<VapModeUrlViewCountDTO> urlView(String key, String field);
@@ -23,5 +25,6 @@ public interface IVapRpcService {
     RpcResponseDTO<GrayUsageVTO> modifyRelatedVersion4GrayVersion(int uid,int dut,int gl,String fwid,String omid);
     RpcResponseDTO<VersionVTO> addDeviceVersion(int uid,int dut,boolean fw,String versionid,String upgrade_url);
     RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid,int dut,boolean fw,String versionid);
-    
+    RpcResponseDTO<Boolean> saveMacs2Gray(int uid, int dut, int gl,
+			List<String> macs);
 }
