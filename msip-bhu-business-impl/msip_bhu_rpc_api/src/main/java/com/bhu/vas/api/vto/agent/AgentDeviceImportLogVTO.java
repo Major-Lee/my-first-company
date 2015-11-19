@@ -63,7 +63,8 @@ public class AgentDeviceImportLogVTO implements Serializable {
     private String filename;
 
     private String remark;
-    
+
+    @JsonIgnore
     private String content;
 
     public long getId() {

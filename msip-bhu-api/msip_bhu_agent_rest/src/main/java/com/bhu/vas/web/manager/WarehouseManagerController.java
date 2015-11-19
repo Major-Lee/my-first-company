@@ -228,8 +228,10 @@ public class WarehouseManagerController extends BaseController{
 
 
         AgentDeviceImportLogVTO vto = agentRpcService.findAgentDeviceImportLogById(uid, logid);
+        System.out.println( "123123123"  + vto);
         if (vto != null) {
             String content = vto.getContent();
+            System.out.println( "content"  + vto.getContent());
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
             if (path != null) {

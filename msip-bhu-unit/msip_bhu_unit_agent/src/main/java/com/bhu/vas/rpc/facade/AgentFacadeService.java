@@ -566,6 +566,7 @@ public class AgentFacadeService {
         vto.setRemark(agentDeviceImportLog.getRemark());
 
 
+        vto.setContent(agentDeviceImportLog.getContent());
         String content = agentDeviceImportLog.getContent();
         AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
         vto.setFilename(outputDTO.getName());
