@@ -210,7 +210,7 @@ public class WarehouseManagerController extends BaseController{
      * @param request
      * @param response
      * @param uid
-     * @param bid
+     * @param logid
      * @return
      * @throws IOException
      */
@@ -220,13 +220,16 @@ public class WarehouseManagerController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) Integer bid) throws IOException {
+//            @RequestParam(required = true) Integer bid) throws IOException {
+            @RequestParam(required = true) Integer logid) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-        AgentBulltinBoardVTO vto = agentRpcService.findAgentBulltinBoardById(uid, bid);
+
+
+        AgentDeviceImportLogVTO vto = agentRpcService.findAgentDeviceImportLogById(uid, logid);
         if (vto != null) {
-            String content = vto.getM();
+            String content = vto.getContent();
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
             if (path != null) {

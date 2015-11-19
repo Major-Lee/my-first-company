@@ -504,7 +504,6 @@ public class AgentFacadeService {
     public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
                                                           String inputPath, String outputPath,
                                                           String originName, String remark) {
-
         User operUser = userService.getById(uid);
         UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
 
@@ -542,6 +541,45 @@ public class AgentFacadeService {
 //        deliverMessageService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
 
         agentBackendFacadeService.sendAgentDeviceClaimImportMessage(uid, agentDeviceImportLog.getId(), inputPath, outputPath, originName);
+
+        return vto;
+
+    }
+
+
+    public AgentDeviceImportLogVTO findAgentDeviceImportLogById(int uid, long logId) {
+
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
+        AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);
+
+
+        AgentDeviceImportLogVTO vto = new AgentDeviceImportLogVTO();
+        vto.setId(agentDeviceImportLog.getId());
+        vto.setAid(agentDeviceImportLog.getAid());
+        vto.setSid(agentDeviceImportLog.getSid());
+        vto.setScount(agentDeviceImportLog.getSuccess_count());
+        vto.setFcount(agentDeviceImportLog.getFail_count());
+        vto.setStatus(agentDeviceImportLog.getStatus());
+        vto.setCreated_at(agentDeviceImportLog.getCreated_at());
+        vto.setRemark(agentDeviceImportLog.getRemark());
+
+
+        String content = agentDeviceImportLog.getContent();
+        AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
+        vto.setFilename(outputDTO.getName());
+
+        User agent = userService.getById(agentDeviceImportLog.getAid());
+        if (agent != null) {
+            vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+            vto.setOrg(agent.getOrg() == null ? "" : agent.getOrg());
+        }
+
+        User sellor = userService.getById(agentDeviceImportLog.getSid());
+        if (sellor != null) {
+            vto.setSnick(sellor.getNick() == null ? "" : sellor.getNick());
+        }
 
         return vto;
 

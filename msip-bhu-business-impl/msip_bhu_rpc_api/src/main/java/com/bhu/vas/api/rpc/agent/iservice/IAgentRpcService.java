@@ -76,6 +76,17 @@ public interface IAgentRpcService {
 
 
     /**
+     * 获取单条导入记录
+     * @param uid
+     * @param logId
+     * @return
+     */
+    AgentDeviceImportLogVTO findAgentDeviceImportLogById(int uid, long logId);
+
+
+
+
+    /**
      * 代理商导入日志
      * @param pageNo
      * @param pageSize

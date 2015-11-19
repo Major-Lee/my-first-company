@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.service.device;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.vto.agent.*;
 
 import org.springframework.stereotype.Service;
@@ -120,6 +121,12 @@ public class AgentRpcService implements IAgentRpcService {
         logger.info(String.format("importAgentDeviceClaim uid:%s aid:%s wid:%s orginName:%s inputpath:%s outputPath:%s remark:%s",
                 uid, aid, wid, originName, inputPath, outputPath, remark));
         return agentFacadeService.importAgentDeviceClaim(uid, aid, wid, inputPath, outputPath, originName, remark);
+    }
+
+
+    public AgentDeviceImportLogVTO findAgentDeviceImportLogById(int uid, long logId) {
+        logger.info(String.format("findAgentDeviceImportLogById uid[%s] logId[%s]", uid, logId));
+        return agentFacadeService.findAgentDeviceImportLogById(uid, logId);
     }
 
     @Override
