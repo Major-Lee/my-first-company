@@ -95,26 +95,28 @@ public class VapEnumType {
 		uRouterRoot(1000, 0,"uRouter"),
 		SOCRoot(2000, 0,"SOC"),
 		
-		uRouterTU_106(106,1000,"uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterTU_106(106,		"H106",1000,"uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
-		MassAP_2_103(103,2000,"MassAP 2 H103","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
-		MassAP_2_110(110,2000,"MassAP 2 H110","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
-		MassAP_Pro_201(201,2000,"MassAP Pro H201","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
-		MassAP_Pro_303(303,2000,"MassAP Pro H303","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
-		MassAP_AC_Pro_305(305,2000,"MassAP AC Pro H305","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
+		MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
+		MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
+		MassAP_Pro_201(201,		"H201",2000,"MassAP Pro H201","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
+		MassAP_Pro_303(303,		"H303",2000,"MassAP Pro H303","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
+		MassAP_AC_Pro_305(305,	"H305",2000,"MassAP AC Pro H305","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
 		
-		MicroStation_2_104(104,2000,"MicroStation 2 H104","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片"),
-		MicroStation_2_109(109,2000,"MicroStation 2 H109","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片"),
-		MicroStation_2U_108(108,2000,"MicroStation 2U H108","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片"),
+		MicroStation_2_104(104,	"H104",2000,"MicroStation 2 H104","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片"),
+		MicroStation_2_109(109,	"H109",2000,"MicroStation 2 H109","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片"),
+		MicroStation_2U_108(108,"H108",2000,"MicroStation 2U H108","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片"),
 		
-		MicroStation_5_304(304,2000,"MicroStation 5 H304","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
-		MicroStation_5_306(306,2000,"MicroStation 5 H306","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
-		uRouterTC_401(401,2000,"uRouter","---","---"),
+		MicroStation_5_304(304,	"H304",2000,"MicroStation 5 H304","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
+		MicroStation_5_306(306,	"H306",2000,"MicroStation 5 H306","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
+		uRouterTC_401(401,		"H401",2000,"uRouter","---","---"),
 		;
 		static Map<Integer, DeviceUnitType> allDeviceUnitTypes;
+		static Map<String, DeviceUnitType> allDeviceHdTypes;
 		static Map<Integer, List<DeviceUnitType>> allRootDeviceUnitTypes;
 		static List<DeviceUnitTypeVTO> allDeviceUnitTypeVTO;
 		private int index;
+		private String hdtype;
 		private String name;
 		private int parent;
 		private String fname;
@@ -125,8 +127,9 @@ public class VapEnumType {
 			this.parent = parent;
 		}
 		
-		private DeviceUnitType(int index, int parent,String name,String fname,String desc){
+		private DeviceUnitType(int index,String hdtype, int parent,String name,String fname,String desc){
 			this.index = index;
+			this.hdtype = hdtype;
 			this.name = name;
 			this.parent = parent;
 			this.fname = fname;
@@ -168,18 +171,30 @@ public class VapEnumType {
 			this.fname = fname;
 		}
 
+		public String getHdtype() {
+			return hdtype;
+		}
+
+		public void setHdtype(String hdtype) {
+			this.hdtype = hdtype;
+		}
+
 		public static DeviceUnitType fromIndex(int index){
 			DeviceUnitType dType = allDeviceUnitTypes.get(index); 
 			return dType;
 		}
-		
+		public static DeviceUnitType fromHdType(String hdtype){
+			return allDeviceHdTypes.get(hdtype);
+		}
 		static {
 			allDeviceUnitTypes = new HashMap<Integer,DeviceUnitType>();
+			allDeviceHdTypes = new HashMap<String,DeviceUnitType>();
 			allRootDeviceUnitTypes = new HashMap<Integer,List<DeviceUnitType>>();
 			allDeviceUnitTypeVTO = new ArrayList<>();
 			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (DeviceUnitType type : types){
 				allDeviceUnitTypes.put(type.getIndex(), type);
+				allDeviceHdTypes.put(type.getHdtype(), type);
 				if(type.parent == 0){//root
 					allRootDeviceUnitTypes.put(type.getIndex(), new ArrayList<DeviceUnitType>());
 					//allDeviceUnitTypeVTO.add(new DeviceUnitTypeVTO(type.getIndex(),type.getName()));
