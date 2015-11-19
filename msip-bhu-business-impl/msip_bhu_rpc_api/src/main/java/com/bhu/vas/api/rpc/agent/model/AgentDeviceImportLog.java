@@ -54,6 +54,15 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
      */
     private int fail_count;
 
+    /**
+     * 导入文件大字段json
+     *
+     * {"aid":100146,"path":"/BHUData/agent/output/100146/1447835444309.xls",
+     * "name":"山西岩涛网络NMAC对应代理商.xls","success_count":0,"fail_count":3}
+     *
+     */
+    private String content;
+
     public int getAid() {
         return aid;
     }
@@ -116,6 +125,14 @@ public class AgentDeviceImportLog extends BaseLongModel implements IRedisSequenc
 
     public void setFail_count(int fail_count) {
         this.fail_count = fail_count;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override

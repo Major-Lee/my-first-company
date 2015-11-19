@@ -135,6 +135,16 @@ public class AgentBackendFacadeService {
             agentDeviceClaimService.updateAll(agentDeviceClaims);
         }
 
+        long logId = dto.getLogId();
+
+        AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);
+
+        //发布公告给代理商
+      AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
+              agentDeviceImportLog.getContent());
+
+      agentDeviceImportLog.setBid(agentBulltinBoard.getId());
+
     }
 
     private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
@@ -263,19 +273,6 @@ public class AgentBackendFacadeService {
 
             outWorkbook.write(out);
 
-            AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
-            agentOutputDTO.setAid(agentDeviceImportLog.getAid());
-            agentOutputDTO.setPath(dto.getOutputPath());
-            agentOutputDTO.setName(dto.getOriginName());
-            agentOutputDTO.setFail_count(failCount);
-            agentOutputDTO.setSuccess_count(successCount);
-
-            //发布公告给代理商
-            AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
-                    JsonHelper.getJSONString(agentOutputDTO));
-
-            agentDeviceImportLog.setBid(agentBulltinBoard.getId());
-
             logger.info("agent excel over..... ");
 
         }catch(Exception ex) {
@@ -299,10 +296,19 @@ public class AgentBackendFacadeService {
                 out = null;
             }
         }
+
+        AgentOutputDTO agentOutputDTO = new AgentOutputDTO();
+        agentOutputDTO.setAid(agentDeviceImportLog.getAid());
+        agentOutputDTO.setPath(dto.getOutputPath());
+        agentOutputDTO.setName(dto.getOriginName());
+        agentOutputDTO.setFail_count(failCount);
+        agentOutputDTO.setSuccess_count(successCount);
+
         //更新导入记录
         agentDeviceImportLog.setSuccess_count(successCount);
         agentDeviceImportLog.setFail_count(failCount);
         agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
+        agentDeviceImportLog.setContent(JsonHelper.getJSONString(agentOutputDTO));
         agentDeviceImportLogService.update(agentDeviceImportLog);
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -259,7 +260,9 @@ public class AgentFacadeService {
         AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
         if (agentDeviceClaim != null) {
             vto.setStock_code(agentDeviceClaim.getStock_code());
-            vto.setStock_name(agentDeviceClaim.getStock_name());
+            //vto.setStock_name(agentDeviceClaim.getStock_name());
+            String hdtype = agentDeviceClaim.getHdtype();
+            vto.setStock_name(VapEnumType.DeviceUnitType.fromHdType(hdtype).getName());
             vto.setSold_at(agentDeviceClaim.getSold_at());
             vto.setClaim_at(agentDeviceClaim.getClaim_at());
             vto.setImport_id(agentDeviceClaim.getImport_id());
@@ -582,12 +585,15 @@ public class AgentFacadeService {
 
                 long bid  = log.getBid();
                 vto.setBid(bid);
-                AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
-                if (agentBulltinBoard != null && agentBulltinBoard.getType().equals(AgentBulltinType.BatchImport.getKey())) {
-                    String content = agentBulltinBoard.getContent();
-                    AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
-                    vto.setFilename(outputDTO.getName());
-                }
+//                AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
+//                if (agentBulltinBoard != null && agentBulltinBoard.getType().equals(AgentBulltinType.BatchImport.getKey())) {
+//                    String content = agentBulltinBoard.getContent();
+//                    AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
+//                    vto.setFilename(outputDTO.getName());
+//                }
+                String content = log.getContent();
+                AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
+                vto.setFilename(outputDTO.getName());
 
                 vtos.add(vto);
             }
