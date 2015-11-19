@@ -105,8 +105,12 @@ public class DailyChargingDataParserOper {
 			},String.format(charginglogs, date));//"/BHUData/bulogs/charginglogs-a/");
 			parser.processEnd(parser.getDevice_records());
 			//是否忽略filter功能
-			if(BusinessRuntimeConfiguration.Agent_Charging_Param_Filter)
+			if(BusinessRuntimeConfiguration.Agent_Charging_Param_Filter){
+				System.out.println("need filter");
 				parser.filter();
+			}else{
+				System.out.println("no need filter");
+			}
 			System.out.println("Device_records size:"+parser.getDevice_records().size());
 			System.out.println("Device_handset_records size:"+parser.getDevice_handset_records().size());
 			//System.out.println("Device_handset_records size:"+parser.getHmacs().size());
