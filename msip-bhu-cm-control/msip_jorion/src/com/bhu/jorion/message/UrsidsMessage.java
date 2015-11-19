@@ -42,6 +42,7 @@ public class UrsidsMessage {
 		
 		return new UrsidsMessage(hdr, content);
 	}
+	
 	public static UrsidsMessage composeUrsidsMessage(int mtype, int stype, String mac, int rev, long taskid, byte[] content){
 		UrsidsHeader hdr = new UrsidsHeader();
 		byte[] body = new byte[content.length + 2 + 6 + 4];//2reserved + 6 mac + 4 taskid
@@ -60,8 +61,7 @@ public class UrsidsMessage {
 		ib.put(content);
 		return new UrsidsMessage(hdr, body, mac);
 	}
-
-
+	
 	public boolean isMqMessage() {
 		return isMqMessage;
 	}

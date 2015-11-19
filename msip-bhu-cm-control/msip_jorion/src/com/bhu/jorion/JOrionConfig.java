@@ -15,6 +15,7 @@ public class JOrionConfig {
 	public final static String MSG_DEV_NOTEXIST		= "00000004";
 	public final static String MSG_DEV_MSG_FORWARD 	= "00000005";
 	public final static String MSG_DEV_XML_APPLY	= "00001001";
+	public final static String MSG_FILE_TRANSFER	= "00001002";
 
 	
 	public static Integer JMX_PORT = 8092;

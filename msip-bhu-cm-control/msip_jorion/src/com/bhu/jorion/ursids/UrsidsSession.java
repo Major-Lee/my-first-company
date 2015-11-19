@@ -136,13 +136,13 @@ public class UrsidsSession {
 	}
 
 
-	public synchronized void addTask(String mac, int rev, long taskid, TextMessage msg){
+	public synchronized void addTask(String mac, int rev, long taskid, int type, TextMessage msg){
 		Queue<PendingTask> q = pendingTask.get(mac);
 		if(q == null){
 			q = new ConcurrentLinkedQueue<PendingTask>();
 			pendingTask.put(mac, q);
 		}
-		PendingTask task = new PendingTask(rev, taskid, msg);
+		PendingTask task = new PendingTask(rev, taskid, type, msg);
 		q.add(task);
 		LOGGER.debug("Queue size now:" + q.size());
 	}
