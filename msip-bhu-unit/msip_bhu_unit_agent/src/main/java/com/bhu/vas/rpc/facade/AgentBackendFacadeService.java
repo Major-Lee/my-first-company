@@ -140,10 +140,10 @@ public class AgentBackendFacadeService {
         AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);
 
         //发布公告给代理商
-      AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
+        AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
               agentDeviceImportLog.getContent());
-
-      agentDeviceImportLog.setBid(agentBulltinBoard.getId());
+        agentDeviceImportLog.setBid(agentBulltinBoard.getId());
+        agentDeviceImportLogService.update(agentDeviceImportLog);
 
     }
 
