@@ -115,7 +115,17 @@ public class Step02DeviceWholeDayRecordService {
 					for(WifiDeviceWholeDayMDTO dto:page){
 						WifiDevice device = devices.get(index);
 						if(device != null){
-							if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
+							if(!AgentHelper.validateDeviceCashbackSupported(device.getHdtype()) || device.getAgentuser() <= 0){
+								//非认领成功的设备不进行mongo数据的录入
+								//非认领成功的设备不进行mongo数据的录入
+								continue;
+							}
+							boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
+							if(ret){
+								dto.setSameday(1);
+							}
+							dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+							/*if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
 								if(device.getAgentuser() > 0){//认领成功的设备
 									boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
 									//System.out.println(ret);
@@ -123,8 +133,14 @@ public class Step02DeviceWholeDayRecordService {
 										dto.setSameday(1);
 									}
 									dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+								}else{
+									//非认领成功的设备不进行mongo数据的录入
+									continue;
 								}
-							}
+							}else{
+								//非定义支持类的设备不进行mongo数据的录入
+								continue;
+							}*/
 						}
 						/*if(device != null){
 							dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
@@ -141,7 +157,7 @@ public class Step02DeviceWholeDayRecordService {
 		System.out.println("count:"+count);
 	}
 	
-	public void deviceRecord2Mongoaaa(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
+	/*public void deviceRecord2Mongoaaa(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
 		
 		Iterator<Entry<String, LineRecords>> iter = lineDeviceRecordsMap.entrySet().iterator();
 		while (iter.hasNext()) {
@@ -191,8 +207,6 @@ public class Step02DeviceWholeDayRecordService {
 			
 			WifiDevice device = wifiDeviceService.getById(key);
 			if(device != null){
-				/*Date currentDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
-				dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);*/
 				if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
 					if(device.getAgentuser() > 0){//认领成功的设备
 						boolean ret = agentBillFacadeService.markFirstCashBack(key, date);
@@ -208,5 +222,5 @@ public class Step02DeviceWholeDayRecordService {
 			wifiDeviceWholeDayMService.save(dto);
 			//System.out.println(dto.getId());
 		}
-	}
+	}*/
 }

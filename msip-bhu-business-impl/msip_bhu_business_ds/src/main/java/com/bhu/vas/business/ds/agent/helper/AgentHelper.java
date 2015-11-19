@@ -1,10 +1,8 @@
 package com.bhu.vas.business.ds.agent.helper;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayMDTO;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
@@ -12,7 +10,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class AgentHelper {
 	
-	public static Set<String> CashbackSupported_HdTypes = new HashSet<String>();
+	/*public static Set<String> CashbackSupported_HdTypes = new HashSet<String>();
 	static{
 		//Mass AP H103 H110
 		CashbackSupported_HdTypes.add("H103");
@@ -20,7 +18,7 @@ public class AgentHelper {
 		//Mass AP Pro H201 H303
 		CashbackSupported_HdTypes.add("H201");
 		CashbackSupported_HdTypes.add("H303");
-	}
+	}*/
 	
 	/**
 	 * 判定某台设备的mac是否能返现
@@ -43,7 +41,8 @@ public class AgentHelper {
 	
 	public static boolean validateDeviceCashbackSupported(String hd_type){
 		if(StringUtils.isEmpty(hd_type)) return false;
-		return CashbackSupported_HdTypes.contains(hd_type);
+		return VapEnumType.DeviceUnitType.getAllMassAPHdTypes().contains(hd_type);
+		//return CashbackSupported_HdTypes.contains(hd_type);
 	}
 	
 	/**
