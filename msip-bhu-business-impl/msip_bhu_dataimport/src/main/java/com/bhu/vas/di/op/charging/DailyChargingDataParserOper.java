@@ -107,7 +107,7 @@ public class DailyChargingDataParserOper {
 			//是否忽略filter功能
 			if(BusinessRuntimeConfiguration.Agent_Charging_Param_Filter){
 				System.out.println("need filter");
-				parser.filter();
+				parser.filterWithoutHansets();
 			}else{
 				System.out.println("no need filter");
 			}

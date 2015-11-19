@@ -510,7 +510,7 @@ public class ParserLog{
 	/**
 	 * 过滤掉不存在终端登录的设备
 	 */
-	public void filter(){
+	public void filterWithoutHansets(){
 		Iterator<Entry<String, LineRecords>> iter = device_records.entrySet().iterator();
 		while (iter.hasNext()) {
 			Entry<String, LineRecords> next = iter.next();
