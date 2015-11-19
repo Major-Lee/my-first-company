@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 11/10/15.
  */
+@SuppressWarnings("serial")
 public class AgentSettlementBulltinBoardDTO implements Serializable{
 
     /**
