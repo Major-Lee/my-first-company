@@ -228,14 +228,12 @@ public class WarehouseManagerController extends BaseController{
 
 
         AgentDeviceImportLogVTO vto = agentRpcService.findAgentDeviceImportLogById(uid, logid);
-        System.out.println( "123123123"  + vto);
         if (vto != null) {
             String content = vto.getContent();
-            System.out.println( "content"  + vto.getContent());
             AgentOutputDTO dto = JsonHelper.getDTO(content, AgentOutputDTO.class);
             String path = dto.getPath();
             if (path != null) {
-                headers.setContentDispositionFormData("attachment", dto.getAid() + ".xls");
+                headers.setContentDispositionFormData("attachment", dto.getName() + ".xls");
                 File file = new File(path);
                 return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
             }
