@@ -12,6 +12,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.AgentBulltinType;
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
@@ -63,7 +64,7 @@ public class AgentFacadeService {
 
     private final Logger logger = LoggerFactory.getLogger(AgentFacadeService.class);
 
-    List<String> massAPList = new ArrayList<String>();
+    /*List<String> massAPList = new ArrayList<String>();
     {
         //todo(bluesand):合并分支后处理
         massAPList.add("H103");
@@ -71,7 +72,7 @@ public class AgentFacadeService {
         massAPList.add("H201");
         massAPList.add("H303");
         massAPList.add("H305");
-    }
+    }*/
 
     @Resource
     private AgentDeviceClaimService agentDeviceClaimService;
@@ -121,7 +122,7 @@ public class AgentFacadeService {
         UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", massAPList);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
@@ -133,7 +134,7 @@ public class AgentFacadeService {
         switch (status) {
             case DEVICE_ONLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -142,7 +143,7 @@ public class AgentFacadeService {
                 break;
             case DEVICE_OFFLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", false).andColumnIn("hdtype", massAPList);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", false).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -150,7 +151,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
                 
@@ -274,7 +275,7 @@ public class AgentFacadeService {
         UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", massAPList);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
@@ -286,7 +287,7 @@ public class AgentFacadeService {
         switch (status) {
             case DEVICE_ONLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -295,7 +296,7 @@ public class AgentFacadeService {
                 break;
             case DEVICE_OFFLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", false).andColumnIn("hdtype", massAPList);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", false).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -303,7 +304,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
+                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
 
@@ -374,11 +375,11 @@ public class AgentFacadeService {
 
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", massAPList);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
-        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
+        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
         offline_count = total_count - online_count;
 
@@ -414,11 +415,11 @@ public class AgentFacadeService {
         int offline_count = 0;
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", massAPList);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
-        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", massAPList);
+        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
         offline_count = total_count - online_count;
 
