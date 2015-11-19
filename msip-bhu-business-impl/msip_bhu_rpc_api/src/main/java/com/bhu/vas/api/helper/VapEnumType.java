@@ -115,6 +115,9 @@ public class VapEnumType {
 		static Map<String, DeviceUnitType> allDeviceHdTypes;
 		static Map<Integer, List<DeviceUnitType>> allRootDeviceUnitTypes;
 		static List<DeviceUnitTypeVTO> allDeviceUnitTypeVTO;
+		
+		static List<String> allMassAPHdTypes;// = new ArrayList<String>();
+		
 		private int index;
 		private String hdtype;
 		private String name;
@@ -186,11 +189,28 @@ public class VapEnumType {
 		public static DeviceUnitType fromHdType(String hdtype){
 			return allDeviceHdTypes.get(hdtype);
 		}
+		
+		public static boolean isURouterHdType(String hdtype) {
+			DeviceUnitType fromHdType = fromHdType(hdtype);
+			if(fromHdType != null){
+				return fromHdType.getParent() == uRouterRoot.getParent();
+			}
+			return false;
+		}
+		
+		public static boolean isSocHdType(String hdtype) {
+			DeviceUnitType fromHdType = fromHdType(hdtype);
+			if(fromHdType != null){
+				return fromHdType.getParent() == SOCRoot.getParent();
+			}
+			return false;
+		}
 		static {
 			allDeviceUnitTypes = new HashMap<Integer,DeviceUnitType>();
 			allDeviceHdTypes = new HashMap<String,DeviceUnitType>();
 			allRootDeviceUnitTypes = new HashMap<Integer,List<DeviceUnitType>>();
 			allDeviceUnitTypeVTO = new ArrayList<>();
+			allMassAPHdTypes = new ArrayList<String>();
 			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (DeviceUnitType type : types){
 				allDeviceUnitTypes.put(type.getIndex(), type);
@@ -217,6 +237,17 @@ public class VapEnumType {
 				}
 				allDeviceUnitTypeVTO.add(parentVTO);
 			}
+			/*MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
+			MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
+			MassAP_Pro_201(201,		"H201",2000,"MassAP Pro H201","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
+			MassAP_Pro_303(303,		"H303",2000,"MassAP Pro H303","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
+			MassAP_AC_Pro_305(305,	"H305",2000,"MassAP AC Pro H305","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
+*/
+			allMassAPHdTypes.add(MassAP_2_103.getHdtype());
+			allMassAPHdTypes.add(MassAP_2_110.getHdtype());
+			allMassAPHdTypes.add(MassAP_Pro_201.getHdtype());
+			allMassAPHdTypes.add(MassAP_Pro_303.getHdtype());
+			allMassAPHdTypes.add(MassAP_AC_Pro_305.getHdtype());
 		}
 
 		public static List<DeviceUnitTypeVTO> getAllDeviceUnitTypeVTO() {
@@ -226,6 +257,9 @@ public class VapEnumType {
 				List<DeviceUnitTypeVTO> allDeviceUnitTypeVTO) {
 			DeviceUnitType.allDeviceUnitTypeVTO = allDeviceUnitTypeVTO;
 		}
-		
+
+		public static List<String> getAllMassAPHdTypes() {
+			return allMassAPHdTypes;
+		}
 	}
 }

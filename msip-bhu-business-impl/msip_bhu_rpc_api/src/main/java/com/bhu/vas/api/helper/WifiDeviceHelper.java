@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -34,18 +35,18 @@ public class WifiDeviceHelper {
 	public final static boolean WIFI_DEVICE_UPGRADE_FW = true;
 	public final static boolean WIFI_DEVICE_UPGRADE_OM = false;
 	
-	private static Set<String> URouter_HdTypes = new HashSet<String>();
-	private static Set<String> Soc_HdTypes = new HashSet<String>();
+	//private static Set<String> URouter_HdTypes = new HashSet<String>();
+	//private static Set<String> Soc_HdTypes = new HashSet<String>();
 	private static Set<String> vapExceptDevices = new HashSet<String>();
 	static{
-		URouter_HdTypes.add("H106");
+		/*URouter_HdTypes.add("H106");
 		
 		//Mass AP H103 H110
 		Soc_HdTypes.add("H103");
 		Soc_HdTypes.add("H110");
 		//Mass AP Pro H201 H303
 		Soc_HdTypes.add("H201");
-		Soc_HdTypes.add("H303");
+		Soc_HdTypes.add("H303");*/
 		
 		vapExceptDevices.add("84:82:f4:23:06:68");
 	}
@@ -58,10 +59,12 @@ public class WifiDeviceHelper {
 	}
 	
 	public static boolean isURouterHdType(String hd_type) {
-		return URouter_HdTypes.contains(hd_type);
+		return DeviceUnitType.isURouterHdType(hd_type);
+		//return URouter_HdTypes.contains(hd_type);
 	}
 	public static boolean isSocHdType(String hd_type) {
-		return Soc_HdTypes.contains(hd_type);
+		return DeviceUnitType.isSocHdType(hd_type);
+		//return Soc_HdTypes.contains(hd_type);
 	}
 	/**
 	 * uRouter 设备 或者SOC设备
