@@ -138,6 +138,13 @@ public class AgentFacadeService {
         return yetTotal;
     }
 
+    private int totalCountYetClaimedAgentDevice() {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0).andColumnEqualTo("import_status", 1);
+        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+        return yetTotal;
+    }
+
     public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
@@ -359,7 +366,7 @@ public class AgentFacadeService {
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
 
-        int yetTotal = totalCountYetClaimedAgentDevice(uid);
+        int yetTotal = totalCountYetClaimedAgentDevice();
 
         agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
