@@ -133,7 +133,7 @@ public class AgentFacadeService {
 
     private int totalCountYetClaimedAgentDevice(int uid) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         return yetTotal;
     }
