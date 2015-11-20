@@ -114,17 +114,38 @@ public class AgentFacadeService {
     }
 
 
+    private ModelCriteria builderClaimedAgentDeviceModelCriteria(int uid ,boolean online) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", online).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+        return mc;
+    }
+
+    private ModelCriteria builderClaimedAgentDeviceModelCriteria(boolean online) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", online).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+        return mc;
+    }
+
+    private int totalCountClaimedAgentDevice(ModelCriteria mc) {
+        int total_count = wifiDeviceService.countByCommonCriteria(mc);
+        return total_count;
+    }
+
+    private int totalCountYetClaimedAgentDevice(int uid) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
+        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+        return yetTotal;
+    }
+
     public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
-
-
-
 
         User operUser = userService.getById(uid);
         UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
-        int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
+        int total_count = totalCountClaimedAgentDevice(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
         ModelCriteria querymc = new ModelCriteria();
@@ -135,7 +156,7 @@ public class AgentFacadeService {
         switch (status) {
             case DEVICE_ONLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+                onlinemc = builderClaimedAgentDeviceModelCriteria(uid, true);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -144,7 +165,7 @@ public class AgentFacadeService {
                 break;
             case DEVICE_OFFLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", false).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+                onlinemc = builderClaimedAgentDeviceModelCriteria(uid, false);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -152,7 +173,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+                onlinemc = builderClaimedAgentDeviceModelCriteria(uid, true);
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
                 
@@ -180,14 +201,12 @@ public class AgentFacadeService {
                 vtos.add(vto);
             }
         }*/
-        List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices,monthlyDtos,summaryDtos);
+        List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices, monthlyDtos, summaryDtos);
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
 
 
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
-        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+        int yetTotal = totalCountYetClaimedAgentDevice(uid);
 
         agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
@@ -233,7 +252,7 @@ public class AgentFacadeService {
         double total_dod =  summaryDTO != null?summaryDTO.getT_dod():0d;
         int total_firstcd = summaryDTO != null?summaryDTO.getT_newdevices():0;
         vto.setUptime(AgentHelper.getTimeDiff(total_dod));
-        vto.setTotal_income(AgentHelper.currency(total_dod,total_firstcd));
+        vto.setTotal_income(AgentHelper.currency(total_dod, total_firstcd));
         
         double previous_dod = wholeMonthDTO !=null ?wholeMonthDTO.getDod():0d;
         int previous_firstcd = wholeMonthDTO != null?wholeMonthDTO.getSamedays():0;
@@ -278,8 +297,8 @@ public class AgentFacadeService {
         UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
-        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
-        int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
+        totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+        int total_count = totalCountClaimedAgentDevice(totalmc);
 
         ModelCriteria onlinemc = new ModelCriteria();
         ModelCriteria querymc = new ModelCriteria();
@@ -290,7 +309,7 @@ public class AgentFacadeService {
         switch (status) {
             case DEVICE_ONLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+                onlinemc = builderClaimedAgentDeviceModelCriteria(true);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -299,7 +318,7 @@ public class AgentFacadeService {
                 break;
             case DEVICE_OFFLINE_STATUS:
 
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", false).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+                onlinemc = builderClaimedAgentDeviceModelCriteria(false);
                 querymc = onlinemc;
                 total_query = wifiDeviceService.countByCommonCriteria(onlinemc);
 
@@ -307,7 +326,7 @@ public class AgentFacadeService {
                 online_count = total_count - offline_count;
                 break;
             default:
-                onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+                onlinemc = builderClaimedAgentDeviceModelCriteria(true);
                 online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
                 querymc = totalmc;
 
@@ -326,7 +345,7 @@ public class AgentFacadeService {
         List<WifiDeviceWholeMonthMDTO> monthlyDtos = wifiDeviceWholeMonthMService.fetchByDate(device_macs, previous_month_key);
         List<RecordSummaryDTO> summaryDtos = wifiDeviceWholeMonthMService.summaryAggregationBetween(device_macs, null, null);
         
-        List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices,monthlyDtos,summaryDtos);
+        List<AgentDeviceClaimVTO>  vtos = buildAgentDeviceClaimVTOs(devices, monthlyDtos, summaryDtos);
         /*List<AgentDeviceClaimVTO>  vtos = new ArrayList<AgentDeviceClaimVTO>();
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
@@ -340,9 +359,7 @@ public class AgentFacadeService {
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
 
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
-        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+        int yetTotal = totalCountYetClaimedAgentDevice(uid);
 
         agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
@@ -381,11 +398,9 @@ public class AgentFacadeService {
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
-        ModelCriteria onlinemc = new ModelCriteria();
-        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+        ModelCriteria onlinemc = builderClaimedAgentDeviceModelCriteria(uid, true);
         online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
         offline_count = total_count - online_count;
-
 
         agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
@@ -421,8 +436,7 @@ public class AgentFacadeService {
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
         int total_count = wifiDeviceService.countByCommonCriteria(totalmc);
 
-        ModelCriteria onlinemc = new ModelCriteria();
-        onlinemc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnEqualTo("online", true).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
+        ModelCriteria onlinemc = builderClaimedAgentDeviceModelCriteria(true);
         online_count = wifiDeviceService.countByCommonCriteria(onlinemc);
         offline_count = total_count - online_count;
 
@@ -468,38 +482,6 @@ public class AgentFacadeService {
         return vto;
     }
 
-/*    private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(WifiDevice wifiDevice) {
-        AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
-        vto.setSn(wifiDevice.getSn());
-        vto.setMac(wifiDevice.getId());
-        vto.setOnline(wifiDevice.isOnline());
-        long uptime = 0;
-        try {
-           uptime =  Long.parseLong(wifiDevice.getUptime());
-        } catch (Exception e) {
-            uptime = 0;
-        }
-
-        vto.setUptime(DateTimeHelper.getTimeDiff(uptime));
-        vto.setCreated_at(wifiDevice.getCreated_at());
-        vto.setOsv(wifiDevice.getOem_swver());
-        vto.setHd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDevice.getId()));
-        //todo(bluesand):收入
-        //vto.setMonth_income();
-//            vto.setTotal_income();
-        vto.setAdr(wifiDevice.getFormatted_address());
-        vto.setUid(wifiDevice.getAgentuser());
-
-        AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
-        if (agentDeviceClaim != null) {
-            vto.setStock_code(agentDeviceClaim.getStock_code());
-            vto.setStock_name(agentDeviceClaim.getStock_name());
-            vto.setSold_at(agentDeviceClaim.getSold_at());
-            vto.setClaim_at(agentDeviceClaim.getClaim_at());
-
-        }
-        return vto;
-    }*/
 
     public AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
                                                           String inputPath, String outputPath,
