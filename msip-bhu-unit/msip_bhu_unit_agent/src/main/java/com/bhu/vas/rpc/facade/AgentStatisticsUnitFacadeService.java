@@ -508,6 +508,11 @@ public class AgentStatisticsUnitFacadeService {
 		if(SettlementVTO.Sort_Field_UR.equals(sort_field)){
 			mc_view.setOrderByClause(String.format(sortSqlFragmentTemplate, "t_price - sd_t_price",desc?"DESC":"ASC"));
 		}
+		if(mc_view.getOrderByClause() != null){
+			//上面的排序优先，如果排序相同的继续以t_price大小排序
+			mc_view.setOrderByClause(mc_view.getOrderByClause().concat(",t_price desc "));
+		}
+		
 		mc_view.setPageNumber(pageNo);
 		mc_view.setPageSize(pageSize);
 		return mc_view;
