@@ -66,6 +66,7 @@ public class WifiDeviceOnlineActionLoader {
 							}
 							
 						}else{
+							//非uRouter设备定时下发查询终端在线指令
 							payloads.add(CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId()));
 							//cmdPayload = CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId());
 							//downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));

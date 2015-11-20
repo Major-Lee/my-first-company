@@ -173,12 +173,23 @@ public class AsyncMsgHandleService {
 					payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
 			}
-			
-			//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
-			if(WifiDeviceHelper.isDeviceNeedOnlineTeminalQuery(wifiDevice.getOrig_model(), wifiDevice.getOrig_swver())){
-				//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
-				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
+			try{
+				/*//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
+				if(WifiDeviceHelper.isDeviceNeedOnlineTeminalQuery(wifiDevice.getOrig_model(), wifiDevice.getOrig_swver())){
+					//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
+					payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
+				}*/
+				//暂时只对uRouter设备进行终端上下线上报指令
+				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_model())){
+					//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
+					payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
+				}
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
 			}
+			
+			
+			
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
 			try{
