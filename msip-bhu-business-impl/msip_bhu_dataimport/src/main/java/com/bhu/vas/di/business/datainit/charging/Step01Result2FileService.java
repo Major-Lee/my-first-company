@@ -52,7 +52,13 @@ public class Step01Result2FileService {
 			while(iter_second.hasNext()){
 				Entry<String, LineRecords> next2 = iter_second.next();
 				String hmac = next2.getKey();
-				sb.append("      hmac:"+hmac).append(String.format("[%s]", MacDictParserFilterHelper.prefixMactch(hmac,false,false))).append('\n');
+				try{
+					sb.append("      hmac:"+hmac).append(String.format("[%s]", MacDictParserFilterHelper.prefixMactch(hmac,false,false))).append('\n');
+				}catch(Exception ex){
+					System.out.println("hmac:"+hmac);
+					ex.printStackTrace(System.out);
+				}
+				
 				LineRecords val = next2.getValue();
 				int times = 0;
 				long total_online_time = 0l;
