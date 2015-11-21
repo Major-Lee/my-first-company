@@ -8,6 +8,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
@@ -26,6 +30,7 @@ import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
+import com.bhu.vas.business.ds.agent.mdao.AgentWholeDayMDao;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
@@ -54,6 +59,9 @@ public class AgentStatisticsUnitFacadeService {
 
 	@Resource
 	private AgentWholeDayMService agentWholeDayMService;
+	
+	@Resource
+	private AgentWholeDayMDao agentWholeDayMDao;
 	
 	@Resource
 	private AgentWholeMonthMService agentWholeMonthMService;
@@ -226,8 +234,24 @@ public class AgentStatisticsUnitFacadeService {
 			//String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
 			Date dateEnd = DateTimeHelper.getDateDaysAgo(currentDate,1);//DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeHelper.getDateDaysAgo(dateEnd,180);
+			System.out.println(String.format(" dateStart[%s] dateEnd[%s] pn[%s] ps[%s]", dateStart,dateEnd,pageNo,pageSize));
+			
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);
+			
+/*				Query query = Query.query(org.springframework.data.mongodb.core.query.Criteria.where("user").is(uid).and("date").gte(DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5)).lte(dateEndStr)).with(new Sort(Direction.DESC,"date"));
+				long totalCount = agentWholeDayMDao.count(query);
+				int totalPageCount = PageHelper.getTotalPages((int)totalCount, pageSize);
+				System.out.println(String.format(" totalCount[%s] totalPageCount[%s]", totalCount,totalPageCount));
+				if (totalPageCount < pageNo) {
+					//重新初始化分页参数
+					pageNo = totalPageCount;
+				}
+				System.out.println(String.format(" pageNo[%s] ", pageNo));
+				query.skip((pageNo - 1) * pageSize).limit(pageSize);
+				List<AgentWholeDayMDTO> rows = agentWholeDayMDao.find(query);
+				TailPage<AgentWholeDayMDTO> page = new CommonPage<AgentWholeDayMDTO>(pageNo, pageSize,totalPageCount, rows);*/
+			
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
 			DailyRevenueRecordVTO vto = null;
 			for(AgentWholeDayMDTO dto : page.getItems()){
