@@ -8,10 +8,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
@@ -30,7 +26,6 @@ import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
-import com.bhu.vas.business.ds.agent.mdao.AgentWholeDayMDao;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeDayMDTO;
 import com.bhu.vas.business.ds.agent.mdto.AgentWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.AgentWholeDayMService;
@@ -59,9 +54,6 @@ public class AgentStatisticsUnitFacadeService {
 
 	@Resource
 	private AgentWholeDayMService agentWholeDayMService;
-	
-	@Resource
-	private AgentWholeDayMDao agentWholeDayMDao;
 	
 	@Resource
 	private AgentWholeMonthMService agentWholeMonthMService;
