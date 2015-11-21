@@ -526,7 +526,7 @@ public class AgentStatisticsUnitFacadeService {
 			List<Integer> sd_list = new ArrayList<Integer>();
 			sd_list.add(AgentBillSummaryView.SummaryView_Settled);
 			sd_list.add(AgentBillSummaryView.SummaryView_Empty);
-			createCriteria.andColumnIn("status", sd_list)
+			createCriteria.andColumnIn("status", sd_list);
 			//createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled);
 		}else if(viewstatus == 0){
 			createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled);
