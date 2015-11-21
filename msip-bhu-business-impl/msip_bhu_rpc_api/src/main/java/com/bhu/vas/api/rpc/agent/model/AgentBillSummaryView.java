@@ -101,7 +101,7 @@ public class AgentBillSummaryView extends BaseIntModel{
 		AgentBillSummaryView sview = new AgentBillSummaryView();
 		sview.setId(user);
 		sview.setOrg(org);
-		sview.setStatus(SummaryView_UnSettled);
+		sview.setStatus(SummaryView_Empty);
 		sview.setT_price(0.00d);
 		sview.setSd_t_price(0.00d);
 		return sview;

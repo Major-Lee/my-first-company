@@ -241,7 +241,7 @@ public class AgentBillFacadeService {
 	public void newBillCreated(int agent,String date,double iSVPrice){
 		String bill_id = AgentBillSettlements.generateId(date, agent);
 		AgentBillSettlements billSettlements = agentBillSettlementsService.getById(bill_id);
-		if(billSettlements != null){//这种情况理论是不应该存在
+		if(billSettlements != null){//这种情况理论是不应该存在，存在于重复生成数据的情况下
 			//如果发生这种情况则覆盖记录，覆盖规则为如下
 			double old_iSVPrice = billSettlements.getiSVPrice();
 			int old_status = billSettlements.getStatus();
