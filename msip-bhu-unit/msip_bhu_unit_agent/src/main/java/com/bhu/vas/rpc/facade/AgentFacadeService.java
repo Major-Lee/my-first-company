@@ -471,8 +471,8 @@ public class AgentFacadeService {
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
         }
-        vto.setOnline(false);
-        vto.setUptime(StringHelper.MINUS_STRING_GAP);
+        //vto.setOnline(false);
+        //vto.setUptime("--");
         /*WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
         if ( wifiDevice != null){
             vto.setOnline(wifiDevice.isOnline());
