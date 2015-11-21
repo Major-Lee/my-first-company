@@ -95,7 +95,7 @@ public class VapEnumType {
 		uRouterRoot(1000, 0,"uRouter"),
 		SOCRoot(2000, 0,"SOC"),
 		
-		uRouterTU_106(106,		"H106",1000,"uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterTU_106(106,		"H106",1000,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
 		MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
 		MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
