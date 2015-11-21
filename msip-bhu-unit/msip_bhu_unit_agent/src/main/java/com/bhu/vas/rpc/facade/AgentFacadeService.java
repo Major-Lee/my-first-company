@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.helper.VapEnumType;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -32,7 +31,6 @@ import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
 import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.agent.helper.AgentHelper;
@@ -47,6 +45,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -134,6 +133,13 @@ public class AgentFacadeService {
     private int totalCountYetClaimedAgentDevice(int uid) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status", 1);
+        int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
+        return yetTotal;
+    }
+
+    private int totalCountYetClaimedAgentDevice() {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("status", 0).andColumnEqualTo("import_status", 1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         return yetTotal;
     }
@@ -359,7 +365,7 @@ public class AgentFacadeService {
         AgentDeviceVTO agentDeviceVTO = new AgentDeviceVTO();
         agentDeviceVTO.setVtos(new CommonPage<AgentDeviceClaimVTO>(pageNo, pageSize, total_query, vtos));
 
-        int yetTotal = totalCountYetClaimedAgentDevice(uid);
+        int yetTotal = totalCountYetClaimedAgentDevice();
 
         agentDeviceVTO.setTotal_count(total_count);
         agentDeviceVTO.setOnline_count(online_count);
@@ -465,8 +471,9 @@ public class AgentFacadeService {
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
         }
-
-        WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
+        //vto.setOnline(false);
+        //vto.setUptime("--");
+        /*WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
         if ( wifiDevice != null){
             vto.setOnline(wifiDevice.isOnline());
             vto.setUptime(wifiDevice.getUptime());
@@ -477,7 +484,7 @@ public class AgentFacadeService {
             //vto.setMonth_income();
 //            vto.setTotal_income();
             vto.setAdr(wifiDevice.getFormatted_address());
-        }
+        }*/
 
         return vto;
     }

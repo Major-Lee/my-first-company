@@ -33,6 +33,18 @@ public class Step02DeviceWholeDayRecordService {
 	@Resource
 	private AgentBillFacadeService agentBillFacadeService;
 	public void deviceRecord2Mongo(String date,Map<String, LineRecords> lineDeviceRecordsMap,Map<String,Map<String,LineRecords>> lineHandsetRecordsMap){
+		/*List<String> massAps = new ArrayList<String>();
+		massAps.add("84:82:f4:19:01:74");
+		massAps.add("84:82:f4:19:01:dc");
+		massAps.add("84:82:f4:19:02:00");
+		massAps.add("84:82:f4:19:02:20");
+		massAps.add("84:82:f4:19:02:bc");
+		massAps.add("84:82:f4:19:02:ec");
+		massAps.add("84:82:f4:19:03:18");
+		massAps.add("84:82:f4:19:03:24");
+		massAps.add("84:82:f4:19:03:8c");
+		massAps.add("84:82:f4:19:03:b0");
+		System.out.println("~~~~~~~~~~gogoo~~~~~~~~");*/
 		List<WifiDeviceWholeDayMDTO> dtos = new ArrayList<WifiDeviceWholeDayMDTO>();
 		
 		Iterator<Entry<String, LineRecords>> iter = lineDeviceRecordsMap.entrySet().iterator();
@@ -110,46 +122,30 @@ public class Step02DeviceWholeDayRecordService {
 					macs.add(dto.getMac());
 				}
 				if(!macs.isEmpty()){
+					System.out.println(macs);
 					List<WifiDevice> devices = wifiDeviceService.findByIds(macs, true, true);
+					//System.out.println("devices~~~~~~:"+devices.size()+" macs:"+macs);
 					int index = 0;
 					for(WifiDeviceWholeDayMDTO dto:page){
 						WifiDevice device = devices.get(index);
 						if(device != null){
-							if(!AgentHelper.validateDeviceCashbackSupported(device.getHdtype()) || device.getAgentuser() <= 0){
-								//非认领成功的设备不进行mongo数据的录入
-								//非认领成功的设备不进行mongo数据的录入
-								continue;
-							}
-							boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
-							if(ret){
-								dto.setSameday(1);
-							}
-							dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
-							/*if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype())){
-								if(device.getAgentuser() > 0){//认领成功的设备
-									boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
-									//System.out.println(ret);
-									if(ret){
-										dto.setSameday(1);
-									}
-									dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
-								}else{
-									//非认领成功的设备不进行mongo数据的录入
-									continue;
+							//System.out.println(device.getId() +"    "+massAps.contains(device.getId()) +"  index:"+index);
+							//System.out.println(device.getHdtype() + " ~~~~~~ "+device.getAgentuser());
+							//非认领成功的设备不进行mongo数据的录入
+							//非认领成功的设备不进行mongo数据的录入
+							if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype()) && device.getAgentuser() > 0){
+								boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
+								System.out.println("markFirstCashBack mac:"+device.getId()+" date:"+date);
+								if(ret){
+									dto.setSameday(1);
 								}
-							}else{
-								//非定义支持类的设备不进行mongo数据的录入
-								continue;
-							}*/
+								dto.setCashback(AgentHelper.validateCashback(dto)?1:0);
+								wifiDeviceWholeDayMService.save(dto);
+								count++;
+							}
 						}
-						/*if(device != null){
-							dto.setSameday(AgentHelper.sameday(device.getCreated_at(), currentDate)?1:0);
-						}else{
-							dto.setSameday(0);
-						}*/
-						wifiDeviceWholeDayMService.save(dto);
+						
 						index++;
-						count++;
 					}
 				}
 			}

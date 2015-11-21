@@ -226,8 +226,24 @@ public class AgentStatisticsUnitFacadeService {
 			//String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
 			Date dateEnd = DateTimeHelper.getDateDaysAgo(currentDate,1);//DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			Date dateStart = DateTimeHelper.getDateDaysAgo(dateEnd,180);
+			System.out.println(String.format(" dateStart[%s] dateEnd[%s] pn[%s] ps[%s]", dateStart,dateEnd,pageNo,pageSize));
+			
 			int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 			TailPage<AgentWholeDayMDTO> page = agentWholeDayMService.pageByDateBetween(uid, DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5), dateEndStr, pageNo, pageSize);
+			
+/*				Query query = Query.query(org.springframework.data.mongodb.core.query.Criteria.where("user").is(uid).and("date").gte(DateTimeHelper.formatDate(dateStart, DateTimeHelper.FormatPattern5)).lte(dateEndStr)).with(new Sort(Direction.DESC,"date"));
+				long totalCount = agentWholeDayMDao.count(query);
+				int totalPageCount = PageHelper.getTotalPages((int)totalCount, pageSize);
+				System.out.println(String.format(" totalCount[%s] totalPageCount[%s]", totalCount,totalPageCount));
+				if (totalPageCount < pageNo) {
+					//重新初始化分页参数
+					pageNo = totalPageCount;
+				}
+				System.out.println(String.format(" pageNo[%s] ", pageNo));
+				query.skip((pageNo - 1) * pageSize).limit(pageSize);
+				List<AgentWholeDayMDTO> rows = agentWholeDayMDao.find(query);
+				TailPage<AgentWholeDayMDTO> page = new CommonPage<AgentWholeDayMDTO>(pageNo, pageSize,totalPageCount, rows);*/
+			
 			List<DailyRevenueRecordVTO> items = new ArrayList<>();
 			DailyRevenueRecordVTO vto = null;
 			for(AgentWholeDayMDTO dto : page.getItems()){
@@ -452,6 +468,14 @@ public class AgentStatisticsUnitFacadeService {
 	}
 	private static final String sortSqlFragmentTemplate = " (%s) %s ";
 	
+	/**
+	 * 统计数据
+	 * 			所有			所有存在过代理商列表 所有
+	 * 			settled 	所有存在过单据的已结清的代理商列表和不存在单据的列表 需要结算的金额 = 0 状态 SummaryView_Settled | SummaryView_Empty
+	 * 			unsettled	所有存在未结清的代理商列表 需要结算的金额>0   所有- （SummaryView_Settled | SummaryView_Empty）
+	 * @param q
+	 * @return
+	 */
 	private SettlementStatisticsVTO statistics(String q){
 		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
 		ModelCriteria mc_total = new ModelCriteria();
@@ -467,16 +491,26 @@ public class AgentStatisticsUnitFacadeService {
 		if(StringUtils.isNotEmpty(q)){
 			createCriteria1.andColumnLike("org", "%"+q+"%");
 		}
-		createCriteria1.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
+		List<Integer> sd_list = new ArrayList<Integer>();
+		sd_list.add(AgentBillSummaryView.SummaryView_Settled);
+		sd_list.add(AgentBillSummaryView.SummaryView_Empty);
+		//createCriteria1.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled).andSimpleCaulse(" 1=1 ");
+		createCriteria1.andColumnIn("status", sd_list).andSimpleCaulse(" 1=1 ");
 		int total_sd = agentBillFacadeService.getAgentBillSummaryViewService().countByModelCriteria(mc_sd); 
+/*		
+		ModelCriteria mc_usd = new ModelCriteria();
+		Criteria createCriteria2 = mc_usd.createCriteria();
+		if(StringUtils.isNotEmpty(q)){
+			createCriteria2.andColumnLike("org", "%"+q+"%");
+		}
+		createCriteria2.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled).andSimpleCaulse(" 1=1 ");
+		int total_usd = agentBillFacadeService.getAgentBillSummaryViewService().countByModelCriteria(mc_usd); */
 		result.setTs(total);
 		result.setSd(total_sd);
-		result.setUs(total- total_sd);
+		result.setUs(total- total_sd);//total_usd);//
 		result.setU(-1);
 		result.setC_at(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
 		return result;
-		
-		
 		//SettlementStatisticsVTO result = agentBillFacadeService.statistics();
 		/*ModelCriteria mc_user = new ModelCriteria();
 		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
@@ -489,7 +523,11 @@ public class AgentStatisticsUnitFacadeService {
 		ModelCriteria mc_view = new ModelCriteria();
 		Criteria createCriteria = mc_view.createCriteria();
 		if(viewstatus == 1){
-			createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled);
+			List<Integer> sd_list = new ArrayList<Integer>();
+			sd_list.add(AgentBillSummaryView.SummaryView_Settled);
+			sd_list.add(AgentBillSummaryView.SummaryView_Empty);
+			createCriteria.andColumnIn("status", sd_list);
+			//createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_Settled);
 		}else if(viewstatus == 0){
 			createCriteria.andColumnEqualTo("status", AgentBillSummaryView.SummaryView_UnSettled);
 		}else{//viewstatus == -1

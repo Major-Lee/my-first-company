@@ -65,6 +65,7 @@ public class MonthlyChargingSettlementGen4AgentOper {
 		if(agentUsers.isEmpty()){
 			System.out.println("没有发现代理商用户");
 		}
+		System.out.println("all agents:"+agentUsers);
 		for(String date:dates){
 			for(Integer user:agentUsers){
 				AgentWholeMonthMDTO wholeMonth = agentWholeMonthMService.getWholeMonth(date, user);
@@ -87,7 +88,7 @@ public class MonthlyChargingSettlementGen4AgentOper {
 				//生成summaryView
 				agentBillFacadeService.billSummaryViewGen(user);
 			}
-			System.out.println(date+" 结算成功");
+			System.out.println(date+" 结算单据计算成功");
 		}
 	}
 }
