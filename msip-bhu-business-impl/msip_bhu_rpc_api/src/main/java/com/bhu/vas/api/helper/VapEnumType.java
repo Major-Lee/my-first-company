@@ -97,19 +97,19 @@ public class VapEnumType {
 		
 		uRouterTU_106(106,		"H106",1000,"uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
-		MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
-		MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
-		MassAP_Pro_201(201,		"H201",2000,"MassAP Pro H201","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
-		MassAP_Pro_303(303,		"H303",2000,"MassAP Pro H303","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
-		MassAP_AC_Pro_305(305,	"H305",2000,"MassAP AC Pro H305","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
+		MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
+		MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
+		MassAP_Pro_201(201,		"H201",2000,"MassAP Pro H201","MassAP Pro","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
+		MassAP_Pro_303(303,		"H303",2000,"MassAP Pro H303","MassAP Pro","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
+		MassAP_AC_Pro_305(305,	"H305",2000,"MassAP AC Pro H305","MassAP AC Pro","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
 		
-		MicroStation_2_104(104,	"H104",2000,"MicroStation 2 H104","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片"),
-		MicroStation_2_109(109,	"H109",2000,"MicroStation 2 H109","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片"),
-		MicroStation_2U_108(108,"H108",2000,"MicroStation 2U H108","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片"),
+		MicroStation_2_104(104,	"H104",2000,"MicroStation 2 H104","MicroStation 2","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片"),
+		MicroStation_2_109(109,	"H109",2000,"MicroStation 2 H109","MicroStation 2","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片"),
+		MicroStation_2U_108(108,"H108",2000,"MicroStation 2U H108","MicroStation 2U","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片"),
 		
-		MicroStation_5_304(304,	"H304",2000,"MicroStation 5 H304","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
-		MicroStation_5_306(306,	"H306",2000,"MicroStation 5 H306","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
-		uRouterTC_401(401,		"H401",2000,"uRouter","---","---"),
+		MicroStation_5_304(304,	"H304",2000,"MicroStation 5 H304","MicroStation 5","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
+		MicroStation_5_306(306,	"H306",2000,"MicroStation 5 H306","MicroStation 5","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
+		uRouterTC_401(401,		"H401",2000,"uRouter","uRouter","---","---"),
 		;
 		static Map<Integer, DeviceUnitType> allDeviceUnitTypes;
 		static Map<String, DeviceUnitType> allDeviceHdTypes;
@@ -121,6 +121,7 @@ public class VapEnumType {
 		private int index;
 		private String hdtype;
 		private String name;
+		private String sname;
 		private int parent;
 		private String fname;
 		private String desc;
@@ -130,10 +131,11 @@ public class VapEnumType {
 			this.parent = parent;
 		}
 		
-		private DeviceUnitType(int index,String hdtype, int parent,String name,String fname,String desc){
+		private DeviceUnitType(int index,String hdtype, int parent,String name,String sname,String fname,String desc){
 			this.index = index;
 			this.hdtype = hdtype;
 			this.name = name;
+			this.sname = sname;
 			this.parent = parent;
 			this.fname = fname;
 			this.desc = desc;
@@ -180,6 +182,14 @@ public class VapEnumType {
 
 		public void setHdtype(String hdtype) {
 			this.hdtype = hdtype;
+		}
+
+		public String getSname() {
+			return sname;
+		}
+
+		public void setSname(String sname) {
+			this.sname = sname;
 		}
 
 		public static DeviceUnitType fromIndex(int index){
