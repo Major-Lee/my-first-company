@@ -469,6 +469,7 @@ public class AgentFacadeService {
         User agent = userService.getById(agentDeviceClaim.getUid());
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
+            vto.setOrg(agent.getOrg() == null ? "" : agent.getOrg());
         }
         //vto.setOnline(false);
         //vto.setUptime("--");
