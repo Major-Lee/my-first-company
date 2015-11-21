@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.VapEnumType;
+
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -47,6 +48,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -472,8 +474,9 @@ public class AgentFacadeService {
         if (agent != null) {
             vto.setNick(agent.getNick() == null ? "" : agent.getNick());
         }
-
-        WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
+        vto.setOnline(false);
+        vto.setUptime(StringHelper.MINUS_STRING_GAP);
+        /*WifiDevice wifiDevice = wifiDeviceService.getById(agentDeviceClaim.getMac());
         if ( wifiDevice != null){
             vto.setOnline(wifiDevice.isOnline());
             vto.setUptime(wifiDevice.getUptime());
@@ -484,7 +487,7 @@ public class AgentFacadeService {
             //vto.setMonth_income();
 //            vto.setTotal_income();
             vto.setAdr(wifiDevice.getFormatted_address());
-        }
+        }*/
 
         return vto;
     }
