@@ -45,7 +45,6 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.IdHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -203,7 +202,7 @@ public class AgentFacadeService {
         if (devices != null) {
             AgentDeviceClaimVTO vto = null;
             for (WifiDevice wifiDevice : devices) {
-                vto = buildAgentDeviceClaimVTO(wifiDevice,monthlyDtos,summaryDtos);
+                vto = buildUnAgentDeviceClaimVTO(wifiDevice,monthlyDtos,summaryDtos);
                 vtos.add(vto);
             }
         }*/
@@ -287,7 +286,7 @@ public class AgentFacadeService {
             vto.setStock_code(agentDeviceClaim.getStock_code());
             //vto.setStock_name(agentDeviceClaim.getStock_name());
             String hdtype = agentDeviceClaim.getHdtype();
-            vto.setStock_name(VapEnumType.DeviceUnitType.fromHdType(hdtype).getName());
+            vto.setStock_name(VapEnumType.DeviceUnitType.fromHdType(hdtype).getSname());
             vto.setSold_at(agentDeviceClaim.getSold_at());
             vto.setClaim_at(agentDeviceClaim.getClaim_at());
             vto.setImport_id(agentDeviceClaim.getImport_id());
@@ -357,7 +356,7 @@ public class AgentFacadeService {
             AgentDeviceClaimVTO vto = null;
             for (WifiDevice wifiDevice : devices) {
             	
-                vto = buildAgentDeviceClaimVTO(wifiDevice);
+                vto = buildUnAgentDeviceClaimVTO(wifiDevice);
                 vtos.add(vto);
             }
         }*/
@@ -387,7 +386,7 @@ public class AgentFacadeService {
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+                vto = buildUnAgentDeviceClaimVTO(agentDeviceClaim);
                 vtos.add(vto);
             }
         }
@@ -427,7 +426,7 @@ public class AgentFacadeService {
         if (agents != null) {
             AgentDeviceClaimVTO vto = null;
             for (AgentDeviceClaim agentDeviceClaim : agents) {
-                vto = buildAgentDeviceClaimVTO(agentDeviceClaim);
+                vto = buildUnAgentDeviceClaimVTO(agentDeviceClaim);
                 vtos.add(vto);
             }
         }
@@ -456,7 +455,7 @@ public class AgentFacadeService {
     }
 
 
-    private AgentDeviceClaimVTO buildAgentDeviceClaimVTO(AgentDeviceClaim agentDeviceClaim) {
+    private AgentDeviceClaimVTO buildUnAgentDeviceClaimVTO(AgentDeviceClaim agentDeviceClaim) {
         AgentDeviceClaimVTO vto = new AgentDeviceClaimVTO();
         vto.setSn(agentDeviceClaim.getId());
         vto.setMac(agentDeviceClaim.getMac());
@@ -555,7 +554,6 @@ public class AgentFacadeService {
         vto.setRemark(agentDeviceImportLog.getRemark());
 
 
-
         String content = agentDeviceImportLog.getContent();
         vto.setContent(content);
         AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
@@ -614,12 +612,6 @@ public class AgentFacadeService {
 
                 long bid  = log.getBid();
                 vto.setBid(bid);
-//                AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.getById(bid);
-//                if (agentBulltinBoard != null && agentBulltinBoard.getType().equals(AgentBulltinType.BatchImport.getKey())) {
-//                    String content = agentBulltinBoard.getContent();
-//                    AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
-//                    vto.setFilename(outputDTO.getName());
-//                }
                 String content = log.getContent();
                 AgentOutputDTO outputDTO = JsonHelper.getDTO(content, AgentOutputDTO.class);
                 vto.setFilename(outputDTO.getName());
