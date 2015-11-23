@@ -47,8 +47,9 @@ public class WifiDeviceHelper {
 		//Mass AP Pro H201 H303
 		Soc_HdTypes.add("H201");
 		Soc_HdTypes.add("H303");*/
+
 		
-		vapExceptDevices.add("84:82:f4:23:06:68");
+		//vapExceptDevices.add("84:82:f4:23:06:68");
 	}
 	
 	public static boolean isURouterDevice(String orig_model) {
