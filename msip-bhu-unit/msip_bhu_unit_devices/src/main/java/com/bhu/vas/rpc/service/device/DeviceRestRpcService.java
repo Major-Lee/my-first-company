@@ -204,7 +204,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 
 	@Override
 	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
-		logger.info("DeviceRestRPC fetchBySearchConditionMessage invoke");
+		logger.info(String.format("DeviceRestRPC fetchBySearchConditionMessage invoke pageNo [%s] pageSize [%s] message [%s]", pageNo, pageSize, message));
 		try{
 			return deviceRestBusinessFacadeService.fetchBySearchConditionMessage(message, pageNo, pageSize);
 		}catch(Exception ex){
