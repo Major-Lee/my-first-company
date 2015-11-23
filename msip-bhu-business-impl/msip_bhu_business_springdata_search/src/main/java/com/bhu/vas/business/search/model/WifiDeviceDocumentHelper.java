@@ -81,9 +81,15 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_address(wifiDevice.getFormatted_address());
 			doc.setD_online(wifiDevice.isOnline() ? String.valueOf(WifiDeviceDocument1.D_Online_True) 
 					: String.valueOf(WifiDeviceDocument1.D_Online_False));
-			doc.setD_lastregedat(wifiDevice.getLast_reged_at().getTime());
-			doc.setD_lastlogoutat(wifiDevice.getLast_logout_at().getTime());
-			doc.setD_createdat(wifiDevice.getCreated_at().getTime());
+			if(wifiDevice.getLast_reged_at() != null){
+				doc.setD_lastregedat(wifiDevice.getLast_reged_at().getTime());
+			}
+			if(wifiDevice.getLast_logout_at() != null){
+				doc.setD_lastlogoutat(wifiDevice.getLast_logout_at().getTime());
+			}
+			if(wifiDevice.getCreated_at() != null){
+				doc.setD_createdat(wifiDevice.getCreated_at().getTime());
+			}
 			
 			if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_soc);
@@ -151,7 +157,9 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_type(agentDeviceClaim.getHdtype());
 			doc.setD_online(String.valueOf(WifiDeviceDocument1.D_Online_Never));
 			doc.setD_monline(String.valueOf(WifiDeviceDocument1.D_MOnline_Never));
-			doc.setD_createdat(agentDeviceClaim.getSold_at().getTime());
+			if(agentDeviceClaim.getSold_at() != null){
+				doc.setD_createdat(agentDeviceClaim.getSold_at().getTime());
+			}
 			
 			if(DeviceUnitType.isSocHdType(agentDeviceClaim.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_soc);
