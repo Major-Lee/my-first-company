@@ -48,7 +48,7 @@ public class WifiDeviceHelper {
 		Soc_HdTypes.add("H201");
 		Soc_HdTypes.add("H303");*/
 
-		
+
 		//vapExceptDevices.add("84:82:f4:23:06:68");
 	}
 	
