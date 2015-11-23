@@ -142,12 +142,13 @@ public class TestBHUModule {
         
         
         
-        /*String xmlFile = TestBHUModule.class.getResource("/test_conf/TTT.xml").getFile();
+        String xmlFile = TestBHUModule.class.getResource("/test_conf/style001.xml").getFile();
         System.out.println(xmlFile);
         BhuModule module3 = requestBinder.fromXmlFile(xmlFile,false,BhuModule.class);
         System.out.println(module3.getBrands().get(0).getInterval());
-        module3.getBrands().get(0).setInterval("200");*/
+        module3.getBrands().get(0).setInterval("200");
         
+        System.out.println(requestBinder.toXml(module3, "utf-8"));
         //requestBinder.toXmlFile(xmlFile, module3, "utf-8", false);
 	}
 }
