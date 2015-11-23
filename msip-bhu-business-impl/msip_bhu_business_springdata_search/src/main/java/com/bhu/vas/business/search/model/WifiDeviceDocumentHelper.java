@@ -5,8 +5,14 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
+import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -44,6 +50,137 @@ public class WifiDeviceDocumentHelper {
 		return doc1;
 	}
 	
+	/**
+	 * 创建上过线的设备的索引数据
+	 * @param wifiDevice
+	 * @param deviceModule
+	 * @param agentDeviceClaim
+	 * @param wifiDeviceGray
+	 * @param bindUser
+	 * @param agentUser
+	 * @param hoc
+	 * @return
+	 */
+	public static WifiDeviceDocument1 fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
+			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, User agentUser, 
+			int hoc){
+		if(wifiDevice == null) return null;
+		
+		WifiDeviceDocument1 doc = new WifiDeviceDocument1();
+		if(wifiDevice != null){
+			doc.setId(wifiDevice.getId());
+			doc.setD_sn(wifiDevice.getSn());
+			doc.setD_origswver(wifiDevice.getOrig_swver());
+			doc.setD_workmodel(wifiDevice.getWork_mode());
+			doc.setD_configmodel(wifiDevice.getConfig_mode());
+			doc.setD_type(wifiDevice.getHdtype());
+			if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
+				doc.setD_geopoint(new double[]{Double.parseDouble(wifiDevice.getLon()), 
+						Double.parseDouble(wifiDevice.getLat())});
+			}
+			doc.setD_address(wifiDevice.getFormatted_address());
+			doc.setD_online(wifiDevice.isOnline() ? String.valueOf(WifiDeviceDocument1.D_Online_True) 
+					: String.valueOf(WifiDeviceDocument1.D_Online_False));
+			doc.setD_lastregedat(wifiDevice.getLast_reged_at().getTime());
+			doc.setD_lastlogoutat(wifiDevice.getLast_logout_at().getTime());
+			doc.setD_createdat(wifiDevice.getCreated_at().getTime());
+			
+			if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
+				doc.setD_dut(DeviceVersion.DUT_soc);
+			}else if(DeviceUnitType.isURouterHdType(wifiDevice.getHdtype())){
+				doc.setD_dut(DeviceVersion.DUT_uRouter);
+			}else{
+				doc.setD_dut(DeviceVersion.DUT_CWifi);
+			}
+			if(!StringUtils.isEmpty(wifiDevice.getUptime())){
+				doc.setD_uptime(wifiDevice.getUptime());
+			}
+		}
+
+		if(deviceModule != null){
+			doc.setD_origvapmodule(deviceModule.getOrig_vap_module());
+			doc.setD_monline(deviceModule.isModule_online() ? String.valueOf(WifiDeviceDocument1.D_MOnline_True) 
+					: String.valueOf(WifiDeviceDocument1.D_MOnline_False));
+		}
+		
+		if(agentDeviceClaim != null){
+			if(agentDeviceClaim.getImport_id() > 0){
+				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));
+			}
+		}
+		
+		if(wifiDeviceGray != null){
+			doc.setO_graylevel(String.valueOf(wifiDeviceGray.getGl()));
+		}else{
+			doc.setO_graylevel(String.valueOf(GrayLevel.Other.getIndex()));
+		}
+		//TODO:doc.setO_template(o_template);
+		if(bindUser != null){
+			doc.setU_id(String.valueOf(bindUser.getId()));
+			doc.setU_nick(bindUser.getNick());
+			doc.setU_mno(bindUser.getMobileno());
+			doc.setU_mcc(String.valueOf(bindUser.getCountrycode()));
+			doc.setU_type(String.valueOf(bindUser.getUtype()));
+		}
+		
+		if(agentUser != null){
+			doc.setA_id(String.valueOf(agentUser.getId()));
+			doc.setA_nick(agentUser.getNick());
+			doc.setA_org(agentUser.getOrg());
+		}
+		doc.setD_hoc(hoc);
+		doc.setUpdatedat(DateTimeHelper.getDateTime());
+		return doc;
+	}
+	
+	/**
+	 * 创建在导入记录里的设备数据
+	 * @param agentDeviceClaim
+	 * @param wifiDeviceGray
+	 * @param agentUser
+	 * @return
+	 */
+	public static WifiDeviceDocument1 fromClaimWifiDevice(AgentDeviceClaim agentDeviceClaim, 
+			WifiDeviceGray wifiDeviceGray, User agentUser){
+		if(agentDeviceClaim == null) return null;
+		
+		WifiDeviceDocument1 doc = new WifiDeviceDocument1();
+		if(agentDeviceClaim != null){
+			doc.setId(agentDeviceClaim.getMac());
+			doc.setD_sn(agentDeviceClaim.getId());
+			doc.setD_type(agentDeviceClaim.getHdtype());
+			doc.setD_online(String.valueOf(WifiDeviceDocument1.D_Online_Never));
+			doc.setD_monline(String.valueOf(WifiDeviceDocument1.D_MOnline_Never));
+			doc.setD_createdat(agentDeviceClaim.getSold_at().getTime());
+			
+			if(DeviceUnitType.isSocHdType(agentDeviceClaim.getHdtype())){
+				doc.setD_dut(DeviceVersion.DUT_soc);
+			}else if(DeviceUnitType.isURouterHdType(agentDeviceClaim.getHdtype())){
+				doc.setD_dut(DeviceVersion.DUT_uRouter);
+			}else{
+				doc.setD_dut(DeviceVersion.DUT_CWifi);
+			}
+			
+			if(agentDeviceClaim.getImport_id() > 0){
+				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));
+			}
+		}
+		
+		if(wifiDeviceGray != null){
+			doc.setO_graylevel(String.valueOf(wifiDeviceGray.getGl()));
+		}else{
+			doc.setO_graylevel(String.valueOf(GrayLevel.Other.getIndex()));
+		}
+		
+		if(agentUser != null){
+			doc.setA_id(String.valueOf(agentUser.getId()));
+			doc.setA_nick(agentUser.getNick());
+			doc.setA_org(agentUser.getOrg());
+		}
+		doc.setD_hoc(0);
+		doc.setUpdatedat(DateTimeHelper.getDateTime());
+		return doc;
+	}
 	
 	public static WifiDeviceVTO toWifiDeviceVTO(WifiDeviceDocument doc,WifiDevice wifiDevice){
 		WifiDeviceVTO vto = new WifiDeviceVTO();

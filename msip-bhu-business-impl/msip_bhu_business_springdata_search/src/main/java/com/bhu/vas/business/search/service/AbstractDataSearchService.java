@@ -2,9 +2,11 @@ package com.bhu.vas.business.search.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +15,8 @@ import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 
 import com.bhu.vas.business.search.model.AbstractDocument;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
@@ -64,6 +68,23 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 			}
 		}
 	}
+	
+	public void updateIndex(String id, Map<String, Object> sourceMap){
+		updateIndex(id, sourceMap, false, false);
+	}
+	
+	public void updateIndex(String id, Map<String, Object> sourceMap, boolean refresh, boolean waitForOperation){
+		IndexRequest indexRequest = new IndexRequest();
+		indexRequest.source(sourceMap);
+		UpdateQuery updateQuery = new UpdateQueryBuilder().withId(id)
+				.withClass(entityClass).withIndexRequest(indexRequest).build();
+		this.getElasticsearchTemplate().update(updateQuery);
+		if(refresh){
+			getElasticsearchTemplate().refresh(entityClass, waitForOperation);
+		}
+	}
+	
+	
 	
 	public void iteratorAll(String indices,String types,IteratorNotify<Page<MODEL>> notify){
 		SearchQuery searchQuery = new NativeSearchQueryBuilder()

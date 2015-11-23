@@ -20,6 +20,14 @@ type = "myWifiDevice",
 shards = 5, 
 replicas = 1)*/
 public class WifiDeviceDocument1 extends AbstractDocument{
+	public static final int D_Online_Never = -1;
+	public static final int D_Online_True = 1;
+	public static final int D_Online_False = 0;
+	
+	public static final int D_MOnline_Never = -1;
+	public static final int D_MOnline_True = 1;
+	public static final int D_MOnline_False = 0;
+	
 	@Id
 	@Field(
 			type = FieldType.String,
@@ -95,7 +103,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String d_online;//设备在线状态 0 从未上线 1 在线 2 离线
+	private String d_online = String.valueOf(D_Online_Never);//设备在线状态 -1 从未上线 1 在线 0 离线
 	
 	@Field(
 			type = FieldType.String,
@@ -103,7 +111,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String d_monline;//设备增值模块在线状态 0 从未上线 1 在线 2 离线
+	private String d_monline = String.valueOf(D_MOnline_Never);;//设备增值模块在线状态 -1 从未上线 1 在线 0 离线
 	
 //	@Field(
 //			type = FieldType.String,
@@ -126,7 +134,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private int d_hoc;//wifi设备上的移动设备在线数量
+	private int d_hoc = 0;//wifi设备上的移动设备在线数量
 	
 	@Field(
 			type = FieldType.Long,
@@ -162,7 +170,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String d_uptime;//设备在线总时长 单位秒
+	private String d_uptime = "0";//设备在线总时长 单位秒
 	
 	@Field(
 			type = FieldType.String,

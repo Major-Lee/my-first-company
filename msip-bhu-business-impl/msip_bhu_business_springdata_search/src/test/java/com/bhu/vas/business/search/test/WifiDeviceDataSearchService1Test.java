@@ -50,7 +50,6 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
     @Test
 	public void test001BatchCreateDocument(){
     	//wifiDeviceDataSearchService.refresh(false);
-    	
 		List<WifiDeviceDocument1> docs = new ArrayList<WifiDeviceDocument1>();
     	//List<IndexQuery> indexQuerys = new ArrayList<IndexQuery>();
 		WifiDeviceDocument1 doc1 = new WifiDeviceDocument1();
@@ -224,7 +223,22 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		wifiDeviceDataSearchService.getElasticsearchTemplate().refresh(clazz, true);*/
 		//wifiDeviceDataSearchService.refresh(true);
 		
-		wifiDeviceDataSearchService1.getRepository().save(docs);
+		//wifiDeviceDataSearchService1.getRepository().save(docs);
+		wifiDeviceDataSearchService1.bulkIndex(docs);
+		
+//		Map<String,Object> source_map = new HashMap<String,Object>();
+//		source_map.put("u_type","99");
+//		source_map.put("u_mcc", "88");
+//		source_map.put("d_geopoint", new double[]{116.345582,40.017052});
+//
+//		wifiDeviceDataSearchService1.updateIndex(doc5.getId(), source_map);
+		wifiDeviceDataSearchService1.refresh(true);
+	}
+	
+	
+	@Test
+	public void test001UpdateDocument(){
+
 	}
 	
 	/**
@@ -356,7 +370,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 	上述条件反向
 	 * 
 	 */
-	@Test
+	//@Test
 	public void test005SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		
@@ -408,7 +422,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 4：导入的批次是20151104开头的
 	 * 5：按照mac地址降序排序
 	 */
-	@Test
+	//@Test
 	public void test006SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
