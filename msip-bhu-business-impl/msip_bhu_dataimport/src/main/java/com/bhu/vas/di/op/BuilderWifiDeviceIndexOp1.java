@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
@@ -114,7 +115,7 @@ public class BuilderWifiDeviceIndexOp1 {
 				}
 				
 				if(!docs.isEmpty()){
-					wifiDeviceDataSearchService.bulkIndex(docs, true, true);
+					wifiDeviceDataSearchService.bulkIndex(docs);
 					bulk_success++;
 				}
 			}
@@ -148,8 +149,8 @@ public class BuilderWifiDeviceIndexOp1 {
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(mac);
-					//long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
-					long hoc = 0;
+					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
+					//long hoc = 0;
 					User agentUser = null;
 					if(wifiDevice.getAgentuser() > 0){
 						agentUser = userService.getById(wifiDevice.getAgentuser());
@@ -169,7 +170,7 @@ public class BuilderWifiDeviceIndexOp1 {
 				}
 				
 				if(!docs.isEmpty()){
-					wifiDeviceDataSearchService.bulkIndex(docs, true, true);
+					wifiDeviceDataSearchService.bulkIndex(docs);
 					bulk_success++;
 				}
 			}
