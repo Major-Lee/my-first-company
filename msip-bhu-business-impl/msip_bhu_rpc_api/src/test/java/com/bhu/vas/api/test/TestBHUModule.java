@@ -92,10 +92,12 @@ public class TestBHUModule {
 		r1.setSequence(1);
 		r1.setSrc_url("www.sina.com.cn,www.sohu.com");
 		r1.setDest_url("www.chinaren.com");
+		r1.setInterval(300);
 		SubRedirect r2 = new SubRedirect();
 		r2.setSequence(2);
 		r2.setSrc_url("www.sina1.com.cn,www.sohu1.com");
 		r2.setDest_url("www.chinaren1.com");
+		r2.setInterval(3000);
 		subredirects.add(r1);
 		subredirects.add(r2);
 		redirect.setSubs(subredirects);
@@ -132,15 +134,10 @@ public class TestBHUModule {
         
         System.out.println(module2);
         
-        
         //JAXBContext newInstance = JAXBContext.newInstance(BhuModule.class);
         //JAXBContext newInstance2 = JAXBContext.newInstance(BhuModule.class,CollectionWrapper.class);
        // JAXBContext newInstance3 = JAXBContext.newInstance(Hotel.class,CollectionWrapper.class);
-        
         System.out.println(module2);
-        
-        
-        
         
         String xmlFile = TestBHUModule.class.getResource("/test_conf/style001.xml").getFile();
         System.out.println(xmlFile);

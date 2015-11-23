@@ -34,5 +34,11 @@ public class SubRedirect extends SubItem{
 	public void setDest_url(String dest_url) {
 		this.dest_url = dest_url;
 	}
+	public int getInterval() {
+		return interval;
+	}
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
 	
 }
