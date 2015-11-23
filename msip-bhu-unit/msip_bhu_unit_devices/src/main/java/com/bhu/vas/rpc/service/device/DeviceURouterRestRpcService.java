@@ -18,6 +18,7 @@ import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
+import com.bhu.vas.api.vto.URouterMainEnterVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -42,6 +43,25 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	@Resource
 	private DeviceURouterRestBusinessFacadeService deviceURouterRestBusinessFacadeService;
 	
+	/**
+	 * 获取主入口界面数据
+	 */
+	@Override
+	public RpcResponseDTO<URouterMainEnterVTO> urouterMainEnter(Integer uid,
+			String wifiId) {
+		logger.info(String.format("DeviceURouterRestRPC urouterMainEnter invoke uid [%s] mac [%s]", uid, wifiId));
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterMainEnter(uid, wifiId.toLowerCase());
+		}catch(RpcBusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC urouterMainEnter failed uid [%s] mac [%s] ", uid, wifiId));
+			throw ex;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterMainEnter exception uid [%s] mac [%s] exmsg[%s]",
+					uid, wifiId, ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 	/**
 	 * 获取入口界面数据
 	 */
@@ -574,4 +594,5 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 				uid, mac, hd_mac));
 		return deviceURouterRestBusinessFacadeService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
 	}
+
 }

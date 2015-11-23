@@ -31,6 +31,32 @@ public class URouterDeviceController extends BaseController{
 	@Resource
 	private IDeviceURouterRestRpcService deviceURouterRestRpcService;
 	
+	
+	/**
+	 * 获取urouter主入口界面数据
+	 * 	hd_list接口需要终端的所有数据
+		路由器上下行速率数据
+		绑定的路由器在线状态、终端个数、路由器个数、路由器名称
+		需要路由器版本号.
+	 * @param request
+	 * @param response
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/mainenter",method={RequestMethod.POST})
+	public void mainenter(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterMainEnterVTO> rpcResponse = deviceURouterRestRpcService.urouterMainEnter(uid, mac.toLowerCase());
+		if(rpcResponse.getErrorCode() == null){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+		}
+	}
+	
 	/**
 	 * 获取urouter入口界面数据
 	 * @param request

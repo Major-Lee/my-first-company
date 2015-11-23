@@ -9,6 +9,7 @@ import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
+import com.bhu.vas.api.vto.URouterMainEnterVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -21,7 +22,7 @@ import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 
 public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId);
-	
+	RpcResponseDTO<URouterMainEnterVTO> urouterMainEnter(Integer uid, String wifiId);
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size,Boolean filterWiredHandset);
 
 	RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac);
