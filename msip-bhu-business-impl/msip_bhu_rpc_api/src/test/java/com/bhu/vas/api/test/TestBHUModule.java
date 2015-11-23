@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.vap.dto.module.ItemHttp404;
 import com.bhu.vas.api.rpc.vap.dto.module.ItemRedirect;
 import com.bhu.vas.api.rpc.vap.dto.module.SubBrand;
 import com.bhu.vas.api.rpc.vap.dto.module.SubChannel;
+import com.bhu.vas.api.rpc.vap.dto.module.SubRedirect;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.xml.jaxb.JAXBXMLHelper;
 
@@ -84,10 +85,20 @@ public class TestBHUModule {
 		
 		ItemRedirect redirect = new ItemRedirect();
 		redirect.setEnable("enable");
-		redirect.setRule("100,12:00:00,20:00:00,http://sina.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c,http://m.sohu.com,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c,http://h5.mse.360.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c,http://hao.360.cn,http://www.hao123.com");
+		//redirect.setRule("100,12:00:00,20:00:00,http://sina.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c,http://m.sohu.com,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c,http://h5.mse.360.cn,http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c,http://hao.360.cn,http://www.hao123.com");
 		redirect.setVer("style004-00.00.03");
-		
-		
+		List<SubRedirect> subredirects = new ArrayList<>();
+		SubRedirect r1 = new SubRedirect();
+		r1.setSequence(1);
+		r1.setSrc_url("www.sina.com.cn,www.sohu.com");
+		r1.setDest_url("www.chinaren.com");
+		SubRedirect r2 = new SubRedirect();
+		r2.setSequence(2);
+		r2.setSrc_url("www.sina1.com.cn,www.sohu1.com");
+		r2.setDest_url("www.chinaren1.com");
+		subredirects.add(r1);
+		subredirects.add(r2);
+		redirect.setSubs(subredirects);
 		ItemHttp404 http404 = new ItemHttp404();
 		http404.setEnable("enable");
 		http404.setUrl("http://vap.bhunetworks.com/vap/rw404?bid=10002");
