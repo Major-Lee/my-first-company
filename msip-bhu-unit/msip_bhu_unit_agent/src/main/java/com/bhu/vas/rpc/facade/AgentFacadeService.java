@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -275,11 +276,11 @@ public class AgentFacadeService {
         int uid = wifiDevice.getAgentuser();
         vto.setUid(uid);
         User user = userService.getById(uid);
-        String nick = "";
         if (user != null) {
-            nick = user.getNick();
+            //nick = user.getNick();
+            vto.setNick(user.getNick() == null ? StringUtils.EMPTY : user.getNick());
+            vto.setOrg(user.getOrg() == null?StringUtils.EMPTY:user.getOrg());
         }
-        vto.setNick(nick == null ? "" : nick);
 
         AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
         if (agentDeviceClaim != null) {
