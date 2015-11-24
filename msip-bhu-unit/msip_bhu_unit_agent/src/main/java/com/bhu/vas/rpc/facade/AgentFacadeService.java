@@ -663,6 +663,7 @@ public class AgentFacadeService {
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("consumer", uid);
+        mc.setOrderByClause("created_at desc");
         int total = agentBulltinBoardService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
