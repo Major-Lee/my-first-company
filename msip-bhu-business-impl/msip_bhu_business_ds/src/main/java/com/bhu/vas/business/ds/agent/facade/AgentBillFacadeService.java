@@ -146,7 +146,7 @@ public class AgentBillFacadeService {
 			}
 			//重新生成SummaryView
 			//方式1：重新全部计算
-			billSummaryViewGen(agent);
+			//billSummaryViewGen(agent);
 			//方式2：直接更新SummaryView
 			billSummaryViewDecrease(operator,agent,inputprice);
 			sb.append(String.format("剩余金额[%s]<BR/>\n", price));
