@@ -167,7 +167,12 @@ public class AgentBillFacadeService {
 		return agentBillSettlementsService.findModelByModelCriteria(mc);
 	}
 	
-	
+	private void billSummaryViewDecrease(int agent,double real_sd_price){
+		AgentBillSummaryView sview = agentBillSummaryViewService.getById(agent);
+		if(sview != null){
+			//sview.setSd_t_price(ArithHelper.add(v1, v2)real_sd_price+sview.getSd_t_price());
+		}
+	}
 	/**
 	 * 代理商单据汇总记录生成
 	 * @param agent
