@@ -246,7 +246,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 1：设备从未上线
 	 * 2：设备业务线为urouter
 	 */
-	//@Test
+	@Test
 	public void test002SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备从未上线

@@ -54,6 +54,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -471,8 +472,10 @@ public class DeviceRestBusinessFacadeService {
 				}else{
 					vtos = new ArrayList<WifiDeviceVTO1>();
 					WifiDeviceVTO1 vto = null;
+					int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
 					for(WifiDeviceDocument1 wifiDeviceDocument : searchDocuments){
 						vto = new WifiDeviceVTO1();
+						vto.setIndex(++startIndex);
 						BeanUtils.copyProperties(wifiDeviceDocument, vto);
 						vtos.add(vto);
 					}
