@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class WifiDeviceVTO1 implements Serializable{
+	private int index;
 	private String id;//设备mac
 	private String d_sn;//设备的sn编号
 	private String d_origswver;//设备的原始软件版本号
@@ -12,8 +13,8 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String d_configmodel;//设备的配置模式
 	private String d_type;//设备的类型
 	private String d_address;//设备所在位置的详细地址
-	private String d_online;//设备在线状态 0 从未上线 1 在线 2 离线
-	private String d_monline;//设备增值模块是否在线
+	private String d_online;//设备在线状态 -1 从未上线 1 在线 0 离线
+	private String d_monline;//设备增值模块是否在线 -1 从未上线 1 在线 0 离线
 	private int d_hoc;//设备终端在线数量
 	private long d_lastregedat;//设备的最新的上线时间
 	private long d_lastlogoutat;//设备的最新的下线时间
@@ -35,6 +36,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String a_nick;//代理商的用户名称
 	private String a_org;//代理商的公司名称
 	
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
 	public String getId() {
 		return id;
 	}
