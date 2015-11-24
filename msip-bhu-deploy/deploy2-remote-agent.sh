@@ -79,11 +79,11 @@ echo '发布业务组件成功'$Deploy2WebAgentServerRest
 
 echo '准备发布其他服务到'$Deploy2WebAgentServerRest
 
-echo 'deploy msip_bhu_backend_online to ...@'$Deploy2WebAgentServerRest
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar  	root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar  	root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/ 		root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_backend_online/bin/com/
-echo 'deploy msip_bhu_backend_online successfully @'$Deploy2WebAgentServerRest
+#echo 'deploy msip_bhu_backend_online to ...@'$Deploy2WebAgentServerRest
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar  	root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_backend_online/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar  	root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_backend_online/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/ 		root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_backend_online/bin/com/
+#echo 'deploy msip_bhu_backend_online successfully @'$Deploy2WebAgentServerRest
 
 echo 'deploy msip_bhu_dataimport to ...@'$Deploy2WebAgentServerRest
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar  		root@$Deploy2WebAgentServerRest:/BHUData/apps/msip_bhu_dataimport/libs/
