@@ -100,20 +100,21 @@ public class AgentBillFacadeService {
 	 * @param agent
 	 * @param price
 	 */
-	public String iterateSettleBills(int operator,String operNick,int agent,double price){
-		if(price <= 0)
+	public String iterateSettleBills(int operator,String operNick,int agent,double inputprice){
+		if(inputprice <= 0)
 			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_LARGERTHENZERO);
 		AgentBillSummaryView sview = agentBillSummaryViewService.getById(agent);
 		if(sview == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		if(sview.getStatus() == AgentBillSummaryView.SummaryView_Settled)
 			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_SETTLEBILLS_AGENT_ALREADY_SETTLED_DONE);
-		if(price > ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))
+		if(inputprice > ArithHelper.sub(sview.getT_price(), sview.getSd_t_price()))
 			throw new BusinessI18nCodeException(ResponseErrorCode.AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_EQUALORLESSTHENSUB);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("结算总金额[%s]<BR/>\n", price));
-		if(agent >0 && price>0){
+		sb.append(String.format("结算总金额[%s]<BR/>\n", inputprice));
+		if(agent >0 && inputprice>0){
+			double price = inputprice;
 			List<AgentBillSettlements> bills = fetchBillsByAgent(agent, AgentBillSettlements.Bill_Created,AgentBillSettlements.Bill_Parted);
 			Iterator<AgentBillSettlements> iter = bills.iterator();
 			String settled_at =  DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1);
@@ -147,9 +148,9 @@ public class AgentBillFacadeService {
 			//方式1：重新全部计算
 			billSummaryViewGen(agent);
 			//方式2：直接更新SummaryView
-			
+			billSummaryViewDecrease(operator,agent,inputprice);
+			sb.append(String.format("剩余金额[%s]<BR/>\n", price));
 		}
-		sb.append(String.format("剩余金额[%s]<BR/>\n", price));
 		return sb.toString();
 	}
 	
@@ -167,7 +168,23 @@ public class AgentBillFacadeService {
 		return agentBillSettlementsService.findModelByModelCriteria(mc);
 	}
 	
-	
+	private void billSummaryViewDecrease(int operator,int agent,double price){//real_sd_price){
+		AgentBillSummaryView sview = agentBillSummaryViewService.getById(agent);
+		if(sview != null){
+			double need_sd_price = ArithHelper.sub(sview.getT_price(), sview.getSd_t_price());
+			if(need_sd_price<=price){
+				sview.setSd_t_price(sview.getT_price());
+				sview.setStatus(AgentBillSummaryView.SummaryView_Settled);
+			}else{
+				sview.setSd_t_price(ArithHelper.add(sview.getSd_t_price(), price));
+				sview.setStatus(AgentBillSummaryView.SummaryView_UnSettled);
+			}
+			sview.setLast_reckoner(operator);
+			sview.setSettled_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
+			agentBillSummaryViewService.update(sview);
+			//sview.setSd_t_price(ArithHelper.add(v1, v2)real_sd_price+sview.getSd_t_price());
+		}
+	}
 	/**
 	 * 代理商单据汇总记录生成
 	 * @param agent
