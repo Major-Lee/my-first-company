@@ -122,6 +122,7 @@ public class WifiDeviceDocumentHelper {
 		}
 		//TODO:doc.setO_template(o_template);
 		if(bindUser != null){
+			doc.setU_binded(String.valueOf(WifiDeviceDocument1.U_Binded_True));
 			doc.setU_id(String.valueOf(bindUser.getId()));
 			doc.setU_nick(bindUser.getNick());
 			doc.setU_mno(bindUser.getMobileno());

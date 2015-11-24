@@ -28,6 +28,9 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	public static final int D_MOnline_True = 1;
 	public static final int D_MOnline_False = 0;
 	
+	public static final int U_Binded_True = 1;
+	public static final int U_Binded_False = 0;
+	
 	@Id
 	@Field(
 			type = FieldType.String,
@@ -245,6 +248,14 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 			store = true
 	)
 	private String u_type;//绑定的用户类型 代理商，普通，销售等等
+	
+	@Field(
+			type = FieldType.String,
+			searchAnalyzer = "lowercase_whitespace",
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String u_binded = String.valueOf(U_Binded_False);//用户是否绑定设备 0 未绑定 1 绑定
 	
 	@Field(
 			type = FieldType.String,
@@ -470,6 +481,14 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 
 	public void setU_type(String u_type) {
 		this.u_type = u_type;
+	}
+	
+	public String getU_binded() {
+		return u_binded;
+	}
+
+	public void setU_binded(String u_binded) {
+		this.u_binded = u_binded;
 	}
 
 	public String getA_id() {

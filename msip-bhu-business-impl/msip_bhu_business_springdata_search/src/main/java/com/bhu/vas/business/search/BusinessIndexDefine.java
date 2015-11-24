@@ -64,7 +64,7 @@ public interface BusinessIndexDefine {
 			U_MOBILENO("u_mno",null),//绑定的用户的手机号码
 			U_MOBILECOUNTRYCODE("u_mcc",null),//绑定的用户的手机号码的区域号码
 			U_TYPE("u_type",null),//用户类型 代理商，普通，销售等等
-			
+			U_BINDED("u_binded", null),//用户是否绑定设备
 			/**** 代理商信息 agent ****/
 			A_ID("a_id",null),//代理商的用户id
 			A_NICK("a_nick",null),//代理商的用户名称
