@@ -13,9 +13,11 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -191,24 +193,60 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	@Override
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
 		logger.info(String.format("DeviceRestRPC fetchDevicePresent invoke wifiId [%s]", wifiId));
-		try{
+		try {
 			return deviceRestBusinessFacadeService.fetchDevicePresent(wifiId);
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD exception exmsg[%s]",ex.getMessage()), ex);
+			logger.error(String.format("DeviceRestRPC fetchDevicePersistenceDetailCMD exception exmsg[%s]", ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
-	
-	/*@Override
-	public Collection<GeoMapVTO> fetchGeoMap(){
-		logger.info("DeviceRestRPC fetchGeoMap invoke");
+
+	@Override
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
+		logger.info(String.format("DeviceRestRPC fetchBySearchConditionMessage invoke pageNo [%s] pageSize [%s] message [%s]", pageNo, pageSize, message));
 		try{
-			return deviceRestBusinessFacadeService.fetchGeoMap();
+			return deviceRestBusinessFacadeService.fetchBySearchConditionMessage(message, pageNo, pageSize);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceRestRPC fetchGeoMap exception exmsg[%s]",ex.getMessage()), ex);
+			logger.error(String.format("DeviceRestRPC fetchBySearchConditionMessage exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
-	}*/
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid,String message) {
+		logger.info("DeviceRestRPC storeUserSearchCondition invoke");
+		try{
+			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC storeUserSearchCondition exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts) {
+		logger.info("DeviceRestRPC removeUserSearchCondition invoke");
+		try{
+			return deviceRestBusinessFacadeService.removeUserSearchCondition(uid, ts);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC removeUserSearchCondition exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+		logger.info("DeviceRestRPC fetchUserSearchConditions invoke");
+		try{
+			return deviceRestBusinessFacadeService.fetchUserSearchConditions(uid, pageNo, pageSize);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchUserSearchConditions exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 }

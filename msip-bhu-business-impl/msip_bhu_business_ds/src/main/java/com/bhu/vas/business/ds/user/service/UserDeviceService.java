@@ -5,10 +5,12 @@ import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.ds.user.dao.UserDeviceDao;
 import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.List;
 
 /**
@@ -37,7 +39,15 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         return findModelByModelCriteria(mc);
     }
 
-    
+    public Integer fetchBindUid(String mac){
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        List<UserDevicePK> pks = super.findIdsByModelCriteria(mc);
+        if(pks != null && !pks.isEmpty()){
+        	return pks.get(0).getUid();
+        }
+        return null;
+    }
     /**
      * 清除用户所有的绑定设备
      * @param uid

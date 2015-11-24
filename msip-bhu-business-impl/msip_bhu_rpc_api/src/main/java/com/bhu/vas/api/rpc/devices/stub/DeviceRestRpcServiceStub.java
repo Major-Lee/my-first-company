@@ -9,9 +9,11 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -102,9 +104,39 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 
 	@Override
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
-		if(StringUtils.isEmpty(wifiId)) 
+		if (StringUtils.isEmpty(wifiId))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return deviceRestRpcService.fetchDevicePresent(wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
+		if(pageNo < 0 || pageSize < 0) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceRestRpcService.fetchBySearchConditionMessage(message, pageNo, pageSize);
+
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid,String message) {
+		if(StringUtils.isEmpty(message))
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceRestRpcService.storeUserSearchCondition(uid, message);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts) {
+		return deviceRestRpcService.removeUserSearchCondition(uid, ts);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+		if(pageNo < 0 || pageSize < 0) 
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+		
+		return deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
 	}
 
 	/*@Override

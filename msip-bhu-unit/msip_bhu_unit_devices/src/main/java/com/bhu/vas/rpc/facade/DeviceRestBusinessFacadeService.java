@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.ElasticsearchIllegalArgumentException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,13 +24,16 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.search.UserSearchConditionSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceCountRegionStatisticsStringService;
@@ -39,8 +44,10 @@ import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateServi
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocument1;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService1;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -49,6 +56,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * device Rest RPC组件的业务service
@@ -75,6 +83,9 @@ public class DeviceRestBusinessFacadeService {
 	private WifiDeviceSearchService wifiDeviceSearchService;*/
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private WifiDeviceDataSearchService1 wifiDeviceDataSearchService1;
 	
 	@Resource
 	private BusinessDeviceCacheService businessDeviceCacheService;
@@ -439,6 +450,83 @@ public class DeviceRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
+
+
+
+	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize){
+		try{
+			List<WifiDeviceVTO1> vtos = null;
+			
+			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+			Page<WifiDeviceDocument1> search_result = wifiDeviceDataSearchService1.searchByConditionMessage(
+					message, searchPageNo, pageSize);
+			
+			int total = (int)search_result.getTotalElements();//.getTotal();
+			if(total == 0){
+				vtos = Collections.emptyList();
+			}else{
+				List<WifiDeviceDocument1> searchDocuments = search_result.getContent();//.getResult();
+				if(searchDocuments.isEmpty()) {
+					vtos = Collections.emptyList();
+				}else{
+					vtos = new ArrayList<WifiDeviceVTO1>();
+					WifiDeviceVTO1 vto = null;
+					for(WifiDeviceDocument1 wifiDeviceDocument : searchDocuments){
+						vto = new WifiDeviceVTO1();
+						BeanUtils.copyProperties(wifiDeviceDocument, vto);
+						vtos.add(vto);
+					}
+				}
+			}
+			TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(ElasticsearchIllegalArgumentException eiaex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
+		}
+	}
+	
+	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid, String message){
+		Long result = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, message);
+		if(result != null && result > 0){
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+	}
+	
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts){
+		Long result = UserSearchConditionSortedSetService.getInstance().removeUserSearchCondition(uid, ts);
+		if(result != null && result > 0){
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+	}
+	
+	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+		List<SearchConditionVTO> vtos = null;
+		long total = UserSearchConditionSortedSetService.getInstance().countUserSearchCondition(uid);
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}else{
+			Set<Tuple> tuples = UserSearchConditionSortedSetService.getInstance().fetchUserSearchConditionsByPage(uid, pageNo, pageSize);
+			if(tuples == null || tuples.isEmpty()){
+				vtos = Collections.emptyList();
+			}else{
+				vtos = new ArrayList<SearchConditionVTO>();
+				SearchConditionVTO vto = null;
+				for(Tuple tuple : tuples){
+					vto = new SearchConditionVTO();
+					vto.setTs(Double.valueOf(tuple.getScore()).longValue());
+					vto.setMessage(tuple.getElement());
+					vtos.add(vto);
+				}
+			}
+		}
+		
+		TailPage<SearchConditionVTO> returnRet = new CommonPage<SearchConditionVTO>(pageNo, pageSize, (int)total, vtos);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+	}
+	
+	
 /*	public static final int GeoMap_Fetch_Count = 500;
 	public Collection<GeoMapVTO> fetchGeoMap(){// throws ESQueryValidateException{
 		Collection<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();

@@ -34,6 +34,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     public static void setUp() throws Exception {
 		System.out.println("setUp");
 		Thread.sleep(1000);
+		
     }
 
     @AfterClass
@@ -63,7 +64,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }    
     
-    //@Test
+    @Test
    	public void test003SearchOnline(){
        	Page<WifiDeviceDocument> searchByKeywords = wifiDeviceDataSearchService.getRepository().findByOnlineTrue(new PageRequest(1,2));
        	System.out.println(searchByKeywords.getTotalElements());
@@ -211,7 +212,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+   // @Test
     public void test012IterateAll(){
     	wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName,BusinessIndexDefine.WifiDevice.Type,new IteratorNotify<Page<WifiDeviceDocument>>(){
 			@Override

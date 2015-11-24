@@ -44,9 +44,11 @@ public enum ResponseErrorCode {
 	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_PRINCE_MUST_EQUALORLESSTHENSUB("802", "agent.settlement.action.settlebills.price.must.equalorlessthensub"),
 	AGENT_SETTLEMENT_ACTION_SETTLEBILLS_AGENT_ALREADY_SETTLED_DONE("802", "agent.settlement.action.settlebills.agent.already.settled.done"),
 	
-	SEARCH_FAVSONG_KEYWORDS_PARSER_ATTARGET_EMPTY("799","search.friendfavsong.keywords.parser.attarget.empty"),
-	SEARCH_COMMON_KEYWORDS_PARSER_ILLEGAL("798","search.keywords.parser.illegal"),
-	SEARCH_NATURALWORD_RESPONSE("797","search.naturalword.reponse"),
+	SEARCH_CONDITION_TYPE_NOTEXIST("851","search.condition.type.notexist"),
+	
+//	SEARCH_FAVSONG_KEYWORDS_PARSER_ATTARGET_EMPTY("799","search.friendfavsong.keywords.parser.attarget.empty"),
+//	SEARCH_COMMON_KEYWORDS_PARSER_ILLEGAL("798","search.keywords.parser.illegal"),
+//	SEARCH_NATURALWORD_RESPONSE("797","search.naturalword.reponse"),
 	
 	TASK_ALREADY_ACCEPTED_OR_COMPLETED("699","task.already.acceptedorcompleted"),
 	TASK_UNDEFINED("698","task.undefined"),
