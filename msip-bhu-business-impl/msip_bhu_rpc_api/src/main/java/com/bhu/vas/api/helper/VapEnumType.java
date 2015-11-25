@@ -193,7 +193,7 @@ public class VapEnumType {
 		public static boolean isURouterHdType(String hdtype) {
 			DeviceUnitType fromHdType = fromHdType(hdtype);
 			if(fromHdType != null){
-				return fromHdType.getParent() == uRouterRoot.getParent();
+				return fromHdType.getParent() == uRouterRoot.getIndex();//.getParent();
 			}
 			return false;
 		}
@@ -201,7 +201,7 @@ public class VapEnumType {
 		public static boolean isSocHdType(String hdtype) {
 			DeviceUnitType fromHdType = fromHdType(hdtype);
 			if(fromHdType != null){
-				return fromHdType.getParent() == SOCRoot.getParent();
+				return fromHdType.getParent() == SOCRoot.getIndex();
 			}
 			return false;
 		}
