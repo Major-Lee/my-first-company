@@ -332,7 +332,8 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 */
 	public FilterBuilder parserMethodString(String fieldName, String conditionPayload){
 		if(validateConditionPayloadVaild(conditionPayload)){
-			return FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(conditionPayload).field(fieldName));
+			//return FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(conditionPayload).field(fieldName));
+			return FilterBuilders.queryFilter(QueryBuilders.matchQuery(fieldName, conditionPayload));
 		}
 		return null;
 	}
