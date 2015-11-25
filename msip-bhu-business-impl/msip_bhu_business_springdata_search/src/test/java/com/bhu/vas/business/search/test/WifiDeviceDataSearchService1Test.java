@@ -246,7 +246,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 1：设备从未上线
 	 * 2：设备业务线为urouter
 	 */
-	@Test
+	//@Test
 	public void test002SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备从未上线
@@ -305,7 +305,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 2：设备业务线为商业wifi
 	 * 3：设备灰度为一级或二级
 	 */
-	@Test
+	//@Test
 	public void test004SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备在线
@@ -576,7 +576,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 实例二:
 	 * 	满足上述的条件1 只获取数量
 	 */
-	@Test
+	//@Test
 	public void test0011SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号大于AP201P07V1.2.14z2匹配
@@ -616,5 +616,20 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 //    	    System.out.println(doc.getId() + " = " + doc.getD_origswver());
 //    	}
 
+	}
+	
+	@Test
+	public void test0012SearchConditionDocument(){
+		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_lastregedat\",\"pattern\":\"btn\",\"payload\":\"{\\\"gtv\\\":\\\"1448341200000\\\",\\\"ltv\\\":\\\"1448430600000\\\"}\"}]}";
+		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"2 1 0 -1\"}]}";
+		SearchConditionMessage searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
+	
+		System.out.println("JSON test0012:"+ JsonHelper.getJSONString(searchConditionMessage));
+		
+		Page<WifiDeviceDocument1> result = wifiDeviceDataSearchService1.searchByConditionMessage(searchConditionMessage, 0, 10);
+    	System.out.println(result.getTotalElements());
+		for(WifiDeviceDocument1 doc : result){
+    	    System.out.println("test0012:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
 	}
 }
