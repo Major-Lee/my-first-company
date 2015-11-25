@@ -407,7 +407,7 @@ public class DeviceBusinessFacadeService {
 	 *
 	 * 移动设备上线
 	 * 1:移动设备基础信息更新
-	 * 2:wifi设备对应handset在线列表redis添加
+	 * 2:wifi设备对应handset在线列表redis添加，在终端上线后需要清除掉以前dhcpname和ip
 	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
 	 * 4:移动设备连接wifi设备的流水log (backend)
 	 * 5:wifi设备接入移动设备的接入数量 (backend)
@@ -449,7 +449,9 @@ public class DeviceBusinessFacadeService {
 			handset.setSnr(dto.getSnr());
 			handset.setEthernet(dto.getEthernet());
 			handset.setAuthorized(dto.getAuthorized());
-
+			//在终端上线后需要清除掉以前dhcpname和ip,由于上线消息中没有dhcpname和ip，所以这些值在上线时都是空，直接用
+			handset.setDhcp_name(dto.getDhcp_name());
+			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
@@ -632,7 +634,7 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceUpdate(String ctx, HandsetDeviceDTO dto, String wifiId){
 		if(dto == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getDhcp_name()) || StringUtils.isEmpty(ctx))
+		if(StringUtils.isEmpty(dto.getMac()) /*|| StringUtils.isEmpty(dto.getDhcp_name())*/ || StringUtils.isEmpty(ctx))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
 
 		String lowercase_d_mac = dto.getMac().toLowerCase();

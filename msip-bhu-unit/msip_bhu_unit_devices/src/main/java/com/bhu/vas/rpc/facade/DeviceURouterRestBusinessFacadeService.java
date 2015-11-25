@@ -1,13 +1,16 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
-
-import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
-import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +55,7 @@ import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterInfoVTO;
+import com.bhu.vas.api.vto.URouterMainEnterVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
 import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
@@ -65,8 +69,12 @@ import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -136,6 +144,34 @@ public class DeviceURouterRestBusinessFacadeService {
 	@Resource
 	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
+	
+	/**
+	 * urouter 主入口界面数据
+	 *  hd_list接口需要终端的所有数据
+		路由器上下行速率数据
+		绑定的路由器在线状态、终端个数、路由器个数、路由器名称
+		需要路由器版本号
+		插件配置信息或者信号强度
+	 * @param uid
+	 * @param wifiId
+	 * @return
+	 */
+	public RpcResponseDTO<URouterMainEnterVTO> urouterMainEnter(Integer uid, String wifiId){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			URouterMainEnterVTO mainEnterVTO = new URouterMainEnterVTO();
+			URouterEnterVTO enterVTO = new URouterEnterVTO();
+			String[] ret = fetchRealtimeRate(wifiId);
+			enterVTO.setTx_rate(ret[0]);
+			enterVTO.setRx_rate(ret[1]);
+			mainEnterVTO.setEn(enterVTO);
+			
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(mainEnterVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
 	
 	/**
 	 * urouter 入口界面数据

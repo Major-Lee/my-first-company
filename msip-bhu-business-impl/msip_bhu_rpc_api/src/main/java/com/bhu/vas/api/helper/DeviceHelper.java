@@ -628,6 +628,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapModule_Upgrade = "<upgrade><ITEM url = “” retry_count=”” retry_interval=”” /></upgrade>";
 	
 	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
+								"<stat_server>"+
+									"<ITEM enable=\"disable\"/>"+
+								"</stat_server>"+
 							    "<channel>"+
 							        "<ITEM enable=\"disable\"/>"+
 							    "</channel>"+
@@ -641,6 +644,13 @@ public class DeviceHelper {
 							        "<ITEM enable=\"disable\"/>"+
 							    "</http404>"+
 							"</bhu_module>";
+	
+/*	public static final String DeviceSetting_VapModuleFull_StatSetting = 
+		"<bhu_module>"+
+				"<stat_server>"+
+					"<ITEM enable=\"enable/disable\" url=\"http://7xo2t3.com2.z0.glb.qiniucdn.com/*\" batch_number=\"10\" cache_time=\"10\"/>"+
+				"</stat_server>"+
+		"</bhu_module>";*/
 	
 	/*public static final String VapModule_Setting_MsgType = "00000003";
 	public static final String VapModule_Query_MsgType = "00000004";*/
