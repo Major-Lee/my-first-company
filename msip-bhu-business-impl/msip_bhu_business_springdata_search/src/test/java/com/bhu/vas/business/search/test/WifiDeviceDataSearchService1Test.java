@@ -254,8 +254,8 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 				Field1.D_ONLINE.getName(), SearchConditionPattern.Equal.getPattern(), "0");
 		//设备业务线为urouter
 		SearchCondition sc_urouter = new SearchCondition(BusinessIndexDefine.WifiDevice.
-				Field1.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.Equal.getPattern(), "TU");
-		searchConditions.add(sc_neveronline);
+				Field1.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), "TU TC");
+		//searchConditions.add(sc_neveronline);
 		searchConditions.add(sc_urouter);
 		
 		SearchConditionMessage searchConditionMessage = new SearchConditionMessage(searchConditions);
