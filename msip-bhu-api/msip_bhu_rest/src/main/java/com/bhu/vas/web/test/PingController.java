@@ -41,6 +41,8 @@ public class PingController {
 	
 	/**
 	 * 获取设备的状态信息
+	 * 由于是设备调用此接口，所以此部分返回text/plain格式，nginx对此格式不进行gzip压缩
+	 * 特殊处理
 	 * @param request
 	 * @param response
 	 */
