@@ -621,7 +621,8 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	@Test
 	public void test0012SearchConditionDocument(){
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_lastregedat\",\"pattern\":\"btn\",\"payload\":\"{\\\"gtv\\\":\\\"1448341200000\\\",\\\"ltv\\\":\\\"1448430600000\\\"}\"}]}";
-		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"2 1 0 -1\"}]}";
+		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"1\"}]}";
+		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"T\"}]}";
 		SearchConditionMessage searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
 	
 		System.out.println("JSON test0012:"+ JsonHelper.getJSONString(searchConditionMessage));

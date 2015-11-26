@@ -49,7 +49,11 @@ public class UserSearchConditionSortedSetService extends AbstractRelationSortedS
 	 * @return
 	 */
 	public Long storeUserSearchCondition(int uid, String message){
-		return super.zadd(generateKey(uid), System.currentTimeMillis(), message);
+		return storeUserSearchCondition(uid, System.currentTimeMillis(), message);
+	}
+	
+	public Long storeUserSearchCondition(int uid, double score, String message){
+		return super.zadd(generateKey(uid), score, message);
 	}
 	
 	/**

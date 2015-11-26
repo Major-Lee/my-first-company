@@ -488,12 +488,13 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid, String message){
-		Long result = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, message);
-		if(result != null && result > 0){
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message){
+		long ts = System.currentTimeMillis();
+		UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, message);
+		/*if(result != null && result > 0){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+		}*/
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(ts);
 	}
 	
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts){
@@ -506,11 +507,12 @@ public class DeviceRestBusinessFacadeService {
 	
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
 		List<SearchConditionVTO> vtos = null;
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
 		long total = UserSearchConditionSortedSetService.getInstance().countUserSearchCondition(uid);
 		if(total == 0){
 			vtos = Collections.emptyList();
 		}else{
-			Set<Tuple> tuples = UserSearchConditionSortedSetService.getInstance().fetchUserSearchConditionsByPage(uid, pageNo, pageSize);
+			Set<Tuple> tuples = UserSearchConditionSortedSetService.getInstance().fetchUserSearchConditionsByPage(uid, searchPageNo, pageSize);
 			if(tuples == null || tuples.isEmpty()){
 				vtos = Collections.emptyList();
 			}else{

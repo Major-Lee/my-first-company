@@ -43,8 +43,8 @@ public interface BusinessIndexDefine {
 			D_TYPE("d_type", null),//设备的类型
 			D_GEOPOINT("d_geopoint", null),//设备所在位置的经纬度坐标
 			D_ADDRESS("d_address", null),//设备所在位置的详细地址
-			D_ONLINE("d_online", null),//设备在线状态 0 从未上线 1 在线 2 离线
-			D_MODULEONLINE("d_monline", null),//设备增值模块是否在线
+			D_ONLINE("d_online", null),//设备在线状态 -1 从未上线 1 在线 0 离线
+			D_MODULEONLINE("d_monline", null),//设备增值模块是否在线 -1 从未上线 1 在线 0 离线
 //			D_GROUPS("d_groups", null),//设备所属群组
 //			D_NVD("d_nvd", null),//是否是新版本设备
 			D_HANDSETONLINECOUNT("d_hoc", null),//设备终端在线数量
