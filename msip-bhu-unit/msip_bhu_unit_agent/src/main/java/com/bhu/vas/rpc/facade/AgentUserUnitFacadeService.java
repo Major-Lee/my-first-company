@@ -72,7 +72,7 @@ public class AgentUserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
 			}catch(BusinessI18nCodeException bex){
 				bex.printStackTrace(System.out);
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(), Boolean.FALSE);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload(), Boolean.FALSE);
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, Boolean.FALSE);
@@ -109,50 +109,54 @@ public class AgentUserUnitFacadeService {
 		if (userService.isExistsOrg(org)) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 		}
-		
-		User user = new User();
-		user.setCountrycode(countrycode);
-		user.setMobileno(acc);
-		//user.addSafety(SafetyBitMarkHelper.mobileno);
-		if(StringUtils.isEmpty(pwd)) 
-			user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
-		else
-			user.setPlainpwd(pwd);
-		user.setNick(nick);
-		user.setSex(sex);
-
-		user.setOrg(org);
-		user.setBln(bln);
-		user.setAddr1(addr1);
-		user.setAddr2(addr2);
-		user.setMemo(memo);
-		
-		user.setRegip(regIp);
-		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
-		user.setRegdevice(device);
-		//标记用户最后登录设备，缺省为DeviceEnum.PC
-		user.setLastlogindevice(device);
-		user.setUtype(UserType.Agent.getIndex());
-		user = this.userService.insert(user);
-		{//更新summary相关的容易字段
-			try{
-				agentBillFacadeService.getAgentBillSummaryViewService().insert(AgentBillSummaryView.buildDefault(user.getId(), org));
-			}catch(Exception ex){
-				ex.printStackTrace(System.out);
+		try{
+			User user = new User();
+			user.setCountrycode(countrycode);
+			user.setMobileno(acc);
+			//user.addSafety(SafetyBitMarkHelper.mobileno);
+			if(StringUtils.isEmpty(pwd)) 
+				user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
+			else
+				user.setPlainpwd(pwd);
+			user.setNick(nick);
+			user.setSex(sex);
+			user.setOrg(org);
+			user.setBln(bln);
+			user.setAddr1(addr1);
+			user.setAddr2(addr2);
+			user.setMemo(memo);
+			user.setRegip(regIp);
+			//标记用户注册时使用的设备，缺省为DeviceEnum.Android
+			user.setRegdevice(device);
+			//标记用户最后登录设备，缺省为DeviceEnum.PC
+			user.setLastlogindevice(device);
+			user.setUtype(UserType.Agent.getIndex());
+			user = this.userService.insert(user);
+			{//更新summary相关的容易字段
+				try{
+					agentBillFacadeService.getAgentBillSummaryViewService().insert(AgentBillSummaryView.buildDefault(user.getId(), org));
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+				}
 			}
-			
+			UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			// token validate code
+			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			{//write header to response header
+				//BusinessWebHelper.setCustomizeHeader(response, uToken);
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+			}
+			//deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
+					uToken.getAccess_token(), uToken.getRefresh_token(), true);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
-		// token validate code
-		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
-		{//write header to response header
-			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
-		}
-		//deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-				uToken.getAccess_token(), uToken.getRefresh_token(), true);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String ut,String device,String remoteIp) {
@@ -199,7 +203,7 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
@@ -242,7 +246,7 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
@@ -301,7 +305,7 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
@@ -358,7 +362,7 @@ public class AgentUserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(RpcResponseDTOBuilder.builderAgentUserDetailVTOFromUser(user, false));
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
