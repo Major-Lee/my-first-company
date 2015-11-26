@@ -488,12 +488,13 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid, String message){
-		UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, message);
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message){
+		long ts = System.currentTimeMillis();
+		UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, message);
 		/*if(result != null && result > 0){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}*/
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(ts);
 	}
 	
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts){

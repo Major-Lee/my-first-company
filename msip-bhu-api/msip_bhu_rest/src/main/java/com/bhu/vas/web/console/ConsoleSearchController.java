@@ -71,7 +71,7 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String message) {
     	
-        RpcResponseDTO<Boolean> result = deviceRestRpcService.storeUserSearchCondition(uid, message);
+        RpcResponseDTO<Long> result = deviceRestRpcService.storeUserSearchCondition(uid, message);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
     

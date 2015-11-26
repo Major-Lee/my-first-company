@@ -215,7 +215,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> storeUserSearchCondition(int uid,String message) {
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message) {
 		logger.info("DeviceRestRPC storeUserSearchCondition invoke");
 		try{
 			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message);
