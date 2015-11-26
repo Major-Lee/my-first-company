@@ -119,11 +119,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message) {
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message,String desc) {
 		if(StringUtils.isEmpty(message))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
-		return deviceRestRpcService.storeUserSearchCondition(uid, message);
+		return deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
 	}
 
 	@Override

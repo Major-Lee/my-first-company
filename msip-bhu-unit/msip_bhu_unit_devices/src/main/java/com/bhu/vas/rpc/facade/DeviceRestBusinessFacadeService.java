@@ -18,6 +18,7 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
+import com.bhu.vas.api.dto.redis.StoreSearchConditionDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -488,9 +489,11 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message){
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message, String desc){
 		long ts = System.currentTimeMillis();
-		UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, message);
+		StoreSearchConditionDTO dto = new StoreSearchConditionDTO(message, desc);
+		String dtojson = JsonHelper.getJSONString(dto);
+		UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, dtojson);
 		/*if(result != null && result > 0){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}*/
@@ -521,7 +524,7 @@ public class DeviceRestBusinessFacadeService {
 				for(Tuple tuple : tuples){
 					vto = new SearchConditionVTO();
 					vto.setTs(Double.valueOf(tuple.getScore()).longValue());
-					vto.setMessage(tuple.getElement());
+					vto.setSdto(JsonHelper.getDTO(tuple.getElement(), StoreSearchConditionDTO.class));
 					vtos.add(vto);
 				}
 			}

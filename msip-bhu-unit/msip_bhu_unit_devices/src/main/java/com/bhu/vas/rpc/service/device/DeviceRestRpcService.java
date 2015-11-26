@@ -215,10 +215,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message) {
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message,String desc) {
 		logger.info("DeviceRestRPC storeUserSearchCondition invoke");
 		try{
-			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message);
+			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message, desc);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC storeUserSearchCondition exception exmsg[%s]",ex.getMessage()), ex);

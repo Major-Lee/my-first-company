@@ -45,15 +45,15 @@ public class UserSearchConditionSortedSetService extends AbstractRelationSortedS
 	/**
 	 * 保存用户的搜索条件数据
 	 * @param uid
-	 * @param message
+	 * @param dtojson
 	 * @return
 	 */
-	public Long storeUserSearchCondition(int uid, String message){
-		return storeUserSearchCondition(uid, System.currentTimeMillis(), message);
+	public Long storeUserSearchCondition(int uid, String dtojson){
+		return storeUserSearchCondition(uid, System.currentTimeMillis(), dtojson);
 	}
 	
-	public Long storeUserSearchCondition(int uid, double score, String message){
-		return super.zadd(generateKey(uid), score, message);
+	public Long storeUserSearchCondition(int uid, double score, String dtojson){
+		return super.zadd(generateKey(uid), score, dtojson);
 	}
 	
 	/**

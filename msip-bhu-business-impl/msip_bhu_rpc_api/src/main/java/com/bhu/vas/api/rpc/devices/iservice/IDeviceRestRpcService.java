@@ -34,7 +34,7 @@ public interface IDeviceRestRpcService {
 
 	//public Collection<GeoMapVTO> fetchGeoMap();
 	
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message);
+	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message, String desc);
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts);
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
 }
