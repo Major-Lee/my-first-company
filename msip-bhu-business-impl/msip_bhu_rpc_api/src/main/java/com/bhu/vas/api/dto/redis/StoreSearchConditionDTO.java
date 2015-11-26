@@ -5,7 +5,8 @@ package com.bhu.vas.api.dto.redis;
  * @author lwaliet
  *
  */
-public class StoreSearchConditionDTO {
+@SuppressWarnings("serial")
+public class StoreSearchConditionDTO implements java.io.Serializable{
 	//搜索条件的message
 	private String message;
 	//索索条件的描述信息 客户端维护
