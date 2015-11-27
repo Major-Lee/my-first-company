@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendws;
+package com.bhu.vas.business.backendmodulestat;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;

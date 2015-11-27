@@ -13,10 +13,9 @@
 	<context:component-scan base-package="com.bhu.vas.business.bucache"/>
 	
 	<import resource="classpath*:spring/applicationContext*.xml"/>
-
 	<!--  
 	<import resource="classpath*:spring/applicationContextCore-resource.xml"/>
 	-->
-	<import resource="classpath*:springws/inbound/applicationContext-InboundKafka-ws-String-AdapterParser.xml"/>
-	<import resource="classpath*:springws/inbound/applicationContext-InboundKafka-ws-String-MessageHandler.xml"/>
+	<import resource="classpath*:springmodulestat/inbound/applicationContext-InboundKafka-modulestat-String-AdapterParser.xml"/>
+	<import resource="classpath*:springmodulestat/inbound/applicationContext-InboundKafka-modulestat-String-MessageHandler.xml"/>
 </beans>

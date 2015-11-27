@@ -124,7 +124,7 @@
                             -->
                             <classpathPrefix>../lib/</classpathPrefix>
                             <!-- Specifies the main class of the application -->
-                            <mainClass>com.bhu.business.BackendModuleStatMain</mainClass>
+                            <mainClass>com.bhu.vas.business.backendmodulestat.BackendModuleStatMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>../conf/</Class-Path>

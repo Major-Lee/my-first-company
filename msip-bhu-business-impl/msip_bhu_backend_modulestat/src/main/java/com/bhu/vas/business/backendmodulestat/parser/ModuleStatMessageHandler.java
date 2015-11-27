@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendws.parser;
+package com.bhu.vas.business.backendmodulestat.parser;
 
 import java.util.Iterator;
 import java.util.List;
