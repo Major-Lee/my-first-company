@@ -2,20 +2,23 @@ package com.bhu.vas.rpc.service.device;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
-import com.bhu.vas.api.vto.agent.*;
-
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.agent.iservice.IAgentRpcService;
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
+import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
+import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.AgentFinancialSettlementVTO;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.agent.UserVTO;
 import com.bhu.vas.rpc.facade.AgentFacadeService;
 import com.bhu.vas.rpc.facade.AgentStatisticsUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;

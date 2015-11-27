@@ -1,5 +1,8 @@
 package com.bhu.vas.business.ds.agent.helper;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.VapEnumType;
@@ -110,6 +113,14 @@ public class AgentHelper {
 	private static long Sec = 	1000;
 	
 	
+	//正数并且小数点不超过2位
+	private static String pattern = "^[+]?(([1-9]\\d*[.]?)|(0.))(\\d{0,2})?$";
+	public static boolean isValidSettledNumberCharacter(final String value){
+		//String namePattern = "[^(0-9\\s\\-\\_)+][a-z0-9\\-\\_]+";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(value);
+		return m.find();
+	  }
 	public static void main(String[] argv){
 		
 		System.out.println(DateTimeHelper.getTimeDiff(2*60*60*1000));
@@ -117,5 +128,12 @@ public class AgentHelper {
 		System.out.println(AgentHelper.flowByte2Megabyte(188322));
 		
 		System.out.println(AgentHelper.millisecond2Minute(188322));
+		
+		System.out.println(AgentHelper.isValidSettledNumberCharacter("-456.5"));
+		System.out.println(AgentHelper.isValidSettledNumberCharacter("456.50"));
+		System.out.println(AgentHelper.isValidSettledNumberCharacter("456.56"));
+		System.out.println(AgentHelper.isValidSettledNumberCharacter("456.555"));
+		System.out.println(AgentHelper.isValidSettledNumberCharacter("-456.50"));
+		System.out.println(AgentHelper.isValidSettledNumberCharacter("0.0000000000001"));
 	}
 }

@@ -61,7 +61,7 @@ public class FinancialController extends BaseController{
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
