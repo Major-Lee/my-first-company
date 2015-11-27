@@ -21,6 +21,6 @@
 	    </entry>
 	</util:map> 
 	
-	<bean id="msMessageHandler" class="com.bhu.vas.business.backendws.parser.ModuleStatMessageHandler"/>
+	<bean id="msMessageHandler" class="com.bhu.vas.business.backendmodulestat.parser.ModuleStatMessageHandler"/>
 	 
 </beans>
