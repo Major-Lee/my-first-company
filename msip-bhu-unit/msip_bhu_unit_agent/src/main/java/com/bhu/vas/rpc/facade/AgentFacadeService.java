@@ -766,17 +766,23 @@ public class AgentFacadeService {
         return true;
     }
 
-    public  RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, double account, String invoice, String receipt, String remark) {
+    public  RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, double settlementAmount, String invoice, String receipt, String remark) {
     	try{
+    		//account = 
+    		//if(account <=0 || ArithHelper.round(account, 2) == 0)
+    		String settlementAmountStr = String.valueOf(settlementAmount);
+    		if(!AgentHelper.isValidSettledNumberCharacter(String.valueOf(settlementAmountStr))){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{settlementAmountStr});
+    		}
 	    	User operUser = userService.getById(uid);
 	    	UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
 	    	User agentUser = userService.getById(aid);
 	    	UserTypeValidateService.validUserType(agentUser, UserType.Agent.getSname());
-	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, account);
+	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, settlementAmount);
 	    	AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
 	        agentFinancialSettlement.setUid(uid);
 	        agentFinancialSettlement.setAid(aid);
-	        agentFinancialSettlement.setAmount(account);
+	        agentFinancialSettlement.setAmount(settlementAmount);
 	        agentFinancialSettlement.setInvoice_fid(invoice);
 	        agentFinancialSettlement.setReceipt_fid(receipt);
 	        agentFinancialSettlement.setRemark(remark);
@@ -788,7 +794,7 @@ public class AgentFacadeService {
 	        agentBulltinBoard.setType(AgentBulltinType.ArrivalNotice.getKey());
 	        AgentSettlementBulltinBoardDTO dto = new AgentSettlementBulltinBoardDTO();
 	        dto.setAid(aid);
-	        dto.setAmount(account);
+	        dto.setAmount(settlementAmount);
 	        dto.setInvoice(invoice);
 	        dto.setReceipt(receipt);
 	        dto.setRemark(remark);
@@ -797,7 +803,7 @@ public class AgentFacadeService {
 	        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     	}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
