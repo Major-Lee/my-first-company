@@ -16,6 +16,6 @@
 	<!--  
 	<import resource="classpath*:spring/applicationContextCore-resource.xml"/>
 	-->
-	<import resource="classpath*:springws/inbound/applicationContext-InboundKafka-modulestat-String-AdapterParser.xml"/>
-	<import resource="classpath*:springws/inbound/applicationContext-InboundKafka-modulestat-String-MessageHandler.xml"/>
+	<import resource="classpath*:springmodulestat/inbound/applicationContext-InboundKafka-modulestat-String-AdapterParser.xml"/>
+	<import resource="classpath*:springmodulestat/inbound/applicationContext-InboundKafka-modulestat-String-MessageHandler.xml"/>
 </beans>
