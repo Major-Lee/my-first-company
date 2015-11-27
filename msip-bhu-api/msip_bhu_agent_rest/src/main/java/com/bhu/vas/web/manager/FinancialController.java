@@ -50,7 +50,7 @@ public class FinancialController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = true) Integer aid,
-            @RequestParam(required = true) Double account,
+            @RequestParam(required = true) String account,
             @RequestParam(required = true) String invoice,
             @RequestParam(required = true) String receipt,
             @RequestParam(required = false) String remark
