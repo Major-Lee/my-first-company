@@ -132,6 +132,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
+	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits) {
+		return deviceRestRpcService.removeUserSearchConditions(uid, message_ts_splits);
+	}
+	
+	@Override
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());

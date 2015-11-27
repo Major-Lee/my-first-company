@@ -96,6 +96,25 @@ public class ConsoleSearchController extends BaseController {
     }
     
     /**
+     * 移除用户的搜索条件数据 (多个)
+     * @param request
+     * @param response
+     * @param uid
+     * @param message_ts_splits 搜索条件的ts标识多个 逗号分割
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/remove_user_search_conditions", method = {RequestMethod.POST})
+    public void remove_user_search_conditions(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true, value = "m_ts_splits") String message_ts_splits) {
+    	
+        RpcResponseDTO<Boolean> result = deviceRestRpcService.removeUserSearchConditions(uid, message_ts_splits);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+    }
+    
+    /**
      * 分页查询用户保存的搜索条件数据列表
      * @param request
      * @param response

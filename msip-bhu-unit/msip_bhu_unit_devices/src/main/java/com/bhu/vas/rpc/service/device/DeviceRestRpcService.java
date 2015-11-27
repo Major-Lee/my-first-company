@@ -216,7 +216,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 
 	@Override
 	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message,String desc) {
-		logger.info("DeviceRestRPC storeUserSearchCondition invoke");
+		logger.info(String.format("DeviceRestRPC storeUserSearchCondition invoke uid [%s] message [%s] desc [%s]", uid, message, desc));
 		try{
 			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message, desc);
 		}catch(Exception ex){
@@ -228,7 +228,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 
 	@Override
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts) {
-		logger.info("DeviceRestRPC removeUserSearchCondition invoke");
+		logger.info(String.format("DeviceRestRPC removeUserSearchCondition invoke uid [%s] ts [%s]", uid, ts));
 		try{
 			return deviceRestBusinessFacadeService.removeUserSearchCondition(uid, ts);
 		}catch(Exception ex){
@@ -237,10 +237,22 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits) {
+		logger.info(String.format("DeviceRestRPC removeUserSearchConditions invoke uid [%s] message_ts_splits [%s]", uid, message_ts_splits));
+		try{
+			return deviceRestBusinessFacadeService.removeUserSearchConditions(uid, message_ts_splits);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC removeUserSearchConditions exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
 
 	@Override
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
-		logger.info("DeviceRestRPC fetchUserSearchConditions invoke");
+		logger.info(String.format("DeviceRestRPC fetchUserSearchConditions invoke uid [%s] pageNo [%s] pageSize [%s]", uid, pageNo, pageSize));
 		try{
 			return deviceRestBusinessFacadeService.fetchUserSearchConditions(uid, pageNo, pageSize);
 		}catch(Exception ex){
