@@ -766,23 +766,24 @@ public class AgentFacadeService {
         return true;
     }
 
-    public  RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, double settlementAmount, String invoice, String receipt, String remark) {
+    public  RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, String settlementAmount, String invoice, String receipt, String remark) {
     	try{
     		//account = 
     		//if(account <=0 || ArithHelper.round(account, 2) == 0)
-    		String settlementAmountStr = String.valueOf(settlementAmount);
-    		if(!AgentHelper.isValidSettledNumberCharacter(String.valueOf(settlementAmountStr))){
-    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{settlementAmountStr});
+    		//String settlementAmountStr = String.valueOf(settlementAmount);
+    		if(!AgentHelper.isValidSettledNumberCharacter(settlementAmount)){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{settlementAmount});
     		}
+    		double amount = Double.parseDouble(settlementAmount);
 	    	User operUser = userService.getById(uid);
 	    	UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
 	    	User agentUser = userService.getById(aid);
 	    	UserTypeValidateService.validUserType(agentUser, UserType.Agent.getSname());
-	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, settlementAmount);
+	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, amount);
 	    	AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
 	        agentFinancialSettlement.setUid(uid);
 	        agentFinancialSettlement.setAid(aid);
-	        agentFinancialSettlement.setAmount(settlementAmount);
+	        agentFinancialSettlement.setAmount(amount);
 	        agentFinancialSettlement.setInvoice_fid(invoice);
 	        agentFinancialSettlement.setReceipt_fid(receipt);
 	        agentFinancialSettlement.setRemark(remark);
@@ -794,7 +795,7 @@ public class AgentFacadeService {
 	        agentBulltinBoard.setType(AgentBulltinType.ArrivalNotice.getKey());
 	        AgentSettlementBulltinBoardDTO dto = new AgentSettlementBulltinBoardDTO();
 	        dto.setAid(aid);
-	        dto.setAmount(settlementAmount);
+	        dto.setAmount(amount);
 	        dto.setInvoice(invoice);
 	        dto.setReceipt(receipt);
 	        dto.setRemark(remark);
