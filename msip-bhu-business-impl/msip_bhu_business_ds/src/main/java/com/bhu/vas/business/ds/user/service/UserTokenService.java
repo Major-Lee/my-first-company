@@ -9,28 +9,25 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.ds.user.dao.UserTokenDao;
 import com.bhu.vas.exception.TokenValidateBusinessException;
+import com.smartwork.msip.business.token.ITokenService;
 import com.smartwork.msip.business.token.service.TokenServiceHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserTokenService extends EntityService<Integer,UserToken, UserTokenDao>{
+public class UserTokenService extends EntityService<Integer,UserToken, UserTokenDao> implements ITokenService{
 	@Resource
 	@Override
 	public void setEntityDao(UserTokenDao userTokenDao) {
 		super.setEntityDao(userTokenDao);
 	}
-	public static final int Access_Token_Matched = 1;
-	public static final int Access_Token_Illegal_Format= 2;
-	public static final int Access_Token_Expired = 3;
-	public static final int Access_Token_NotExist = 4;
-	public static final int Access_Token_NotMatch = 5;
 	
 	/**
 	 * 
 	 * @param uid
 	 * @param ifExistThenGenerated 已经存在是否替换新的
 	 */
+	@Override
 	public UserToken generateUserAccessToken(Integer uid,boolean ifExpiredThenReplaced,boolean ifExistThenReplaced){
 		if(uid == null || uid.intValue() ==0) return null;
 		UserToken userToken = this.getById(uid);
@@ -53,7 +50,7 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 		}
 		return userToken;
 	}
-	
+	@Override
 	public UserToken validateUserAccessToken(String accessToken){
 		try{
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
@@ -72,7 +69,7 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 			throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
 		}
 	}
-	
+	@Override
 	public UserToken doRefreshUserAccessToken(String refreshToken){
 		try{
 			if(StringUtils.isEmpty(refreshToken)) return null;
