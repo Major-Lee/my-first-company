@@ -89,7 +89,9 @@ public enum OperationCMD {
 	DeviceModuleUpgrade("154", "设备module升级(设备vapmudule不为空)以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
 	
 	DeviceCurrentConfigSave("200", "通知设备存储设备当前运行配置","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"save\" /></cmd>"),
-
+	//指令透传下发给设备，出来header部分，其余xml部分完全替换
+	DeviceCmdPassThrough("201", "设备指令透传下发","","00001001%s%s%s"+"000100000001%s"),
+	
 	ClearDeviceBootReset("250","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"clear_reset_flag\" /></cmd>"),
 
 	//<cmd><ITEM cmd="clear_reset_flag" /></cmd>

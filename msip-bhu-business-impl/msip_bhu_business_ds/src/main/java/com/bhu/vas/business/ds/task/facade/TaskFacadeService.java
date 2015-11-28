@@ -253,7 +253,18 @@ public class TaskFacadeService {
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
-
+		
+		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
+			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
+			simulateTask.setId(-1l);
+			simulateTask.setChannel(channel);
+			simulateTask.setChannel_taskid(channel_taskid);
+			simulateTask.setPayload(CMDBuilder.builderDeviceCmdPassThrough(mac,extparams));
+			simulateTask.setMac(mac);
+			return simulateTask;
+		}
+		
+		
 		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {
 			if(ods_cmd == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
