@@ -72,10 +72,10 @@ public class RpcResponseDTOBuilder {
 	
 	
 	public static Map<String,Object> builderUserRpcPayload4Agent(User user,
-			   String atoken, String rtoken, boolean isReg){
+			UserTokenDTO token, boolean isReg){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, builderAgentUserDetailVTOFromUser(user,isReg));
-		ret.put(Key_UserToken, new UserTokenDTO(user.getId(),atoken,rtoken));
+		ret.put(Key_UserToken, token);
 		ret.put(Key_Cm, "60");
 		return ret;
 	}

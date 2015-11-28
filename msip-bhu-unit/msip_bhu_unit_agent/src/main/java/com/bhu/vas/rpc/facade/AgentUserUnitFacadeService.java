@@ -151,7 +151,7 @@ public class AgentUserUnitFacadeService {
 		}
 		//deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-				uToken.getAtoken(), uToken.getRtoken(), true);
+				uToken, true);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
@@ -195,7 +195,7 @@ public class AgentUserUnitFacadeService {
 			}
 			//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-					uToken.getAtoken(), uToken.getRtoken(), false);
+					uToken, false);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
@@ -238,7 +238,7 @@ public class AgentUserUnitFacadeService {
 			}
 			this.userService.update(user);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-					uToken.getAtoken(), uToken.getRtoken(), false);
+					uToken, false);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
