@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.user.dto;
+package com.smartwork.msip.business.token;
 
 @SuppressWarnings("serial")
 public class UserTokenDTO implements java.io.Serializable{

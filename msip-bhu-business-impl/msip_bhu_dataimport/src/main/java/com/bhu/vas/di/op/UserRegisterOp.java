@@ -5,12 +5,12 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
+import com.smartwork.msip.business.token.UserTokenDTO;
 /**
  * @author Edmond Lee
  * ./startupbuilder_bhu_userregister.sh ADD 1 13901076750 bhunetworks 徐冬冬
@@ -98,10 +98,10 @@ public class UserRegisterOp {
 			System.out.println("uid:"+user.getId());
 			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code
-			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
 			System.out.println(String.format("userReg[id:%s mobileno:%s nick:%s] successfully!", user.getId(),user.getMobileno(),user.getNick()));
 		} else if ("Remove".equals(oper)) {
@@ -143,10 +143,10 @@ public class UserRegisterOp {
 			System.out.println("uid:"+user.getId());
 			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code
-			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
 			System.out.println(String.format("userReg[id:%s mobileno:%s nick:%s] successfully!", user.getId(),user.getMobileno(),user.getNick()));
 		}

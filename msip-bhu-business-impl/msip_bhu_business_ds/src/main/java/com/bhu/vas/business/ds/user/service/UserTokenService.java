@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.ds.user.dao.UserTokenDao;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.token.ITokenService;
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.business.token.service.TokenServiceHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
 
@@ -28,7 +29,7 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 	 * @param ifExistThenGenerated 已经存在是否替换新的
 	 */
 	@Override
-	public UserToken generateUserAccessToken(Integer uid,boolean ifExpiredThenReplaced,boolean ifExistThenReplaced){
+	public UserTokenDTO generateUserAccessToken(Integer uid,boolean ifExpiredThenReplaced,boolean ifExistThenReplaced){
 		if(uid == null || uid.intValue() ==0) return null;
 		UserToken userToken = this.getById(uid);
 		if(userToken == null){
@@ -48,10 +49,10 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 				}
 			}
 		}
-		return userToken;
+		return userToken.toUserTokenDTO();
 	}
 	@Override
-	public UserToken validateUserAccessToken(String accessToken){
+	public UserTokenDTO validateUserAccessToken(String accessToken){
 		try{
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(accessToken)){
@@ -59,7 +60,7 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 				UserToken userToken = this.getById(uid);
 				if(userToken == null) throw new TokenValidateBusinessException(Access_Token_NotExist);
 				if(accessToken.equals(userToken.getAccess_token())){
-					return userToken;//Access_Token_Matched;
+					return userToken.toUserTokenDTO();//Access_Token_Matched;
 				}
 				else throw new TokenValidateBusinessException(Access_Token_NotMatch);
 			}else{
@@ -70,7 +71,7 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 		}
 	}
 	@Override
-	public UserToken doRefreshUserAccessToken(String refreshToken){
+	public UserTokenDTO doRefreshUserAccessToken(String refreshToken){
 		try{
 			if(StringUtils.isEmpty(refreshToken)) return null;
 			Integer uid = TokenServiceHelper.parserRefreshToken4User(refreshToken);
@@ -79,9 +80,8 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 			if(refreshToken.equals(userToken.getRefresh_token())){
 				userToken.doTokenRefresh();
 				this.update(userToken);
-			}
-			else return null;
-			return userToken;
+			}else return null;
+			return userToken.toUserTokenDTO();
 		}catch(Exception ex){
 			//throw new RuntimeException("refreshToken exception");
 			return null;

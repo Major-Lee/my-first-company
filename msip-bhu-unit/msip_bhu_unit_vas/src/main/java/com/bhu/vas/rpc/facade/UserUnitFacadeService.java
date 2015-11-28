@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,8 @@ import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -30,6 +29,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -149,15 +149,18 @@ public class UserUnitFacadeService {
 		}
 		this.userService.update(user);
 		
-		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
 		{//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 		}
 		//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
+		/*Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
 				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
-				uToken.getAccess_token(), uToken.getRefresh_token(), false);
+				uToken.getAtoken(), uToken.getRtoken(), false);*/
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
+				user,
+				uToken, false);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
@@ -172,13 +175,13 @@ public class UserUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp) {
-		UserToken uToken = null;
+		UserTokenDTO uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
-			System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAccess_token());
+			System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAtoken());
 			//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(uToken.getId().intValue(), uToken.getAccess_token());
+			IegalTokenHashService.getInstance().userTokenRegister(uToken.getId(), uToken.getAtoken());
 		}catch(TokenValidateBusinessException ex){
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
@@ -200,9 +203,13 @@ public class UserUnitFacadeService {
 		}
 		this.userService.update(user);
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+		/*Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(), user.getUtype(),
-				uToken.getAccess_token(), uToken.getRefresh_token(), false,
+				uToken.getAtoken(), uToken.getRtoken(), false,
+				fetchBindDevices(user.getId()));*/
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user,
+				uToken, false,
 				fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
@@ -243,7 +250,7 @@ public class UserUnitFacadeService {
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
 		System.out.println("1. userid:"+uid);
 		User user = null;
-		UserToken uToken = null;
+		UserTokenDTO uToken = null;
 		boolean reg = false;
 		if(uid == null || uid.intValue() == 0){//注册
 			//return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
@@ -267,7 +274,7 @@ public class UserUnitFacadeService {
 			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
 			deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,remoteIp);
 		}else{//登录
@@ -289,15 +296,18 @@ public class UserUnitFacadeService {
 			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
 			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
 		}
 
 
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+/*		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user.getId(), countrycode, acc, user.getNick(), user.getUtype(),
-				uToken.getAccess_token(), uToken.getRefresh_token(), reg,fetchBindDevices(user.getId()));
+				uToken.getAtoken(), uToken.getRtoken(), reg,fetchBindDevices(user.getId()));*/
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user,
+				uToken, reg,fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		/*UserDTO payload = new UserDTO();
 		payload.setId(user.getId());
