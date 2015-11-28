@@ -67,6 +67,24 @@ public class UserSearchConditionSortedSetService extends AbstractRelationSortedS
 	}
 	
 	/**
+	 * 移除用户的搜索数据(多个)
+	 * @param uid
+	 * @param scores_array 搜索条件ts的数组
+	 */
+	public void removeUserSearchConditions(int uid, String[] scores_array){
+		if(scores_array == null || scores_array.length == 0) return;
+		int length = scores_array.length;
+		double[] startScores = new double[length];
+		double[] endScores = new double[length];
+		for(int i = 0;i<length;i++){
+			double score = Double.parseDouble(scores_array[i]);
+			startScores[i] = score;
+			endScores[i] = score;
+		}
+		super.pipelineZRemrangeByScore_sameKeyWithDiffScore(generateKey(uid), startScores, endScores);
+	}
+	
+	/**
 	 * 查询用户保存的搜索条件列表
 	 * @param uid
 	 * @param start

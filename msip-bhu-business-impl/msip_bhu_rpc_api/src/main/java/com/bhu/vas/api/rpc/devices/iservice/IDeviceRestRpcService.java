@@ -36,5 +36,6 @@ public interface IDeviceRestRpcService {
 	
 	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message, String desc);
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts);
+	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits);
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
 }

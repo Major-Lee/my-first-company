@@ -508,6 +508,12 @@ public class DeviceRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
 	}
 	
+	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits){
+		String[] message_ts_array = message_ts_splits.split(StringHelper.COMMA_STRING_GAP);
+		UserSearchConditionSortedSetService.getInstance().removeUserSearchConditions(uid, message_ts_array);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
 		List<SearchConditionVTO> vtos = null;
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
