@@ -40,12 +40,13 @@ public class IegalTokenHashService extends AbstractRelationHashCache{
 	private static String generateKey(int uid){
 		return generateKey(String.valueOf(uid));
 	}
+	
 	private static String generateKey(String uid){
-		
 		int hashvalue = HashAlgorithmsHelper.additiveHash(uid, hasPrimeValue);
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.UserTokenPrefixKey);
+		return generateKeyByHashValue(hashvalue);
+		/*StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.UserTokenPrefixKey);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(String.format("%04d", hashvalue));
-		return sb.toString();
+		return sb.toString();*/
 	}
 	
 	private static String generateKeyByHashValue(int hashvalue){
@@ -57,7 +58,6 @@ public class IegalTokenHashService extends AbstractRelationHashCache{
 	public void userTokenRegister(int uid,String token){
 		this.hset(generateKey(uid), String.valueOf(uid), String.valueOf(token));
 	}
-	
 	
 	public void userTokenRemove(int uid){
 		this.hdel(generateKey(uid), String.valueOf(uid));//(generateKey(uid), String.valueOf(uid), String.valueOf(System.currentTimeMillis()));

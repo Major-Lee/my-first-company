@@ -16,7 +16,6 @@ import com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView;
 import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
@@ -24,6 +23,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -139,16 +139,15 @@ public class AgentUserUnitFacadeService {
 					ex.printStackTrace(System.out);
 				}
 			}
-			UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code
-			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
 			//deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
-			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-					uToken.getAccess_token(), uToken.getRefresh_token(), true);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,uToken, true);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
@@ -192,14 +191,14 @@ public class AgentUserUnitFacadeService {
 			}
 			this.userService.update(user);
 			
-			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
 			//deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-					uToken.getAccess_token(), uToken.getRefresh_token(), false);
+					uToken, false);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
@@ -212,13 +211,13 @@ public class AgentUserUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp) {
-		UserToken uToken = null;
+		UserTokenDTO uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
-			System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAccess_token());
+			System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAtoken());
 			//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(uToken.getId().intValue(), uToken.getAccess_token());
+			IegalTokenHashService.getInstance().userTokenRegister(uToken.getId(), uToken.getAtoken());
 		}catch(TokenValidateBusinessException ex){
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
@@ -242,7 +241,7 @@ public class AgentUserUnitFacadeService {
 			}
 			this.userService.update(user);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,
-					uToken.getAccess_token(), uToken.getRefresh_token(), false);
+					uToken, false);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);

@@ -8,8 +8,8 @@ import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.rpc.user.dto.UserTokenDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class RpcResponseDTOBuilder {
@@ -46,19 +46,19 @@ public class RpcResponseDTOBuilder {
 		res.setPayload(payload);
 		return res;
 	}
-	
-	public static Map<String,Object> builderSimpleUserRpcPayload(int uid, int countrycode, String acc, String nick,int utype,
+	public static Map<String,Object> builderSimpleUserRpcPayload(User user,UserTokenDTO token, boolean isReg){
+		return builderUserRpcPayload(user,token,isReg,null);
+	}
+	/*public static Map<String,Object> builderSimpleUserRpcPayload(int uid, int countrycode, String acc, String nick,int utype,
 			   String atoken, String rtoken, boolean isReg){
 		return builderUserRpcPayload(uid,countrycode,acc,nick,utype,atoken,rtoken,isReg,null);
-	}
+	}*/
 	
-	public static Map<String,Object> builderUserRpcPayload(int uid, int countrycode, String acc, String nick,int utype,
-														   String atoken, String rtoken, boolean isReg,
-														   List<UserDeviceDTO> userDeviceDTOList){
+	public static Map<String,Object> builderUserRpcPayload(User user,UserTokenDTO token, boolean isReg,List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
-		ret.put(Key_User, new UserDTO(uid,countrycode,acc,nick,utype,isReg));
-		ret.put(Key_UserToken, new UserTokenDTO(uid,atoken,rtoken));
-		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(acc));
+		ret.put(Key_User, builderUserDTOFromUser(user,isReg));
+		ret.put(Key_UserToken,token);
+		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(user.getMobileno()));
 		ret.put(Key_Cm, "60");
 		ret.put(Key_Devices, userDeviceDTOList);
 		return ret;
@@ -72,10 +72,10 @@ public class RpcResponseDTOBuilder {
 	
 	
 	public static Map<String,Object> builderUserRpcPayload4Agent(User user,
-			   String atoken, String rtoken, boolean isReg){
+			UserTokenDTO token, boolean isReg){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, builderAgentUserDetailVTOFromUser(user,isReg));
-		ret.put(Key_UserToken, new UserTokenDTO(user.getId(),atoken,rtoken));
+		ret.put(Key_UserToken, token);
 		ret.put(Key_Cm, "60");
 		return ret;
 	}

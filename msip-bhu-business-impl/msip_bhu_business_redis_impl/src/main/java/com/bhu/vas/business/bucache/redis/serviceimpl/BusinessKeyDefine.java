@@ -65,6 +65,7 @@ public class BusinessKeyDefine {
 		public static final String EmailCheck = "WUEC";
 		public static final String NickCheck = "WUNC";
 		public static final String MobilenoCheck = "WUMC";
+		public static final String AccCheck = "WUAC";
 		//public static final String PermalinkCheck = "UPC";
 		//public static final String SnsTokenCheck = "USC";
 		public static final String UserSnsCheck  = "WUSC";
