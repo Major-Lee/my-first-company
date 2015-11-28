@@ -262,7 +262,7 @@ public class UserUnitFacadeService {
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
 			user.setLastlogindevice(device);
 			user = this.userService.insert(user);
-			UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code
 			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header

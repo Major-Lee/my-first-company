@@ -142,7 +142,7 @@ public class AgentUserUnitFacadeService {
 			}
 			
 		}
-		UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		// token validate code
 		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 		{//write header to response header

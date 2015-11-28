@@ -15,6 +15,16 @@ public class UniqueFacadeService {
 			return null;
 		}
 	}
+	
+	
+	public static boolean checkEmailExist(String email){
+		try{
+			return UniqueEmailHashService.getInstance().check(email);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return true;
+		}
+	}
 	public static Integer fetchUidByNick(String nick){
 		String uidStr =  UniqueNickHashService.getInstance().fetchUidByNick(nick);
 		if(uidStr == null) return null;
@@ -25,16 +35,6 @@ public class UniqueFacadeService {
 			return null;
 		}
 	}
-	
-	public static boolean checkEmailExist(String email){
-		try{
-			return UniqueEmailHashService.getInstance().check(email);
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return true;
-		}
-	}
-	
 	public static boolean checkNickExist(String nick){
 		try{
 			return UniqueNickHashService.getInstance().check(nick);
@@ -54,7 +54,6 @@ public class UniqueFacadeService {
 			return null;
 		}
 	}
-	
 	public static Integer fetchUidByMobileno(String mobilenoWithCountryCode){
 		String uidStr =  UniqueMobilenoHashService.getInstance().fetchUidByMobileno(mobilenoWithCountryCode);
 		if(uidStr == null) return null;
@@ -84,16 +83,19 @@ public class UniqueFacadeService {
 		}
 	}
 	
-	public static void uniqueRegister(int uid,int countrycode,String mobileno){
+	public static void uniqueMobilenoRegister(int uid,int countrycode,String mobileno){
 		System.out.println(String.format("uid[%s] countrycode[%s] mobileno[%s]", uid,countrycode, mobileno));
 		UniqueMobilenoHashService.getInstance().registerOrUpdate(countrycode,mobileno, uid, null);
 	}
 	
+	public static void uniqueMobilenoChanged(int uid,int countrycode,String mobileno,String oldmobileno){
+		UniqueMobilenoHashService.getInstance().registerOrUpdate(countrycode,mobileno, uid,oldmobileno);
+	}
 	/*public static void uniqueRegister(int uid,String email,String pwd,String nick,String mobileno){
-		System.out.println(String.format("uid[%s] email[%s] pwd[%s] nick[%s] mobileno[%s]", uid, email, pwd, nick, mobileno));
-		UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,null);
-		UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, null);
-		UniqueMobilenoHashService.getInstance().registerOrUpdate(mobileno, uid, null);
+	System.out.println(String.format("uid[%s] email[%s] pwd[%s] nick[%s] mobileno[%s]", uid, email, pwd, nick, mobileno));
+	UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,null);
+	UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, null);
+	UniqueMobilenoHashService.getInstance().registerOrUpdate(mobileno, uid, null);
 	}
 	
 	public static void uniquePwdChanged(int uid,String email,String pwd){
@@ -102,12 +104,7 @@ public class UniqueFacadeService {
 	
 	public static void uniqueEmailChanged(int uid,String email,String pwd,String oldemail){
 		UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,oldemail);
-	}*/
-	
-	public static void uniqueMobilenoChanged(int uid,int countrycode,String mobileno,String oldmobileno){
-		UniqueMobilenoHashService.getInstance().registerOrUpdate(countrycode,mobileno, uid,oldmobileno);
-	}
-	
+	}*/	
 	/*public static void uniqueNickUpdate(int uid,String nick,String oldnick,boolean isNickUpd){
 		if(isNickUpd)
 			UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, oldnick);

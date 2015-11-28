@@ -96,7 +96,7 @@ public class UserRegisterOp {
 			user = userService.insert(user);
 			//user.setId(id);
 			System.out.println("uid:"+user.getId());
-			UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code
 			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
@@ -141,7 +141,7 @@ public class UserRegisterOp {
 			user = userService.insert(user);
 			//user.setId(id);
 			System.out.println("uid:"+user.getId());
-			UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 			// token validate code
 			UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
