@@ -256,7 +256,7 @@ public class TaskFacadeService {
 		
 		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
 			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
-			simulateTask.setId(0l);
+			simulateTask.setId(-1l);
 			simulateTask.setChannel(channel);
 			simulateTask.setChannel_taskid(channel_taskid);
 			simulateTask.setPayload(CMDBuilder.builderDeviceCmdPassThrough(mac,extparams));
