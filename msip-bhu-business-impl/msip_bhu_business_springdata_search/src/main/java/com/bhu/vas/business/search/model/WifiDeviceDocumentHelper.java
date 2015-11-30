@@ -104,7 +104,11 @@ public class WifiDeviceDocumentHelper {
 		}
 
 		if(deviceModule != null){
-			doc.setD_origvapmodule(deviceModule.getOrig_vap_module());
+			String orig_vap_module = deviceModule.getOrig_vap_module();
+			if(!StringUtils.isEmpty(orig_vap_module)){
+				doc.setD_origvapmodule(orig_vap_module);
+				doc.setO_operate(String.valueOf(WifiDeviceDocument1.O_Operate_True));
+			}
 			doc.setD_monline(deviceModule.isModule_online() ? String.valueOf(WifiDeviceDocument1.D_MOnline_True) 
 					: String.valueOf(WifiDeviceDocument1.D_MOnline_False));
 		}
