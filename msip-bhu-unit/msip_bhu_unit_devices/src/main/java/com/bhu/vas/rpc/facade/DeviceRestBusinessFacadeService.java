@@ -2,7 +2,9 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.dto.redis.StoreSearchConditionDTO;
@@ -24,12 +27,14 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
@@ -44,6 +49,7 @@ import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocument1;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
@@ -54,6 +60,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -94,6 +101,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
+	
+	@Resource
+	private UserService userService;
 	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
@@ -489,15 +499,20 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message, String desc){
+	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid, String message, String desc){
 		long ts = System.currentTimeMillis();
+		Map<String,Object> payload = new HashMap<String,Object>();
+		
 		StoreSearchConditionDTO dto = new StoreSearchConditionDTO(message, desc);
 		String dtojson = JsonHelper.getJSONString(dto);
-		UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, dtojson);
-		/*if(result != null && result > 0){
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-		}*/
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(ts);
+		Long ret = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, dtojson);
+		if(ret != null && ret > 0){
+			payload.put("ts", ts);
+			payload.put("stored", true);
+		}else{
+			payload.put("stored", false);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 	}
 	
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts){
@@ -512,6 +527,25 @@ public class DeviceRestBusinessFacadeService {
 		String[] message_ts_array = message_ts_splits.split(StringHelper.COMMA_STRING_GAP);
 		UserSearchConditionSortedSetService.getInstance().removeUserSearchConditions(uid, message_ts_array);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex());
+		List<User> agents = userService.findModelByModelCriteria(mc);
+		List<UserAgentVTO> vtos = null;
+		if(agents != null && !agents.isEmpty()){
+			vtos = new ArrayList<UserAgentVTO>();
+			UserAgentVTO vto = null;
+			for(User user : agents){
+				vto = new UserAgentVTO();
+				vto.setId(user.getId());
+				vto.setN(user.getNick());
+				vto.setOrg(user.getOrg());
+				vtos.add(vto);
+			}
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
