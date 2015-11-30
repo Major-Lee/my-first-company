@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -18,6 +19,7 @@ import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
@@ -215,7 +217,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message,String desc) {
+	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid,String message,String desc) {
 		logger.info(String.format("DeviceRestRPC storeUserSearchCondition invoke uid [%s] message [%s] desc [%s]", uid, message, desc));
 		try{
 			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message, desc);
@@ -258,6 +260,17 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchUserSearchConditions exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+	@Override
+	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid) {
+		logger.info(String.format("DeviceRestRPC fetchAgents invoke uid [%s]", uid));
+		try{
+			return deviceRestBusinessFacadeService.fetchAgents(uid);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchAgents exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}

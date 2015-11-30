@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
@@ -14,6 +15,7 @@ import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -119,7 +121,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid,String message,String desc) {
+	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid,String message,String desc) {
 		if(StringUtils.isEmpty(message))
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
@@ -142,6 +144,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
 		return deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid) {
+		return deviceRestRpcService.fetchAgents(uid);
 	}
 
 	/*@Override

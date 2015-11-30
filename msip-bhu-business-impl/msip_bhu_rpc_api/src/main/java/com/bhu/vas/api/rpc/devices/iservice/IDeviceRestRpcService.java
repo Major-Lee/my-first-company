@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -11,6 +12,7 @@ import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -34,8 +36,9 @@ public interface IDeviceRestRpcService {
 
 	//public Collection<GeoMapVTO> fetchGeoMap();
 	
-	public RpcResponseDTO<Long> storeUserSearchCondition(int uid, String message, String desc);
+	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid, String message, String desc);
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts);
 	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits);
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
+	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid);
 }

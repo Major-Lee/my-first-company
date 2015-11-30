@@ -1,5 +1,8 @@
 package com.bhu.vas.web.console;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +17,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -72,7 +76,7 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = true) String message,
             @RequestParam(required = false) String desc) {
     	
-        RpcResponseDTO<Long> result = deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
+        RpcResponseDTO<Map<String, Object>> result = deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
     
@@ -132,6 +136,23 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
     	
         RpcResponseDTO<TailPage<SearchConditionVTO>> vtos = deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+    }
+    
+    /**
+     * 获取分销商的全部列表
+     * @param request
+     * @param response
+     * @param uid
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_agents", method = {RequestMethod.POST})
+    public void fetch_agents(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid) {
+    	
+        RpcResponseDTO<List<UserAgentVTO>> vtos = deviceRestRpcService.fetchAgents(uid);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
     }
 
