@@ -31,6 +31,9 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	public static final int U_Binded_True = 1;
 	public static final int U_Binded_False = 0;
 	
+	public static final int O_Operate_True = 1;
+	public static final int O_Operate_False = 0;
+	
 	@Id
 	@Field(
 			type = FieldType.String,
@@ -216,6 +219,14 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "lowercase_whitespace",
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String o_operate = String.valueOf(O_Operate_False);//设备是否可运营 0 不可 1 可
+	
+	@Field(
+			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -259,6 +270,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "lowercase_whitespace",
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -441,6 +453,14 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 
 	public void setO_batch(String o_batch) {
 		this.o_batch = o_batch;
+	}
+
+	public String getO_operate() {
+		return o_operate;
+	}
+
+	public void setO_operate(String o_operate) {
+		this.o_operate = o_operate;
 	}
 
 	public String getU_id() {
