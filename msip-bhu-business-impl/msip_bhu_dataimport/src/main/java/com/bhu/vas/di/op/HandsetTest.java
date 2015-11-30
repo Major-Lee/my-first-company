@@ -12,7 +12,7 @@ public class HandsetTest {
 
     public static void main(String[] args){
 
-        long ts= 1447328625160L ;
+        long ts= 1448866325348L ;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
 //        System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
 //        System.out.println(getDateZeroTime(new Date()).getTime());

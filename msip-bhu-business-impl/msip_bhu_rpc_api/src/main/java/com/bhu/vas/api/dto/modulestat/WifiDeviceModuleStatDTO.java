@@ -10,11 +10,11 @@ import java.util.List;
  *
  * 增值服务统计
  */
-public class ModuleStatDTO implements Serializable {
+public class WifiDeviceModuleStatDTO implements Serializable {
     @JsonProperty("dev")
     private String mac;//设备mac
     @JsonProperty("item")
-    private List<ModuleStatItemDTO> items;//
+    private List<WifiDeviceModuleStatItemDTO> items;//
 
 
     public String getMac() {
@@ -25,11 +25,11 @@ public class ModuleStatDTO implements Serializable {
         this.mac = mac;
     }
 
-    public List<ModuleStatItemDTO> getItems() {
+    public List<WifiDeviceModuleStatItemDTO> getItems() {
         return items;
     }
 
-    public void setItems(List<ModuleStatItemDTO> items) {
+    public void setItems(List<WifiDeviceModuleStatItemDTO> items) {
         this.items = items;
     }
 }
