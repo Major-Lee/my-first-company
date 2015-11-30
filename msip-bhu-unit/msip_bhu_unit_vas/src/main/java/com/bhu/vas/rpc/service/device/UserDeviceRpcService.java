@@ -4,12 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.rpc.facade.UserUnitFacadeService;
-
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
@@ -19,6 +17,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
+import com.bhu.vas.rpc.facade.UserUnitFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -71,11 +70,24 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
         logger.info(String.format("unBindDevice with mac[%s] uid[%s]",mac, uid));
-        return userDeviceFacadeService.unBindDevice(mac,uid);
+        int deviceStatus = validateDeviceStatusIsOnlineAndBinded(mac);
+        logger.debug("devicestatus==" + deviceStatus);
+        if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_UROOTER);
+        }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
+                || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
+            return userDeviceFacadeService.unBindDevice(mac, uid);
+        } /*else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
+            //TODO(bluesand):未绑定过装备的时候，取消绑定
+        	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        }*/
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
-    @Override
-    public int validateDeviceStatusIsOnlineAndBinded(String mac) {
+    //@Override
+    private int validateDeviceStatusIsOnlineAndBinded(String mac) {
         logger.info(String.format("validateDeviceStatusIsOnlineAndBinded with mac[%s]",mac));
         int retStatus = deviceFacadeService.getWifiDeviceOnlineStatus(mac);
         if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_ONLINE) {
@@ -93,7 +105,13 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         logger.info(String.format("fetchBindDevices with uid[%s]", uid));
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid));
     }
-
+    
+    @Override
+    public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
+        logger.info(String.format("fetchBindDevicesByAccOrUid with uid[%s]", uid));
+        return userUnitFacadeService.fetchBindDevicesByAccOrUid(countrycode,acc,uid);
+    }
+    
     @Override
     public RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac) {
         logger.info(String.format("validateDeviceStatus with mac[%s]", mac));

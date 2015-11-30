@@ -71,7 +71,7 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
         }
-        int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
+        /*int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
         logger.debug("devicestatus==" + deviceStatus);
         if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_EXIST));
@@ -89,8 +89,13 @@ public class UserDeviceController extends BaseController {
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
             //TODO(bluesand):未绑定过装备的时候，取消绑定
             SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+        }*/
+        RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.unBindDevice(mac, uid);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
-
     }
 
     @ResponseBody()
@@ -112,7 +117,6 @@ public class UserDeviceController extends BaseController {
         RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
     }
-
 
     @ResponseBody()
     @RequestMapping(value="/modify/device_name",method={RequestMethod.POST})

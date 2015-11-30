@@ -9,12 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.statistics.dto.*;
-import com.bhu.vas.api.vto.*;
-import com.smartwork.msip.cores.helper.DateHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +18,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlSubDTO;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.StatisticsGeneralVTO;
+import com.bhu.vas.api.vto.UserBrandVTO;
+import com.bhu.vas.api.vto.UserUrlVTO;
+import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
+import com.smartwork.msip.cores.helper.DateHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -42,6 +52,10 @@ public class ConsoleController extends BaseController {
 
     @Resource
     private IDeviceRestRpcService deviceRestRpcService;
+
+    @Resource
+    private IUserDeviceRpcService userDeviceRpcService;
+
 
     @Resource
     private IStatisticsRpcService statisticsRpcService;
@@ -200,6 +214,41 @@ public class ConsoleController extends BaseController {
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 
+
+    /**
+     * 控制层 获取用户手机号或者用户tid绑定的设备
+     * @param response
+     * @param countrycode
+     * @param acc 目标用户手机号
+     * @param tid 目标用户id
+     * @param uid
+     */
+    @ResponseBody()
+    @RequestMapping(value="/fetch_bindedbyaccortid",method={RequestMethod.POST})
+    public void fetchBindedByAccOrTid(HttpServletResponse response,
+					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+								@RequestParam(required = false) String acc,
+								@RequestParam(required = false,defaultValue="0") int tid,
+                                @RequestParam(required = true) int uid) {
+    	RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevicesByAccOrUid(countrycode, acc, tid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value="/un_bindedbyaccortid",method={RequestMethod.POST})
+    public void unBindedByAccOrTid(HttpServletResponse response,
+					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+								@RequestParam(required = false) String acc,
+					    		@RequestParam(required = true) int tid,
+                                @RequestParam(required = true, value = "uid") int uid) {
+        //RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
+        //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+    }
+    
     /**
      * 获取地图设备数据
      * 暂时采用读取500条wifi设备全量返回

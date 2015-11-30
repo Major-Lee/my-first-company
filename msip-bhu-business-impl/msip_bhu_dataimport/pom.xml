@@ -52,6 +52,11 @@
             <artifactId>UserAgentUtils</artifactId>
             <version>1.2.4</version>
         </dependency>
+		<dependency>
+		    <groupId>com.qiniu</groupId>
+		    <artifactId>sdk</artifactId>
+		    <version>6.0.0</version>
+		</dependency>        
     </dependencies>
 
     <build>

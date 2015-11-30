@@ -366,6 +366,26 @@ public class UserUnitFacadeService {
 	}
 	
 	/**
+	 * 通过用户手机号或者指定用户的uid得到其绑定的设备
+	 * @param countrycode
+	 * @param acc
+	 * @return
+	 */
+	public RpcResponseDTO<List<UserDeviceDTO>>  fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
+		if(uid <=0 && StringUtils.isEmpty(acc))
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		if(uid <=0){
+			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+			if(ret_uid == null || ret_uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			uid = ret_uid.intValue();
+		}
+		List<UserDeviceDTO> fetchBindDevices = fetchBindDevices(uid);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fetchBindDevices);
+	}
+	
+	/**
 	 * 用户bbs登录 通过发送push消息通知app
 	 * 安卓设备推送静默发送
 	 * ios设备推送通知发送
