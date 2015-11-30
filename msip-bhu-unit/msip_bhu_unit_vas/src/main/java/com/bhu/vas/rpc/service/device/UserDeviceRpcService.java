@@ -113,6 +113,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
     
     @Override
+    public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid){
+    	logger.info(String.format("unBindDevicesByAccOrUid with uid[%s]", uid));
+        return userUnitFacadeService.unBindDevicesByAccOrUid(countrycode,acc,uid);
+    }
+    @Override
     public RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac) {
         logger.info(String.format("validateDeviceStatus with mac[%s]", mac));
         UserDeviceStatusDTO userDeviceStatusDTO = new UserDeviceStatusDTO();

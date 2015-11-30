@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -383,6 +384,34 @@ public class UserUnitFacadeService {
 		}
 		List<UserDeviceDTO> fetchBindDevices = fetchBindDevices(uid);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fetchBindDevices);
+	}
+	
+	
+	
+	/**
+	 * 通过用户手机号或者指定用户的uid得到其绑定的设备
+	 * @param countrycode
+	 * @param acc
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
+		if(uid <=0 && StringUtils.isEmpty(acc))
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		if(uid <=0){
+			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+			if(ret_uid == null || ret_uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			uid = ret_uid.intValue();
+		}
+		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, WIFI_DEVICE_BIND_LIMIT_NUM);
+		for(UserDevice ud:userDeviceList){
+			UserDevicePK userDevicePK = ud.getId();
+	        if (userDeviceService.deleteById(userDevicePK) > 0)  {
+	        	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, userDevicePK.getMac());
+	        }
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	
 	/**
