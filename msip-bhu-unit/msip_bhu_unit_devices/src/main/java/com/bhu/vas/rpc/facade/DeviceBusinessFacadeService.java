@@ -641,6 +641,7 @@ public class DeviceBusinessFacadeService {
 		//1:更新终端的hostname
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
 		if(handset != null){
+			handset.setAction(HandsetDeviceDTO.Action_Online);
 			handset.setDhcp_name(dto.getDhcp_name());
 			handset.setIp(dto.getIp());
 			handset.setLast_wifi_id(dto.getLast_wifi_id());

@@ -245,6 +245,12 @@ public class ConsoleController extends BaseController {
 								@RequestParam(required = false) String acc,
 					    		@RequestParam(required = true) int tid,
                                 @RequestParam(required = true, value = "uid") int uid) {
+    	RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.unBindDevicesByAccOrUid(countrycode, acc, tid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
         //RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
     }

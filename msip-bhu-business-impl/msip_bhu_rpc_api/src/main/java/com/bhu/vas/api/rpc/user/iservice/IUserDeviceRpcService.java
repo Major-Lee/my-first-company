@@ -29,6 +29,7 @@ public interface IUserDeviceRpcService {
 
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid);
+    RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid);
     //int validateDeviceStatusIsOnlineAndBinded(String mac);
 
     RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac);
