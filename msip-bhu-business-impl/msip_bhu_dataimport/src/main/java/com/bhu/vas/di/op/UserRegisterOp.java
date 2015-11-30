@@ -30,14 +30,12 @@ import com.smartwork.msip.business.token.UserTokenDTO;
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90002 18911370002 agent1234 代理商3
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90003 18911370003 agent1234 代理商4
  * 
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90010 18911370010 agent1234 仓储管理员1
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90011 18911370011 agent1234 仓储管理员2
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90012 18911370012 agent1234 仓储管理员3
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90010 13910222600 222600 黄运强
+
+ * 
  * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90020 18911370020 agent1234 财务1
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90021 18911370021 agent1234 财务2
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90022 18911370022 agent1234 财务3
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90023 18911370023 agent1234 财务4
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90021 13910139032 139032 佟艳
  * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90030 18911370030 agent1234 销售1
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90031 18911370031 agent1234 销售2
