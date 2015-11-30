@@ -500,17 +500,22 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid, String message, String desc){
-		long ts = System.currentTimeMillis();
 		Map<String,Object> payload = new HashMap<String,Object>();
 		
 		StoreSearchConditionDTO dto = new StoreSearchConditionDTO(message, desc);
 		String dtojson = JsonHelper.getJSONString(dto);
-		Long ret = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, dtojson);
-		if(ret != null && ret > 0){
-			payload.put("ts", ts);
-			payload.put("stored", true);
-		}else{
+		
+		Double exist_ts = UserSearchConditionSortedSetService.getInstance().zscore(uid, dtojson);
+		if(exist_ts != null && exist_ts > 0){
+			payload.put("ts", exist_ts);
 			payload.put("stored", false);
+		}else{
+			long ts = System.currentTimeMillis();
+			Long ret = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, dtojson);
+			if(ret != null && ret > 0){
+				payload.put("ts", ts);
+				payload.put("stored", true);
+			}
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 	}

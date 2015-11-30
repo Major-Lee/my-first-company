@@ -56,6 +56,10 @@ public class UserSearchConditionSortedSetService extends AbstractRelationSortedS
 		return super.zadd(generateKey(uid), score, dtojson);
 	}
 	
+	public Double zscore(int uid, String dtojson){
+		return super.zscore(generateKey(uid), dtojson);
+	}
+	
 	/**
 	 * 移除用户的搜索条件数据
 	 * @param uid
