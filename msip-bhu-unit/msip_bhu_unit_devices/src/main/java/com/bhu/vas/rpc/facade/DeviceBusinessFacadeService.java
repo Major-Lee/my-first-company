@@ -426,16 +426,21 @@ public class DeviceBusinessFacadeService {
 		long last_login_at = 0;
 		//1:移动设备基础信息更新
 		String wifiId_lowerCase = wifiId.toLowerCase();
+		
+		//System.out.println("message:"+JsonHelper.getJSONString(dto));
+		
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(dto.getMac().toLowerCase());
 		long this_login_at = System.currentTimeMillis();
 		//HandsetDevice handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(handset == null){
+			//System.out.println("before update message:null");
 			last_login_at = this_login_at;
 			dto.setLast_wifi_id(wifiId_lowerCase);
 			dto.setTs(this_login_at);
 			HandsetStorageFacadeService.handsetComming(dto);
 			newHandset = true;
 		}else{
+			//System.out.println("before update message:"+JsonHelper.getJSONString(handset));
 			last_login_at = handset.getTs();
 			handset.setLast_wifi_id(wifiId_lowerCase);
 			handset.setTs(this_login_at);
@@ -470,7 +475,10 @@ public class DeviceBusinessFacadeService {
 		}
 		//本次移动设备登录时间
 		//long this_login_at = handset_device_entity.getLast_login_at().getTime();
-
+		/*{
+			HandsetDeviceDTO now = HandsetStorageFacadeService.handset(dto.getMac().toLowerCase());
+			System.out.println("after update message:"+JsonHelper.getJSONString(now));
+		}*/
 
 		if(isVisitorWifi(ctx, dto)) { //访客网络
 			handsetDeviceVisitorOnline(ctx, dto, wifiId);
