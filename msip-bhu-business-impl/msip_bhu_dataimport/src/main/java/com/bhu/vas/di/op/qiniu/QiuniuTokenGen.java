@@ -3,7 +3,6 @@ package com.bhu.vas.di.op.qiniu;
 import com.qiniu.api.auth.digest.Mac;
 import com.qiniu.api.config.Config;
 import com.qiniu.api.rs.PutPolicy;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class QiuniuTokenGen {
 	 public static void main(String[] args) throws Exception {
@@ -15,7 +14,9 @@ public class QiuniuTokenGen {
 	        PutPolicy putPolicy = new PutPolicy(bucketName);
 	        
 	        //DateDateTimeHelper.getDateDaysAfter(counts);
-	        putPolicy.expires = putPolicy.expires*24*365;//默认一小时 ，所以*24*265为一年
+	        //putPolicy.expires = putPolicy.expires*24*365;//默认一小时 ，所以*24*265为一年
+	        //单位秒
+	        putPolicy.expires = 24*60*60*365;//默认一小时 ，所以*24*265为一年
 	        String uptoken = putPolicy.token(mac);
 	        System.out.println(putPolicy.expires);
 	        System.out.println("uptoken:"+uptoken);

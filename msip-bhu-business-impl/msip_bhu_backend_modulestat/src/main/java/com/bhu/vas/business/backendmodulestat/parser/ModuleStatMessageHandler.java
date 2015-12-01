@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.bhu.vas.api.dto.modulestat.WifiDeviceModuleStatDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -47,6 +49,8 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 				this.doBusinessWifistasnifferData(dto);
 				//进行push消息的发送
 				this.doPushMessage(dto);*/
+
+				WifiDeviceModuleStatDTO dto = JsonHelper.getDTO(message, WifiDeviceModuleStatDTO.class);
 				
 			}
 		}

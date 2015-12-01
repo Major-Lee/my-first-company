@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum UserType {
 	Normal(1,"N","普通用户"),
-	Agent(10,"A","代理商用户"),
+	Agent(10,"A","分销商用户"),
 	Finance(15,"F","财务用户"),
 	WarehouseManager(20,"W","仓储用户"),
 	Sellor(30,"S","销售用户"),
