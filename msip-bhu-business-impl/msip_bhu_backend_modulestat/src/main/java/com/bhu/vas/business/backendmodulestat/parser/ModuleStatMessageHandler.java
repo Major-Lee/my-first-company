@@ -23,12 +23,7 @@ import com.smartwork.async.messagequeue.kafka.parser.iface.IMessageHandler;
 public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 	private final Logger logger = LoggerFactory.getLogger(ModuleStatMessageHandler.class);
 
-	//@Resource
-	//private BusinessWSCacheService businessWSCacheService;
-	
-	//@Resource
-	//private PushService pushService;
-	
+
 	@Override
 	public void handler(String topic, Map<Integer, List<byte[]>> value) {
 		//logger.info("WSMessageHandler Thread " + Thread.currentThread().getName());
@@ -44,17 +39,13 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 				if(StringUtils.isEmpty(message)) continue;
 				logger.info(String.format("WSMessageHandler [%s]", message));
 				System.out.println(String.format("WSMessageHandler [%s]", message));
-				/*WifistasnifferRddto dto = JsonHelper.getDTO(message, WifistasnifferRddto.class);
-				//进行周边探测业务数据持久化
-				this.doBusinessWifistasnifferData(dto);
-				//进行push消息的发送
-				this.doPushMessage(dto);*/
 
 				WifiDeviceModuleStatDTO dto = JsonHelper.getDTO(message, WifiDeviceModuleStatDTO.class);
 				
 			}
 		}
 		
-		
 	}
+
+
 }
