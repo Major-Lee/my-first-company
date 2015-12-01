@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -47,33 +46,37 @@ public class WifiDeviceHelper {
 		//Mass AP Pro H201 H303
 		Soc_HdTypes.add("H201");
 		Soc_HdTypes.add("H303");*/
-
-
 		//vapExceptDevices.add("84:82:f4:23:06:68");
 	}
-	
-	public static boolean isURouterDevice(String orig_model) {
-		/*DeviceVersion ver = DeviceVersion.parser(orig_swver);
+	public static boolean isURouterDevice(String orig_swver) {
+		DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null) return false;
-		return ver.wasDstURouter();*/
-		return WIFI_URouter_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
+		return ver.wasDutURouter();
 	}
+	/*public static boolean isURouterDevice(String orig_model) {
+		DeviceVersion ver = DeviceVersion.parser(orig_swver);
+		if(ver == null) return false;
+		return ver.wasDstURouter();
+		
+		ssss
+		return WIFI_URouter_DEVICE_ORIGIN_MODEL.equalsIgnoreCase(orig_model);
+	}*/
 	
-	public static boolean isURouterHdType(String hd_type) {
+	/*public static boolean isURouterHdType(String hd_type) {
 		return DeviceUnitType.isURouterHdType(hd_type);
 		//return URouter_HdTypes.contains(hd_type);
 	}
 	public static boolean isSocHdType(String hd_type) {
 		return DeviceUnitType.isSocHdType(hd_type);
 		//return Soc_HdTypes.contains(hd_type);
-	}
+	}*/
 	/**
 	 * uRouter 设备 或者SOC设备
 	 * 开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC ） ）支持
 	 * @param orig_model
 	 * @return
 	 */
-	public static boolean isDeviceNeedOnlineTeminalQuery(String orig_model,String orig_swver){
+	/*public static boolean isDeviceNeedOnlineTeminalQuery(String orig_model,String orig_swver){
 		if(isURouterDevice(orig_model)){
 			return true;
 		}else{
@@ -83,7 +86,7 @@ public class WifiDeviceHelper {
 			}
 		}
 		return false;
-	}
+	}*/
 	
 	public static boolean isLocationCMDSupported(){
 		return false;

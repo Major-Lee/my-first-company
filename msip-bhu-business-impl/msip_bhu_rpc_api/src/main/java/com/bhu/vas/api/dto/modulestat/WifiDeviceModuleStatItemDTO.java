@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 11/27/15.
  */
+@SuppressWarnings("serial")
 public class WifiDeviceModuleStatItemDTO implements Serializable {
     private  String mac;
     private  int type;

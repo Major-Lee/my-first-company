@@ -52,7 +52,7 @@ public class VapRpcService  implements IVapRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<CurrentGrayUsageVTO> currentGrays(int uid, int dut) {
+	public RpcResponseDTO<CurrentGrayUsageVTO> currentGrays(int uid, String dut) {
 		logger.info(String.format("currentGrays uid[%s] dut[%s]",uid,dut));
 		try{
 			DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex(dut);
@@ -67,7 +67,7 @@ public class VapRpcService  implements IVapRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<VersionVTO>> pagesDeviceVersions(int uid,int dut,boolean fw,int pn,int ps) {
+	public RpcResponseDTO<TailPage<VersionVTO>> pagesDeviceVersions(int uid,String dut,boolean fw,int pn,int ps) {
 		logger.info(String.format("pagesDeviceVersions uid[%s] dut[%s] fw[%s] pn[%s] ps[%s]",uid,dut,fw,pn,ps));
 		try{
 			DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex(dut);
@@ -89,7 +89,7 @@ public class VapRpcService  implements IVapRpcService{
 
 	@Override
 	public RpcResponseDTO<GrayUsageVTO> modifyRelatedVersion4GrayVersion(
-			int uid, int dut, int gl, String fwid, String omid) {
+			int uid, String dut, int gl, String fwid, String omid) {
 		logger.info(String.format("modifyRelatedVersion4GrayVersion uid[%s] dut[%s] gl[%s] fwid[%s] omid[%s]",uid,dut,gl,fwid,omid));
 		try{
 			 GrayUsageVTO grayUsageVTO = wifiDeviceGrayFacadeService.modifyRelatedVersion4GrayVersion(
@@ -106,7 +106,7 @@ public class VapRpcService  implements IVapRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<VersionVTO> addDeviceVersion(int uid, int dut,
+	public RpcResponseDTO<VersionVTO> addDeviceVersion(int uid, String dut,
 			boolean fw, String versionid, String upgrade_url) {
 		logger.info(String.format("addDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s] upgrade_url[%s]",uid,dut,fw,versionid,upgrade_url));
 		try{
@@ -122,7 +122,7 @@ public class VapRpcService  implements IVapRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, int dut,
+	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, String dut,
 			boolean fw, String versionid) {
 		logger.info(String.format("removeDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s]",uid,dut,fw,versionid));
 		try{
@@ -137,7 +137,7 @@ public class VapRpcService  implements IVapRpcService{
 		}
 	}
 	@Override
-	public RpcResponseDTO<Boolean> saveMacs2Gray(int uid, int dut, int gl,
+	public RpcResponseDTO<Boolean> saveMacs2Gray(int uid, String dut, int gl,
 			List<String> macs) {
 		logger.info(String.format("saveMacs2Gray uid[%s] dut[%s] gl[%s] macs[%s]",uid,dut,gl,macs));
 		try{

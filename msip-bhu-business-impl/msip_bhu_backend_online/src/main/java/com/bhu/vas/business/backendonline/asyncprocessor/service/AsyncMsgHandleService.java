@@ -14,6 +14,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.business.asyn.spring.model.*;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
@@ -140,7 +142,7 @@ public class AsyncMsgHandleService {
 		WifiDeviceOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceOnlineDTO.class);
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
-			boolean isRouter = WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_model());
+			boolean isRouter = WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver());//wifiDevice.getOrig_model());
 			//boolean needWiffsniffer = false;
 			List<String> payloads = new ArrayList<String>();
 			//boolean forceFirmwareUpdate = false;
@@ -172,23 +174,23 @@ public class AsyncMsgHandleService {
 				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 					payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
+				
+				//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
+				payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
 			}
-			try{
-				/*//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
+			/*try{
+				//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
 				if(WifiDeviceHelper.isDeviceNeedOnlineTeminalQuery(wifiDevice.getOrig_model(), wifiDevice.getOrig_swver())){
 					//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
 					payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
-				}*/
+				}
 				//暂时只对uRouter设备进行终端上下线上报指令
-				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_model())){
-					//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
-					payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
+				if(WifiDeviceHelper.isURouterDevice()){wifiDevice.getOrig_model())){
+					
 				}
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
-			}
-			
-			
+			}*/
 			
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
@@ -196,7 +198,8 @@ public class AsyncMsgHandleService {
 				boolean needUpdate = false;
 				//设备上线后认领
 				if(wifiDevice.needClaim()){
-					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn(), wifiDevice.getId(), wifiDevice.getHdtype());
+					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
+					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn(), wifiDevice.getId(), parser.toDeviceUnitTypeIndex());
 					if(claim_ret != 0){//-1 or >0
 						wifiDevice.setAgentuser(claim_ret);
 						needUpdate = true;
@@ -234,15 +237,15 @@ public class AsyncMsgHandleService {
 	public void wifiDeviceModuleOnlineHandle(String message) throws Exception{
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s]", message));
 		WifiDeviceModuleOnlineDTO dto = JsonHelper.getDTO(message, WifiDeviceModuleOnlineDTO.class);
-		{//组件模块升级指令
-			UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceOMUpgrade(dto.getMac(), dto.getOrig_vap_module());
-			if(upgrade != null && upgrade.isForceDeviceUpgrade() && WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM == upgrade.isFw()){
-				String cmd = upgrade.buildUpgradeCMD(dto.getMac(), 0l, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
-				afterDeviceModuleOnlineThenCmdDown(dto.getMac(),cmd);
-			}
-		}
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if(wifiDevice != null){
+			{//组件模块升级指令
+				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceOMUpgrade(dto.getMac(),wifiDevice.getOrig_swver(), dto.getOrig_vap_module());
+				if(upgrade != null && upgrade.isForceDeviceUpgrade() && WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM == upgrade.isFw()){
+					String cmd = upgrade.buildUpgradeCMD(dto.getMac(), 0l, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
+					afterDeviceModuleOnlineThenCmdDown(dto.getMac(),cmd);
+				}
+			}
 			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s] successful", message));

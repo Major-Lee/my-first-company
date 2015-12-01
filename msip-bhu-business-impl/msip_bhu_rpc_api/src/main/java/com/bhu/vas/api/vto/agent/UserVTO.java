@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 10/20/15.
  */
+@SuppressWarnings("serial")
 public class UserVTO implements Serializable {
 
     private long id;

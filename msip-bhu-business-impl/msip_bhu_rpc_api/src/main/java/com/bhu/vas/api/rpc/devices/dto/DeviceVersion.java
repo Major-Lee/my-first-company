@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -19,10 +20,9 @@ public class DeviceVersion {
 	public static final String Prefix_CPE = "CPE";
 	public static final String Build_Normal_Prefix = "Build";
 	public static final String Build_R_Prefix = "r";
-	/*//version prefix
-	private String vp;*/
+
 	private String prefix;
-	private String hdt;
+	//private String hdt;
 	private String pno;
 	
 	//版本号1.3.0、1.3.0r1、1.3.2Build8606、1.2.16Buildwaip
@@ -64,12 +64,12 @@ public class DeviceVersion {
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
-	public String getHdt() {
+	/*public String getHdt() {
 		return hdt;
 	}
 	public void setHdt(String hdt) {
 		this.hdt = hdt;
-	}
+	}*/
 	public String getPno() {
 		return pno;
 	}
@@ -77,29 +77,30 @@ public class DeviceVersion {
 		this.pno = pno;
 	}
 
-	// U(家用版本，urouter), C(商业wifi版本), S(soc版本)
-	public static final String DUT_uRouter = "TU";
-	public static final String DUT_CWifi = "TC";
-	public static final String DUT_soc = "TS";
-	
 	/**
 	 * dut = TU为uRouter
 	 * dut = null && vp.startWith("AP106")为uRouter
 	 * @return
 	 */
 	public boolean wasDutURouter(){
-		/*if(StringUtils.isEmpty(dut)) return false;
-		return DUT_uRouter.equals(dut);*/
-		if(StringUtils.isEmpty(dut) && StringUtils.isNotEmpty(prefix) && StringUtils.isNotEmpty(hdt)){
-			return Prefix_AP.equals(prefix) && hdt.equals("106");
-			//return vp.startsWith("AP106");
+		if(StringUtils.isEmpty(dut) && StringUtils.isNotEmpty(prefix)){//兼容老的版本号没有_TU的uRouter
+			return "AP106".equals(prefix);
 		}
-		return DUT_uRouter.equals(dut);
+		return DeviceUnitType.isURouter(prefix, dut);//DeviceUnitType.uRouterRoot.getIndex().equals(dut);
 	}
 	
+	public String toDeviceUnitTypeIndex(){
+		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(dut, prefix);
+		if(fromVersionPrefix != null){
+			return fromVersionPrefix.getIndex();
+		}
+		return StringHelper.EMPTY_STRING_GAP;
+	}
+	
+	/**/
 	public boolean wasDutSoc(){
 		if(StringUtils.isEmpty(dut)) return false;
-		return DUT_soc.equals(dut);
+		return DeviceUnitType.SOCRoot.getIndex().equals(dut);
 	}
 	/**
 	 * 解析设备的软件版本
@@ -141,11 +142,11 @@ public class DeviceVersion {
 		if(StringUtils.isEmpty(orig_swver)) return Empty_DeviceVersion;
 		String prefix = null;
 		if(orig_swver.startsWith(Prefix_AP)){
-			prefix = Prefix_AP;
-			orig_swver = orig_swver.substring(Prefix_AP.length());
+			prefix = orig_swver.substring(0,Prefix_AP.length()+3);//Prefix_AP;
+			orig_swver = orig_swver.substring(Prefix_AP.length()+4);
 		}else if(orig_swver.startsWith(Prefix_CPE)){
-			prefix = Prefix_CPE;
-			orig_swver = orig_swver.substring(Prefix_CPE.length());
+			prefix = orig_swver.substring(0,Prefix_CPE.length()+3);//Prefix_CPE;
+			orig_swver = orig_swver.substring(Prefix_CPE.length()+4);
 		}else{
 			prefix = null;
 		}
@@ -155,10 +156,10 @@ public class DeviceVersion {
 		String[] split = orig_swver.split(Swver_Spliter_Patterns);
 		int index = 0;
 		for(String s:split){
-			if(index == 0) dv.setHdt(s);
-			if(index == 1) dv.setPno(s);
-			if(index == 2) dv.setVer(s);
-			if(index > 2){
+			//if(index == 0) dv.setHdt(s);
+			if(index == 0) dv.setPno(s);
+			if(index == 1) dv.setVer(s);
+			if(index > 1){
 				char _prefix = s.charAt(0);
 				if(_prefix == 'T'){
 					dv.setDut(s);
@@ -196,7 +197,7 @@ public class DeviceVersion {
 		if(orig_swver2_versions == null) return 1;
 		//暂时忽略在vp相等的前提下才能允许升级
 		//if(true){//{ver1.getVp().equals(ver2.getVp())){
-		if(ver1.getPrefix().equals(ver2.getPrefix()) && ver1.getHdt().equals(ver2.getHdt())){
+		if(ver1.getPrefix().equals(ver2.getPrefix())){
 			//判断大版本号
 			int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
 			//System.out.println("top ret " + top_ret);
@@ -212,8 +213,9 @@ public class DeviceVersion {
 		return 0;
 	}
 	public boolean valid(){
-		return StringUtils.isNotEmpty(prefix) && StringUtils.isNotEmpty(hdt) && StringUtils.isNotEmpty(pno) && StringUtils.isNotEmpty(ver);
+		return StringUtils.isNotEmpty(prefix) && StringUtils.isNotEmpty(pno) && StringUtils.isNotEmpty(ver);
 	}
+	
 	public boolean canExecuteUpgrade(){
 		return StringUtils.isEmpty(dut) || wasDutURouter();
 	}
@@ -223,10 +225,10 @@ public class DeviceVersion {
 		for(String orig:array){
 			DeviceVersion parser = DeviceVersion.parser(orig);
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
-			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getPrefix()+" "+parser.getHdt()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]+"  "+parser.getDut()+"  "+parser.getMn());
+			System.out.println(orig+"   "+/*parser.wasDutURouter() +*/ "  "+ parser.getPrefix()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]+"  "+parser.getDut()+"  "+parser.getMn());
 		}
 		
-		String ss = "Build8606";
+		/*String ss = "Build8606";
 		System.out.println(ss.substring(5));
 		
 		String current = "AP106P06V1.3.2Build8606";
@@ -241,6 +243,6 @@ public class DeviceVersion {
 		//String[] split = "2015-03-18-19:19 Revision: 6926".split(Swver_Spliter_Patterns);
 		for(String orig:split){
 			System.out.println(orig);
-		}
+		}*/
 	}
 }

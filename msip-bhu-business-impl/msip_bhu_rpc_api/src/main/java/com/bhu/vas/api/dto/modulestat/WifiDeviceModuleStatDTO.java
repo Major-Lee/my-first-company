@@ -10,6 +10,7 @@ import java.util.List;
  *
  * 增值服务统计
  */
+@SuppressWarnings("serial")
 public class WifiDeviceModuleStatDTO implements Serializable {
     @JsonProperty("dev")
     private String mac;//设备mac

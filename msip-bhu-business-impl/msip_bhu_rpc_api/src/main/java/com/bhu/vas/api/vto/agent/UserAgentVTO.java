@@ -3,6 +3,7 @@ package com.bhu.vas.api.vto.agent;
 /**
  * Created by bluesand on 11/5/15.
  */
+@SuppressWarnings("serial")
 public class UserAgentVTO extends UserVTO {
     private String org;
 

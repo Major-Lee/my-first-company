@@ -10,8 +10,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
 @SuppressWarnings("serial")
 public class WifiDeviceGrayVersionPK implements Serializable {
 
-	//device unit type
-    private int dut;
+	//device unit type TU_H106 TS_H103
+    private String dut;
     //gray level
     private int gl;
 
@@ -19,16 +19,16 @@ public class WifiDeviceGrayVersionPK implements Serializable {
 
     }
 
-    public WifiDeviceGrayVersionPK(int dut, int gl) {
+    public WifiDeviceGrayVersionPK(String dut, int gl) {
         this.dut = dut;
         this.gl = gl;
     }
 
-    public int getDut() {
+    public String getDut() {
 		return dut;
 	}
 
-	public void setDut(int dut) {
+	public void setDut(String dut) {
 		this.dut = dut;
 	}
 

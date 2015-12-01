@@ -3,7 +3,7 @@ package com.bhu.vas.api.vto.device;
 @SuppressWarnings("serial")
 public class GrayUsageVTO implements java.io.Serializable{
 	//device unit type
-	private int dut;
+	private String dut;
 	//gray index
 	private int gl;
 	//device unit name
@@ -34,10 +34,10 @@ public class GrayUsageVTO implements java.io.Serializable{
 	public void setOmid(String omid) {
 		this.omid = omid;
 	}
-	public int getDut() {
+	public String getDut() {
 		return dut;
 	}
-	public void setDut(int dut) {
+	public void setDut(String dut) {
 		this.dut = dut;
 	}
 	public int getGl() {

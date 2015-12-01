@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 10/22/15.
  */
+@SuppressWarnings("serial")
 public class AgentFinancialSettlementVTO implements Serializable {
 
     /**

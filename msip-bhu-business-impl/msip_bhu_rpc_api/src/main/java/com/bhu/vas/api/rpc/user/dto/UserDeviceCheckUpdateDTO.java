@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class UserDeviceCheckUpdateDTO implements Serializable {
 	private int uid;
 	private String mac;
-	private int dut;
+	private String dut;
 	private int gray;
 	
     //wifi设备是否在线
@@ -62,11 +62,11 @@ public class UserDeviceCheckUpdateDTO implements Serializable {
 		this.forceAppUpdate = forceAppUpdate;
 	}
 
-	public int getDut() {
+	public String getDut() {
 		return dut;
 	}
 
-	public void setDut(int dut) {
+	public void setDut(String dut) {
 		this.dut = dut;
 	}
 

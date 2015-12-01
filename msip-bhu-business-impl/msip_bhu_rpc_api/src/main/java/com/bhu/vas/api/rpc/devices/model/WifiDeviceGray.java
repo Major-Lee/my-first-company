@@ -12,7 +12,7 @@ public class WifiDeviceGray extends BaseStringModel{
 	//id为设备mac地址
 	
 	//device unit type
-	private int dut;
+	private String dut;
 	//灰度
 	private int gl;	
 	private Date created_at;
@@ -24,10 +24,10 @@ public class WifiDeviceGray extends BaseStringModel{
 		super.preInsert();
 	}
 
-	public int getDut() {
+	public String getDut() {
 		return dut;
 	}
-	public void setDut(int dut) {
+	public void setDut(String dut) {
 		this.dut = dut;
 	}
 	public int getGl() {

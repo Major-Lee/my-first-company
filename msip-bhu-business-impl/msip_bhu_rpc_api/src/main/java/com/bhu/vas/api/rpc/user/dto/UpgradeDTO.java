@@ -4,7 +4,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
 public class UpgradeDTO {
-	private int dut;
+	private String dut;
 	private int gl;
 	//升级类别 true固件升级 false 增值组件升级
 	private boolean fw;
@@ -15,13 +15,13 @@ public class UpgradeDTO {
 	private String currentDVB;
     private String currentAVB;
     private String desc;
-	public UpgradeDTO(int dut,int gl,boolean fw,boolean forceDeviceUpgrade) {
+	public UpgradeDTO(String dut,int gl,boolean fw,boolean forceDeviceUpgrade) {
 		this.dut = dut;
 		this.gl = gl;
 		this.fw = fw;
 		this.forceDeviceUpgrade = forceDeviceUpgrade;
 	}
-	public UpgradeDTO(int dut,int gl,boolean fw,boolean forceDeviceUpgrade, String name, String upgradeurl) {
+	public UpgradeDTO(String dut,int gl,boolean fw,boolean forceDeviceUpgrade, String name, String upgradeurl) {
 		this.dut = dut;
 		this.gl = gl;
 		this.fw = fw;
@@ -75,10 +75,10 @@ public class UpgradeDTO {
 	public void setCurrentDVB(String currentDVB) {
 		this.currentDVB = currentDVB;
 	}
-	public int getDut() {
+	public String getDut() {
 		return dut;
 	}
-	public void setDut(int dut) {
+	public void setDut(String dut) {
 		this.dut = dut;
 	}
 	public int getGl() {

@@ -23,8 +23,8 @@ import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.plugins.filterhelper.StringHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -163,7 +163,7 @@ public class UserDeviceFacadeService {
 	        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 	        		//long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        		//String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
-	        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING);
+	        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
 	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
 	        	}
         	}
@@ -204,7 +204,7 @@ public class UserDeviceFacadeService {
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
         	retDTO.setOnline(wifiDevice.isOnline());
-        	retDTO.setDut(upgrade!=null?upgrade.getDut():0);
+        	retDTO.setDut(upgrade!=null?upgrade.getDut():StringHelper.MINUS_STRING_GAP);
         	retDTO.setGray(upgrade!=null?upgrade.getGl():0);
         	retDTO.setForceDeviceUpdate(upgrade!=null?upgrade.isForceDeviceUpgrade():false);
         	retDTO.setForceAppUpdate(upgrade!=null?upgrade.isForceAppUpgrade():false);

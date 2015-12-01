@@ -2,7 +2,6 @@ package com.bhu.vas.api.rpc.devices.dto;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -40,11 +39,11 @@ public class DeviceOMVersion {
 		this.mno = mno;
 	}
 	
-	public String getHdt(){
+	/*public String getHdt(){
 		if(StringUtils.isNotEmpty(vp))
 			return vp.substring(1);
 		return null;
-	}
+	}*/
 	
 	private static final String Swver_Spliter_Patterns = "[V|M]+";
 	public static DeviceOMVersion parser(String device_om){
@@ -64,9 +63,11 @@ public class DeviceOMVersion {
 	public boolean valid(){
 		return StringUtils.isNotEmpty(vp) && StringUtils.isNotEmpty(ver) && StringUtils.isNotEmpty(mno);
 	}
+	
 	public boolean canExecuteUpgrade(){
 		return true;
 	}
+	
 	/**
 	 * 比较两个设备的运营模块版本号
 	 * 前置条件：版本号不包括
@@ -98,12 +99,14 @@ public class DeviceOMVersion {
 			return 0;
 		}
 	}
-	public boolean wasDutURouter(){
+	
+	/*public boolean wasDutURouter(){
 		return WifiDeviceHelper.isURouterHdType(vp);
 	}
+	
 	public boolean wasDutSoc(){
 		return WifiDeviceHelper.isSocHdType(vp);
-	}
+	}*/
 	
 	public String toString(){
 		return String.format("vp[%s] ver[%s] mno[%s]", vp,ver,mno);

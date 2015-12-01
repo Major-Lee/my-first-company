@@ -34,14 +34,14 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	}
 
 	
-    public int getDut() {
+    public String getDut() {
     	if (this.getId() == null) {
-            return 0;
+            return null;
         }
         return this.getId().getDut();
 	}
 
-	public void setDut(int dut) {
+	public void setDut(String dut) {
 	 	if (this.getId() == null) {
             this.setId(new WifiDeviceGrayVersionPK());
         }

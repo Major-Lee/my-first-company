@@ -67,7 +67,7 @@ public class ConsoleVersionController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int dut) {
+            @RequestParam(required = true) String dut) {
     	RpcResponseDTO<CurrentGrayUsageVTO> rpcResult = vapRpcService.currentGrays(uid, dut);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -86,7 +86,7 @@ public class ConsoleVersionController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) String dut,
             @RequestParam(required = true) boolean fw,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
@@ -114,7 +114,7 @@ public class ConsoleVersionController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) String dut,
             @RequestParam(required = true) int gl,
             @RequestParam(required = true) String fwid,
             @RequestParam(required = true) String omid
@@ -142,7 +142,7 @@ public class ConsoleVersionController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) String dut,
             @RequestParam(required = true) boolean fw,
             @RequestParam(required = true) String versionid, 
             @RequestParam(required = true) String upgrade_url
@@ -161,7 +161,7 @@ public class ConsoleVersionController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) String dut,
             @RequestParam(required = true) boolean fw,
             @RequestParam(required = true) String versionid
             ) {
@@ -178,7 +178,7 @@ public class ConsoleVersionController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int dut,
+            @RequestParam(required = true) String dut,
             @RequestParam(required = true) int gl,
             @RequestParam(required = true) String macs
             ) {

@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.util.StringUtils;
+
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 
 
@@ -85,6 +88,10 @@ public class VapEnumType {
 		}
 	}
 	
+	// U(家用版本，urouter), C(商业wifi版本), S(soc版本)
+	public static final String DUT_uRouter = "TU";
+	public static final String DUT_CWifi = "TC";
+	public static final String DUT_soc = "TS";
 	
 	/**
 	 * 采用正式的设备的hdtype中的数字作为子类型的index
@@ -92,48 +99,51 @@ public class VapEnumType {
 	 *
 	 */
 	public enum DeviceUnitType{
-		uRouterRoot(1000, 0,"uRouter"),
-		SOCRoot(2000, 0,"SOC"),
+		uRouterRoot(DUT_uRouter, StringHelper.MINUS_STRING_GAP,"uRouter"),
+		SOCRoot(DUT_soc, StringHelper.MINUS_STRING_GAP,"SOC"),
 		
-		uRouterTU_106(106,		"H106",1000,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterTU_106("TU_H106",	"AP106",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
-		MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
-		MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
-		MassAP_Pro_201(201,		"H201",2000,"MassAP Pro H201","MassAP Pro","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
-		MassAP_Pro_303(303,		"H303",2000,"MassAP Pro H303","MassAP Pro","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
-		MassAP_AC_Pro_305(305,	"H305",2000,"MassAP AC Pro H305","MassAP AC Pro","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
+		MassAP_2_103("TS_H103",		"AP103",DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
+		MassAP_2_110("TS_H110",		"AP110",DUT_soc,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
+		MassAP_Pro_201("TS_H201",	"AP201",DUT_soc,"MassAP Pro H201","MassAP Pro","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
+		MassAP_Pro_303("TS_H303",	"AP303",DUT_soc,"MassAP Pro H303","MassAP Pro","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
+		MassAP_AC_Pro_305("TS_H305","AP305",DUT_soc,"MassAP AC Pro H305","MassAP AC Pro","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
 		
-		MicroStation_2_104(104,	"H104",2000,"MicroStation 2 H104","MicroStation 2","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片"),
-		MicroStation_2_109(109,	"H109",2000,"MicroStation 2 H109","MicroStation 2","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片"),
-		MicroStation_2U_108(108,"H108",2000,"MicroStation 2U H108","MicroStation 2U","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片"),
+		MicroStation_2_104("TS_H104","AP104",DUT_soc,"MicroStation 2 H104","MicroStation 2","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片"),
+		MicroStation_2_109("TS_H109","AP109",DUT_soc,"MicroStation 2 H109","MicroStation 2","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片"),
+		MicroStation_2U_108("TS_H108","AP108",DUT_soc,"MicroStation 2U H108","MicroStation 2U","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片"),
 		
-		MicroStation_5_304(304,	"H304",2000,"MicroStation 5 H304","MicroStation 5","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
-		MicroStation_5_306(306,	"H306",2000,"MicroStation 5 H306","MicroStation 5","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
-		uRouterTC_401(401,		"H401",2000,"uRouter","uRouter","---","---"),
+		MicroStation_5_304("TS_H304","AP304",DUT_soc,"MicroStation 5 H304","MicroStation 5","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
+		MicroStation_5_306("TS_H306","AP306",DUT_soc,"MicroStation 5 H306","MicroStation 5","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
+		uRouterTS_401("TS_H106",	 "AP106",DUT_soc,"uRouter","uRouter","---","---"),
 		;
-		static Map<Integer, DeviceUnitType> allDeviceUnitTypes;
-		static Map<String, DeviceUnitType> allDeviceHdTypes;
-		static Map<Integer, List<DeviceUnitType>> allRootDeviceUnitTypes;
+		//key index,value DeviceUnitType
+		static Map<String, DeviceUnitType> allDeviceUnitHDTypes;
+		//key parent_prefix ,value DeviceUnitType
+		static Map<String, DeviceUnitType> allDeviceUnitPrefixTypes;
+		static Map<String, List<DeviceUnitType>> allRootDeviceUnitTypes;
 		static List<DeviceUnitTypeVTO> allDeviceUnitTypeVTO;
 		
 		static List<String> allMassAPHdTypes;// = new ArrayList<String>();
-		
-		private int index;
-		private String hdtype;
+		//业务类型_HDTYPE
+		private String index;
+		//orig_swver 前缀
+		private String prefix;
 		private String name;
 		private String sname;
-		private int parent;
+		private String parent;
 		private String fname;
 		private String desc;
-		private DeviceUnitType(int index, int parent,String name){
+		private DeviceUnitType(String index, String parent,String name){
 			this.index = index;
 			this.name = name;
 			this.parent = parent;
 		}
 		
-		private DeviceUnitType(int index,String hdtype, int parent,String name,String sname,String fname,String desc){
+		private DeviceUnitType(String index,String prefix, String parent,String name,String sname,String fname,String desc){
 			this.index = index;
-			this.hdtype = hdtype;
+			this.prefix = prefix;
 			this.name = name;
 			this.sname = sname;
 			this.parent = parent;
@@ -147,19 +157,22 @@ public class VapEnumType {
 			this.name = name;
 		}
 		
-		public int getIndex() {
+		public String getIndex() {
 			return index;
 		}
-		public void setIndex(int index) {
+
+		public void setIndex(String index) {
 			this.index = index;
 		}
-		public int getParent() {
+
+		public String getParent() {
 			return parent;
 		}
-		public void setParent(int parent) {
+
+		public void setParent(String parent) {
 			this.parent = parent;
 		}
-		
+
 		public String getDesc() {
 			return desc;
 		}
@@ -176,12 +189,12 @@ public class VapEnumType {
 			this.fname = fname;
 		}
 
-		public String getHdtype() {
-			return hdtype;
+		public String getPrefix() {
+			return prefix;
 		}
 
-		public void setHdtype(String hdtype) {
-			this.hdtype = hdtype;
+		public void setPrefix(String prefix) {
+			this.prefix = prefix;
 		}
 
 		public String getSname() {
@@ -192,52 +205,87 @@ public class VapEnumType {
 			this.sname = sname;
 		}
 
-		public static DeviceUnitType fromIndex(int index){
-			DeviceUnitType dType = allDeviceUnitTypes.get(index); 
+		public static DeviceUnitType fromIndex(String index){
+			DeviceUnitType dType = allDeviceUnitHDTypes.get(index); 
 			return dType;
 		}
-		public static DeviceUnitType fromHdType(String hdtype){
+		
+		public static DeviceUnitType fromHdType(String dut,String hdtype){
+			StringBuilder sb_key = new StringBuilder();
+			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP).append(hdtype);
+			DeviceUnitType dType = allDeviceUnitHDTypes.get(sb_key.toString()); 
+			return dType;
+		}
+		
+		public static DeviceUnitType fromVersionPrefix(String dut,String prefix){
+			StringBuilder sb_key = new StringBuilder();
+			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP).append(prefix);
+			DeviceUnitType dType = allDeviceUnitPrefixTypes.get(sb_key.toString()); 
+			return dType;
+		}
+		
+		/*public static DeviceUnitType fromHdType(String hdtype){
 			return allDeviceHdTypes.get(hdtype);
-		}
+		}*/
 		
-		public static boolean isURouterHdType(String hdtype) {
-			DeviceUnitType fromHdType = fromHdType(hdtype);
-			if(fromHdType != null){
-				return fromHdType.getParent() == uRouterRoot.getIndex();//.getParent();
+		/**
+		 * 以TU结尾 并且包含以AP106开头
+		 * @param orig_swver
+		 * @return
+		 */
+		public static boolean isURouter(String orig_swver) {
+			if(StringUtils.isEmpty(orig_swver)) return false;
+			if(orig_swver.endsWith(uRouterTU_106.getPrefix()) && orig_swver.endsWith(uRouterTU_106.getParent())){
+				return true;
 			}
 			return false;
 		}
 		
-		public static boolean isSocHdType(String hdtype) {
-			DeviceUnitType fromHdType = fromHdType(hdtype);
-			if(fromHdType != null){
-				return fromHdType.getParent() == SOCRoot.getIndex();
+		public static boolean isURouter(String prefix,String dut) {
+			if(StringUtils.isEmpty(prefix) || StringUtils.isEmpty(dut)) return false;
+			if(prefix.equals(uRouterTU_106.getPrefix()) && dut.equals(uRouterTU_106.getParent())){
+				return true;
 			}
 			return false;
 		}
+		
+		/**
+		 * 以TS结尾的
+		 * @param orig_swver
+		 * @return
+		 */
+		public static boolean isSoc(String orig_swver) {
+			if(StringUtils.isEmpty(orig_swver)) return false;
+			if(orig_swver.endsWith(SOCRoot.getIndex())){
+				return true;
+			}
+			return false;
+		}
+		
 		static {
-			allDeviceUnitTypes = new HashMap<Integer,DeviceUnitType>();
-			allDeviceHdTypes = new HashMap<String,DeviceUnitType>();
-			allRootDeviceUnitTypes = new HashMap<Integer,List<DeviceUnitType>>();
+			allDeviceUnitHDTypes = new HashMap<String,DeviceUnitType>();
+			allDeviceUnitPrefixTypes = new HashMap<String,DeviceUnitType>();
+			allRootDeviceUnitTypes = new HashMap<String,List<DeviceUnitType>>();
 			allDeviceUnitTypeVTO = new ArrayList<>();
 			allMassAPHdTypes = new ArrayList<String>();
 			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (DeviceUnitType type : types){
-				allDeviceUnitTypes.put(type.getIndex(), type);
-				allDeviceHdTypes.put(type.getHdtype(), type);
-				if(type.parent == 0){//root
+				allDeviceUnitHDTypes.put(type.getIndex(), type);
+				if(StringHelper.MINUS_STRING_GAP.equals(type.parent)){//root
 					allRootDeviceUnitTypes.put(type.getIndex(), new ArrayList<DeviceUnitType>());
 					//allDeviceUnitTypeVTO.add(new DeviceUnitTypeVTO(type.getIndex(),type.getName()));
 				}else{
+					String prefixKey = type.getParent().concat(StringHelper.UNDERLINE_STRING_GAP).concat(type.getPrefix());
+					allDeviceUnitPrefixTypes.put(prefixKey, type);
 					List<DeviceUnitType> list = allRootDeviceUnitTypes.get(type.getParent());
 					if(list != null)
 						list.add(type);
 				}
 			}
-			Iterator<Entry<Integer, List<DeviceUnitType>>> iter = allRootDeviceUnitTypes.entrySet().iterator();
+			Iterator<Entry<String, List<DeviceUnitType>>> iter = allRootDeviceUnitTypes.entrySet().iterator();
 			while(iter.hasNext()){
-				Entry<Integer, List<DeviceUnitType>> next = iter.next();
-				Integer index = next.getKey();
+				Entry<String, List<DeviceUnitType>> next = iter.next();
+				String index = next.getKey();
 				List<DeviceUnitType> children = next.getValue();
 				DeviceUnitType parent = DeviceUnitType.fromIndex(index);
 				DeviceUnitTypeVTO parentVTO = new DeviceUnitTypeVTO(parent.getIndex(),parent.getName());
@@ -247,17 +295,13 @@ public class VapEnumType {
 				}
 				allDeviceUnitTypeVTO.add(parentVTO);
 			}
-			/*MassAP_2_103(103,		"H103",2000,"MassAP 2 H103","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
-			MassAP_2_110(110,		"H110",2000,"MassAP 2 H110","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
-			MassAP_Pro_201(201,		"H201",2000,"MassAP Pro H201","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
-			MassAP_Pro_303(303,		"H303",2000,"MassAP Pro H303","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
-			MassAP_AC_Pro_305(305,	"H305",2000,"MassAP AC Pro H305","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
-*/
-			allMassAPHdTypes.add(MassAP_2_103.getHdtype());
-			allMassAPHdTypes.add(MassAP_2_110.getHdtype());
-			allMassAPHdTypes.add(MassAP_Pro_201.getHdtype());
-			allMassAPHdTypes.add(MassAP_Pro_303.getHdtype());
-			allMassAPHdTypes.add(MassAP_AC_Pro_305.getHdtype());
+			
+			//截取 index中_后面的字符串为hdtype
+			allMassAPHdTypes.add(MassAP_2_103.getIndex().substring(3));
+			allMassAPHdTypes.add(MassAP_2_110.getIndex().substring(3));
+			allMassAPHdTypes.add(MassAP_Pro_201.getIndex().substring(3));
+			allMassAPHdTypes.add(MassAP_Pro_303.getIndex().substring(3));
+			allMassAPHdTypes.add(MassAP_AC_Pro_305.getIndex().substring(3));
 		}
 
 		public static List<DeviceUnitTypeVTO> getAllDeviceUnitTypeVTO() {

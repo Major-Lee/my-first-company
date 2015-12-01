@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @SuppressWarnings("serial")
 public class DeviceUnitTypeVTO implements java.io.Serializable{
-	private int index;
+	private String index;
 	//name
 	private String n;
 	
@@ -15,13 +15,13 @@ public class DeviceUnitTypeVTO implements java.io.Serializable{
 	@JsonInclude(Include.NON_NULL)
 	private List<DeviceUnitTypeVTO> c;
 	
-	public DeviceUnitTypeVTO(int index, String name) {
+	public DeviceUnitTypeVTO(String index, String name) {
 		super();
 		this.index = index;
 		this.n = name;
 	}
 	
-	public DeviceUnitTypeVTO(int index, String name,
+	public DeviceUnitTypeVTO(String index, String name,
 			List<DeviceUnitTypeVTO> children) {
 		super();
 		this.index = index;
@@ -29,11 +29,11 @@ public class DeviceUnitTypeVTO implements java.io.Serializable{
 		this.c = children;
 	}
 
-	public int getIndex() {
+	public String getIndex() {
 		return index;
 	}
 	
-	public void setIndex(int index) {
+	public void setIndex(String index) {
 		this.index = index;
 	}
 

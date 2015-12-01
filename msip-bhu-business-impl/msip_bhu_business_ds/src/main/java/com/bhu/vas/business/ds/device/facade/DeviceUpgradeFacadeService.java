@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 /**
@@ -50,7 +49,7 @@ public class DeviceUpgradeFacadeService {
 	}*/
 	
 	public UpgradeDTO checkDeviceUpgrade(String dmac,WifiDevice wifiDevice){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, wifiDevice.getOrig_swver(),WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
+		return wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(dmac, wifiDevice.getOrig_swver());
 		/*UpgradeDTO resultDto = null;
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver())){
 			System.out.println(String.format("-----checkDeviceUpgrade step10 [%s] [%s] ",mac,wifiDevice.getOrig_swver()));
@@ -80,7 +79,7 @@ public class DeviceUpgradeFacadeService {
 	}
 	
 	public UpgradeDTO checkDeviceUpgradeWithClientVer(String dmac,WifiDevice wifiDevice,String handset_device,String appVer){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, wifiDevice.getOrig_swver(),WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
+		return wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(dmac, wifiDevice.getOrig_swver());
 		/*UpgradeDTO resultDto = null;
 		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
 		if(StringUtils.isEmpty(wifiDevice.getOrig_swver()) || StringUtils.isEmpty(handset_device) || StringUtils.isEmpty(appVer)){
@@ -138,7 +137,7 @@ public class DeviceUpgradeFacadeService {
 		return resultDto;*/
 	}
 	
-	public UpgradeDTO checkDeviceOMUpgrade(String dmac,String orig_vap_module){
-		return wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(dmac, orig_vap_module,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM);
+	public UpgradeDTO checkDeviceOMUpgrade(String dmac,String orig_swver,String orig_vap_module){
+		return wifiDeviceGrayFacadeService.deviceOMUpgradeAutoAction(dmac,orig_swver, orig_vap_module);
 	}
 }

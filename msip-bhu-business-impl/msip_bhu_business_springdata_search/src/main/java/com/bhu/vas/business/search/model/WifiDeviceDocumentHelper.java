@@ -39,6 +39,7 @@ public class WifiDeviceDocumentHelper {
 		doc1.setOrigswver(wifiDevice.getOrig_swver());
 		
 		doc1.setDevicetype(wifiDevice.getHdtype());
+		
 		doc1.setNvd(DeviceHelper.isNewOrigSwverDevice(wifiDevice.getOrig_swver()) ? 1 : 0);
 		if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
 			doc1.setGeopoint(new double[]{Double.parseDouble(wifiDevice.getLon()),Double.parseDouble(wifiDevice.getLat())});
@@ -90,14 +91,15 @@ public class WifiDeviceDocumentHelper {
 			if(wifiDevice.getCreated_at() != null){
 				doc.setD_createdat(wifiDevice.getCreated_at().getTime());
 			}
-			
-			if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
+			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
+			doc.setD_dut(parser.getDut());
+			/*if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_soc);
 			}else if(DeviceUnitType.isURouterHdType(wifiDevice.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_uRouter);
 			}else{
 				doc.setD_dut(DeviceVersion.DUT_CWifi);
-			}
+			}*/
 			if(!StringUtils.isEmpty(wifiDevice.getUptime())){
 				doc.setD_uptime(wifiDevice.getUptime());
 			}
@@ -165,14 +167,16 @@ public class WifiDeviceDocumentHelper {
 			if(agentDeviceClaim.getSold_at() != null){
 				doc.setD_createdat(agentDeviceClaim.getSold_at().getTime());
 			}
-			
-			if(DeviceUnitType.isSocHdType(agentDeviceClaim.getHdtype())){
+			if(StringUtils.isNotEmpty(agentDeviceClaim.getHdtype())){
+				doc.setD_dut(DeviceUnitType.fromIndex(agentDeviceClaim.getHdtype()).getParent());
+			}
+			/*if(DeviceUnitType.isSocHdType(agentDeviceClaim.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_soc);
 			}else if(DeviceUnitType.isURouterHdType(agentDeviceClaim.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_uRouter);
 			}else{
 				doc.setD_dut(DeviceVersion.DUT_CWifi);
-			}
+			}*/
 			
 			if(agentDeviceClaim.getImport_id() > 0){
 				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));

@@ -426,12 +426,6 @@ public class DeviceHelper {
 			//ex.printStackTrace(System.out);
 		}
 		return false;
-//		for(String newOrigSwver : newOrigSwvers){
-//			if(orig_swver.contains(newOrigSwver)){
-//				return true;
-//			}
-//		}
-//		return false;
 	}
 	
 	/**

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
@@ -42,8 +44,9 @@ public class WifiDeviceOnlineUpgradeLoader {
 		int total = 0;
 		try{
 			List<DownCmds> downCmds = new ArrayList<DownCmds>();
+			//缩小范围，目前只在uRouter中进行
 			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnEqualTo("online", 1);
+			mc.createCriteria().andColumnEqualTo("hdtype", "H106").andColumnEqualTo("online", 1);
 	    	mc.setPageNumber(1);
 	    	mc.setPageSize(50);
 	    	
@@ -52,11 +55,21 @@ public class WifiDeviceOnlineUpgradeLoader {
 			while(it.hasNext()){
 				List<WifiDevice> devices = it.next();
 				for(WifiDevice device:devices){
-					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceUpgradeAutoAction(device.getId(),device.getOrig_swver(),WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
+					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(device.getId(),device.getOrig_swver());
 					if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 						String payload = upgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
 						downCmds.add(DownCmds.builderDownCmds(device.getId(), payload));
 						System.out.println(String.format("mac[%s] cmd[%s]", device.getId(),payload));
+					}else{//在固件不需要升级的时候，检测组件的升级
+						WifiDeviceModule deviceModule = wifiDeviceGrayFacadeService.getWifiDeviceModuleService().getById(device.getId());
+						if(deviceModule!=null && StringUtils.isNotEmpty(deviceModule.getOrig_vap_module())){
+							UpgradeDTO omUpgrade = wifiDeviceGrayFacadeService.deviceOMUpgradeAutoAction(device.getId(), device.getOrig_swver(), deviceModule.getOrig_vap_module());
+							if(omUpgrade != null && omUpgrade.isForceDeviceUpgrade()){
+								String payload = upgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
+								downCmds.add(DownCmds.builderDownCmds(device.getId(), payload));
+								System.out.println(String.format("mac[%s] cmd[%s]", device.getId(),payload));
+							}
+						}
 					}
 				}
 				if(!downCmds.isEmpty()){
