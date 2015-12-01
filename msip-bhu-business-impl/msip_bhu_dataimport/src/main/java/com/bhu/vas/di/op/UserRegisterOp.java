@@ -25,10 +25,6 @@ import com.smartwork.msip.business.token.UserTokenDTO;
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 100027 13811561274 test 张盼
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 100025 18911372223 test 郭旭锋
  * 
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90000 18911370000 agent1234 代理商1
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90001 18911370001 agent1234 代理商2
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90002 18911370002 agent1234 代理商3
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90003 18911370003 agent1234 代理商4
  * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90010 13910222600 222600 黄运强
 
@@ -37,13 +33,23 @@ import com.smartwork.msip.business.token.UserTokenDTO;
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90020 18911370020 agent1234 财务1
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90021 13910139032 139032 佟艳
  * 
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90030 18911370030 agent1234 销售1
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90031 18911370031 agent1234 销售2
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90032 18911370032 agent1234 销售3
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90033 18911370033 agent1234 销售4
+ * 
+ 销售
+（1）崔建平  cuijp@bhuwifi.com 13720492962
+（2）高云凌  gaoyl@bhuwifi.com 18601640418
+（3）魏晓川  weixc@bhuwifi.com 18911666698
+（4）孙荣辉  sunrh@bhuwifi.com 18802932533
+   ./startupbuilder_bhu_userregister.sh RemoveAndADD 90029 18911370030 370030 默认销售
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90030 13720492962 492962 崔建平
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90031 18601640418 640418 高云凌
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90032 18911666698 666698 魏晓川
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90033 18802932533 932533 孙荣辉
+ * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90034 18911370034 agent1234 销售5
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90035 18911370035 agent1234 销售6
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90036 18911370036 agent1234 销售7
+ * 
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90050 18911370000 370000 默认分销商
  * 
  */
 public class UserRegisterOp {
