@@ -10,6 +10,7 @@ public class WifiDeviceModuleStatItemDTO implements Serializable {
     private  int type;
     private int sequence;
     private long systime;
+    private String ver;
 
     public String getMac() {
         return mac;
@@ -42,4 +43,13 @@ public class WifiDeviceModuleStatItemDTO implements Serializable {
     public void setSystime(long systime) {
         this.systime = systime;
     }
+
+    public String getVer() {
+        return ver;
+    }
+
+    public void setVer(String ver) {
+        this.ver = ver;
+    }
 }
+
