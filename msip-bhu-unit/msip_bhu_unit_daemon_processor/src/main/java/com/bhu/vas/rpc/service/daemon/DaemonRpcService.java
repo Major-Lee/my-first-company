@@ -116,6 +116,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	
 	@Override
 	public boolean wifiMultiDevicesCmdsDown(DownCmds... downCmds) {
+		logger.info(String.format("wifiMultiDevicesCmdsDown DownCmds size[%s]",downCmds.length));
 		for(DownCmds downCmd:downCmds){
 			if(downCmd != null){
 				if(downCmd.valid()){

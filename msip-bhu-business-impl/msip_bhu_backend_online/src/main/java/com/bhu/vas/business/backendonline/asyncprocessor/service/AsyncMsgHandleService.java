@@ -1189,13 +1189,11 @@ public class AsyncMsgHandleService {
 	}
 	
 	public void wifiMultiCmdsDownNotifyHandle(String message){
-		logger.info(String.format("wifiCmdsDownNotifyHandle message[%s]", message));
+		logger.info(String.format("wifiMultiCmdsDownNotifyHandle message[%s]", message));
 		WifiMultiCmdsNotifyDTO dto = JsonHelper.getDTO(message, WifiMultiCmdsNotifyDTO.class);
 		if(dto.getDownCmds() == null || dto.getDownCmds().isEmpty()) return;
 		DaemonHelper.daemonMultiCmdsDown(daemonRpcService, dto.getDownCmds().toArray(new DownCmds[0]));
-		//this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
-		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
-		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
+		logger.info(String.format("wifiMultiCmdsDownNotifyHandle message[%s] successful", message));
 	}
 	/**
 	 * 修改黑名单列表内容的后续操作

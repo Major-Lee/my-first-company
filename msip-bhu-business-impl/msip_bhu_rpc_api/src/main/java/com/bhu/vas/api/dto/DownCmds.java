@@ -40,7 +40,7 @@ public class DownCmds implements java.io.Serializable{
 	}
 	
 	public boolean valid(){
-		return (StringUtils.isEmpty(mac) || cmds == null || cmds.length ==0 );
+		return (StringUtils.isNotEmpty(mac) || cmds != null || cmds.length >0 );
 	}
 	
 	/*public static DownCmds builderDownCmds(int aa,String... cmds){
