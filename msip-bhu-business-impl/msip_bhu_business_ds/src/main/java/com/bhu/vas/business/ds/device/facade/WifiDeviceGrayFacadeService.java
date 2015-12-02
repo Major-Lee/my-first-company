@@ -376,6 +376,27 @@ public class WifiDeviceGrayFacadeService {
     	return upgradeDecideAction(dmac,dut,gl,d_version,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
     }
     
+    public WifiDeviceGrayVersionPK determineDeviceGray(String dmac,String d_version){
+    	WifiDeviceGrayVersionPK deviceUnitGrayPk = this.deviceUnitGray(dmac);
+		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
+			deviceUnitGrayPk = new WifiDeviceGrayVersionPK();
+			//获取d_version中的dut
+			DeviceVersion dvparser = DeviceVersion.parser(d_version);
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getDut(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
+			if(dutype != null){
+				deviceUnitGrayPk.setDut(dutype.getIndex());
+			}else{
+				deviceUnitGrayPk.setDut(null);
+			}
+			deviceUnitGrayPk.setGl(VapEnumType.GrayLevel.Other.getIndex());
+		}/*else{
+			return deviceUnitGrayPk;
+		}*/
+		return deviceUnitGrayPk;
+    }
+    
+    
+    
     public UpgradeDTO deviceOMUpgradeAutoAction(String dmac,String d_version,String d_om_version){
     	WifiDeviceGrayVersionPK deviceUnitGrayPk = this.deviceUnitGray(dmac);
     	String dut = null;

@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
+import com.bhu.vas.api.vto.device.DeviceDetailVTO;
+import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -44,11 +47,11 @@ public class ConsoleDeviceController extends BaseController {
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String mac
     		) {
-		/*RpcResponseDTO<TailPage<VersionVTO>> rpcResult = vapRpcService.pagesDeviceVersions(uid, dut, fw, pageNo, pageSize);
+		RpcResponseDTO<DeviceDetailVTO> rpcResult = vapRpcService.deviceDetail(uid, mac.toLowerCase());
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));*/
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
     }
     
     /**
@@ -74,12 +77,17 @@ public class ConsoleDeviceController extends BaseController {
             @RequestParam(required = false) String beginTime,
             @RequestParam(required = false) String endTime
     		) {
-    	String[] macarray = StringHelper.split(macs, StringHelper.COMMA_STRING_GAP);
+    	String[] macarray = StringHelper.split(macs.toLowerCase(), StringHelper.COMMA_STRING_GAP);
     	List<String> masList = Arrays.asList(macarray);
     	if(!StringHelper.isValidMacs(masList)){
     		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
     		return;
     	}
+    	RpcResponseDTO<Boolean> rpcResult = vapRpcService.forceDeviceUpgrade(uid, fw, versionid, masList, beginTime, endTime);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
     @ResponseBody()
@@ -88,29 +96,26 @@ public class ConsoleDeviceController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String mac
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-		/*RpcResponseDTO<TailPage<VersionVTO>> rpcResult = vapRpcService.pagesDeviceVersions(uid, dut, fw, pageNo, pageSize);
+		RpcResponseDTO<TailPage<ModuleStyleVTO>> rpcResult = vapRpcService.pagesVapStyles(uid,pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));*/
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
     
-    @ResponseBody()
+    /*@ResponseBody()
     @RequestMapping(value = "/upd_style", method = {RequestMethod.POST})
     public void upd_style(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) int uid
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int style
     		) {
-		/*RpcResponseDTO<TailPage<VersionVTO>> rpcResult = vapRpcService.pagesDeviceVersions(uid, dut, fw, pageNo, pageSize);
-		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));*/
-    }
+    }*/
     
     @ResponseBody()
     @RequestMapping(value = "/savemacs2gray", method = {RequestMethod.POST})
@@ -122,7 +127,7 @@ public class ConsoleDeviceController extends BaseController {
             @RequestParam(required = true) int gl,
             @RequestParam(required = true) String macs
             ) {
-    	String[] macarray = StringHelper.split(macs, StringHelper.COMMA_STRING_GAP);
+    	String[] macarray = StringHelper.split(macs.toLowerCase(), StringHelper.COMMA_STRING_GAP);
     	List<String> masList = Arrays.asList(macarray);
     	if(!StringHelper.isValidMacs(masList)){
     		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));

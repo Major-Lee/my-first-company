@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.task.model;
 
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
+import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.smartwork.msip.cores.orm.model.BasePKModel;
 
 /**
@@ -70,5 +71,12 @@ public class VasModuleCmdDefined extends BasePKModel<VasModuleCmdPK> {
         return VasModuleCmdPK.class;
     }
 
-
+	public ModuleStyleVTO toModuleStyleVTO(){
+		ModuleStyleVTO vto = new ModuleStyleVTO();
+		vto.setDref(this.getId().getDref());
+		vto.setStyle(this.getId().getStyle());
+		vto.setVersion(this.getVersion());
+		vto.setMemo(this.getMemo());
+		return vto;
+	}
 }
