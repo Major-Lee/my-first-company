@@ -883,7 +883,7 @@ public class AsyncMsgHandleService {
 		//配置状态如果为恢复出厂 则清空设备的相关业务数据
 		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
 			//只有urouter设备才会执行
-			if(deviceFacadeService.isURooterDevice(dto.getMac())){
+			if(deviceFacadeService.isURouterDevice(dto.getMac())){
 				try{
 					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
 					backendBusinessService.deviceResetFactory(dto.getMac());
@@ -926,7 +926,7 @@ public class AsyncMsgHandleService {
 		//分发指令
 		this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
 		//如果是urouter设备 才会发push
-		if(deviceFacadeService.isURooterDevice(dto.getMac())){
+		if(deviceFacadeService.isURouterDevice(dto.getMac())){
 			pushService.push(new WifiDeviceSettingChangedPushDTO(dto.getMac()));
 			
 			/*//如果需要初始化设备的黑名单配置 按照urouter约定来进行
