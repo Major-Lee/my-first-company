@@ -15,6 +15,7 @@ import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.DeviceOMVersion;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW;
@@ -586,6 +587,20 @@ public class WifiDeviceGrayFacadeService {
     	this.validateVersionFormat(versionid, fw);
     	if(macs == null || macs.isEmpty()) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"});
+    	
+    	List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
+    	if(devices == null || devices.isEmpty()) 
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+    	List<String> onlineMacs = new ArrayList<String>();
+    	for(WifiDevice device:devices){
+    		if(device.isOnline()){
+    			onlineMacs.add(device.getId());
+    		}
+    	}
+		if(onlineMacs.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}
+    	
     	List<DownCmds> downCmds = new ArrayList<DownCmds>();
     	String upgradeUrl = null;
     	String dut = null;
@@ -606,7 +621,7 @@ public class WifiDeviceGrayFacadeService {
     		dut = versionom.getDut();
     		upgradeUrl = versionom.getUpgrade_url();
     	}
-    	for(String mac:macs){
+    	for(String mac:onlineMacs){
     		UpgradeDTO dto = new UpgradeDTO(fw,true);
     		dto.setDut(dut);
     		dto.setUpgradeurl(upgradeUrl);
