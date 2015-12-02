@@ -15,6 +15,12 @@ public class UpgradeDTO {
 	private String currentDVB;
     private String currentAVB;
     private String desc;
+    
+    public UpgradeDTO(boolean fw,boolean forceDeviceUpgrade) {
+    	this.fw = fw;
+		this.forceDeviceUpgrade = forceDeviceUpgrade;
+    }
+    
 	public UpgradeDTO(String dut,int gl,boolean fw,boolean forceDeviceUpgrade) {
 		this.dut = dut;
 		this.gl = gl;

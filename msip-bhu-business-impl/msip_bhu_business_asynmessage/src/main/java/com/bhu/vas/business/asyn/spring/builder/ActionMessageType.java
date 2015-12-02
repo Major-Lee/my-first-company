@@ -30,6 +30,7 @@ public enum ActionMessageType {
 	
 	//WifiCmdDownNotify("wifi单指令下发","wcdn","WD"),
 	WifiCmdsDownNotify("wifi多指令下发","wcsdn","SM"),
+	WifiMultiCmdsDownNotify("wifi多指令下发","wmcsdn","SS"),
 	WifiDeviceAsyncCMDGen("给设备组下发指令","wdgcmd","WA"),
 	WifiDeviceGroupCreateIndex("设备群组添加设备时建立搜索索引", "wdgci", "WI"),
 	

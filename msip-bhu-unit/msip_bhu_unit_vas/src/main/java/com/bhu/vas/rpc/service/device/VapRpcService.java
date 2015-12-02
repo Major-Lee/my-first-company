@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -18,6 +19,8 @@ import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.rpc.facade.VapFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -38,7 +41,8 @@ public class VapRpcService  implements IVapRpcService{
     
     @Resource
     private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
-
+	@Resource
+	private DeliverMessageService deliverMessageService;
     @Override
     public RpcResponseDTO<VapModeUrlViewCountDTO> urlView(String key, String field) {
         logger.info(String.format("checkAcc with key[%s] field[%s]", key, field));
@@ -152,4 +156,23 @@ public class VapRpcService  implements IVapRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	
+	@Override
+	public RpcResponseDTO<Boolean> forceDeviceUpgrade(int uid, boolean fw, String versionid,List<String> macs,String beginTime,String endTime) {
+		logger.info(String.format("forceDeviceUpgrade uid[%s] fw[%s] versionid[%s] macs[%s]",uid,fw,versionid,macs));
+		try{
+			 List<DownCmds> downCmds = wifiDeviceGrayFacadeService.forceDeviceUpgrade(fw,versionid, macs,beginTime,endTime);
+			 if(downCmds != null && !downCmds.isEmpty())
+				 deliverMessageService.sendWifiCmdsCommingNotifyMessage(uid, downCmds);
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 }

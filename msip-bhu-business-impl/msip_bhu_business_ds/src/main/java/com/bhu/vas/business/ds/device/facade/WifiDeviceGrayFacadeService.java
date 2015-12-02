@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
@@ -559,6 +560,40 @@ public class WifiDeviceGrayFacadeService {
 		}
 		
     }
+    
+    public List<DownCmds> forceDeviceUpgrade(boolean fw,String versionid, List<String> macs,String beginTime,String endTime){
+    	this.validateVersionFormat(versionid, fw);
+    	if(macs == null || macs.isEmpty()) 
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"});
+    	List<DownCmds> downCmds = new ArrayList<DownCmds>();
+    	String upgradeUrl = null;
+    	String dut = null;
+    	if(fw){
+    		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
+    		if(versionfw == null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{versionid});
+    		}
+    		dut = versionfw.getDut();
+    		upgradeUrl = versionfw.getUpgrade_url();
+    		if(StringUtils.isEmpty(beginTime)) beginTime = StringUtils.EMPTY;
+    		if(StringUtils.isEmpty(endTime)) endTime = StringUtils.EMPTY;
+    	}else{
+    		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
+    		if(versionom == null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{versionid});
+    		}
+    		dut = versionom.getDut();
+    		upgradeUrl = versionom.getUpgrade_url();
+    	}
+    	for(String mac:macs){
+    		UpgradeDTO dto = new UpgradeDTO(fw,true);
+    		dto.setDut(dut);
+    		dto.setUpgradeurl(upgradeUrl);
+    		downCmds.add(DownCmds.builderDownCmds(mac, dto.buildUpgradeCMD(mac, 0l, beginTime, endTime)));
+    	}
+    	return downCmds;
+    }
+    
     
     /**
      * 验证版本号格式：包括固件的和增值组件的

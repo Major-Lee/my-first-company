@@ -5,12 +5,42 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.*;
+import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
+import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
+import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
+import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
+import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceUsedStatusDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiHDRateFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
 
@@ -58,15 +88,14 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
-	/*public void sendWifiCmdsCommingNotifyMessage(String mac,int taskid,String opt,List<String> payloads){
-		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
-		dto.setMac(mac);
-		dto.setTaskid(taskid);
-		dto.setOpt(opt);
-		dto.setPayload(payload);
+	
+	public void sendWifiCmdsCommingNotifyMessage(int uid,List<DownCmds> downCmds){
+		WifiMultiCmdsNotifyDTO dto = new WifiMultiCmdsNotifyDTO();
+		dto.setUid(uid);
+		dto.setDownCmds(downCmds);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}*/
+	}
 	
 	public void sendWifiDeviceModuleOnlineMessage(String wifiId,String orig_vap_module){
 		WifiDeviceModuleOnlineDTO dto = new WifiDeviceModuleOnlineDTO();

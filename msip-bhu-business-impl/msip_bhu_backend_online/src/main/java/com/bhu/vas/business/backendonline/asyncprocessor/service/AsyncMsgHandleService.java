@@ -8,25 +8,25 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.push.*;
-import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
-import com.bhu.vas.business.asyn.spring.model.*;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
+import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
+import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
+import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -41,13 +41,38 @@ import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
+import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
+import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
+import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
@@ -56,6 +81,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.bhu.vas.push.business.PushService;
@@ -1160,6 +1186,16 @@ public class AsyncMsgHandleService {
 		if(payloads == null || payloads.isEmpty()) return;
 
 		DaemonHelper.daemonCmdsDown(mac, payloads, daemonRpcService);
+	}
+	
+	public void wifiMultiCmdsDownNotifyHandle(String message){
+		logger.info(String.format("wifiCmdsDownNotifyHandle message[%s]", message));
+		WifiMultiCmdsNotifyDTO dto = JsonHelper.getDTO(message, WifiMultiCmdsNotifyDTO.class);
+		if(dto.getDownCmds() == null || dto.getDownCmds().isEmpty()) return;
+		DaemonHelper.daemonMultiCmdsDown(daemonRpcService, dto.getDownCmds().toArray(new DownCmds[0]));
+		//this.wifiCmdsDownNotify(dto.getMac(), dto.getPayloads());
+		//daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(), dto.getPayload());
+		logger.info(String.format("wifiCmdDownNotifyHandle message[%s] successful", message));
 	}
 	/**
 	 * 修改黑名单列表内容的后续操作

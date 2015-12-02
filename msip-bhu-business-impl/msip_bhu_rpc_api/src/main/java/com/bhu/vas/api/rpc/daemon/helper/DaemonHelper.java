@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.daemon.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -104,6 +105,10 @@ public class DaemonHelper {
 	
 	public static void daemonCmdDown(String mac,String cmd,IDaemonRpcService daemonRpcService){
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
+	}
+	
+	public static void daemonMultiCmdsDown(IDaemonRpcService daemonRpcService,DownCmds... downCmds){
+		daemonRpcService.wifiMultiDevicesCmdsDown(downCmds);//.wifiDeviceCmdDown(null, mac, cmd);
 	}
 	
 //	public static void deviceTerminalsQuery(String mac,List<String> vapnames,IDaemonRpcService daemonRpcService){

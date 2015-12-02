@@ -1,6 +1,5 @@
 package com.bhu.vas.web.console;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -21,10 +20,8 @@ import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -172,27 +169,4 @@ public class ConsoleVersionController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
-    @ResponseBody()
-    @RequestMapping(value = "/savemacs2gray", method = {RequestMethod.POST})
-    public void saveMacs2Gray(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String dut,
-            @RequestParam(required = true) int gl,
-            @RequestParam(required = true) String macs
-            ) {
-    	String[] macarray = StringHelper.split(macs, StringHelper.COMMA_STRING_GAP);
-    	List<String> masList = Arrays.asList(macarray);
-    	if(!StringHelper.isValidMacs(masList)){
-    		//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"});
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
-    		return;
-    	}
-    	RpcResponseDTO<Boolean> rpcResult = vapRpcService.saveMacs2Gray(uid, dut, gl, masList);
-		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-    }
 }
