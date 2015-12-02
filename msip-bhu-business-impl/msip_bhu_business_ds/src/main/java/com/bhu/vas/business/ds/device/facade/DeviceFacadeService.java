@@ -435,7 +435,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			return WIFI_DEVICE_STATUS_NOT_EXIST;
 		}
 		
-		if (!isURooterDevice(mac,wifiDevice.getOrig_swver())) {
+		if (!WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())) {
 			return WIFI_DEVICE_STATUS_NOT_UROOTER;
 		}
 		
@@ -451,11 +451,11 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 * @return
 	 */
-	public boolean isURooterDevice(String mac,String orig_swver) {
+	public boolean isURouterDevice(String mac) {
 		if(StringUtils.isEmpty(mac)) return false;
-		/*WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-		if(wifiDevice == null) return false;*/
-		return WifiDeviceHelper.isURouterDevice(orig_swver);
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		if(wifiDevice == null) return false;
+		return WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver());
 	}
 	
 

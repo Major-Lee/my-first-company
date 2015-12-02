@@ -594,7 +594,7 @@ public class AsyncMsgHandleService {
 				DeviceStatistics.Statis_HandsetDevice_Type);
 		
 		//如果是urouter设备 才会发push
-		if(deviceFacadeService.isURooterDevice(dto.getWifiId())){
+		if(deviceFacadeService.isURouterDevice(dto.getWifiId())){
 			boolean terminal_notify_push_mark = businessCacheService.getQTerminalPushNotifyCacheByQ(dto.getWifiId(), dto.getMac());
 			if(!terminal_notify_push_mark){
 				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle do Push");
@@ -666,7 +666,7 @@ public class AsyncMsgHandleService {
 	public void handsetDeviceVisitorAuthorizeOnline(String message) {
 
 		HandsetDeviceVisitorAuthorizeOnlineDTO dto = JsonHelper.getDTO(message, HandsetDeviceVisitorAuthorizeOnlineDTO.class);
-		if(deviceFacadeService.isURooterDevice(dto.getWifiId())){
+		if(deviceFacadeService.isURouterDevice(dto.getWifiId())){
 
 			logger.info("AnsyncMsgBackendProcessor handsetDeviceVisitorAuthorizeOnline do Push");
 
