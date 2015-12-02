@@ -3,6 +3,7 @@ package com.bhu.vas.api.helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -265,7 +266,7 @@ public class VapEnumType {
 		static {
 			allDeviceUnitHDTypes = new HashMap<String,DeviceUnitType>();
 			allDeviceUnitPrefixTypes = new HashMap<String,DeviceUnitType>();
-			allRootDeviceUnitTypes = new HashMap<String,List<DeviceUnitType>>();
+			allRootDeviceUnitTypes = new LinkedHashMap<String,List<DeviceUnitType>>();
 			allDeviceUnitTypeVTO = new ArrayList<>();
 			allMassAPHdTypes = new ArrayList<String>();
 			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
