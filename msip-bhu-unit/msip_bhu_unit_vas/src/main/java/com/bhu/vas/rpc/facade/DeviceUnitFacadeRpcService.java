@@ -170,7 +170,7 @@ public class DeviceUnitFacadeRpcService{
 		try{
 			 List<DownCmds> downCmds = wifiDeviceGrayFacadeService.forceDeviceUpgrade(fw,versionid, macs,beginTime,endTime);
 			 if(downCmds != null && !downCmds.isEmpty())
-				 deliverMessageService.sendWifiCmdsCommingNotifyMessage(uid, downCmds);
+				 deliverMessageService.sendWifiMultiCmdsCommingNotifyMessage(uid, downCmds);
 			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);

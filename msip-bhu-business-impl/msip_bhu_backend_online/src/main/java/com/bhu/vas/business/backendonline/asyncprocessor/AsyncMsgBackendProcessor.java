@@ -115,6 +115,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case WifiMultiCmdsDownNotify:
 							asyncMsgHandleService.wifiMultiCmdsDownNotifyHandle(message);
+							
 						case DeviceModifySettingAclMacs:
 							asyncMsgHandleService.deviceModifySettingAclMacs(message);
 							break;
@@ -148,12 +149,6 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceUsedStatus:
 							wifiDeviceUsedStatusServiceHandler.process(message);
 							break;
-//						case AgentDeviceClaimImport:
-//							agentDeviceClaimServiceHandler.importAgentDeviceClaim(message);
-//							break;
-//						case AgentDeviceClaimUpdate:
-//							agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
-//							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

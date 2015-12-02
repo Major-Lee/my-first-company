@@ -89,7 +89,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendWifiCmdsCommingNotifyMessage(int uid,List<DownCmds> downCmds){
+	public void sendWifiMultiCmdsCommingNotifyMessage(int uid,List<DownCmds> downCmds){
 		WifiMultiCmdsNotifyDTO dto = new WifiMultiCmdsNotifyDTO();
 		dto.setUid(uid);
 		dto.setDownCmds(downCmds);
