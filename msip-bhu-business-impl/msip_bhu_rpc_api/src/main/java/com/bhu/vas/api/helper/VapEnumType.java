@@ -317,4 +317,10 @@ public class VapEnumType {
 			return allMassAPHdTypes;
 		}
 	}
+	
+	
+	public static void main(String[] argv){
+		DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
+		System.out.print(unitType.name);
+	}
 }

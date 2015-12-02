@@ -54,7 +54,7 @@ public class WifiDeviceGrayVersionPK implements Serializable {
 
         WifiDeviceGrayVersionPK that = (WifiDeviceGrayVersionPK) o;
 
-        if (dut == that.dut && gl == that.gl) return true;
+        if (dut.equals(that.dut) && gl == that.gl) return true;
         return false;
     }
 
