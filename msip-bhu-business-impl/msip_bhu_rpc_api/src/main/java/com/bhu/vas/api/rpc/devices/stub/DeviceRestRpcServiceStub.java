@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.List;
 import java.util.Map;
 
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
@@ -155,5 +156,6 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	public Collection<GeoMapVTO> fetchGeoMap() {
 		return deviceRestRpcService.fetchGeoMap();
 	}*/
+
 
 }

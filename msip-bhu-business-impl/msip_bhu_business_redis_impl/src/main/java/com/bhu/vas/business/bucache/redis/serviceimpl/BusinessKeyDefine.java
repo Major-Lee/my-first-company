@@ -92,4 +92,9 @@ public class BusinessKeyDefine {
 	public static class WifiDeviceGuest {
 		public static final String Guest = "WDG";
 	}
+
+	public static class ModuleStat{
+		public static final String StylePrefix = "MSSP";
+		public static final String ModulePrefix = "MSMP";
+	}
 }
