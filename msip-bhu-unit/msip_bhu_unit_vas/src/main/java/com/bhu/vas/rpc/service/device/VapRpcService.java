@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedItemVTO;
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -111,4 +113,16 @@ public class VapRpcService  implements IVapRpcService{
         logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
         return deviceUnitFacadeRpcService.userDetail(uid,countrycode,acc,tid);
     }
+
+	@Override
+	public RpcResponseDTO<List<ModuleDefinedVTO>> fetchDayStat(int uid) {
+		logger.info(String.format("fetchDayStat uid[%s]",uid));
+		return vapFacadeService.fetchDayStat(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<ModuleDefinedItemVTO> fetchStatDetail(int uid, String style) {
+		logger.info(String.format("fetchStatDetail uid[%s] style[%s]",uid, style));
+		return vapFacadeService.fetchStatDetail(uid, style);
+	}
 }

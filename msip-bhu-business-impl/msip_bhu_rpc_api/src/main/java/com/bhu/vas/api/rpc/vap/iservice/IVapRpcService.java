@@ -10,6 +10,8 @@ import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedItemVTO;
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -32,4 +34,10 @@ public interface IVapRpcService {
     RpcResponseDTO<TailPage<ModuleStyleVTO>> pagesVapStyles(int uid,int pn,int ps);
     RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
     RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
+
+
+
+    RpcResponseDTO<List<ModuleDefinedVTO>> fetchDayStat(int uid);
+    RpcResponseDTO<ModuleDefinedItemVTO> fetchStatDetail(int uid,String style);
+
 }

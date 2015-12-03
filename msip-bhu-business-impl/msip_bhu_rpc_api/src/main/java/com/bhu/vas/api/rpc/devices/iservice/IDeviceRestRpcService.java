@@ -13,6 +13,7 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -41,4 +42,5 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits);
 	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid);
+
 }
