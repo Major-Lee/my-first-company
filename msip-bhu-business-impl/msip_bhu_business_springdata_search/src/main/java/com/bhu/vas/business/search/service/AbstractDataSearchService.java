@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -72,8 +73,16 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 	public void updateIndex(String id, Map<String, Object> sourceMap){
 		updateIndex(id, sourceMap, false, false);
 	}
-	
+	/**
+	 * 更新单条索引数据
+	 * @param id 索引主键
+	 * @param sourceMap 需要更新的字段数据map
+	 * @param refresh
+	 * @param waitForOperation
+	 */
 	public void updateIndex(String id, Map<String, Object> sourceMap, boolean refresh, boolean waitForOperation){
+		if(StringUtils.isEmpty(id) || sourceMap == null || sourceMap.isEmpty()) return;
+		
 		IndexRequest indexRequest = new IndexRequest();
 		indexRequest.source(sourceMap);
 		UpdateQuery updateQuery = new UpdateQueryBuilder().withId(id)
@@ -84,6 +93,72 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 		}
 	}
 	
+	public void bulkUpdate(List<String> ids, List<Map<String, Object>> sourceMaps){
+		bulkUpdate(ids, sourceMaps, false, false);
+	}
+	
+	/**
+	 * 打包批量更新索引数据 不同id 不同数据
+	 * @param ids 索引主键的集合
+	 * @param sourceMaps 需要更新的字段数据map的集合
+	 * @param refresh
+	 * @param waitForOperation
+	 */
+	public void bulkUpdate(List<String> ids, List<Map<String, Object>> sourceMaps, boolean refresh, boolean waitForOperation){
+		if(ids == null || ids.isEmpty()) return;
+		if(sourceMaps == null || sourceMaps.isEmpty()) return;
+		if(ids.size() != sourceMaps.size()) return;
+		
+		List<UpdateQuery> updateQuerys = new ArrayList<UpdateQuery>();
+		int cursor = 0;
+		for(String id : ids){
+			if(StringUtils.isEmpty(id)) continue;
+			Map<String, Object> sourceMap = sourceMaps.get(cursor);
+			if(sourceMap == null || sourceMap.isEmpty()) continue;
+
+			IndexRequest indexRequest = new IndexRequest();
+			indexRequest.source(sourceMap);
+			updateQuerys.add(new UpdateQueryBuilder().withId(id)
+					.withClass(entityClass).withIndexRequest(indexRequest).build());
+			cursor++;
+		}
+		
+		if(!updateQuerys.isEmpty()){
+			getElasticsearchTemplate().bulkUpdate(updateQuerys);
+			if(refresh){
+				getElasticsearchTemplate().refresh(entityClass, waitForOperation);
+			}
+		}
+	}
+	
+	/**
+	 * 打包批量更新索引数据 不同id 相同数据
+	 * @param ids 索引主键的集合
+	 * @param sourceMap 需要更新的字段数据map
+	 * @param refresh
+	 * @param waitForOperation
+	 */
+	public void bulkUpdate(List<String> ids, Map<String, Object> sourceMap, boolean refresh, boolean waitForOperation){
+		if(ids == null || ids.isEmpty()) return;
+		if(sourceMap == null || sourceMap.isEmpty()) return;
+		
+		List<UpdateQuery> updateQuerys = new ArrayList<UpdateQuery>();
+		for(String id : ids){
+			if(StringUtils.isEmpty(id)) continue;
+
+			IndexRequest indexRequest = new IndexRequest();
+			indexRequest.source(sourceMap);
+			updateQuerys.add(new UpdateQueryBuilder().withId(id)
+					.withClass(entityClass).withIndexRequest(indexRequest).build());
+		}
+		
+		if(!updateQuerys.isEmpty()){
+			getElasticsearchTemplate().bulkUpdate(updateQuerys);
+			if(refresh){
+				getElasticsearchTemplate().refresh(entityClass, waitForOperation);
+			}
+		}
+	}
 	
 	
 	public void iteratorAll(String indices,String types,IteratorNotify<Page<MODEL>> notify){

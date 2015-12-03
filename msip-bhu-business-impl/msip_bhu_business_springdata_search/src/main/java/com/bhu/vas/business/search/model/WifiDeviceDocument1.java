@@ -294,7 +294,7 @@ public class WifiDeviceDocument1 extends AbstractDocument{
 	public String getId() {
 		return id;
 	}
-
+	
 	public String getD_sn() {
 		return d_sn;
 	}

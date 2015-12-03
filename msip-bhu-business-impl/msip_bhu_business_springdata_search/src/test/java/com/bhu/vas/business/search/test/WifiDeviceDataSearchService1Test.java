@@ -1,7 +1,9 @@
 package com.bhu.vas.business.search.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -227,11 +229,31 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		wifiDeviceDataSearchService1.bulkIndex(docs);
 		
 //		Map<String,Object> source_map = new HashMap<String,Object>();
-//		source_map.put("u_type","99");
-//		source_map.put("u_mcc", "88");
+//		//source_map.put("u_type","99");
+//		//source_map.put("u_mcc", "88");
 //		source_map.put("d_geopoint", new double[]{116.345582,40.017052});
 //
 //		wifiDeviceDataSearchService1.updateIndex(doc5.getId(), source_map);
+//		
+//		source_map = new HashMap<String,Object>();
+//		source_map.put("a_org", null);
+//		
+//		wifiDeviceDataSearchService1.updateIndex(doc5.getId(), source_map);
+		List<String> ids = new ArrayList<String>();
+		ids.add("84:82:f4:0a:60:a8");
+		ids.add("84:82:f4:05:52:14");
+		List<Map<String,Object>> sourceMaps = new ArrayList<Map<String,Object>>();
+		Map<String,Object> source_map1 = new HashMap<String,Object>();
+		source_map1.put("u_type","66");
+		source_map1.put("u_mcc", "77");
+		Map<String,Object> source_map2 = new HashMap<String,Object>();
+		source_map2.put("u_type","88");
+		source_map2.put("u_mcc", "99");
+		sourceMaps.add(source_map1);
+		sourceMaps.add(source_map2);
+		
+		wifiDeviceDataSearchService1.bulkUpdate(ids, source_map1, false, false);
+		
 		wifiDeviceDataSearchService1.refresh(true);
 	}
 	
@@ -246,7 +268,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 1：设备从未上线
 	 * 2：设备业务线为urouter
 	 */
-	//@Test
+	@Test
 	public void test002SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备从未上线
@@ -273,7 +295,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 2：设备业务线为商业wifi
 	 * 3：设备灰度为二级
 	 */
-	//@Test
+	@Test
 	public void test003SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备在线
@@ -305,7 +327,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 2：设备业务线为商业wifi
 	 * 3：设备灰度为一级或二级
 	 */
-	//@Test
+	@Test
 	public void test004SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备在线
@@ -370,7 +392,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 	上述条件反向
 	 * 
 	 */
-	//@Test
+	@Test
 	public void test005SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		
@@ -422,7 +444,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 4：导入的批次是20151104开头的
 	 * 5：按照mac地址降序排序
 	 */
-	//@Test
+	@Test
 	public void test006SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -461,7 +483,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 满足条件
 	 * 按照设备位置与"广西壮族自治区柳州市柳南区西堤路"{109.407456,24.315300}的距离升序排序
 	 */
-	//@Test
+	@Test
 	public void test007SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -489,7 +511,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 满足条件
 	 * 按照圆心坐标是"北京市海淀区双清路" {116.345581,40.017058} 半径为30km内的设备
 	 */
-	//@Test
+	@Test
 	public void test008SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -517,7 +539,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * topLeft {116.21520418420414, 40.07323716177983}
 	 * bottomRight {116.5394884295654, 39.75419016772713}
 	 */
-	//@Test
+	@Test
 	public void test009SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -550,7 +572,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 		84:82:f4:0a:64:68 = AP201P07V1.2.14z2
 		84:82:f4:05:52:14 = AP201P07V1.2.14r3
 	 */
-	//@Test
+	@Test
 	public void test0010SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号倒序排序
@@ -576,7 +598,7 @@ public class WifiDeviceDataSearchService1Test extends BaseTest{
 	 * 实例二:
 	 * 	满足上述的条件1 只获取数量
 	 */
-	//@Test
+	@Test
 	public void test0011SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号大于AP201P07V1.2.14z2匹配
