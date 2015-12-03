@@ -15,11 +15,16 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
+import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
+import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
+import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
+import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
@@ -28,6 +33,9 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 	
 	@Resource
 	private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
+	
+	@Resource
+	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
 	private static final String fw_upgrade_url_template = "http://7xl3iu.dl1.z0.glb.clouddn.com/device/dev/fw/%s";
 	private static final String om_upgrade_url_template = "http://7xl3iu.dl1.z0.glb.clouddn.com/device/dev/om/AP106/";
 	//@Test
@@ -96,7 +104,7 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 		System.out.println(JsonHelper.getJSONString(currentGrays));
 	}
 	
-	@Test
+	//@Test
 	public void test004MainPageRightBottomData(){
 		TailPage<VersionVTO> pagesFW = wifiDeviceGrayFacadeService.pagesFW(VapEnumType.DeviceUnitType.uRouterTU_106,1,10);
 		System.out.println(JsonHelper.getJSONString(pagesFW));
@@ -106,9 +114,29 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 		
 	}
 	
-	//@Test
+	@Test
 	public void test005deviceUnitGrayTest(){
-		System.out.println(wifiDeviceGrayFacadeService.deviceUnitGray("84:82:f4:19:01:0c"));
-		System.out.println(wifiDeviceGrayFacadeService.deviceUnitGray("84:82:f4:23:06:68"));
+		//System.out.println(wifiDeviceGrayFacadeService.deviceUnitGray("84:82:f4:19:01:0c"));
+		//System.out.println(wifiDeviceGrayFacadeService.deviceUnitGray("84:82:f4:23:06:68"));
+		
+		/*VasModuleCmdDefined byId = vasModuleCmdDefinedService.getById(new VasModuleCmdPK("ModuleCMD","style000"));
+		System.out.println(byId.getTemplate());*/
+		
+		
+		ModelCriteria mc = new ModelCriteria();
+    	mc.createCriteria().andSimpleCaulse(" 1=1 ");
+    	mc.setPageNumber(1);
+    	mc.setPageSize(10);
+    	mc.setOrderByClause(" created_at desc ");
+    	
+    	List<VasModuleCmdPK> pks = vasModuleCmdDefinedService.findIdsByModelCriteria(mc);
+    	System.out.println(pks.size());
+    	
+		TailPage<VasModuleCmdDefined> pages = vasModuleCmdDefinedService.findModelTailPageByModelCriteria(mc);
+		List<ModuleStyleVTO> vtos = new ArrayList<>();
+		for(VasModuleCmdDefined mcf:pages.getItems()){
+			vtos.add(mcf.toModuleStyleVTO());
+		}
+		System.out.println(pages.getTotalItemsCount());
 	}
 }

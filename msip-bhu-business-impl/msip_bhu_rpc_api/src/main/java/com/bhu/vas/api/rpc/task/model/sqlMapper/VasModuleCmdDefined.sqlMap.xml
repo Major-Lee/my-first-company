@@ -150,7 +150,7 @@
         </where>
     </delete>
 
-    <select id="pkSelectByModelCriteria" resultType="wifiDeviceGroupRelationPK">
+    <select id="pkSelectByModelCriteria" resultType="vasModuleCmdPK">
         select dref, style from
         <include refid="modelTableName"/>
         <if test="_parameter != null">
