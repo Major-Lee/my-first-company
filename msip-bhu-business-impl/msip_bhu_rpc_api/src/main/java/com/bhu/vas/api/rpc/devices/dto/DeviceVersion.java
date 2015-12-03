@@ -228,17 +228,17 @@ public class DeviceVersion {
 			System.out.println(orig+"   "+/*parser.wasDutURouter() +*/ "  "+ parser.getPrefix()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]+"  "+parser.getDut()+"  "+parser.getMn());
 		}
 		
-		/*String ss = "Build8606";
+		String ss = "Build8606";
 		System.out.println(ss.substring(5));
 		
-		String current = "AP106P06V1.3.2Build8606";
-		String[] array1 = {"AP106P06V1.3.2Build8606","AP106P06V1.3.2Build8677","AP106P06V1.3.2Build8600","AP106P07V1.3.3r1_TU","AP106P07V1.3.1r1_TU","AP106P06V1.3.0Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		String current = "AP106P07V1.3.2r1_TU";
+		String[] array1 = {"AP106P06V1.3.4Build8882_TU","AP106P06V1.3.2Build8677","AP106P06V1.3.2Build8600","AP106P07V1.3.3r1_TU","AP106P07V1.3.1r1_TU","AP106P06V1.3.0Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array1){
 			int compareDeviceVersions = compareVersions(current, orig);
 			System.out.println(compareDeviceVersions);
 		}
 			
-		String Swver_Spliter_Patterns = "[P0|V|_]+";
+		/*String Swver_Spliter_Patterns = "[P0|V|_]+";
 		String[] split = "AP106P06V1.3.2Build8606".split(Swver_Spliter_Patterns);
 		//String[] split = "2015-03-18-19:19 Revision: 6926".split(Swver_Spliter_Patterns);
 		for(String orig:split){

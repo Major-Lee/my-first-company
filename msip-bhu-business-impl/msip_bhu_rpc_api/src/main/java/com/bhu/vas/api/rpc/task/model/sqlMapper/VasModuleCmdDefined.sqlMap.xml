@@ -151,7 +151,7 @@
     </delete>
 
     <select id="pkSelectByModelCriteria" resultType="wifiDeviceGroupRelationPK">
-        select gid, mac from
+        select dref, style from
         <include refid="modelTableName"/>
         <if test="_parameter != null">
             <include refid="model_CRITERIA_SQL_GenCondition"/>
