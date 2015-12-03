@@ -106,11 +106,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid));
     }
     
-    @Override
+    /*@Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
         logger.info(String.format("fetchBindDevicesByAccOrUid with uid[%s]", uid));
         return userUnitFacadeService.fetchBindDevicesByAccOrUid(countrycode,acc,uid);
-    }
+    }*/
     
     @Override
     public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid){

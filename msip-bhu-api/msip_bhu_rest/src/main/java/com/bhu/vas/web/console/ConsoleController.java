@@ -27,7 +27,6 @@ import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
 import com.bhu.vas.api.rpc.statistics.dto.UserUrlSubDTO;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
-import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -214,30 +213,6 @@ public class ConsoleController extends BaseController {
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 
-
-    /**
-     * 控制层 获取用户手机号或者用户tid绑定的设备
-     * @param response
-     * @param countrycode
-     * @param acc 目标用户手机号
-     * @param tid 目标用户id
-     * @param uid
-     */
-    @ResponseBody()
-    @RequestMapping(value="/fetch_bindedbyaccortid",method={RequestMethod.POST})
-    public void fetchBindedByAccOrTid(HttpServletResponse response,
-					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
-								@RequestParam(required = false) String acc,
-								@RequestParam(required = false,defaultValue="0") int tid,
-                                @RequestParam(required = true) int uid) {
-    	RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevicesByAccOrUid(countrycode, acc, tid);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-    }
-    
     @ResponseBody()
     @RequestMapping(value="/un_bindedbyaccortid",method={RequestMethod.POST})
     public void unBindedByAccOrTid(HttpServletResponse response,

@@ -40,7 +40,7 @@ public class ConsoleDeviceController extends BaseController {
      * @param mac
      */
     @ResponseBody()
-    @RequestMapping(value = "/detail", method = {RequestMethod.POST})
+    @RequestMapping(value = "/devicedetail", method = {RequestMethod.POST})
     public void detail(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -52,6 +52,29 @@ public class ConsoleDeviceController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+    }
+    
+    /**
+     * 控制层 获取用户手机号或者用户tid绑定的设备
+     * @param response
+     * @param countrycode
+     * @param acc 目标用户手机号
+     * @param tid 目标用户id
+     * @param uid
+     */
+    @ResponseBody()
+    @RequestMapping(value="/userdetail",method={RequestMethod.POST})
+    public void userdetail(HttpServletResponse response,
+					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+								@RequestParam(required = false) String acc,
+								@RequestParam(required = false,defaultValue="0") int tid,
+                                @RequestParam(required = true) int uid) {
+    	RpcResponseDTO<List<DeviceDetailVTO>> rpcResult = vapRpcService.userDetail(uid, countrycode, acc, tid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
     
     /**

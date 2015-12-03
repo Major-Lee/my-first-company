@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
@@ -29,6 +30,7 @@ import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -208,6 +210,27 @@ public class DeviceUnitFacadeRpcService{
 	/*public RpcResponseDTO<Boolean> changeVapStyle(int uid,String mac,String style){
 		return null;
 	}*/
+	
+	public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int operationUid,int countrycode,String acc,int tid){
+		if(tid <=0 && StringUtils.isEmpty(acc))
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		if(tid <=0){
+			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+			if(ret_uid == null || ret_uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			tid = ret_uid.intValue();
+		}
+		List<UserDevice> userDevices = userDeviceService.fetchBindDevicesWithLimit(tid, UserUnitFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM);
+		
+		List<DeviceDetailVTO> resultVTOs = new ArrayList<>();
+		for(UserDevice udevice:userDevices){
+			RpcResponseDTO<DeviceDetailVTO> vto = this.deviceDetail(operationUid, udevice.getMac());
+			if(!vto.hasError())
+				resultVTOs.add(vto.getPayload());
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(resultVTOs);
+	}
 	
 	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int operationUid,String mac){
 		try{

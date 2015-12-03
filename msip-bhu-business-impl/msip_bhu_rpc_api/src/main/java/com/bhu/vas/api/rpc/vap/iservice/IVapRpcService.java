@@ -31,4 +31,5 @@ public interface IVapRpcService {
     RpcResponseDTO<Boolean> forceDeviceUpgrade(int uid, boolean fw, String versionid,List<String> macs,String beginTime,String endTime);
     RpcResponseDTO<TailPage<ModuleStyleVTO>> pagesVapStyles(int uid,int pn,int ps);
     RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
+    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
 }

@@ -105,4 +105,10 @@ public class VapRpcService  implements IVapRpcService{
 		logger.info(String.format("deviceDetail uid[%s] mac[%s]",uid,mac));
 		return deviceUnitFacadeRpcService.deviceDetail(uid, mac);
 	}
+	
+    @Override
+    public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid) {
+        logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
+        return deviceUnitFacadeRpcService.userDetail(uid,countrycode,acc,tid);
+    }
 }
