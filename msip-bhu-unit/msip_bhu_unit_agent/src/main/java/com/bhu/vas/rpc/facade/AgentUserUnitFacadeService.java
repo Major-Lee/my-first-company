@@ -95,6 +95,23 @@ public class AgentUserUnitFacadeService {
 		}
 	}
 			
+	/**
+	 * 创建分销商用户
+	 * 如果此用户已经存在于系统，并且不是分销商用户，则修改pwd，nick，org等数据
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param nick
+	 * @param sex
+	 * @param org
+	 * @param bln
+	 * @param addr1
+	 * @param addr2
+	 * @param memo
+	 * @param device
+	 * @param regIp
+	 * @return
+	 */
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,String pwd,
 			String nick, String sex,
 			String org,
@@ -103,14 +120,27 @@ public class AgentUserUnitFacadeService {
 			String addr2,
 			String memo,
 			String device,String regIp) {
-		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
+		/*if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
-		}
+		}*/
 		if (userService.isExistsOrg(org)) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_ORG_DATA_EXIST);
 		}
 		try{
-			User user = new User();
+			boolean isReg = true;
+			User user = null;
+			Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+			if(uid == null || uid.intValue() == 0){
+				user = new User();
+			}else{
+				user = userService.getById(uid);
+				if(user != null){
+					isReg = false;
+				}else{
+					user = new User();
+				}
+			}
+			
 			user.setCountrycode(countrycode);
 			user.setMobileno(acc);
 			//user.addSafety(SafetyBitMarkHelper.mobileno);
@@ -131,23 +161,31 @@ public class AgentUserUnitFacadeService {
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
 			user.setLastlogindevice(device);
 			user.setUtype(UserType.Agent.getIndex());
-			user = this.userService.insert(user);
-			{//更新summary相关的容易字段
-				try{
-					agentBillFacadeService.getAgentBillSummaryViewService().insert(AgentBillSummaryView.buildDefault(user.getId(), org));
-				}catch(Exception ex){
-					ex.printStackTrace(System.out);
+			UserTokenDTO uToken = null;
+			if(isReg){
+				user = this.userService.insert(user);
+				{//更新summary相关的容易字段
+					try{
+						agentBillFacadeService.getAgentBillSummaryViewService().insert(AgentBillSummaryView.buildDefault(user.getId(), org));
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
 				}
+				UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+				// token validate code
+				uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			}else{
+				user = this.userService.update(user);
+				AgentBillSummaryView sview = agentBillFacadeService.getAgentBillSummaryViewService().getById(user.getId());
+				if(sview != null){
+					sview.setOrg(org);
+					agentBillFacadeService.getAgentBillSummaryViewService().update(sview);
+				}
+				uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
 			}
-			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
-			// token validate code
-			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
-			{//write header to response header
-				//BusinessWebHelper.setCustomizeHeader(response, uToken);
-				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
-			}
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			//deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
-			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,uToken, true);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload4Agent(user,uToken, isReg);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
