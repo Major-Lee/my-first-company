@@ -1015,7 +1015,7 @@ public class DeviceBusinessFacadeService {
 				//获取设备配置之后的指令分发
 				List<String> afterQueryPayloads = null;
 				//只有URouter的设备才需进行此操作
-				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_model())){
+				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())){
 					//验证URouter设备配置是否符合约定
 					if(!DeviceHelper.validateURouterBlackList(dto)){
 						if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();

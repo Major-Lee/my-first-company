@@ -50,7 +50,7 @@ public class WifiDeviceHelper {
 	}
 	public static boolean isURouterDevice(String orig_swver) {
 		DeviceVersion ver = DeviceVersion.parser(orig_swver);
-		if(ver == null) return false;
+		if(ver == null || !ver.valid()) return false;
 		return ver.wasDutURouter();
 	}
 	/*public static boolean isURouterDevice(String orig_model) {

@@ -217,7 +217,7 @@ public class DeviceVersion {
 	}
 	
 	public boolean canExecuteUpgrade(){
-		return StringUtils.isEmpty(dut) || wasDutURouter();
+		return wasDutURouter();
 	}
 	
 	public static void main(String[] argv){
