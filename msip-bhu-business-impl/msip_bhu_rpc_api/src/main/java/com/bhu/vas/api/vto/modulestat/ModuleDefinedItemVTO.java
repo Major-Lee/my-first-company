@@ -1,8 +1,5 @@
 package com.bhu.vas.api.vto.modulestat;
 
-import com.bhu.vas.api.rpc.vap.dto.module.ItemChannel;
-import com.bhu.vas.api.rpc.vap.dto.module.ItemRedirect;
-
 import java.io.Serializable;
 import java.util.List;
 

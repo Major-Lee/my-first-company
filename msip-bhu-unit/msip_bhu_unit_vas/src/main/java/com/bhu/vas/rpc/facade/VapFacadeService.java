@@ -112,6 +112,7 @@ public class VapFacadeService {
         ModuleDefinedItemVTO vto = new ModuleDefinedItemVTO();
 
         vto.setStyle(style);
+
         vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
 
 
