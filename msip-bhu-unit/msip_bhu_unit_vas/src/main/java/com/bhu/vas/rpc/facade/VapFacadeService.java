@@ -74,7 +74,11 @@ public class VapFacadeService {
         return false;
     }
 
-
+    /**
+     * 获取当前所有增值模板的
+     * @param uid
+     * @return
+     */
     public RpcResponseDTO<List<ModuleDefinedVTO>> fetchDayStat(int uid) {
 
         //TODO(bluesnad): findall???
@@ -85,6 +89,8 @@ public class VapFacadeService {
         ModuleDefinedVTO dto = null;
         for (VasModuleCmdDefined vasModuleCmdDefined : vasModuleCmdDefineds) {
             dto = new ModuleDefinedVTO();
+
+            //TODO(bluesand): dto.setCount();
             dto.setStyle(vasModuleCmdDefined.getStyle());
             dto.setMemo(vasModuleCmdDefined.getMemo());
             dto.setItem(buildModuleDefinedItemVTO(vasModuleCmdDefined.getStyle()));
