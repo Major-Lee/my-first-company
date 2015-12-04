@@ -168,8 +168,16 @@ public class WifiDeviceIndexIncrementService {
 	}
 	
 	/**
-	 * 
-	 * @param entitys
+	 * 设备上线发生变更multi
+	 * 变更涉及的更改索引字段是
+	 * 1) d_online
+	 * 2) d_origswver
+	 * 3) d_workmodel
+	 * 4) d_configmodel
+	 * 5) d_type
+	 * 6) d_lastregedat
+	 * 7) d_dut
+	 * @param entitys 设备实体集合
 	 */
 	public void onlineMultiUpdIncrement(List<WifiDevice> entitys){
 		if(entitys == null) return;
