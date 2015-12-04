@@ -220,10 +220,11 @@ public class AsyncMsgHandleService {
 			
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
+			boolean needUpdate = false;
+			boolean needClaim = wifiDevice.needClaim();
 			try{
-				boolean needUpdate = false;
 				//设备上线后认领
-				if(wifiDevice.needClaim()){
+				if(needClaim){
 					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn(), wifiDevice.getId(), parser.toDeviceUnitTypeIndex());
 					if(claim_ret != 0){//-1 or >0
@@ -248,7 +249,11 @@ public class AsyncMsgHandleService {
 			}
 			
 			try{
-				wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
+				if(needClaim){
+					wifiDeviceIndexIncrementService.onlineClaimCrdIncrement(wifiDevice);
+				}else{
+					wifiDeviceIndexIncrementService.onlineUpdIncrement(wifiDevice);
+				}
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 			}
@@ -272,7 +277,8 @@ public class AsyncMsgHandleService {
 					afterDeviceModuleOnlineThenCmdDown(dto.getMac(),cmd);
 				}
 			}
-			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
+			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
+			wifiDeviceIndexIncrementService.moduleOnlineUpdIncrement(wifiDevice.getId(), dto.getOrig_vap_module());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s] successful", message));
 	}
@@ -395,7 +401,8 @@ public class AsyncMsgHandleService {
 			WifiDevicePresentCtxService.getInstance().addPresents(idsSyncRegeds, ctx);
 		}
 		//5:增量索引
-		wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);
+		//wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);
+		wifiDeviceIndexIncrementService.onlineMultiUpdIncrement(entitys);
 		//设备统计
 		deviceFacadeService.deviceStatisticsOnlines(ds, DeviceStatistics.Statis_Device_Type);
 	}
@@ -556,7 +563,8 @@ public class AsyncMsgHandleService {
 			taskFacadeService.taskStateFailByDevice(dto.getMac());
 			
 			//6:增量索引
-			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
+			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
+			wifiDeviceIndexIncrementService.offlineUpdIncrement(wifiId, entity.getUptime(), entity.getLast_logout_at().getTime());
 
 		}
 		
@@ -993,7 +1001,9 @@ public class AsyncMsgHandleService {
 			}
 			wifiDeviceService.update(entity);
 			//3:增量索引
-			wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
+			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
+			wifiDeviceIndexIncrementService.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()), 
+					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
 	}

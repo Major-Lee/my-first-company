@@ -26,10 +26,10 @@ public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备从未上线
 		SearchCondition sc_neveronline = new SearchCondition(BusinessIndexDefine.WifiDevice.
-				Field1.D_ONLINE.getName(), SearchConditionPattern.Equal.getPattern(), "0");
+				Field.D_ONLINE.getName(), SearchConditionPattern.Equal.getPattern(), "0");
 		//设备业务线为urouter
 		SearchCondition sc_urouter = new SearchCondition(BusinessIndexDefine.WifiDevice.
-				Field1.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.Equal.getPattern(), "TU");
+				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.Equal.getPattern(), "TU");
 		searchConditions.add(sc_neveronline);
 		searchConditions.add(sc_urouter);
 		

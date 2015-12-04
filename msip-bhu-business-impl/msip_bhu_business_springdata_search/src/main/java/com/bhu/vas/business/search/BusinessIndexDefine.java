@@ -12,7 +12,7 @@ public interface BusinessIndexDefine {
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
 		public static final String refreshInterval = "-1";
-		interface Field{
+/*		interface Field{
 			public static final String ID 		= "id";
 			public static final String SN 		= "sn";
 			public static final String ORIGSWVER 		= "origswver";
@@ -30,8 +30,8 @@ public interface BusinessIndexDefine {
 			public static final String COUNT 		= "count";
 			public static final String REGISTEREDAT 		= "registeredat";
 			public static final String UPDATEDAT 		= "updatedat";
-		}
-		enum Field1 implements FieldDefine{
+		}*/
+		enum Field implements FieldDefine{
 			ID("id", null),//设备mac
 			UPDATEDAT("updatedat", null),//索引记录的最后更新时间
 			/**** 设备信息 device ****/
@@ -77,7 +77,7 @@ public interface BusinessIndexDefine {
 			//权重得分，排序，计算专用字段名称
 			String score_name;
 			
-			Field1(String name, String score_name){
+			Field(String name, String score_name){
 				this.name = name;
 				this.score_name = score_name;
 			}
@@ -100,19 +100,19 @@ public interface BusinessIndexDefine {
 
 
 
-			private static Map<String, Field1> wifiDeviceFieldMaps;
+			private static Map<String, Field> wifiDeviceFieldMaps;
 			
 			static {
-				wifiDeviceFieldMaps = new HashMap<String, Field1>();
-				Field1[] items = values();//new ThumbType[] {SMALL, MIDDLE, LARGE, ORIGINAL};
-				for (Field1 item : items){
+				wifiDeviceFieldMaps = new HashMap<String, Field>();
+				Field[] items = values();//new ThumbType[] {SMALL, MIDDLE, LARGE, ORIGINAL};
+				for (Field item : items){
 					wifiDeviceFieldMaps.put(item.name, item);
 				}
 			}
 			
 
-			public static Field1 getByName(String name) {
-				Field1 ret = wifiDeviceFieldMaps.get(name);
+			public static Field getByName(String name) {
+				Field ret = wifiDeviceFieldMaps.get(name);
 				return ret;
 			}
 			
