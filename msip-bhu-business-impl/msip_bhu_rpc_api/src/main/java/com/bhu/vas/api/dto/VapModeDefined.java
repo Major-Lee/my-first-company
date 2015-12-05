@@ -18,6 +18,79 @@ public class VapModeDefined {
 		return Vap_Supported_Work_Mode1.equals(device_workmode) 
 				|| Vap_Supported_Work_Mode2.equals(device_workmode) || Vap_Supported_Work_Mode3.equals(device_workmode);
 	}
+
+	public enum VapModeType {
+		Http404(1, "http404", "http404增值模块"),
+		Redirect(2, "redirect", "重定向"),
+		Brand(3, "brand", "品牌展示"),
+		Channel(4, "channel", "渠道号");
+
+		private int type;
+		private String style;
+		private String desc;
+
+		VapModeType(int type, String style, String desc) {
+			this.type = type;
+			this.style = style;
+			this.desc = desc;
+		}
+
+		public int getType() {
+			return type;
+		}
+
+		public void setType(int type) {
+			this.type = type;
+		}
+
+		public String getStyle() {
+			return style;
+		}
+
+		public void setStyle(String style) {
+			this.style = style;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+
+		public static VapModeType getDescByType(int type) {
+			if (Http404.getType() == type) {
+				return Http404;
+			} else if (Redirect.getType() == type) {
+				return Redirect;
+			} else if (Brand.getType() == type) {
+				return Brand;
+			} else if (Channel.getType() == type) {
+				return Channel;
+			} else {
+				return null;
+			}
+		}
+
+		public static VapModeType getDescByStyle(String style) {
+			if (style.equals(Http404.getStyle())) {
+				return Http404;
+			} else if (style.equals(Redirect.getStyle())){
+				return Redirect;
+			} else if (style.equals(Brand.getStyle())) {
+				return Brand;
+			} else if (style.equals(Channel.getStyle())) {
+				return Channel;
+			} else {
+				return null;
+			}
+		}
+
+	}
+
+
+
 	
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
 	//private final static String url_prefix = "http://vap.bhunetworks.com/vap/";
@@ -524,6 +597,9 @@ public class VapModeDefined {
 				return HtmlRedirect.STYLE000;
 		}
 	}
+
+
+
 	
 	
 	public static void main(String[] argv){

@@ -20,10 +20,18 @@ import org.springframework.util.StringUtils;
 import com.smartwork.async.messagequeue.kafka.parser.iface.IMessageHandler;
 
 /**
- * 周边探测终端handle
- * 1) 周边探测业务数据持久化
- * 2) 周边探测push发送
- * @author tangzichao
+ * 增值服务统计
+ *
+ *
+ * redis:
+ * {key: stlye + daydate field:type.sequence value: count}
+ * {key: style002.20151212 field: 4.1 value:1}
+ *
+ * {key: stlye + monthdate field:type.sequence value: count}
+ * {key: style002.201512 field: 4.1 value:1}
+ *
+ *
+ * @author bluesand
  *
  */
 public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
@@ -54,7 +62,12 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 	}
 
 
-
+	/**
+	 *
+	 * @param type
+	 * @param sequence
+	 * @return
+	 */
 	private String generateModuleKey(int type, int sequence) {
 		return type + "." + sequence;
 	}
@@ -70,15 +83,6 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 	private String generateDStyleKey(String ver, long time) {
 		return generateStyleKey(ver) + "." + DateTimeHelper.formatDate(new Date(time * 1000), "yyyyMMdd");
 	}
-
-	private String generateMStyleKey(String style) {
-		return style + "." + DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyyMM");
-	}
-
-	private String generateDStyleKey(String style) {
-		return style + "." + DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyyMMdd");
-	}
-
 
 	public static void main(String[] args) {
 
@@ -127,10 +131,30 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 	}
 
 
-
+	/**
+	 *
+	 * dev: 设备mac
+	 * mac: 终端mac
+	 * type: 增值类型 1: 404, 2:重定向, 3: 品牌展示, 4:渠道号
+	 * sequence: 子类型编号
+	 * ver: 模板类型版本
+	 *
+	 *
+	 {
+	 "dev": "84:82:f4:23:06:68",
+	 	"item": [{
+	 		"mac": "a4:5e:60:bb:86:7d",
+	 		"type": 2,
+	 		"sequence": 1,
+	 		"systime": 1448859775,
+	 		"ver": "style000-00.00.01"
+	 	}]
+	 }
+	 *
+	 * @param message
+	 */
 	private void builderMessage(String message) {
 		WifiDeviceModuleStatDTO dto = JsonHelper.getDTO(message, WifiDeviceModuleStatDTO.class);
-
 
 		Map<String, Map<String, Long>> dmaps = new HashMap<String,Map<String,Long>>();
 		Map<String, Map<String, Long>> mmaps = new HashMap<String,Map<String,Long>>();

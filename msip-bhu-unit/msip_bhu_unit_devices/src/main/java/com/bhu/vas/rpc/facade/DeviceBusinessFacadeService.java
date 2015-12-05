@@ -458,6 +458,8 @@ public class DeviceBusinessFacadeService {
 			handset.setDhcp_name(dto.getDhcp_name());
 			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
+
+			System.out.println("after update message:" + JsonHelper.getJSONString(handset));
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
 			//BeanUtils.copyProperties(dto, handset_device_entity);
