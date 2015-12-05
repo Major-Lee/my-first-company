@@ -880,6 +880,7 @@ public class DeviceBusinessFacadeService {
 						handset.setTs(System.currentTimeMillis());
 						handset.setLast_wifi_id(wifiId);
 					}else{
+						handset.setAction(HandsetDeviceDTO.Action_Online); // 清除的时候设置成 offline了
 						handset.setData_tx_rate(terminal.getData_tx_rate());
 						handset.setData_rx_rate(terminal.getData_rx_rate());
 					}
