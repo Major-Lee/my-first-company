@@ -169,7 +169,15 @@ public interface IAgentRpcService {
      * @param uid
      * @param logId
      */
-    boolean updateAgentImportImport(int uid, int logId);
+    boolean updateAgentDeviceImport(int uid, int logId);
+
+    /**
+     * 取消导入
+     * @param uid
+     * @param logId
+     * @return
+     */
+    boolean cancelAgentDeviceImport(int uid, int logId);
 
 
     /**

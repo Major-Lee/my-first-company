@@ -113,7 +113,7 @@ public class WarehouseManagerController extends BaseController{
     ) {
 
         try {
-            boolean ret  = agentRpcService.updateAgentImportImport(uid, logid);
+            boolean ret  = agentRpcService.updateAgentDeviceImport(uid, logid);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,6 +121,36 @@ public class WarehouseManagerController extends BaseController{
 
         }
     }
+
+
+    /**
+     * 取消导入
+     * @param request
+     * @param response
+     * @param uid
+     * @param logid
+     *
+     */
+    @ResponseBody()
+    @RequestMapping(value="/log/cancel", method={RequestMethod.POST})
+    public void CancelImport(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) Integer logid
+    ){
+
+        try {
+            boolean ret = agentRpcService.cancelAgentDeviceImport(uid, logid);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+
+        }
+
+    }
+
 
 
     /**
@@ -191,6 +221,8 @@ public class WarehouseManagerController extends BaseController{
 
 
 
+
+
     private void makeDirs(String path) {
         File dirFile = new File(path);
         if (dirFile.exists()) {
@@ -242,6 +274,12 @@ public class WarehouseManagerController extends BaseController{
         return null;
 
     }
+
+
+
+
+
+
 
     /**
      * 还未认领的设备

@@ -383,7 +383,7 @@ public class AgentFacadeService {
     
     public AgentDeviceVTO pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize) {
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status",1);
+        mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("uid", uid).andColumnEqualTo("status", 0).andColumnEqualTo("import_status", 1);
         int yetTotal = agentDeviceClaimService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
@@ -768,6 +768,21 @@ public class AgentFacadeService {
 //            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
             agentBackendFacadeService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
         }
+        return true;
+    }
+
+
+    public boolean cancelAgentImport(int uid, long logId) {
+        User operUser = userService.getById(uid);
+        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+
+
+        agentDeviceImportLogService.deleteById(logId);
+
+        List<Long> ids = agentDeviceImportLogService.findIds("import_id", logId);
+
+        agentDeviceImportLogService.deleteByIds(ids);
+
         return true;
     }
 
