@@ -779,9 +779,9 @@ public class AgentFacadeService {
 
         agentDeviceImportLogService.deleteById(logId);
 
-        List<Long> ids = agentDeviceImportLogService.findIds("import_id", logId);
+        List<String> ids = agentDeviceClaimService.findIds("import_id", logId);
 
-        agentDeviceImportLogService.deleteByIds(ids);
+        agentDeviceClaimService.deleteByIds(ids);
 
         return true;
     }
