@@ -19,6 +19,7 @@ public class DeviceBaseVTO implements java.io.Serializable{
 	private String hdtype;
 	//归属业务线
 	private String dut;
+	private String dutn;
 	//设备名称
 	private String orig_model;
 	//工作模式
@@ -77,4 +78,11 @@ public class DeviceBaseVTO implements java.io.Serializable{
 	public void setWork_mode(String work_mode) {
 		this.work_mode = work_mode;
 	}
+	public String getDutn() {
+		return dutn;
+	}
+	public void setDutn(String dutn) {
+		this.dutn = dutn;
+	}
+	
 }

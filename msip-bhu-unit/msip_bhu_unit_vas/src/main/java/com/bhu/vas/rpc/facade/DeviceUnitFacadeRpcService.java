@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
@@ -39,6 +40,7 @@ import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -259,14 +261,23 @@ public class DeviceUnitFacadeRpcService{
 			dbv.setWork_mode(wifiDevice.getWork_mode());
 			dbv.setHdtype(wifiDevice.getHdtype());
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
+			//String dut = parser.toDeviceUnitTypeIndex();
 			dbv.setDut(parser.getDut());
-			
+			DeviceUnitType unitType = DeviceUnitType.fromIndex(parser.getDut());
+			dbv.setDutn(unitType != null ?unitType.getName():StringHelper.MINUS_STRING_GAP);
 			//状态信息
 			DevicePresentVTO dpv = new DevicePresentVTO();
 			dpv.setMac(wifiDevice.getId());
 			dpv.setUid(user != null?user.getId():0);
 			dpv.setMobileno(user != null ? user.getMobileno():StringUtils.EMPTY);
-			dpv.setHandsettype(user != null ? user.getLastlogindevice():StringUtils.EMPTY);
+			if(user != null){
+				dpv.setHandsettype(user.getLastlogindevice());
+				dpv.setHandsetn(DeviceEnum.getBySName(user.getLastlogindevice()).getName());
+			}else{
+				dpv.setHandsettype(StringHelper.MINUS_STRING_GAP);
+				dpv.setHandsetn(StringHelper.MINUS_STRING_GAP);
+			}
+			
 			dpv.setAddress(wifiDevice.getFormatted_address());
 			dpv.setOnline(wifiDevice.isOnline());
 			dpv.setMonline(wifiDeviceModule != null?wifiDeviceModule.isModule_online():false);
@@ -278,9 +289,12 @@ public class DeviceUnitFacadeRpcService{
 			WifiDeviceGrayVersionPK deviceGray = wifiDeviceGrayFacadeService.determineDeviceGray(wifiDevice.getId(), wifiDevice.getOrig_swver());
 			dov.setDut(deviceGray.getDut());
 			dov.setGl(deviceGray.getGl());
-			
+			dov.setGln(VapEnumType.GrayLevel.fromIndex(deviceGray.getGl()).getName());
 			String mstyle = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(wifiDevice.getId());
-			dov.setMstyle(mstyle);
+			if(StringUtils.isNotEmpty(mstyle))
+				dov.setMstyle(mstyle);
+			else
+				dov.setMstyle(StringHelper.MINUS_STRING_GAP);
 			DeviceDetailVTO dvto = new DeviceDetailVTO();
 			dvto.setDbv(dbv);
 			dvto.setDpv(dpv);
