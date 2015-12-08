@@ -12,11 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
@@ -25,7 +23,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 @Service
@@ -120,7 +117,7 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 	public void createDeviceGroupIndex(String message) {
 
 		logger.info(String.format("WifiDeviceGroupServiceHandler createDeviceGroupIndex message[%s]", message));
-		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
+/*		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
 		String wifiIdsStr = dto.getWifiIds();
 		String type = dto.getType();
 		Long gid = dto.getGid();
@@ -140,8 +137,7 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 			groupIdList.add(gids);
 		}
 		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
-
-		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);
+		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);*/
 
 	}
 }

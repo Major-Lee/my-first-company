@@ -8,12 +8,18 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -26,112 +32,152 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  *
  */
 public class BuilderWifiDeviceIndexOp {
-	public static int bulk_success = 0;//批量成功次数
-	public static int bulk_fail = 0;//批量失败次数
-	public static int index_count = 0;//建立的索引数据条数
+
 	
 	//public static WifiDeviceIndexService wifiDeviceIndexService = null;
 	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	public static DeviceFacadeService deviceFacadeService = null;
-	public static WifiDeviceService wifiDeviceService = null;
-	
-	public static WifiDeviceModuleService wifiDeviceModuleService;
-	public static WifiDeviceGroupRelationService wifiDeviceGroupRelationService = null;
+	private static AgentDeviceClaimService agentDeviceClaimService;
+	private static WifiDeviceGrayService wifiDeviceGrayService;
+	private static UserService userService;
+	private static WifiDeviceService wifiDeviceService;
+	private static WifiDeviceModuleService wifiDeviceModuleService;
+	private static UserDeviceService userDeviceService;
 	
 	public static void main(String[] argv) throws IOException, ParseException{
 		
 		try{
-			/*//是否需要更新索引库mapping
-			boolean updated_mapping = false;
-			//是否需要更新wifi设备的地理位置
-			boolean updated_geocoding = false;
-			if(argv != null){
-				if(argv.length == 1){
-					updated_mapping = Boolean.valueOf(argv[0]);
-				}
-				else if(argv.length == 2){
-					updated_mapping = Boolean.valueOf(argv[0]);
-					updated_geocoding = Boolean.valueOf(argv[1]);
-				}
-			}*/
 			
 			ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 	
 			//wifiDeviceIndexService = (WifiDeviceIndexService)ctx.getBean("wifiDeviceIndexService");
 			
 			wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
+			agentDeviceClaimService = (AgentDeviceClaimService)ctx.getBean("agentDeviceClaimService");
+			wifiDeviceGrayService = (WifiDeviceGrayService)ctx.getBean("wifiDeviceGrayService");
+			userService = (UserService)ctx.getBean("userService");
 			
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 			wifiDeviceModuleService= (WifiDeviceModuleService)ctx.getBean("wifiDeviceModuleService");
-			deviceFacadeService = (DeviceFacadeService)ctx.getBean("deviceFacadeService");
-			wifiDeviceGroupRelationService = (WifiDeviceGroupRelationService)ctx.getBean("wifiDeviceGroupRelationService");
+			userDeviceService = (UserDeviceService)ctx.getBean("userDeviceService");
 			
 			long t0 = System.currentTimeMillis();
-/*			//建立索引库, 如果库存在, 不会重新创建
-			wifiDeviceIndexService.createResponse();
-			if(updated_mapping){
-				wifiDeviceIndexService.createMapping();
+			
+			agentsDevicesClaimIndexs();
+			wifiDeviceIndexs();
+			
+			wifiDeviceDataSearchService.refresh(true);
+			
+			System.out.println("数据全量导入，总耗时"+((System.currentTimeMillis()-t0)/1000)+"s");
+
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}finally{
+
+		}
+		System.exit(1);
+	}
+	
+	/**
+	 * 从t_agents_devices_claim表中创建索引数据
+	 */
+	public static void agentsDevicesClaimIndexs(){
+		int bulk_success = 0;//批量成功次数
+		int index_count = 0;//建立的索引数据条数
+		
+		try{
+			ModelCriteria mc = new ModelCriteria();
+	//		//如果是初始化，会全表遍历
+	//		if(!inited){
+	//			//从未上线的应该是 import_status = 1, status = 0
+	//			mc.createCriteria().andColumnEqualTo("import_status", 1);
+	//			mc.createCriteria().andColumnEqualTo("status", 0);
+	//		}
+	    	mc.setPageNumber(1);
+	    	mc.setPageSize(500);
+			EntityIterator<String, AgentDeviceClaim> it = new KeyBasedEntityBatchIterator<String,AgentDeviceClaim>(String.class
+					,AgentDeviceClaim.class, agentDeviceClaimService.getEntityDao(), mc);
+			while(it.hasNext()){
+				List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
+				WifiDeviceDocument doc = null;
+				List<AgentDeviceClaim> entitys = it.next();
+				for(AgentDeviceClaim agentDeviceClaim : entitys){
+					System.out.println(agentDeviceClaim.getMac());
+					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(agentDeviceClaim.getMac());
+					User agentUser = null;
+					if(agentDeviceClaim.getUid() > 0){
+						agentUser = userService.getById(agentDeviceClaim.getUid());
+					}
+					doc = WifiDeviceDocumentHelper.fromClaimWifiDevice(agentDeviceClaim, wifiDeviceGray, agentUser);
+					if(doc != null){
+						docs.add(doc);
+						index_count++;
+					}
+				}
+				
+				if(!docs.isEmpty()){
+					wifiDeviceDataSearchService.bulkIndex(docs);
+					bulk_success++;
+				}
 			}
-			
-			wifiDeviceIndexService.disableIndexRefresh();*/
-			
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+		
+		System.out.println("agentsDevicesClaim 数据全量导入 成功批量次数:" + bulk_success + " 一共索引数量:" + index_count);
+	}
+	
+	/**
+	 * 从t_wifi_devices表中创建索引数据
+	 */
+	public static void wifiDeviceIndexs(){
+		int bulk_success = 0;//批量成功次数
+		int index_count = 0;//建立的索引数据条数
+		
+		try{
 			ModelCriteria mc = new ModelCriteria();
 	    	mc.setPageNumber(1);
 	    	mc.setPageSize(500);
 			EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
 					,WifiDevice.class, wifiDeviceService.getEntityDao(), mc);
 			while(it.hasNext()){
-				List<WifiDevice> entitys = it.next();
-				
-				//List<WifiDeviceIndexDTO> indexDtos = new ArrayList<WifiDeviceIndexDTO>();
-				List<WifiDeviceDocument> docs = new ArrayList<>();
-				//WifiDeviceIndexDTO indexDto = null;
+				List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
 				WifiDeviceDocument doc = null;
-				for(WifiDevice device:entitys){
-					String wifi_mac = device.getId();
-					/*if(false){//updated_geocoding){
-						if(deviceFacadeService.wifiDeiviceGeocoding(device)){
-							wifiDeviceService.update(device);
-						}
-					}*/
-					//long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentNotOfflineSize(wifi_mac);
-					long count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifi_mac);
-					List<Long> groupids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifi_mac);
-					//System.out.println(wifi_mac+"-"+count);
-					//indexDto = IndexDTOBuilder.builderWifiDeviceIndexDTO(device, groupids);
-					doc = WifiDeviceDocumentHelper.fromWifiDevice(device,wifiDeviceModuleService.getById(device.getId()), groupids);
-					doc.setCount((int)count);
-					//indexDto.setOnline(device.isOnline() ? 1 : 0);
-					//indexDto.setCount((int)count);
-					//indexDtos.add(indexDto);
-					docs.add(doc);
+				List<WifiDevice> entitys = it.next();
+				for(WifiDevice wifiDevice : entitys){
+					String mac = wifiDevice.getId();
+					System.out.println("2="+mac);
+					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
+					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
+					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(mac);
+					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
+					//long hoc = 0;
+					User agentUser = null;
+					if(wifiDevice.getAgentuser() > 0){
+						agentUser = userService.getById(wifiDevice.getAgentuser());
+					}
+					
+					User bindUser = null;
+					Integer bindUserId = userDeviceService.fetchBindUid(mac);
+					if(bindUserId != null && bindUserId > 0){
+						bindUser = userService.getById(bindUserId);
+					}
+					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, agentDeviceClaim, 
+							wifiDeviceGray, bindUser, agentUser, (int)hoc);
+					if(doc != null){
+						docs.add(doc);
+						index_count++;
+					}
 				}
 				
-				/*boolean bulk_result = wifiDeviceIndexService.createIndexComponents(indexDtos);
-				if(bulk_result){
-					bulk_success++;
-				}else{
-					bulk_fail++;
-				}
-				index_count = index_count + entitys.size();*/
 				if(!docs.isEmpty()){
-					wifiDeviceDataSearchService.getRepository().save(docs);
-					System.out.println(docs.size());//）
+					wifiDeviceDataSearchService.bulkIndex(docs);
+					bulk_success++;
 				}
 			}
-			
-			System.out.println("数据全量导入，总耗时"+((System.currentTimeMillis()-t0)/1000)+"s 成功批量次数:" 
-					+  bulk_success + " 失败批量次数:" + bulk_fail + " 一共索引数量:" + index_count);
-
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-		}finally{
-			/*wifiDeviceIndexService.openIndexRefresh();
-			
-			wifiDeviceIndexService.optimize();
-			//关闭es连接
-			wifiDeviceIndexService.destroy();*/
 		}
-		System.exit(1);
+		
+		System.out.println("wifiDevice 数据全量导入 成功批量次数:" + bulk_success + " 一共索引数量:" + index_count);
 	}
 }

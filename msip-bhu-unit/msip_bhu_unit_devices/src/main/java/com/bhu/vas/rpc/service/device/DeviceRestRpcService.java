@@ -87,7 +87,8 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		logger.info(String.format("DeviceRestRPC fetchWDevicesByKeyword invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
 		
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceByKeyword(keyword, region, excepts, pageNo, pageSize);
+			//return deviceRestBusinessFacadeService.fetchWDeviceByKeyword(keyword, region, excepts, pageNo, pageSize);
+			return null;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeyword exception pageNo [%s] pageSize [%s] exmsg[%s]",
@@ -116,8 +117,9 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 				adr, work_mode, config_mode, devicetype, region, excepts, pageNo, pageSize));
 		
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode,
-					devicetype, online, moduleonline, newVersionDevice,canOperateable, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
+//			return deviceRestBusinessFacadeService.fetchWDeviceByKeywords(mac, sn, orig_swver,origvapmodule, adr, work_mode, config_mode,
+//					devicetype, online, moduleonline, newVersionDevice,canOperateable, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
+			return null;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDevicesByKeywords invoke mac [%s] orig_swver [%s] adr [%s]"
@@ -149,7 +151,8 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions) {
 		logger.info(String.format("DeviceRestRPC fetchWDeviceRegionCount invoke regions [%s] ", regions));
 		try{
-			return deviceRestBusinessFacadeService.fetchWDeviceRegionCount(regions);
+			//return deviceRestBusinessFacadeService.fetchWDeviceRegionCount(regions);
+			return null;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchWDeviceRegionCount exception exmsg[%s]",ex.getMessage()), ex);
@@ -161,7 +164,8 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchRecentWDevice invoke pageNo [%s] pageSize [%s]", pageNo, pageSize));
 		try{
-			return deviceRestBusinessFacadeService.fetchRecentWDevice(pageNo, pageSize);
+			//return deviceRestBusinessFacadeService.fetchRecentWDevice(pageNo, pageSize);
+			return null;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchRecentWDevice exception exmsg[%s]",ex.getMessage()), ex);
