@@ -310,8 +310,7 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday) {
-		User user = null;
-		user = this.userService.getById(uid);
+		User user = this.userService.getById(uid);
 		System.out.println("2. user:"+user);
 		if(user == null){//存在不干净的数据，需要清理数据
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
@@ -336,6 +335,17 @@ public class UserUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
+	
+	public RpcResponseDTO<Map<String, Object>> profile(int uid) {
+		User user = this.userService.getById(uid);
+		if(user == null){//存在不干净的数据，需要清理数据
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user,
+				null, false,null);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
 	
 	/**
 	 * 如果数据库中不存在用户id数据

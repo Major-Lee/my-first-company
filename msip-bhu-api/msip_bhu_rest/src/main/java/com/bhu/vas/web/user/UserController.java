@@ -131,6 +131,19 @@ public class UserController extends BaseController{
 	}
 	
 	@ResponseBody()
+	@RequestMapping(value="/profile",method={RequestMethod.GET,RequestMethod.POST})
+	public void profile(HttpServletRequest request,
+			HttpServletResponse response, 
+			@RequestParam(required = true) Integer uid
+			) {
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.profile(uid);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
+	
+	@ResponseBody()
 	@RequestMapping(value="/check_mobileno",method={RequestMethod.POST})
 	public void check_unique(
 			HttpServletResponse response,

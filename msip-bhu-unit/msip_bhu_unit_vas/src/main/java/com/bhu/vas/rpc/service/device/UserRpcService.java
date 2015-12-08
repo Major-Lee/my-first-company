@@ -72,4 +72,10 @@ public class UserRpcService implements IUserRpcService{
 				uid,nick,avatar,sex,birthday));
 		return userUnitFacadeService.updateProfile(uid, nick, avatar, sex, birthday);
 	}
+
+	@Override
+	public RpcResponseDTO<Map<String, Object>> profile(int uid) {
+		logger.info(String.format("profile with uid[%s]",uid));
+		return userUnitFacadeService.profile(uid);
+	}
 }
