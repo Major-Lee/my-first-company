@@ -9,6 +9,7 @@ package com.bhu.vas.api.vto.device;
 public class DeviceOperationVTO implements java.io.Serializable{
 	private String dut;
 	private int gl;
+	private String gln;
 	private String mstyle;
 	public String getDut() {
 		return dut;
@@ -28,4 +29,11 @@ public class DeviceOperationVTO implements java.io.Serializable{
 	public void setMstyle(String mstyle) {
 		this.mstyle = mstyle;
 	}
+	public String getGln() {
+		return gln;
+	}
+	public void setGln(String gln) {
+		this.gln = gln;
+	}
+	
 }
