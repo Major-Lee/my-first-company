@@ -197,6 +197,10 @@ public class DeviceUnitFacadeRpcService{
 				vtos.add(mcf.toModuleStyleVTO());
 			}
 			TailPage<ModuleStyleVTO> result_pages = new CommonPage<ModuleStyleVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+			{
+				//增加一条无的数据，用于关闭增值模板指令
+				result_pages.getItems().add(0, VasModuleCmdDefined.BuildEmptyModuleStyleVTO());
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);

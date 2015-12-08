@@ -6,6 +6,7 @@ public class ModuleStyleVTO implements java.io.Serializable{
     private String style;
     private String version;
 	private String memo;
+	private String updated_at;
 	public String getDref() {
 		return dref;
 	}
@@ -29,6 +30,12 @@ public class ModuleStyleVTO implements java.io.Serializable{
 	}
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+	public String getUpdated_at() {
+		return updated_at;
+	}
+	public void setUpdated_at(String updated_at) {
+		this.updated_at = updated_at;
 	}
 	
 }
