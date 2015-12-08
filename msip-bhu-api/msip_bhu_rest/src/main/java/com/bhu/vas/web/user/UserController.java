@@ -134,13 +134,22 @@ public class UserController extends BaseController{
 	@RequestMapping(value="/profile",method={RequestMethod.GET,RequestMethod.POST})
 	public void profile(HttpServletRequest request,
 			HttpServletResponse response, 
-			@RequestParam(required = true) Integer uid
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String jsonpcallback
 			) {
 			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.profile(uid);
-			if(!rpcResult.hasError())
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-			else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			if(!rpcResult.hasError()){
+				if(StringUtils.isEmpty(jsonpcallback))
+					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+				else
+					SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				if(StringUtils.isEmpty(jsonpcallback))
+					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				else
+					SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult));
+			}
+				
 	}
 	
 	@ResponseBody()
