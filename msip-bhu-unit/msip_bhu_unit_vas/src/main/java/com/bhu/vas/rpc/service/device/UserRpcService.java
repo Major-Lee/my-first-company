@@ -64,4 +64,12 @@ public class UserRpcService implements IUserRpcService{
 		logger.info(String.format("userBBSsignedon with countrycode[%s] acc[%s] sk[%s]", countrycode,acc,secretkey));
 		return userUnitFacadeService.userBBSsignedon(countrycode, acc, secretkey);
 	}
+
+	@Override
+	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,
+			String nick, String avatar, String sex, String birthday) {
+		logger.info(String.format("updateProfile with uid[%s] nick[%s] avatar[%s] sex[%s] birthday[%s]",
+				uid,nick,avatar,sex,birthday));
+		return userUnitFacadeService.updateProfile(uid, nick, avatar, sex, birthday);
+	}
 }

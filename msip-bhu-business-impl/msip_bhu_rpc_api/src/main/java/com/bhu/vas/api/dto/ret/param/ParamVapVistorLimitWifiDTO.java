@@ -16,8 +16,8 @@ public class ParamVapVistorLimitWifiDTO implements java.io.Serializable{
 	
 	public Object[] builderProperties() {
 		Object[] properties = new Object[2];
-		properties[0] = users_tx_rate;
-		properties[1] = users_rx_rate;
+		properties[0] = users_tx_rate*8;
+		properties[1] = users_rx_rate*8;
 		return properties;
 	}
 

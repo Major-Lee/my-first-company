@@ -213,14 +213,6 @@ public class UserUnitFacadeService {
 				uToken, false,
 				fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
-		/*UserDTO payload = new UserDTO();
-		payload.setId(user.getId());
-		payload.setCountrycode(user.getCountrycode());
-		payload.setMobileno(user.getMobileno());
-		payload.setNick(user.getNick());
-		payload.setAtoken(uToken.getAccess_token());
-		payload.setRtoken(uToken.getRefresh_token());
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
 	}
 	
 	/**
@@ -301,24 +293,47 @@ public class UserUnitFacadeService {
 			}
 			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
 		}
-
-
-/*		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				user.getId(), countrycode, acc, user.getNick(), user.getUtype(),
-				uToken.getAtoken(), uToken.getRtoken(), reg,fetchBindDevices(user.getId()));*/
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
 				uToken, reg,fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
-		/*UserDTO payload = new UserDTO();
-		payload.setId(user.getId());
-		payload.setCountrycode(countrycode);
-		payload.setMobileno(acc);
-		payload.setNick(user.getNick());
-		payload.setAtoken(uToken.getAccess_token());
-		payload.setRtoken(uToken.getRefresh_token());
-		payload.setReg(reg);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
+	}
+	
+	
+	/**
+	 * 更新用户信息接口
+	 * @param countrycode
+	 * @param acc
+	 * @param device
+	 * @param remoteIp
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday) {
+		User user = null;
+		user = this.userService.getById(uid);
+		System.out.println("2. user:"+user);
+		if(user == null){//存在不干净的数据，需要清理数据
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		if(StringUtils.isEmpty(nick)){
+			user.setNick(nick);
+		}
+		
+		if(StringUtils.isEmpty(avatar)){
+			user.setAvatar(avatar);
+		}
+		if(StringUtils.isEmpty(sex)){
+			user.setSex(sex);
+		}
+		if(StringUtils.isEmpty(birthday)){
+			user.setBirthday(birthday);
+		}
+		this.userService.update(user);
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user,
+				null, false,null);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	

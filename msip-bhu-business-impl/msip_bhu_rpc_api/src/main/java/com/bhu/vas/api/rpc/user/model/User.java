@@ -40,8 +40,8 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	private boolean validated = false;
 	//是否锁住用户 ，例如用户尝试几次都登录失败可能锁住此用户，每天解锁一次
 	private boolean locked = false;
-	/*private String avatar;
-	private String cover;*/
+	private String avatar;
+	/*private String cover;*/
 	//公司名称
 	private String org;
 	//营业执照号Business license number
@@ -243,5 +243,11 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	}
 	public void setBln(String bln) {
 		this.bln = bln;
+	}
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 }

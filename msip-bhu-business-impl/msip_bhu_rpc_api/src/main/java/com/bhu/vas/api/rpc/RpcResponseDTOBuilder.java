@@ -57,10 +57,12 @@ public class RpcResponseDTOBuilder {
 	public static Map<String,Object> builderUserRpcPayload(User user,UserTokenDTO token, boolean isReg,List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, builderUserDTOFromUser(user,isReg));
-		ret.put(Key_UserToken,token);
+		if(token != null)
+			ret.put(Key_UserToken,token);
 		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(user.getMobileno()));
 		ret.put(Key_Cm, "60");
-		ret.put(Key_Devices, userDeviceDTOList);
+		if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
+			ret.put(Key_Devices, userDeviceDTOList);
 		return ret;
 	}
 

@@ -1,8 +1,12 @@
 package com.bhu.vas.web.user;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +20,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/account")
@@ -87,6 +92,43 @@ public class UserController extends BaseController{
 		}
 	}*/
 	
+	/**
+	 * 用户信息修改
+	 * @param request
+	 * @param response
+	 * @param uid 用户uid
+	 * @param nickname 昵称
+	 * @param birthday 生日
+	 * @param sex 性别
+	 * @param memo 信息描述
+	 * @param lang 语言
+	 * @param region 地域
+	 * @param isreg 是否是注册步骤
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/upd_profile",method={RequestMethod.GET,RequestMethod.POST})
+	public void upd_profile(HttpServletRequest request,
+			HttpServletResponse response, 
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String nick,
+			@RequestParam(required = false) String avatar,
+			@RequestParam(required = false,value="bday") String birthday,
+			@RequestParam(required = false) String sex,
+			//@RequestParam(required = false,defaultValue="") String lang,
+			//@RequestParam(required = false,defaultValue="") String region,
+			@RequestParam(required = false) String memo
+			) {
+			if(StringUtils.isEmpty(nick) && StringUtils.isEmpty(birthday) && StringUtils.isEmpty(sex) 
+					&& StringUtils.isEmpty(avatar) && StringUtils.isEmpty(memo)){
+				SpringMVCHelper.renderJson(response, Response.SUCCESS);
+				return;
+			}
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(uid, nick, avatar, sex, birthday);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
 	
 	@ResponseBody()
 	@RequestMapping(value="/check_mobileno",method={RequestMethod.POST})

@@ -76,6 +76,8 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
+	RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday);
+	
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,
 			String opt,
