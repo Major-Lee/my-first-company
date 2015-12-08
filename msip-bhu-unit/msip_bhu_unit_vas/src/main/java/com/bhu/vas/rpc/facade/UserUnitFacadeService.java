@@ -312,20 +312,20 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday) {
 		User user = this.userService.getById(uid);
 		System.out.println("2. user:"+user);
-		if(user == null){//存在不干净的数据，需要清理数据
+		if(user == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
-		if(StringUtils.isEmpty(nick)){
+		if(StringUtils.isNotEmpty(nick)){
 			user.setNick(nick);
 		}
 		
-		if(StringUtils.isEmpty(avatar)){
+		if(StringUtils.isNotEmpty(avatar)){
 			user.setAvatar(avatar);
 		}
-		if(StringUtils.isEmpty(sex)){
+		if(StringUtils.isNotEmpty(sex)){
 			user.setSex(sex);
 		}
-		if(StringUtils.isEmpty(birthday)){
+		if(StringUtils.isNotEmpty(birthday)){
 			user.setBirthday(birthday);
 		}
 		this.userService.update(user);
