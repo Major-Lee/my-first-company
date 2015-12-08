@@ -74,7 +74,11 @@ public class VapFacadeService {
         return false;
     }
 
-
+    /**
+     * 获取当前所有增值模板的
+     * @param uid
+     * @return
+     */
     public RpcResponseDTO<List<ModuleDefinedVTO>> fetchDayStat(int uid) {
 
         //TODO(bluesnad): findall???
@@ -85,6 +89,8 @@ public class VapFacadeService {
         ModuleDefinedVTO dto = null;
         for (VasModuleCmdDefined vasModuleCmdDefined : vasModuleCmdDefineds) {
             dto = new ModuleDefinedVTO();
+
+            //TODO(bluesand): dto.setCount();
             dto.setStyle(vasModuleCmdDefined.getStyle());
             dto.setMemo(vasModuleCmdDefined.getMemo());
             dto.setItem(buildModuleDefinedItemVTO(vasModuleCmdDefined.getStyle()));
@@ -102,18 +108,27 @@ public class VapFacadeService {
     }
 
 
+    /**
+     * 构建模板统计
+     * @param style
+     * @return
+     */
     private ModuleDefinedItemVTO buildModuleDefinedItemVTO(String style) {
         VasModuleCmdPK pk = new VasModuleCmdPK();
         pk.setStyle(style);
         pk.setDref(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
 
-        VasModuleCmdDefined vasModuleCmdDefined = vasModuleCmdDefinedService.getById(pk);
+//        VasModuleCmdDefined vasModuleCmdDefined = vasModuleCmdDefinedService.getById(pk);
 
         ModuleDefinedItemVTO vto = new ModuleDefinedItemVTO();
 
         vto.setStyle(style);
         vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
-
+        VapModeDefined.VapModeType vapModeType = VapModeDefined.VapModeType.getDescByStyle(style);
+        if (vapModeType != null) {
+            vto.setDesc(vapModeType.getDesc());
+            vto.setType(vapModeType.getType());
+        }
 
         List<ItemBrandVTO> brands = new ArrayList<ItemBrandVTO>();
 
@@ -138,28 +153,28 @@ public class VapFacadeService {
             int type = Integer.parseInt(key.substring(index + 1, lastIndex));
             int sequence = Integer.parseInt(key.substring(lastIndex + 1));
 
-            if (type ==1) {
+            if (type == VapModeDefined.VapModeType.Http404.getType()) {
                 ItemHttp404VTO item = new ItemHttp404VTO();
                 item.setSequence(sequence);
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 http404s.add(item);
 
-            } else if (type == 2) {
+            } else if (type == VapModeDefined.VapModeType.Redirect.getType()) {
                 ItemRedirectVTO item = new ItemRedirectVTO();
                 item.setSequence(sequence);
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 redirects.add(item);
 
-            } else if (type == 3) {
+            } else if (type == VapModeDefined.VapModeType.Brand.getType()) {
                 ItemBrandVTO item = new ItemBrandVTO();
                 item.setSequence(sequence);
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 brands.add(item);
 
-            } else if (type == 4) {
+            } else if (type == VapModeDefined.VapModeType.Channel.getType()) {
                 ItemChannelVTO item = new ItemChannelVTO();
                 item.setSequence(sequence);
                 item.setDcount(dcount);

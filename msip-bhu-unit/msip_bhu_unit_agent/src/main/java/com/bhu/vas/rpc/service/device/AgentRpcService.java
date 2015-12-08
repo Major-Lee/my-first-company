@@ -114,9 +114,15 @@ public class AgentRpcService implements IAgentRpcService {
     }
 
     @Override
-    public boolean updateAgentImportImport(int uid, int logId) {
-        logger.info(String.format("updateAgentImportImport uid[%s] logId[%s]", uid, logId));
+    public boolean updateAgentDeviceImport(int uid, int logId) {
+        logger.info(String.format("updateAgentDeviceImport uid[%s] logId[%s]", uid, logId));
         return agentFacadeService.updateAgentImportImport(uid, logId);
+    }
+
+    @Override
+    public boolean cancelAgentDeviceImport(int uid, int logId) {
+        logger.info(String.format("cancelAgentDeviceImport uid[%s] logId[%s]", uid, logId));
+        return agentFacadeService.cancelAgentImport(uid, logId);
     }
 
     @Override

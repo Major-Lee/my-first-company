@@ -427,20 +427,20 @@ public class DeviceBusinessFacadeService {
 		//1:移动设备基础信息更新
 		String wifiId_lowerCase = wifiId.toLowerCase();
 		
-		//System.out.println("message:"+JsonHelper.getJSONString(dto));
+		System.out.println("message:"+JsonHelper.getJSONString(dto));
 		
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(dto.getMac().toLowerCase());
 		long this_login_at = System.currentTimeMillis();
 		//HandsetDevice handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(handset == null){
-			//System.out.println("before update message:null");
+			System.out.println("before update message:null");
 			last_login_at = this_login_at;
 			dto.setLast_wifi_id(wifiId_lowerCase);
 			dto.setTs(this_login_at);
 			HandsetStorageFacadeService.handsetComming(dto);
 			newHandset = true;
 		}else{
-			//System.out.println("before update message:"+JsonHelper.getJSONString(handset));
+			System.out.println("before update message:"+JsonHelper.getJSONString(handset));
 			last_login_at = handset.getTs();
 			handset.setLast_wifi_id(wifiId_lowerCase);
 			handset.setTs(this_login_at);
@@ -458,6 +458,8 @@ public class DeviceBusinessFacadeService {
 			handset.setDhcp_name(dto.getDhcp_name());
 			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
+
+			System.out.println("after update message:" + JsonHelper.getJSONString(handset));
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
 			//BeanUtils.copyProperties(dto, handset_device_entity);
@@ -870,7 +872,7 @@ public class DeviceBusinessFacadeService {
 					//判断是否在黑名单中
 					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
 						continue;
-
+					
 					if(handset == null){
 						handset = new HandsetDeviceDTO();
 						handset.setMac(terminal.getMac());
@@ -878,6 +880,7 @@ public class DeviceBusinessFacadeService {
 						handset.setTs(System.currentTimeMillis());
 						handset.setLast_wifi_id(wifiId);
 					}else{
+						handset.setAction(HandsetDeviceDTO.Action_Online); // 清除的时候设置成 offline了
 						handset.setData_tx_rate(terminal.getData_tx_rate());
 						handset.setData_rx_rate(terminal.getData_rx_rate());
 					}

@@ -1,8 +1,5 @@
 package com.bhu.vas.api.vto.modulestat;
 
-import com.bhu.vas.api.rpc.vap.dto.module.ItemChannel;
-import com.bhu.vas.api.rpc.vap.dto.module.ItemRedirect;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class ModuleDefinedItemVTO implements Serializable {
 
     private int type;
 
-    private String name;
+    private String desc;
 
     private List<ItemBrandVTO> brands;
 
@@ -52,12 +49,12 @@ public class ModuleDefinedItemVTO implements Serializable {
         this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public List<ItemBrandVTO> getBrands() {
