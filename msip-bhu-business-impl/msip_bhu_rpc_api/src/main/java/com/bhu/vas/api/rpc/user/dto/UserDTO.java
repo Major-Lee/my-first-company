@@ -6,6 +6,10 @@ public class UserDTO implements java.io.Serializable{
 	private int countrycode;
 	private String mobileno;
 	private String nick;
+	
+	private String avatar;
+	private String sex;
+	
 	//是否是注册  true 注册  false 登录
 	private boolean reg = false;
 	private int utype;
@@ -45,6 +49,19 @@ public class UserDTO implements java.io.Serializable{
 	}
 	public void setUtype(int utype) {
 		this.utype = utype;
+	}
+	
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
 	public UserDTO() {
 	}
