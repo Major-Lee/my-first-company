@@ -1,7 +1,10 @@
 package com.bhu.vas.api.rpc.task.model;
 
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.model.BasePKModel;
 
 /**
@@ -71,12 +74,23 @@ public class VasModuleCmdDefined extends BasePKModel<VasModuleCmdPK> {
         return VasModuleCmdPK.class;
     }
 
+	public static ModuleStyleVTO BuildEmptyModuleStyleVTO(){
+		ModuleStyleVTO vto = new ModuleStyleVTO();
+		vto.setDref(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
+		vto.setStyle(StringHelper.MINUS_STRING_GAP);
+		vto.setVersion(StringHelper.EMPTY_STRING_GAP);
+		vto.setMemo(StringHelper.EMPTY_STRING_GAP);
+		vto.setUpdated_at(StringHelper.EMPTY_STRING_GAP);
+		return vto;
+	}
+	
 	public ModuleStyleVTO toModuleStyleVTO(){
 		ModuleStyleVTO vto = new ModuleStyleVTO();
 		vto.setDref(this.getId().getDref());
 		vto.setStyle(this.getId().getStyle());
 		vto.setVersion(this.getVersion());
 		vto.setMemo(this.getMemo());
+		vto.setUpdated_at(DateTimeHelper.formatDate(this.getUpdated_at(), DateTimeHelper.FormatPattern1));
 		return vto;
 	}
 }
