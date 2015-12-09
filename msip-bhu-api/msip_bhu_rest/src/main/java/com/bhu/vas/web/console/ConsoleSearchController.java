@@ -1,7 +1,6 @@
 package com.bhu.vas.web.console;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.vto.SearchConditionVTO;
+import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -76,7 +75,7 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = true) String message,
             @RequestParam(required = false) String desc) {
     	
-        RpcResponseDTO<Map<String, Object>> result = deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
+        RpcResponseDTO<UserSearchConditionDTO> result = deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
     
@@ -135,7 +134,7 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
     	
-        RpcResponseDTO<TailPage<SearchConditionVTO>> vtos = deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
+        RpcResponseDTO<TailPage<UserSearchConditionDTO>> vtos = deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
     }
     

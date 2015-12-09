@@ -2,9 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -19,15 +17,15 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
-import com.bhu.vas.api.dto.redis.StoreSearchConditionDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
-import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
@@ -36,7 +34,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.search.UserSearchConditionSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
@@ -45,13 +42,13 @@ import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
+import com.bhu.vas.business.ds.user.service.UserSearchConditionStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -94,6 +91,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
+	
+	@Resource
+	private UserSearchConditionStateService userSearchConditionStateService;
 	
 	@Resource
 	private UserService userService;
@@ -492,10 +492,33 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid, String message, String desc){
-		Map<String,Object> payload = new HashMap<String,Object>();
+	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid, String message, String desc){
+		UserSearchConditionState entity = userSearchConditionStateService.getById(uid);
+		boolean newed = false;
+		if(entity == null){
+			entity = new UserSearchConditionState();
+			newed = true;
+		}
 		
-		StoreSearchConditionDTO dto = new StoreSearchConditionDTO(message, desc);
+		UserSearchConditionDTO dto = new UserSearchConditionDTO(message, desc);
+		if(entity.validateExist(message)){
+			dto.setStored(false);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+		}
+		
+		dto.setTs(System.currentTimeMillis());
+		entity.putInnerModel(dto, true, true);
+		
+		if(newed){
+			userSearchConditionStateService.insert(entity);
+		}else{
+			userSearchConditionStateService.update(entity);
+		}
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+/*		Map<String,Object> payload = new HashMap<String,Object>();
+		
+		UserSearchConditionDTO dto = new UserSearchConditionDTO(message, desc);
 		String dtojson = JsonHelper.getJSONString(dto);
 		
 		Double exist_ts = UserSearchConditionSortedSetService.getInstance().zscore(uid, dtojson);
@@ -510,21 +533,47 @@ public class DeviceRestBusinessFacadeService {
 				payload.put("stored", true);
 			}
 		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
 	}
 	
 	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts){
-		Long result = UserSearchConditionSortedSetService.getInstance().removeUserSearchCondition(uid, ts);
+		UserSearchConditionState entity = userSearchConditionStateService.getById(uid);
+		if(entity != null){
+			boolean removed = entity.removeInnerModel(new UserSearchConditionDTO(ts));
+			if(removed){
+				userSearchConditionStateService.update(entity);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			}
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+/*		Long result = UserSearchConditionSortedSetService.getInstance().removeUserSearchCondition(uid, ts);
 		if(result != null && result > 0){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);*/
 	}
 	
 	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits){
 		String[] message_ts_array = message_ts_splits.split(StringHelper.COMMA_STRING_GAP);
-		UserSearchConditionSortedSetService.getInstance().removeUserSearchConditions(uid, message_ts_array);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		if(message_ts_array != null && message_ts_array.length > 0){
+			UserSearchConditionState entity = userSearchConditionStateService.getById(uid);
+			if(entity != null){
+				boolean needUpdate = false;
+				for(String ts : message_ts_array){
+					boolean removed = entity.removeInnerModel(new UserSearchConditionDTO(Long.parseLong(ts)));
+					if(removed){
+						needUpdate = true;
+					}
+				}
+				
+				if(needUpdate){
+					userSearchConditionStateService.update(entity);
+					return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+				}
+			}
+		}
+		//UserSearchConditionSortedSetService.getInstance().removeUserSearchConditions(uid, message_ts_array);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
 	}
 	
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid){
@@ -546,10 +595,24 @@ public class DeviceRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
-	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
-		List<SearchConditionVTO> vtos = null;
-		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-		long total = UserSearchConditionSortedSetService.getInstance().countUserSearchCondition(uid);
+	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+//		List<SearchConditionVTO> vtos = null;
+//		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		UserSearchConditionState entity = userSearchConditionStateService.getById(uid);
+		if(entity == null){
+			TailPage<UserSearchConditionDTO> emptyRet = new CommonPage<UserSearchConditionDTO>(pageNo, pageSize, 0, null);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(emptyRet);
+		}
+		List<UserSearchConditionDTO> dtos = entity.getInnerModels();
+		if(dtos == null || dtos.isEmpty()){
+			TailPage<UserSearchConditionDTO> emptyRet = new CommonPage<UserSearchConditionDTO>(pageNo, pageSize, 0, null);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(emptyRet);
+		}
+		int total = dtos.size();
+		TailPage<UserSearchConditionDTO> returnRet = new CommonPage<UserSearchConditionDTO>(pageNo, pageSize, total, dtos);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		
+		/*		long total = UserSearchConditionSortedSetService.getInstance().countUserSearchCondition(uid);
 		if(total == 0){
 			vtos = Collections.emptyList();
 		}else{
@@ -569,7 +632,7 @@ public class DeviceRestBusinessFacadeService {
 		}
 		
 		TailPage<SearchConditionVTO> returnRet = new CommonPage<SearchConditionVTO>(pageNo, pageSize, (int)total, vtos);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);*/
 	}
 	
 	
