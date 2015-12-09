@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -138,8 +140,9 @@ public class WifiDeviceIndexIncrementService {
 	 * 3) d_workmodel
 	 * 4) d_configmodel
 	 * 5) d_type
-	 * 6) d_lastregedat
-	 * 7) d_dut
+	 * 6) d_type_sname
+	 * 7) d_lastregedat
+	 * 8) d_dut
 	 * @param entity
 	 */
 	public void onlineUpdIncrement(WifiDevice entity){
@@ -161,7 +164,12 @@ public class WifiDeviceIndexIncrementService {
 		
 		DeviceVersion parser = DeviceVersion.parser(entity.getOrig_swver());
 		if(parser != null){
-			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), parser.getDut());
+			String dut = parser.getDut();
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), dut);
+			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, entity.getHdtype());
+			if(deviceUnitType != null){
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
+			}
 		}
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, true, true);
@@ -175,8 +183,9 @@ public class WifiDeviceIndexIncrementService {
 	 * 3) d_workmodel
 	 * 4) d_configmodel
 	 * 5) d_type
-	 * 6) d_lastregedat
-	 * 7) d_dut
+	 * 6) d_type_sname
+	 * 7) d_lastregedat
+	 * 8) d_dut
 	 * @param entitys 设备实体集合
 	 */
 	public void onlineMultiUpdIncrement(List<WifiDevice> entitys){
@@ -204,7 +213,12 @@ public class WifiDeviceIndexIncrementService {
 			
 			DeviceVersion parser = DeviceVersion.parser(entity.getOrig_swver());
 			if(parser != null){
-				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), parser.getDut());
+				String dut = parser.getDut();
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), dut);
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, entity.getHdtype());
+				if(deviceUnitType != null){
+					sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
+				}
 			}
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), updatedat);
 			sourceMaps.add(sourceMap);
@@ -213,10 +227,10 @@ public class WifiDeviceIndexIncrementService {
 	}
 	
 	/**
-	 * 设备认领上线处理，按照全字段重建覆盖标准
+	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
-	public void onlineClaimCrdIncrement(WifiDevice entity){
+	public void onlineCrdIncrement(WifiDevice entity){
 		if(entity == null) return;
 		logger.info(String.format("OnlineCrdIncrement Request id [%s]", entity.getId()));
 		String mac = entity.getId();

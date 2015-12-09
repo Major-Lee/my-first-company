@@ -41,6 +41,7 @@ public interface BusinessIndexDefine {
 			D_WORKMODEL("d_workmodel", null),//设备的工作模式
 			D_CONFIGMODEL("d_configmodel", null),//设备的配置模式
 			D_TYPE("d_type", null),//设备的类型
+			D_TYPE_SNAME("d_type_sname", null),//设备的类型的sname
 			D_GEOPOINT("d_geopoint", null),//设备所在位置的经纬度坐标
 			D_ADDRESS("d_address", null),//设备所在位置的详细地址
 			D_ONLINE("d_online", null),//设备在线状态 -1 从未上线 1 在线 0 离线

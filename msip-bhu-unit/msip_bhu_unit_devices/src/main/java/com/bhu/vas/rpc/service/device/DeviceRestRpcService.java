@@ -1,7 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,8 +13,8 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
-import com.bhu.vas.api.vto.SearchConditionVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
@@ -222,7 +221,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<Map<String, Object>> storeUserSearchCondition(int uid,String message,String desc) {
+	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid,String message,String desc) {
 		logger.info(String.format("DeviceRestRPC storeUserSearchCondition invoke uid [%s] message [%s] desc [%s]", uid, message, desc));
 		try{
 			return deviceRestBusinessFacadeService.storeUserSearchCondition(uid, message, desc);
@@ -258,7 +257,7 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<SearchConditionVTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
 		logger.info(String.format("DeviceRestRPC fetchUserSearchConditions invoke uid [%s] pageNo [%s] pageSize [%s]", uid, pageNo, pageSize));
 		try{
 			return deviceRestBusinessFacadeService.fetchUserSearchConditions(uid, pageNo, pageSize);

@@ -249,8 +249,9 @@ public class AsyncMsgHandleService {
 			}
 			
 			try{
-				if(needClaim){
-					wifiDeviceIndexIncrementService.onlineClaimCrdIncrement(wifiDevice);
+				boolean newWifi = dto.isNewWifi();
+				if(needClaim || newWifi){
+					wifiDeviceIndexIncrementService.onlineCrdIncrement(wifiDevice);
 				}else{
 					wifiDeviceIndexIncrementService.onlineUpdIncrement(wifiDevice);
 				}

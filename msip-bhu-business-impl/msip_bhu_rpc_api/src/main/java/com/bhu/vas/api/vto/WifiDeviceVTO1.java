@@ -12,6 +12,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String d_workmodel;//设备的工作模式
 	private String d_configmodel;//设备的配置模式
 	private String d_type;//设备的类型
+	private String d_type_sname;//设备类型的sname
 	private String d_address;//设备所在位置的详细地址
 	private String d_online;//设备在线状态 -1 从未上线 1 在线 0 离线
 	private String d_monline;//设备增值模块是否在线 -1 从未上线 1 在线 0 离线
@@ -83,6 +84,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_type(String d_type) {
 		this.d_type = d_type;
+	}
+	public String getD_type_sname() {
+		return d_type_sname;
+	}
+	public void setD_type_sname(String d_type_sname) {
+		this.d_type_sname = d_type_sname;
 	}
 	public String getD_address() {
 		return d_address;

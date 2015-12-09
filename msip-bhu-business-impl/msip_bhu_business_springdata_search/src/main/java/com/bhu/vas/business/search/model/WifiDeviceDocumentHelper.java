@@ -2,6 +2,7 @@ package com.bhu.vas.business.search.model;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
@@ -86,7 +87,15 @@ public class WifiDeviceDocumentHelper {
 				doc.setD_createdat(wifiDevice.getCreated_at().getTime());
 			}
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
-			doc.setD_dut(parser.getDut());
+			if(parser != null){
+				String dut = parser.getDut();
+				doc.setD_dut(dut);
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, wifiDevice.getHdtype());
+				if(deviceUnitType != null){
+					doc.setD_type_sname(deviceUnitType.getSname());
+				}
+			}
+			
 			/*if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_soc);
 			}else if(DeviceUnitType.isURouterHdType(wifiDevice.getHdtype())){
