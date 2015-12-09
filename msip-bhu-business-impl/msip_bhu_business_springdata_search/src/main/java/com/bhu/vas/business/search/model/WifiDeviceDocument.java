@@ -85,6 +85,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			store = true
 	)
 	private String d_type;//设备的类型
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_type_sname;//设备的类型的sname
 
 	
 	/**
@@ -341,6 +348,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_type(String d_type) {
 		this.d_type = d_type;
+	}
+
+	public String getD_type_sname() {
+		return d_type_sname;
+	}
+
+	public void setD_type_sname(String d_type_sname) {
+		this.d_type_sname = d_type_sname;
 	}
 
 	public double[] getD_geopoint() {
