@@ -86,7 +86,7 @@ public class GexinPushService{
 		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
 		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
 		        // 收到消息是否立即启动应用，1为立即启动，2则广播等待客户端自启动
-				template.setTransmissionType(1);
+				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
 				template.setTitle(pushMsg.getTitle());
 		        template.setText(pushMsg.getText());
