@@ -497,6 +497,7 @@ public class DeviceRestBusinessFacadeService {
 		boolean newed = false;
 		if(entity == null){
 			entity = new UserSearchConditionState();
+			entity.setId(uid);
 			newed = true;
 		}
 		
