@@ -15,6 +15,8 @@ public class BusinessKeyDefine {
 		public static final String PresentPrefixKey 			= "HPP.";
 	}
 	
+	
+	
 	public static class Present{
 		public static final String MarkPrefixKey = "MP";
 		public static final String UserTokenPrefixKey  			= "WTH";//"TokenH";
