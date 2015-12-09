@@ -84,9 +84,6 @@ public class WifiDeviceModuleStatService extends AbstractRelationHashCache {
 
 
 
-
-
-
     public List<Object> addDayModuleStats(Map<String, Map<String,Long>> maps, int size) {
         String[][] keyAndFields = generateKeyAndFieldsAndValues(maps, size);
 

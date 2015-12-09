@@ -599,7 +599,7 @@ public class AsyncMsgHandleService {
 			terminal_notify_push_mark = false;
 			if(!terminal_notify_push_mark){
 				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle do Push");
-				
+
 				HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
 				pushDto.setMac(dto.getWifiId());
 				pushDto.setHd_mac(dto.getMac());
