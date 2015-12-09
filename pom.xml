@@ -51,20 +51,6 @@
         <module>msip-bhu-api/msip_bhu_rest</module>
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
-        <!--
-        <module>msip-bhu-business-impl/msip_bhu_spark_task</module>
-    -->
-        <!--
-        
-        <module>msip-wecite-business/msip_wecite_business_ds</module>
-        <module>msip-wecite-business/msip_wecite_business_redis_impl</module>
-        <module>msip-wecite-business/msip_wecite_business_asynmessage</module>
-        <module>msip-wecite-business/msip_wecite_dataimport</module>
-        <module>msip-wecite-business/msip_wecite_backend_online</module>
-        -->
-        <!--
-        <module>msip-wecite-api/msip_wecite_rest</module>
--->
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
