@@ -66,24 +66,43 @@ public class HandsetLogService extends AbstractRelationListCache{
 	 * @param rtb  总得流量
 	 * @param ts   时间
 	 */
-	public void hansetLogComming(boolean action,String dmac,String hmac,long rtb,long ts){
+	public void hansetLogComming(boolean action,String dmac,String hmac,long trb,long ts){
 		String key = generateKey(dmac,hmac);
 		if(action){//online
 			HandsetLogDTO[] previous = previousHandsetLog(key,1);
 			HandsetLogDTO current = null;
-			if(previous != null && !previous[0].wasComplete()){//前一条数据不为空并且为数据是不完整的
+			if(previous[0] != null && !previous[0].wasComplete()){//前一条数据不为空并且为数据是不完整的
 				previous[0].setF(ts);
 				this.lset(key, -1, JsonHelper.getJSONString(previous[0]));
 			}
 			current = HandsetLogDTO.buildOnline(ts);
 			this.rpush(key, JsonHelper.getJSONString(current));
-			/*if(previous == null || previous.wasComplete()){//没有前一条数据 或者前一条数据是完整的
-				current = HandsetLogDTO.buildOnline(ts);
-			}else{
-				previous.setF(ts);
-				current = HandsetLogDTO.buildOnline(ts);
-			}*/
 		}else{//offline
+			HandsetLogDTO[] previous = previousHandsetLog(key,2);//取最后两条数据
+			HandsetLogDTO previousTheLastTwo = previous[0];
+			HandsetLogDTO previousTheLastOne = previous[1];
+			if(previousTheLastOne == null){
+				HandsetLogDTO current = HandsetLogDTO.buildFull(ts-Merge_When_In_GAP, ts, trb);
+				this.rpush(key, JsonHelper.getJSONString(current));
+			}else{
+				if(previousTheLastOne.wasComplete()){
+					previousTheLastOne.setF(ts);
+					previousTheLastOne.setTrb(previousTheLastOne.getTrb()+trb);
+				}else{
+					previousTheLastOne.setF(ts);
+					previousTheLastOne.setTrb(trb);
+				}
+				this.lset(key, -1, JsonHelper.getJSONString(previousTheLastOne));
+				{//判定两条数据是否需要合并
+					if(previousTheLastTwo != null && previousTheLastTwo.wasComplete()){
+						long gap = previousTheLastOne.getO() - previousTheLastTwo.getF();
+						if(gap < Merge_When_In_GAP){//需要合并
+							//更新倒数第二条数据
+							//删除倒数第一条数据
+						}
+					}
+				}
+			}
 			
 		}
 	}
@@ -95,13 +114,14 @@ public class HandsetLogService extends AbstractRelationListCache{
 	 * @return
 	 */
 	private HandsetLogDTO[] previousHandsetLog(String key,int result){
-		if(result <= 0) return null;
+		HandsetLogDTO[] ret = new HandsetLogDTO[result];
+		if(result <= 0) return ret;
 		List<String> lrange = this.lrange(key, -result, -1);
-		if(lrange == null || lrange.isEmpty()) return null;
+		if(lrange == null || lrange.isEmpty()) return ret;
 		else{
 			int rangesize = lrange.size();
-			HandsetLogDTO[] ret = new HandsetLogDTO[result];
-			for(int i = result-1;i<=0;i--){
+			//HandsetLogDTO[] ret = new HandsetLogDTO[result];
+			for(int i = result-1;i>=0;i--){
 				int fetchIndex = rangesize-1;
 				if(fetchIndex < 0) break;
 				ret[i] = JsonHelper.getDTO(lrange.get(fetchIndex), HandsetLogDTO.class);
@@ -112,7 +132,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 	}
 	
 	public void test(String dmac,String hmac){
-		String key = generateKey(dmac,hmac);
+		/*String key = generateKey(dmac,hmac);
 		for(int i=0;i<100;i++){
 			this.rpush(key, String.valueOf(i));
 		}
@@ -138,6 +158,16 @@ public class HandsetLogService extends AbstractRelationListCache{
 		lrange1 = this.lrange(key, -1, -1);
 		for(String l:lrange1){
 			System.out.println("element:"+l);
+		}*/
+		
+		String key = generateKey(dmac,hmac);
+		for(int i=0;i<3;i++){
+			this.rpush(key, JsonHelper.getJSONString(HandsetLogDTO.buildOnline(i)));
+		}
+		
+		HandsetLogDTO[] previousHandsetLog = previousHandsetLog(key,2);
+		for(HandsetLogDTO l:previousHandsetLog){
+			System.out.println("element:"+JsonHelper.getJSONString(l));
 		}
 	}
 	public void testClear(String dmac,String hmac){

@@ -39,7 +39,13 @@ public class HandsetLogDTO implements Serializable{
 		dto.setO(ts);
 		return dto;
 	}
-	
+	public static HandsetLogDTO buildFull(long o_ts,long f_ts,long trb){
+		HandsetLogDTO dto = new HandsetLogDTO();
+		dto.setO(o_ts);
+		dto.setF(f_ts);
+		dto.setTrb(trb);
+		return dto;
+	}
 	/**
 	 * 是否是完整的片段，存在上线并且存在下线
 	 * @return
