@@ -92,37 +92,37 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 3,\n" +
 						"        \"sequence\": 2,\n" +
-						"        \"systime\": 1448862498,\n" +
+						"        \"systime\": 1449590400,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 2,\n" +
-						"        \"systime\": 1448862498,\n" +
+						"        \"systime\": 1449590400,\n" +
 						"        \"ver\": \"style001-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1449862499,\n" +
+						"        \"systime\": 1449590400,\n" +
 						"        \"ver\": \"style002-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 3,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1448862499,\n" +
+						"        \"systime\": 1449590400,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1448862503,\n" +
+						"        \"systime\": 1449590400,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1448862505,\n" +
+						"        \"systime\": 1449590400,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }]\n" +
 						"}";

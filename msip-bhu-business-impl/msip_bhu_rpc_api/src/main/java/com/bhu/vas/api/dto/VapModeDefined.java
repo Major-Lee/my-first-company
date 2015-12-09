@@ -1,6 +1,8 @@
 package com.bhu.vas.api.dto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.StringUtils;
@@ -85,6 +87,16 @@ public class VapModeDefined {
 			} else {
 				return null;
 			}
+		}
+
+
+		public static List<VapModeType> getAllModeType() {
+			List<VapModeType> list = new ArrayList<>();
+			list.add(Http404);
+			list.add(Redirect);
+			list.add(Brand);
+			list.add(Channel);
+			return list;
 		}
 
 	}

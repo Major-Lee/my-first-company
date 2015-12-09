@@ -93,7 +93,7 @@ public class VapFacadeService {
             //TODO(bluesand): dto.setCount();
             dto.setStyle(vasModuleCmdDefined.getStyle());
             dto.setMemo(vasModuleCmdDefined.getMemo());
-            dto.setItem(buildModuleDefinedItemVTO(vasModuleCmdDefined.getStyle()));
+            dto.setItem(buildModuleDefinedDetailVTO(vasModuleCmdDefined.getStyle()));
             dtos.add(dto);
         }
 
@@ -106,6 +106,47 @@ public class VapFacadeService {
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(buildModuleDefinedItemVTO(style));
 
     }
+
+
+    private List<ModuleDefinedDetailVTO> buildModuleDefinedDetailVTO(String style) {
+
+
+        List<ModuleDefinedDetailVTO> items = new ArrayList<ModuleDefinedDetailVTO>();
+
+        ModuleDefinedDetailVTO vto = null;
+
+        List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
+
+        for (VapModeDefined.VapModeType modeType : modeTypes) {
+            vto = new ModuleDefinedDetailVTO();
+
+            vto.setDesc(modeType.getDesc());
+            vto.setType(modeType.getType());
+
+
+            Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateDStyleKey(style));
+            Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateMStyleKey(style));
+
+            long dcount = 0;
+            long mcount = 0;
+            for (String key: dayRets.keySet()) {
+                dcount = dayRets.get(key) + dcount;
+                mcount = monthRets.get(key) + mcount;
+            }
+
+            vto.setDcount(dcount);
+            vto.setMcount(mcount);
+
+            items.add(vto);
+
+        }
+
+        return items;
+
+    }
+
+
+
 
 
     /**

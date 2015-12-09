@@ -3,22 +3,32 @@ package com.bhu.vas.api.vto.modulestat;
 import java.io.Serializable;
 
 /**
- * Created by bluesand on 12/3/15.
+ * Created by bluesand on 12/9/15.
  */
-public class ItemChannelVTO  implements Serializable{
+public class ModuleDefinedDetailVTO implements Serializable {
 
-    private int sequence;
+    private int type;
+
+    private String desc;
 
     private long dcount;
 
     private long mcount;
 
-    public int getSequence() {
-        return sequence;
+    public int getType() {
+        return type;
     }
 
-    public void setSequence(int sequence) {
-        this.sequence = sequence;
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public long getDcount() {

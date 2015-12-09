@@ -14,7 +14,7 @@ public class ModuleDefinedVTO implements Serializable {
 
     private long count;
 
-    private ModuleDefinedItemVTO item;
+    private List<ModuleDefinedDetailVTO> item;
 
     public String getStyle() {
         return style;
@@ -40,13 +40,12 @@ public class ModuleDefinedVTO implements Serializable {
         this.count = count;
     }
 
-    public ModuleDefinedItemVTO getItem() {
+
+    public List<ModuleDefinedDetailVTO> getItem() {
         return item;
     }
 
-    public void setItem(ModuleDefinedItemVTO item) {
+    public void setItem(List<ModuleDefinedDetailVTO> item) {
         this.item = item;
     }
-
-
 }

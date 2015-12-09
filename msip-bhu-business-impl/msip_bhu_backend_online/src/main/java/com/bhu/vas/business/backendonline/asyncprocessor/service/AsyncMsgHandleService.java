@@ -605,9 +605,10 @@ public class AsyncMsgHandleService {
 		//如果是urouter设备 才会发push
 		if(deviceFacadeService.isURouterDevice(dto.getWifiId())){
 			boolean terminal_notify_push_mark = businessCacheService.getQTerminalPushNotifyCacheByQ(dto.getWifiId(), dto.getMac());
+			terminal_notify_push_mark = false;
 			if(!terminal_notify_push_mark){
 				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle do Push");
-				
+
 				HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
 				pushDto.setMac(dto.getWifiId());
 				pushDto.setHd_mac(dto.getMac());
