@@ -15,7 +15,6 @@
     <artifactId>bhu-parent</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-
     <modules>
 
 		<module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
