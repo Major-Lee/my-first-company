@@ -160,8 +160,19 @@ public class WifiDeviceGrayFacadeService {
     public void saveMacs2Gray(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,List<String> macs){
     	validateDut(dut);
     	validateGrayEnalbe(gray);
-    	for(String mac:macs){
+    	List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
+    	if(devices == null || devices.isEmpty()){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+    	}
+    	for(WifiDevice device:devices){
+    		String mac = device.getId();
     		WifiDeviceGray wdg = wifiDeviceGrayService.getById(mac);
+    		DeviceVersion parser = DeviceVersion.parser(device.getOrig_swver());
+    		if(!parser.valid()) continue;
+    		if(!dut.getIndex().equals(parser.toDeviceUnitTypeIndex())){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
+    		}
+    		
     		if(wdg == null){
     			wdg = new WifiDeviceGray();
     			wdg.setId(mac);
@@ -172,10 +183,10 @@ public class WifiDeviceGrayFacadeService {
     			dgv.setDevices(dgv.getDevices()+1);
     			wifiDeviceGrayVersionService.update(dgv);
     		}else{
-    			if(wdg.getDut() == dut.getIndex() && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
+    			if(wdg.getDut().equals(dut.getIndex()) && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
     				;
     			}else{
-    				if(wdg.getDut() == dut.getIndex()){
+    				if(wdg.getDut().equals(dut.getIndex())){
     					wdg.setDut(dut.getIndex());
     	    			wdg.setGl(gray.getIndex());
     	    			wifiDeviceGrayService.update(wdg);
