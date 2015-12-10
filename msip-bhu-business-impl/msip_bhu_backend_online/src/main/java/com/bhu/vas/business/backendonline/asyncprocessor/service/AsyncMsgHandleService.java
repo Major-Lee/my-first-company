@@ -63,6 +63,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDevicesGrayChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
@@ -1313,6 +1314,13 @@ public class AsyncMsgHandleService {
 		WifiDevicesGrayChangedDTO dto = JsonHelper.getDTO(message, WifiDevicesGrayChangedDTO.class);
 		this.wifiDeviceIndexIncrementService.graylevelMultiUpdIncrement(dto.getMacs(), String.valueOf(dto.getGl()));
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesGrayChanged message[%s] successful", message));
+	}
+	
+	public void wifiDevicesModuleStyleChanged(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesModuleStyleChanged message[%s]", message));
+		WifiDevicesModuleStyleChangedDTO dto = JsonHelper.getDTO(message, WifiDevicesModuleStyleChangedDTO.class);
+		this.wifiDeviceIndexIncrementService.templateMultiUpdIncrement(dto.getMacs(), dto.getStyle());
+		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesModuleStyleChanged message[%s] successful", message));
 	}
 	
 	/**

@@ -2,17 +2,20 @@ package com.bhu.vas.rpc.facade;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -126,6 +129,18 @@ public class TaskUnitFacadeService {
 			
 			//发送异步消息到Queue
 			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac,/*downTask.getId(),opt,*/downTask.getPayload());
+			{
+				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
+				if(OperationDS.DS_Http_VapModuleCMD_Start == ods_cmd){//开启增值
+					ParamVasModuleDTO param_dto = JsonHelper.getDTO(extparams, ParamVasModuleDTO.class);
+					if(param_dto != null && StringUtils.isNotEmpty(param_dto.getStyle()))
+						deliverMessageService.sendDevicesModuleStyleChangedNotifyMessage(uid,param_dto.getStyle(),mac);
+				}
+				if(OperationDS.DS_Http_VapModuleCMD_Stop == ods_cmd){//关闭增值
+					deliverMessageService.sendDevicesModuleStyleChangedNotifyMessage(uid,StringUtils.EMPTY,mac);
+				}
+			}
+			
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
 			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);

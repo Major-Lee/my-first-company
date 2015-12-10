@@ -63,6 +63,7 @@ public class TaskFacadeService {
 	
 	@Resource
 	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
+	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	

@@ -39,6 +39,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceUsedStatusDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDevicesGrayChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiHDRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
@@ -419,4 +420,12 @@ public class DeliverMessageService {
 		dto.setMacs(macs);
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	public void sendDevicesModuleStyleChangedNotifyMessage(Integer uid,String style,String... macs){
+		WifiDevicesModuleStyleChangedDTO dto = new WifiDevicesModuleStyleChangedDTO();
+		dto.setUid(uid);
+		dto.setStyle(style);
+		dto.setMacs(Arrays.asList(macs));
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 }

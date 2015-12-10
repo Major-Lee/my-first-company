@@ -152,6 +152,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDevicesGrayChanged:
 							asyncMsgHandleService.wifiDevicesGrayChanged(message);
 							break;
+						case WifiDevicesModuleStyleChanged:
+							asyncMsgHandleService.wifiDevicesModuleStyleChanged(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

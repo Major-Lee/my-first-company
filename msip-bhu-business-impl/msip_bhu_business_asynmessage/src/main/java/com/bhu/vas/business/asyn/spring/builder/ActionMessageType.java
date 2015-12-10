@@ -22,14 +22,14 @@ public enum ActionMessageType {
 	WifiDeviceHDRateFetch("下发终端实时速率","wdrealtime","WH"),
 	WifiDeviceSpeedFetch("下发设备的网速","wdspeed","WS"),
 	WifiDeviceUsedStatus("下发设备的网速","wdspeed","WU"),
-	WifiDevicesGrayChanged("下发设备的网速","wdspeed","WG"),
+	WifiDevicesGrayChanged("设备灰度变更","wdgraychanged","WG"),
+	WifiDevicesModuleStyleChanged("设备增值模板变更","wdmodulestylechanged","WD"),
 	
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
 	DeviceModifySettingAalias("修改终端别名","dsalias","DI"),
 	
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	
-	//WifiCmdDownNotify("wifi单指令下发","wcdn","WD"),
 	WifiCmdsDownNotify("wifi多指令下发","wcsdn","SM"),
 	WifiMultiCmdsDownNotify("wifi多指令下发","wmcsdn","SS"),
 	WifiDeviceAsyncCMDGen("给设备组下发指令","wdgcmd","WA"),
