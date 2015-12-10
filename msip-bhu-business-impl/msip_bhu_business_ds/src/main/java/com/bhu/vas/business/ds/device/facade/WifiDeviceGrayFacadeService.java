@@ -171,7 +171,8 @@ public class WifiDeviceGrayFacadeService {
     		DeviceVersion parser = DeviceVersion.parser(device.getOrig_swver());
     		if(!parser.valid()) continue;
     		if(!dut.getIndex().equals(parser.toDeviceUnitTypeIndex())){
-    			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
+    			continue;
+    			//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
     		}
     		if(wdg == null){
     			wdg = new WifiDeviceGray();
@@ -200,7 +201,8 @@ public class WifiDeviceGrayFacadeService {
     	    			dgv.setDevices(dgv.getDevices()+1);
     	    			wifiDeviceGrayVersionService.update(dgv);
     				}else{
-    					throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
+    					continue;
+    					//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
     				}
     			}
     		}
