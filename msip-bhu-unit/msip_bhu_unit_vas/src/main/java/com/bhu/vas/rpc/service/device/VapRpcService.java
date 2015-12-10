@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.modulestat.ModuleDefinedItemVTO;
-import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -19,6 +17,8 @@ import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedItemVTO;
+import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import com.bhu.vas.rpc.facade.DeviceUnitFacadeRpcService;
 import com.bhu.vas.rpc.facade.VapFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -83,7 +83,7 @@ public class VapRpcService  implements IVapRpcService{
 		return deviceUnitFacadeRpcService.removeDeviceVersion(uid, dut, fw, versionid);
 	}
 	@Override
-	public RpcResponseDTO<Boolean> saveMacs2Gray(int uid, String dut, int gl,
+	public RpcResponseDTO<List<String>> saveMacs2Gray(int uid, String dut, int gl,
 			List<String> macs) {
 		logger.info(String.format("saveMacs2Gray uid[%s] dut[%s] gl[%s] macs[%s]",uid,dut,gl,macs));
 		return deviceUnitFacadeRpcService.saveMacs2Gray(uid, dut, gl, macs);

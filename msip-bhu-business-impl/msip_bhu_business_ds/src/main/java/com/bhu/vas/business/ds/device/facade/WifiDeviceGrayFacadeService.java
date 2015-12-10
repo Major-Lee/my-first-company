@@ -157,13 +157,14 @@ public class WifiDeviceGrayFacadeService {
      * @param gray
      * @param macs
      */
-    public void saveMacs2Gray(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,List<String> macs){
+    public List<String> saveMacs2Gray(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,List<String> macs){
     	validateDut(dut);
     	validateGrayEnalbe(gray);
     	List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
     	if(devices == null || devices.isEmpty()){
     		throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
     	}
+    	List<String> result_success = new ArrayList<String>();
     	for(WifiDevice device:devices){
     		String mac = device.getId();
     		WifiDeviceGray wdg = wifiDeviceGrayService.getById(mac);
@@ -172,7 +173,6 @@ public class WifiDeviceGrayFacadeService {
     		if(!dut.getIndex().equals(parser.toDeviceUnitTypeIndex())){
     			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
     		}
-    		
     		if(wdg == null){
     			wdg = new WifiDeviceGray();
     			wdg.setId(mac);
@@ -204,7 +204,10 @@ public class WifiDeviceGrayFacadeService {
     				}
     			}
     		}
+    		
+    		result_success.add(device.getId());
     	}
+    	return result_success;
     }
     
     /**

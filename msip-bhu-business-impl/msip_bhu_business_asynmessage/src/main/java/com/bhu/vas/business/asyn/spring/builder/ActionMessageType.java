@@ -22,6 +22,7 @@ public enum ActionMessageType {
 	WifiDeviceHDRateFetch("下发终端实时速率","wdrealtime","WH"),
 	WifiDeviceSpeedFetch("下发设备的网速","wdspeed","WS"),
 	WifiDeviceUsedStatus("下发设备的网速","wdspeed","WU"),
+	WifiDevicesGrayChanged("下发设备的网速","wdspeed","WG"),
 	
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
 	DeviceModifySettingAalias("修改终端别名","dsalias","DI"),

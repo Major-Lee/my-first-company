@@ -156,7 +156,7 @@ public class ConsoleDeviceController extends BaseController {
     		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
     		return;
     	}
-    	RpcResponseDTO<Boolean> rpcResult = vapRpcService.saveMacs2Gray(uid, dut, gl, masList);
+    	RpcResponseDTO<List<String>> rpcResult = vapRpcService.saveMacs2Gray(uid, dut, gl, masList);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

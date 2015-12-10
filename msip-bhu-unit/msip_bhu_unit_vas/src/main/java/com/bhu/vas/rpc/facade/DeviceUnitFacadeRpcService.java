@@ -155,12 +155,15 @@ public class DeviceUnitFacadeRpcService{
 		}
 	}
 	
-	public RpcResponseDTO<Boolean> saveMacs2Gray(int uid, String dut, int gl,
+	public RpcResponseDTO<List<String>> saveMacs2Gray(int uid, String dut, int gl,
 			List<String> macs) {
 		try{
-			 wifiDeviceGrayFacadeService.saveMacs2Gray(
+			 List<String> result_success= wifiDeviceGrayFacadeService.saveMacs2Gray(
 					 VapEnumType.DeviceUnitType.fromIndex(dut), VapEnumType.GrayLevel.fromIndex(gl), macs);
-			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			 if(result_success != null && !result_success.isEmpty()){
+				 deliverMessageService.sendDevicesGrayChangedNotifyMessage(uid,dut,gl,macs);
+			 }
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_success);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
