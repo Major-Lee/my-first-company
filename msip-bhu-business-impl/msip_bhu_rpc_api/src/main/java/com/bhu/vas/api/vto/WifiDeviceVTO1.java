@@ -218,6 +218,6 @@ public class WifiDeviceVTO1 implements Serializable{
 	public String getD_duts() {
 		if(StringUtils.isEmpty(d_dut)) return StringHelper.MINUS_STRING_GAP;
 		if(StringUtils.isEmpty(d_type)) return StringHelper.MINUS_STRING_GAP;
-		return d_dut.concat(StringHelper.MINUS_STRING_GAP).concat(d_type);
+		return d_dut.concat(StringHelper.UNDERLINE_STRING_GAP).concat(d_type);
 	}
 }
