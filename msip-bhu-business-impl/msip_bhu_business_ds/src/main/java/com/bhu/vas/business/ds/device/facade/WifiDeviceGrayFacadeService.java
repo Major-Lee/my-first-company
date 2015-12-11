@@ -169,10 +169,13 @@ public class WifiDeviceGrayFacadeService {
     		String mac = device.getId();
     		WifiDeviceGray wdg = wifiDeviceGrayService.getById(mac);
     		DeviceVersion parser = DeviceVersion.parser(device.getOrig_swver());
-    		if(!parser.valid()) continue;
-    		if(!dut.getIndex().equals(parser.toDeviceUnitTypeIndex())){
+    		if(!parser.valid()) {
+    			System.out.println(device.getOrig_swver()+" invalid");
     			continue;
-    			//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
+    		}
+    		if(!dut.getIndex().equals(parser.toDeviceUnitTypeIndex())){
+    			System.out.println("mac:"+mac+" dut:"+dut.getIndex() +" ver:"+parser.toDeviceUnitTypeIndex());
+    			continue;
     		}
     		if(GrayLevel.Other == gray){
     			wifiDeviceGrayService.deleteById(mac);//.deleteByIds(ids);
