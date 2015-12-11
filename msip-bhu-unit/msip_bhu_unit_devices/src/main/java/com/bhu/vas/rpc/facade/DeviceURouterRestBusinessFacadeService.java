@@ -302,6 +302,7 @@ public class DeviceURouterRestBusinessFacadeService {
        int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
        return day2 - day1;
 	}
+	
 	/**
 	 * 如果一段日志跨天了，需要拆分出来
 	 * @param recentLogs
@@ -310,15 +311,19 @@ public class DeviceURouterRestBusinessFacadeService {
 	private Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
 		for(HandsetLogDTO log:recentLogs){
+			boolean completed = true;
 			long o = log.getO();
 			long f = log.getF();
 			long trb = log.getTrb();
-			if(f == 0) f = System.currentTimeMillis();
+			if(f == 0){
+				f = System.currentTimeMillis();
+				completed = false;
+			}
 			Date login = new Date(o);
 			Date logout = new Date(f);
 			if(DateUtils.isSameDay(login, logout)){
 				String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
-				add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),logout.getTime(),trb));
+				add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),completed?logout.getTime():0l,trb));
 			}else{//跨天
 				long days = DateTimeHelper.getTwoDateDifferentDay(login, logout, DateTimeHelper.FormatPattern5);
 				for(int i=0;i<=days;i++){
@@ -330,7 +335,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						Date current = DateTimeHelper.getDateDaysAfter(login, i);
 						String date  = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
 						Date start 	= DateTimeHelper.getCertainDateStart(current);
-						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(start.getTime(),logout.getTime(),0l));
+						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(start.getTime(),completed?logout.getTime():0l,trb));
 					}else{
 						Date current = DateTimeHelper.getDateDaysAfter(login, i);
 						String date  = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
@@ -344,13 +349,19 @@ public class DeviceURouterRestBusinessFacadeService {
 		return SortMapHelper.sortMapByKey(result);
 	}
 
+	/**
+	 * 每次往list里面增加记录的时候都index=0
+	 * @param result
+	 * @param date
+	 * @param dto
+	 */
 	private void add2Result(Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result,String date,WifiHandsetDeviceItemDetailMDTO dto){
 		List<WifiHandsetDeviceItemDetailMDTO> list = result.get(date);
 		if(list == null){
 			list = new ArrayList<>();
 			result.put(date, list);
 		}
-		list.add(dto);
+		list.add(0,dto);
 	}
 	
 	/**
@@ -382,6 +393,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				timeLineVto.setDate(date);
 				timeLineVto.setDetail(detail);
 				uRouterHdTimeLineVTOList.add(timeLineVto);
+				//Collections.reverse(list);
 			}
 			vto.setTimeline(uRouterHdTimeLineVTOList);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
