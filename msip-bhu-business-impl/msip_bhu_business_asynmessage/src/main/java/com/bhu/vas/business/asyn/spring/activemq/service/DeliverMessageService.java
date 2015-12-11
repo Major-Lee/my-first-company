@@ -9,6 +9,8 @@ import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
+import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
@@ -403,10 +405,11 @@ public class DeliverMessageService {
 
 	}
 
-	public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId) {
+	public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId, List<AgentDeviceClaimDTO> devices) {
 		AgentDeviceClaimUpdateDTO dto = new AgentDeviceClaimUpdateDTO();
 		dto.setUid(uid);
 		dto.setLogId(logId);
+		dto.setDevices(devices);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 

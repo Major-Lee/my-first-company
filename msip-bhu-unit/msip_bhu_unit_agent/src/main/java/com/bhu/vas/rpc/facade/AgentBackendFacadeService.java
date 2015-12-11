@@ -7,11 +7,11 @@ import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
@@ -63,7 +63,7 @@ public class AgentBackendFacadeService {
 
 
     @Resource
-    private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+    private DeliverMessageService deliverMessageService;
 
     private void onMessage(final String messagejsonHasPrefix) {
         exec.submit((new Runnable() {
@@ -156,7 +156,7 @@ public class AgentBackendFacadeService {
                     }
                 }
                 agentDeviceClaimService.updateAll(agentDeviceClaims);
-                wifiDeviceIndexIncrementService.batchConfirmMultiCrdIncrement(dto.getLogId(), indexAgentDeviceClaims);
+
 
             }
         }

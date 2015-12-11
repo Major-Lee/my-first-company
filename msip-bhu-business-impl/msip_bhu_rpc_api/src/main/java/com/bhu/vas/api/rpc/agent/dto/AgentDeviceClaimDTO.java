@@ -24,6 +24,36 @@ public class AgentDeviceClaimDTO implements Serializable {
     private String mac;
 
     /**
+     * 存货编码
+     */
+    private String stock_code;
+    /**
+     * 存货名称
+     */
+    private String stock_name;
+
+    /**
+     * 设备类型
+     */
+    private String hdtype;
+
+    /**
+     * 0:导入 1:认领
+     */
+    private int status;
+
+    /**
+     * 导入批次id
+     */
+    private long import_id;
+
+
+    /**
+     * 导入状态 0:未确认 1:已确认
+     */
+    private int import_status;
+
+    /**
      * 设备售出日期
      */
     private Date sold_at;
@@ -32,6 +62,7 @@ public class AgentDeviceClaimDTO implements Serializable {
      * 设备认领日期
      */
     private Date claim_at;
+
 
     public String getId() {
         return id;
@@ -55,6 +86,54 @@ public class AgentDeviceClaimDTO implements Serializable {
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public String getStock_code() {
+        return stock_code;
+    }
+
+    public void setStock_code(String stock_code) {
+        this.stock_code = stock_code;
+    }
+
+    public String getStock_name() {
+        return stock_name;
+    }
+
+    public void setStock_name(String stock_name) {
+        this.stock_name = stock_name;
+    }
+
+    public String getHdtype() {
+        return hdtype;
+    }
+
+    public void setHdtype(String hdtype) {
+        this.hdtype = hdtype;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public long getImport_id() {
+        return import_id;
+    }
+
+    public void setImport_id(long import_id) {
+        this.import_id = import_id;
+    }
+
+    public int getImport_status() {
+        return import_status;
+    }
+
+    public void setImport_status(int import_status) {
+        this.import_status = import_status;
     }
 
     public Date getSold_at() {

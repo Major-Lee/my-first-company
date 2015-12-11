@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -50,6 +51,9 @@ public class AgentDeviceClaimServiceHandler {
     @Resource
     private WifiDeviceService wifiDeviceService;
 
+    @Resource
+    private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+
     /**
      * 导入代理商设备
      * @param message
@@ -70,39 +74,16 @@ public class AgentDeviceClaimServiceHandler {
     }
 
 
+    /**
+     * 确认导入后建立索引
+     * @param message
+     */
     public void updateAgentDeviceClaim(String message) {
 
         logger.info(String.format("AgentDeviceClaimServiceHandler updateAgentDeviceClaim message[%s]", message));
         AgentDeviceClaimUpdateDTO dto = JsonHelper.getDTO(message, AgentDeviceClaimUpdateDTO.class);
 
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", dto.getLogId());
-        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
-
-        if (agentDeviceClaims != null) {
-            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
-
-                if (agentDeviceClaim.getStatus() != 1) {
-                    agentDeviceClaim.setImport_status(1);
-                    List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
-                    if (ids != null && ids.size()>0) {
-                        String id = ids.get(0);
-                        WifiDevice wifiDevice = wifiDeviceService.getById(id);
-                        if (wifiDevice != null) {
-                            wifiDevice.setAgentuser(dto.getUid());
-                            agentDeviceClaim.setMac(wifiDevice.getId());
-                            agentDeviceClaim.setStatus(1);
-                            agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
-                            agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
-                            wifiDeviceService.update(wifiDevice);
-                        }
-                        //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
-                    }
-                }
-            }
-            agentDeviceClaimService.updateAll(agentDeviceClaims);
-        }
-
+        wifiDeviceIndexIncrementService.batchConfirmMultiCrdIncrement(dto.getLogId(), dto.getDevices());
 
 
 
