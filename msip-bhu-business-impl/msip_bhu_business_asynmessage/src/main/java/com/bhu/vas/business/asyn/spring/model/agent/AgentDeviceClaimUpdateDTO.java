@@ -15,23 +15,12 @@ public class AgentDeviceClaimUpdateDTO extends ActionDTO {
 
     private long logId;
 
-    private List<AgentDeviceClaimDTO> devices;
-
     public long getLogId() {
         return logId;
     }
 
     public void setLogId(long logId) {
         this.logId = logId;
-    }
-
-
-    public List<AgentDeviceClaimDTO> getDevices() {
-        return devices;
-    }
-
-    public void setDevices(List<AgentDeviceClaimDTO> devices) {
-        this.devices = devices;
     }
 
     @Override

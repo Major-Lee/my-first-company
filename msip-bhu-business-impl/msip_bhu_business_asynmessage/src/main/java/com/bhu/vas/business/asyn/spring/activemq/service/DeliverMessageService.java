@@ -405,11 +405,10 @@ public class DeliverMessageService {
 
 	}
 
-	public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId, List<AgentDeviceClaimDTO> devices) {
+	public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId) {
 		AgentDeviceClaimUpdateDTO dto = new AgentDeviceClaimUpdateDTO();
 		dto.setUid(uid);
 		dto.setLogId(logId);
-		dto.setDevices(devices);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 
