@@ -5,19 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.junit.Test;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
-import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
 
 /**
@@ -32,12 +25,12 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
     private static final String HANDSET_LOGIN_TYPE = "login";
     private static final String HANDSET_LOGOUT_TYPE = "logout";
 
-    @Resource
-    private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+    //@Resource
+    //private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 
-    @Resource
-    private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
+    //@Resource
+    //private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 
     @Test
     public void test() {
@@ -49,14 +42,14 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 
 //        for (WifiHandsetDeviceRelationMDTO dto : results) {
 
-            String wifiId = "84:82:f4:1c:e8:b8";
-            String mac = "d0:67:e5:40:89:a2";
+            //String wifiId = "84:82:f4:1c:e8:b8";
+            // mac = "d0:67:e5:40:89:a2";
 
 //            wifiId = dto.getWifiId();
 //            mac = dto.getHandsetId();
 
 
-            WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+            /*WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
                     wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
 
             List<String> weeks = DateTimeExtHelper.getSevenDateOfWeek();
@@ -87,7 +80,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
             }
             System.out.println(JsonHelper.getJSONString(uRouterHdTimeLineVTOList));
 //        }
-    }
+*/    }
 
 
 

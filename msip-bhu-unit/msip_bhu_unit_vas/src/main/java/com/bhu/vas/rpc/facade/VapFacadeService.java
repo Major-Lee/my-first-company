@@ -117,6 +117,9 @@ public class VapFacadeService {
 
         List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
 
+        Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateDStyleKey(style));
+        Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateMStyleKey(style));
+
         for (VapModeDefined.VapModeType modeType : modeTypes) {
             vto = new ModuleDefinedDetailVTO();
 
@@ -124,14 +127,18 @@ public class VapFacadeService {
             vto.setType(modeType.getType());
 
 
-            Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateDStyleKey(style));
-            Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateMStyleKey(style));
+            String type = String.valueOf(modeType.getType());
 
             long dcount = 0;
             long mcount = 0;
             for (String key: dayRets.keySet()) {
-                dcount = dayRets.get(key) + dcount;
-                mcount = monthRets.get(key) + mcount;
+
+                int index = key.indexOf(".");
+                int lastindex = key.lastIndexOf(".");
+                if (key.substring(index+1, lastindex).equals(type)) {
+                    dcount = dayRets.get(key) + dcount;
+                    mcount = monthRets.get(key) + mcount;
+                }
             }
 
             vto.setDcount(dcount);
@@ -144,9 +151,6 @@ public class VapFacadeService {
         return items;
 
     }
-
-
-
 
 
     /**
@@ -165,11 +169,23 @@ public class VapFacadeService {
 
         vto.setStyle(style);
         vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
-        VapModeDefined.VapModeType vapModeType = VapModeDefined.VapModeType.getDescByStyle(style);
-        if (vapModeType != null) {
-            vto.setDesc(vapModeType.getDesc());
-            vto.setType(vapModeType.getType());
-        }
+
+        BrandVTO brand = new BrandVTO();
+        brand.setType(VapModeDefined.VapModeType.Brand.getType());
+        brand.setDesc(VapModeDefined.VapModeType.Brand.getDesc());
+
+        ChannelVTO channel = new ChannelVTO();
+        channel.setType(VapModeDefined.VapModeType.Channel.getType());
+        channel.setDesc(VapModeDefined.VapModeType.Channel.getDesc());
+
+        RedirectVTO redirect = new RedirectVTO();
+        redirect.setType(VapModeDefined.VapModeType.Redirect.getType());
+        redirect.setDesc(VapModeDefined.VapModeType.Redirect.getDesc());
+
+        Http404VTO http404 = new Http404VTO();
+        http404.setType(VapModeDefined.VapModeType.Http404.getType());
+        http404.setDesc(VapModeDefined.VapModeType.Http404.getDesc());
+
 
         List<ItemBrandVTO> brands = new ArrayList<ItemBrandVTO>();
 
@@ -201,12 +217,15 @@ public class VapFacadeService {
                 item.setMcount(mcount);
                 http404s.add(item);
 
+                http404.setItems(http404s);
+
             } else if (type == VapModeDefined.VapModeType.Redirect.getType()) {
                 ItemRedirectVTO item = new ItemRedirectVTO();
                 item.setSequence(sequence);
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 redirects.add(item);
+                redirect.setItems(redirects);
 
             } else if (type == VapModeDefined.VapModeType.Brand.getType()) {
                 ItemBrandVTO item = new ItemBrandVTO();
@@ -214,6 +233,7 @@ public class VapFacadeService {
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 brands.add(item);
+                brand.setItems(brands);
 
             } else if (type == VapModeDefined.VapModeType.Channel.getType()) {
                 ItemChannelVTO item = new ItemChannelVTO();
@@ -221,14 +241,17 @@ public class VapFacadeService {
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 channels.add(item);
+
+                channel.setItems(channels);
             }
 
         }
 
-        vto.setHttp404s(http404s);
-        vto.setRedirects(redirects);
-        vto.setBrands(brands);
-        vto.setChannels(channels);
+        vto.setHttp404(http404);
+        vto.setRedirect(redirect);
+        vto.setBrand(brand);
+        vto.setChannel(channel);
+
 
         return vto;
     }

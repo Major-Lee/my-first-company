@@ -12,17 +12,13 @@ public class ModuleDefinedItemVTO implements Serializable {
 
     private String def;
 
-    private int type;
+    private Http404VTO http404;
 
-    private String desc;
+    private RedirectVTO redirect;
 
-    private List<ItemBrandVTO> brands;
+    private BrandVTO brand;
 
-    private List<ItemChannelVTO> channels;
-
-    private List<ItemRedirectVTO> redirects;
-
-    private List<ItemHttp404VTO> http404s;
+    private ChannelVTO channel;
 
 
     public String getStyle() {
@@ -41,51 +37,36 @@ public class ModuleDefinedItemVTO implements Serializable {
         this.def = def;
     }
 
-    public int getType() {
-        return type;
+
+    public BrandVTO getBrand() {
+        return brand;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setBrand(BrandVTO brand) {
+        this.brand = brand;
     }
 
-    public String getDesc() {
-        return desc;
+    public ChannelVTO getChannel() {
+        return channel;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setChannel(ChannelVTO channel) {
+        this.channel = channel;
     }
 
-    public List<ItemBrandVTO> getBrands() {
-        return brands;
+    public RedirectVTO getRedirect() {
+        return redirect;
     }
 
-    public void setBrands(List<ItemBrandVTO> brands) {
-        this.brands = brands;
+    public void setRedirect(RedirectVTO redirect) {
+        this.redirect = redirect;
     }
 
-    public List<ItemChannelVTO> getChannels() {
-        return channels;
+    public Http404VTO getHttp404() {
+        return http404;
     }
 
-    public void setChannels(List<ItemChannelVTO> channels) {
-        this.channels = channels;
-    }
-
-    public List<ItemRedirectVTO> getRedirects() {
-        return redirects;
-    }
-
-    public void setRedirects(List<ItemRedirectVTO> redirects) {
-        this.redirects = redirects;
-    }
-
-    public List<ItemHttp404VTO> getHttp404s() {
-        return http404s;
-    }
-
-    public void setHttp404s(List<ItemHttp404VTO> http404s) {
-        this.http404s = http404s;
+    public void setHttp404(Http404VTO http404) {
+        this.http404 = http404;
     }
 }

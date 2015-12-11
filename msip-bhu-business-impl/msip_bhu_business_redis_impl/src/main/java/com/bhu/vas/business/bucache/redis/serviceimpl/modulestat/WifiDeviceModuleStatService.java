@@ -150,7 +150,7 @@ public class WifiDeviceModuleStatService extends AbstractRelationHashCache {
     }
     @Override
     public JedisPool getRedisPool() {
-        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
+        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.CLUSTEREXT);
     }
 
 

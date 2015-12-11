@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.localunit.BaseTest;
 
@@ -22,8 +21,8 @@ public class WifiDeviceFacadeServiceTest extends BaseTest{
 //	@Resource
 //	DeviceFacadeService deviceFacadeService;
 //
-	@Resource
-	WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+	//@Resource
+	//WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 	@Resource
 	WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;

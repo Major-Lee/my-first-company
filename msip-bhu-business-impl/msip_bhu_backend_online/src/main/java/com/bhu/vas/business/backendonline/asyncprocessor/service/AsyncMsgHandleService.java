@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
@@ -72,6 +73,7 @@ import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
@@ -81,7 +83,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
+//import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -109,8 +111,8 @@ public class AsyncMsgHandleService {
 	/*@Resource
 	private HandsetDeviceService handsetDeviceService;*/
 	
-	@Resource
-	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+	//@Resource
+	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 	
 	@Resource
 	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
@@ -541,9 +543,10 @@ public class AsyncMsgHandleService {
 
 			//3:wifi上的移动设备基础信息表的在线状态更新,返回在线设备记录，继续更新终端离线状态
 			String wifiId = dto.getMac();
-			wifiHandsetDeviceRelationMService.wifiDeviceIllegalOfflineAdapter(wifiId,
-					deviceFacadeService.allHandsetDoOfflines(wifiId));
-
+			{//修改为redis实现终端上下线日志 2015-12-11
+				//wifiHandsetDeviceRelationMService.wifiDeviceIllegalOfflineAdapter(wifiId,deviceFacadeService.allHandsetDoOfflines(wifiId));
+				HandsetStorageFacadeService.wifiDeviceIllegalOffline(wifiId, deviceFacadeService.allHandsetDoOfflines(wifiId));
+			}
 			//5:统计增量 wifi设备的daily访问时长增量
 /*			if(dto.getLast_login_at() > 0){
 				long uptime = dto.getTs() - dto.getLast_login_at();
@@ -589,15 +592,25 @@ public class AsyncMsgHandleService {
 		
 		HandsetDeviceOnlineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOnlineDTO.class);
 		
-		//3:移动设备连接wifi设备的接入记录(非流水)
-		int result_status = wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(), 
-				new Date(dto.getLogin_ts()));
+		/*//3:移动设备连接wifi设备的接入记录(非流水)
+		int result_status = wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
 
 		//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
 		if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert){
 			//5:wifi设备接入移动设备的接入数量增量
 			wifiHandsetDeviceLoginCountMService.incrCount(dto.getWifiId());
+		}*/
+		
+		//3:移动设备连接wifi设备的接入记录(非流水)
+		//修改为redis实现终端上下线日志 2015-12-11
+		int result_status = HandsetStorageFacadeService.wifiDeviceHandsetOnline(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
+
+		//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
+		if(result_status == HandsetLogDTO.Element_NewHandset){
+			//5:wifi设备接入移动设备的接入数量增量
+			wifiHandsetDeviceLoginCountMService.incrCount(dto.getWifiId());
 		}
+		
 		//4:移动设备连接wifi设备的流水log
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());
 		
@@ -616,7 +629,7 @@ public class AsyncMsgHandleService {
 				pushDto.setMac(dto.getWifiId());
 				pushDto.setHd_mac(dto.getMac());
 				pushDto.setTs(System.currentTimeMillis());
-				if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert)
+				if(result_status == HandsetLogDTO.Element_NewHandset)
 					pushDto.setNewed(true);
 				boolean push_successed = pushService.push(pushDto);
 				if(push_successed){
@@ -641,9 +654,10 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s]", message));
 		
 		HandsetDeviceOfflineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOfflineDTO.class);
+		//修改为redis实现终端上下线日志 2015-12-11
+		//wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
+		HandsetStorageFacadeService.wifiDeviceHandsetOffline(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
 		
-		wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
-
 		//3:统计增量 移动设备的daily访问时长增量
 		if(!StringUtils.isEmpty(dto.getUptime())){
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
@@ -665,10 +679,10 @@ public class AsyncMsgHandleService {
 		HandsetDeviceSyncDTO syncDto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
 
 		for (HandsetDeviceDTO dto : syncDto.getDtos()) {
-			wifiHandsetDeviceRelationMService.addRelation(syncDto.getMac(), dto.getMac(),
-					new Date(dto.getTs()));
+			//修改为redis实现终端上下线日志 2015-12-11
+			//wifiHandsetDeviceRelationMService.addRelation(syncDto.getMac(), dto.getMac(),new Date(dto.getTs()));
+			HandsetStorageFacadeService.wifiDeviceHandsetOnline(syncDto.getMac(), dto.getMac(), dto.getTs());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
 		}
-
 	}
 
 

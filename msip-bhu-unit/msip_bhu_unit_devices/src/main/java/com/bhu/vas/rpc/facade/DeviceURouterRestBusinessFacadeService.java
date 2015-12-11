@@ -8,18 +8,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
@@ -38,7 +39,6 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -87,17 +87,15 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTermina
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.builder.WifiStasnifferHelper;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -111,14 +109,14 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class DeviceURouterRestBusinessFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
+/*	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
 
 	private static final long IGNORE_LOGIN_TIME_SPACE = 15 * 60 * 1000L;
 
 	private static final int DAY_TIME_MILLION_SECOND = 24 * 3600 * 1000;
 
 	private static final String HANDSET_LOGIN_TYPE = "login";
-	private static final String HANDSET_LOGOUT_TYPE = "logout";
+	private static final String HANDSET_LOGOUT_TYPE = "logout";*/
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -141,8 +139,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	@Resource
 	private DeliverMessageService deliverMessageService;
 
-	@Resource
-	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+	//@Resource
+	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 	
 	/**
@@ -292,15 +290,115 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 
+	
+	public static int daysOfTwo(Date fDate, Date oDate) {
+       Calendar aCalendar = Calendar.getInstance();
+       aCalendar.setTime(fDate);
+       int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+       aCalendar.setTime(oDate);
+       int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
+       return day2 - day1;
+	}
+	
+	/**
+	 * 如果一段日志跨天了，需要拆分出来
+	 * @param recentLogs
+	 * @return Map<String,List<WifiHandsetDeviceItemDetailMDTO>> date,list
+	 */
+	private Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
+		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
+		for(HandsetLogDTO log:recentLogs){
+			boolean completed = true;
+			long o = log.getO();
+			long f = log.getF();
+			long trb = log.getTrb();
+			if(f == 0){
+				f = System.currentTimeMillis();
+				completed = false;
+			}
+			Date login = new Date(o);
+			Date logout = new Date(f);
+			if(DateUtils.isSameDay(login, logout)){
+				String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
+				add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),completed?logout.getTime():0l,trb));
+			}else{//跨天
+				long days = DateTimeHelper.getTwoDateDifferentDay(login, logout, DateTimeHelper.FormatPattern5);
+				for(int i=0;i<=days;i++){
+					if(i == 0){
+						String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
+						Date end = DateTimeHelper.getCertainDateEnd(login);
+						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),end.getTime(),0l));
+					}else if(i==days){
+						Date current = DateTimeHelper.getDateDaysAfter(login, i);
+						String date  = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
+						Date start 	= DateTimeHelper.getCertainDateStart(current);
+						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(start.getTime(),completed?logout.getTime():0l,trb));
+					}else{
+						Date current = DateTimeHelper.getDateDaysAfter(login, i);
+						String date  = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
+						Date start 	= DateTimeHelper.getCertainDateStart(current);
+						Date end 	= DateTimeHelper.getCertainDateEnd(current);
+						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(start.getTime(),end.getTime(),0l));
+					}
+				}
+			}
+		}
+		return SortMapHelper.sortMapByKey(result);
+	}
 
 	/**
+	 * 每次往list里面增加记录的时候都index=0
+	 * @param result
+	 * @param date
+	 * @param dto
+	 */
+	private void add2Result(Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result,String date,WifiHandsetDeviceItemDetailMDTO dto){
+		List<WifiHandsetDeviceItemDetailMDTO> list = result.get(date);
+		if(list == null){
+			list = new ArrayList<>();
+			result.put(date, list);
+		}
+		list.add(0,dto);
+	}
+	
+	/**
 	 * 获取终端详情
+	 * //修改为redis实现终端上下线日志 2015-12-11
 	 * @param uid
 	 * @param wifiId
 	 * @param mac
 	 * @return
 	 */
 	public RpcResponseDTO<URouterHdDetailVTO>  urouterHdDetail(Integer uid, String wifiId, String mac) {
+
+		URouterHdDetailVTO vto = new URouterHdDetailVTO();
+		vto.setHd_mac(mac);
+		vto.setMac(wifiId);
+		try {
+			long rtb = HandsetStorageFacadeService.wifiDeviceHandsetTrbFetched(wifiId, mac);
+			vto.setTotal_rx_bytes(String.valueOf(rtb));
+			List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs(wifiId, mac, 100);
+			Map<String, List<WifiHandsetDeviceItemDetailMDTO>> sortedMap = buildHdDetailMap(recentLogs);
+			List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
+			Iterator<Entry<String, List<WifiHandsetDeviceItemDetailMDTO>>> iter = sortedMap.entrySet().iterator();
+			URouterHdTimeLineVTO timeLineVto = null;
+			while(iter.hasNext()){
+				Entry<String, List<WifiHandsetDeviceItemDetailMDTO>> next = iter.next();
+				String date = next.getKey();
+				List<WifiHandsetDeviceItemDetailMDTO> detail = next.getValue();
+				timeLineVto = new URouterHdTimeLineVTO();
+				timeLineVto.setDate(date);
+				timeLineVto.setDetail(detail);
+				uRouterHdTimeLineVTOList.add(timeLineVto);
+				//Collections.reverse(list);
+			}
+			vto.setTimeline(uRouterHdTimeLineVTOList);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		} catch (BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	/*public RpcResponseDTO<URouterHdDetailVTO>  urouterHdDetail(Integer uid, String wifiId, String mac) {
 
 		URouterHdDetailVTO vto = new URouterHdDetailVTO();
 		vto.setHd_mac(mac);
@@ -348,7 +446,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		} catch (BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
-	}
+	}*/
 
 
 	public RpcResponseDTO<Long>  urouterHdModifyAlias(Integer uid, String wifiId, String mac, String alias) {
@@ -370,7 +468,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param logs
 	 * @return
 	 */
-	private List<URouterHdTimeLineVTO> getLogs(List<URouterHdTimeLineVTO> vtos, List<WifiHandsetDeviceItemLogMDTO> logs) {
+/*	private List<URouterHdTimeLineVTO> getLogs(List<URouterHdTimeLineVTO> vtos, List<WifiHandsetDeviceItemLogMDTO> logs) {
 		long currentTime = System.currentTimeMillis();
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
@@ -488,7 +586,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 		return offset;
 	}
-
+*/
 	/**
 	 *
 	 * 解析终端登入登出日志，每条日志只有时间戳和类型(login/logout)
@@ -506,7 +604,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param offset 记录是七天的第几天
 	 * @param first last_type == null 时候
 	 */
-	private boolean filterDay(long ts, long last_ts, String type, String last_type, long rx_bytes, List<URouterHdTimeLineVTO> vtos,
+/*	private boolean filterDay(long ts, long last_ts, String type, String last_type, long rx_bytes, List<URouterHdTimeLineVTO> vtos,
 						   int offset, boolean first, boolean flag) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
@@ -680,10 +778,10 @@ public class DeviceURouterRestBusinessFacadeService {
 			e.printStackTrace();
 		}
 		return flag;
-	}
+	}*/
 
 
-	private Date getDateZeroTime(Date date) {
+	/*private Date getDateZeroTime(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
@@ -695,7 +793,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		cal.setTimeInMillis(cal.getTimeInMillis()-millisecond);
 
 		return cal.getTime();
-	}
+	}*/
 
 	
 	/**

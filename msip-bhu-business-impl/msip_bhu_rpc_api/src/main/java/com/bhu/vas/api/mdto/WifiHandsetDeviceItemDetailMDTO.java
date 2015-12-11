@@ -37,4 +37,15 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
     public void setRx_bytes(long rx_bytes) {
         this.rx_bytes = rx_bytes;
     }
+
+    public WifiHandsetDeviceItemDetailMDTO() {
+	}
+	public WifiHandsetDeviceItemDetailMDTO(long login_at, long logout_at,
+			long rx_bytes) {
+		this.login_at = login_at;
+		this.logout_at = logout_at;
+		this.rx_bytes = rx_bytes;
+	}
+    
+    
 }
