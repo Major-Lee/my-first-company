@@ -137,8 +137,8 @@ public class WifiDeviceIndexIncrementService {
 	 * @param importId 导入批次
 	 * @param agentDeviceClaims
 	 */
-	public void batchConfirmMultiCrdIncrement(String importId, List<AgentDeviceClaim> agentDeviceClaims){
-		if(StringUtils.isEmpty(importId)) return;
+	public void batchConfirmMultiCrdIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims){
+
 		if(agentDeviceClaims == null || agentDeviceClaims.isEmpty()) return;
 		
 		logger.info(String.format("BatchConfirmMultiCrdIncrement Request importid [%s] size [%s]", importId, agentDeviceClaims.size()));

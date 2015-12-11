@@ -11,12 +11,15 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -31,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -56,6 +60,10 @@ public class AgentBackendFacadeService {
 
     @Resource
     private WifiDeviceService wifiDeviceService;
+
+
+    @Resource
+    private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 
     private void onMessage(final String messagejsonHasPrefix) {
         exec.submit((new Runnable() {
@@ -110,9 +118,22 @@ public class AgentBackendFacadeService {
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", dto.getLogId());
-        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
 
-        if (agentDeviceClaims != null) {
+
+        mc.setOrderByClause(" created_at ");
+        mc.setPageNumber(1);
+        mc.setPageSize(200);
+        EntityIterator<String, AgentDeviceClaim> it = new KeyBasedEntityBatchIterator<String,AgentDeviceClaim>(String.class
+                ,AgentDeviceClaim.class, agentDeviceClaimService.getEntityDao(), mc);
+
+
+        List<AgentDeviceClaim> indexAgentDeviceClaims = null;
+        List<AgentDeviceClaim> agentDeviceClaims = null;
+        while(it.hasNext()){
+            //wifiDeviceHocIncrement(it.next());
+
+            indexAgentDeviceClaims = new ArrayList<AgentDeviceClaim>();
+            agentDeviceClaims = it.next();
             for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
                 if (agentDeviceClaim.getStatus() != 1) {
                     agentDeviceClaim.setImport_status(1);
@@ -127,13 +148,43 @@ public class AgentBackendFacadeService {
                             agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
                             agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
                             wifiDeviceService.update(wifiDevice);
+
+                            indexAgentDeviceClaims.add(agentDeviceClaim);
+
                         }
                         //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
                     }
                 }
+                agentDeviceClaimService.updateAll(agentDeviceClaims);
+                wifiDeviceIndexIncrementService.batchConfirmMultiCrdIncrement(dto.getLogId(), indexAgentDeviceClaims);
+
             }
-            agentDeviceClaimService.updateAll(agentDeviceClaims);
         }
+
+//        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
+//
+//        if (agentDeviceClaims != null) {
+//            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
+//                if (agentDeviceClaim.getStatus() != 1) {
+//                    agentDeviceClaim.setImport_status(1);
+//                    List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
+//                    if (ids != null && ids.size()>0) {
+//                        String id = ids.get(0);
+//                        WifiDevice wifiDevice = wifiDeviceService.getById(id);
+//                        if (wifiDevice != null) {
+//                            wifiDevice.setAgentuser(dto.getUid());
+//                            agentDeviceClaim.setMac(wifiDevice.getId());
+//                            agentDeviceClaim.setStatus(1);
+//                            agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
+//                            agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
+//                            wifiDeviceService.update(wifiDevice);
+//                        }
+//                        //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
+//                    }
+//                }
+//            }
+//            agentDeviceClaimService.updateAll(agentDeviceClaims);
+//        }
 
         long logId = dto.getLogId();
 
