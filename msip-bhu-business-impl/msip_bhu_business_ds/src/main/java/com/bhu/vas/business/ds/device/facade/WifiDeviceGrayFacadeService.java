@@ -154,7 +154,7 @@ public class WifiDeviceGrayFacadeService {
      * 			匹配则强制更改其灰度等级
      * 			否则抛出异常灰度的产品类型不匹配
      * @param dut
-     * @param gray
+     * @param gray 如果gray为其他，则代表从灰度中移除mac地址
      * @param macs
      */
     public List<String> saveMacs2Gray(VapEnumType.DeviceUnitType dut,VapEnumType.GrayLevel gray,List<String> macs){
@@ -174,39 +174,43 @@ public class WifiDeviceGrayFacadeService {
     			continue;
     			//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
     		}
-    		if(wdg == null){
-    			wdg = new WifiDeviceGray();
-    			wdg.setId(mac);
-    			wdg.setDut(dut.getIndex());
-    			wdg.setGl(gray.getIndex());
-    			wifiDeviceGrayService.insert(wdg);
-    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
-    			dgv.setDevices(dgv.getDevices()+1);
-    			wifiDeviceGrayVersionService.update(dgv);
+    		if(GrayLevel.Other == gray){
+    			wifiDeviceGrayService.deleteById(mac);//.deleteByIds(ids);
     		}else{
-    			if(wdg.getDut().equals(dut.getIndex()) && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
-    				;
-    			}else{
-    				if(wdg.getDut().equals(dut.getIndex())){
-    					wdg.setDut(dut.getIndex());
-    	    			wdg.setGl(gray.getIndex());
-    	    			wifiDeviceGrayService.update(wdg);
-    	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
-    	    			dgv.setDevices(dgv.getDevices()-1);
-    	    			wifiDeviceGrayVersionService.update(dgv);
-    	    			wdg.setDut(dut.getIndex());
-    	    			wdg.setGl(gray.getIndex());
-    	    			wifiDeviceGrayService.update(wdg);
-    	    			dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
-    	    			dgv.setDevices(dgv.getDevices()+1);
-    	    			wifiDeviceGrayVersionService.update(dgv);
-    				}else{
-    					continue;
-    					//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
-    				}
-    			}
+        		if(wdg == null){
+        			wdg = new WifiDeviceGray();
+        			wdg.setId(mac);
+        			wdg.setDut(dut.getIndex());
+        			wdg.setGl(gray.getIndex());
+        			wifiDeviceGrayService.insert(wdg);
+        			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+        			dgv.setDevices(dgv.getDevices()+1);
+        			wifiDeviceGrayVersionService.update(dgv);
+        		}else{
+        			if(wdg.getDut().equals(dut.getIndex()) && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
+        				;
+        			}else{
+        				if(wdg.getDut().equals(dut.getIndex())){
+        					wdg.setDut(dut.getIndex());
+        	    			wdg.setGl(gray.getIndex());
+        	    			wifiDeviceGrayService.update(wdg);
+        	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
+        	    			dgv.setDevices(dgv.getDevices()-1);
+        	    			wifiDeviceGrayVersionService.update(dgv);
+        	    			wdg.setDut(dut.getIndex());
+        	    			wdg.setGl(gray.getIndex());
+        	    			wifiDeviceGrayService.update(wdg);
+        	    			dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+        	    			dgv.setDevices(dgv.getDevices()+1);
+        	    			wifiDeviceGrayVersionService.update(dgv);
+        				}else{
+        					continue;
+        					//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED);
+        				}
+        			}
+        		}
+        		
     		}
-    		
     		result_success.add(device.getId());
     	}
     	return result_success;
