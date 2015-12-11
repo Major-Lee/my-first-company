@@ -146,9 +146,6 @@ public class VapFacadeService {
     }
 
 
-
-
-
     /**
      * 构建模板统计
      * @param style
@@ -170,6 +167,23 @@ public class VapFacadeService {
             vto.setDesc(vapModeType.getDesc());
             vto.setType(vapModeType.getType());
         }
+
+        BrandVTO brand = new BrandVTO();
+        brand.setType(VapModeDefined.VapModeType.Brand.getType());
+        brand.setDesc(VapModeDefined.VapModeType.Brand.getDesc());
+
+        ChannelVTO channel = new ChannelVTO();
+        channel.setType(VapModeDefined.VapModeType.Channel.getType());
+        channel.setDesc(VapModeDefined.VapModeType.Channel.getDesc());
+
+        RedirectVTO redirect = new RedirectVTO();
+        redirect.setType(VapModeDefined.VapModeType.Redirect.getType());
+        redirect.setDesc(VapModeDefined.VapModeType.Redirect.getDesc());
+
+        Http404VTO http404 = new Http404VTO();
+        http404.setType(VapModeDefined.VapModeType.Http404.getType());
+        http404.setDesc(VapModeDefined.VapModeType.Http404.getDesc());
+
 
         List<ItemBrandVTO> brands = new ArrayList<ItemBrandVTO>();
 
@@ -201,12 +215,15 @@ public class VapFacadeService {
                 item.setMcount(mcount);
                 http404s.add(item);
 
+                http404.setItems(http404s);
+
             } else if (type == VapModeDefined.VapModeType.Redirect.getType()) {
                 ItemRedirectVTO item = new ItemRedirectVTO();
                 item.setSequence(sequence);
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 redirects.add(item);
+                redirect.setItems(redirects);
 
             } else if (type == VapModeDefined.VapModeType.Brand.getType()) {
                 ItemBrandVTO item = new ItemBrandVTO();
@@ -214,6 +231,7 @@ public class VapFacadeService {
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 brands.add(item);
+                brand.setItems(brands);
 
             } else if (type == VapModeDefined.VapModeType.Channel.getType()) {
                 ItemChannelVTO item = new ItemChannelVTO();
@@ -221,14 +239,17 @@ public class VapFacadeService {
                 item.setDcount(dcount);
                 item.setMcount(mcount);
                 channels.add(item);
+
+                channel.setItems(channels);
             }
 
         }
 
-        vto.setHttp404s(http404s);
-        vto.setRedirects(redirects);
-        vto.setBrands(brands);
-        vto.setChannels(channels);
+        vto.setHttp404(http404);
+        vto.setRedirect(redirect);
+        vto.setBrand(brand);
+        vto.setChannel(channel);
+
 
         return vto;
     }

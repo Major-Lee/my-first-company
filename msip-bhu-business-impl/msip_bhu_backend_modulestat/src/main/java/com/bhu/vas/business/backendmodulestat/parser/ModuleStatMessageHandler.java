@@ -3,6 +3,7 @@ package com.bhu.vas.business.backendmodulestat.parser;
 import java.util.*;
 import java.util.Map.Entry;
 
+import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.modulestat.WifiDeviceModuleStatDTO;
 import com.bhu.vas.api.dto.modulestat.WifiDeviceModuleStatItemDTO;
 import com.bhu.vas.api.helper.OperationDS;
@@ -92,37 +93,37 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 3,\n" +
 						"        \"sequence\": 2,\n" +
-						"        \"systime\": 1449590400,\n" +
+						"        \"systime\": 1449763200,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 2,\n" +
-						"        \"systime\": 1449590400,\n" +
+						"        \"systime\": 1449763200,\n" +
 						"        \"ver\": \"style001-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1449590400,\n" +
+						"        \"systime\": 1449763200,\n" +
 						"        \"ver\": \"style002-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 3,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1449590400,\n" +
+						"        \"systime\": 1449763200,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1449590400,\n" +
+						"        \"systime\": 1449763200,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }, {\n" +
 						"        \"mac\": \"a4:5e:60:bb:86:7d\",\n" +
 						"        \"type\": 4,\n" +
 						"        \"sequence\": 1,\n" +
-						"        \"systime\": 1449590400,\n" +
+						"        \"systime\": 1449763200,\n" +
 						"        \"ver\": \"style000-00.00.01\"\n" +
 						"    }]\n" +
 						"}";
@@ -271,6 +272,23 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 		vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
 
 
+		BrandVTO brand = new BrandVTO();
+		brand.setType(VapModeDefined.VapModeType.Brand.getType());
+		brand.setDesc(VapModeDefined.VapModeType.Brand.getDesc());
+
+		ChannelVTO channel = new ChannelVTO();
+		channel.setType(VapModeDefined.VapModeType.Channel.getType());
+		channel.setDesc(VapModeDefined.VapModeType.Channel.getDesc());
+
+		RedirectVTO redirect = new RedirectVTO();
+		redirect.setType(VapModeDefined.VapModeType.Redirect.getType());
+		redirect.setDesc(VapModeDefined.VapModeType.Redirect.getDesc());
+
+		Http404VTO http404 = new Http404VTO();
+		http404.setType(VapModeDefined.VapModeType.Http404.getType());
+		http404.setDesc(VapModeDefined.VapModeType.Http404.getDesc());
+
+
 		List<ItemBrandVTO> brands = new ArrayList<ItemBrandVTO>();
 
 		List<ItemChannelVTO> channels = new ArrayList<ItemChannelVTO>();
@@ -296,43 +314,49 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 			int type = Integer.parseInt(key.substring(index + 1, lastIndex));
 			int sequence = Integer.parseInt(key.substring(lastIndex + 1));
 
-			if (type ==1) {
+			if (type == VapModeDefined.VapModeType.Http404.getType()) {
 				ItemHttp404VTO item = new ItemHttp404VTO();
 				item.setSequence(sequence);
 				item.setDcount(dcount);
 				item.setMcount(mcount);
 				http404s.add(item);
 
-			} else if (type == 2) {
+				http404.setItems(http404s);
+
+			} else if (type == VapModeDefined.VapModeType.Redirect.getType()) {
 				ItemRedirectVTO item = new ItemRedirectVTO();
 				item.setSequence(sequence);
 				item.setDcount(dcount);
 				item.setMcount(mcount);
 				redirects.add(item);
+				redirect.setItems(redirects);
 
-			} else if (type == 3) {
+			} else if (type == VapModeDefined.VapModeType.Brand.getType()) {
 				ItemBrandVTO item = new ItemBrandVTO();
 				item.setSequence(sequence);
 				item.setDcount(dcount);
 				item.setMcount(mcount);
 				brands.add(item);
+				brand.setItems(brands);
 
-			} else if (type == 4) {
+			} else if (type == VapModeDefined.VapModeType.Channel.getType()) {
 				ItemChannelVTO item = new ItemChannelVTO();
 				item.setSequence(sequence);
 				item.setDcount(dcount);
 				item.setMcount(mcount);
 				channels.add(item);
+
+				channel.setItems(channels);
 			}
 
 		}
 
 
 
-		vto.setHttp404s(http404s);
-		vto.setRedirects(redirects);
-		vto.setBrands(brands);
-		vto.setChannels(channels);
+		vto.setHttp404(http404);
+		vto.setRedirect(redirect);
+		vto.setBrand(brand);
+		vto.setChannel(channel);
 
 		System.out.println(vto);
 	}

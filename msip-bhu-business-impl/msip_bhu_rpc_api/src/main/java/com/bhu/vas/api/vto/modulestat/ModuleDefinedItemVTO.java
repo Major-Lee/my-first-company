@@ -16,13 +16,22 @@ public class ModuleDefinedItemVTO implements Serializable {
 
     private String desc;
 
-    private List<ItemBrandVTO> brands;
+//    private List<ItemBrandVTO> brands;
+//
+//    private List<ItemChannelVTO> channels;
+//
+//    private List<ItemRedirectVTO> redirects;
+//
+//    private List<ItemHttp404VTO> http404s;
 
-    private List<ItemChannelVTO> channels;
 
-    private List<ItemRedirectVTO> redirects;
+    private BrandVTO brand;
 
-    private List<ItemHttp404VTO> http404s;
+    private ChannelVTO channel;
+
+    private RedirectVTO redirect;
+
+    private Http404VTO http404;
 
 
     public String getStyle() {
@@ -57,35 +66,35 @@ public class ModuleDefinedItemVTO implements Serializable {
         this.desc = desc;
     }
 
-    public List<ItemBrandVTO> getBrands() {
-        return brands;
+    public BrandVTO getBrand() {
+        return brand;
     }
 
-    public void setBrands(List<ItemBrandVTO> brands) {
-        this.brands = brands;
+    public void setBrand(BrandVTO brand) {
+        this.brand = brand;
     }
 
-    public List<ItemChannelVTO> getChannels() {
-        return channels;
+    public ChannelVTO getChannel() {
+        return channel;
     }
 
-    public void setChannels(List<ItemChannelVTO> channels) {
-        this.channels = channels;
+    public void setChannel(ChannelVTO channel) {
+        this.channel = channel;
     }
 
-    public List<ItemRedirectVTO> getRedirects() {
-        return redirects;
+    public RedirectVTO getRedirect() {
+        return redirect;
     }
 
-    public void setRedirects(List<ItemRedirectVTO> redirects) {
-        this.redirects = redirects;
+    public void setRedirect(RedirectVTO redirect) {
+        this.redirect = redirect;
     }
 
-    public List<ItemHttp404VTO> getHttp404s() {
-        return http404s;
+    public Http404VTO getHttp404() {
+        return http404;
     }
 
-    public void setHttp404s(List<ItemHttp404VTO> http404s) {
-        this.http404s = http404s;
+    public void setHttp404(Http404VTO http404) {
+        this.http404 = http404;
     }
 }

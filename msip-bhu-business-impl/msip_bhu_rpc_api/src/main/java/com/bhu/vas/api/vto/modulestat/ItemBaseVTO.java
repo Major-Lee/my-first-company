@@ -3,9 +3,9 @@ package com.bhu.vas.api.vto.modulestat;
 import java.io.Serializable;
 
 /**
- * Created by bluesand on 12/3/15.
+ * Created by bluesand on 12/11/15.
  */
-public class ItemChannelVTO  extends ItemBaseVTO {
+public class ItemBaseVTO implements Serializable {
 
     private int sequence;
 
@@ -36,4 +36,5 @@ public class ItemChannelVTO  extends ItemBaseVTO {
     public void setMcount(long mcount) {
         this.mcount = mcount;
     }
+
 }
