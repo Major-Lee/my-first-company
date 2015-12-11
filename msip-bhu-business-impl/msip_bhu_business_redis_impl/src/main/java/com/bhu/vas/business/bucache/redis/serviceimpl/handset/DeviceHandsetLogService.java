@@ -254,12 +254,12 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 			this.rpush(key, JsonHelper.getJSONString(HandsetLogDTO.buildOnline(i)));
 		}
 		
-		List<String> lrange = this.lrange(key, 0, -1);
+		List<String> lrange = this.lrange(key, -1, -10);
 		for(String l:lrange){
 			System.out.println("element:"+l);
 		}
-		System.out.println("----------1");
-		this.handsetLogsTrim(dmac, hmac);
+		//System.out.println("----------1");
+		//this.handsetLogsTrim(dmac, hmac);
 /*		HandsetLogDTO[] previous = previousHandsetLog(key,2);
 		for(HandsetLogDTO l:previous){
 			System.out.println("element:"+JsonHelper.getJSONString(l));
@@ -276,20 +276,20 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		
 		
 		
-		System.out.println("----------2");
+		/*System.out.println("----------2");
 		lrange = this.lrange(key, 0, -1);
 		for(String l:lrange){
 			System.out.println("element:"+l);
-		}
+		}*/
 		
 	}
 	public void testClear(String dmac,String hmac){
 		System.out.println("----------brefore clear");
 		String key = generateKey(dmac,hmac);
-		List<String> lrange = this.lrange(key, 0, -1);
+		/*List<String> lrange = this.lrange(key, 0, -1);
 		for(String l:lrange){
 			System.out.println("element:"+l);
-		}
+		}*/
 		
 		this.expire(key, 0);
 	
@@ -298,7 +298,7 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	public static void main(String[] argv){
 		String dmac = "aaaaa";
 		String hmac = "bbbbb";
-		DeviceHandsetLogService.getInstance().testbuinsess(dmac, hmac);
+		DeviceHandsetLogService.getInstance().test(dmac, hmac);
 		DeviceHandsetLogService.getInstance().testClear(dmac, hmac);
 	}
 	
