@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -66,6 +67,50 @@ public class HandsetStorageFacadeService{
 		return HandsetStatisticsService.getInstance().statistics();
 	}
 	
+	
+    /**
+	 * 设备非法关机，断开长连接后通知所有终端离线，设备端上报的终端流量统计为0.
+	 * @param wifiId
+	 */
+	public static void wifiDeviceIllegalOffline(String dmac, List<HandsetDeviceDTO> handsets) {
+        if (handsets != null) {
+        	long ts = System.currentTimeMillis();
+            for(HandsetDeviceDTO dto:handsets){
+                if(dto != null){
+                	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, dto.getMac(), 0l, ts);//(wifiId, dto.getMac(), "0", System.currentTimeMillis());
+                }
+            }
+        }
+	}
+	
+    /**
+     * 终端离线更新记录
+     * @param wifiId
+     * @param handsetId
+     * @param tx_bytes
+     * @param logout_at
+     */
+    public static void wifiDeviceHandsetOffline(String dmac, String hmac, String tx_bytes, long logout_at) {
+    	long rb = Long.parseLong(tx_bytes);
+    	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
+    	if(rb >0){
+    		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, rb);
+    	}
+    }
+
+    
+    public static int wifiDeviceHandsetOnline(String dmac, String hmac, long last_login_at){
+    	return DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
+    }
+	
+    public static List<HandsetLogDTO> wifiDeviceHandsetRecentLogs(String dmac, String hmac,int size){
+    	return DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
+    }
+    
+    public static long wifiDeviceHandsetTrbFetched(String dmac, String hmac){
+    	return DeviceHandsetExtFieldService.getInstance().trb(dmac, hmac);//.fetchRecentHandsetLogs(dmac, hmac, size);
+    }
+    
 	public static void main(String[] argc){
 		//HandsetStorageService.getInstance().clearOrResetAll();
 		/*HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
