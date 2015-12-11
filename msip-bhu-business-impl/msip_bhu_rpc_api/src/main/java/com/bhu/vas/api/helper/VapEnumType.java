@@ -225,6 +225,12 @@ public class VapEnumType {
 			return dType;
 		}
 		
+		public static String buildDutIndex4HdType(String dut,String hdtype){
+			StringBuilder sb_key = new StringBuilder();
+			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP).append(hdtype);
+			return sb_key.toString();
+		}
+		
 		/**
 		 * 拆分index数据为数组 TU H106
 		 * @param index TU_H106

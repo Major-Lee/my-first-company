@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
@@ -218,6 +219,6 @@ public class WifiDeviceVTO1 implements Serializable{
 	public String getD_duts() {
 		if(StringUtils.isEmpty(d_dut)) return StringHelper.MINUS_STRING_GAP;
 		if(StringUtils.isEmpty(d_type)) return StringHelper.MINUS_STRING_GAP;
-		return d_dut.concat(StringHelper.UNDERLINE_STRING_GAP).concat(d_type);
+		return VapEnumType.DeviceUnitType.buildDutIndex4HdType(d_dut, d_type);
 	}
 }
