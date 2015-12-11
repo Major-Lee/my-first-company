@@ -12,18 +12,6 @@ public class ModuleDefinedItemVTO implements Serializable {
 
     private String def;
 
-    private int type;
-
-    private String desc;
-
-//    private List<ItemBrandVTO> brands;
-//
-//    private List<ItemChannelVTO> channels;
-//
-//    private List<ItemRedirectVTO> redirects;
-//
-//    private List<ItemHttp404VTO> http404s;
-
     private Http404VTO http404;
 
     private RedirectVTO redirect;
@@ -49,21 +37,6 @@ public class ModuleDefinedItemVTO implements Serializable {
         this.def = def;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 
     public BrandVTO getBrand() {
         return brand;

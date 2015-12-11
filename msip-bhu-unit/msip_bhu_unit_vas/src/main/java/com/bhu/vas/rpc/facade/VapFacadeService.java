@@ -117,15 +117,15 @@ public class VapFacadeService {
 
         List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
 
+        Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateDStyleKey(style));
+        Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateMStyleKey(style));
+
         for (VapModeDefined.VapModeType modeType : modeTypes) {
             vto = new ModuleDefinedDetailVTO();
 
             vto.setDesc(modeType.getDesc());
             vto.setType(modeType.getType());
 
-
-            Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateDStyleKey(style));
-            Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateMStyleKey(style));
 
             long dcount = 0;
             long mcount = 0;
@@ -162,11 +162,6 @@ public class VapFacadeService {
 
         vto.setStyle(style);
         vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
-        VapModeDefined.VapModeType vapModeType = VapModeDefined.VapModeType.getDescByStyle(style);
-        if (vapModeType != null) {
-            vto.setDesc(vapModeType.getDesc());
-            vto.setType(vapModeType.getType());
-        }
 
         BrandVTO brand = new BrandVTO();
         brand.setType(VapModeDefined.VapModeType.Brand.getType());

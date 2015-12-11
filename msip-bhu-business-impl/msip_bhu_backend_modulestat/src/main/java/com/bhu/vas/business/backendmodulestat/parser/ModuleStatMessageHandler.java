@@ -243,7 +243,37 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 
 
-			System.out.println(WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201511"));
+			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151211");
+			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
+
+
+			ModuleDefinedDetailVTO vto = null;
+			List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
+
+			for (VapModeDefined.VapModeType modeType : modeTypes) {
+				vto = new ModuleDefinedDetailVTO();
+
+				vto.setDesc(modeType.getDesc());
+				vto.setType(modeType.getType());
+
+				String type = String.valueOf(modeType.getType());
+
+				long dcount = 0;
+				long mcount = 0;
+				for (String key: dayRets.keySet()) {
+
+					int index = key.indexOf(".");
+					int lastindex = key.lastIndexOf(".");
+					if (key.substring(index+1, lastindex).equals(type)) {
+						dcount = dayRets.get(key) + dcount;
+						mcount = monthRets.get(key) + mcount;
+					}
+				}
+
+				vto.setDcount(dcount);
+				vto.setMcount(mcount);
+
+			}
 
 
 
@@ -253,7 +283,7 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 			int lastindex = field.lastIndexOf(".");
 
 			System.out.println(field.substring(index+1, lastindex));
-			vtos("style000");
+//			vtos("style000");
 
 
 		}
