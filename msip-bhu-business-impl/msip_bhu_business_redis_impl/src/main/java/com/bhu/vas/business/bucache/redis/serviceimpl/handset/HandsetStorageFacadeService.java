@@ -103,8 +103,12 @@ public class HandsetStorageFacadeService{
     	return DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
     }
 	
-    public static List<HandsetLogDTO> wifiDeviceHandsetLogs(String dmac, String hmac, int start,int size){
-    	return DeviceHandsetLogService.getInstance().fetchHandsetLogs(dmac, hmac, start, size);
+    public static List<HandsetLogDTO> wifiDeviceHandsetRecentLogs(String dmac, String hmac,int size){
+    	return DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
+    }
+    
+    public static long wifiDeviceHandsetTrbFetched(String dmac, String hmac){
+    	return DeviceHandsetExtFieldService.getInstance().trb(dmac, hmac);//.fetchRecentHandsetLogs(dmac, hmac, size);
     }
     
 	public static void main(String[] argc){

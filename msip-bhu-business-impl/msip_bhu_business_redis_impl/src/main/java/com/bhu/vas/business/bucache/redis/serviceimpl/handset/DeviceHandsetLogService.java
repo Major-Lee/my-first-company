@@ -146,8 +146,16 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		return ret;
 	}
 	
-	public List<HandsetLogDTO> fetchHandsetLogs(String dmac,String hmac,int start,int size){
-		List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
+	/**
+	 * 取最近的log数据列表
+	 * @param dmac
+	 * @param hmac
+	 * @param size
+	 * @return
+	 */
+	public List<HandsetLogDTO> fetchRecentHandsetLogs(String dmac,String hmac,int size){
+		//List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
+		List<String> result = this.lrange(generateKey(dmac,hmac), -size, 1);
 		if(result == null || result.isEmpty()) return Collections.emptyList();
 		/*int result_len = result.size();
 		if(result_len >){
@@ -250,11 +258,11 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		}*/
 		
 		String key = generateKey(dmac,hmac);
-		for(int i=1;i<=50;i++){
+		for(int i=1;i<=10;i++){
 			this.rpush(key, JsonHelper.getJSONString(HandsetLogDTO.buildOnline(i)));
 		}
 		
-		List<String> lrange = this.lrange(key, -1, -10);
+		List<String> lrange = this.lrange(key, -20, -1);
 		for(String l:lrange){
 			System.out.println("element:"+l);
 		}
