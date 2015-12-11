@@ -251,12 +251,13 @@ public class AsyncMsgHandleService {
 			}
 			
 			try{
-				boolean newWifi = dto.isNewWifi();
+/*				boolean newWifi = dto.isNewWifi();
 				if(needClaim || newWifi){
 					wifiDeviceIndexIncrementService.onlineCrdIncrement(wifiDevice);
 				}else{
 					wifiDeviceIndexIncrementService.onlineUpdIncrement(wifiDevice);
-				}
+				}*/
+				wifiDeviceIndexIncrementService.onlineCrdIncrement(wifiDevice);
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 			}

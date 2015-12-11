@@ -150,52 +150,41 @@ public class WifiDeviceDocumentHelper {
 	}
 	
 	/**
-	 * 创建在导入记录里的设备数据
+	 * 创建在导入的确认的设备数据
 	 * @param agentDeviceClaim
-	 * @param wifiDeviceGray
-	 * @param agentUser
 	 * @return
 	 */
-	public static WifiDeviceDocument fromClaimWifiDevice(AgentDeviceClaim agentDeviceClaim, 
-			WifiDeviceGray wifiDeviceGray, User agentUser){
+	public static WifiDeviceDocument fromClaimWifiDevice(AgentDeviceClaim agentDeviceClaim){
 		if(agentDeviceClaim == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
 		if(agentDeviceClaim != null){
 			doc.setId(agentDeviceClaim.getMac());
 			doc.setD_sn(agentDeviceClaim.getId());
-			doc.setD_type(agentDeviceClaim.getHdtype());
+			//doc.setD_type(agentDeviceClaim.getHdtype());
 			doc.setD_online(String.valueOf(WifiDeviceDocument.D_Online_Never));
 			doc.setD_monline(String.valueOf(WifiDeviceDocument.D_MOnline_Never));
+			
+			String[] parserHdtypes = VapEnumType.DeviceUnitType.parserIndex(agentDeviceClaim.getHdtype());
+			if(parserHdtypes != null && parserHdtypes.length == 2){
+				String dut = parserHdtypes[0];
+				String hdtype = parserHdtypes[1];
+				if(!StringUtils.isEmpty(hdtype)){
+					doc.setD_type(hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, hdtype);
+					if(deviceUnitType != null){
+						doc.setD_type_sname(deviceUnitType.getSname());
+					}
+				}
+			}
+			
 			if(agentDeviceClaim.getSold_at() != null){
 				doc.setD_createdat(agentDeviceClaim.getSold_at().getTime());
 			}
-			if(StringUtils.isNotEmpty(agentDeviceClaim.getHdtype())){
-				doc.setD_dut(DeviceUnitType.fromIndex(agentDeviceClaim.getHdtype()).getParent());
-			}
-			/*if(DeviceUnitType.isSocHdType(agentDeviceClaim.getHdtype())){
-				doc.setD_dut(DeviceVersion.DUT_soc);
-			}else if(DeviceUnitType.isURouterHdType(agentDeviceClaim.getHdtype())){
-				doc.setD_dut(DeviceVersion.DUT_uRouter);
-			}else{
-				doc.setD_dut(DeviceVersion.DUT_CWifi);
-			}*/
 			
 			if(agentDeviceClaim.getImport_id() > 0){
 				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));
 			}
-		}
-		
-		if(wifiDeviceGray != null){
-			doc.setO_graylevel(String.valueOf(wifiDeviceGray.getGl()));
-		}else{
-			doc.setO_graylevel(String.valueOf(GrayLevel.Other.getIndex()));
-		}
-		
-		if(agentUser != null){
-			doc.setA_id(String.valueOf(agentUser.getId()));
-			doc.setA_nick(agentUser.getNick());
-			doc.setA_org(agentUser.getOrg());
 		}
 		doc.setD_hoc(0);
 		doc.setUpdatedat(DateTimeHelper.getDateTime());

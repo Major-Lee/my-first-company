@@ -133,6 +133,27 @@ public class WifiDeviceIndexIncrementService {
 	}
 	
 	/**
+	 * 创建在导入的确认的设备数据multi
+	 * @param importId 导入批次
+	 * @param agentDeviceClaims
+	 */
+	public void batchConfirmMultiCrdIncrement(String importId, List<AgentDeviceClaim> agentDeviceClaims){
+		if(StringUtils.isEmpty(importId)) return;
+		if(agentDeviceClaims == null || agentDeviceClaims.isEmpty()) return;
+		
+		logger.info(String.format("BatchConfirmMultiCrdIncrement Request importid [%s] size [%s]", importId, agentDeviceClaims.size()));
+		
+		List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
+		for(AgentDeviceClaim agentDeviceClaim : agentDeviceClaims){
+			if(agentDeviceClaim == null || StringUtils.isEmpty(agentDeviceClaim.getMac())) continue;
+			
+			docs.add(WifiDeviceDocumentHelper.fromClaimWifiDevice(agentDeviceClaim));
+		}
+		
+		wifiDeviceDataSearchService.bulkIndex(docs, true, true);
+	}
+	
+	/**
 	 * 设备上线发生变更
 	 * 变更涉及的更改索引字段是
 	 * 1) d_online

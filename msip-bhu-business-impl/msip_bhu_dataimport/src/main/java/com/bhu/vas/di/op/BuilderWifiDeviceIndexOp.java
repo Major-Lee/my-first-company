@@ -92,6 +92,8 @@ public class BuilderWifiDeviceIndexOp {
 	//			mc.createCriteria().andColumnEqualTo("import_status", 1);
 	//			mc.createCriteria().andColumnEqualTo("status", 0);
 	//		}
+			mc.createCriteria().andColumnEqualTo("import_status", 1);
+			mc.createCriteria().andColumnEqualTo("status", 0);
 	    	mc.setPageNumber(1);
 	    	mc.setPageSize(500);
 			EntityIterator<String, AgentDeviceClaim> it = new KeyBasedEntityBatchIterator<String,AgentDeviceClaim>(String.class
@@ -102,12 +104,12 @@ public class BuilderWifiDeviceIndexOp {
 				List<AgentDeviceClaim> entitys = it.next();
 				for(AgentDeviceClaim agentDeviceClaim : entitys){
 					System.out.println(agentDeviceClaim.getMac());
-					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(agentDeviceClaim.getMac());
-					User agentUser = null;
-					if(agentDeviceClaim.getUid() > 0){
-						agentUser = userService.getById(agentDeviceClaim.getUid());
-					}
-					doc = WifiDeviceDocumentHelper.fromClaimWifiDevice(agentDeviceClaim, wifiDeviceGray, agentUser);
+//					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(agentDeviceClaim.getMac());
+//					User agentUser = null;
+//					if(agentDeviceClaim.getUid() > 0){
+//						agentUser = userService.getById(agentDeviceClaim.getUid());
+//					}
+					doc = WifiDeviceDocumentHelper.fromClaimWifiDevice(agentDeviceClaim);
 					if(doc != null){
 						docs.add(doc);
 						index_count++;
