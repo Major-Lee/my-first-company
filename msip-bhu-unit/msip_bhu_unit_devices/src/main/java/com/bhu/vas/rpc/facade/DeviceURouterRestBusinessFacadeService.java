@@ -14,8 +14,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -41,7 +39,6 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -112,14 +109,14 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class DeviceURouterRestBusinessFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
+/*	private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
 
 	private static final long IGNORE_LOGIN_TIME_SPACE = 15 * 60 * 1000L;
 
 	private static final int DAY_TIME_MILLION_SECOND = 24 * 3600 * 1000;
 
 	private static final String HANDSET_LOGIN_TYPE = "login";
-	private static final String HANDSET_LOGOUT_TYPE = "logout";
+	private static final String HANDSET_LOGOUT_TYPE = "logout";*/
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -471,7 +468,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param logs
 	 * @return
 	 */
-	private List<URouterHdTimeLineVTO> getLogs(List<URouterHdTimeLineVTO> vtos, List<WifiHandsetDeviceItemLogMDTO> logs) {
+/*	private List<URouterHdTimeLineVTO> getLogs(List<URouterHdTimeLineVTO> vtos, List<WifiHandsetDeviceItemLogMDTO> logs) {
 		long currentTime = System.currentTimeMillis();
 		long currentZeroTime = getDateZeroTime(new Date()).getTime();
 
@@ -589,7 +586,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 		return offset;
 	}
-
+*/
 	/**
 	 *
 	 * 解析终端登入登出日志，每条日志只有时间戳和类型(login/logout)
@@ -607,7 +604,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param offset 记录是七天的第几天
 	 * @param first last_type == null 时候
 	 */
-	private boolean filterDay(long ts, long last_ts, String type, String last_type, long rx_bytes, List<URouterHdTimeLineVTO> vtos,
+/*	private boolean filterDay(long ts, long last_ts, String type, String last_type, long rx_bytes, List<URouterHdTimeLineVTO> vtos,
 						   int offset, boolean first, boolean flag) {
 
 		//如果当前在线，当前时间与上一次登录时间相隔数天
@@ -781,10 +778,10 @@ public class DeviceURouterRestBusinessFacadeService {
 			e.printStackTrace();
 		}
 		return flag;
-	}
+	}*/
 
 
-	private Date getDateZeroTime(Date date) {
+	/*private Date getDateZeroTime(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
@@ -796,7 +793,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		cal.setTimeInMillis(cal.getTimeInMillis()-millisecond);
 
 		return cal.getTime();
-	}
+	}*/
 
 	
 	/**
