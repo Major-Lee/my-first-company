@@ -144,6 +144,8 @@ public class VapFacadeService {
             vto.setDcount(dcount);
             vto.setMcount(mcount);
 
+            items.add(vto);
+
         }
 
         return items;

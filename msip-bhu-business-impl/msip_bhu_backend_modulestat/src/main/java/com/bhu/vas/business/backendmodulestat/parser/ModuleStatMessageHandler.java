@@ -247,6 +247,8 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
 
 
+
+			List<ModuleDefinedDetailVTO> items = new ArrayList<ModuleDefinedDetailVTO>();
 			ModuleDefinedDetailVTO vto = null;
 			List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
 
@@ -272,8 +274,11 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 				vto.setDcount(dcount);
 				vto.setMcount(mcount);
+				items.add(vto);
 
 			}
+
+
 
 
 
@@ -282,7 +287,7 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 			int index = field.indexOf(".");
 			int lastindex = field.lastIndexOf(".");
 
-			System.out.println(field.substring(index+1, lastindex));
+			System.out.println(field.substring(index + 1, lastindex));
 //			vtos("style000");
 
 
