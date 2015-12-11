@@ -766,7 +766,9 @@ public class AgentFacadeService {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
             agentDeviceImportLogService.update(agentDeviceImportLog);
 //            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
-            agentBackendFacadeService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
+//            agentBackendFacadeService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
+
+            deliverMessageService.sendAgentDeviceClaimUpdateMessage(agentDeviceImportLog.getAid(), logId);
         }
         return true;
     }

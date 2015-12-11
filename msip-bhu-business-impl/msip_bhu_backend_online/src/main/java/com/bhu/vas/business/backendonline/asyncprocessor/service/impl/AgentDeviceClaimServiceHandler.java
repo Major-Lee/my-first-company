@@ -133,7 +133,6 @@ public class AgentDeviceClaimServiceHandler {
             }
         }
 
-
         long logId = dto.getLogId();
 
         AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);

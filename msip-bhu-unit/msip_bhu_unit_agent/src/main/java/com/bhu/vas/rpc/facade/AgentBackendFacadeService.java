@@ -76,9 +76,9 @@ public class AgentBackendFacadeService {
                         case AgentDeviceClaimImport:
                             importAgentDeviceClaim(message);
                             break;
-                        case AgentDeviceClaimUpdate:
-                            updateAgentDeviceClaim(message);
-                            break;
+//                      case AgentDeviceClaimUpdate:
+//                            updateAgentDeviceClaim(message);
+//                            break;
                         default:
                             break;
                     }
@@ -111,50 +111,47 @@ public class AgentBackendFacadeService {
     }
 
 
-    public void updateAgentDeviceClaim(String message) {
-
-        logger.info(String.format("AgentBackendProcessor updateAgentDeviceClaim message[%s]", message));
-        AgentDeviceClaimUpdateDTO dto = JsonHelper.getDTO(message, AgentDeviceClaimUpdateDTO.class);
-
-
-        deliverMessageService.sendAgentDeviceClaimUpdateMessage(dto.getUid(), dto.getLogId());
-
-//        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
+//    public void updateAgentDeviceClaim(String message) {
 //
-//        if (agentDeviceClaims != null) {
-//            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
-//                if (agentDeviceClaim.getStatus() != 1) {
-//                    agentDeviceClaim.setImport_status(1);
-//                    List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
-//                    if (ids != null && ids.size()>0) {
-//                        String id = ids.get(0);
-//                        WifiDevice wifiDevice = wifiDeviceService.getById(id);
-//                        if (wifiDevice != null) {
-//                            wifiDevice.setAgentuser(dto.getUid());
-//                            agentDeviceClaim.setMac(wifiDevice.getId());
-//                            agentDeviceClaim.setStatus(1);
-//                            agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
-//                            agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
-//                            wifiDeviceService.update(wifiDevice);
-//                        }
-//                        //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
-//                    }
-//                }
-//            }
-//            agentDeviceClaimService.updateAll(agentDeviceClaims);
-//        }
-
-//        long logId = dto.getLogId();
+//        logger.info(String.format("AgentBackendProcessor updateAgentDeviceClaim message[%s]", message));
+//        AgentDeviceClaimUpdateDTO dto = JsonHelper.getDTO(message, AgentDeviceClaimUpdateDTO.class);
 //
-//        AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);
+////        List<AgentDeviceClaim> agentDeviceClaims =  agentDeviceClaimService.findModelByCommonCriteria(mc);
+////
+////        if (agentDeviceClaims != null) {
+////            for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
+////                if (agentDeviceClaim.getStatus() != 1) {
+////                    agentDeviceClaim.setImport_status(1);
+////                    List<String> ids = wifiDeviceService.findIds("sn",agentDeviceClaim.getId());
+////                    if (ids != null && ids.size()>0) {
+////                        String id = ids.get(0);
+////                        WifiDevice wifiDevice = wifiDeviceService.getById(id);
+////                        if (wifiDevice != null) {
+////                            wifiDevice.setAgentuser(dto.getUid());
+////                            agentDeviceClaim.setMac(wifiDevice.getId());
+////                            agentDeviceClaim.setStatus(1);
+////                            agentDeviceClaim.setStock_name(wifiDevice.getHdtype());
+////                            agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
+////                            wifiDeviceService.update(wifiDevice);
+////                        }
+////                        //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
+////                    }
+////                }
+////            }
+////            agentDeviceClaimService.updateAll(agentDeviceClaims);
+////        }
 //
-//        //发布公告给代理商
-//        AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
-//              agentDeviceImportLog.getContent());
-//        agentDeviceImportLog.setBid(agentBulltinBoard.getId());
-//        agentDeviceImportLogService.update(agentDeviceImportLog);
-
-    }
+////        long logId = dto.getLogId();
+////
+////        AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);
+////
+////        //发布公告给代理商
+////        AgentBulltinBoard agentBulltinBoard = agentBulltinBoardService.bulltinPublish(dto.getUid(), agentDeviceImportLog.getAid(), AgentBulltinType.BatchImport,
+////              agentDeviceImportLog.getContent());
+////        agentDeviceImportLog.setBid(agentBulltinBoard.getId());
+////        agentDeviceImportLogService.update(agentDeviceImportLog);
+//
+//    }
 
     private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
 
@@ -332,11 +329,11 @@ public class AgentBackendFacadeService {
         onMessage(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
     }
 
-    public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId) {
-        AgentDeviceClaimUpdateDTO dto = new AgentDeviceClaimUpdateDTO();
-        dto.setUid(uid);
-        dto.setLogId(logId);
-        dto.setTs(System.currentTimeMillis());
-        onMessage(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-    }
+//    public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId) {
+//        AgentDeviceClaimUpdateDTO dto = new AgentDeviceClaimUpdateDTO();
+//        dto.setUid(uid);
+//        dto.setLogId(logId);
+//        dto.setTs(System.currentTimeMillis());
+//        onMessage(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+//    }
 }
