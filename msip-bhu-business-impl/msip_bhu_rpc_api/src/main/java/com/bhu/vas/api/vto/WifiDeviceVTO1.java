@@ -2,6 +2,10 @@ package com.bhu.vas.api.vto;
 
 import java.io.Serializable;
 
+import org.springframework.util.StringUtils;
+
+import com.smartwork.msip.cores.helper.StringHelper;
+
 @SuppressWarnings("serial")
 public class WifiDeviceVTO1 implements Serializable{
 	private int index;
@@ -210,5 +214,10 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setA_org(String a_org) {
 		this.a_org = a_org;
+	}
+	public String getD_duts() {
+		if(StringUtils.isEmpty(d_dut)) return StringHelper.MINUS_STRING_GAP;
+		if(StringUtils.isEmpty(d_type)) return StringHelper.MINUS_STRING_GAP;
+		return d_dut.concat(StringHelper.MINUS_STRING_GAP).concat(d_type);
 	}
 }
