@@ -225,6 +225,16 @@ public class VapEnumType {
 			return dType;
 		}
 		
+		/**
+		 * 拆分index数据为数组 TU H106
+		 * @param index TU_H106
+		 * @return
+		 */
+		public static String[] parserIndex(String index){
+			if(StringUtils.isEmpty(index)) return null;
+			return index.split(StringHelper.UNDERLINE_STRING_GAP);
+		}
+		
 		/*public static DeviceUnitType fromHdType(String hdtype){
 			return allDeviceHdTypes.get(hdtype);
 		}*/
@@ -320,7 +330,12 @@ public class VapEnumType {
 	
 	
 	public static void main(String[] argv){
-		DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
-		System.out.print(unitType.name);
+		//DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
+		//System.out.print(unitType.name);
+		
+		String[] parserIndex = VapEnumType.DeviceUnitType.parserIndex("TU_H106");
+		for(String p:parserIndex){
+			System.out.println(p);
+		}
 	}
 }
