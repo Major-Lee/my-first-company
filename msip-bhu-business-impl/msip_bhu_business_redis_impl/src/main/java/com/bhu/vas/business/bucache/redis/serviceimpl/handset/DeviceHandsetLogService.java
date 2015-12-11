@@ -26,18 +26,18 @@ import com.smartwork.msip.cores.helper.StringHelper;
  * @author Edmond Lee
  *
  */
-public class HandsetLogService extends AbstractRelationListCache{
+public class DeviceHandsetLogService extends AbstractRelationListCache{
 	private static class ServiceHolder{ 
-		private static HandsetLogService instance =new HandsetLogService(); 
+		private static DeviceHandsetLogService instance =new DeviceHandsetLogService(); 
 	}
 	/**
 	 * 获取工厂单例
 	 * @return
 	 */
-	public static HandsetLogService getInstance() { 
+	public static DeviceHandsetLogService getInstance() { 
 		return ServiceHolder.instance; 
 	}
-	private HandsetLogService(){
+	private DeviceHandsetLogService(){
 	}
 	
 	private String generateKey(String dmac,String hmac){
@@ -48,8 +48,8 @@ public class HandsetLogService extends AbstractRelationListCache{
 	}
 	
 	private static long Merge_When_In_GAP = 15*60*1000;
-	public static final int Element_NewHandset = 1;
-	public static final int Element_ExistHandset = 2;
+	/*public static final int Element_NewHandset = 1;
+	public static final int Element_ExistHandset = 2;*/
 	/**
 	 * 日志数据记录
 	 * 规则：
@@ -70,15 +70,15 @@ public class HandsetLogService extends AbstractRelationListCache{
 	 * @param ts   时间
 	 */
 	public int hansetLogComming(boolean action,String dmac,String hmac,long trb,long ts){
-		int ret = Element_ExistHandset;
+		int ret = HandsetLogDTO.Element_ExistHandset;
 		String key = generateKey(dmac,hmac);
 		if(action){//online
 			HandsetLogDTO[] previous = previousHandsetLog(key,1);
 			HandsetLogDTO current = null;
 			if(previous[0] != null){
-				ret = Element_ExistHandset;
+				ret = HandsetLogDTO.Element_ExistHandset;
 			}else{
-				ret = Element_NewHandset;
+				ret = HandsetLogDTO.Element_NewHandset;
 			}
 			if(previous[0] != null && !previous[0].wasComplete()){//前一条数据不为空并且为数据是不完整的
 				previous[0].setF(ts);
@@ -95,7 +95,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 			if(previousTheLastOne == null){
 				HandsetLogDTO current = HandsetLogDTO.buildFull(ts-Merge_When_In_GAP, ts, trb);
 				this.rpush(key, JsonHelper.getJSONString(current));
-				ret = Element_NewHandset;
+				ret = HandsetLogDTO.Element_NewHandset;
 			}else{
 				/*if(previousTheLastOne.wasComplete()){
 					previousTheLastOne.setF(ts);
@@ -298,8 +298,8 @@ public class HandsetLogService extends AbstractRelationListCache{
 	public static void main(String[] argv){
 		String dmac = "aaaaa";
 		String hmac = "bbbbb";
-		HandsetLogService.getInstance().testbuinsess(dmac, hmac);
-		HandsetLogService.getInstance().testClear(dmac, hmac);
+		DeviceHandsetLogService.getInstance().testbuinsess(dmac, hmac);
+		DeviceHandsetLogService.getInstance().testClear(dmac, hmac);
 	}
 	
 	/*public void userTickerMusicLove_lpush_pipeline_samevalue(Set<String> uids,String value){
@@ -398,7 +398,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 
 	@Override
 	public String getName() {
-		return HandsetLogService.class.getName();
+		return DeviceHandsetLogService.class.getName();
 	}
 
 	@Override

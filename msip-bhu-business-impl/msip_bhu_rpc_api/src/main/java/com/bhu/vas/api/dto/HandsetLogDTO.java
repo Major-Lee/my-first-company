@@ -10,7 +10,8 @@ import com.smartwork.msip.cores.helper.StringHelper;
  */
 @SuppressWarnings("serial")
 public class HandsetLogDTO implements Serializable{
-
+	public static final int Element_NewHandset = 1;
+	public static final int Element_ExistHandset = 2;
 	// online ts
 	private long o;
 	//offline ts

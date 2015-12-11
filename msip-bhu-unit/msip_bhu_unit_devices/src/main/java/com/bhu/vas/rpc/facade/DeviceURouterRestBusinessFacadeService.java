@@ -90,7 +90,6 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -141,8 +140,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	@Resource
 	private DeliverMessageService deliverMessageService;
 
-	@Resource
-	private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+	//@Resource
+	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 	
 	/**
@@ -295,6 +294,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	/**
 	 * 获取终端详情
+	 * //修改为redis实现终端上下线日志 2015-12-11
 	 * @param uid
 	 * @param wifiId
 	 * @param mac
@@ -349,6 +349,55 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
 	}
+	/*public RpcResponseDTO<URouterHdDetailVTO>  urouterHdDetail(Integer uid, String wifiId, String mac) {
+
+		URouterHdDetailVTO vto = new URouterHdDetailVTO();
+		vto.setHd_mac(mac);
+		vto.setMac(wifiId);
+		try {
+			WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+					wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
+
+			if (wifiHandsetDeviceRelationMDTO != null) {
+				HandsetDeviceDTO handsetDeviceDTO = HandsetStorageFacadeService.handset(mac);
+				long total_rx_bytes = wifiHandsetDeviceRelationMDTO.getTotal_rx_bytes();
+
+				if (handsetDeviceDTO != null) {
+					if (handsetDeviceDTO.wasOnline()) { //离线的时候会加进去
+						if (handsetDeviceDTO.getTx_bytes() != null ) {
+							total_rx_bytes = total_rx_bytes + Long.parseLong(handsetDeviceDTO.getTx_bytes());
+						}
+					}
+				}
+
+				vto.setTotal_rx_bytes(String.valueOf(total_rx_bytes));
+
+				List<String> weeks = DateTimeExtHelper.getSevenDateOfWeek();
+
+				List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
+
+
+				//集合中只有七天的在线记录
+				for (String key : weeks) {
+					URouterHdTimeLineVTO uRouterHdTimeLineVTO = new URouterHdTimeLineVTO();
+					uRouterHdTimeLineVTO.setDate(key);
+					List<WifiHandsetDeviceItemDetailMDTO> mdtos = new ArrayList<WifiHandsetDeviceItemDetailMDTO>();
+					uRouterHdTimeLineVTO.setDetail(mdtos);
+					uRouterHdTimeLineVTOList.add(uRouterHdTimeLineVTO);
+				}
+
+				List<WifiHandsetDeviceItemLogMDTO> logs = wifiHandsetDeviceRelationMDTO.getLogs();
+
+				getLogs(uRouterHdTimeLineVTOList, logs);
+
+				vto.setTimeline(uRouterHdTimeLineVTOList);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+
+		} catch (BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}*/
 
 
 	public RpcResponseDTO<Long>  urouterHdModifyAlias(Integer uid, String wifiId, String mac, String alias) {
