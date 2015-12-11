@@ -306,6 +306,8 @@ public class DeviceURouterRestBusinessFacadeService {
 		vto.setHd_mac(mac);
 		vto.setMac(wifiId);
 		try {
+			HandsetStorageFacadeService.wifiDeviceHandsetLogs(wifiId, mac, start, size);
+			
 			WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
 					wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
 
