@@ -67,7 +67,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -129,7 +129,7 @@ public class AsyncMsgHandleService {
 
 	
 	@Resource
-	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
 	
 //	@Resource
 //	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
@@ -257,7 +257,7 @@ public class AsyncMsgHandleService {
 				}else{
 					wifiDeviceIndexIncrementService.onlineUpdIncrement(wifiDevice);
 				}*/
-				wifiDeviceIndexIncrementService.onlineCrdIncrement(wifiDevice);
+				wifiDeviceIndexIncrementProcesser.onlineCrdIncrement(wifiDevice);
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 			}
@@ -282,7 +282,7 @@ public class AsyncMsgHandleService {
 				}
 			}
 			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
-			wifiDeviceIndexIncrementService.moduleOnlineUpdIncrement(wifiDevice.getId(), dto.getOrig_vap_module());
+			wifiDeviceIndexIncrementProcesser.moduleOnlineUpdIncrement(wifiDevice.getId(), dto.getOrig_vap_module());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s] successful", message));
 	}
@@ -406,7 +406,7 @@ public class AsyncMsgHandleService {
 		}
 		//5:增量索引
 		//wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);
-		wifiDeviceIndexIncrementService.onlineMultiUpdIncrement(entitys);
+		wifiDeviceIndexIncrementProcesser.onlineMultiUpdIncrement(entitys);
 		//设备统计
 		deviceFacadeService.deviceStatisticsOnlines(ds, DeviceStatistics.Statis_Device_Type);
 	}
@@ -568,7 +568,7 @@ public class AsyncMsgHandleService {
 			
 			//6:增量索引
 			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
-			wifiDeviceIndexIncrementService.offlineUpdIncrement(wifiId, entity.getUptime(), entity.getLast_logout_at().getTime());
+			wifiDeviceIndexIncrementProcesser.offlineUpdIncrement(wifiId, entity.getUptime(), entity.getLast_logout_at().getTime());
 
 		}
 		
@@ -1007,7 +1007,7 @@ public class AsyncMsgHandleService {
 			wifiDeviceService.update(entity);
 			//3:增量索引
 			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
-			wifiDeviceIndexIncrementService.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()), 
+			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()), 
 					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
@@ -1313,14 +1313,14 @@ public class AsyncMsgHandleService {
 	public void wifiDevicesGrayChanged(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesGrayChanged message[%s]", message));
 		WifiDevicesGrayChangedDTO dto = JsonHelper.getDTO(message, WifiDevicesGrayChangedDTO.class);
-		this.wifiDeviceIndexIncrementService.graylevelMultiUpdIncrement(dto.getMacs(), String.valueOf(dto.getGl()));
+		this.wifiDeviceIndexIncrementProcesser.graylevelMultiUpdIncrement(dto.getMacs(), String.valueOf(dto.getGl()));
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesGrayChanged message[%s] successful", message));
 	}
 	
 	public void wifiDevicesModuleStyleChanged(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesModuleStyleChanged message[%s]", message));
 		WifiDevicesModuleStyleChangedDTO dto = JsonHelper.getDTO(message, WifiDevicesModuleStyleChangedDTO.class);
-		this.wifiDeviceIndexIncrementService.templateMultiUpdIncrement(dto.getMacs(), dto.getStyle());
+		this.wifiDeviceIndexIncrementProcesser.templateMultiUpdIncrement(dto.getMacs(), dto.getStyle());
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesModuleStyleChanged message[%s] successful", message));
 	}
 	

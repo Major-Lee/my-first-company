@@ -16,7 +16,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
@@ -44,8 +43,8 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 
-	@Resource
-	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+//	@Resource
+//	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 
 
 	@Override

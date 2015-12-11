@@ -38,7 +38,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
  *
  */
 @Service
-public class WifiDeviceIndexIncrementService {
+public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncrement{
 	private final Logger logger = LoggerFactory.getLogger(WifiDeviceIndexIncrementService.class);
 	
 	//@Resource
@@ -74,6 +74,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param lon 经度
 	 * @param d_address 详细地址
 	 */
+	@Override
 	public void locaitionUpdIncrement(String id, double lat, double lon, String d_address){
 		logger.info(String.format("LocaitionUpdIncrement Request id [%s] d_address [%s]", id, d_address));
 		if(StringUtils.isEmpty(id)) return;
@@ -94,6 +95,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param id 设备mac
 	 * @param origvapmodule 原始模块软件版本号
 	 */
+	@Override
 	public void moduleOnlineUpdIncrement(String id, String d_origvapmodule){
 		logger.info(String.format("ModuleOnlineUpdIncrement Request id [%s] d_origvapmodule [%s]", id, d_origvapmodule));
 		if(StringUtils.isEmpty(id)) return;
@@ -118,6 +120,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param d_uptime 设备运行总时长
 	 * @param d_lastlogoutat 设备的最后下线的时间
 	 */
+	@Override
 	public void offlineUpdIncrement(String id, String d_uptime, long d_lastlogoutat){
 		logger.info(String.format("OfflineUpdIncrement Request id [%s] d_uptime [%s] d_lastlogoutat [%s]", id, d_uptime, d_lastlogoutat));
 		if(StringUtils.isEmpty(id)) return;
@@ -137,6 +140,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param importId 导入批次
 	 * @param agentDeviceClaims
 	 */
+	@Override
 	public void batchConfirmMultiCrdIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims){
 
 		if(agentDeviceClaims == null || agentDeviceClaims.isEmpty()) return;
@@ -166,6 +170,7 @@ public class WifiDeviceIndexIncrementService {
 	 * 8) d_dut
 	 * @param entity
 	 */
+	@Override
 	public void onlineUpdIncrement(WifiDevice entity){
 		if(entity == null || StringUtils.isEmpty(entity.getId())) return;
 		
@@ -209,6 +214,7 @@ public class WifiDeviceIndexIncrementService {
 	 * 8) d_dut
 	 * @param entitys 设备实体集合
 	 */
+	@Override
 	public void onlineMultiUpdIncrement(List<WifiDevice> entitys){
 		if(entitys == null) return;
 		int size = entitys.size();
@@ -251,6 +257,7 @@ public class WifiDeviceIndexIncrementService {
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
+	@Override
 	public void onlineCrdIncrement(WifiDevice entity){
 		if(entity == null) return;
 		logger.info(String.format("OnlineCrdIncrement Request id [%s]", entity.getId()));
@@ -289,6 +296,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
+	@Override
 	public void bindUserUpdIncrement(String id, User bindUser){
 		logger.info(String.format("bindUserUpdIncrement Request id [%s] bindUser [%s]", id, bindUser));
 		if(StringUtils.isEmpty(id)) return;
@@ -321,6 +329,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param id
 	 * @param o_template 运营模板编号
 	 */
+	@Override
 	public void templateUpdIncrement(String id, String o_template){
 		logger.info(String.format("TemplateUpdIncrement Request id [%s] o_template [%s]", id, o_template));
 		if(StringUtils.isEmpty(id)) return;
@@ -339,6 +348,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param ids 设备mac的集合
 	 * @param o_template
 	 */
+	@Override
 	public void templateMultiUpdIncrement(List<String> ids, String o_template){
 		logger.info(String.format("TemplateMultiUpdIncrement Request ids [%s] o_template [%s]", ids, o_template));
 		if(ids == null || ids.isEmpty()) return;
@@ -357,6 +367,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param id
 	 * @param o_graylevel
 	 */
+	@Override
 	public void graylevelUpdIncrement(String id, String o_graylevel){
 		logger.info(String.format("GraylevelUpdIncrement Request id [%s] o_graylevel [%s]", id, o_graylevel));
 		if(StringUtils.isEmpty(id)) return;
@@ -375,6 +386,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param ids 设备mac的集合
 	 * @param o_graylevel
 	 */
+	@Override
 	public void graylevelMultiUpdIncrement(List<String> ids, String o_graylevel){
 		logger.info(String.format("GraylevelMultiUpdIncrement Request ids [%s] o_graylevel [%s]", ids, o_graylevel));
 		if(ids == null || ids.isEmpty()) return;
@@ -393,6 +405,7 @@ public class WifiDeviceIndexIncrementService {
 	 * @param ids 设备mac的集合
 	 * @param hocs 设备的终端数量的集合
 	 */
+	@Override
 	public void hocMultiUpdIncrement(List<String> ids, List<Integer> hocs){
 		logger.info(String.format("HocMultiUpdIncrement Request ids [%s] hocs [%s]", ids, hocs));
 		if(ids == null || ids.isEmpty()) return;
