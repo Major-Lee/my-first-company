@@ -91,7 +91,11 @@ public class HandsetStorageFacadeService{
      * @param logout_at
      */
     public static void wifiDeviceHandsetOffline(String dmac, String hmac, String tx_bytes, long logout_at) {
-    	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, Long.parseLong(tx_bytes), logout_at);
+    	long rb = Long.parseLong(tx_bytes);
+    	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
+    	if(rb >0){
+    		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, rb);
+    	}
     }
 
     
