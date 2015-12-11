@@ -1,5 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import redis.clients.jedis.JedisPool;
@@ -46,7 +48,8 @@ public class HandsetLogService extends AbstractRelationListCache{
 	}
 	
 	private static long Merge_When_In_GAP = 15*60*1000;
-	
+	public static final int Element_NewHandset = 1;
+	public static final int Element_ExistHandset = 2;
 	/**
 	 * 日志数据记录
 	 * 规则：
@@ -66,15 +69,23 @@ public class HandsetLogService extends AbstractRelationListCache{
 	 * @param rtb  总得流量
 	 * @param ts   时间
 	 */
-	public void hansetLogComming(boolean action,String dmac,String hmac,long trb,long ts){
+	public int hansetLogComming(boolean action,String dmac,String hmac,long trb,long ts){
+		int ret = Element_ExistHandset;
 		String key = generateKey(dmac,hmac);
 		if(action){//online
 			HandsetLogDTO[] previous = previousHandsetLog(key,1);
 			HandsetLogDTO current = null;
+			if(previous[0] != null){
+				ret = Element_ExistHandset;
+			}else{
+				ret = Element_NewHandset;
+			}
 			if(previous[0] != null && !previous[0].wasComplete()){//前一条数据不为空并且为数据是不完整的
 				previous[0].setF(ts);
 				this.lset(key, -1, JsonHelper.getJSONString(previous[0]));
-			}
+			}/*else{
+				ret = Element_NewHandset;
+			}*/
 			current = HandsetLogDTO.buildOnline(ts);
 			this.rpush(key, JsonHelper.getJSONString(current));
 		}else{//offline
@@ -84,6 +95,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 			if(previousTheLastOne == null){
 				HandsetLogDTO current = HandsetLogDTO.buildFull(ts-Merge_When_In_GAP, ts, trb);
 				this.rpush(key, JsonHelper.getJSONString(current));
+				ret = Element_NewHandset;
 			}else{
 				/*if(previousTheLastOne.wasComplete()){
 					previousTheLastOne.setF(ts);
@@ -109,7 +121,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 				boolean merged = false;
 				if(previousTheLastTwo != null && previousTheLastTwo.wasComplete()){
 					long gap = previousTheLastOne.getO() - previousTheLastTwo.getF();
-					if(gap < Merge_When_In_GAP){//需要合并
+					if(gap <= Merge_When_In_GAP){//需要合并
 						//更新倒数第二条数据(-2 代表倒数第二条数据下标)
 						previousTheLastTwo.merge(ts,trb);
 						this.lset(key, -2, JsonHelper.getJSONString(previousTheLastTwo));
@@ -129,10 +141,37 @@ public class HandsetLogService extends AbstractRelationListCache{
 					this.lset(key, -1, JsonHelper.getJSONString(previousTheLastOne));
 				}
 			}
-			
 		}
+		//System.out.println("----------:"+ret);
+		return ret;
 	}
 	
+	public List<HandsetLogDTO> fetchHandsetLogs(String dmac,String hmac,int start,int size){
+		List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
+		if(result == null || result.isEmpty()) return Collections.emptyList();
+		/*int result_len = result.size();
+		if(result_len >){
+			
+		}*/
+		List<HandsetLogDTO> ret = new ArrayList<>();
+		for(String json :result){
+			ret.add(JsonHelper.getDTO(json, HandsetLogDTO.class));
+		}
+		return ret;
+	}
+	
+	private static final int trim_when_logs_size_largerthen = 200;
+	
+	/**
+	 * 保留最后的100条数据（负数下标） 
+	 * @param dmac
+	 * @param hmac
+	 * @return
+	 */
+	public String handsetLogsTrim(String dmac,String hmac){
+		String key = generateKey(dmac,hmac);
+		return this.ltrim(key, -100, -1);
+	}
 	/**
 	 * 取列表中的最后几个元素
 	 * @param key
@@ -169,7 +208,13 @@ public class HandsetLogService extends AbstractRelationListCache{
 		hansetLogComming(true,dmac,hmac,0l,start);
 		start += Merge_When_In_GAP+1;
 		hansetLogComming(false,dmac,hmac,100l,start);
-		start += Merge_When_In_GAP-1;
+		start += Merge_When_In_GAP+1;
+		hansetLogComming(true,dmac,hmac,0l,start);
+		
+		start += Merge_When_In_GAP+100;
+		hansetLogComming(false,dmac,hmac,1000l,start);
+		
+		start += Merge_When_In_GAP+1;
 		hansetLogComming(true,dmac,hmac,0l,start);
 		
 		start += Merge_When_In_GAP+100;
@@ -205,7 +250,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 		}*/
 		
 		String key = generateKey(dmac,hmac);
-		for(int i=1;i<=10;i++){
+		for(int i=1;i<=50;i++){
 			this.rpush(key, JsonHelper.getJSONString(HandsetLogDTO.buildOnline(i)));
 		}
 		
@@ -214,7 +259,8 @@ public class HandsetLogService extends AbstractRelationListCache{
 			System.out.println("element:"+l);
 		}
 		System.out.println("----------1");
-		HandsetLogDTO[] previous = previousHandsetLog(key,2);
+		this.handsetLogsTrim(dmac, hmac);
+/*		HandsetLogDTO[] previous = previousHandsetLog(key,2);
 		for(HandsetLogDTO l:previous){
 			System.out.println("element:"+JsonHelper.getJSONString(l));
 		}
@@ -226,7 +272,7 @@ public class HandsetLogService extends AbstractRelationListCache{
 		
 		this.lset(key, -1, JsonHelper.getJSONString(previousTheLastOne));
 		this.lset(key, -2, JsonHelper.getJSONString(previousTheLastTwo));
-		this.lrem(key, -1, JsonHelper.getJSONString(previousTheLastOne));
+		this.lrem(key, -1, JsonHelper.getJSONString(previousTheLastOne));*/
 		
 		
 		
