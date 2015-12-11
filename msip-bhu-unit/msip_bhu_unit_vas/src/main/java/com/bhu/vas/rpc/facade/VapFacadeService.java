@@ -127,17 +127,22 @@ public class VapFacadeService {
             vto.setType(modeType.getType());
 
 
+            String type = String.valueOf(modeType.getType());
+
             long dcount = 0;
             long mcount = 0;
             for (String key: dayRets.keySet()) {
-                dcount = dayRets.get(key) + dcount;
-                mcount = monthRets.get(key) + mcount;
+
+                int index = key.indexOf(".");
+                int lastindex = key.lastIndexOf(".");
+                if (key.substring(index+1, lastindex).equals(type)) {
+                    dcount = dayRets.get(key) + dcount;
+                    mcount = monthRets.get(key) + mcount;
+                }
             }
 
             vto.setDcount(dcount);
             vto.setMcount(mcount);
-
-            items.add(vto);
 
         }
 
