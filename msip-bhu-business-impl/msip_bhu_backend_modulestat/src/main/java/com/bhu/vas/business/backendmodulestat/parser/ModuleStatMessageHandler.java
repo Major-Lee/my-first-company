@@ -351,8 +351,6 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 		}
 
-
-
 		vto.setHttp404(http404);
 		vto.setRedirect(redirect);
 		vto.setBrand(brand);

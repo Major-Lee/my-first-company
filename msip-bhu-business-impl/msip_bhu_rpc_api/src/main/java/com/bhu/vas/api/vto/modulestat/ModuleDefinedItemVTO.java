@@ -24,14 +24,13 @@ public class ModuleDefinedItemVTO implements Serializable {
 //
 //    private List<ItemHttp404VTO> http404s;
 
+    private Http404VTO http404;
+
+    private RedirectVTO redirect;
 
     private BrandVTO brand;
 
     private ChannelVTO channel;
-
-    private RedirectVTO redirect;
-
-    private Http404VTO http404;
 
 
     public String getStyle() {
