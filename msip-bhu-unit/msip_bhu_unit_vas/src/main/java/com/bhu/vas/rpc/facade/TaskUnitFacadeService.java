@@ -129,11 +129,13 @@ public class TaskUnitFacadeService {
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
 			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
-			return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
-			return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 	}
 	
@@ -165,11 +167,13 @@ public class TaskUnitFacadeService {
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
 			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
-			return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
-			return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 	}
 	
