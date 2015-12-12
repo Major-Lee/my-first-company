@@ -378,6 +378,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			long rtb = HandsetStorageFacadeService.wifiDeviceHandsetTrbFetched(wifiId, mac);
 			vto.setTotal_rx_bytes(String.valueOf(rtb));
 			List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs(wifiId, mac, 100);
+			{
+				
+			}
 			Map<String, List<WifiHandsetDeviceItemDetailMDTO>> sortedMap = buildHdDetailMap(recentLogs);
 			List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
 			Iterator<Entry<String, List<WifiHandsetDeviceItemDetailMDTO>>> iter = sortedMap.entrySet().iterator();

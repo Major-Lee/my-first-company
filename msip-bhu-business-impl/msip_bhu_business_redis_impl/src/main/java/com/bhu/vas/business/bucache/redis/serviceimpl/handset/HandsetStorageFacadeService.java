@@ -1,10 +1,12 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -119,7 +121,7 @@ public class HandsetStorageFacadeService{
 				System.out.println(t);
 			}
 		});*/
-		long countAll = HandsetStorageFacadeService.countAll();
+		/*long countAll = HandsetStorageFacadeService.countAll();
 		System.out.println(countAll);
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset("88:32:9b:32:41:10");
 		System.out.println(handset.getMac());
@@ -128,6 +130,16 @@ public class HandsetStorageFacadeService{
 		int[] statistics = HandsetStorageFacadeService.statistics();
 		
 		System.out.println(statistics[0]);
-		System.out.println(statistics[1]);
+		System.out.println(statistics[1]);*/
+		
+		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", 100);
+		for(HandsetLogDTO dto :recentLogs){
+			System.out.println(JsonHelper.getJSONString(dto));
+		}
+		
+		System.out.println(new Date(1449836882759l));
+		System.out.println(new Date(1449837003638l));
+		System.out.println(new Date(1449834460661l));
+		System.out.println(new Date(1449835127772l));
 	}
 }
