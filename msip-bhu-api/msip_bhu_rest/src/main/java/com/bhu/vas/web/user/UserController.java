@@ -174,7 +174,7 @@ public class UserController extends BaseController{
 				if(checkAcc.getErrorCode() == null)
 					SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				else
-					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc.getErrorCode()));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc));
 				return;
 			}
 		}catch(Exception ex){

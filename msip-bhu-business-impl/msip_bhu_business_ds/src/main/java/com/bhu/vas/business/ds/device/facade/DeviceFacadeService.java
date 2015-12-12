@@ -503,7 +503,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证设备是否存在
 		WifiDevice device_entity = wifiDeviceService.getById(mac);
 		if(device_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
 		}
 		/*//验证设备是否在线
 		if(!device_entity.isOnline()){

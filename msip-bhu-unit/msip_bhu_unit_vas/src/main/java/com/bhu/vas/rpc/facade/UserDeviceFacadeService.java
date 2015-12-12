@@ -118,10 +118,10 @@ public class UserDeviceFacadeService {
                         user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
                 return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
             } else {
-                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
+                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
             }
         } else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
         }
     }
 
@@ -146,14 +146,14 @@ public class UserDeviceFacadeService {
     	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
     	UserDevice userDevice = userDeviceService.getById(userDevicePK);
         if (userDevice == null) {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
         } else {
         	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
         	if(wifiDevice == null){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
         	}
         	if(!wifiDevice.isOnline()){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
         	}
         	//发送异步Device升级指令，指定立刻升级
         	{
@@ -184,10 +184,10 @@ public class UserDeviceFacadeService {
         } else {
         	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
         	if(wifiDevice == null){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
         	}
         	if(!wifiDevice.isOnline()){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
         	}
         	
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);

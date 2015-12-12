@@ -38,17 +38,21 @@ public class QueryController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
         }
-        RpcResponseDTO<UserDTO> user = userDeviceRpcService.fetchBindDeviceUser(mac);
-        if(user.getPayload() != null) {
+        RpcResponseDTO<UserDTO> rpcResult = userDeviceRpcService.fetchBindDeviceUser(mac);
+        if(!rpcResult.hasError()) {
             if(StringUtils.isEmpty(jsonpcallback))
-                SpringMVCHelper.renderJson(response, ResponseSuccess.embed(user.getPayload()));
+                SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
             else
-                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(user.getPayload()));
+                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            if(StringUtils.isEmpty(jsonpcallback))
+        	if(StringUtils.isEmpty(jsonpcallback))
+                SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            else
+                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult));
+            /*if(StringUtils.isEmpty(jsonpcallback))
                 SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_BINDED));
             else
-                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_BINDED));
+                SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.DEVICE_NOT_BINDED));*/
         }
     }
 }

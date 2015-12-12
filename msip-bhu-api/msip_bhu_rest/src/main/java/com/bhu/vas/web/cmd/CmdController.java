@@ -48,14 +48,13 @@ public class CmdController extends BaseController{
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) throws  Exception{
 
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.createNewTask(uid, mac.toLowerCase(), opt, subopt, extparams,/*payload,*/ channel, channel_taskid);
+		RpcResponseDTO<TaskResDTO> rpcResult = taskRpcService.createNewTask(uid, mac.toLowerCase(), opt, subopt, extparams,/*payload,*/ channel, channel_taskid);
 		
 		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
-		if(resp.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
-			return;
-		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 
 	/**
@@ -87,12 +86,11 @@ public class CmdController extends BaseController{
 			@RequestParam(required = false) String extparams,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) {
-		RpcResponseDTO<Boolean> resp = taskRpcService.createNewTask4Group(uid, gid, dependency, mac, opt, subopt, extparams, channel, channel_taskid);
-		if(!resp.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
-			return;
-		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		RpcResponseDTO<Boolean> rpcResult = taskRpcService.createNewTask4Group(uid, gid, dependency, mac, opt, subopt, extparams, channel, channel_taskid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 /*	@ResponseBody()
@@ -134,15 +132,13 @@ public class CmdController extends BaseController{
 			@RequestParam(required = false) String channel_taskid,
 			@RequestParam(required = false) Long taskid) {
 		
-		RpcResponseDTO<TaskResDTO> resp = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
+		RpcResponseDTO<TaskResDTO> rpcResult = taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
 		
 		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
-		if(resp.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
-			return;
-		}
-		
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 }

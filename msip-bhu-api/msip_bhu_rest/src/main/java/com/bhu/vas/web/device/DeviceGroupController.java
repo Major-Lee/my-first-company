@@ -79,11 +79,11 @@ public class DeviceGroupController extends BaseController{
 			) {
 		System.out.println("~~~~~~~~~~~~save");
 		System.out.println("~~~~~~~~~~~~save:"+deviceGroupRpcService);
-		RpcResponseDTO<DeviceGroupVTO> save = deviceGroupRpcService.save(uid, gid, pid, name);
-		if(save.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, save.getPayload());
+		RpcResponseDTO<DeviceGroupVTO> rpcResult = deviceGroupRpcService.save(uid, gid, pid, name);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(save.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 
@@ -105,11 +105,11 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) long gid,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-		RpcResponseDTO<DeviceGroupVTO> detail = deviceGroupRpcService.detail(uid, gid, pageNo, pageSize);
-		if(detail.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, detail.getPayload());
+		RpcResponseDTO<DeviceGroupVTO> rpcResult = deviceGroupRpcService.detail(uid, gid, pageNo, pageSize);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(detail.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 	/**
@@ -125,11 +125,11 @@ public class DeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String gids) {
-		RpcResponseDTO<Boolean> remove = deviceGroupRpcService.remove(uid, gids);
-		if(remove.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, remove.getPayload());
+		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.remove(uid, gids);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(remove.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 	/**
@@ -147,11 +147,11 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) Long gid,
 			@RequestParam(required = true) String wifi_ids) {
-		RpcResponseDTO<Boolean> grant = deviceGroupRpcService.grant(uid, gid, wifi_ids);
-		if(grant.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, grant.getPayload());
+		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.grant(uid, gid, wifi_ids);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(grant.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 	/**
@@ -169,11 +169,11 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) long gid,
 			@RequestParam(required = true) String wifi_ids) {
-		RpcResponseDTO<Boolean> ungrant = deviceGroupRpcService.ungrant(uid, gid, wifi_ids);
-		if(ungrant.getErrorCode() == null)
-			SpringMVCHelper.renderJson(response, ungrant.getPayload());
+		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.ungrant(uid, gid, wifi_ids);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ungrant.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 }

@@ -56,9 +56,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
             } else if (retStatus == WIFI_DEVICE_STATUS_BINDED) {
                 responseErrorCode = ResponseErrorCode.DEVICE_ALREADY_BEBINDED;
             }
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(responseErrorCode);
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(responseErrorCode,new String[]{mac});
         } else if (retStatus == WIFI_DEVICE_STATUS_BINDED){
-           return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
+           return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED,new String[]{mac});
         }
         
         String deviceName = deviceFacadeService.getUrouterSSID(mac);
@@ -73,9 +73,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         int deviceStatus = validateDeviceStatusIsOnlineAndBinded(mac);
         logger.debug("devicestatus==" + deviceStatus);
         if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
-        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_UROOTER);
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_UROOTER,new String[]{mac});
         }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
                 || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             return userDeviceFacadeService.unBindDevice(mac, uid);
@@ -125,23 +125,23 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_EXIST) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_DATA_NOT_EXIST.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_DATA_NOT_EXIST.i18n()));
+                    ResponseErrorCode.DEVICE_DATA_NOT_EXIST.i18n(),new String[]{mac}));
         } else if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.i18n()));
+                    ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.i18n(),new String[]{mac}));
         } else if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_UROOTER.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_NOT_UROOTER.i18n()));
+                    ResponseErrorCode.DEVICE_NOT_UROOTER.i18n(),new String[]{mac}));
         } else if (deviceStatus == WIFI_DEVICE_STATUS_BINDED) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_ALREADY_BEBINDED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_ALREADY_BEBINDED.i18n()));
+                    ResponseErrorCode.DEVICE_ALREADY_BEBINDED.i18n(),new String[]{mac}));
         } else if (deviceStatus == WIFI_DEVICE_STATUS_UNBINDED) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_BINDED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_NOT_BINDED.i18n()));
+                    ResponseErrorCode.DEVICE_NOT_BINDED.i18n(),new String[]{mac}));
         }
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceStatusDTO);
     }
