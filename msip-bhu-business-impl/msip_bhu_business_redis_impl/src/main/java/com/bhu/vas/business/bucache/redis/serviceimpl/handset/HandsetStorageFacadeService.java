@@ -1,10 +1,13 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -156,10 +159,18 @@ public class HandsetStorageFacadeService{
 		System.out.println(new Date(1449837003638l));
 		System.out.println(new Date(1449834460661l));
 		System.out.println(new Date(1449835127772l));*/
-		/*HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e");
+		HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e");
 		HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", DateTimeHelper.getDateDaysAgo(10).getTime());
 		HandsetStorageFacadeService.wifiDeviceHandsetOffline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e","403999333", DateTimeHelper.getDateDaysAgo(7).getTime());
 		
+		
+		
+		Date start = DateTimeHelper.getDateDaysAgo(3);
+		HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", start.getTime());
+		HandsetStorageFacadeService.wifiDeviceHandsetOffline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e","1235566", start.getTime()+3*60*60*1000);
+		
+		HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", start.getTime()+4*60*60*1000);
+		HandsetStorageFacadeService.wifiDeviceHandsetOffline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e","1231166", start.getTime()+5*60*60*1000);
 		
 		HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", System.currentTimeMillis());
 		HandsetStorageFacadeService.wifiDeviceHandsetOffline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e","7999333", DateTimeHelper.getDateDaysAfter(1).getTime());
@@ -173,6 +184,7 @@ public class HandsetStorageFacadeService{
 			System.out.println(JsonHelper.getJSONString(dto));
 		}
 		
+		/*
 		System.out.println(new Date(1449836882759l));
 		System.out.println(new Date(1449837003638l));
 		System.out.println(new Date(1449834460661l));
