@@ -147,7 +147,7 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	}
 	
 	/**
-	 * 取最近的log数据列表
+	 * 取最近的log数据列表 条数最多为size
 	 * @param dmac
 	 * @param hmac
 	 * @param size
@@ -164,6 +164,12 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		return ret;
 	}
 	
+	/**
+	 * 得到所有存在的日志列表数据
+	 * @param dmac
+	 * @param hmac
+	 * @return
+	 */
 	public List<HandsetLogDTO> fetchHandsetAllLogs(String dmac,String hmac){
 		//List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
 		List<String> result = this.lrange(generateKey(dmac,hmac), 0, -1);
