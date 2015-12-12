@@ -52,6 +52,11 @@ public class DeviceHandsetExtFieldService extends AbstractRelationHashCache {
 		}
 	}
 	
+	public long trbclear(String dmac,String hmac){
+		this.hset(generateKey(dmac,hmac), Field_TRB, "0");
+		return 0l;
+	}
+	
 	
 	
 /*	private static final String Field_Online = "O";
