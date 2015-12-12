@@ -355,7 +355,7 @@ public class TaskFacadeService {
 		wifiDevicePersistenceCMDStateService.filterPersistenceCMD(mac,opt_cmd,ods_cmd,extparams);
 		//验证设备是否在线
 		if(!wifiDevice.isOnline()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
 		}
 		
 		if(OperationCMD.DeviceModuleUpgrade == opt_cmd){//判定设备版本是否兼容
@@ -363,7 +363,7 @@ public class TaskFacadeService {
 			if(wifiDeviceModule == null  
 					|| !WifiDeviceHelper.isDeviceVapModuleSupported(wifiDeviceModule.getOrig_vap_module())
 					|| !WifiDeviceHelper.isDeviceVapModuleOnline(wifiDeviceModule.isOnline(),wifiDeviceModule.isModule_online())){
-				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE);
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_NOT_ONLINE,new String[]{mac});
 			}
 			
 		}

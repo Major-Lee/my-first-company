@@ -598,7 +598,7 @@ public class WifiDeviceGrayFacadeService {
     		}
     	}
 		if(onlineMacs.isEmpty()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{""});
 		}
     	
     	List<DownCmds> downCmds = new ArrayList<DownCmds>();
