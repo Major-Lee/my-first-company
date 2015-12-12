@@ -155,12 +155,23 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	 */
 	public List<HandsetLogDTO> fetchRecentHandsetLogs(String dmac,String hmac,int size){
 		//List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
-		List<String> result = this.lrange(generateKey(dmac,hmac), -size, 1);
+		List<String> result = this.lrange(generateKey(dmac,hmac), -size, -1);
 		if(result == null || result.isEmpty()) return Collections.emptyList();
 		/*int result_len = result.size();
 		if(result_len >){
 			
 		}*/
+		List<HandsetLogDTO> ret = new ArrayList<>();
+		for(String json :result){
+			ret.add(JsonHelper.getDTO(json, HandsetLogDTO.class));
+		}
+		return ret;
+	}
+	
+	public List<HandsetLogDTO> fetchHandsetAllLogs(String dmac,String hmac){
+		//List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
+		List<String> result = this.lrange(generateKey(dmac,hmac), 0, -1);
+		if(result == null || result.isEmpty()) return Collections.emptyList();
 		List<HandsetLogDTO> ret = new ArrayList<>();
 		for(String json :result){
 			ret.add(JsonHelper.getDTO(json, HandsetLogDTO.class));
@@ -179,6 +190,11 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	public String handsetLogsTrim(String dmac,String hmac){
 		String key = generateKey(dmac,hmac);
 		return this.ltrim(key, -100, -1);
+	}
+	
+	public long handsetLogsClear(String dmac,String hmac){
+		String key = generateKey(dmac,hmac);
+		return this.expire(key, 0);
 	}
 	/**
 	 * 取列表中的最后几个元素
