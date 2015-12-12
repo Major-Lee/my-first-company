@@ -1299,7 +1299,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
