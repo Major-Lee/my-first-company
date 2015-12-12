@@ -1,13 +1,10 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -94,7 +91,7 @@ public class HandsetStorageFacadeService{
      * @param logout_at
      */
     public static void wifiDeviceHandsetOffline(String dmac, String hmac, String tx_bytes, long logout_at) {
-    	System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
+    	//System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
     	long rb = Long.parseLong(tx_bytes);
     	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
     	if(rb >0){
@@ -104,7 +101,7 @@ public class HandsetStorageFacadeService{
 
     
     public static int wifiDeviceHandsetOnline(String dmac, String hmac, long last_login_at){
-    	System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
+    	//System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
     	return DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
     }
 	
@@ -120,7 +117,7 @@ public class HandsetStorageFacadeService{
     
     public static long wifiDeviceHandsetTrbFetched(String dmac, String hmac){
     	long trb = DeviceHandsetExtFieldService.getInstance().trb(dmac, hmac);
-    	System.out.println(String.format("wifiDeviceHandsetTrbFetched dmac[%s] hmac[%s] trb[%s]", dmac,hmac,trb));
+    	//System.out.println(String.format("wifiDeviceHandsetTrbFetched dmac[%s] hmac[%s] trb[%s]", dmac,hmac,trb));
     	return trb;//.fetchRecentHandsetLogs(dmac, hmac, size);
     }
     
@@ -160,7 +157,7 @@ public class HandsetStorageFacadeService{
 		System.out.println(new Date(1449834460661l));
 		System.out.println(new Date(1449835127772l));*/
 		HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e");
-		HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", DateTimeHelper.getDateDaysAgo(10).getTime());
+		/*HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", DateTimeHelper.getDateDaysAgo(10).getTime());
 		HandsetStorageFacadeService.wifiDeviceHandsetOffline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e","403999333", DateTimeHelper.getDateDaysAgo(7).getTime());
 		
 		
@@ -182,7 +179,7 @@ public class HandsetStorageFacadeService{
 		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", 5);
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
-		}
+		}*/
 		
 		/*
 		System.out.println(new Date(1449836882759l));

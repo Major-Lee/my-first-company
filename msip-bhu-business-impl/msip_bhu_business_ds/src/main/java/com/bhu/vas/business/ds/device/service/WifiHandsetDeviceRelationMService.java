@@ -29,7 +29,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
  *
  */
 //@Service
-public class WifiHandsetDeviceRelationMServiceOld {
+public class WifiHandsetDeviceRelationMService {
 	
 	@Resource
 	private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;

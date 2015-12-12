@@ -393,9 +393,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				timeLineVto.setDate(date);
 				timeLineVto.setDetail(detail);
 				 
-				uRouterHdTimeLineVTOList.add(timeLineVto);
+				uRouterHdTimeLineVTOList.add(0,timeLineVto);
 				//DESC
-				Collections.reverse(uRouterHdTimeLineVTOList);
+				//Collections.reverse(uRouterHdTimeLineVTOList);
 			}
 			vto.setTimeline(uRouterHdTimeLineVTOList);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
