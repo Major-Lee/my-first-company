@@ -157,10 +157,6 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		//List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
 		List<String> result = this.lrange(generateKey(dmac,hmac), -size, -1);
 		if(result == null || result.isEmpty()) return Collections.emptyList();
-		/*int result_len = result.size();
-		if(result_len >){
-			
-		}*/
 		List<HandsetLogDTO> ret = new ArrayList<>();
 		for(String json :result){
 			ret.add(JsonHelper.getDTO(json, HandsetLogDTO.class));
