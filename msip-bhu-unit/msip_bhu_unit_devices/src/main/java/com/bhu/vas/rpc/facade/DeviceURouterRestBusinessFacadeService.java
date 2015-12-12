@@ -322,7 +322,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
 				add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),completed?logout.getTime():0l,trb));
 			}else{//跨天
-				long days = DateTimeHelper.getTwoDateDifferentDay(login, logout, DateTimeHelper.FormatPattern5);
+				long days = DateTimeHelper.getTwoDateDifferentDay(logout,login, DateTimeHelper.FormatPattern5);
 				for(int i=0;i<=days;i++){
 					if(i == 0){
 						String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
