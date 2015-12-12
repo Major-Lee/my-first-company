@@ -94,7 +94,7 @@ public class HandsetStorageFacadeService{
      * @param logout_at
      */
     public static void wifiDeviceHandsetOffline(String dmac, String hmac, String tx_bytes, long logout_at) {
-    	System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
+    	//System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
     	long rb = Long.parseLong(tx_bytes);
     	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
     	if(rb >0){
@@ -104,7 +104,7 @@ public class HandsetStorageFacadeService{
 
     
     public static int wifiDeviceHandsetOnline(String dmac, String hmac, long last_login_at){
-    	System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
+    	//System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
     	return DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
     }
 	
@@ -120,7 +120,7 @@ public class HandsetStorageFacadeService{
     
     public static long wifiDeviceHandsetTrbFetched(String dmac, String hmac){
     	long trb = DeviceHandsetExtFieldService.getInstance().trb(dmac, hmac);
-    	System.out.println(String.format("wifiDeviceHandsetTrbFetched dmac[%s] hmac[%s] trb[%s]", dmac,hmac,trb));
+    	//System.out.println(String.format("wifiDeviceHandsetTrbFetched dmac[%s] hmac[%s] trb[%s]", dmac,hmac,trb));
     	return trb;//.fetchRecentHandsetLogs(dmac, hmac, size);
     }
     
