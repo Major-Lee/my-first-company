@@ -474,7 +474,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证用户是否管理设备
 		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userdevice_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
 		}
 		return device_entity;
 	}
@@ -490,11 +490,11 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证设备是否存在
 		WifiDevice device_entity = wifiDeviceService.getById(mac);
 		if(device_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
 		}
 		//验证设备是否在线
 		if(!device_entity.isOnline()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
 		}
 		return device_entity;
 	}

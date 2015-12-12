@@ -378,6 +378,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			long rtb = HandsetStorageFacadeService.wifiDeviceHandsetTrbFetched(wifiId, mac);
 			vto.setTotal_rx_bytes(String.valueOf(rtb));
 			List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs(wifiId, mac, 100);
+			{
+				
+			}
 			Map<String, List<WifiHandsetDeviceItemDetailMDTO>> sortedMap = buildHdDetailMap(recentLogs);
 			List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
 			Iterator<Entry<String, List<WifiHandsetDeviceItemDetailMDTO>>> iter = sortedMap.entrySet().iterator();
@@ -816,7 +819,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			vto.setTs(System.currentTimeMillis());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -838,7 +841,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -865,7 +868,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -962,7 +965,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			Map<String, Object> payload = PageHelper.partialAllList(vtos, total, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1005,7 +1008,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1030,7 +1033,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1064,7 +1067,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1091,7 +1094,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							on ? WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer : WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1110,7 +1113,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}else
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1190,7 +1193,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 
@@ -1296,7 +1299,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1335,7 +1338,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1382,7 +1385,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			//System.out.println("step5:"+payload);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1433,7 +1436,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1449,7 +1452,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			UserTerminalFocusHashService.getInstance().setFocusValue(uid, hd_mac, focus);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1465,7 +1468,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			UserTerminalFocusHashService.getInstance().setNickValue(uid, hd_mac, nick);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1516,7 +1519,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			Map<String, Object> payload = PageHelper.partialAllList(dtos, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1535,7 +1538,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			URouterWSCommunityVTO vto = WifiStasnifferHelper.communityType(communityCountByTypes);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1557,7 +1560,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deviceFacadeService.userMobileDeviceRegister(uid, d, dt, dm, cv, pv, ut, pt);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
@@ -1574,7 +1577,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			deviceFacadeService.userMobileDeviceDestory(uid, d, dt);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 
@@ -1600,7 +1603,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterAdminPasswordVTO);
 		} catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 
@@ -1634,7 +1637,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(uRouterVapPasswordVTO);
 		} catch(BusinessI18nCodeException bex) {
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 
 	}

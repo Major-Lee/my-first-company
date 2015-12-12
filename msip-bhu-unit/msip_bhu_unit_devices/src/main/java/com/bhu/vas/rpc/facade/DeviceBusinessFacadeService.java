@@ -425,9 +425,7 @@ public class DeviceBusinessFacadeService {
 		long last_login_at = 0;
 		//1:移动设备基础信息更新
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		
-		System.out.println("message:"+JsonHelper.getJSONString(dto));
-		
+		//System.out.println("message:"+JsonHelper.getJSONString(dto));
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(dto.getMac().toLowerCase());
 		long this_login_at = System.currentTimeMillis();
 		//HandsetDevice handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
@@ -458,7 +456,7 @@ public class DeviceBusinessFacadeService {
 			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
 
-			System.out.println("after update message:" + JsonHelper.getJSONString(handset));
+			//System.out.println("after update message:" + JsonHelper.getJSONString(handset));
 			//last_login_at = handset_device_entity.getLast_login_at().getTime();
 			//		<ITEM action="online" mac="d4:f4:6f:4c:ce:e6" channel="2" ssid="居无忧-海道生态水族馆" bssid="84:82:f4:18:df:79" location="" phy_rate="72M" rssi="-92dBm" snr="15dB" />
 			//BeanUtils.copyProperties(dto, handset_device_entity);
