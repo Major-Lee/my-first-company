@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -45,11 +46,10 @@ public class UserDeviceController extends BaseController {
         }
 
         RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid);
-        if (userDeviceResult.getErrorCode() != null) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult.getErrorCode()));
-            return;
+        if (!userDeviceResult.hasError()) {
+        	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+        	SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult));
         }
 
     }
@@ -107,15 +107,25 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
         }
-        SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
+        RpcResponseDTO<UserDeviceStatusDTO> rpcResult = userDeviceRpcService.validateDeviceStatus(mac);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+        //SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
     }
 
     @ResponseBody()
     @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
     public void listBindDevice(HttpServletResponse response,
                                @RequestParam(required = true, value = "uid") int uid) {
-        RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+        RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
     }
 
     @ResponseBody()
@@ -156,12 +166,12 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
         }
-        RpcResponseDTO<UserDeviceCheckUpdateDTO> resp = userDeviceRpcService.checkDeviceUpdate(uid, mac, appver);
-		if(!resp.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+        RpcResponseDTO<UserDeviceCheckUpdateDTO> rpcResult = userDeviceRpcService.checkDeviceUpdate(uid, mac, appver);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
     @ResponseBody()
@@ -180,7 +190,7 @@ public class UserDeviceController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp));
     }
     
     private boolean validateDeviceName(String deviceName) throws  Exception {

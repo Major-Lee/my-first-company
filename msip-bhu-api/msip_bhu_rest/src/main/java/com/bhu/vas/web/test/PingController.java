@@ -57,7 +57,7 @@ public class PingController {
 			if(rpcResponse.getErrorCode() == null){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()),true);
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()),true);
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse),true);
 			}
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);

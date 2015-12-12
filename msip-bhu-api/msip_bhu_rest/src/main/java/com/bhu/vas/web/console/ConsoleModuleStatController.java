@@ -41,7 +41,7 @@ public class ConsoleModuleStatController extends BaseController {
         if(!rpcResult.hasError())
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         else
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 
 
     }
@@ -59,7 +59,7 @@ public class ConsoleModuleStatController extends BaseController {
         if(!rpcResult.hasError())
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         else
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
 
 }

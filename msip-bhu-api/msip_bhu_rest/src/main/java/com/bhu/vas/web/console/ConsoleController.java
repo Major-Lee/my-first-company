@@ -276,10 +276,10 @@ public class ConsoleController extends BaseController {
         if (ml > 5) ml = 5;
 
         RpcResponseDTO<Map<String, Object>> rpcResult = statisticsRpcService.buildHandsetOnline4Chart(type, ml);
-        if (rpcResult.getErrorCode() == null) {
+        if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
         //Map<String,List<String>> result = build4Chart(type,ml);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
@@ -303,10 +303,10 @@ public class ConsoleController extends BaseController {
         if (ml > 5) ml = 5;
 
         RpcResponseDTO<Map<String, Object>> rpcResult = statisticsRpcService.buildDeviceOnline4Chart(type, ml);
-        if (rpcResult.getErrorCode() == null) {
+        if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
         //Map<String,List<String>> result = build4Chart(type,ml);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
@@ -349,11 +349,9 @@ public class ConsoleController extends BaseController {
         if (date == null || date.isEmpty()) {
             date = DateHelper.COMMON_HELPER.getDateText(new Date());
         }
-        RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
-
-
-        if (result != null && result.getPayload() != null) {
-            List<UserBrandDTO> userBrandDTOList = result.getPayload();
+        RpcResponseDTO<List<UserBrandDTO>> rpcResult = statisticsRpcService.fetchUserBrandStatistics(date);
+        if (!rpcResult.hasError()) {
+            List<UserBrandDTO> userBrandDTOList = rpcResult.getPayload();
             List<UserBrandVTO> userBrandVTOList = new ArrayList<UserBrandVTO>();
 
 
@@ -376,7 +374,7 @@ public class ConsoleController extends BaseController {
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
 
 
@@ -441,6 +439,6 @@ public class ConsoleController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp));
     }
 }

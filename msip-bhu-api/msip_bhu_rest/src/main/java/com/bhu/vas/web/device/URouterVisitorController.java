@@ -46,11 +46,11 @@ public class URouterVisitorController extends BaseController {
             @RequestParam(required = false, defaultValue="5", value = "ps") int size
             ) {
 
-        RpcResponseDTO<URouterVisitorListVTO> rpcResponse = deviceURouterRestRpcService.urouterVisitorList(uid, mac,start, size);
-        if(rpcResponse.getErrorCode() == null){
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorList(uid, mac,start, size);
+        if(!rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
     }
 

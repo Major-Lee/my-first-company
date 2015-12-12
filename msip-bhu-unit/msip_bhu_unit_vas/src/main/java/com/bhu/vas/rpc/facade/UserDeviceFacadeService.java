@@ -118,10 +118,10 @@ public class UserDeviceFacadeService {
                         user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
                 return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
             } else {
-                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
+                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
             }
         } else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
         }
     }
 
