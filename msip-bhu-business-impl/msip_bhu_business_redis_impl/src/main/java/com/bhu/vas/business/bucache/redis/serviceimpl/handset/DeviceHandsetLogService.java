@@ -11,6 +11,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
+import com.smartwork.msip.cores.helper.ConvertHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -230,7 +231,7 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		start += Merge_When_In_GAP+100;
 		hansetLogComming(false,dmac,hmac,100l,start);*/
 		
-		long start  = 1l;
+		long start  = System.currentTimeMillis();
 		hansetLogComming(true,dmac,hmac,0l,start);
 		start += Merge_When_In_GAP+1;
 		hansetLogComming(false,dmac,hmac,100l,start);
@@ -312,11 +313,10 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	public void testClear(String dmac,String hmac){
 		System.out.println("----------brefore clear");
 		String key = generateKey(dmac,hmac);
-		/*List<String> lrange = this.lrange(key, 0, -1);
+		List<String> lrange = this.lrange(key, 0, -1);
 		for(String l:lrange){
-			System.out.println("element:"+l);
-		}*/
-		
+			System.out.println("element:"+l.length());
+		}		
 		this.expire(key, 0);
 	
 	}
@@ -324,8 +324,13 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	public static void main(String[] argv){
 		String dmac = "aaaaa";
 		String hmac = "bbbbb";
-		DeviceHandsetLogService.getInstance().test(dmac, hmac);
+		DeviceHandsetLogService.getInstance().testbuinsess(dmac, hmac);
 		DeviceHandsetLogService.getInstance().testClear(dmac, hmac);
+		
+		/*long total = 40*1000;
+		//按10w设备 每设备接入20终端
+		8000w K
+		System.out.println(speedByteFormat(total));*/
 	}
 	
 	/*public void userTickerMusicLove_lpush_pipeline_samevalue(Set<String> uids,String value){
