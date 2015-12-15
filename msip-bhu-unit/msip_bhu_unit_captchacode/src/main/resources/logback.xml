@@ -26,13 +26,6 @@
 		<File>${log.base}.unitrequest.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.unitrequest.zip</FileNamePattern>
-			<!-- keep 10 days history log
-			<MaxHistory>10</MaxHistory>
-			
-			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-		    	<MaxFileSize>100MB</MaxFileSize>
-		   	</TimeBasedFileNamingAndTriggeringPolicy>
-		   	 -->
 		</rollingPolicy>
 		<encoder>
 			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
@@ -43,13 +36,6 @@
 		<File>${log.base}.unitfacade.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.unitfacade.zip</FileNamePattern>
-			<!-- keep 10 days history log
-			<MaxHistory>10</MaxHistory>
-
-			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-		    	<MaxFileSize>100MB</MaxFileSize>
-		   	</TimeBasedFileNamingAndTriggeringPolicy>
-		   	 -->
 		</rollingPolicy>
 		<encoder>
 			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
@@ -69,8 +55,5 @@
 	
 	<root level="WARN">
 		<appender-ref ref="stdout" />
-		<!-- 
-		<appender-ref ref="logfile" />
-		 -->
 	</root> 
 </configuration>

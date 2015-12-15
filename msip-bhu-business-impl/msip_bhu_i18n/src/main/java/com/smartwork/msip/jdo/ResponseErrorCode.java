@@ -172,6 +172,9 @@ public enum ResponseErrorCode {
 	USER_TYPE_NOTMATCHED("320","user.type.notmatched"),
 	USER_TYPE_WASNOT_NORMAL("321", "user.type.wasnot.normal"),
 	
+	SMS_COUNTRYCODE_NOTSUPPORTED("330", "sms.countrycode.notsupported"),
+	
+	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
 	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),

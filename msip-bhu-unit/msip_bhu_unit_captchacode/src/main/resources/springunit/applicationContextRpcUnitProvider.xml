@@ -33,21 +33,5 @@
 	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<!--  accesslog="/Users/tangzichao/access.log"-->
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
-		interface="com.bhu.vas.api.rpc.task.iservice.ITaskRpcService" ref="taskRpcService" 
-		stub="com.bhu.vas.api.rpc.task.stub.TaskServiceStub" />
-	<!-- 
-	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
 		interface="com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService" ref="userCaptchaCodeRpcService"/>
-		 -->
-	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
-		interface="com.bhu.vas.api.rpc.user.iservice.IUserRpcService" ref="userRpcService"/>
-	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
-		interface="com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService" ref="statisticsRpcService"/>
-    <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
-                   interface="com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService" ref="userDeviceRpcService"/>
-    <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
-                   interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceGroupRpcService" ref="deviceGroupRpcService"/>
-                   
-    <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
-                   interface="com.bhu.vas.api.rpc.vap.iservice.IVapRpcService" ref="vapRpcService"/>
 </beans>

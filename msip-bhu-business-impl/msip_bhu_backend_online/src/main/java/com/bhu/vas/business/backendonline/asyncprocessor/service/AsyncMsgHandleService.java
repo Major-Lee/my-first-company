@@ -1412,7 +1412,7 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 */
 	public void userRegister(String message){
-		logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s]", message));
+		//logger.info(String.format("AnsyncMsgBackendProcessor userRegister message[%s]", message));
 		UserRegisteredDTO dto = JsonHelper.getDTO(message, UserRegisteredDTO.class);
 		int addret = ExchangeBBSHelper.userAdd2BBS(dto.getMobileno());
 		if(addret == 1){
@@ -1430,7 +1430,7 @@ public class AsyncMsgHandleService {
 	 * @param message
 	 */
 	public void userBBSsignedon(String message){
-		logger.info(String.format("AnsyncMsgBackendProcessor userBBSsignedon message[%s]", message));
+		//logger.info(String.format("AnsyncMsgBackendProcessor userBBSsignedon message[%s]", message));
 		UserBBSsignedonDTO dto = JsonHelper.getDTO(message, UserBBSsignedonDTO.class);
 		UserBBSsignedonPushDTO push_dto = new UserBBSsignedonPushDTO();
 		push_dto.setUid(dto.getUid());
@@ -1514,7 +1514,7 @@ public class AsyncMsgHandleService {
 			ex.printStackTrace(System.out);
 		}
 		
-		logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s] successful", message));
+		//logger.info(String.format("sendCaptchaCodeNotifyHandle message[%s] successful", message));
 
 	}
 	/*public void deviceAsyncCmdGen(String message){
