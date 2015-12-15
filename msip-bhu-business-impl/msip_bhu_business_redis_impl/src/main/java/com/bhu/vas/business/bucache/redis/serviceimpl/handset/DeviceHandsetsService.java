@@ -1,5 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
+import java.util.Map;
+
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.HandsetLogDTO;
@@ -36,7 +38,11 @@ public class DeviceHandsetsService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
-	public int hansetComming(boolean action,String dmac,String hmac,long ts){
+	public Map<String,String> handsets(String dmac){
+		return this.hgetall(generateKey(dmac));
+	}
+	
+	public int handsetComming(boolean action,String dmac,String hmac,long ts){
 		String valuePrefix = action?StringHelper.PLUS_STRING_GAP:StringHelper.MINUS_STRING_GAP;
 		Long ret = this.hset(generateKey(dmac), hmac, 
 				valuePrefix.concat(String.valueOf(ts)));

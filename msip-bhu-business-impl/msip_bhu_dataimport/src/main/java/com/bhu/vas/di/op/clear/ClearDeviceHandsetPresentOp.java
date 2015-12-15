@@ -12,8 +12,10 @@ import java.util.Map.Entry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
@@ -32,8 +34,12 @@ public class ClearDeviceHandsetPresentOp {
 //		device_macs.add("62:68:75:f1:10:80");
 //	}
 	
+	
 	public static void main(String[] argv) throws UnsupportedEncodingException, IOException{
-		
+		//10天的毫秒数
+		long reachThenCleanClear = 10*24*60*60*1000; 
+		long reachThenPartClear = 5*24*60*60*1000;
+		long current = System.currentTimeMillis();
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 		Map<String,Long> result  = new HashMap<String,Long>();
@@ -47,10 +53,34 @@ public class ClearDeviceHandsetPresentOp {
 			for(String mac:devices){
 				long size = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(mac);
 				result.put(mac, size);
+				
+				Map<String, String> allHandsets4Device = HandsetStorageFacadeService.allHandsets4Device(mac);
+				if(!allHandsets4Device.isEmpty()){
+					Iterator<Entry<String, String>> iter = allHandsets4Device.entrySet().iterator();
+					while(iter.hasNext()){
+						Entry<String, String> next = iter.next();
+						String hmac = next.getKey();
+						String value = next.getValue();
+						if(StringUtils.isNotEmpty(value)){
+							long action_ts = Long.parseLong(value.substring(1));
+							long gap = current - action_ts;
+							if(gap >= reachThenCleanClear){
+								//clear 
+								//1.清除DeviceHandset
+								//2.清除对应的所有DeviceLog
+								//3.清除对应的流量统计
+							}else if(gap < reachThenCleanClear && gap >=reachThenPartClear){
+								//2.清除对应的部分DeviceLog
+							}else{
+								
+							}
+						}
+					}
+				}
 			}
 		}
 		
-		Map<String, Long> sorted = SortMapHelper.sortMapByValue(result);
+		/*Map<String, Long> sorted = SortMapHelper.sortMapByValue(result);
 		StringBuilder sb = new StringBuilder();
 		Iterator<Entry<String, Long>> iter = sorted.entrySet().iterator();
 		while(iter.hasNext()){
@@ -58,7 +88,7 @@ public class ClearDeviceHandsetPresentOp {
 			sb.append(String.format("mac[%s] size[%s]\n", next.getKey(),next.getValue()));
 		}
 		
-		FileHelper.generateFile("/BHUData/data/parser/present.txt", new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
+		FileHelper.generateFile("/BHUData/data/parser/present.txt", new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));*/
 	}
 	
 /*	public static void doClearRedis(String mac){
