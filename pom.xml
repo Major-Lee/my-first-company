@@ -42,6 +42,8 @@
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
         <module>msip-bhu-unit/msip_bhu_unit_vas</module>
+        <module>msip-bhu-unit/msip_bhu_unit_captchacode</module>
+        
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
