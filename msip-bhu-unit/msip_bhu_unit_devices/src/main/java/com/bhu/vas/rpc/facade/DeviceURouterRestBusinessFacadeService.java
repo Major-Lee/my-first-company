@@ -308,6 +308,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	private Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
 		//int count = 0;
+		int logsize = recentLogs.size();
 		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){
 			boolean completed = true;
@@ -315,19 +316,14 @@ public class DeviceURouterRestBusinessFacadeService {
 			long f = log.getF();
 			long trb = log.getTrb();
 			if(f == 0){
-				if(index == 0){
+				if(index == logsize-1){//最后一条
 					f = System.currentTimeMillis();
 					completed = false;
 				}else{
+					//非法数据
 					continue;
 				}
 			}
-			/*if(f == 0 && index == 0){
-				f = System.currentTimeMillis();
-				completed = false;
-			}else{
-				continue;
-			}*/
 			Date login = new Date(o);
 			Date logout = new Date(f);
 			if(DateUtils.isSameDay(login, logout)){
