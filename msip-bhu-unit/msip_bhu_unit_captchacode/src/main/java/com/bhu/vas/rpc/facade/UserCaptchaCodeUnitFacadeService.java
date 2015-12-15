@@ -54,7 +54,7 @@ public class UserCaptchaCodeUnitFacadeService {
 							public void run() {
 								String response = SmsSenderFactory.buildSender(
 										RuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-								logger.info("sendCaptchaCodeNotifyHandle new Chanzor res:"+response+" msg:"+smsg);
+								logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
 							}
 						}));
 					}else{
