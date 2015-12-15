@@ -240,7 +240,8 @@ public class HandsetStorageFacadeService{
 		System.out.println(new Date(1449834460661l));
 		System.out.println(new Date(1449835127772l));*/
 		
-		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:27:99:44", "c8:9c:dc:db:91:82", 100);
+		HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:27:99:44", "c8:9c:dc:db:91:82");
+		/*List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:27:99:44", "c8:9c:dc:db:91:82", 100);
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
 		}
@@ -274,7 +275,7 @@ public class HandsetStorageFacadeService{
 		
 		
 		System.out.println(DateTimeHelper.getDateTime(new Date(1450055107398l), DateTimeHelper.FormatPattern3));
-		System.out.println(DateTimeHelper.getDateTime(new Date(1450056163757l), DateTimeHelper.FormatPattern3));
+		System.out.println(DateTimeHelper.getDateTime(new Date(1450056163757l), DateTimeHelper.FormatPattern3));*/
 	}
 	
 	
