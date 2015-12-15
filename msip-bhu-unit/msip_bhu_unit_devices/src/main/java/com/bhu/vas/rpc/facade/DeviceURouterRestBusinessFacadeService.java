@@ -307,14 +307,17 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	private Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
+		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){
 			boolean completed = true;
 			long o = log.getO();
 			long f = log.getF();
 			long trb = log.getTrb();
-			if(f == 0){
+			if(f == 0 && index == 0){
 				f = System.currentTimeMillis();
 				completed = false;
+			}else{
+				continue;
 			}
 			Date login = new Date(o);
 			Date logout = new Date(f);
@@ -342,6 +345,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 			}
+			index ++;
 		}
 		return SortMapHelper.sortMapByKey(result);
 	}

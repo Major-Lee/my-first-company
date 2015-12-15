@@ -1,10 +1,22 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang.time.DateUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
+import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
+import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -99,6 +111,14 @@ public class HandsetStorageFacadeService{
     	}
     }
 
+    /*private static List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();
+    private static int hash_prime = 50;
+    private static int per_threads = 1;
+    static{
+    	for(int i=0;i<hash_prime;i++){
+			exec_processes.add(Executors.newFixedThreadPool(per_threads));
+		}
+    }*/
     
     public static int wifiDeviceHandsetOnline(String dmac, String hmac, long last_login_at){
     	//System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
@@ -156,7 +176,11 @@ public class HandsetStorageFacadeService{
 		System.out.println(new Date(1449837003638l));
 		System.out.println(new Date(1449834460661l));
 		System.out.println(new Date(1449835127772l));*/
-		HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e");
+		//HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e");
+		/*List<HandsetLogDTO> allLogs = HandsetStorageFacadeService.wifiDeviceHandsetAllLogs("84:82:f4:27:99:44", "c8:9c:dc:db:91:82");
+		for(HandsetLogDTO dto :allLogs){
+			System.out.println(JsonHelper.getJSONString(dto));
+		}*/
 		/*HandsetStorageFacadeService.wifiDeviceHandsetOnline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", DateTimeHelper.getDateDaysAgo(10).getTime());
 		HandsetStorageFacadeService.wifiDeviceHandsetOffline("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e","403999333", DateTimeHelper.getDateDaysAgo(7).getTime());
 		
@@ -187,13 +211,41 @@ public class HandsetStorageFacadeService{
 		System.out.println(new Date(1449834460661l));
 		System.out.println(new Date(1449835127772l));*/
 		
-		/*List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", 100);
+		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:27:99:44", "c8:9c:dc:db:91:82", 100);
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
 		}
 		
-		Map<String, List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap = buildHdDetailMap(recentLogs);
-		System.out.println(buildHdDetailMap);*/
+		Map<String, List<WifiHandsetDeviceItemDetailMDTO>> sortedMap = buildHdDetailMap(recentLogs);
+		//System.out.println(sortedMap);
+		List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
+		Iterator<Entry<String, List<WifiHandsetDeviceItemDetailMDTO>>> iter = sortedMap.entrySet().iterator();
+		URouterHdTimeLineVTO timeLineVto = null;
+		while(iter.hasNext()){
+			Entry<String, List<WifiHandsetDeviceItemDetailMDTO>> next = iter.next();
+			String date = next.getKey();
+			List<WifiHandsetDeviceItemDetailMDTO> detail = next.getValue();
+			timeLineVto = new URouterHdTimeLineVTO();
+			timeLineVto.setDate(date);
+			timeLineVto.setDetail(detail);
+			 
+			uRouterHdTimeLineVTOList.add(0,timeLineVto);
+			//DESC
+			//Collections.reverse(uRouterHdTimeLineVTOList);
+		}
+		for(URouterHdTimeLineVTO vto:uRouterHdTimeLineVTOList){
+			String date = vto.getDate();
+			List<WifiHandsetDeviceItemDetailMDTO> details = vto.getDetail();
+			System.out.println("date:"+date);
+			for(WifiHandsetDeviceItemDetailMDTO detail:details){
+				System.out.println("	detail:"+JsonHelper.getJSONString(detail));
+			}
+		}
+		//System.out.println(JsonHelper.getJSONString(uRouterHdTimeLineVTOList));
+		
+		
+		System.out.println(DateTimeHelper.getDateTime(new Date(1450055107398l), DateTimeHelper.FormatPattern3));
+		System.out.println(DateTimeHelper.getDateTime(new Date(1450056163757l), DateTimeHelper.FormatPattern3));
 	}
 	
 	
@@ -202,17 +254,20 @@ public class HandsetStorageFacadeService{
 	 * 如果一段日志跨天了，需要拆分出来
 	 * @param recentLogs
 	 * @return Map<String,List<WifiHandsetDeviceItemDetailMDTO>> date,list
-	 *//*
+	 */
 	private static Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
+		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){
 			boolean completed = true;
 			long o = log.getO();
 			long f = log.getF();
 			long trb = log.getTrb();
-			if(f == 0){
+			if(f == 0 && index == 0){
 				f = System.currentTimeMillis();
 				completed = false;
+			}else{
+				continue;
 			}
 			Date login = new Date(o);
 			Date logout = new Date(f);
@@ -240,16 +295,17 @@ public class HandsetStorageFacadeService{
 					}
 				}
 			}
+			index ++;
 		}
 		return SortMapHelper.sortMapByKey(result);
 	}
 
-	*//**
+	/**
 	 * 每次往list里面增加记录的时候都index=0
 	 * @param result
 	 * @param date
 	 * @param dto
-	 *//*
+	 */
 	private static void add2Result(Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result,String date,WifiHandsetDeviceItemDetailMDTO dto){
 		List<WifiHandsetDeviceItemDetailMDTO> list = result.get(date);
 		if(list == null){
@@ -257,5 +313,5 @@ public class HandsetStorageFacadeService{
 			result.put(date, list);
 		}
 		list.add(0,dto);
-	}*/
+	}
 }
