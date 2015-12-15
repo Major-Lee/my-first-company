@@ -257,23 +257,33 @@ public class HandsetStorageFacadeService{
 	 */
 	private static Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
+		int count = 0;
 		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){
 			boolean completed = true;
 			long o = log.getO();
 			long f = log.getF();
 			long trb = log.getTrb();
-			if(f == 0 && index == 0){
+			if(f == 0){
+				if(index == 0){
+					f = System.currentTimeMillis();
+					completed = false;
+				}else{
+					continue;
+				}
+			}
+			/*if(f == 0 && index == 0){
 				f = System.currentTimeMillis();
 				completed = false;
 			}else{
 				continue;
-			}
+			}*/
 			Date login = new Date(o);
 			Date logout = new Date(f);
 			if(DateUtils.isSameDay(login, logout)){
 				String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
 				add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),completed?logout.getTime():0l,trb));
+				count++;
 			}else{//跨天
 				long days = DateTimeHelper.getTwoDateDifferentDay(logout,login, DateTimeHelper.FormatPattern5);
 				for(int i=0;i<=days;i++){
@@ -293,10 +303,12 @@ public class HandsetStorageFacadeService{
 						Date end 	= DateTimeHelper.getCertainDateEnd(current);
 						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(start.getTime(),end.getTime(),0l));
 					}
+					count++;
 				}
 			}
 			index ++;
 		}
+		System.out.println("~~~~~~~~:"+count);
 		return SortMapHelper.sortMapByKey(result);
 	}
 
