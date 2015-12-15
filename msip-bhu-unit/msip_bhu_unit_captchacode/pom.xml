@@ -64,7 +64,7 @@
         </dependency>        
 	</dependencies>
 	<build>
-		<finalName>msip_bhu_unit_vas</finalName>
+		<finalName>msip_bhu_unit_captchacode</finalName>
 		<plugins>
 			<!-- mina打包为了bundle格式，为此，需要添加插件
 				在maven的pom.xml中plugins段中加入plugin即可 -->
