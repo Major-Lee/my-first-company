@@ -40,7 +40,7 @@
 		</encoder>
 	</appender>
 	<appender name="unitfacadefile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${log.base}.unitrequest.log</File>
+		<File>${log.base}.unitfacade.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.unitfacade.zip</FileNamePattern>
 			<!-- keep 10 days history log
