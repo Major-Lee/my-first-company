@@ -1,7 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -291,14 +290,14 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 
 	
-	public static int daysOfTwo(Date fDate, Date oDate) {
+	/*public static int daysOfTwo(Date fDate, Date oDate) {
        Calendar aCalendar = Calendar.getInstance();
        aCalendar.setTime(fDate);
        int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
        aCalendar.setTime(oDate);
        int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
        return day2 - day1;
-	}
+	}*/
 	
 	/**
 	 * 如果一段日志跨天了，需要拆分出来

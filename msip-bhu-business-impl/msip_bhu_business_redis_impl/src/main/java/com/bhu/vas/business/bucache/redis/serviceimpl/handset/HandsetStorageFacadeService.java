@@ -106,14 +106,6 @@ public class HandsetStorageFacadeService{
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
     }
-	
-	/*String mac = headers.getMac();
-	int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
-	hits[hash] = hits[hash]+1;
-	exec_processes.get(hash).submit((new Runnable() {
-		
-		
-	}*/
     
     public static int determinExecMacHash(String hmac){
     	int hash = HashAlgorithmsHelper.rotatingHash(hmac, hash_prime);
