@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.service.device;
+/*package com.bhu.vas.rpc.service.device;
 
 import javax.annotation.Resource;
 
@@ -23,4 +23,4 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 		return userCaptchaCodeUnitFacadeService.fetchCaptchaCode(countrycode, acc);
 	}
 
-}
+}*/

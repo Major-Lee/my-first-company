@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.facade;
+/*package com.bhu.vas.rpc.facade;
 
 import javax.annotation.Resource;
 
@@ -48,4 +48,4 @@ public class UserCaptchaCodeUnitFacadeService {
 		}
 		return result;
 	}
-}
+}*/
