@@ -196,11 +196,11 @@ public class HandsetStorageFacadeService{
 		
 		
 		
-		/*List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", 100);
+		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", 100);
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
 		}
-		
+		/*
 		System.out.println(new Date(1449836882759l));
 		System.out.println(new Date(1449837003638l));
 		System.out.println(new Date(1449834460661l));
@@ -240,12 +240,12 @@ public class HandsetStorageFacadeService{
 		System.out.println(new Date(1449834460661l));
 		System.out.println(new Date(1449835127772l));*/
 		
-		HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:27:99:44", "c8:9c:dc:db:91:82");
+		//HandsetStorageFacadeService.wifiDeviceHandsetLogsClear("84:82:f4:27:99:44", "c8:9c:dc:db:91:82");
 		/*List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:27:99:44", "c8:9c:dc:db:91:82", 100);
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
 		}
-		
+		*/
 		Map<String, List<WifiHandsetDeviceItemDetailMDTO>> sortedMap = buildHdDetailMap(recentLogs);
 		//System.out.println(sortedMap);
 		List<URouterHdTimeLineVTO> uRouterHdTimeLineVTOList = new ArrayList<URouterHdTimeLineVTO>();
@@ -275,7 +275,7 @@ public class HandsetStorageFacadeService{
 		
 		
 		System.out.println(DateTimeHelper.getDateTime(new Date(1450055107398l), DateTimeHelper.FormatPattern3));
-		System.out.println(DateTimeHelper.getDateTime(new Date(1450056163757l), DateTimeHelper.FormatPattern3));*/
+		System.out.println(DateTimeHelper.getDateTime(new Date(1450056163757l), DateTimeHelper.FormatPattern3));
 	}
 	
 	
@@ -288,6 +288,7 @@ public class HandsetStorageFacadeService{
 	private static Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
 		//int count = 0;
+		int logsize = recentLogs.size();
 		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){
 			boolean completed = true;
@@ -295,7 +296,7 @@ public class HandsetStorageFacadeService{
 			long f = log.getF();
 			long trb = log.getTrb();
 			if(f == 0){
-				if(index == 0){
+				if(index == logsize-1){//最后一条
 					f = System.currentTimeMillis();
 					completed = false;
 				}else{
@@ -303,12 +304,6 @@ public class HandsetStorageFacadeService{
 					continue;
 				}
 			}
-			/*if(f == 0 && index == 0){
-				f = System.currentTimeMillis();
-				completed = false;
-			}else{
-				continue;
-			}*/
 			Date login = new Date(o);
 			Date logout = new Date(f);
 			if(DateUtils.isSameDay(login, logout)){
@@ -339,7 +334,6 @@ public class HandsetStorageFacadeService{
 			}
 			index ++;
 		}
-		//System.out.println("~~~~~~~~:"+count);
 		return SortMapHelper.sortMapByKey(result);
 	}
 
