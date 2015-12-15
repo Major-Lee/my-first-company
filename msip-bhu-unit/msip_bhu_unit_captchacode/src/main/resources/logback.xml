@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-vas/${provider.port}/vas" />
+	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-captchacode/${provider.port}/vas" />
 	<jmxConfigurator />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
