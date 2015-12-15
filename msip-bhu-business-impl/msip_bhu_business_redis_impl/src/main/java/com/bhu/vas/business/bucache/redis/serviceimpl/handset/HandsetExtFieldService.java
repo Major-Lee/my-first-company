@@ -15,6 +15,8 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
  * @author edmond
  *
  */
+
+@Deprecated
 public class HandsetExtFieldService extends AbstractRelationHashCache {
 	
 	private static class ServiceHolder{ 
