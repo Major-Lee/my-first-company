@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.time.DateUtils;
 
@@ -15,6 +17,7 @@ import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
@@ -95,6 +98,41 @@ public class HandsetStorageFacadeService{
         }
 	}
 	
+    private static List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();
+    private static int hash_prime = 50;
+    private static int per_threads = 1;
+    static{
+    	for(int i=0;i<hash_prime;i++){
+			exec_processes.add(Executors.newFixedThreadPool(per_threads));
+		}
+    }
+	
+	/*String mac = headers.getMac();
+	int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
+	hits[hash] = hits[hash]+1;
+	exec_processes.get(hash).submit((new Runnable() {
+		
+		
+	}*/
+    
+    public static int determinExecMacHash(String hmac){
+    	int hash = HashAlgorithmsHelper.rotatingHash(hmac, hash_prime);
+    	return hash;
+    }
+    
+    public static int wifiDeviceHandsetOnline(final String dmac, final String hmac, final long last_login_at){
+    	int ret = DeviceHandsetsService.getInstance().hansetComming(true, dmac, hmac, last_login_at);
+    	exec_processes.get(determinExecMacHash(hmac)).submit((new Runnable() {
+			@Override
+			public void run() {
+				DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
+			}
+    	}));
+    	return ret;
+    	//System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
+    	//return DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
+    }
+    
     /**
      * 终端离线更新记录
      * @param wifiId
@@ -102,30 +140,21 @@ public class HandsetStorageFacadeService{
      * @param tx_bytes
      * @param logout_at
      */
-    public static void wifiDeviceHandsetOffline(String dmac, String hmac, String tx_bytes, long logout_at) {
+    public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final String tx_bytes, final long logout_at) {
     	//System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
-    	long rb = Long.parseLong(tx_bytes);
-    	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
+    	DeviceHandsetsService.getInstance().hansetComming(true, dmac, hmac, logout_at);
+    	final long rb = Long.parseLong(tx_bytes);
     	if(rb >0){
     		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, rb);
     	}
+    	exec_processes.get(determinExecMacHash(hmac)).submit((new Runnable() {
+			@Override
+			public void run() {
+				DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
+			}
+    	}));
     }
 
-    /*private static List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();
-    private static int hash_prime = 50;
-    private static int per_threads = 1;
-    static{
-    	for(int i=0;i<hash_prime;i++){
-			exec_processes.add(Executors.newFixedThreadPool(per_threads));
-		}
-    }*/
-    
-    public static int wifiDeviceHandsetOnline(String dmac, String hmac, long last_login_at){
-    	//System.out.println(String.format("wifiDeviceHandsetOnline dmac[%s] hmac[%s] last_login_at[%s]", dmac,hmac,last_login_at));
-    	return DeviceHandsetLogService.getInstance().hansetLogComming(true, dmac, hmac, 0l, last_login_at);
-    }
-	
-    
     public static List<HandsetLogDTO> wifiDeviceHandsetRecentLogs(String dmac, String hmac,int size){
     	
     	return DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
@@ -257,7 +286,7 @@ public class HandsetStorageFacadeService{
 	 */
 	private static Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
-		int count = 0;
+		//int count = 0;
 		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){
 			boolean completed = true;
@@ -269,6 +298,7 @@ public class HandsetStorageFacadeService{
 					f = System.currentTimeMillis();
 					completed = false;
 				}else{
+					//非法数据
 					continue;
 				}
 			}
@@ -283,7 +313,7 @@ public class HandsetStorageFacadeService{
 			if(DateUtils.isSameDay(login, logout)){
 				String date  = DateTimeHelper.formatDate(login, DateTimeHelper.FormatPattern5);
 				add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(login.getTime(),completed?logout.getTime():0l,trb));
-				count++;
+				//count++;
 			}else{//跨天
 				long days = DateTimeHelper.getTwoDateDifferentDay(logout,login, DateTimeHelper.FormatPattern5);
 				for(int i=0;i<=days;i++){
@@ -303,12 +333,12 @@ public class HandsetStorageFacadeService{
 						Date end 	= DateTimeHelper.getCertainDateEnd(current);
 						add2Result(result,date,new WifiHandsetDeviceItemDetailMDTO(start.getTime(),end.getTime(),0l));
 					}
-					count++;
+					//count++;
 				}
 			}
 			index ++;
 		}
-		System.out.println("~~~~~~~~:"+count);
+		//System.out.println("~~~~~~~~:"+count);
 		return SortMapHelper.sortMapByKey(result);
 	}
 
