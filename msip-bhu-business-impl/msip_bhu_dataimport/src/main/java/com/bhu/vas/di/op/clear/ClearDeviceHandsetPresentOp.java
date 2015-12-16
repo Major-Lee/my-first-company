@@ -65,22 +65,25 @@ public class ClearDeviceHandsetPresentOp {
 							long gap = current - action_ts;
 							if(gap >= reachThenCleanClear){
 								//1.清除对应的所有DeviceLog及流量统计 和清除DeviceHandset
-								HandsetStorageFacadeService.wifiDeviceHandsetClear(mac,hmac);
+								//HandsetStorageFacadeService.wifiDeviceHandsetClear(mac,hmac);
+								System.out.println(String.format("CleanClear mac[%s] hmac[%s]", mac,hmac));
 							}else if(gap < reachThenCleanClear && gap >=reachThenPartClear){
 								//1.清除对应的部分DeviceLog
-								HandsetStorageFacadeService.wifiDeviceHandsetPartClear(mac,hmac);
+								//HandsetStorageFacadeService.wifiDeviceHandsetPartClear(mac,hmac);
+								System.out.println(String.format("PartClear mac[%s] hmac[%s]", mac,hmac));
 							}else{
-								continue;
+								//continue;
+								System.out.println(String.format("NoAction mac[%s] hmac[%s]", mac,hmac));
 							}
-							if(presentsize>deviceHandsetPresentSizeLimit){
+							/*if(presentsize>deviceHandsetPresentSizeLimit){
 								removedHMacs.add(hmac);
-							}
+							}*/
 						}
 					}
-					if(!removedHMacs.isEmpty()){
+					/*if(!removedHMacs.isEmpty()){
 						WifiDeviceHandsetPresentSortedSetService.getInstance().removePresents(mac, removedHMacs);
 						removedHMacs.clear();
-					}
+					}*/
 				}
 			}
 		}
