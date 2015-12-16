@@ -285,7 +285,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			Map<String, Object> payload = PageHelper.partialAllList(vtos, total, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 

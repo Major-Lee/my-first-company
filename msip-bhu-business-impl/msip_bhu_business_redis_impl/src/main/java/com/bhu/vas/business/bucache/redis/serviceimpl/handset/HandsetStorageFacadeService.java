@@ -139,7 +139,7 @@ public class HandsetStorageFacadeService{
      */
     public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final String tx_bytes, final long logout_at) {
     	//System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
-    	DeviceHandsetsService.getInstance().handsetComming(true, dmac, hmac, logout_at);
+    	DeviceHandsetsService.getInstance().handsetComming(false, dmac, hmac, logout_at);
     	final long rb = Long.parseLong(tx_bytes);
     	if(rb >0){
     		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, rb);
@@ -167,10 +167,15 @@ public class HandsetStorageFacadeService{
     	return trb;//.fetchRecentHandsetLogs(dmac, hmac, size);
     }
     
-    public static long wifiDeviceHandsetLogsClear(String dmac, String hmac){
+    public static void wifiDeviceHandsetClear(String dmac, String hmac){
     	DeviceHandsetExtFieldService.getInstance().trbclear(dmac, hmac);
-    	return DeviceHandsetLogService.getInstance().handsetLogsClear(dmac, hmac);
+    	DeviceHandsetLogService.getInstance().handsetLogsClear(dmac, hmac);
+    	DeviceHandsetsService.getInstance().handsetClear(dmac, hmac);
     }
+    
+    public static String wifiDeviceHandsetPartClear(String dmac,String hmac){
+    	return DeviceHandsetLogService.getInstance().handsetLogsTrim(dmac, hmac);
+	}
     
 	public static void main(String[] argc){
 		//HandsetStorageService.getInstance().clearOrResetAll();

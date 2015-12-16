@@ -1,8 +1,8 @@
 package com.bhu.vas.di.op.clear;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +17,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.smartwork.msip.cores.helper.FileHelper;
-import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -39,6 +37,7 @@ public class ClearDeviceHandsetPresentOp {
 		//10天的毫秒数
 		long reachThenCleanClear = 10*24*60*60*1000; 
 		long reachThenPartClear = 5*24*60*60*1000;
+		long deviceHandsetPresentSizeLimit = 1000;
 		long current = System.currentTimeMillis();
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
@@ -51,9 +50,9 @@ public class ClearDeviceHandsetPresentOp {
 		while(it.hasNext()){
 			List<String> devices = it.nextKeys();
 			for(String mac:devices){
-				long size = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(mac);
-				result.put(mac, size);
-				
+				long presentsize = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(mac);
+				result.put(mac, presentsize);
+				List<String> removedHMacs = new ArrayList<String>();
 				Map<String, String> allHandsets4Device = HandsetStorageFacadeService.allHandsets4Device(mac);
 				if(!allHandsets4Device.isEmpty()){
 					Iterator<Entry<String, String>> iter = allHandsets4Device.entrySet().iterator();
@@ -65,16 +64,22 @@ public class ClearDeviceHandsetPresentOp {
 							long action_ts = Long.parseLong(value.substring(1));
 							long gap = current - action_ts;
 							if(gap >= reachThenCleanClear){
-								//clear 
-								//1.清除DeviceHandset
-								//2.清除对应的所有DeviceLog
-								//3.清除对应的流量统计
+								//1.清除对应的所有DeviceLog及流量统计 和清除DeviceHandset
+								HandsetStorageFacadeService.wifiDeviceHandsetClear(mac,hmac);
 							}else if(gap < reachThenCleanClear && gap >=reachThenPartClear){
-								//2.清除对应的部分DeviceLog
+								//1.清除对应的部分DeviceLog
+								HandsetStorageFacadeService.wifiDeviceHandsetPartClear(mac,hmac);
 							}else{
-								
+								continue;
+							}
+							if(presentsize>deviceHandsetPresentSizeLimit){
+								removedHMacs.add(hmac);
 							}
 						}
+					}
+					if(!removedHMacs.isEmpty()){
+						WifiDeviceHandsetPresentSortedSetService.getInstance().removePresents(mac, removedHMacs);
+						removedHMacs.clear();
 					}
 				}
 			}

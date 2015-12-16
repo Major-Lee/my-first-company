@@ -52,7 +52,11 @@ public class DeviceHandsetsService extends AbstractRelationHashCache{
 			return HandsetLogDTO.Element_ExistHandset;
 		}
 	}
-
+	public Long handsetClear(String dmac,String hmac){
+		return this.hdel(generateKey(dmac), hmac);
+	}
+	
+	
 	@Override
 	public String getRedisKey() {
 		return null;

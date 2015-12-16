@@ -11,10 +11,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.vto.modulestat.*;
-import com.bhu.vas.business.bucache.redis.serviceimpl.modulestat.WifiDeviceModuleStatService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -478,7 +474,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证用户是否管理设备
 		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userdevice_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
 		}
 		return device_entity;
 	}
