@@ -83,6 +83,11 @@ public class HandsetStorageFacadeService{
 	}
 	
 	
+	
+	public static Map<String,String> allHandsets4Device(String dmac){
+		return DeviceHandsetsService.getInstance().handsets(dmac);
+	}
+	
     /**
 	 * 设备非法关机，断开长连接后通知所有终端离线，设备端上报的终端流量统计为0.
 	 * @param wifiId
@@ -106,14 +111,6 @@ public class HandsetStorageFacadeService{
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
     }
-	
-	/*String mac = headers.getMac();
-	int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
-	hits[hash] = hits[hash]+1;
-	exec_processes.get(hash).submit((new Runnable() {
-		
-		
-	}*/
     
     public static int determinExecMacHash(String hmac){
     	int hash = HashAlgorithmsHelper.rotatingHash(hmac, hash_prime);
@@ -121,7 +118,7 @@ public class HandsetStorageFacadeService{
     }
     
     public static int wifiDeviceHandsetOnline(final String dmac, final String hmac, final long last_login_at){
-    	int ret = DeviceHandsetsService.getInstance().hansetComming(true, dmac, hmac, last_login_at);
+    	int ret = DeviceHandsetsService.getInstance().handsetComming(true, dmac, hmac, last_login_at);
     	exec_processes.get(determinExecMacHash(hmac)).submit((new Runnable() {
 			@Override
 			public void run() {
@@ -142,7 +139,7 @@ public class HandsetStorageFacadeService{
      */
     public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final String tx_bytes, final long logout_at) {
     	//System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
-    	DeviceHandsetsService.getInstance().hansetComming(true, dmac, hmac, logout_at);
+    	DeviceHandsetsService.getInstance().handsetComming(false, dmac, hmac, logout_at);
     	final long rb = Long.parseLong(tx_bytes);
     	if(rb >0){
     		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, rb);
@@ -170,10 +167,15 @@ public class HandsetStorageFacadeService{
     	return trb;//.fetchRecentHandsetLogs(dmac, hmac, size);
     }
     
-    public static long wifiDeviceHandsetLogsClear(String dmac, String hmac){
+    public static void wifiDeviceHandsetClear(String dmac, String hmac){
     	DeviceHandsetExtFieldService.getInstance().trbclear(dmac, hmac);
-    	return DeviceHandsetLogService.getInstance().handsetLogsClear(dmac, hmac);
+    	DeviceHandsetLogService.getInstance().handsetLogsClear(dmac, hmac);
+    	DeviceHandsetsService.getInstance().handsetClear(dmac, hmac);
     }
+    
+    public static String wifiDeviceHandsetPartClear(String dmac,String hmac){
+    	return DeviceHandsetLogService.getInstance().handsetLogsTrim(dmac, hmac);
+	}
     
 	public static void main(String[] argc){
 		//HandsetStorageService.getInstance().clearOrResetAll();
