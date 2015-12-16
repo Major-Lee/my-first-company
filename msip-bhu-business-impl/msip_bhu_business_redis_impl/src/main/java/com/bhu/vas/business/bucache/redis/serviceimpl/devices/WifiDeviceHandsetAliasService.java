@@ -46,9 +46,9 @@ public class WifiDeviceHandsetAliasService extends AbstractRelationHashCache {
         return WifiDeviceHandsetAliasService.class.getName();
     }
 
-    private static String generateKey(String wifiId){
+    private static String generateKey(String uid){
         StringBuilder sb = new StringBuilder(BusinessKeyDefine.UserWifiDeviceHandset.Nick);
-        sb.append(StringHelper.POINT_CHAR_GAP).append(wifiId);
+        sb.append(StringHelper.POINT_CHAR_GAP).append(uid);
         return sb.toString();
     }
 
