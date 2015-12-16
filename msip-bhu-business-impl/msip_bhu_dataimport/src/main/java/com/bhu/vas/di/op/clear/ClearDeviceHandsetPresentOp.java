@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -66,14 +67,14 @@ public class ClearDeviceHandsetPresentOp {
 							if(gap >= reachThenCleanClear){
 								//1.清除对应的所有DeviceLog及流量统计 和清除DeviceHandset
 								//HandsetStorageFacadeService.wifiDeviceHandsetClear(mac,hmac);
-								System.out.println(String.format("CleanClear mac[%s] hmac[%s]", mac,hmac));
+								System.out.println(String.format("CleanClear mac[%s] hmac[%s] gap[%s]", mac,hmac,DateTimeHelper.getTimeDiff(gap)));
 							}else if(gap < reachThenCleanClear && gap >=reachThenPartClear){
 								//1.清除对应的部分DeviceLog
 								//HandsetStorageFacadeService.wifiDeviceHandsetPartClear(mac,hmac);
-								System.out.println(String.format("PartClear mac[%s] hmac[%s]", mac,hmac));
+								System.out.println(String.format("PartClear mac[%s] hmac[%s] gap[%s]", mac,hmac,DateTimeHelper.getTimeDiff(gap)));
 							}else{
 								//continue;
-								System.out.println(String.format("NoAction mac[%s] hmac[%s]", mac,hmac));
+								System.out.println(String.format("NoAction mac[%s] hmac[%s] gap[%s]", mac,hmac,DateTimeHelper.getTimeDiff(gap)));
 							}
 							/*if(presentsize>deviceHandsetPresentSizeLimit){
 								removedHMacs.add(hmac);
