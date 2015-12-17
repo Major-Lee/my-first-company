@@ -1,4 +1,4 @@
-package com.bhu.vas.di.op.repair;
+/*package com.bhu.vas.di.op.repair;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
-/**
+*//**
  * 数据迁移
  * WifiDevicePresentService ——》WifiDevicePresentCtxService
  * @author Edmond
  *
- */
+ *//*
 public class OnlineDeviceRedisDataRepairOp {
 	
 	public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
@@ -59,3 +59,4 @@ public class OnlineDeviceRedisDataRepairOp {
 		System.out.println("数据迁移成功 count:"+count);
 	}
 }
+*/

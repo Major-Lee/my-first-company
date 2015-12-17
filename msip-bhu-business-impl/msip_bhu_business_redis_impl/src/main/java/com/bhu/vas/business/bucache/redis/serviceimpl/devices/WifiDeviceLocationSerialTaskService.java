@@ -28,7 +28,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  */
 public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCache{
 	
-	private static class WifiDevicePresentCtxServiceHolder{ 
+	private static class WifiDeviceLocationSerialTaskHolder{ 
 		private static WifiDeviceLocationSerialTaskService instance =new WifiDeviceLocationSerialTaskService(); 
 	}
 	/**
@@ -36,7 +36,7 @@ public class WifiDeviceLocationSerialTaskService extends AbstractRelationHashCac
 	 * @return
 	 */
 	public static WifiDeviceLocationSerialTaskService getInstance() { 
-		return WifiDevicePresentCtxServiceHolder.instance; 
+		return WifiDeviceLocationSerialTaskHolder.instance; 
 	}
 	
 	private WifiDeviceLocationSerialTaskService(){
