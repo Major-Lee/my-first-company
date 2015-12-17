@@ -1,6 +1,5 @@
 package com.bhu.vas.api.helper;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.VapModeDefined;
@@ -10,6 +9,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
 import com.bhu.vas.api.dto.ret.transfer.ParamDeviceRemoteControlDTO;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -109,7 +109,29 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid), payload);
 	}
 	
-	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,long taskid, int period, int duration, String download_url, String upload_url){
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac, long taskid, int type, 
+			int period, int duration){
+		String download_url = StringHelper.EMPTY_STRING_GAP;
+		String upload_url = StringHelper.EMPTY_STRING_GAP;
+		switch(type){
+			case DeviceHelper.Device_Peak_Section_Type_OnlyDownload:
+				download_url = RuntimeConfiguration.Device_SpeedTest_Download_url;
+				break;
+			case DeviceHelper.Device_Peak_Section_Type_OnlyUpload:
+				upload_url = RuntimeConfiguration.Device_SpeedTest_Upload_url;
+				break;
+			case DeviceHelper.Device_Peak_Section_Type_All:
+				download_url = RuntimeConfiguration.Device_SpeedTest_Download_url;
+				upload_url = RuntimeConfiguration.Device_SpeedTest_Upload_url;
+				break;
+			default:
+				return null;
+		}
+		
+		return builderDeviceSpeedNotifyQuery(wifi_mac, taskid, period, duration, download_url, upload_url);
+	}
+	
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac, long taskid, int period, int duration, String download_url, String upload_url){
 		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
 		String taskid_format = builderTaskidFormat(taskid);
 		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
@@ -522,9 +544,13 @@ public class CMDBuilder {
 		return normal_taskid_fragment.wasInFragment(taskid);
 	}
 	
-	/*public static void main(String[] argv){
-		String[] params = new String[]{};
-		String resultCmd = String.format("",params);
-		System.out.println(new Date(1436407520276l));
-	}*/
+	public static void main(String[] argv){
+//		String[] params = new String[]{};
+//		String resultCmd = String.format("",params);
+//		System.out.println(new Date(1436407520276l));
+		String taskid_format = CMDBuilder.builderTaskidFormat(99999);
+		System.out.println(CMDBuilder.builderTaskidFormat(99999));
+		System.out.println(CMDBuilder.builderCMDSerial(OperationCMD.QueryDeviceSpeedNotify.getNo(), taskid_format));
+		
+	}
 }

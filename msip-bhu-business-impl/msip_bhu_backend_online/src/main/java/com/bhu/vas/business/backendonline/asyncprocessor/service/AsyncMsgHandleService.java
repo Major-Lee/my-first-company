@@ -62,7 +62,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
@@ -1299,7 +1298,7 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiDeviceHDRateFetch message[%s] successful", message));
 	}
 	
-	public void wifiDevicePeakRateFetch(String message){
+/*	public void wifiDevicePeakRateFetch(String message){
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s]", message));
 		WifiDeviceSpeedFetchDTO dto = JsonHelper.getDTO(message, WifiDeviceSpeedFetchDTO.class);
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
@@ -1308,7 +1307,7 @@ public class AsyncMsgHandleService {
 		DaemonHelper.deviceSpeedQuery(dto.getMac(), dto.getType(), dto.getPeriod(), dto.getDuration(), daemonRpcService);
 		//WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeakRateWaiting(dto.getMac());
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s] successful", message));
-	}
+	}*/
 	
 	/**
 	 * 用户绑定设备之后 会进行下发配置操作

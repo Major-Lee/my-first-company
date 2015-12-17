@@ -8,6 +8,7 @@ import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -326,24 +327,42 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	}
 	
 	/**
+	 * 清理并初始化设备测速的数据
+	 * 初始化数据为#taskid#
+	 * @param mac
+	 * @param taskid
+	 */
+	public void setPeakSections(String mac, String taskid){
+		String init_value = StringHelper.WELL_STRING_GAP.concat(taskid).concat(StringHelper.WELL_STRING_GAP);
+		super.mset(new String[]{generatePeakSectionKey(mac, Type_Rx_Rate), generatePeakSectionKey(mac, Type_Tx_Rate)},
+				new String[]{init_value, init_value});
+	}
+	
+	/**
 	 * 获取上下行测速分段数据列表dtos
 	 * @param mac
 	 * 	0 为下行速率dtos
 	 *  1 为上行速率dtos
 	 * @return
 	 */
-	public Object[] getPeakSections(String mac){
+	public URouterPeakSectionsDTO getPeakSections(String mac){
+		URouterPeakSectionsDTO dto = new URouterPeakSectionsDTO();
 		String[] keys = new String[2];
 		keys[0] = generatePeakSectionKey(mac, Type_Rx_Rate);
 		keys[1] = generatePeakSectionKey(mac, Type_Tx_Rate);
 		List<String> rets = super.mget(keys);
-		if(rets == null || rets.isEmpty()){
-			return null;
+		if(rets != null && !rets.isEmpty()){
+			String rxPeakValue = rets.get(0);
+			String txPeakValue = rets.get(1);
+			dto.setRxs(generatePeakSectionDtos(rxPeakValue, WifiDeviceRxPeakSectionDTO.class));
+			dto.setTxs(generatePeakSectionDtos(txPeakValue, WifiDeviceTxPeakSectionDTO.class));
+			dto.setSerial(generatePeakSectionSerial(rxPeakValue));
 		}
-		Object[] ret_obj = new Object[2];
-		ret_obj[0] = generatePeakSectionDtos(rets.get(0), WifiDeviceRxPeakSectionDTO.class);
-		ret_obj[1] = generatePeakSectionDtos(rets.get(1), WifiDeviceTxPeakSectionDTO.class);
-		return ret_obj;
+		
+		//Object[] ret_obj = new Object[2];
+		//ret_obj[0] = generatePeakSectionDtos(rets.get(0), WifiDeviceRxPeakSectionDTO.class);
+		//ret_obj[1] = generatePeakSectionDtos(rets.get(1), WifiDeviceTxPeakSectionDTO.class);
+		return dto;
 	}
 	
 	/**
@@ -353,9 +372,14 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 */
 	protected String generatePeakSectionJsonArray(String peakSection){
 		if(StringUtils.isEmpty(peakSection)) return null;
+		int json_index = peakSection.indexOf(StringHelper.LEFT_BRACE_STRING);
+		if(json_index == -1) return null;
 		
-		return StringHelper.LEFT_MEDIUM_BRACKET_STRING_GAP.concat(peakSection.substring(1)).
-				concat(StringHelper.RIGHT_MEDIUM_BRACKET_STRING_GAP);
+		String json = peakSection.substring(json_index);
+		if(!StringUtils.isEmpty(json)){
+			return StringHelper.LEFT_MEDIUM_BRACKET_STRING_GAP.concat(json).concat(StringHelper.RIGHT_MEDIUM_BRACKET_STRING_GAP);
+		}
+		return null;
 	}
 	
 	/**
@@ -373,6 +397,22 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 			ex.printStackTrace(System.out);
 		}
 		return null;
+	}
+	/**
+	 * 生成设备本次测速的上下文Serial
+	 * @param peakSection
+	 * @return
+	 */
+	protected String generatePeakSectionSerial(String peakSection){
+		if(StringUtils.isEmpty(peakSection)) return null;
+		
+		int sindex = peakSection.indexOf(StringHelper.WELL_STRING_GAP);
+		if(sindex == -1) return null;
+			
+		int eindex = peakSection.lastIndexOf(StringHelper.WELL_STRING_GAP);
+		if(eindex <= sindex) return null;
+		
+		return peakSection.substring(sindex+1,eindex);
 	}
 	
 	/**
