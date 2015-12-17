@@ -3,8 +3,6 @@ package com.bhu.vas.api.rpc.devices.stub;
 import java.util.List;
 import java.util.Map;
 
-import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
-
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -16,12 +14,13 @@ import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterMainEnterVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -77,7 +76,7 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 	
 	@Override
-	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
+	public RpcResponseDTO<String> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		
@@ -85,7 +84,7 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 	
 	@Override
-	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId) {
+	public RpcResponseDTO<URouterPeakSectionsDTO> urouterPeakSectionFetch(Integer uid, String wifiId) {
 		if(uid == null || StringUtils.isEmpty(wifiId)) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		

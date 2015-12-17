@@ -21,8 +21,6 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
-import com.bhu.vas.api.dto.ret.WifiDeviceRxPeakSectionDTO;
-import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -36,6 +34,7 @@ import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -56,7 +55,7 @@ import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.URouterInfoVTO;
 import com.bhu.vas.api.vto.URouterMainEnterVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
@@ -845,13 +844,20 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param duration 测速时长
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration){
+	public RpcResponseDTO<String> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 		
-			deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId, type, period, duration);
-			
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			//deliverMessageService.sendQueryDeviceSpeedFetchActionMessage(wifiId, type, period, duration);
+			long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+			String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(wifiId, taskid, type, period, duration);
+			if(!StringUtils.isEmpty(cmd)){
+				deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, cmd);
+				String serial = CMDBuilder.builderCMDSerial(OperationCMD.QueryDeviceSpeedNotify.getNo(), 
+						CMDBuilder.builderTaskidFormat(taskid));
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(serial);
+			}
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
@@ -863,12 +869,11 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param wifiId
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId){
+	public RpcResponseDTO<URouterPeakSectionsDTO> urouterPeakSectionFetch(Integer uid, String wifiId){
 		try{
 			deviceFacadeService.validateUserDevice(uid, wifiId);
 			
-			URouterPeakSectionsVTO vto = new URouterPeakSectionsVTO();
+/*			URouterPeakSectionsVTO vto = new URouterPeakSectionsVTO();
 			Object[] rets = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeakSections(wifiId);
 			if(rets != null && rets.length == 2){
 				if(rets[0] != null){
@@ -877,8 +882,9 @@ public class DeviceURouterRestBusinessFacadeService {
 				if(rets[1] != null){
 					vto.setTxs((List<WifiDeviceTxPeakSectionDTO>)rets[1]);
 				}
-			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+			}*/
+			URouterPeakSectionsDTO dto = WifiDeviceRealtimeRateStatisticsStringService.getInstance().getPeakSections(wifiId);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}

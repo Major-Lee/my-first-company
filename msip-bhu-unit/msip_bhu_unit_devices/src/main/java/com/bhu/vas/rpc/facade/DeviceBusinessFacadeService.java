@@ -1284,7 +1284,8 @@ public class DeviceBusinessFacadeService {
 		QuerySerialReturnDTO serialDto = RPCMessageParseHelper.generateDTOFromMessage(doc, QuerySerialReturnDTO.class);
 		//如果返回状态为doing 表示新下发的测速指令开始执行 需清除点之前的测速分段数据
 		if(WifiDeviceDownTask.State_Doing.equals(serialDto.getStatus())){
-			WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearPeakSections(wifiId);
+			//WifiDeviceRealtimeRateStatisticsStringService.getInstance().clearPeakSections(wifiId);
+			WifiDeviceRealtimeRateStatisticsStringService.getInstance().setPeakSections(wifiId, String.valueOf(taskid));
 		}
 	}
 	

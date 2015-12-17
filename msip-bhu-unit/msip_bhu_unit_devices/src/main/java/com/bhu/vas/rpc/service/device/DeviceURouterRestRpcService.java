@@ -5,8 +5,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,12 +18,13 @@ import com.bhu.vas.api.vto.URouterHdDetailVTO;
 import com.bhu.vas.api.vto.URouterHdHostNameVTO;
 import com.bhu.vas.api.vto.URouterMainEnterVTO;
 import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakSectionsVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
 import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -170,7 +169,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
-	public RpcResponseDTO<Boolean> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
+	public RpcResponseDTO<String> urouterPeakSection(Integer uid, String wifiId, int type, int period, int duration) {
 		logger.info(String.format("DeviceURouterRestRPC urouterPeakSection invoke uid [%s] mac [%s] type [%s] period [%s] duration [%s] ",
 				uid, wifiId, type, period, duration ));
 		
@@ -191,7 +190,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
-	public RpcResponseDTO<URouterPeakSectionsVTO> urouterPeakSectionFetch(Integer uid, String wifiId) {
+	public RpcResponseDTO<URouterPeakSectionsDTO> urouterPeakSectionFetch(Integer uid, String wifiId) {
 		logger.info(String.format("DeviceURouterRestRPC urouterPeakSectionFetch invoke uid [%s] mac [%s] ", 
 				uid, wifiId));
 		

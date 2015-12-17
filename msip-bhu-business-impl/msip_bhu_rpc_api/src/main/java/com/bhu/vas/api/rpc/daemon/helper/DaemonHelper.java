@@ -5,11 +5,8 @@ import java.util.List;
 
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 public class DaemonHelper {
 	public static void afterDeviceOnline(String mac,boolean needLocationQuery,List<String> payloads,
@@ -167,7 +164,7 @@ public class DaemonHelper {
 //	//设备测速数据上报间隔2秒
 //	public static final int DeviceSpeedQuery_Period = 2;
 	
-	public static void deviceSpeedQuery(String mac, int type, int period, int duration, IDaemonRpcService daemonRpcService){
+/*	public static void deviceSpeedQuery(String mac, int type, int period, int duration, IDaemonRpcService daemonRpcService){
 		String download_url = StringHelper.EMPTY_STRING_GAP;
 		String upload_url = StringHelper.EMPTY_STRING_GAP;
 		switch(type){
@@ -188,7 +185,7 @@ public class DaemonHelper {
 		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()
 				,period, duration, download_url, upload_url);
 		daemonCmdDown(mac, cmd, daemonRpcService);
-	}
+	}*/
 	
 	public static void deviceSettingModify(String mac, String paylod, IDaemonRpcService daemonRpcService){
 		String cmd = CMDBuilder.builderDeviceSettingModify(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(),

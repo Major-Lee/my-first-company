@@ -62,7 +62,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
-import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDevicesGrayChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
@@ -1313,7 +1312,7 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiDeviceHDRateFetch message[%s] successful", message));
 	}
 	
-	public void wifiDevicePeakRateFetch(String message){
+/*	public void wifiDevicePeakRateFetch(String message){
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s]", message));
 		WifiDeviceSpeedFetchDTO dto = JsonHelper.getDTO(message, WifiDeviceSpeedFetchDTO.class);
 		//DaemonHelper.daemonCmdDown(dto.getMac(), dto.getPayload(), daemonRpcService);
@@ -1322,7 +1321,7 @@ public class AsyncMsgHandleService {
 		DaemonHelper.deviceSpeedQuery(dto.getMac(), dto.getType(), dto.getPeriod(), dto.getDuration(), daemonRpcService);
 		//WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeakRateWaiting(dto.getMac());
 		logger.info(String.format("wifiDevicePeakRateFetch message[%s] successful", message));
-	}
+	}*/
 	
 	public void wifiDevicesGrayChanged(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesGrayChanged message[%s]", message));
