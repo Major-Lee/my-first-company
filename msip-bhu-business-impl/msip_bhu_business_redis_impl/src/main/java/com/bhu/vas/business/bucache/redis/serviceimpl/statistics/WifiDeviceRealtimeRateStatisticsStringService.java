@@ -330,10 +330,10 @@ public class WifiDeviceRealtimeRateStatisticsStringService extends AbstractRelat
 	 * 清理并初始化设备测速的数据
 	 * 初始化数据为#taskid#
 	 * @param mac
-	 * @param taskid
+	 * @param serial
 	 */
-	public void setPeakSections(String mac, String taskid){
-		String init_value = StringHelper.WELL_STRING_GAP.concat(taskid).concat(StringHelper.WELL_STRING_GAP);
+	public void setPeakSections(String mac, String serial){
+		String init_value = StringHelper.WELL_STRING_GAP.concat(serial).concat(StringHelper.WELL_STRING_GAP);
 		super.mset(new String[]{generatePeakSectionKey(mac, Type_Rx_Rate), generatePeakSectionKey(mac, Type_Tx_Rate)},
 				new String[]{init_value, init_value});
 	}
