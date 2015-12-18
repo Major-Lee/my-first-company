@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.param;
 
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 
 
 /**
@@ -19,7 +21,8 @@ public class ParamVasPluginDTO{
 	private String stop_cmd;
 	//下载地址
 	private String download_path;
-
+	//版本
+	private String ver;
 	public String getName() {
 		return name;
 	}
@@ -59,12 +62,46 @@ public class ParamVasPluginDTO{
 	public void setDownload_path(String download_path) {
 		this.download_path = download_path;
 	}
-	public static void main(String[] argv){
-		/*WifiDeviceSettingVapHttp404DTO dto = new WifiDeviceSettingVapHttp404DTO();
-		//dto.setAd_interface(ad_interface);
-		//dto.setAd_url(ad_url);
-		dto.setUrl("http://auth.wi2o.cn/ad/ad.js");
+	
+	public String getVer() {
+		return ver;
+	}
+
+	public void setVer(String ver) {
+		this.ver = ver;
+	}
+
+	public Object[] builderProperties() {
+		Object[] properties = new Object[6];
+		properties[0] = name;
+		properties[1] = enable;
+		properties[2] = start_cmd;
+		properties[3] = stop_cmd;
+		properties[4] = download_path;
+		properties[5] = ver;
+		return properties;
+	}
+	
+	public static ParamVasPluginDTO builderDefaultSambaPlugin(){
+		ParamVasPluginDTO dto = new ParamVasPluginDTO();
+		dto.setName("samba");
 		dto.setEnable("enable");
-		System.out.println(JsonHelper.getJSONString(dto));*/
+		dto.setStart_cmd("./smbsrv.sh start");
+		dto.setStop_cmd("./smbsrv.sh stop");
+		dto.setDownload_path("http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz");
+		dto.setVer("0.01");
+		return dto;
+	}
+	
+	public static void main(String[] argv){
+	//http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz
+		ParamVasPluginDTO dto = new ParamVasPluginDTO();
+		dto.setName("samba");
+		dto.setEnable("enable");
+		dto.setStart_cmd("./smbsrv.sh start");
+		dto.setStop_cmd("./smbsrv.sh stop");
+		dto.setDownload_path("http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz");
+		dto.setVer("0.01");
+		System.out.println(JsonHelper.getJSONString(dto));
 	}
 }

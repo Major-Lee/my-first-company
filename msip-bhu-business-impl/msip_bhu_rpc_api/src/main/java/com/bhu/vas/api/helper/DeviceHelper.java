@@ -725,7 +725,7 @@ public class DeviceHelper {
 	    "<sys>"+
 	    	"<config><ITEM sequence=\"-1\" /></config>"+
 	        "<external_plugins>"+
-	            "<ITEM name=\"samba\" enable=\"enable\" start_cmd=\"./smbsrv.sh start\" stop_cmd=\"./smbsrv.sh stop\" download_path=\"http://192.168.66.119/files/smb.package.tar.gz\" ver=\"1.0.0\"/>"+
+	            "<ITEM name=\"%s\" enable=\"%s\" start_cmd=\"%s\" stop_cmd=\"%s\" download_path=\"%s\" ver=\"%s\"/>"+
 	        "</external_plugins>"+
 	    "</sys>"+
 	"</dev>";
@@ -990,7 +990,7 @@ public class DeviceHelper {
 	
 	public static String builderDSPluginOuter(String extparams){
 		ParamVasPluginDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasPluginDTO.class);
-		return null;
+		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
 	
 	/**

@@ -33,11 +33,13 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
@@ -1023,6 +1025,13 @@ public class DeviceBusinessFacadeService {
 						afterQueryPayloads.add(CMDBuilder.builderDeviceSettingModify(wifiId, 
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
 					}
+					//如果是uRouter插件更新下发策略
+					if(dto.getPlugins() == null || dto.getPlugins().isEmpty()){
+						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
+								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
+								deviceFacadeService);
+						afterQueryPayloads.add(pluginCmd);
+					}
 				}
 				//如果是dhcp模式 则下发指令查询dhcp相关数据
 				String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
@@ -1030,11 +1039,16 @@ public class DeviceBusinessFacadeService {
 					if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
 					afterQueryPayloads.add(queryDHCPStatus);
 				}
-				{//插件更新下发策略
-					if(dto.getPlugins() == null || dto.getPlugins().isEmpty()){
-						//afterQueryPayloads.add(e);
+				/*{//如果是uRouter插件更新下发策略
+					if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())){
+						if(dto.getPlugins() == null || dto.getPlugins().isEmpty()){
+							String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
+									CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
+									deviceFacadeService);
+							afterQueryPayloads.add(pluginCmd);
+						}
 					}
-				}
+				}*/
 				//设备持久指令分发
 				/*List<String> persistencePayloads = null;
 				if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
