@@ -912,7 +912,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSStartVisitorWifiOuter(extparams);
 			case DS_VistorWifi_Stop:
 				return DeviceHelper.builderDSStopVisitorWifiOuter();
-				
+			case DS_Plugins:
+				return DeviceHelper.builderDSPluginOuter(extparams);
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_RealChannel:
@@ -929,6 +930,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams);
 			case DS_MM:
 				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+			
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
 			default:

@@ -34,9 +34,6 @@ public class QiuniuTokenGen {
 	        	// 请确保该bucket已经存在
 		        String bucketName = "appavatar4bhu";
 		        PutPolicy putPolicy = new PutPolicy(bucketName);
-		        
-		        //DateDateTimeHelper.getDateDaysAfter(counts);
-		        //putPolicy.expires = putPolicy.expires*24*365;//默认一小时 ，所以*24*265为一年
 		        //单位秒
 		        putPolicy.expires = 24*60*60*365;//默认一小时 ，所以*24*265为一年
 		        String uptoken = putPolicy.token(mac);
