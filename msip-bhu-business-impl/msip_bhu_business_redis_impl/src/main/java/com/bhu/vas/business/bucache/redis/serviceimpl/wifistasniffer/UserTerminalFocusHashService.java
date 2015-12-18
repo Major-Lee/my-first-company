@@ -154,6 +154,6 @@ public class UserTerminalFocusHashService extends AbstractRelationHashCache{
 	}
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.WIFISTASNIFFER);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
 }

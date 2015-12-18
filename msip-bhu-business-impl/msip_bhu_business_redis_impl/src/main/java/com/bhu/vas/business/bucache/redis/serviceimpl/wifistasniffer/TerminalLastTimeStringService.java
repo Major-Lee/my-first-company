@@ -1,4 +1,4 @@
-package com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer;
+/*package com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,20 +11,20 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationStringCache;
 import com.smartwork.msip.cores.helper.StringHelper;
 
-/**
+*//**
  * 周边探测终端的最后一次探测时间
  * @author lawliet
  *
- */
+ *//*
 public class TerminalLastTimeStringService extends AbstractRelationStringCache{
 	
 	private static class ServiceHolder{ 
 		private static TerminalLastTimeStringService instance =new TerminalLastTimeStringService(); 
 	}
-	/**
+	*//**
 	 * 获取工厂单例
 	 * @return
-	 */
+	 *//*
 	public static TerminalLastTimeStringService getInstance() { 
 		return ServiceHolder.instance; 
 	}
@@ -83,3 +83,4 @@ public class TerminalLastTimeStringService extends AbstractRelationStringCache{
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.WIFISTASNIFFER);
 	}
 }
+*/
