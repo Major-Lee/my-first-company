@@ -1009,7 +1009,6 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
-		
 		//System.out.println("~~~~~~~~~~~~~1:mac:"+wifiId);
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		int refresh_status = refreshDeviceSetting(wifiId, dto);
