@@ -36,20 +36,15 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 public class UserThirdTokenController extends BaseController{
 	private static Mac mac = null;
 	private static Set<String> bucketNameSupported = new HashSet<String>();
-	
-	private static final String bucketName_Avatar = "appavatar4bhu";
-	private static final String bucketName_Log = "applogs4bhu";
-	
-	private static final String avatar_suffix_name = ".jpeg";
-	private static final String log_suffix_name = ".log";
-	
 	static{
 		Config.ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
 		Config.SECRET_KEY = "edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
 	    mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
-	    bucketNameSupported.add(bucketName_Avatar);
-	    bucketNameSupported.add(bucketName_Log);
+	    bucketNameSupported.add("applogs4bhu");
+	    bucketNameSupported.add("appavatar4bhu");
 	}
+	
+	private static final String avatar_suffix_name = ".jpeg";
 	@ResponseBody()
 	@RequestMapping(value="/fetch",method={RequestMethod.POST})
 	public void fetch(
@@ -61,13 +56,7 @@ public class UserThirdTokenController extends BaseController{
         		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"bucketName",bucketName}));
         		return;
         	}
-        	String fid = null;//
-        	if(bucketName_Avatar.equals(bucketName)){
-        		fid = uid.toString().concat(avatar_suffix_name);
-        	}else{
-        		fid = uid.toString().concat(log_suffix_name);
-        	}
-        	
+        	String fid = uid.toString().concat(avatar_suffix_name);
     		CurrentKey ckey = new CurrentKey();
             PutPolicy putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(fid));
             //单位秒
