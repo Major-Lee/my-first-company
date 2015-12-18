@@ -1009,18 +1009,20 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
+		
+		System.out.println("~~~~~~~~~~~~~1:mac:"+wifiId);
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		int refresh_status = refreshDeviceSetting(wifiId, dto);
 		try{
 			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 			if(wifiDevice != null){
 				//获取设备配置之后的指令分发
-				List<String> afterQueryPayloads = null;
+				List<String> afterQueryPayloads = new ArrayList<String>();
 				//只有URouter的设备才需进行此操作
 				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())){
 					//验证URouter设备配置是否符合约定
 					if(!DeviceHelper.validateURouterBlackList(dto)){
-						if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
+						//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
 						String modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 						afterQueryPayloads.add(CMDBuilder.builderDeviceSettingModify(wifiId, 
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
@@ -1030,13 +1032,15 @@ public class DeviceBusinessFacadeService {
 						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
 								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
 								deviceFacadeService);
+						System.out.println("~~~~~~~~~~~~~2:cmd:"+pluginCmd);
 						afterQueryPayloads.add(pluginCmd);
 					}
+					System.out.println("~~~~~~~~~~~~~3:mac:"+wifiId);
 				}
 				//如果是dhcp模式 则下发指令查询dhcp相关数据
 				String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
 				if(!StringUtils.isEmpty(queryDHCPStatus)){
-					if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
+					//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
 					afterQueryPayloads.add(queryDHCPStatus);
 				}
 				/*{//如果是uRouter插件更新下发策略
