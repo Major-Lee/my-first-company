@@ -38,6 +38,10 @@ public enum OperationDS {
 	
 	DS_Http_VapModuleCMD_Start("25","ModuleCMD","开启全部增值指令-404、redirect、品牌及渠道指令"),
 	DS_Http_VapModuleCMD_Stop("26","关闭全部增值指令-404、redirect、品牌及渠道指令"),
+	
+	
+	DS_Plugins("50","plugins"),
+	
 	;
 
 	public static final String Empty_OperationDS = "00";

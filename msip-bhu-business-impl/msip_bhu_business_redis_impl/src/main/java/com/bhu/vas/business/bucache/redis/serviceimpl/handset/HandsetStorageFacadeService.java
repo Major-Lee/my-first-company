@@ -198,7 +198,7 @@ public class HandsetStorageFacadeService{
 		
 		
 		
-		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:23:06:68", "3c:d0:f8:e9:b3:2e", 100);
+		List<HandsetLogDTO> recentLogs = HandsetStorageFacadeService.wifiDeviceHandsetRecentLogs("84:82:f4:1c:e8:b8", "d4:f4:6f:61:46:13", 100);
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
 		}

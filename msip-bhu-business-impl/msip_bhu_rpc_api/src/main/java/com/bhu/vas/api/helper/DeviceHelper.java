@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -719,6 +720,16 @@ public class DeviceHelper {
 			     "</wifi>"+
 			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
 		    "</dev>";
+	public static final String DeviceSetting_Plugins_Samba =
+	"<dev>"+
+	    "<sys>"+
+	    	"<config><ITEM sequence=\"-1\" /></config>"+
+	        "<external_plugins>"+
+	            "<ITEM name=\"samba\" enable=\"enable\" start_cmd=\"./smbsrv.sh start\" stop_cmd=\"./smbsrv.sh stop\" download_path=\"http://192.168.66.119/files/smb.package.tar.gz\" ver=\"1.0.0\"/>"+
+	        "</external_plugins>"+
+	    "</sys>"+
+	"</dev>";
+	
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" />";
@@ -976,6 +987,12 @@ public class DeviceHelper {
 		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Stop_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
 		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, DeviceSetting_Stop_HttpPortalItem);
 	}
+	
+	public static String builderDSPluginOuter(String extparams){
+		ParamVasPluginDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasPluginDTO.class);
+		return null;
+	}
+	
 	/**
 	 * 构建信号强度配置数据
 	 * @param config_sequence

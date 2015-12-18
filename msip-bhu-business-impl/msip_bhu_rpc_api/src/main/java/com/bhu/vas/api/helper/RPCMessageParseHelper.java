@@ -28,6 +28,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
@@ -592,6 +593,23 @@ public class RPCMessageParseHelper {
 					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_Happen);
 				else
 					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_NotHappen);
+			}
+			
+			//解析插件配置
+			List<Element> plugin_items = Dom4jHelper.selectElements(doc, "dev/sys/external_plugins/ITEM");
+			if(plugin_items != null && !plugin_items.isEmpty()){
+				List<WifiDeviceSettingPluginDTO> plugin_dtos = new ArrayList<WifiDeviceSettingPluginDTO>();
+				for(Element plugin : plugin_items){
+					WifiDeviceSettingPluginDTO mm_dto = new WifiDeviceSettingPluginDTO();
+					mm_dto.setName(plugin.attributeValue("name"));
+					mm_dto.setEnable(plugin.attributeValue("enable"));
+					mm_dto.setStart_cmd(plugin.attributeValue("start_cmd"));
+					mm_dto.setStop_cmd(plugin.attributeValue("stop_cmd"));
+					mm_dto.setDownload_path(plugin.attributeValue("download_path"));
+					mm_dto.setVer(plugin.attributeValue("ver"));
+					plugin_dtos.add(mm_dto);
+				}
+				dto.setPlugins(plugin_dtos);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

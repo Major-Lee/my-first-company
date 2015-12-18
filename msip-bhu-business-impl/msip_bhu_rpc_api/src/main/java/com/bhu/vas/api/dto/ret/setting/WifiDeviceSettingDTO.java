@@ -41,6 +41,10 @@ public class WifiDeviceSettingDTO {
 	private List<WifiDeviceSettingUserDTO> users;
 	//终端别名列表
 	private List<WifiDeviceSettingMMDTO> mms;
+	
+	//终端别名列表
+	private List<WifiDeviceSettingPluginDTO> plugins;
+	
 	//广告
 	private WifiDeviceSettingVapAdDTO ad;
 	
@@ -140,6 +144,12 @@ public class WifiDeviceSettingDTO {
 	public void setBoot_on_reset(int boot_on_reset) {
 		this.boot_on_reset = boot_on_reset;
 	}
-	
-	
+
+	public List<WifiDeviceSettingPluginDTO> getPlugins() {
+		return plugins;
+	}
+
+	public void setPlugins(List<WifiDeviceSettingPluginDTO> plugins) {
+		this.plugins = plugins;
+	}
 }

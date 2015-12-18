@@ -1030,6 +1030,11 @@ public class DeviceBusinessFacadeService {
 					if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
 					afterQueryPayloads.add(queryDHCPStatus);
 				}
+				{//插件更新下发策略
+					if(dto.getPlugins() == null || dto.getPlugins().isEmpty()){
+						//afterQueryPayloads.add(e);
+					}
+				}
 				//设备持久指令分发
 				/*List<String> persistencePayloads = null;
 				if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
