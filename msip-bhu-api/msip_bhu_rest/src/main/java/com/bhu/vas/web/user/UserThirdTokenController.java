@@ -56,13 +56,15 @@ public class UserThirdTokenController extends BaseController{
         		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"bucketName",bucketName}));
         		return;
         	}
+        	String fid = uid.toString().concat(avatar_suffix_name);
     		CurrentKey ckey = new CurrentKey();
-            PutPolicy putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(avatar_suffix_name));
+            PutPolicy putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(fid));
             //单位秒
             putPolicy.expires = 24*60*60*365;//默认一小时 ，所以*24*265为一年
 			String uptoken = putPolicy.token(mac);
 			ckey.setBn(bucketName);
 			ckey.setUt(uptoken);
+			ckey.setFid(fid);
 			System.out.println(JsonHelper.getJSONString(ckey));
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ckey));
 		} catch (AuthException e) {
