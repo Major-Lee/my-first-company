@@ -79,7 +79,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
@@ -1431,7 +1430,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			List<URouterWSHotVTO> vto_list = new ArrayList<URouterWSHotVTO>();
 			
 			String[] hd_macs = BusinessModelBuilder.toElementsArray(tuples);
-			List<String> last_time_strings = TerminalLastTimeStringService.getInstance().getMulti(mac, hd_macs);
+			//List<String> last_time_strings = TerminalLastTimeStringService.getInstance().getMulti(mac, hd_macs);
 			List<UserTerminalFocusDTO> focus_dtos = UserTerminalFocusHashService.getInstance().fetchUserTerminalFocus(uid, hd_macs);
 			int cursor = 0;
 			for(Tuple tuple : tuples){
@@ -1444,10 +1443,10 @@ public class DeviceURouterRestBusinessFacadeService {
 					vto.setNick(focus_dto.getNick());
 					vto.setFocus(focus_dto.isFocus());
 				}
-				String last_time = last_time_strings.get(cursor);
+/*				String last_time = last_time_strings.get(cursor);
 				if(!StringUtils.isEmpty(last_time)){
 					vto.setLast_snifftime(Long.parseLong(last_time));
-				}
+				}*/
 				vto_list.add(vto);
 				cursor++;
 			}

@@ -60,6 +60,6 @@ public class TerminalDeviceTypeCountHashService extends AbstractRelationHashCach
 	}
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.WIFISTASNIFFER);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
 }

@@ -17,7 +17,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -148,7 +147,7 @@ public class BackendBusinessService {
 					
 					String[] recent_array = recent_set.toArray(new String[]{});
 					//删除最后一次探测上线时间数据
-					TerminalLastTimeStringService.getInstance().dels(mac, recent_array);
+					//TerminalLastTimeStringService.getInstance().dels(mac, recent_array);
 					//删除终端探测细节数据
 					TerminalDetailRecentSortedSetService.getInstance().dels(mac, recent_array);
 					//删除终端探测隔壁老王数据
