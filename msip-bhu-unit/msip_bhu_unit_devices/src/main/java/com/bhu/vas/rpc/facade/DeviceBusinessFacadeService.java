@@ -1009,8 +1009,7 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceSetting(String ctx, String response, String wifiId, long taskid){
-		
-		System.out.println("~~~~~~~~~~~~~1:mac:"+wifiId);
+		//System.out.println("~~~~~~~~~~~~~1:mac:"+wifiId);
 		WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(response);
 		int refresh_status = refreshDeviceSetting(wifiId, dto);
 		try{
@@ -1032,10 +1031,10 @@ public class DeviceBusinessFacadeService {
 						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
 								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
 								deviceFacadeService);
-						System.out.println("~~~~~~~~~~~~~2:cmd:"+pluginCmd);
+						//System.out.println("~~~~~~~~~~~~~2:cmd:"+pluginCmd);
 						afterQueryPayloads.add(pluginCmd);
 					}
-					System.out.println("~~~~~~~~~~~~~3:mac:"+wifiId);
+					//System.out.println("~~~~~~~~~~~~~3:mac:"+wifiId);
 				}
 				//如果是dhcp模式 则下发指令查询dhcp相关数据
 				String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
