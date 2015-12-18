@@ -5,6 +5,7 @@ public class CurrentKey {
 	private String bn;
 	private String ut;
 	private String dt;
+	private String fid;
 	public String getUt() {
 		return ut;
 	}
@@ -22,6 +23,12 @@ public class CurrentKey {
 	}
 	public void setBn(String bn) {
 		this.bn = bn;
+	}
+	public String getFid() {
+		return fid;
+	}
+	public void setFid(String fid) {
+		this.fid = fid;
 	}
 	
 }
