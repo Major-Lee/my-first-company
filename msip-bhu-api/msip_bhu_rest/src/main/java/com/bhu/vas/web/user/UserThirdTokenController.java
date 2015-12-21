@@ -50,33 +50,46 @@ public class UserThirdTokenController extends BaseController{
 	    bucketNameSupported.add(bucketName_Avatar);
 	    bucketNameSupported.add(bucketName_Log);
 	}
+	
+	/**
+	 * 
+	 * @param response
+	 * @param uid
+	 * @param upd 是否是需要更新
+	 * @param bucketName
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/fetch",method={RequestMethod.POST})
 	public void fetch(
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,defaultValue = "true") boolean upd,
 			@RequestParam(required = true,value="b") String bucketName) {
         try {
         	if(!bucketNameSupported.contains(bucketName)){
         		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"bucketName",bucketName}));
         		return;
         	}
-        	String fid = null;//
-        	if(bucketName_Avatar.equals(bucketName)){
-        		fid = uid.toString().concat(avatar_suffix_name);
+        	PutPolicy putPolicy = null;
+        	CurrentKey ckey = new CurrentKey();
+        	if(upd){
+        		String fid = null;//
+            	if(bucketName_Avatar.equals(bucketName)){
+            		fid = uid.toString().concat(avatar_suffix_name);
+            	}else{
+            		fid = uid.toString().concat(log_suffix_name);
+            	}
+            	putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(fid));
+            	ckey.setFid(fid);
         	}else{
-        		fid = uid.toString().concat(log_suffix_name);
+            	putPolicy = new PutPolicy(bucketName);
         	}
-        	
-    		CurrentKey ckey = new CurrentKey();
-            PutPolicy putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(fid));
             //单位秒
             putPolicy.expires = 24*60*60*365;//默认一小时 ，所以*24*265为一年
 			String uptoken = putPolicy.token(mac);
 			ckey.setBn(bucketName);
 			ckey.setUt(uptoken);
-			ckey.setFid(fid);
-			System.out.println(JsonHelper.getJSONString(ckey));
+			//System.out.println(JsonHelper.getJSONString(ckey));
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ckey));
 		} catch (AuthException e) {
 			e.printStackTrace(System.out);
