@@ -152,7 +152,7 @@ public class Step05AgentWholeDayRecordService {
 	}
 	
 	
-	private void doAgentWholeDay(String date,Integer uid){
+	public void doAgentWholeDay(String date,Integer uid){
 		//int user_devices_hit = 0;
 		RecordDeviceWholeDaySummaryDTO summary = new RecordDeviceWholeDaySummaryDTO();
 		summary.setId(uid.toString());
@@ -203,7 +203,7 @@ public class Step05AgentWholeDayRecordService {
 		
 		//System.out.println("~~~~~~~size:"+lineHandsetRecordsMap.size());
 	}
-	private void doAgentWholeCurrentMonth(String date,List<Integer> users){
+	public void doAgentWholeCurrentMonth(String date,List<Integer> users){
 		Date certainDate = DateTimeHelper.parseDate(date, DateTimeHelper.FormatPattern5);
 		Date monthStartDate = DateTimeExtHelper.getFirstDateOfMonth(certainDate);
 		Date monthEndDate = DateTimeExtHelper.getLastDateOfMonth(certainDate);
