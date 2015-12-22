@@ -50,7 +50,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
             if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_EXIST) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_EXIST;
             }else if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-                responseErrorCode = ResponseErrorCode.DEVICE_NOT_UROOTER;
+                responseErrorCode = ResponseErrorCode.DEVICE_NOT_UROUTER;
             }else if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_ONLINE;
             } else if (retStatus == WIFI_DEVICE_STATUS_BINDED) {
@@ -75,7 +75,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
         	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_UROOTER,new String[]{mac});
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_UROUTER,new String[]{mac});
         }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
                 || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             return userDeviceFacadeService.unBindDevice(mac, uid);
@@ -131,9 +131,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
                     ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.i18n(),new String[]{mac}));
         } else if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_UROOTER.code());
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_UROUTER.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_NOT_UROOTER.i18n(),new String[]{mac}));
+                    ResponseErrorCode.DEVICE_NOT_UROUTER.i18n(),new String[]{mac}));
         } else if (deviceStatus == WIFI_DEVICE_STATUS_BINDED) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_ALREADY_BEBINDED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
