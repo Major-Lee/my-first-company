@@ -67,6 +67,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -1027,7 +1028,7 @@ public class DeviceBusinessFacadeService {
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
 					}
 					//如果是uRouter插件更新下发策略
-					if(dto.getPlugins() == null || dto.getPlugins().isEmpty()){
+					if(dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
 						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
 								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
 								deviceFacadeService);
