@@ -1028,7 +1028,7 @@ public class DeviceBusinessFacadeService {
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
 					}
 					//如果是uRouter插件更新下发策略
-					if(dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
+					if(!dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
 						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
 								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
 								deviceFacadeService);
