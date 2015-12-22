@@ -85,8 +85,8 @@ public enum OperationCMD {
 	
 	DeviceDelayReboot("152","设备延迟重启","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"delayreboot\" delay=\"5\"/></cmd>"),
 
-	DeviceUpgrade("153", "设备升级","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"firmware_upgrade\" download_timeout=\"1800\" url=\"%s\" upgrade_begin=\"%s\" upgrade_end=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
-	DeviceModuleUpgrade("154", "设备module升级(设备vapmudule不为空)以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
+	DeviceUpgrade("153", "设备升级","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"firmware_upgrade\" download_timeout=\"1800\" url=\"%s\" url_groups=\"%s\" upgrade_begin=\"%s\" upgrade_end=\"%s\" __notify=\"true\"  serial=\"%s\" /></cmd>"),
+	DeviceModuleUpgrade("154", "设备module升级(设备vapmudule不为空)以上","","00001001%s0000000000000000100000012%s%s%s"+"<upgrade><ITEM url = \"%s\" url_groups=\"%s\" retry_count=\"%s\" retry_interval=\"%s\" /></upgrade>"),
 	
 	DeviceCurrentConfigSave("200", "通知设备存储设备当前运行配置","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"save\" /></cmd>"),
 	//指令透传下发给设备，出来header部分，其余xml部分完全替换

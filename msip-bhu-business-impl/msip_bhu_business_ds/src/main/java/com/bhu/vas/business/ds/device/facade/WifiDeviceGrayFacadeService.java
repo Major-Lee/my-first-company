@@ -257,7 +257,7 @@ public class WifiDeviceGrayFacadeService {
      * @param versionid
      * @param upgrade_url
      */
-    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid,String upgrade_url){
+    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls){
     	validateDut(dut);
     	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(upgrade_url)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
@@ -272,6 +272,7 @@ public class WifiDeviceGrayFacadeService {
     		versionfw.setName(versionid);
     		versionfw.setDut(dut.getIndex());
     		versionfw.setUpgrade_url(upgrade_url);
+    		versionfw.setUpgrade_slaver_urls(upgrade_slaver_urls);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
     		return versionfw.toVersionVTO();
     	}else{
@@ -284,6 +285,7 @@ public class WifiDeviceGrayFacadeService {
     		versionom.setName(versionid);
     		versionom.setDut(dut.getIndex());
     		versionom.setUpgrade_url(upgrade_url);
+    		versionom.setUpgrade_slaver_urls(upgrade_slaver_urls);
     		versionom = wifiDeviceVersionOMService.insert(versionom);
     		return versionom.toVersionVTO();
     	}
@@ -464,7 +466,7 @@ public class WifiDeviceGrayFacadeService {
     		validateGrayEnalbe4Upgrade(grayLevel);
     	}catch(BusinessI18nCodeException i18nex){
     		i18nex.printStackTrace(System.out);
-    		resultDto = new UpgradeDTO(dut,gl,true,false);
+    		resultDto = new UpgradeDTO(dut,gl,fw,false);
     		resultDto.setDesc(i18nex.getMessage());
     		System.out.println("A1 upgradeDecideAction exception:"+resultDto);
     		return resultDto;
@@ -483,6 +485,7 @@ public class WifiDeviceGrayFacadeService {
 					if(versionfw != null && versionfw.valid()){
 						resultDto = new UpgradeDTO(dut,gl,fw,true,
 								grayVersion.getD_fwid(),versionfw.getUpgrade_url());
+						resultDto.setUpgrade_slaver_urls(versionfw.getUpgrade_slaver_urls());
 						resultDto.setCurrentDVB(d_version);
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{
@@ -502,6 +505,7 @@ public class WifiDeviceGrayFacadeService {
 					if(versionom != null && versionom.valid()){
 						resultDto = new UpgradeDTO(dut,gl,fw,true,
 								grayVersion.getD_omid(),versionom.getUpgrade_url());
+						resultDto.setUpgrade_slaver_urls(versionom.getUpgrade_slaver_urls());;
 						resultDto.setCurrentDVB(d_version);
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{

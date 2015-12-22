@@ -22,6 +22,8 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	private String name;
 	//固件文件下载url
 	private String upgrade_url;
+	//备用固件文件下载url 逗号分割
+	private String upgrade_slaver_urls;
 	//适用的产品类型
 	private String dut;
 	//当前灰度中被引用
@@ -73,6 +75,14 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 
 	public void setDut(String dut) {
 		this.dut = dut;
+	}
+	
+	public String getUpgrade_slaver_urls() {
+		return upgrade_slaver_urls;
+	}
+
+	public void setUpgrade_slaver_urls(String upgrade_slaver_urls) {
+		this.upgrade_slaver_urls = upgrade_slaver_urls;
 	}
 
 	public boolean valid(){

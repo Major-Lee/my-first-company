@@ -12,6 +12,7 @@ public class UpgradeDTO {
 	private boolean forceAppUpgrade;
 	private String name;
 	private String upgradeurl;
+	private String upgrade_slaver_urls;
 	private String currentDVB;
     private String currentAVB;
     private String desc;
@@ -106,6 +107,15 @@ public class UpgradeDTO {
 		this.desc = desc;
 	}
 	
+
+	public String getUpgrade_slaver_urls() {
+		return upgrade_slaver_urls;
+	}
+
+	public void setUpgrade_slaver_urls(String upgrade_slaver_urls) {
+		this.upgrade_slaver_urls = upgrade_slaver_urls;
+	}
+
 	public String buildUpgradeCMD(String mac, long taskid,String beginTime,String endTime){
 		if(taskid == 0){
 			taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
@@ -115,9 +125,9 @@ public class UpgradeDTO {
 			/*//测试时使用，都变成立即升级
 			beginTime = StringUtils.EMPTY;
 			endTime = StringUtils.EMPTY;*/
-			cmd = CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
+			cmd = CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl(),this.getUpgrade_slaver_urls());
 		}else
-			cmd = CMDBuilder.builderVapModuleUpgrade(mac, taskid,this.getUpgradeurl(),
+			cmd = CMDBuilder.builderVapModuleUpgrade(mac, taskid,this.getUpgradeurl(),this.getUpgrade_slaver_urls(),
 					WifiDeviceHelper.Upgrade_Module_Default_Retry_Count, WifiDeviceHelper.Upgrade_Module_Default_RetryInterval);
 		return cmd;
 		//return CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());

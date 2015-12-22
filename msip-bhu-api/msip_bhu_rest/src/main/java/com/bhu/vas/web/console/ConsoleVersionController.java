@@ -142,9 +142,10 @@ public class ConsoleVersionController extends BaseController {
             @RequestParam(required = true) String dut,
             @RequestParam(required = true) boolean fw,
             @RequestParam(required = true) String versionid, 
-            @RequestParam(required = true) String upgrade_url
+            @RequestParam(required = true) String upgrade_url,
+            @RequestParam(required = false) String upgrade_slaver_urls
             ) {
-    	RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, versionid, upgrade_url);
+    	RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, versionid, upgrade_url,upgrade_slaver_urls);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

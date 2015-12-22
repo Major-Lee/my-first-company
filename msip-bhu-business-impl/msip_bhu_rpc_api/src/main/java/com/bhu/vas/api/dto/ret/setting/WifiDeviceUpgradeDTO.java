@@ -2,8 +2,12 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
- * Created by bluesand on 5/14/15.
+ * 升级指令DTO
+ * @author Edmond
+ *
  */
 @SuppressWarnings("serial")
 public class WifiDeviceUpgradeDTO implements Serializable {
@@ -13,7 +17,7 @@ public class WifiDeviceUpgradeDTO implements Serializable {
     private String upgrade_end;
 
     private String url;
-
+    private String url_groups;
     private boolean ctrl_version;
 
     public String getUpgrade_begin() {
@@ -33,14 +37,30 @@ public class WifiDeviceUpgradeDTO implements Serializable {
     }
 
     public String getUrl() {
-        return url;
+    	if(StringUtils.isEmpty(url)){
+    		return StringUtils.EMPTY;
+    	}else{
+    		return url;
+    	}
     }
 
     public void setUrl(String url) {
         this.url = url;
     }
 
-    public boolean isCtrl_version() {
+    public String getUrl_groups() {
+    	if(StringUtils.isEmpty(url_groups)){
+    		return StringUtils.EMPTY;
+    	}else{
+    		return url_groups;
+    	}
+	}
+
+	public void setUrl_groups(String url_groups) {
+		this.url_groups = url_groups;
+	}
+
+	public boolean isCtrl_version() {
         return ctrl_version;
     }
 
