@@ -496,6 +496,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		if(!device_entity.isOnline()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
 		}
+		//验证是否是urouter
+		if(!WifiDeviceHelper.isURouterDevice(device_entity.getOrig_swver())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_UROUTER,new String[]{mac});
+		}
 		return device_entity;
 	}
 	
