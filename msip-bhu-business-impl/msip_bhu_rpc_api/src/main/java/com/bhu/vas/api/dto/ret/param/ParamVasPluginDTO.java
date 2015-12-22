@@ -1,5 +1,6 @@
 package com.bhu.vas.api.dto.ret.param;
 
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 
@@ -84,17 +85,17 @@ public class ParamVasPluginDTO{
 	
 	public static ParamVasPluginDTO builderDefaultSambaPlugin(){
 		ParamVasPluginDTO dto = new ParamVasPluginDTO();
-		dto.setName("samba");
-		dto.setEnable("enable");
-		dto.setStart_cmd("./smbsrv.sh start");
-		dto.setStop_cmd("./smbsrv.sh stop");
-		dto.setDownload_path("http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz");
-		dto.setVer("0.01");
+		dto.setName(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name);
+		dto.setEnable(BusinessRuntimeConfiguration.Devices_CMD_Enable);
+		dto.setStart_cmd(BusinessRuntimeConfiguration.Devices_Plugin_Samba_StartCmd);
+		dto.setStop_cmd(BusinessRuntimeConfiguration.Devices_Plugin_Samba_StopCmd);
+		dto.setDownload_path(BusinessRuntimeConfiguration.Devices_Plugin_Samba_DownloadPath);
+		dto.setVer(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Ver);
 		return dto;
 	}
 	
 	public static void main(String[] argv){
-	//http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz
+		//http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz
 		ParamVasPluginDTO dto = new ParamVasPluginDTO();
 		dto.setName("samba");
 		dto.setEnable("enable");
