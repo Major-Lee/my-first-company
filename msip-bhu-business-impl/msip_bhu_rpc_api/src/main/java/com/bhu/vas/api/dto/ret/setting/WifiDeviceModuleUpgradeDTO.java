@@ -2,18 +2,27 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
- * Created by bluesand on 5/14/15.
+ * 
+ * @author Edmond
+ *
  */
 @SuppressWarnings("serial")
 public class WifiDeviceModuleUpgradeDTO implements Serializable {
     private String urlprefix;
+    private String url_groups;
     private int retry_count;
     private int retry_interval;
 	public String getUrlprefix() {
-		return urlprefix;
+		if(StringUtils.isEmpty(urlprefix)){
+    		return StringUtils.EMPTY;
+    	}else{
+    		return urlprefix;
+    	}
 	}
 	public void setUrlprefix(String urlprefix) {
 		this.urlprefix = urlprefix;
@@ -29,6 +38,16 @@ public class WifiDeviceModuleUpgradeDTO implements Serializable {
 	}
 	public void setRetry_interval(int retry_interval) {
 		this.retry_interval = retry_interval;
+	}
+	public String getUrl_groups() {
+		if(StringUtils.isEmpty(url_groups)){
+    		return StringUtils.EMPTY;
+    	}else{
+    		return url_groups;
+    	}
+	}
+	public void setUrl_groups(String url_groups) {
+		this.url_groups = url_groups;
 	}
 	public static void main(String[] argv){
 		WifiDeviceModuleUpgradeDTO dto = new WifiDeviceModuleUpgradeDTO();

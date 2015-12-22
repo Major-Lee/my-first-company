@@ -25,6 +25,13 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	Agent_Charging_Param_TimeUnit = PropertiesHelper.getInt("agent.charging.param.timeunit", paramProperties,Agent_Charging_Param_TimeUnit);
         	Agent_Charging_Param_ValueUnit = PropertiesHelper.getDouble("agent.charging.param.valueunit", paramProperties, Agent_Charging_Param_ValueUnit);
         	Agent_Charging_Param_CashBackFirstEach = PropertiesHelper.getDouble("agent.charging.param.cashbackfirsteach", paramProperties, Agent_Charging_Param_CashBackFirstEach);
+        	
+        	Devices_Plugin_Samba_Name = PropertiesHelper.getString("devices.plugin.samba.name", paramProperties, Devices_Plugin_Samba_Name);
+        	Devices_Plugin_Samba_StartCmd = PropertiesHelper.getString("devices.plugin.samba.startcmd", paramProperties, Devices_Plugin_Samba_StartCmd);
+        	Devices_Plugin_Samba_StopCmd = PropertiesHelper.getString("devices.plugin.samba.stopcmd", paramProperties, Devices_Plugin_Samba_StopCmd);
+        	Devices_Plugin_Samba_DownloadPath = PropertiesHelper.getString("devices.plugin.samba.downloadpath", paramProperties, Devices_Plugin_Samba_DownloadPath);
+        	Devices_Plugin_Samba_Ver = PropertiesHelper.getString("devices.plugin.samba.ver", paramProperties, Devices_Plugin_Samba_Ver);
+        	
         	logger.info("loading runtime configuration successfully!");  
         }  
     }  
@@ -37,4 +44,13 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	//缺省值 新设备第一次返现额度 为30.00d  agent.charging.param.cashbackfirsteach
 	public static double Agent_Charging_Param_CashBackFirstEach = 30.00d;
 	
+	public static String Devices_CMD_Enable = "enable";
+	public static String Devices_CMD_Disable = "disable";
+	
+	public static String Devices_Plugin_Samba_Name = "samba";
+	public static String Devices_Plugin_Samba_StartCmd = "./smbsrv.sh start";
+	public static String Devices_Plugin_Samba_StopCmd = "./smbsrv.sh stop";
+	//下载地址，支持逗号分割
+	public static String Devices_Plugin_Samba_DownloadPath = "http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz";
+	public static String Devices_Plugin_Samba_Ver = "0.01";
 }

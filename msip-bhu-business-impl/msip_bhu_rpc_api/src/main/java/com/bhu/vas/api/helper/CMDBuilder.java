@@ -138,7 +138,7 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, download_url, upload_url, period, duration, builderCMDSerial(opt, taskid_format));
 	}
 
-	public static String builderDeviceUpgrade(String wifi_mac, long taskid, String upgrade_begin, String upgrade_end, String url) {
+	public static String builderDeviceUpgrade(String wifi_mac, long taskid, String upgrade_begin, String upgrade_end, String url,String url_groups) {
 		String opt = OperationCMD.DeviceUpgrade.getNo();
 		String taskid_format = builderTaskidFormat(taskid);
 		String searilno = builderFirmwareUpdateSerialno(taskid);
@@ -146,7 +146,7 @@ public class CMDBuilder {
 //				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url, builderCMDSerial(opt, taskid_format));
 		
 		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, searilno);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,url_groups,upgrade_begin, upgrade_end, searilno);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderDhcpcStatusQuery(String wifi_mac,long taskid,String interface_name){
@@ -371,11 +371,11 @@ public class CMDBuilder {
 					break;
 				case DeviceUpgrade:
 					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
-					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
+					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl(),upgradeDto.getUrl_groups());
 					break;
 				case DeviceModuleUpgrade:
 					WifiDeviceModuleUpgradeDTO moduleupgradeDto = JsonHelper.getDTO(extparams, WifiDeviceModuleUpgradeDTO.class);
-					resultCmd = builderVapModuleUpgrade(wifi_mac, taskid,moduleupgradeDto.getUrlprefix(),moduleupgradeDto.getRetry_count(), moduleupgradeDto.getRetry_interval());
+					resultCmd = builderVapModuleUpgrade(wifi_mac, taskid,moduleupgradeDto.getUrlprefix(),moduleupgradeDto.getUrl_groups(),moduleupgradeDto.getRetry_count(), moduleupgradeDto.getRetry_interval());
 					break;
 				case DeviceWifiTimerStart:
 					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
@@ -472,7 +472,7 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_Register_RES_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()));
 	}
 	
-	public static String builderVapModuleUpgrade(String wifi_mac, long taskid, String urlprefix, int retry_count, int retry_interval) {
+	public static String builderVapModuleUpgrade(String wifi_mac, long taskid, String urlprefix,String url_groups, int retry_count, int retry_interval) {
 		String taskid_format = builderTaskidFormat(taskid);
 		
 		return String.format(OperationCMD.DeviceModuleUpgrade.getCmdtpl(),
@@ -481,6 +481,7 @@ public class CMDBuilder {
 				OperationCMD.DeviceModuleUpgrade.getNo(),
 				taskid_format,//builderTaskidFormat(auto_taskid_fragment.getNextSequence()), 
 				urlprefix,
+				url_groups,
 				retry_count,
 				retry_interval);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
 	}

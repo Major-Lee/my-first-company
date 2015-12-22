@@ -8,6 +8,8 @@
     <id property="id" column="id"/>
     <result property="name" column="name"/>
     <result property="upgrade_url" column="upgrade_url"/>
+    <result property="upgrade_slaver_urls" column="upgrade_slaver_urls"/>
+    
     <result property="dut" column="dut"/>
     <result property="related" column="related"/>
     <result property="created_at" column="created_at"/>
@@ -24,6 +26,7 @@
 	    	id,
 	    	name,
 	    	upgrade_url,
+	    	upgrade_slaver_urls,
 	    	dut,
 	    	related,
 	    	created_at,
@@ -34,6 +37,7 @@
 	    <![CDATA[
 			name,
 	    	upgrade_url,
+	    	upgrade_slaver_urls,
 	    	dut,
 	    	related,
 	    	created_at,
@@ -45,6 +49,7 @@
 			#{id},
 	    	#{name},
 	    	#{upgrade_url},
+	    	#{upgrade_slaver_urls},
 	    	#{dut},
 	    	#{related},
 	    	#{created_at},
@@ -54,6 +59,7 @@
 	<sql id="modelUpdateValues">
 	    	name = #{name},
 	    	upgrade_url = #{upgrade_url},
+	    	upgrade_slaver_urls = #{upgrade_slaver_urls},
 	    	dut= #{dut},
 	    	related = #{related},
 	    	updated_at = #{updated_at}

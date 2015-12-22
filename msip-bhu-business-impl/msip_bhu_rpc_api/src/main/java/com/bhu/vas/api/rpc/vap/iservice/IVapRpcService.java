@@ -27,7 +27,7 @@ public interface IVapRpcService {
     RpcResponseDTO<TailPage<VersionVTO>> pagesDeviceVersions(int uid,String dut,boolean fw,int pn,int ps);
     
     RpcResponseDTO<GrayUsageVTO> modifyRelatedVersion4GrayVersion(int uid,String dut,int gl,String fwid,String omid);
-    RpcResponseDTO<VersionVTO> addDeviceVersion(int uid,String dut,boolean fw,String versionid,String upgrade_url);
+    RpcResponseDTO<VersionVTO> addDeviceVersion(int uid,String dut,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls);
     RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid,String dut,boolean fw,String versionid);
     RpcResponseDTO<List<String>> saveMacs2Gray(int uid, String dut, int gl,List<String> macs);
     RpcResponseDTO<Boolean> forceDeviceUpgrade(int uid, boolean fw, String versionid,List<String> macs,String beginTime,String endTime);

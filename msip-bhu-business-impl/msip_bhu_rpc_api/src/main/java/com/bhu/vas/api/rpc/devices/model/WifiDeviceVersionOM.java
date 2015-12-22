@@ -20,8 +20,11 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 	//id 采用运营模块版本 eg： H108V1.2.10M8299.tgz 中的H108V1.2.10M8299，H106V1.3.2M8888
 	//固件名称
 	private String name;
-	//固件文件下载url
+	//组件文件路径下载url
 	private String upgrade_url;
+	//备用组件文件路径下载url 逗号分割
+	private String upgrade_slaver_urls;
+
 	//适用的产品类型
 	private String dut;
 	//当前灰度中被引用
@@ -67,6 +70,15 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 	public void setDut(String dut) {
 		this.dut = dut;
 	}
+	
+	public String getUpgrade_slaver_urls() {
+		return upgrade_slaver_urls;
+	}
+
+	public void setUpgrade_slaver_urls(String upgrade_slaver_urls) {
+		this.upgrade_slaver_urls = upgrade_slaver_urls;
+	}
+
 	public boolean valid(){
 		return StringUtils.isNotEmpty(id) && StringUtils.isNotEmpty(upgrade_url);
 	}
