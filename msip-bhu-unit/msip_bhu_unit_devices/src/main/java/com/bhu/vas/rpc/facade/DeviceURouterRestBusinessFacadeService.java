@@ -1374,6 +1374,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(StringUtils.isEmpty(mac)){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
+			
+			deviceFacadeService.validateUserDevice(uid, mac);
+			
 			List<URouterWSRecentVTO> vto_list = null;
 			//当前时间
 			long current_ts = System.currentTimeMillis();
@@ -1420,6 +1423,8 @@ public class DeviceURouterRestBusinessFacadeService {
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 
+			deviceFacadeService.validateUserDevice(uid, mac);
+			
 			long count = TerminalHotSortedSetService.getInstance().terminalHotSize(mac);
 			if(count == 0){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
@@ -1500,6 +1505,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
 		try{
+			deviceFacadeService.validateUserDevice(uid, mac);
 			
 			long count = TerminalDetailRecentSortedSetService.getInstance().terminalDetailRecentSize(mac, hd_mac);
 			if(count == 0){
@@ -1548,6 +1554,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterWSCommunityVTO> urouterWSCommunity(Integer uid, String mac) {
 		try{
+			deviceFacadeService.validateUserDevice(uid, mac);
+			
 			Map<String, String> communityCountByTypes = TerminalDeviceTypeCountHashService.getInstance().getAll(mac);
 			if(communityCountByTypes == null || communityCountByTypes.isEmpty()){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
