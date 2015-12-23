@@ -82,16 +82,18 @@ public interface IWifiDeviceIndexIncrement {
 	 * 1) o_batch
 	 * @param ids
 	 * @param importId
+	 * @param agentUser
 	 */
-	public void batchUpdIncrement(String id, long importId);
+	public void agentUpdIncrement(String id, long importId, User agentUser);
 	/**
 	 * 批量更新设备的批次号multi
 	 * 变更涉及的更改索引字段是
 	 * 1) o_batch
 	 * @param ids
 	 * @param importId
+	 * @param agentUser
 	 */
-	public void batchMultiUpdIncrement(List<String> ids, long importId);
+	public void agentMultiUpdIncrement(List<String> ids, long importId, User agentUser);
 	
 	/**
 	 * 设备运营灰度级别的变更

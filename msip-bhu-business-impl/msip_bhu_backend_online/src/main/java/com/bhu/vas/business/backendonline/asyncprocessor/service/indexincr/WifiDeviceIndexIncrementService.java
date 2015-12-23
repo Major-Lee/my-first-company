@@ -287,6 +287,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
+	@Deprecated
 	@Override
 	public void onlineCrdIncrement(WifiDevice entity){
 		if(entity == null) return;
@@ -396,16 +397,21 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 1) o_batch
 	 * @param id
 	 * @param importId
+	 * @param agentUser
 	 */
 	@Override
-	public void batchUpdIncrement(String id, long importId){
-		logger.info(String.format("BatchUpdIncrement Request id [%s] importId [%s]", id, importId));
+	public void agentUpdIncrement(String id, long importId, User agentUser){
+		logger.info(String.format("AgentUpdIncrement Request id [%s] importId [%s]", id, importId));
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_BATCH.getName(), importId);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-
+		if(agentUser != null){
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_ID.getName(), agentUser.getId());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_NICK.getName(), agentUser.getNick());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_ORG.getName(), agentUser.getOrg());
+		}
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
 	}
 	
@@ -415,16 +421,21 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 1) o_batch
 	 * @param ids
 	 * @param importId
+	 * @param agentUser
 	 */
 	@Override
-	public void batchMultiUpdIncrement(List<String> ids, long importId){
-		logger.info(String.format("BatchMultiUpdIncrement Request ids [%s] importId [%s]", ids, importId));
+	public void agentMultiUpdIncrement(List<String> ids, long importId, User agentUser){
+		logger.info(String.format("AgentMultiUpdIncrement Request ids [%s] importId [%s]", ids, importId));
 		if(ids == null || ids.isEmpty()) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_BATCH.getName(), importId);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-
+		if(agentUser != null){
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_ID.getName(), agentUser.getId());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_NICK.getName(), agentUser.getNick());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_ORG.getName(), agentUser.getOrg());
+		}
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
 	}
 	

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.user.service.UserService;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
@@ -233,11 +235,19 @@ public class AsyncMsgHandleService {
 				//设备上线后认领
 				if(needClaim){
 					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
-					int claim_ret = agentDeviceClaimService.claimAgentDevice(wifiDevice.getSn(), wifiDevice.getId(), parser.toDeviceUnitTypeIndex());
+					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
+					int claim_ret = agentDeviceClaimService.claimAgentDevice(agentDeviceClaim, wifiDevice.getId(), parser.toDeviceUnitTypeIndex());
 					if(claim_ret != 0){//-1 or >0
 						wifiDevice.setAgentuser(claim_ret);
 						needUpdate = true;
+						//如果认领存在代理商信息 增量设备代理商信息索引
+						if(wifiDevice.getAgentuser() > 0){
+							User agentUser = userService.getById(wifiDevice.getAgentuser());
+							wifiDeviceIndexIncrementProcesser.agentUpdIncrement(wifiDevice.getId(),
+									agentDeviceClaim.getImport_id(), agentUser);
+						}
 					}
+					
 				}
 				//根据wan_ip获取设备的网络运营商信息
 				if(dto.isWanIpChanged() && StringUtils.isNotEmpty(wifiDevice.getWan_ip())){
@@ -255,17 +265,17 @@ public class AsyncMsgHandleService {
 				ex.printStackTrace(System.out);
 			}
 			
-			try{
-/*				boolean newWifi = dto.isNewWifi();
+/*			try{
+				boolean newWifi = dto.isNewWifi();
 				if(needClaim || newWifi){
 					wifiDeviceIndexIncrementService.onlineCrdIncrement(wifiDevice);
 				}else{
 					wifiDeviceIndexIncrementService.onlineUpdIncrement(wifiDevice);
-				}*/
+				}
 				wifiDeviceIndexIncrementProcesser.onlineCrdIncrement(wifiDevice);
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
-			}
+			}*/
 			//设备统计
 			deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 					new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
@@ -287,7 +297,7 @@ public class AsyncMsgHandleService {
 				}
 			}
 			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
-			wifiDeviceIndexIncrementProcesser.moduleOnlineUpdIncrement(wifiDevice.getId(), dto.getOrig_vap_module());
+			//wifiDeviceIndexIncrementProcesser.moduleOnlineUpdIncrement(wifiDevice.getId(), dto.getOrig_vap_module());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceModuleOnlineHandle message[%s] successful", message));
 	}
@@ -573,7 +583,7 @@ public class AsyncMsgHandleService {
 			
 			//6:增量索引
 			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
-			wifiDeviceIndexIncrementProcesser.offlineUpdIncrement(wifiId, entity.getUptime(), entity.getLast_logout_at().getTime());
+			//wifiDeviceIndexIncrementProcesser.offlineUpdIncrement(wifiId, entity.getUptime(), entity.getLast_logout_at().getTime());
 
 		}
 		
