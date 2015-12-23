@@ -128,6 +128,8 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 						"    }]\n" +
 						"}";
 
+//		String message = "{\"dev\":\"84:82:f4:23:06:28\",\"item\":[{\"mac\":\"f0:25:b7:93:d9:e9\",\"type\":4,\"sequence\":1,\"systime\":1450850171}]}";
+
 		new ModuleStatMessageHandler().builderMessage(message);
 	}
 
@@ -176,6 +178,10 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 
 					String ver = item.getVer();
+					if (ver == null) { //如果没有style字段，不统计
+						continue;
+					}
+
 					System.out.println(String.format("[%s][%s][%s]", type, sequence, ver));
 					String dStyleKey = generateDStyleKey(ver, time);
 					String modlueKey = generateModuleKey(type, sequence);
