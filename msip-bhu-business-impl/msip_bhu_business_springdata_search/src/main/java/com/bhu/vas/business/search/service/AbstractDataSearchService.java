@@ -94,7 +94,7 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 	}
 	
 	public void bulkUpdate(List<String> ids, List<Map<String, Object>> sourceMaps){
-		bulkUpdate(ids, sourceMaps, false, false);
+		bulkUpdate(ids, sourceMaps, false, false, false);
 	}
 	
 	/**
@@ -104,7 +104,8 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 	 * @param refresh
 	 * @param waitForOperation
 	 */
-	public void bulkUpdate(List<String> ids, List<Map<String, Object>> sourceMaps, boolean refresh, boolean waitForOperation){
+	public void bulkUpdate(List<String> ids, List<Map<String, Object>> sourceMaps, boolean upsert,
+			boolean refresh, boolean waitForOperation){
 		if(ids == null || ids.isEmpty()) return;
 		if(sourceMaps == null || sourceMaps.isEmpty()) return;
 		if(ids.size() != sourceMaps.size()) return;
@@ -118,7 +119,7 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 
 			IndexRequest indexRequest = new IndexRequest();
 			indexRequest.source(sourceMap);
-			updateQuerys.add(new UpdateQueryBuilder().withId(id)
+			updateQuerys.add(new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
 					.withClass(entityClass).withIndexRequest(indexRequest).build());
 			cursor++;
 		}
@@ -138,7 +139,8 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 	 * @param refresh
 	 * @param waitForOperation
 	 */
-	public void bulkUpdate(List<String> ids, Map<String, Object> sourceMap, boolean refresh, boolean waitForOperation){
+	public void bulkUpdate(List<String> ids, Map<String, Object> sourceMap, boolean upsert,
+			boolean refresh, boolean waitForOperation){
 		if(ids == null || ids.isEmpty()) return;
 		if(sourceMap == null || sourceMap.isEmpty()) return;
 		
@@ -148,7 +150,7 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 
 			IndexRequest indexRequest = new IndexRequest();
 			indexRequest.source(sourceMap);
-			updateQuerys.add(new UpdateQueryBuilder().withId(id)
+			updateQuerys.add(new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
 					.withClass(entityClass).withIndexRequest(indexRequest).build());
 		}
 		

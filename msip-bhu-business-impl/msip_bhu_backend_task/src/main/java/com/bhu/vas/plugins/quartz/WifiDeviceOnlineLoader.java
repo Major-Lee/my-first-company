@@ -157,7 +157,7 @@ public class WifiDeviceOnlineLoader {
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), updatedat);
 				sourceMaps.add(sourceMap);
 			}
-			wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, true);
+			wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, false, true, true);
 			index_count += ids.size();
 			bulk_success++;
 		}catch(Exception ex){

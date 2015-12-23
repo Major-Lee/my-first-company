@@ -132,12 +132,12 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param importId 导入批次
 	 * @param agentDeviceClaims
 	 */
-	public void batchConfirmMultiCrdIncrement(final long importId, final List<AgentDeviceClaim> agentDeviceClaims){
+	public void batchConfirmMultiUpsertIncrement(final long importId, final List<AgentDeviceClaim> agentDeviceClaims){
 		multiExecProcesser().submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					wifiDeviceIndexIncrement.batchConfirmMultiCrdIncrement(importId, agentDeviceClaims);
+					wifiDeviceIndexIncrement.batchConfirmMultiUpsertIncrement(importId, agentDeviceClaims);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}

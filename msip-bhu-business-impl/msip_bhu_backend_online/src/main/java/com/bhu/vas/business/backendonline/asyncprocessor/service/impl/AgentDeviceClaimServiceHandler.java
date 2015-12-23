@@ -128,7 +128,7 @@ public class AgentDeviceClaimServiceHandler {
                 }
                 agentDeviceClaimService.updateAll(agentDeviceClaims);
 
-                wifiDeviceIndexIncrementService.batchConfirmMultiCrdIncrement(dto.getLogId(), agentDeviceClaims);
+                wifiDeviceIndexIncrementService.batchConfirmMultiUpsertIncrement(dto.getLogId(), agentDeviceClaims);
 
             }
         }
