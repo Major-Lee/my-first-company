@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.user.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,6 +156,9 @@ public class AsyncMsgHandleService {
 
 	@Resource
 	private UserDeviceService userDeviceService;
+
+	@Resource
+	private UserService userService;
 
 
 	/**
@@ -590,7 +595,7 @@ public class AsyncMsgHandleService {
 		HandsetDeviceOnlineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOnlineDTO.class);
 		
 		//3:移动设备连接wifi设备的接入记录(非流水)
-		int result_status = wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(), 
+		int result_status = wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),
 				new Date(dto.getLogin_ts()));
 
 		//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
@@ -1007,7 +1012,7 @@ public class AsyncMsgHandleService {
 			wifiDeviceService.update(entity);
 			//3:增量索引
 			//wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
-			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()), 
+			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
 					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
@@ -1342,6 +1347,10 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.generateDeviceMobilePresents(dto.getUid());
 		
 		afterUserSignedonThenCmdDown(dto.getMac());
+
+		User user = userService.getById(dto.getUid());
+
+		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
 	
@@ -1368,6 +1377,7 @@ public class AsyncMsgHandleService {
 			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
 		}*/
 
+		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	
