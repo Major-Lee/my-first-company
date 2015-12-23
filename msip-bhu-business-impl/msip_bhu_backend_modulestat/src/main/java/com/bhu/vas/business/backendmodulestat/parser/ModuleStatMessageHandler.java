@@ -130,6 +130,8 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 //		String message = "{\"dev\":\"84:82:f4:23:06:28\",\"item\":[{\"mac\":\"f0:25:b7:93:d9:e9\",\"type\":4,\"sequence\":1,\"systime\":1450850171}]}";
 
+		message = "{\"dev\":\"84:82:f4:23:06:68\",\"item\":[{\"mac\":\"a4:5e:60:bb:86:7d\",\"type\":4,\"sequence\":1,\"systime\":1450854086}]}";
+
 		new ModuleStatMessageHandler().builderMessage(message);
 	}
 
@@ -237,63 +239,64 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 			}
 
 			System.out.println(dmaps);
-//		System.out.println(dmaps.size());
-//		System.out.println(dmaps.keySet().size());
-			//WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps);
+
 			System.out.println(mmaps);
 
 			System.out.println(cursor);
 
-			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps, cursor));
-			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(mmaps, cursor));
+//			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps, cursor));
+//			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(mmaps, cursor));
 
 
-
-			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151211");
-			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
-
-
-
-			List<ModuleDefinedDetailVTO> items = new ArrayList<ModuleDefinedDetailVTO>();
-			ModuleDefinedDetailVTO vto = null;
-			List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
-
-			for (VapModeDefined.VapModeType modeType : modeTypes) {
-				vto = new ModuleDefinedDetailVTO();
-
-				vto.setDesc(modeType.getDesc());
-				vto.setType(modeType.getType());
-
-				String type = String.valueOf(modeType.getType());
-
-				long dcount = 0;
-				long mcount = 0;
-				for (String key: dayRets.keySet()) {
-
-					int index = key.indexOf(".");
-					int lastindex = key.lastIndexOf(".");
-					if (key.substring(index+1, lastindex).equals(type)) {
-						dcount = dayRets.get(key) + dcount;
-						mcount = monthRets.get(key) + mcount;
-					}
-				}
-
-				vto.setDcount(dcount);
-				vto.setMcount(mcount);
-				items.add(vto);
-
+			if (cursor >0 ) {
+				WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps, cursor);
+				WifiDeviceModuleStatService.getInstance().addDayModuleStats(mmaps, cursor);
 			}
 
 
 
 
+//			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151211");
+//			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
+//
+//
+//
+//			List<ModuleDefinedDetailVTO> items = new ArrayList<ModuleDefinedDetailVTO>();
+//			ModuleDefinedDetailVTO vto = null;
+//			List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
+//
+//			for (VapModeDefined.VapModeType modeType : modeTypes) {
+//				vto = new ModuleDefinedDetailVTO();
+//
+//				vto.setDesc(modeType.getDesc());
+//				vto.setType(modeType.getType());
+//
+//				String type = String.valueOf(modeType.getType());
+//
+//				long dcount = 0;
+//				long mcount = 0;
+//				for (String key: dayRets.keySet()) {
+//
+//					int index = key.indexOf(".");
+//					int lastindex = key.lastIndexOf(".");
+//					if (key.substring(index+1, lastindex).equals(type)) {
+//						dcount = dayRets.get(key) + dcount;
+//						mcount = monthRets.get(key) + mcount;
+//					}
+//				}
+//
+//				vto.setDcount(dcount);
+//				vto.setMcount(mcount);
+//				items.add(vto);
+//
+//			}
 
-			String  field = "MSMP.3.1=5";
-
-			int index = field.indexOf(".");
-			int lastindex = field.lastIndexOf(".");
-
-			System.out.println(field.substring(index + 1, lastindex));
+//			String  field = "MSMP.3.1=5";
+//
+//			int index = field.indexOf(".");
+//			int lastindex = field.lastIndexOf(".");
+//
+//			System.out.println(field.substring(index + 1, lastindex));
 //			vtos("style000");
 
 
