@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
@@ -24,6 +25,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+
 import org.apache.poi.hssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +56,8 @@ public class AgentDeviceClaimServiceHandler {
     @Resource
     private WifiDeviceService wifiDeviceService;
 
-    @Resource
-    private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	@Resource
+	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
 
     /**
      * 导入代理商设备
@@ -136,7 +138,7 @@ public class AgentDeviceClaimServiceHandler {
                 
             }
             if(!indexAgentDeviceMacs.isEmpty())
-            	wifiDeviceIndexIncrementService.batchMultiUpdIncrement(indexAgentDeviceMacs, dto.getLogId());
+            	wifiDeviceIndexIncrementProcesser.batchMultiUpdIncrement(indexAgentDeviceMacs, dto.getLogId());
         }
 
         long logId = dto.getLogId();
