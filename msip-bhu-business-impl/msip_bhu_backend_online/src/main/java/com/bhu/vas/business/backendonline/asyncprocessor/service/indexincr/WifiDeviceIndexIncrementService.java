@@ -296,7 +296,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		
 		WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 		WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
-		AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(mac);
+		AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(entity.getSn());
 		long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
 		User agentUser = null;
 		if(entity.getAgentuser() > 0){
