@@ -242,7 +242,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 //		source_map.put("a_org", null);
 //		
 //		wifiDeviceDataSearchService.updateIndex(doc5.getId(), source_map);
-		List<String> ids = new ArrayList<String>();
+/*		List<String> ids = new ArrayList<String>();
 		ids.add("84:82:f4:0a:60:a8");
 		ids.add("84:82:f4:05:52:88");
 		List<Map<String,Object>> sourceMaps = new ArrayList<Map<String,Object>>();
@@ -253,7 +253,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		source_map2.put("id", "84:82:f4:05:52:88");
 		source_map2.put("o_batch","02");
 		sourceMaps.add(source_map1);
-		sourceMaps.add(source_map2);
+		sourceMaps.add(source_map2);*/
 		
 //		IndexRequest indexRequest = new IndexRequest();
 //		indexRequest.source(source_map2);
@@ -262,8 +262,10 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 //				.withIndexRequest(indexRequest).build();
 		
 		//wifiDeviceDataSearchService.bulkUpdate(ids, source_map1, false, false);
-		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, false, false);
+		//wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, false, false);
 		//wifiDeviceDataSearchService.getElasticsearchTemplate().update(updateQuery);
+		
+		wifiDeviceDataSearchService.getRepository().delete("84:82:f4:19:01:0c");
 		
 		wifiDeviceDataSearchService.refresh(true);
 	}
