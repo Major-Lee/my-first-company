@@ -179,7 +179,7 @@ public class UserUnitFacadeService {
 		UserTokenDTO uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
-			System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAtoken());
+			//System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAtoken());
 			//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(uToken.getId(), uToken.getAtoken());
@@ -241,7 +241,7 @@ public class UserUnitFacadeService {
 			}
 		}
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-		System.out.println("1. userid:"+uid);
+		//System.out.println("1. userid:"+uid);
 		User user = null;
 		UserTokenDTO uToken = null;
 		boolean reg = false;
@@ -273,7 +273,7 @@ public class UserUnitFacadeService {
 		}else{//登录
 			reg = false;
 			user = this.userService.getById(uid);
-			System.out.println("2. user:"+user);
+			//System.out.println("2. user:"+user);
 			if(user == null){//存在不干净的数据，需要清理数据
 				cleanDirtyUserData(uid,countrycode,acc);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);

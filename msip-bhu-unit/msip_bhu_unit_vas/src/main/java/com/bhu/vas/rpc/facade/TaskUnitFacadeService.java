@@ -128,7 +128,7 @@ public class TaskUnitFacadeService {
 			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac,/*downTask.getId(),opt,*/downTask.getPayload());
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
-			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
+			//logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
 		}catch(Exception ex){

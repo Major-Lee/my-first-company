@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -189,17 +188,12 @@ public class UserDeviceFacadeService {
         	if(!wifiDevice.isOnline()){
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
         	}
-        	
         	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
+        	/*app检测设备是否需要升级的时候不进行定时升级指令的操作
         	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-        		/*long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-        		String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
-        				WifiDeviceHelper.Upgrade_Default_BeginTime, 
-        				WifiDeviceHelper.Upgrade_Default_EndTime, 
-        				upgrade.getUpgradeurl());*/
         		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
-        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
-        	}
+        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+        	}*/
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
