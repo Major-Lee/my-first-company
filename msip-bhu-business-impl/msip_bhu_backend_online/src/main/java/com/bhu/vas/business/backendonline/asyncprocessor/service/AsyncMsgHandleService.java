@@ -914,10 +914,13 @@ public class AsyncMsgHandleService {
 					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
 					backendBusinessService.deviceResetFactory(dto.getMac());
 					//解绑后需要发送指令通知设备
+					if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
 					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 					logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
 				}catch(Exception ex){
 					//ex.printStackTrace();
+					//清除失败后是否需要通知设备清除状态
+					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 					logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
 				}
 			}
