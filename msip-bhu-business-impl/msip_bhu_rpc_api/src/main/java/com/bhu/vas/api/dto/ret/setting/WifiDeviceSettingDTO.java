@@ -1,6 +1,10 @@
 package com.bhu.vas.api.dto.ret.setting;
 
 import java.util.List;
+
+import org.springframework.util.StringUtils;
+
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 /**
  * 设备的配置dto
  * @author tangzichao
@@ -151,5 +155,15 @@ public class WifiDeviceSettingDTO {
 
 	public void setPlugins(List<WifiDeviceSettingPluginDTO> plugins) {
 		this.plugins = plugins;
+	}
+	
+	public boolean hasPlugin(String pluginName){
+		//参数为空直接返回true
+		if(StringUtils.isEmpty(pluginName)) return true;
+		if(this.getPlugins() == null || this.getPlugins().isEmpty()) return false;
+		for(WifiDeviceSettingPluginDTO plugin:this.getPlugins()){
+			if(pluginName.equals(plugin.getName())) return true;
+		}
+		return false;
 	}
 }
