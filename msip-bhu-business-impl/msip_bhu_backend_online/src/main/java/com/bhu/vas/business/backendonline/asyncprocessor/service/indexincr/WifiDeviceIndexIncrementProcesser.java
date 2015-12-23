@@ -267,6 +267,26 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	}
 	
 	/**
+	 * 批量更新设备的批次号multi
+	 * 变更涉及的更改索引字段是
+	 * 1) o_batch
+	 * @param ids
+	 * @param importId
+	 */
+	public void batchMultiUpdIncrement(final List<String> ids, final long importId){
+		multiExecProcesser().submit((new Runnable() {
+			@Override
+			public void run() {
+				try{
+					wifiDeviceIndexIncrement.batchMultiUpdIncrement(ids, importId);
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+				}
+			}
+		}));
+	}
+	
+	/**
 	 * 设备运营灰度级别的变更
 	 * @param id
 	 * @param o_graylevel

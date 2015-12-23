@@ -98,12 +98,14 @@ public class AgentDeviceClaimServiceHandler {
                 ,AgentDeviceClaim.class, agentDeviceClaimService.getEntityDao(), mc);
 
 
-        List<AgentDeviceClaim> indexAgentDeviceClaims = null;
+        //List<AgentDeviceClaim> indexAgentDeviceClaims = null;
+        List<String> indexAgentDeviceMacs = null;
         List<AgentDeviceClaim> agentDeviceClaims = null;
         while(it.hasNext()){
             //wifiDeviceHocIncrement(it.next());
 
-            indexAgentDeviceClaims = new ArrayList<AgentDeviceClaim>();
+            //indexAgentDeviceClaims = new ArrayList<AgentDeviceClaim>();
+        	indexAgentDeviceMacs = new ArrayList<String>(); 
             agentDeviceClaims = it.next();
             for (AgentDeviceClaim agentDeviceClaim : agentDeviceClaims) {
                 if (agentDeviceClaim.getStatus() != 1) {
@@ -113,6 +115,8 @@ public class AgentDeviceClaimServiceHandler {
                         String id = ids.get(0);
                         WifiDevice wifiDevice = wifiDeviceService.getById(id);
                         if (wifiDevice != null) {
+                        	indexAgentDeviceMacs.add(wifiDevice.getId());
+                        	
                             wifiDevice.setAgentuser(dto.getUid());
                             agentDeviceClaim.setMac(wifiDevice.getId());
                             agentDeviceClaim.setStatus(1);
@@ -120,7 +124,7 @@ public class AgentDeviceClaimServiceHandler {
                             agentDeviceClaim.setHdtype(wifiDevice.getHdtype());
                             wifiDeviceService.update(wifiDevice);
 
-                            indexAgentDeviceClaims.add(agentDeviceClaim);
+                            //indexAgentDeviceClaims.add(agentDeviceClaim);
 
                         }
                         //logger.info("wifiDeviceService.update" + wifiDevice.getSn());
@@ -128,9 +132,11 @@ public class AgentDeviceClaimServiceHandler {
                 }
                 agentDeviceClaimService.updateAll(agentDeviceClaims);
 
-                wifiDeviceIndexIncrementService.batchConfirmMultiUpsertIncrement(dto.getLogId(), agentDeviceClaims);
-
+                //wifiDeviceIndexIncrementService.batchConfirmMultiUpsertIncrement(dto.getLogId(), agentDeviceClaims);
+                
             }
+            if(!indexAgentDeviceMacs.isEmpty())
+            	wifiDeviceIndexIncrementService.batchMultiUpdIncrement(indexAgentDeviceMacs, dto.getLogId());
         }
 
         long logId = dto.getLogId();

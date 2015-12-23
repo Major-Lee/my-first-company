@@ -391,6 +391,25 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	}
 	
 	/**
+	 * 批量更新设备的批次号multi
+	 * 变更涉及的更改索引字段是
+	 * 1) o_batch
+	 * @param ids
+	 * @param importId
+	 */
+	@Override
+	public void batchMultiUpdIncrement(List<String> ids, long importId){
+		logger.info(String.format("BatchMultiUpdIncrement Request ids [%s] importId [%s]", ids, importId));
+		if(ids == null || ids.isEmpty()) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_BATCH.getName(), importId);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
+	}
+	
+	/**
 	 * 设备运营灰度级别的变更
 	 * 变更涉及的更改索引字段是
 	 * 1) o_graylevel
