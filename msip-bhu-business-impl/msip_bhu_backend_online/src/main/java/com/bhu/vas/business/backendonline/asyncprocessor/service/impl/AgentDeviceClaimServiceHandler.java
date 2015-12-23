@@ -91,7 +91,7 @@ public class AgentDeviceClaimServiceHandler {
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("import_id", dto.getLogId());
 
 
-        mc.setOrderByClause(" created_at ");
+        //mc.setOrderByClause(" created_at ");
         mc.setPageNumber(1);
         mc.setPageSize(200);
         EntityIterator<String, AgentDeviceClaim> it = new KeyBasedEntityBatchIterator<String,AgentDeviceClaim>(String.class
