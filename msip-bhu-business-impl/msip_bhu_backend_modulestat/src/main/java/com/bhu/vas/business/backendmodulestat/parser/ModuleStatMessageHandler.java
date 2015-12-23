@@ -256,8 +256,96 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 
 
-//			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151211");
+//			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151223");
 //			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
+//
+//
+//
+//			ModuleDefinedItemVTO vto = new ModuleDefinedItemVTO();
+//
+//			vto.setStyle("style000");
+//			vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
+//
+//			BrandVTO brand = new BrandVTO();
+//			brand.setType(VapModeDefined.VapModeType.Brand.getType());
+//			brand.setDesc(VapModeDefined.VapModeType.Brand.getDesc());
+//
+//			ChannelVTO channel = new ChannelVTO();
+//			channel.setType(VapModeDefined.VapModeType.Channel.getType());
+//			channel.setDesc(VapModeDefined.VapModeType.Channel.getDesc());
+//
+//			RedirectVTO redirect = new RedirectVTO();
+//			redirect.setType(VapModeDefined.VapModeType.Redirect.getType());
+//			redirect.setDesc(VapModeDefined.VapModeType.Redirect.getDesc());
+//
+//			Http404VTO http404 = new Http404VTO();
+//			http404.setType(VapModeDefined.VapModeType.Http404.getType());
+//			http404.setDesc(VapModeDefined.VapModeType.Http404.getDesc());
+//
+//
+//			List<ItemBrandVTO> brands = new ArrayList<ItemBrandVTO>();
+//
+//			List<ItemChannelVTO> channels = new ArrayList<ItemChannelVTO>();
+//
+//			List<ItemRedirectVTO> redirects = new ArrayList<ItemRedirectVTO>();
+//
+//			List<ItemHttp404VTO> http404s = new ArrayList<ItemHttp404VTO>();
+//
+//			for (String key: dayRets.keySet()) {
+//
+//				Long dcount = dayRets.get(key);
+//				Long mcount = monthRets.get(key);
+//				int index = key.indexOf(".");
+//				int lastIndex = key.lastIndexOf(".");
+//
+//				int type = Integer.parseInt(key.substring(index + 1, lastIndex));
+//				int sequence = Integer.parseInt(key.substring(lastIndex + 1));
+//
+//				if (type == VapModeDefined.VapModeType.Http404.getType()) {
+//					ItemHttp404VTO item = new ItemHttp404VTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					http404s.add(item);
+//
+//					http404.setItems(http404s);
+//
+//				} else if (type == VapModeDefined.VapModeType.Redirect.getType()) {
+//					ItemRedirectVTO item = new ItemRedirectVTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					redirects.add(item);
+//					redirect.setItems(redirects);
+//
+//				} else if (type == VapModeDefined.VapModeType.Brand.getType()) {
+//					ItemBrandVTO item = new ItemBrandVTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					brands.add(item);
+//					brand.setItems(brands);
+//
+//				} else if (type == VapModeDefined.VapModeType.Channel.getType()) {
+//					ItemChannelVTO item = new ItemChannelVTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					channels.add(item);
+//
+//					channel.setItems(channels);
+//				}
+//
+//			}
+//
+//			vto.setHttp404(http404);
+//			vto.setRedirect(redirect);
+//			vto.setBrand(brand);
+//			vto.setChannel(channel);
+//
+//			System.out.println(vto);
+//
+//			System.out.println(DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyyMMdd"));
 //
 //
 //
