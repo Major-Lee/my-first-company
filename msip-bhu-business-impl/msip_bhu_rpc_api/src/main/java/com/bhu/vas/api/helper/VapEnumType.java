@@ -104,6 +104,7 @@ public class VapEnumType {
 		SOCRoot(DUT_soc, StringHelper.MINUS_STRING_GAP,"SOC"),
 		
 		uRouterTU_106("TU_H106",	"AP106",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterPlusTU_112("TU_H112","AP112",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
 		MassAP_2_103("TS_H103",		"AP103",DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
 		MassAP_2_110("TS_H110",		"AP110",DUT_soc,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
@@ -117,7 +118,8 @@ public class VapEnumType {
 		
 		MicroStation_5_304("TS_H304","AP304",DUT_soc,"MicroStation 5 H304","MicroStation 5","5GHz室外单频AP","8M Flash、64M内存、9344芯片"),
 		MicroStation_5_306("TS_H306","AP306",DUT_soc,"MicroStation 5 H306","MicroStation 5","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
-		uRouterTS_401("TS_H106",	 "AP106",DUT_soc,"uRouter","uRouter","---","---"),
+		uRouterTS_106("TS_H106",	 "AP106",DUT_soc,"uRouter","uRouter","商用","---"),
+		uRouterPlusTS_112("TU_H112","AP112",DUT_soc,"uRouter Plus","uRouter","商用","64M内存、TF卡版本、9341芯片"),
 		;
 		//key index,value DeviceUnitType
 		static Map<String, DeviceUnitType> allDeviceUnitHDTypes;
@@ -234,17 +236,17 @@ public class VapEnumType {
 		 * @param orig_swver
 		 * @return
 		 */
-		public static boolean isURouter(String orig_swver) {
+		/*public static boolean isURouter(String orig_swver) {
 			if(StringUtils.isEmpty(orig_swver)) return false;
 			if(orig_swver.endsWith(uRouterTU_106.getPrefix()) && orig_swver.endsWith(uRouterTU_106.getParent())){
 				return true;
 			}
 			return false;
-		}
+		}*/
 		
 		public static boolean isURouter(String prefix,String dut) {
 			if(StringUtils.isEmpty(prefix) || StringUtils.isEmpty(dut)) return false;
-			if(prefix.equals(uRouterTU_106.getPrefix()) && dut.equals(uRouterTU_106.getParent())){
+			if((prefix.equals(uRouterTU_106.getPrefix()) || prefix.equals(uRouterPlusTU_112.getPrefix())) && dut.equals(uRouterRoot.getIndex())){
 				return true;
 			}
 			return false;
