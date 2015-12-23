@@ -267,6 +267,30 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	}
 	
 	/**
+	 * 更新设备的批次号
+	 * 变更涉及的更改索引字段是
+	 * 1) o_batch
+	 * @param id
+	 * @param importId
+	 */
+	@Override
+	public void batchUpdIncrement(final String id, final long importId) {
+		ExecutorService executor = singleExecProcesser(id);
+		if(executor != null){
+			executor.submit((new Runnable() {
+				@Override
+				public void run() {
+					try{
+						wifiDeviceIndexIncrement.batchUpdIncrement(id, importId);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}));
+		}
+	}
+	
+	/**
 	 * 批量更新设备的批次号multi
 	 * 变更涉及的更改索引字段是
 	 * 1) o_batch
@@ -342,4 +366,5 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 			}
 		}));
 	}
+	
 }

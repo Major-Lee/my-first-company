@@ -77,6 +77,14 @@ public interface IWifiDeviceIndexIncrement {
 	 */
 	public void templateMultiUpdIncrement(List<String> ids, String o_template);
 	/**
+	 * 更新设备的批次号
+	 * 变更涉及的更改索引字段是
+	 * 1) o_batch
+	 * @param ids
+	 * @param importId
+	 */
+	public void batchUpdIncrement(String id, long importId);
+	/**
 	 * 批量更新设备的批次号multi
 	 * 变更涉及的更改索引字段是
 	 * 1) o_batch
