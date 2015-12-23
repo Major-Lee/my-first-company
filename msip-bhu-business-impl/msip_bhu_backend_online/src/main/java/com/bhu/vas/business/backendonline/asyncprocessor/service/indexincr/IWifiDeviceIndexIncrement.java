@@ -36,7 +36,7 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param importId 导入批次
 	 * @param agentDeviceClaims
 	 */
-	public void batchConfirmMultiCrdIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims);
+	public void batchConfirmMultiUpsertIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims);
 	
 	/**
 	 * 设备上线发生变更

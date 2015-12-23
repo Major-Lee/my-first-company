@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -14,6 +15,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 
 import com.bhu.vas.api.dto.search.condition.SearchCondition;
 import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
@@ -241,22 +244,31 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 //		wifiDeviceDataSearchService.updateIndex(doc5.getId(), source_map);
 		List<String> ids = new ArrayList<String>();
 		ids.add("84:82:f4:0a:60:a8");
-		ids.add("84:82:f4:05:52:14");
+		ids.add("84:82:f4:05:52:88");
 		List<Map<String,Object>> sourceMaps = new ArrayList<Map<String,Object>>();
 		Map<String,Object> source_map1 = new HashMap<String,Object>();
-		source_map1.put("u_type","66");
-		source_map1.put("u_mcc", "77");
+		source_map1.put("id", "84:82:f4:0a:60:a8");
+		source_map1.put("o_batch","01");
 		Map<String,Object> source_map2 = new HashMap<String,Object>();
-		source_map2.put("u_type","88");
-		source_map2.put("u_mcc", "99");
+		source_map2.put("id", "84:82:f4:05:52:88");
+		source_map2.put("o_batch","02");
 		sourceMaps.add(source_map1);
 		sourceMaps.add(source_map2);
 		
-		wifiDeviceDataSearchService.bulkUpdate(ids, source_map1, false, false);
+//		IndexRequest indexRequest = new IndexRequest();
+//		indexRequest.source(source_map2);
+//		UpdateQuery updateQuery = new UpdateQueryBuilder().withId("84:82:f4:05:52:88")
+//				.withDoUpsert(true).withClass(WifiDeviceDocument.class)
+//				.withIndexRequest(indexRequest).build();
+		
+		//wifiDeviceDataSearchService.bulkUpdate(ids, source_map1, false, false);
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, false, false);
+		//wifiDeviceDataSearchService.getElasticsearchTemplate().update(updateQuery);
 		
 		wifiDeviceDataSearchService.refresh(true);
 	}
 	
+
 	
 	@Test
 	public void test001UpdateDocument(){

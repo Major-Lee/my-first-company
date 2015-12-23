@@ -141,20 +141,50 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param agentDeviceClaims
 	 */
 	@Override
-	public void batchConfirmMultiCrdIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims){
+	public void batchConfirmMultiUpsertIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims){
 
 		if(agentDeviceClaims == null || agentDeviceClaims.isEmpty()) return;
 		
 		logger.info(String.format("BatchConfirmMultiCrdIncrement Request importid [%s] size [%s]", importId, agentDeviceClaims.size()));
 		
-		List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
+//		List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
+		List<String> ids = new ArrayList<String>();
+		List<Map<String, Object>> sourceMaps = new ArrayList<Map<String, Object>>();
 		for(AgentDeviceClaim agentDeviceClaim : agentDeviceClaims){
 			if(agentDeviceClaim == null || StringUtils.isEmpty(agentDeviceClaim.getMac())) continue;
+			ids.add(agentDeviceClaim.getMac());
 			
-			docs.add(WifiDeviceDocumentHelper.fromClaimWifiDevice(agentDeviceClaim));
+			Map<String, Object> sourceMap = new HashMap<String, Object>();
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.ID.getName(), agentDeviceClaim.getMac());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SN.getName(), agentDeviceClaim.getId());
+			
+			String[] parserHdtypes = VapEnumType.DeviceUnitType.parserIndex(agentDeviceClaim.getHdtype());
+			if(parserHdtypes != null && parserHdtypes.length == 2){
+				String dut = parserHdtypes[0];
+				String hdtype = parserHdtypes[1];
+				if(!StringUtils.isEmpty(hdtype)){
+					sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE.getName(), hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, hdtype);
+					if(deviceUnitType != null){
+						sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
+					}
+				}
+			}
+			
+			if(agentDeviceClaim.getSold_at() != null){
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_CREATEDAT.getName(), agentDeviceClaim.getSold_at().getTime());
+			}
+			
+			if(agentDeviceClaim.getImport_id() > 0){
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_BATCH.getName(), agentDeviceClaim.getImport_id());
+			}
+			sourceMaps.add(sourceMap);
 		}
 		
-		wifiDeviceDataSearchService.bulkIndex(docs, true, true);
+		if(!ids.isEmpty()){
+			wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, true, true);
+		}
+		//wifiDeviceDataSearchService.bulkIndex(docs, true, true);
 	}
 	
 	/**
@@ -250,7 +280,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), updatedat);
 			sourceMaps.add(sourceMap);
 		}
-		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, true);
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, true, true);
 	}
 	
 	/**
@@ -357,7 +387,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_TEMPLATE.getName(), o_template);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
-		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, true, true);
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -395,7 +425,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_GRAYLEVEL.getName(), o_graylevel);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
-		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, true, true);
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -420,7 +450,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), updatedat);
 			sourceMaps.add(sourceMap);
 		}
-		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, true);
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, false, true, true);
 	}
 
 }
