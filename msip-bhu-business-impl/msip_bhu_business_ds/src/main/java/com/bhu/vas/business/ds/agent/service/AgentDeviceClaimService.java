@@ -31,8 +31,8 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
      * >0 认领库中的agentuser id
      * @param hdtype 产品型号
      */
-    public int claimAgentDevice(String sn, String mac, String hdtype) {
-        AgentDeviceClaim agentDeviceClaim = this.getById(sn);
+    public int claimAgentDevice(AgentDeviceClaim agentDeviceClaim, String mac, String hdtype) {
+//        AgentDeviceClaim agentDeviceClaim = this.getById(sn);
         if (agentDeviceClaim != null) {
             int status = agentDeviceClaim.getStatus();
             int import_status = agentDeviceClaim.getImport_status();
@@ -48,6 +48,5 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
         } else {
             return -1; //不存在
         }
-
     }
 }

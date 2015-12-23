@@ -10,31 +10,34 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.helper.AgentBulltinType;
-import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
-import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementProcesser;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementService;
-import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
-import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.AgentBulltinType;
+import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
+import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementProcesser;
+import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * Created by bluesand on 9/8/15.
@@ -55,6 +58,9 @@ public class AgentDeviceClaimServiceHandler {
 
     @Resource
     private WifiDeviceService wifiDeviceService;
+    
+    @Resource
+    private UserService userService;
 
 	@Resource
 	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
@@ -137,8 +143,11 @@ public class AgentDeviceClaimServiceHandler {
                 //wifiDeviceIndexIncrementService.batchConfirmMultiUpsertIncrement(dto.getLogId(), agentDeviceClaims);
                 
             }
-            if(!indexAgentDeviceMacs.isEmpty())
-            	wifiDeviceIndexIncrementProcesser.batchMultiUpdIncrement(indexAgentDeviceMacs, dto.getLogId());
+            if(!indexAgentDeviceMacs.isEmpty()){
+            	User agentUser = userService.getById(dto.getUid());
+            	wifiDeviceIndexIncrementProcesser.agentMultiUpdIncrement(indexAgentDeviceMacs, dto.getLogId(), agentUser);
+            }
+            	
         }
 
         long logId = dto.getLogId();

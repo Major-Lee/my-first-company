@@ -89,6 +89,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param id 设备mac
 	 * @param origvapmodule 原始模块软件版本号
 	 */
+	@Deprecated
 	public void moduleOnlineUpdIncrement(final String id, final String d_origvapmodule){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
@@ -111,6 +112,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param d_uptime 设备运行总时长
 	 * @param d_lastlogoutat 设备的最后下线的时间
 	 */
+	@Deprecated
 	public void offlineUpdIncrement(final String id, final String d_uptime, final long d_lastlogoutat){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
@@ -132,6 +134,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param importId 导入批次
 	 * @param agentDeviceClaims
 	 */
+	@Deprecated
 	public void batchConfirmMultiUpsertIncrement(final long importId, final List<AgentDeviceClaim> agentDeviceClaims){
 		multiExecProcesser().submit((new Runnable() {
 			@Override
@@ -149,6 +152,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * 设备上线发生变更
 	 * @param entity
 	 */
+	@Deprecated
 	public void onlineUpdIncrement(final WifiDevice entity){
 		if(entity == null) return;
 		
@@ -188,6 +192,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
+	@Deprecated
 	public void onlineCrdIncrement(final WifiDevice entity){
 		if(entity == null) return;
 		
@@ -272,16 +277,17 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * 1) o_batch
 	 * @param id
 	 * @param importId
+	 * @param agentUser
 	 */
 	@Override
-	public void batchUpdIncrement(final String id, final long importId) {
+	public void agentUpdIncrement(final String id, final long importId, final User agentUser) {
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
 				@Override
 				public void run() {
 					try{
-						wifiDeviceIndexIncrement.batchUpdIncrement(id, importId);
+						wifiDeviceIndexIncrement.agentUpdIncrement(id, importId, agentUser);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
 					}
@@ -296,13 +302,14 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * 1) o_batch
 	 * @param ids
 	 * @param importId
+	 * @param agentUser
 	 */
-	public void batchMultiUpdIncrement(final List<String> ids, final long importId){
+	public void agentMultiUpdIncrement(final List<String> ids, final long importId, final User agentUser){
 		multiExecProcesser().submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					wifiDeviceIndexIncrement.batchMultiUpdIncrement(ids, importId);
+					wifiDeviceIndexIncrement.agentMultiUpdIncrement(ids, importId, agentUser);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
