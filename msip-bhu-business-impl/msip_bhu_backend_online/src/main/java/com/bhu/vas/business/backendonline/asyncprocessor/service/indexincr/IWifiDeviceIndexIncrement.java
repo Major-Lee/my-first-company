@@ -76,6 +76,14 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param o_template
 	 */
 	public void templateMultiUpdIncrement(List<String> ids, String o_template);
+	/**
+	 * 批量更新设备的批次号multi
+	 * 变更涉及的更改索引字段是
+	 * 1) o_batch
+	 * @param ids
+	 * @param importId
+	 */
+	public void batchMultiUpdIncrement(List<String> ids, long importId);
 	
 	/**
 	 * 设备运营灰度级别的变更
