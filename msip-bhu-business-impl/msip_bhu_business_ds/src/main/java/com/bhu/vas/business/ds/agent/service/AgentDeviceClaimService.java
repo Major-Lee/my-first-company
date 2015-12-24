@@ -49,4 +49,17 @@ public class AgentDeviceClaimService extends AbstractCoreService<String, AgentDe
             return -1; //不存在
         }
     }
+    
+    /**
+     * 通过设备的sn进行认领操作
+     * @param sn
+     * @return
+     * -1 认领库中不存在此设备
+     * >0 认领库中的agentuser id
+     * @param hdtype 产品型号
+     */
+    public int claimAgentDevice(String sn, String mac, String hdtype) {
+      AgentDeviceClaim agentDeviceClaim = this.getById(sn);
+      return claimAgentDevice(agentDeviceClaim, mac, hdtype);
+  }
 }
