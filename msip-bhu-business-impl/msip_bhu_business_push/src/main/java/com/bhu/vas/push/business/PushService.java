@@ -330,6 +330,8 @@ public class PushService{
 			if(presentDto != null){
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
+					pushMsg.setText(PushType.UserBBSsignedon.getText());
+					pushMsg.setTitle(PushType.UserBBSsignedon.getTitle());
 					pushMsg.setPaylod(JsonHelper.getJSONString(bbs_push_dto));
 					//发送push
 					ret = pushAndroidTransmissionAndIosNotification(pushMsg);

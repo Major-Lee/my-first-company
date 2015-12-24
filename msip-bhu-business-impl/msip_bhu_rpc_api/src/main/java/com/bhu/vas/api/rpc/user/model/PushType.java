@@ -18,7 +18,7 @@ public enum PushType {
 	HandsetDeviceWSOnline("HDWSO", "周边探测%s", "%s在附近出现"),//终端探测上线
 	WifiDeviceReboot("WDR", null, null),//设备重启成功后
 	WifiDeviceSettingChanged("WDC", null, null),//设备配置变更
-	UserBBSsignedon("UBS", null, null),//用户bbs登录
+	UserBBSsignedon("UBS", "论坛登录", "论坛登录"),//用户bbs登录
 	;
 	String type;
 	String title;

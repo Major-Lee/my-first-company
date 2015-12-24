@@ -170,7 +170,7 @@ public class GexinPushService{
 			    template.setTransmissionContent(pushMsg.getPaylod());
 
 			    /*iOS 推送需要对该字段进行设置具体参数详见iOS模板说明*/
-			    template.setPushInfo("", pushMsg.getBadge(), "", pushMsg.getSound(),
+			    template.setPushInfo("", pushMsg.getBadge(), pushMsg.getText(), pushMsg.getSound(),
 			    		"", "", "", "");
 			    /*template.setPushInfo("actionLocKey", 4, "message", "sound", 
 			    "payload", "locKey", "locArgs", "launchImage","ContentAvailable");*/
