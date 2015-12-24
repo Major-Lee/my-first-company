@@ -62,7 +62,7 @@ public class BuilderWifiDeviceIndexOp {
 			
 			long t0 = System.currentTimeMillis();
 			
-			agentsDevicesClaimIndexs();
+			//agentsDevicesClaimIndexs();
 			wifiDeviceIndexs();
 			
 			wifiDeviceDataSearchService.refresh(true);
@@ -80,7 +80,7 @@ public class BuilderWifiDeviceIndexOp {
 	/**
 	 * 从t_agents_devices_claim表中创建索引数据
 	 */
-	public static void agentsDevicesClaimIndexs(){
+/*	public static void agentsDevicesClaimIndexs(){
 		int bulk_success = 0;//批量成功次数
 		int index_count = 0;//建立的索引数据条数
 		
@@ -126,7 +126,7 @@ public class BuilderWifiDeviceIndexOp {
 		}
 		
 		System.out.println("agentsDevicesClaim 数据全量导入 成功批量次数:" + bulk_success + " 一共索引数量:" + index_count);
-	}
+	}*/
 	
 	/**
 	 * 从t_wifi_devices表中创建索引数据
@@ -147,7 +147,7 @@ public class BuilderWifiDeviceIndexOp {
 				List<WifiDevice> entitys = it.next();
 				for(WifiDevice wifiDevice : entitys){
 					String mac = wifiDevice.getId();
-					System.out.println("2="+mac);
+					//System.out.println("2="+mac);
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
@@ -174,6 +174,7 @@ public class BuilderWifiDeviceIndexOp {
 				if(!docs.isEmpty()){
 					wifiDeviceDataSearchService.bulkIndex(docs);
 					bulk_success++;
+					System.out.println("bluk successed");
 				}
 			}
 		}catch(Exception ex){
