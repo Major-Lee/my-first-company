@@ -95,6 +95,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param id 设备mac
 	 * @param origvapmodule 原始模块软件版本号
 	 */
+	@Deprecated
 	@Override
 	public void moduleOnlineUpdIncrement(String id, String d_origvapmodule){
 		logger.info(String.format("ModuleOnlineUpdIncrement Request id [%s] d_origvapmodule [%s]", id, d_origvapmodule));
@@ -120,6 +121,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param d_uptime 设备运行总时长
 	 * @param d_lastlogoutat 设备的最后下线的时间
 	 */
+	@Deprecated
 	@Override
 	public void offlineUpdIncrement(String id, String d_uptime, long d_lastlogoutat){
 		logger.info(String.format("OfflineUpdIncrement Request id [%s] d_uptime [%s] d_lastlogoutat [%s]", id, d_uptime, d_lastlogoutat));
@@ -200,6 +202,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 8) d_dut
 	 * @param entity
 	 */
+	@Deprecated
 	@Override
 	public void onlineUpdIncrement(WifiDevice entity){
 		if(entity == null || StringUtils.isEmpty(entity.getId())) return;
