@@ -180,6 +180,7 @@ public class DeviceVersion {
 	 * 返回 0 表示 device_orig_swver 等于 gray_orig_swver
 	 * 返回 -1 表示 device_orig_swver 小于 gray_orig_swver 可以升级
 	 * 小版本号的前缀不一致的情况下都返回 0 eg：build或r
+	 * TODO:目前只是限制于uRouter 进行版本比对
 	 * @param orig_swver1
 	 * @param orig_swver2
 	 * @return

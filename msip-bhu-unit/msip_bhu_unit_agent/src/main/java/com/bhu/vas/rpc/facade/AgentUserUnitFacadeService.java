@@ -252,7 +252,7 @@ public class AgentUserUnitFacadeService {
 		UserTokenDTO uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
-			System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAtoken());
+			//System.out.println("~~~~~step4 id:"+uToken.getId()+" token:"+uToken.getAtoken());
 			//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(uToken.getId(), uToken.getAtoken());

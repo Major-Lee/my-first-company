@@ -130,6 +130,8 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 
 //		String message = "{\"dev\":\"84:82:f4:23:06:28\",\"item\":[{\"mac\":\"f0:25:b7:93:d9:e9\",\"type\":4,\"sequence\":1,\"systime\":1450850171}]}";
 
+		message = "{\"dev\":\"84:82:f4:23:06:68\",\"item\":[{\"mac\":\"a4:5e:60:bb:86:7d\",\"type\":4,\"sequence\":1,\"systime\":1450854086}]}";
+
 		new ModuleStatMessageHandler().builderMessage(message);
 	}
 
@@ -237,63 +239,152 @@ public class ModuleStatMessageHandler implements IMessageHandler<byte[]>{
 			}
 
 			System.out.println(dmaps);
-//		System.out.println(dmaps.size());
-//		System.out.println(dmaps.keySet().size());
-			//WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps);
+
 			System.out.println(mmaps);
 
 			System.out.println(cursor);
 
-			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps, cursor));
-			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(mmaps, cursor));
+//			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps, cursor));
+//			System.out.println(WifiDeviceModuleStatService.getInstance().addDayModuleStats(mmaps, cursor));
 
 
-
-			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151211");
-			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
-
-
-
-			List<ModuleDefinedDetailVTO> items = new ArrayList<ModuleDefinedDetailVTO>();
-			ModuleDefinedDetailVTO vto = null;
-			List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
-
-			for (VapModeDefined.VapModeType modeType : modeTypes) {
-				vto = new ModuleDefinedDetailVTO();
-
-				vto.setDesc(modeType.getDesc());
-				vto.setType(modeType.getType());
-
-				String type = String.valueOf(modeType.getType());
-
-				long dcount = 0;
-				long mcount = 0;
-				for (String key: dayRets.keySet()) {
-
-					int index = key.indexOf(".");
-					int lastindex = key.lastIndexOf(".");
-					if (key.substring(index+1, lastindex).equals(type)) {
-						dcount = dayRets.get(key) + dcount;
-						mcount = monthRets.get(key) + mcount;
-					}
-				}
-
-				vto.setDcount(dcount);
-				vto.setMcount(mcount);
-				items.add(vto);
-
+			if (cursor >0 ) {
+				WifiDeviceModuleStatService.getInstance().addDayModuleStats(dmaps, cursor);
+				WifiDeviceModuleStatService.getInstance().addDayModuleStats(mmaps, cursor);
 			}
 
 
 
 
+//			Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.20151223");
+//			Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey("style000.201512");
+//
+//
+//
+//			ModuleDefinedItemVTO vto = new ModuleDefinedItemVTO();
+//
+//			vto.setStyle("style000");
+//			vto.setDef(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
+//
+//			BrandVTO brand = new BrandVTO();
+//			brand.setType(VapModeDefined.VapModeType.Brand.getType());
+//			brand.setDesc(VapModeDefined.VapModeType.Brand.getDesc());
+//
+//			ChannelVTO channel = new ChannelVTO();
+//			channel.setType(VapModeDefined.VapModeType.Channel.getType());
+//			channel.setDesc(VapModeDefined.VapModeType.Channel.getDesc());
+//
+//			RedirectVTO redirect = new RedirectVTO();
+//			redirect.setType(VapModeDefined.VapModeType.Redirect.getType());
+//			redirect.setDesc(VapModeDefined.VapModeType.Redirect.getDesc());
+//
+//			Http404VTO http404 = new Http404VTO();
+//			http404.setType(VapModeDefined.VapModeType.Http404.getType());
+//			http404.setDesc(VapModeDefined.VapModeType.Http404.getDesc());
+//
+//
+//			List<ItemBrandVTO> brands = new ArrayList<ItemBrandVTO>();
+//
+//			List<ItemChannelVTO> channels = new ArrayList<ItemChannelVTO>();
+//
+//			List<ItemRedirectVTO> redirects = new ArrayList<ItemRedirectVTO>();
+//
+//			List<ItemHttp404VTO> http404s = new ArrayList<ItemHttp404VTO>();
+//
+//			for (String key: dayRets.keySet()) {
+//
+//				Long dcount = dayRets.get(key);
+//				Long mcount = monthRets.get(key);
+//				int index = key.indexOf(".");
+//				int lastIndex = key.lastIndexOf(".");
+//
+//				int type = Integer.parseInt(key.substring(index + 1, lastIndex));
+//				int sequence = Integer.parseInt(key.substring(lastIndex + 1));
+//
+//				if (type == VapModeDefined.VapModeType.Http404.getType()) {
+//					ItemHttp404VTO item = new ItemHttp404VTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					http404s.add(item);
+//
+//					http404.setItems(http404s);
+//
+//				} else if (type == VapModeDefined.VapModeType.Redirect.getType()) {
+//					ItemRedirectVTO item = new ItemRedirectVTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					redirects.add(item);
+//					redirect.setItems(redirects);
+//
+//				} else if (type == VapModeDefined.VapModeType.Brand.getType()) {
+//					ItemBrandVTO item = new ItemBrandVTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					brands.add(item);
+//					brand.setItems(brands);
+//
+//				} else if (type == VapModeDefined.VapModeType.Channel.getType()) {
+//					ItemChannelVTO item = new ItemChannelVTO();
+//					item.setSequence(sequence);
+//					item.setDcount(dcount);
+//					item.setMcount(mcount);
+//					channels.add(item);
+//
+//					channel.setItems(channels);
+//				}
+//
+//			}
+//
+//			vto.setHttp404(http404);
+//			vto.setRedirect(redirect);
+//			vto.setBrand(brand);
+//			vto.setChannel(channel);
+//
+//			System.out.println(vto);
+//
+//			System.out.println(DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyyMMdd"));
+//
+//
+//
+//			List<ModuleDefinedDetailVTO> items = new ArrayList<ModuleDefinedDetailVTO>();
+//			ModuleDefinedDetailVTO vto = null;
+//			List<VapModeDefined.VapModeType> modeTypes = VapModeDefined.VapModeType.getAllModeType();
+//
+//			for (VapModeDefined.VapModeType modeType : modeTypes) {
+//				vto = new ModuleDefinedDetailVTO();
+//
+//				vto.setDesc(modeType.getDesc());
+//				vto.setType(modeType.getType());
+//
+//				String type = String.valueOf(modeType.getType());
+//
+//				long dcount = 0;
+//				long mcount = 0;
+//				for (String key: dayRets.keySet()) {
+//
+//					int index = key.indexOf(".");
+//					int lastindex = key.lastIndexOf(".");
+//					if (key.substring(index+1, lastindex).equals(type)) {
+//						dcount = dayRets.get(key) + dcount;
+//						mcount = monthRets.get(key) + mcount;
+//					}
+//				}
+//
+//				vto.setDcount(dcount);
+//				vto.setMcount(mcount);
+//				items.add(vto);
+//
+//			}
 
-			String  field = "MSMP.3.1=5";
-
-			int index = field.indexOf(".");
-			int lastindex = field.lastIndexOf(".");
-
-			System.out.println(field.substring(index + 1, lastindex));
+//			String  field = "MSMP.3.1=5";
+//
+//			int index = field.indexOf(".");
+//			int lastindex = field.lastIndexOf(".");
+//
+//			System.out.println(field.substring(index + 1, lastindex));
 //			vtos("style000");
 
 
