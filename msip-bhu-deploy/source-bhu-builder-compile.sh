@@ -5,6 +5,7 @@ echo $Current_DIR
 ./source-java-git.pull.sh
 #进入bhu business repository 进行编译
 cd ..
+mvn clean
 mvn package -Dmaven.test.skip
 echo '代码编译并打包成功'
 #unzip -o test.zip -d tmp/
