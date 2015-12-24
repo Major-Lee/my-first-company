@@ -83,7 +83,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_GEOPOINT.getName(), new double[]{lon, lat});
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ADDRESS.getName(), d_address);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ORIGVAPMODULE.getName(), d_origvapmodule);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_OPERATE.getName(), WifiDeviceDocument.O_Operate_True);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_LASTLOGOUTAT.getName(), d_lastlogoutat);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_HANDSETONLINECOUNT.getName(), 0);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -142,6 +142,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param importId 导入批次
 	 * @param agentDeviceClaims
 	 */
+	@Deprecated
 	@Override
 	public void batchConfirmMultiUpsertIncrement(long importId, List<AgentDeviceClaim> agentDeviceClaims){
 
@@ -231,7 +232,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			}
 		}
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, false, true, true);
 	}
 	
 	/**
@@ -248,7 +249,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param entitys 设备实体集合
 	 */
 	@Override
-	public void onlineMultiUpdIncrement(List<WifiDevice> entitys){
+	public void onlineMultiUpsertIncrement(List<WifiDevice> entitys){
 		if(entitys == null) return;
 		int size = entitys.size();
 		logger.info(String.format("OnlineMultiUpdIncrement Request size [%s]", entitys.size()));
@@ -353,7 +354,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		}
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -372,7 +373,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_TEMPLATE.getName(), o_template);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -415,7 +416,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_NICK.getName(), agentUser.getNick());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.A_ORG.getName(), agentUser.getOrg());
 		}
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -458,7 +459,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_GRAYLEVEL.getName(), o_graylevel);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**

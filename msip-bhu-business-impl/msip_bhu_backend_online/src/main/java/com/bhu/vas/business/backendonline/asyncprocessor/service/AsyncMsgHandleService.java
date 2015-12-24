@@ -421,7 +421,7 @@ public class AsyncMsgHandleService {
 		}
 		//5:增量索引
 		//wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);
-		wifiDeviceIndexIncrementProcesser.onlineMultiUpdIncrement(entitys);
+		wifiDeviceIndexIncrementProcesser.onlineMultiUpsertIncrement(entitys);
 		//设备统计
 		deviceFacadeService.deviceStatisticsOnlines(ds, DeviceStatistics.Statis_Device_Type);
 	}

@@ -175,12 +175,12 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * 设备上线发生变更multi
 	 * @param entitys 设备实体集合
 	 */
-	public void onlineMultiUpdIncrement(final List<WifiDevice> entitys){
+	public void onlineMultiUpsertIncrement(final List<WifiDevice> entitys){
 		multiExecProcesser().submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					wifiDeviceIndexIncrement.onlineMultiUpdIncrement(entitys);
+					wifiDeviceIndexIncrement.onlineMultiUpsertIncrement(entitys);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}

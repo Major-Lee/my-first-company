@@ -48,7 +48,7 @@ public interface IWifiDeviceIndexIncrement {
 	 * 设备上线发生变更multi
 	 * @param entitys 设备实体集合
 	 */
-	public void onlineMultiUpdIncrement(List<WifiDevice> entitys);
+	public void onlineMultiUpsertIncrement(List<WifiDevice> entitys);
 	
 	/**
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准

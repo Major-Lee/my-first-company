@@ -49,7 +49,7 @@ public class WifiDeviceStautsIndexIncrementService{
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ORIGVAPMODULE.getName(), d_origvapmodule);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_OPERATE.getName(), WifiDeviceDocument.O_Operate_True);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class WifiDeviceStautsIndexIncrementService{
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_LASTLOGOUTAT.getName(), d_lastlogoutat);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_HANDSETONLINECOUNT.getName(), 0);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(id, sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 	
 
@@ -92,10 +92,10 @@ public class WifiDeviceStautsIndexIncrementService{
 	 * 8) d_dut
 	 * @param entity
 	 */
-	public void onlineUpdIncrement(WifiDevice entity){
+	public void onlineUpsertIncrement(WifiDevice entity){
 		if(entity == null || StringUtils.isEmpty(entity.getId())) return;
 		
-		logger.info(String.format("OnlineUpdIncrement Request id [%s] d_origswver [%s] d_workmodel [%s] d_configmodel [%s] d_type [%s] d_lastregedat [%s]",
+		logger.info(String.format("OnlineUpsertIncrement Request id [%s] d_origswver [%s] d_workmodel [%s] d_configmodel [%s] d_type [%s] d_lastregedat [%s]",
 				entity.getId(), entity.getOrig_swver(), entity.getWork_mode(), entity.getConfig_mode(), 
 				entity.getHdtype(), entity.getLast_reged_at()));
 		
@@ -119,7 +119,7 @@ public class WifiDeviceStautsIndexIncrementService{
 			}
 		}
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
-		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, true, true);
+		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, true, true, true);
 	}
 
 }
