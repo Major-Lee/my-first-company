@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -46,8 +47,12 @@ public class DeviceVersion {
 	}
 
 	public String getDut() {
+		if(StringUtils.isEmpty(dut) && wasDutURouter()){
+			return VapEnumType.DUT_uRouter;
+		}
 		return dut;
 	}
+	
 	public void setDut(String dut) {
 		this.dut = dut;
 	}
@@ -222,7 +227,7 @@ public class DeviceVersion {
 	}
 	
 	public static void main(String[] argv){
-		String[] array = {"AP106P06V1.3.2Build8606","AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		String[] array = {"AP106P06V1.3.2Build8606","AP107P07V1.3.2r1","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array){
 			DeviceVersion parser = DeviceVersion.parser(orig);
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
