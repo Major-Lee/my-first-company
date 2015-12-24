@@ -71,21 +71,23 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 	}
 	
 	public void updateIndex(String id, Map<String, Object> sourceMap){
-		updateIndex(id, sourceMap, false, false);
+		updateIndex(id, sourceMap, false, false, false);
 	}
 	/**
 	 * 更新单条索引数据
 	 * @param id 索引主键
 	 * @param sourceMap 需要更新的字段数据map
+	 * @param upsert
 	 * @param refresh
 	 * @param waitForOperation
 	 */
-	public void updateIndex(String id, Map<String, Object> sourceMap, boolean refresh, boolean waitForOperation){
+	public void updateIndex(String id, Map<String, Object> sourceMap, boolean upsert,
+			boolean refresh, boolean waitForOperation){
 		if(StringUtils.isEmpty(id) || sourceMap == null || sourceMap.isEmpty()) return;
 		
 		IndexRequest indexRequest = new IndexRequest();
 		indexRequest.source(sourceMap);
-		UpdateQuery updateQuery = new UpdateQueryBuilder().withId(id)
+		UpdateQuery updateQuery = new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
 				.withClass(entityClass).withIndexRequest(indexRequest).build();
 		this.getElasticsearchTemplate().update(updateQuery);
 		if(refresh){
