@@ -47,7 +47,7 @@ public class DeviceVersion {
 	}
 
 	public String getDut() {
-		if(StringUtils.isEmpty(dut) && wasDutURouter()){
+		if(wasDutURouter()){
 			return VapEnumType.DUT_uRouter;
 		}
 		return dut;
