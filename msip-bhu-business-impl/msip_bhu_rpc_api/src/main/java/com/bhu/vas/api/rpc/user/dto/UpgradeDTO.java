@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
@@ -109,6 +111,7 @@ public class UpgradeDTO {
 	
 
 	public String getUpgrade_slaver_urls() {
+		if(StringUtils.isEmpty(upgrade_slaver_urls)) return StringUtils.EMPTY;
 		return upgrade_slaver_urls;
 	}
 
