@@ -285,6 +285,10 @@ public class DeviceUnitFacadeRpcService{
 			dpv.setOnline(wifiDevice.isOnline());
 			dpv.setMonline(wifiDeviceModule != null?wifiDeviceModule.isModule_online():false);
 			dpv.setFirst_reg_at(DateTimeHelper.formatDate(wifiDevice.getCreated_at(), DateTimeHelper.FormatPattern0));
+			if(wifiDevice.getLast_reged_at() != null)
+				dpv.setLast_reg_at(DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
+			if(wifiDevice.getLast_logout_at() != null)
+				dpv.setLast_logout_at(DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
 			dpv.setDod(wifiDevice.getUptime());
 			
 			//运营状态信息 灰度、模板

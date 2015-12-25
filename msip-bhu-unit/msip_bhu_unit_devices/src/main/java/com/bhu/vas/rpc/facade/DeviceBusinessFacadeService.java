@@ -722,8 +722,8 @@ public class DeviceBusinessFacadeService {
 			for(HandsetDeviceDTO handset : handsets){
 				HandsetDeviceDTO dto = dtos.get(cursor);
 				if(handset != null){
-					dto.setDhcp_name(handset.getDhcp_name());
-					dto.setIp(handset.getIp());
+					//dto.setDhcp_name(handset.getDhcp_name());
+					//dto.setIp(handset.getIp());
 					dto.setData_tx_rate(handset.getData_tx_rate());
 					dto.setData_rx_rate(handset.getData_rx_rate());
 				}
