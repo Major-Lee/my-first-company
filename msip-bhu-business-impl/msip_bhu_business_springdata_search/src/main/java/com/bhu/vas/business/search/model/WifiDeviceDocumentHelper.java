@@ -154,6 +154,7 @@ public class WifiDeviceDocumentHelper {
 	 * @param agentDeviceClaim
 	 * @return
 	 */
+	@Deprecated
 	public static WifiDeviceDocument fromClaimWifiDevice(AgentDeviceClaim agentDeviceClaim){
 		if(agentDeviceClaim == null) return null;
 		
