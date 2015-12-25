@@ -119,6 +119,9 @@ public class WifiDeviceStautsIndexIncrementService{
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 			}
 		}
+		if(entity.getCreated_at() != null)
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_CREATEDAT.getName(), entity.getCreated_at().getTime());
+			
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, true, true, true);
 	}
