@@ -153,8 +153,28 @@ public class HandsetStorageFacadeService{
     }
 
     public static List<HandsetLogDTO> wifiDeviceHandsetRecentLogs(String dmac, String hmac,int size){
-    	
     	return DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
+    	/*List<HandsetLogDTO> recentLogs = DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
+    	//再次进行区间15分钟内的记录合并，录入部分由于存在没有合并成功，目前没有找到原因
+    	if(!recentLogs.isEmpty()){
+			Iterator<HandsetLogDTO> iter = recentLogs.iterator();
+			HandsetLogDTO previous = null;
+			while(iter.hasNext()){
+				HandsetLogDTO current = iter.next();
+				if(current.getF() == 0) continue;
+				if(previous != null){
+					long gap = current.getO()-previous.getF();
+					if(gap <=15*60*1000){
+						previous.setF(current.getF());
+						previous.setTrb(previous.getTrb()+current.getTrb());
+						iter.remove();
+						continue;
+					}
+				}
+				previous = current;
+			}
+		}
+    	return recentLogs;*/
     }
     
     public static List<HandsetLogDTO> wifiDeviceHandsetAllLogs(String dmac, String hmac){
@@ -202,6 +222,7 @@ public class HandsetStorageFacadeService{
 		for(HandsetLogDTO dto :recentLogs){
 			System.out.println(JsonHelper.getJSONString(dto));
 		}
+		
 		/*
 		System.out.println(new Date(1449836882759l));
 		System.out.println(new Date(1449837003638l));
@@ -290,6 +311,25 @@ public class HandsetStorageFacadeService{
 	private static Map<String,List<WifiHandsetDeviceItemDetailMDTO>> buildHdDetailMap(List<HandsetLogDTO> recentLogs){
 		Map<String,List<WifiHandsetDeviceItemDetailMDTO>> result = new HashMap<>();
 		//int count = 0;
+		
+		/*if(!recentLogs.isEmpty()){
+			Iterator<HandsetLogDTO> iter = recentLogs.iterator();
+			HandsetLogDTO previous = null;
+			while(iter.hasNext()){
+				HandsetLogDTO current = iter.next();
+				if(current.getF() == 0) continue;
+				if(previous != null){
+					long gap = current.getO()-previous.getF();
+					if(gap <=15*60*1000){
+						previous.setF(current.getF());
+						previous.setTrb(previous.getTrb()+current.getTrb());
+						iter.remove();
+						continue;
+					}
+				}
+				previous = current;
+			}
+		}*/
 		int logsize = recentLogs.size();
 		int index  = 0;
 		for(HandsetLogDTO log:recentLogs){

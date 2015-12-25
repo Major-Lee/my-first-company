@@ -2,6 +2,7 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import redis.clients.jedis.JedisPool;
@@ -148,6 +149,7 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	
 	/**
 	 * 取最近的log数据列表 条数最多为size
+	 * 如果记录直接区间超过Merge_When_In_GAP需要合并
 	 * @param dmac
 	 * @param hmac
 	 * @param size
@@ -157,11 +159,30 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		//List<String> result = this.lrange(generateKey(dmac,hmac), start, start+size-1);
 		List<String> result = this.lrange(generateKey(dmac,hmac), -size, -1);
 		if(result == null || result.isEmpty()) return Collections.emptyList();
-		List<HandsetLogDTO> ret = new ArrayList<>();
+		List<HandsetLogDTO> recentLogs = new ArrayList<>();
 		for(String json :result){
-			ret.add(JsonHelper.getDTO(json, HandsetLogDTO.class));
+			recentLogs.add(JsonHelper.getDTO(json, HandsetLogDTO.class));
 		}
-		return ret;
+		//再次进行区间15分钟内的记录合并，录入部分由于存在没有合并成功，目前没有找到原因
+    	if(!recentLogs.isEmpty()){
+			Iterator<HandsetLogDTO> iter = recentLogs.iterator();
+			HandsetLogDTO previous = null;
+			while(iter.hasNext()){
+				HandsetLogDTO current = iter.next();
+				if(current.getF() == 0) continue;
+				if(previous != null){
+					long gap =Math.abs(current.getO()-previous.getF());
+					if(gap <=Merge_When_In_GAP){
+						previous.setF(current.getF());
+						previous.setTrb(previous.getTrb()+current.getTrb());
+						iter.remove();
+						continue;
+					}
+				}
+				previous = current;
+			}
+		}
+    	return recentLogs;
 	}
 	
 	/**
