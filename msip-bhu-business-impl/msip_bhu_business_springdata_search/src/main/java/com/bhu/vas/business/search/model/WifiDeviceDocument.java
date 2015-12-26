@@ -37,7 +37,9 @@ public class WifiDeviceDocument extends AbstractDocument{
 	@Id
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.not_analyzed,
+			index = FieldIndex.analyzed,
+			searchAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "lowercase_whitespace",	
 			store = true
 	)
 	private String id;//设备mac
