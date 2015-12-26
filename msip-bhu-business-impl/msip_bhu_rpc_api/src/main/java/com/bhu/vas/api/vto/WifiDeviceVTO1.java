@@ -11,6 +11,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class WifiDeviceVTO1 implements Serializable{
 	private int index;
 	private String id;//设备mac
+	private String d_mac;//设备mac
 	private String d_sn;//设备的sn编号
 	private String d_origswver;//设备的原始软件版本号
 	private String d_origvapmodule;//设备的原始软件增值模块版本号
@@ -53,6 +54,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getD_mac() {
+		return d_mac;
+	}
+	public void setD_mac(String d_mac) {
+		this.d_mac = d_mac;
 	}
 	public String getD_sn() {
 		return d_sn;
