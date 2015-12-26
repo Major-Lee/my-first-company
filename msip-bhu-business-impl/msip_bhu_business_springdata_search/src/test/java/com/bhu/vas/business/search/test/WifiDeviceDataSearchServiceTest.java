@@ -59,6 +59,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	//List<IndexQuery> indexQuerys = new ArrayList<IndexQuery>();
 		WifiDeviceDocument doc1 = new WifiDeviceDocument();
 		doc1.setId("84:82:f4:0a:64:68");
+		doc1.setD_mac("84:82:f4:0a:64:68");
 		doc1.setD_sn("BN205CD100343AA");
 		doc1.setD_origswver("AP201P07V1.2.14z2");
 		doc1.setD_origvapmodule("H106V1.3.2M8888");
@@ -91,6 +92,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		
 		WifiDeviceDocument doc2 = new WifiDeviceDocument();
 		doc2.setId("62:68:75:00:00:01");
+		doc2.setD_mac("62:68:75:00:00:01");
 		doc2.setD_sn("BN007BF106629AA");
 		doc2.setD_origswver("AP304P07V1.2.18");
 		doc2.setD_origvapmodule("H106V1.3.2M8888");
@@ -122,6 +124,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		
 		WifiDeviceDocument doc3 = new WifiDeviceDocument();
 		doc3.setId("12:d3:7f:be:34:12");
+		doc3.setD_mac("12:d3:7f:be:34:12");
 		doc3.setD_sn("BN007BD100075AA");
 		doc3.setD_origswver("AP304P07V1.2.18Build8578");
 		doc3.setD_origvapmodule("H305V1.2.17M8578");
@@ -153,6 +156,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		
 		WifiDeviceDocument doc4 = new WifiDeviceDocument();
 		doc4.setId("84:82:f4:05:52:14");
+		doc4.setD_mac("84:82:f4:05:52:14");
 		doc4.setD_sn("BN007BD100075AA");
 		doc4.setD_origswver("AP201P07V1.2.14r3");
 		doc4.setD_origvapmodule("H305V1.2.17M8579");
@@ -184,6 +188,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		
 		WifiDeviceDocument doc5 = new WifiDeviceDocument();
 		doc5.setId("84:82:f4:0a:60:a8");
+		doc5.setD_mac("84:82:f4:0a:60:a8");
 		doc5.setD_sn("BN007BD100075AA");
 		doc5.setD_origswver("AP201P07V1.2.14r3");
 		doc5.setD_origvapmodule("H305V1.2.17M8579");

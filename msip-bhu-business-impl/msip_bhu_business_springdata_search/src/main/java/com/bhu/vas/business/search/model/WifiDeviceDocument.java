@@ -37,12 +37,19 @@ public class WifiDeviceDocument extends AbstractDocument{
 	@Id
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.analyzed,
-			searchAnalyzer = "lowercase_whitespace",
-			indexAnalyzer = "lowercase_whitespace",	
+			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String id;//设备mac
+	private String id;//mac
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.analyzed,
+			searchAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "lowercase_whitespace",
+			store = true
+	)
+	private String d_mac;//设备的mac地址
 	
 	@Field(
 			type = FieldType.String,
@@ -304,6 +311,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 		return id;
 	}
 	
+	public String getD_mac() {
+		return d_mac;
+	}
+
+	public void setD_mac(String d_mac) {
+		this.d_mac = d_mac;
+	}
+
 	public String getD_sn() {
 		return d_sn;
 	}

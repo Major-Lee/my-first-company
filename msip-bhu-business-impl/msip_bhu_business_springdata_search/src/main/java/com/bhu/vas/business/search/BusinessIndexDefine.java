@@ -35,6 +35,7 @@ public interface BusinessIndexDefine {
 			ID("id", null),//设备mac
 			UPDATEDAT("updatedat", null),//索引记录的最后更新时间
 			/**** 设备信息 device ****/
+			D_MAC("d_mac", null),//设备mac
 			D_SN("d_sn", null),//设备的sn编号
 			D_ORIGSWVER("d_origswver", null),//设备的原始软件版本号
 			D_ORIGVAPMODULE("d_origvapmodule", null),//设备的原始软件增值模块版本号

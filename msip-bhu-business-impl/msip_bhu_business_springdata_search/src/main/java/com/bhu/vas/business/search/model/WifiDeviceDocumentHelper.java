@@ -65,6 +65,7 @@ public class WifiDeviceDocumentHelper {
 		WifiDeviceDocument doc = new WifiDeviceDocument();
 		if(wifiDevice != null){
 			doc.setId(wifiDevice.getId());
+			doc.setD_mac(wifiDevice.getId());
 			doc.setD_sn(wifiDevice.getSn());
 			doc.setD_origswver(wifiDevice.getOrig_swver());
 			doc.setD_workmodel(wifiDevice.getWork_mode());
@@ -161,6 +162,7 @@ public class WifiDeviceDocumentHelper {
 		WifiDeviceDocument doc = new WifiDeviceDocument();
 		if(agentDeviceClaim != null){
 			doc.setId(agentDeviceClaim.getMac());
+			doc.setD_mac(agentDeviceClaim.getMac());
 			doc.setD_sn(agentDeviceClaim.getId());
 			//doc.setD_type(agentDeviceClaim.getHdtype());
 			doc.setD_online(String.valueOf(WifiDeviceDocument.D_Online_Never));
