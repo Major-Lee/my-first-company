@@ -356,7 +356,7 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
+		//System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
@@ -366,7 +366,7 @@ public class DeviceBusinessFacadeService {
 
 	private void handsetDeviceVisitorOnline(String ctx, WifiDeviceTerminalDTO dto, String wifiId) {
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
+		//System.out.println("handsetDeviceVisitorOnline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
