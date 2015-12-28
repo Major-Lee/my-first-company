@@ -305,13 +305,13 @@ public class AgentBillFacadeService {
     	if(mark == null){
     		mark = new AgentDeviceMark();
     		mark.setId(mac);
-    		mark.setNeed_afcb(true);
+    		//mark.setNeed_afcb(true);
     		mark.setAfcb(true);
     		mark.setAfcb_date(date);
     		agentDeviceMarkService.insert(mark);
     		return true;
     	}else{
-    		if(mark.isNeed_afcb()){
+    		//if(mark.isNeed_afcb()){
     			if(mark.isAfcb()){
         			return false;
         		}else{
@@ -320,9 +320,9 @@ public class AgentBillFacadeService {
             		agentDeviceMarkService.update(mark);
             		return true;
         		}
-    		}else{
+    		/*}else{
     			return false;
-    		}
+    		}*/
     	}
     }
 }
