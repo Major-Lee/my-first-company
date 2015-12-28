@@ -292,10 +292,11 @@ public class AgentBillFacadeService {
 	
 	/**
      * 标记设备FirstCashBack状态
-     * 如果表中不存在mac数据，则录入数据firstcb true并标记日期 并返回true
+     * 如果表中不存在mac数据，则录入数据need_afcb true firstcb true并标记日期 并返回true
      * 如果表中存在mac数据，
      * 		判定firstcb =true 则返回false 
      * 		判定firstcb = false 则update firstcb true返回true
+     * 特例，可能有部分设备是不需要进行第一次返现，这部分设备会初始录入此表，并且need_afcb=false
      * @param mac
      * @return
      */
@@ -304,18 +305,23 @@ public class AgentBillFacadeService {
     	if(mark == null){
     		mark = new AgentDeviceMark();
     		mark.setId(mac);
-    		mark.setAfcb(true);;
+    		mark.setNeed_afcb(true);
+    		mark.setAfcb(true);
     		mark.setAfcb_date(date);
     		agentDeviceMarkService.insert(mark);
     		return true;
     	}else{
-    		if(mark.isAfcb()){
-    			return false;
+    		if(mark.isNeed_afcb()){
+    			if(mark.isAfcb()){
+        			return false;
+        		}else{
+        			mark.setAfcb(true);
+            		mark.setAfcb_date(date);
+            		agentDeviceMarkService.update(mark);
+            		return true;
+        		}
     		}else{
-    			mark.setAfcb(true);;
-        		mark.setAfcb_date(date);
-        		agentDeviceMarkService.update(mark);
-        		return true;
+    			return false;
     		}
     	}
     }

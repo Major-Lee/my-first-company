@@ -3,8 +3,6 @@ package com.bhu.vas.api.dto.ret.setting;
 import java.util.List;
 
 import org.springframework.util.StringUtils;
-
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 /**
  * 设备的配置dto
  * @author tangzichao

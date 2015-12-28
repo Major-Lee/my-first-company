@@ -1036,8 +1036,9 @@ public class DeviceBusinessFacadeService {
 						afterQueryPayloads.add(CMDBuilder.builderDeviceSettingModify(wifiId, 
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
 					}
-					//如果是uRouter插件更新下发策略
-					if(!dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
+					//如果是uRouter 插件更新下发策略
+					//查询配置上报的过程中，配置>0的情况下,并且 不存在指定的plugin
+					if((StringUtils.isNotEmpty(dto.getSequence()) && Integer.parseInt(dto.getSequence()) > 0) && !dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
 						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
 								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
 								deviceFacadeService);
