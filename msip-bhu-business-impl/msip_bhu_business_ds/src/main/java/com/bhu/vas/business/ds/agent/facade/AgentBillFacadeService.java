@@ -297,21 +297,21 @@ public class AgentBillFacadeService {
      * 		判定firstcb =true 则返回false 
      * 		判定firstcb = false 则update firstcb true返回true
      * 特例，可能有部分设备是不需要进行第一次返现，这部分设备会初始录入此表，并且need_afcb=false
-     * @param mac
+     * @param sn
      * @return
      */
-    public boolean markFirstCashBack(String mac,String date){
-    	AgentDeviceMark mark = agentDeviceMarkService.getById(mac);
+    public boolean markFirstCashBack(String sn,String date){
+    	AgentDeviceMark mark = agentDeviceMarkService.getById(sn);
     	if(mark == null){
     		mark = new AgentDeviceMark();
-    		mark.setId(mac);
-    		//mark.setNeed_afcb(true);
+    		mark.setId(sn);
+    		mark.setNeed_afcb(true);
     		mark.setAfcb(true);
     		mark.setAfcb_date(date);
     		agentDeviceMarkService.insert(mark);
     		return true;
     	}else{
-    		//if(mark.isNeed_afcb()){
+    		if(mark.isNeed_afcb()){
     			if(mark.isAfcb()){
         			return false;
         		}else{
@@ -320,9 +320,9 @@ public class AgentBillFacadeService {
             		agentDeviceMarkService.update(mark);
             		return true;
         		}
-    		/*}else{
+    		}else{
     			return false;
-    		}*/
+    		}
     	}
     }
 }

@@ -134,7 +134,7 @@ public class Step02DeviceWholeDayRecordService {
 							//非认领成功的设备不进行mongo数据的录入
 							//非认领成功的设备不进行mongo数据的录入
 							if(AgentHelper.validateDeviceCashbackSupported(device.getHdtype()) && device.getAgentuser() > 0){
-								boolean ret = agentBillFacadeService.markFirstCashBack(device.getId(), date);
+								boolean ret = agentBillFacadeService.markFirstCashBack(device.getSn(), date);
 								System.out.println("markFirstCashBack mac:"+device.getId()+" date:"+date);
 								if(ret){
 									dto.setSameday(1);

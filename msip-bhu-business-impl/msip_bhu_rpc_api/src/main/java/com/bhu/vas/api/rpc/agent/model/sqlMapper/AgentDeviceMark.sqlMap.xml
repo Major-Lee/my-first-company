@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="agentDeviceMark">
     <id property="id" column="id"/>
+    <result property="need_afcb" column="need_afcb"/>
 	  <result property="afcb" column="afcb"/>
 	  <result property="afcb_date" column="afcb_date"/>
 	  <result property="updated_at" column="updated_at"/>
@@ -19,6 +20,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	need_afcb,
 	    	afcb,
 	    	afcb_date,
 	    	updated_at
@@ -26,6 +28,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	need_afcb,
 	    	afcb,
 	    	afcb_date,
 	    	updated_at
@@ -34,12 +37,14 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{need_afcb},
 			#{afcb},
 			#{afcb_date},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			need_afcb = #{need_afcb},
 	    	afcb = #{afcb},
 	    	afcb_date = #{afcb_date},
 	    	updated_at = #{updated_at}
