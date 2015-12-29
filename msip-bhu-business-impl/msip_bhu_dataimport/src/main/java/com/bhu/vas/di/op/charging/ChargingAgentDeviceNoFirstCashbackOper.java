@@ -8,8 +8,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceMark;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
+import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceMarkService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
@@ -36,7 +38,7 @@ public class ChargingAgentDeviceNoFirstCashbackOper {
 			return;
 		}
 		System.out.println("----------ParamsStart------------");
-		Integer batchno = Integer.parseInt(argv[0]);
+		long batchno = Long.parseLong(argv[0]);
 		System.out.println("----------ParamsEnd------------");
 		System.out.println("批次号参数:"+batchno);
 
@@ -44,6 +46,17 @@ public class ChargingAgentDeviceNoFirstCashbackOper {
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		AgentDeviceMarkService agentDeviceMarkService = (AgentDeviceMarkService)ctx.getBean("agentDeviceMarkService");
 		AgentDeviceClaimService agentDeviceClaimService = (AgentDeviceClaimService)ctx.getBean("agentDeviceClaimService");
+		AgentDeviceImportLogService agentDeviceImportLogService = (AgentDeviceImportLogService)ctx.getBean("agentDeviceImportLogService");
+		
+		AgentDeviceImportLog importLog = agentDeviceImportLogService.getById(batchno);
+		if(importLog == null){
+			System.out.println(String.format("批次号【%s】不存在！", batchno));
+			return;
+		}
+		if(importLog.getStatus() != AgentDeviceImportLog.CONFIRM_DONE){
+			System.out.println(String.format("批次号还未被确认！", batchno));
+			return;
+		}
 		ModelCriteria mc_claim = new ModelCriteria();
 		mc_claim.createCriteria().andColumnEqualTo("import_id", batchno).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		mc_claim.setPageNumber(1);
