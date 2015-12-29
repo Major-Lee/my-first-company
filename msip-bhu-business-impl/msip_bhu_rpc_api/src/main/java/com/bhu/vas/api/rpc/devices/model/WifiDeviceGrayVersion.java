@@ -7,6 +7,7 @@ import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.model.BasePKModel;
 
 
@@ -21,9 +22,9 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	//冗余字段关联使用灰度的设备数量，定时30分钟更新一次
 	private int devices;
 	//固件版本号id
-	private String d_fwid;
+	private String d_fwid = StringHelper.MINUS_STRING_GAP;
 	//增值模块 版本id
-	private String d_omid;
+	private String d_omid = StringHelper.MINUS_STRING_GAP;
 	private Date created_at;
 	
 	@Override
