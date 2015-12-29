@@ -170,7 +170,7 @@ public class DeviceBusinessFacadeService {
 		wifi_device_module.setLast_module_reged_at(reged_at);
 		wifiDeviceModuleService.update(wifi_device_module);
 		//设备上线增量索引
-		wifiDeviceStautsIndexIncrementService.onlineUpsertIncrement(wifi_device_entity);
+		wifiDeviceStautsIndexIncrementService.onlineUpsertIncrement(wifi_device_entity, newWifi);
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;

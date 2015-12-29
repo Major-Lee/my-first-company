@@ -91,8 +91,9 @@ public class WifiDeviceStautsIndexIncrementService{
 	 * 7) d_lastregedat
 	 * 8) d_dut
 	 * @param entity
+	 * @param newWifi
 	 */
-	public void onlineUpsertIncrement(WifiDevice entity){
+	public void onlineUpsertIncrement(WifiDevice entity, boolean newWifi){
 		if(entity == null || StringUtils.isEmpty(entity.getId())) return;
 		
 		logger.info(String.format("OnlineUpsertIncrement Request id [%s] d_origswver [%s] d_workmodel [%s] d_configmodel [%s] d_type [%s] d_lastregedat [%s]",
@@ -108,6 +109,9 @@ public class WifiDeviceStautsIndexIncrementService{
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_CONFIGMODEL.getName(), entity.getConfig_mode());
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE.getName(), entity.getHdtype());
 //		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_HANDSETONLINECOUNT.getName(), 0);
+		if(newWifi)
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_GRAYLEVEL.getName(), VapEnumType.GrayLevel.Other.getIndex());
+		
 		if(entity.getLast_reged_at() != null)
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_LASTREGEDAT.getName(), entity.getLast_reged_at().getTime());
 		

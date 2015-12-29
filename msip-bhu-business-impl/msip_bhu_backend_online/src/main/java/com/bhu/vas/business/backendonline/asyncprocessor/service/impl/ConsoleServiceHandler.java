@@ -175,6 +175,6 @@ public class ConsoleServiceHandler {
 			}
 		}
 		formatStr.append(StringHelper.COMMA_STRING_GAP);
-		return str;
+		return formatStr.toString();
 	}
 }
