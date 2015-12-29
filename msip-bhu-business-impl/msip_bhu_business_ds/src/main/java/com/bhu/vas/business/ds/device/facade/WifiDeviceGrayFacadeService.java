@@ -186,7 +186,7 @@ public class WifiDeviceGrayFacadeService {
         			wdg.setDut(dut.getIndex());
         			wdg.setGl(gray.getIndex());
         			wifiDeviceGrayService.insert(wdg);
-        			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+        			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
         			dgv.setDevices(dgv.getDevices()+1);
         			wifiDeviceGrayVersionService.update(dgv);
         		}else{
@@ -197,13 +197,13 @@ public class WifiDeviceGrayFacadeService {
         					wdg.setDut(dut.getIndex());
         	    			wdg.setGl(gray.getIndex());
         	    			wifiDeviceGrayService.update(wdg);
-        	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
-        	    			dgv.setDevices(dgv.getDevices()-1);
+        	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
+        	    			dgv.setDevices(dgv.getDevices()==0?0:(dgv.getDevices()-1));
         	    			wifiDeviceGrayVersionService.update(dgv);
         	    			wdg.setDut(dut.getIndex());
         	    			wdg.setGl(gray.getIndex());
         	    			wifiDeviceGrayService.update(wdg);
-        	    			dgv = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
+        	    			dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
         	    			dgv.setDevices(dgv.getDevices()+1);
         	    			wifiDeviceGrayVersionService.update(dgv);
         				}else{
