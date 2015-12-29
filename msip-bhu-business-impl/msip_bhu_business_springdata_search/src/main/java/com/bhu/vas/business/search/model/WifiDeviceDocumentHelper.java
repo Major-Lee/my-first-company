@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -76,8 +77,8 @@ public class WifiDeviceDocumentHelper {
 						Double.parseDouble(wifiDevice.getLat())});
 			}
 			doc.setD_address(wifiDevice.getFormatted_address());
-			doc.setD_online(wifiDevice.isOnline() ? String.valueOf(WifiDeviceDocument.D_Online_True) 
-					: String.valueOf(WifiDeviceDocument.D_Online_False));
+			doc.setD_online(wifiDevice.isOnline() ? WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()
+					: WifiDeviceDocumentEnumType.OnlineEnum.Offline.getType());
 			if(wifiDevice.getLast_reged_at() != null){
 				doc.setD_lastregedat(wifiDevice.getLast_reged_at().getTime());
 			}
@@ -113,10 +114,10 @@ public class WifiDeviceDocumentHelper {
 			String orig_vap_module = deviceModule.getOrig_vap_module();
 			if(!StringUtils.isEmpty(orig_vap_module)){
 				doc.setD_origvapmodule(orig_vap_module);
-				doc.setO_operate(String.valueOf(WifiDeviceDocument.O_Operate_True));
+				doc.setO_operate(WifiDeviceDocumentEnumType.OperateEnum.Operate.getType());
 			}
-			doc.setD_monline(deviceModule.isModule_online() ? String.valueOf(WifiDeviceDocument.D_MOnline_True) 
-					: String.valueOf(WifiDeviceDocument.D_MOnline_False));
+			doc.setD_monline(deviceModule.isModule_online() ? WifiDeviceDocumentEnumType.MOnlineEnum.MOnline.getType() 
+					: WifiDeviceDocumentEnumType.MOnlineEnum.MOffline.getType());
 		}
 		
 		if(agentDeviceClaim != null){
@@ -132,7 +133,7 @@ public class WifiDeviceDocumentHelper {
 		}
 		//TODO:doc.setO_template(o_template);
 		if(bindUser != null){
-			doc.setU_binded(String.valueOf(WifiDeviceDocument.U_Binded_True));
+			doc.setU_binded(WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
 			doc.setU_id(String.valueOf(bindUser.getId()));
 			doc.setU_nick(bindUser.getNick());
 			doc.setU_mno(bindUser.getMobileno());
@@ -165,8 +166,8 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_mac(agentDeviceClaim.getMac());
 			doc.setD_sn(agentDeviceClaim.getId());
 			//doc.setD_type(agentDeviceClaim.getHdtype());
-			doc.setD_online(String.valueOf(WifiDeviceDocument.D_Online_Never));
-			doc.setD_monline(String.valueOf(WifiDeviceDocument.D_MOnline_Never));
+			doc.setD_online(WifiDeviceDocumentEnumType.OnlineEnum.NeverOnline.getType());
+			doc.setD_monline(WifiDeviceDocumentEnumType.MOnlineEnum.MNeverOnline.getType());
 			
 			String[] parserHdtypes = VapEnumType.DeviceUnitType.parserIndex(agentDeviceClaim.getHdtype());
 			if(parserHdtypes != null && parserHdtypes.length == 2){

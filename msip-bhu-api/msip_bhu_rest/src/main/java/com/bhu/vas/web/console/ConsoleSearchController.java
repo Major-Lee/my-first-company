@@ -154,5 +154,23 @@ public class ConsoleSearchController extends BaseController {
         RpcResponseDTO<List<UserAgentVTO>> vtos = deviceRestRpcService.fetchAgents(uid);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
     }
-
+    
+    /**
+     * 搜索结果可进行导出txt文件
+     * @param request
+     * @param response
+     * @param uid
+     * @param message
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/export_result", method = {RequestMethod.POST})
+    public void export_result(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message) {
+    	
+        RpcResponseDTO<String> result = deviceRestRpcService.exportResult(uid, message);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+    }
 }

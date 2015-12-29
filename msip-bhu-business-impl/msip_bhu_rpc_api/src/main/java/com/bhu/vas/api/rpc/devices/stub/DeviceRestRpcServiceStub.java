@@ -2,7 +2,6 @@ package com.bhu.vas.api.rpc.devices.stub;
 
 import java.util.List;
 
-import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
@@ -149,6 +148,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid) {
 		return deviceRestRpcService.fetchAgents(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<String> exportResult(int uid, String message) {
+		return deviceRestRpcService.exportResult(uid, message);
 	}
 
 	/*@Override

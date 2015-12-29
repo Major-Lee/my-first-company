@@ -30,6 +30,7 @@ import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
@@ -97,6 +98,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private DeliverMessageService deliverMessageService;
 	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
@@ -575,6 +579,12 @@ public class DeviceRestBusinessFacadeService {
 		}
 		//UserSearchConditionSortedSetService.getInstance().removeUserSearchConditions(uid, message_ts_array);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+	}
+	
+	public RpcResponseDTO<String> exportResult(int uid, String message){
+		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).concat(String.valueOf(System.currentTimeMillis()));
+		deliverMessageService.sendSearchResultExportFileMessage(uid, message, exportFileName);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
 	}
 	
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid){

@@ -14,6 +14,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.ConsoleServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -39,6 +40,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceUsedStatusServiceHandler;
+	
+	@Resource
+	private ConsoleServiceHandler consoleServiceHandler;
 	
 	@PostConstruct
 	public void initialize() {
@@ -158,7 +162,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case AgentDeviceClaimUpdate:
 							agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
 							break;
-
+						case SearchResultExportFile:
+							consoleServiceHandler.searchResultExportFile(message);
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

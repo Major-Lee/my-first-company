@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -275,6 +276,18 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchAgents exception exmsg[%s]",ex.getMessage()), ex);
+			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<String> exportResult(int uid, String message) {
+		logger.info(String.format("DeviceRestRPC exportResult invoke uid [%s]", uid));
+		try{
+			return deviceRestBusinessFacadeService.exportResult(uid, message);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC exportResult exception exmsg[%s]",ex.getMessage()), ex);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
 		}
 	}

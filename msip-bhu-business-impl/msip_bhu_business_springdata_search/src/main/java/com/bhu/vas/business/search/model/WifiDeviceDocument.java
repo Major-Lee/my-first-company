@@ -7,6 +7,7 @@ import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 
 @Document(	indexName = BusinessIndexDefine.WifiDevice.IndexNameNew, 
@@ -20,7 +21,7 @@ type = "myWifiDevice",
 shards = 5, 
 replicas = 1)*/
 public class WifiDeviceDocument extends AbstractDocument{
-	public static final int D_Online_Never = -1;
+/*	public static final int D_Online_Never = -1;
 	public static final int D_Online_True = 1;
 	public static final int D_Online_False = 0;
 	
@@ -32,7 +33,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 	public static final int U_Binded_False = 0;
 	
 	public static final int O_Operate_True = 1;
-	public static final int O_Operate_False = 0;
+	public static final int O_Operate_False = 0;*/
 	
 	@Id
 	@Field(
@@ -125,7 +126,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String d_online = String.valueOf(D_Online_Never);//设备在线状态 -1 从未上线 1 在线 0 离线
+	private String d_online = WifiDeviceDocumentEnumType.OnlineEnum.NeverOnline.getType();//设备在线状态 -1 从未上线 1 在线 0 离线
 	
 	@Field(
 			type = FieldType.String,
@@ -133,7 +134,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String d_monline = String.valueOf(D_MOnline_Never);;//设备增值模块在线状态 -1 从未上线 1 在线 0 离线
+	private String d_monline = WifiDeviceDocumentEnumType.MOnlineEnum.MNeverOnline.getType();//设备增值模块在线状态 -1 从未上线 1 在线 0 离线
 	
 //	@Field(
 //			type = FieldType.String,
@@ -239,7 +240,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String o_operate = String.valueOf(O_Operate_False);//设备是否可运营 0 不可 1 可
+	private String o_operate = WifiDeviceDocumentEnumType.OperateEnum.NOOperate.getType();//设备是否可运营 0 不可 1 可
 	
 	@Field(
 			type = FieldType.String,
@@ -282,7 +283,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String u_binded = String.valueOf(U_Binded_False);//用户是否绑定设备 0 未绑定 1 绑定
+	private String u_binded = WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType();//用户是否绑定设备 0 未绑定 1 绑定
 	
 	@Field(
 			type = FieldType.String,

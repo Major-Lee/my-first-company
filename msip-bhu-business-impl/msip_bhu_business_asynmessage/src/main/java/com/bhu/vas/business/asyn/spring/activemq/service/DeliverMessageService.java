@@ -9,13 +9,12 @@ import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
-import com.bhu.vas.api.rpc.agent.dto.AgentDeviceClaimDTO;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceSearchResultExportFileDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
@@ -428,6 +427,16 @@ public class DeliverMessageService {
 		dto.setStyle(style);
 		dto.setMacs(Arrays.asList(macs));
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendSearchResultExportFileMessage(int uid, String message, String exportFileName){
+		DeviceSearchResultExportFileDTO dto = new DeviceSearchResultExportFileDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setExportFileName(exportFileName);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
 	}
 	
 }

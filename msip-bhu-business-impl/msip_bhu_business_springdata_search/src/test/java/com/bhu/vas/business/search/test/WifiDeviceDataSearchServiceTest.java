@@ -1,13 +1,13 @@
 package com.bhu.vas.business.search.test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.action.index.IndexRequest;
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,9 +15,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.data.domain.Page;
-import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.search.condition.SearchCondition;
 import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
 import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
@@ -31,6 +30,7 @@ import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.localunit.BaseTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -270,7 +270,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		//wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, false, false);
 		//wifiDeviceDataSearchService.getElasticsearchTemplate().update(updateQuery);
 		
-		wifiDeviceDataSearchService.getRepository().delete("84:82:f4:19:01:0c");
+		//wifiDeviceDataSearchService.getRepository().delete("84:82:f4:19:01:0c");
 		
 		wifiDeviceDataSearchService.refresh(true);
 	}
@@ -663,7 +663,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	public void test0012SearchConditionDocument(){
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_lastregedat\",\"pattern\":\"btn\",\"payload\":\"{\\\"gtv\\\":\\\"1448341200000\\\",\\\"ltv\\\":\\\"1448430600000\\\"}\"}]}";
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"1\"}]}";
-		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"T\"}]}";
+		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"T\"}]}";
+		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_mac\",\"pattern\":\"seq\",\"payload\":\"84:82:F4:23:06:68\"}]}";
 		SearchConditionMessage searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
 	
 		System.out.println("JSON test0012:"+ JsonHelper.getJSONString(searchConditionMessage));
@@ -673,5 +674,20 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		for(WifiDeviceDocument doc : result){
     	    System.out.println("test0012:"+ doc.getId() + " = " + doc.getD_lastregedat());
     	}
+	}
+	
+	@Test
+	public void test0013SearchIteratorAll(){
+		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"TU \"}]}";
+		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
+				BusinessIndexDefine.WifiDevice.Type, message, new IteratorNotify<Page<WifiDeviceDocument>>(){
+			@Override
+			public void notifyComming(Page<WifiDeviceDocument> pages) {
+				for(WifiDeviceDocument doc : pages){
+					System.out.println("test0013:"+doc.getId());
+				}
+				System.out.println(pages.getTotalElements());
+			}
+		});
 	}
 }

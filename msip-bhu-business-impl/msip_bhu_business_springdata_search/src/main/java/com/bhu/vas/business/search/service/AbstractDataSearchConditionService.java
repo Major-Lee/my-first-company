@@ -29,6 +29,7 @@ import com.bhu.vas.business.search.SortBuilderHelper;
 import com.bhu.vas.business.search.model.AbstractDocument;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
  * 封装了condition解析逻辑service
@@ -56,7 +57,7 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 */
 	public Page<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) 
 			throws ElasticsearchIllegalArgumentException{
-		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+/*		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
 		SearchType searchType = SearchType.QUERY_THEN_FETCH;
 		
 		if(searchConditionMessage != null){
@@ -72,7 +73,44 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
         		.withSearchType(searchType)
         		.withPageable(new PageRequest(pageNo, pageSize))
         		.build();
-        return getElasticsearchTemplate().queryForPage(searchQuery, entityClass);
+        return getElasticsearchTemplate().queryForPage(searchQuery, entityClass);*/
+		return getElasticsearchTemplate().queryForPage(builderSearchQueryByConditionMessage(searchConditionMessage, 
+				pageNo, pageSize), entityClass);
+	}
+	
+	private SearchQuery builderSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
+			int pageNo, int pageSize){
+		return builderNativeSearchQueryByConditionMessage(searchConditionMessage, pageNo, pageSize).build();
+	}
+	
+	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
+			int pageNo, int pageSize){
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+		SearchType searchType = SearchType.QUERY_THEN_FETCH;
+		
+		if(searchConditionMessage != null){
+			//解析condition返回原生搜索QueryBuilder
+			parserCondition(nativeSearchQueryBuilder, searchConditionMessage.getSearchConditions());
+	    	searchType = SearchType.fromId(searchConditionMessage.getSearchType());
+		}else{
+			nativeSearchQueryBuilder.withFilter(FilterBuilders.matchAllFilter());
+		}
+		
+		//使用es原生方式进行查询
+        nativeSearchQueryBuilder
+        		.withSearchType(searchType)
+        		.withPageable(new PageRequest(pageNo, pageSize));
+        return nativeSearchQueryBuilder;
+	}
+	
+	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
+			String indices, String types, int pageNo, int pageSize){
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(
+				searchConditionMessage, pageNo, pageSize);
+		nativeSearchQueryBuilder
+				.withIndices(indices)
+				.withTypes(types);
+		return nativeSearchQueryBuilder;
 	}
 	
 	/**
@@ -230,6 +268,27 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	public boolean validateConditionPayloadVaild(String conditionPayload){
 		if(StringUtils.isEmpty(conditionPayload)) return false;
 		return true;
+	}
+	
+	
+	public void iteratorAll(String indices, String types, String message, IteratorNotify<Page<MODEL>> notify){
+		SearchConditionMessage searchConditionMessage = null;
+		if(!StringUtils.isEmpty(message)){
+			searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
+		}
+		
+		SearchQuery searchQuery = builderNativeSearchQueryByConditionMessage(searchConditionMessage, indices, types, 0, 500).build();
+
+		String scrollId = getElasticsearchTemplate().scan(searchQuery, 60000, false);
+		boolean hasRecords = true;
+		while (hasRecords) {
+			Page<MODEL> page = getElasticsearchTemplate().scroll(scrollId, 60000, entityClass);
+			if (page.hasContent()) {
+				notify.notifyComming(page);
+			} else {
+				hasRecords = false;
+			}
+		}
 	}
 	
 	/****************************  Method Parser **********************************/
