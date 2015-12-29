@@ -55,7 +55,7 @@ public class ConsoleServiceHandler {
 		if(dto == null) return;
 		
 		String exportFilePath = RuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
-				.concat(File.pathSeparator).concat(dto.getExportFileName());
+				.concat(File.separator).concat(dto.getExportFileName());
 		BufferedWriter fw = null;
 		try {
 			FileHelper.makeDirectory(exportFilePath);
@@ -78,9 +78,17 @@ public class ConsoleServiceHandler {
 			//输出文件
 			//System.out.println(ret);
 			//输出列
-			for(String columns : SearchResultExportColumns){
-				fw.append(formatStr(columns));
+			int columns_length = SearchResultExportColumns.length;
+			for(int i = 0;i<columns_length;i++){
+				if((i+1) == columns_length){
+					fw.append(formatStr(SearchResultExportColumns[i], false));
+				}else{
+					fw.append(formatStr(SearchResultExportColumns[i]));
+				}
 			}
+//			for(String columns : SearchResultExportColumns){
+//				fw.append(formatStr(columns));
+//			}
 			fw.newLine();
 			for(String item : allItemStrings){
 				fw.append(item);
@@ -150,7 +158,7 @@ public class ConsoleServiceHandler {
 			bw.append(formatStr(null));
 		}
 		bw.append(formatStr(doc.getO_template()));
-		bw.append(formatStr(doc.getD_workmodel()));
+		bw.append(formatStr(doc.getD_workmodel(), false));
 		return bw.toString();
 	}
 	
@@ -160,7 +168,7 @@ public class ConsoleServiceHandler {
 	 * @param str
 	 * @return
 	 */
-	private static String formatStr(String str) {
+	private static String formatStr(String str, boolean split) {
 		if(str == null) str = StringHelper.EMPTY_STRING_GAP;
 		
 		StringBuffer formatStr = new StringBuffer();
@@ -174,7 +182,12 @@ public class ConsoleServiceHandler {
 				formatStr.append(StringHelper.WHITESPACE_STRING_GAP);
 			}
 		}
-		formatStr.append(StringHelper.COMMA_STRING_GAP);
+		if(split)
+			formatStr.append(StringHelper.COMMA_STRING_GAP);
 		return formatStr.toString();
+	}
+	
+	private static String formatStr(String str) {
+		return formatStr(str, true);
 	}
 }

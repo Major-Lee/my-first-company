@@ -582,7 +582,8 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	public RpcResponseDTO<String> exportResult(int uid, String message){
-		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).concat(String.valueOf(System.currentTimeMillis()));
+		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).
+				concat(DateTimeHelper.getDateTime());
 		deliverMessageService.sendSearchResultExportFileMessage(uid, message, exportFileName);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
 	}
