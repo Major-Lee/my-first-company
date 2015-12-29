@@ -164,6 +164,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case SearchResultExportFile:
 							consoleServiceHandler.searchResultExportFile(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

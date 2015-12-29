@@ -134,7 +134,14 @@ public class ConsoleServiceHandler {
 		bw.append(formatStr(DateTimeHelper.formatDate(new Date(doc.getD_lastlogoutat()), DateTimeHelper.FormatPattern0)));
 		
 		if(!StringUtils.isEmpty(doc.getO_graylevel())){
-			GrayLevel gl = VapEnumType.GrayLevel.fromIndex(Integer.parseInt(doc.getO_graylevel()));
+			int o_graylevel_int = 0;
+			try{
+				o_graylevel_int = Integer.parseInt(doc.getO_graylevel());
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
+			GrayLevel gl = VapEnumType.GrayLevel.fromIndex(o_graylevel_int);
 			if(gl != null){
 				bw.append(formatStr(gl.getName()));
 			}
