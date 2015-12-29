@@ -161,15 +161,19 @@ public class ConsoleServiceHandler {
 	 */
 	private static String formatStr(String str) {
 		if(str == null) str = StringHelper.EMPTY_STRING_GAP;
-		str = StringHelper.WHITESPACE_STRING_GAP + str;
-		int strLen = str.getBytes().length;
+		
+		StringBuffer formatStr = new StringBuffer();
+		formatStr.append(StringHelper.WHITESPACE_STRING_GAP);
+		formatStr.append(str);
+		int strLen = formatStr.toString().getBytes().length;
 		if (strLen < TxtFileLength) {
 			int temp = TxtFileLength - strLen;
 			for (int i = 0; i < temp; i++) {
-				str += StringHelper.WHITESPACE_STRING_GAP;
+				//str += StringHelper.WHITESPACE_STRING_GAP;
+				formatStr.append(StringHelper.WHITESPACE_STRING_GAP);
 			}
 		}
+		formatStr.append(StringHelper.COMMA_STRING_GAP);
 		return str;
 	}
-
 }
