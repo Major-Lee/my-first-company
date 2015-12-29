@@ -102,6 +102,7 @@ public class VapEnumType {
 	public enum DeviceUnitType{
 		uRouterRoot(DUT_uRouter, StringHelper.MINUS_STRING_GAP,"uRouter"),
 		SOCRoot(DUT_soc, StringHelper.MINUS_STRING_GAP,"SOC"),
+		CWifiRoot(DUT_CWifi, StringHelper.MINUS_STRING_GAP,"CWifi"),
 		
 		uRouterTU_106("TU_H106",	"AP106",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterPlusTU_112("TU_H112","AP112",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
