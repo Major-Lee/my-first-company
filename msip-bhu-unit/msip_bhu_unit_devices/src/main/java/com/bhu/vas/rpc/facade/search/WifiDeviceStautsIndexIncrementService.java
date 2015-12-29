@@ -102,6 +102,7 @@ public class WifiDeviceStautsIndexIncrementService{
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.ID.getName(), entity.getId());
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SN.getName(), entity.getSn());
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_MAC.getName(), entity.getId());
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ONLINE.getName(), WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ORIGSWVER.getName(), entity.getOrig_swver());
