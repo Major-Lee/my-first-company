@@ -54,7 +54,8 @@ public class ConsoleServiceHandler {
 		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
 		if(dto == null) return;
 		
-		String exportFilePath = RuntimeConfiguration.Search_Result_Export_Dir.concat(dto.getExportFileName());
+		String exportFilePath = RuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
+				.concat(File.pathSeparator).concat(dto.getExportFileName());
 		BufferedWriter fw = null;
 		try {
 			FileHelper.makeDirectory(exportFilePath);
