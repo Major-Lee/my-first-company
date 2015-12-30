@@ -55,15 +55,23 @@ public class TerminalRecentSortedSetService extends AbstractRelationSortedSetCac
 	public void addTerminalRecents(String mac, String[] hd_macs, double[] snifftimes){
 		if(hd_macs == null || snifftimes == null) return;
 		
-		Map<Double,String> members = new HashMap<Double,String>();
+		/*Map<Double,String> members = new HashMap<Double,String>();
 		int length = hd_macs.length;
 		for(int i = 0;i<length;i++){
 			members.put(snifftimes[i], hd_macs[i]);
 		}
+		super.zadd(generateKey(mac), members);*/
+		
+		Map<String,Double> members = new HashMap<>();
+		int length = hd_macs.length;
+		for(int i = 0;i<length;i++){
+			members.put(hd_macs[i],snifftimes[i]);
+		}
 		super.zadd(generateKey(mac), members);
 	}
 	
-	public void addTerminalRecents(String mac, Map<Double,String> snifftimesAndHdmacs_map){
+	//public void addTerminalRecents(String mac, Map<Double,String> snifftimesAndHdmacs_map){
+	public void addTerminalRecents(String mac, Map<String,Double> snifftimesAndHdmacs_map){
 		if(snifftimesAndHdmacs_map == null || snifftimesAndHdmacs_map.isEmpty()) return;
 		super.zadd(generateKey(mac), snifftimesAndHdmacs_map);
 	}
