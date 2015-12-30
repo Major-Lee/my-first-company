@@ -29,6 +29,7 @@ import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -44,7 +45,7 @@ public class ConsoleServiceHandler {
 
 	public static final String[] SearchResultExportColumns = new String[]{"Mac","SN","软件版本","模块版本",
 		"归属业务线","状态","是否绑定","绑定手机号","地理位置","在线总时长","首次上线时间",
-		"末次上线时间","末次离线时间","灰度","关联模板","工作模式"};
+		"末次上线时间","末次离线时间","灰度","关联模板","工作模式","在线总时长占比"};
 	/**
 	 * 搜索结果导出txt文件
 	 * @param message
@@ -158,7 +159,20 @@ public class ConsoleServiceHandler {
 			bw.append(formatStr(null));
 		}
 		bw.append(formatStr(doc.getO_template()));
-		bw.append(formatStr(doc.getD_workmodel(), false));
+		bw.append(formatStr(doc.getD_workmodel()));
+		//计算在线时长百分比
+		long current_ts = System.currentTimeMillis();
+		long theory_uptime = current_ts - doc.getD_createdat();
+		long actual_uptime = 0l;
+		if(!StringUtils.isEmpty(doc.getD_uptime())){
+			actual_uptime = Long.parseLong(doc.getD_uptime());
+		}
+		//如果设备当前在线，上线时长加入当前在线时间
+		if(WifiDeviceDocumentEnumType.OnlineEnum.Online.getType().equals(doc.getD_online())){
+			long current_actual_uptime = current_ts - doc.getD_lastregedat();
+			actual_uptime = actual_uptime + current_actual_uptime;
+		}
+		bw.append(formatStr(ArithHelper.percent(actual_uptime, theory_uptime, 2), false));
 		return bw.toString();
 	}
 	
