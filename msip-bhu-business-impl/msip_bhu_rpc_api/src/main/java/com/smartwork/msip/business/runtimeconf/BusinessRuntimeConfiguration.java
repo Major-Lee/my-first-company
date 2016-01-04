@@ -32,6 +32,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	Devices_Plugin_Samba_DownloadPath = PropertiesHelper.getString("devices.plugin.samba.downloadpath", paramProperties, Devices_Plugin_Samba_DownloadPath);
         	Devices_Plugin_Samba_Ver = PropertiesHelper.getString("devices.plugin.samba.ver", paramProperties, Devices_Plugin_Samba_Ver);
         	
+        	Terminal_Push_Notify_Exprie_Second = PropertiesHelper.getInt("terminal.push.notify.exprie.second", paramProperties, Terminal_Push_Notify_Exprie_Second);
         	logger.info("loading runtime configuration successfully!");  
         }  
     }  
@@ -53,4 +54,6 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	//下载地址，支持逗号分割
 	public static String Devices_Plugin_Samba_DownloadPath = "http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz";
 	public static String Devices_Plugin_Samba_Ver = "0.01";
+	
+	public static int Terminal_Push_Notify_Exprie_Second = 15 * 60;
 }

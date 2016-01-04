@@ -464,7 +464,7 @@ public class DeviceBusinessFacadeService {
 			handset.setEthernet(dto.getEthernet());
 			handset.setAuthorized(dto.getAuthorized());
 			//在终端上线后需要清除掉以前dhcpname和ip,由于上线消息中没有dhcpname和ip，所以这些值在上线时都是空，直接用
-			handset.setDhcp_name(dto.getDhcp_name());
+			//handset.setDhcp_name(dto.getDhcp_name());
 			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
 
