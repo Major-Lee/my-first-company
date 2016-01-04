@@ -738,6 +738,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		if(de == null || !DeviceEnum.isHandsetDevice(de)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_TYPE_NOT_SUPPORTED);
 		}
+		if(!StringUtils.isEmpty(dm)){
+			dm = dm.toLowerCase();
+		}
 		//1:当前用户使用app移动设备数据
 		userMobileDeviceService.deviceRegister(uid, dm, dt, d, pt);
 		//2:用户使用app移动设备历史数据
