@@ -102,7 +102,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	}
 
 	private final static String Default_Redirect_url = "www.bhuwifi.com";
-	private final static String Default_Open_resource = "";
+	private final static String Default_Open_resource = "bhuwifi.com,bhunetworks.com";
 	private final static String Default_SSID = "BhuWiFi-访客";
 	
 	private final static int Default_Users_tx_rate= 128;
