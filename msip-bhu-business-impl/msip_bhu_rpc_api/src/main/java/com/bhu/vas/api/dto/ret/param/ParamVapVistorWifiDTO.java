@@ -133,7 +133,9 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(Default_Redirect_url);
 		if(param.getIdle_timeout() == 0) param.setIdle_timeout(Default_Idle_timeout);
 		if(param.getForce_timeout() == 0) param.setForce_timeout(Default_Force_timeout);
-		if(StringUtils.isEmpty(param.getOpen_resource())) param.setOpen_resource(Default_Open_resource);
+		if(StringUtils.isEmpty(param.getOpen_resource()) || param.getOpen_resource().indexOf(Default_Open_resource) == -1) {
+			param.setOpen_resource(Default_Open_resource);
+		}
 		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(Default_SSID);
 		return param;
 	}
