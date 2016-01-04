@@ -97,7 +97,6 @@ public class WifiDeviceDocumentHelper {
 					doc.setD_type_sname(deviceUnitType.getSname());
 				}
 			}
-			
 			/*if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
 				doc.setD_dut(DeviceVersion.DUT_soc);
 			}else if(DeviceUnitType.isURouterHdType(wifiDevice.getHdtype())){

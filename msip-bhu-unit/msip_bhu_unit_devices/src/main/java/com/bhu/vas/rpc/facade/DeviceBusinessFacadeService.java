@@ -356,7 +356,7 @@ public class DeviceBusinessFacadeService {
 	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
+		//System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
@@ -366,7 +366,7 @@ public class DeviceBusinessFacadeService {
 
 	private void handsetDeviceVisitorOnline(String ctx, WifiDeviceTerminalDTO dto, String wifiId) {
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorOnline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
+		//System.out.println("handsetDeviceVisitorOnline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 		} else {
@@ -464,7 +464,7 @@ public class DeviceBusinessFacadeService {
 			handset.setEthernet(dto.getEthernet());
 			handset.setAuthorized(dto.getAuthorized());
 			//在终端上线后需要清除掉以前dhcpname和ip,由于上线消息中没有dhcpname和ip，所以这些值在上线时都是空，直接用
-			handset.setDhcp_name(dto.getDhcp_name());
+			//handset.setDhcp_name(dto.getDhcp_name());
 			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
 
