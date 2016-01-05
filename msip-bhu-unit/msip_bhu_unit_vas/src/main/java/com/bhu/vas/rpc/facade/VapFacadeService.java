@@ -43,6 +43,9 @@ public class VapFacadeService {
 
     /**
      * 验证url传过来的key
+     *
+     * 
+     *
      * @param key
      * @param field
      * @return
@@ -71,7 +74,7 @@ public class VapFacadeService {
 //        } else {
 //            return false;
 //        }
-//        return false;
+        return true;
     }
 
     /**
