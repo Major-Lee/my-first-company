@@ -68,7 +68,11 @@ public class VapModeHashService extends AbstractRelationHashCache {
         System.out.println(VapModeHashService.getInstance().hget(generatePrefixKey("htmlad"), "style001"));
         System.out.println(VapModeHashService.getInstance().keys("VM.*"));
 
-        System.out.println(VapModeHashService.getInstance().hvalues(generatePrefixKey("htmlad")));
+
+        System.out.println(VapModeHashService.getInstance().incrStatistics("style000", "http_404", 1));
+        System.out.println(VapModeHashService.getInstance().incrStatistics("style000", "http_502", 1));
+
+        System.out.println(VapModeHashService.getInstance().hvalues(generatePrefixKey("style000")));
 
     }
 }
