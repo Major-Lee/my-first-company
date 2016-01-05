@@ -97,7 +97,8 @@ public class HandsetStorageFacadeService{
         	long ts = System.currentTimeMillis();
             for(HandsetDeviceDTO dto:handsets){
                 if(dto != null){
-                	DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, dto.getMac(), 0l, ts);//(wifiId, dto.getMac(), "0", System.currentTimeMillis());
+                	wifiDeviceHandsetOffline(dmac, dto.getMac(), 0l, ts);
+                	//DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, dto.getMac(), 0l, ts);//(wifiId, dto.getMac(), "0", System.currentTimeMillis());
                 }
             }
         }
@@ -137,21 +138,28 @@ public class HandsetStorageFacadeService{
      * @param tx_bytes
      * @param logout_at
      */
-    public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final String tx_bytes, final long logout_at) {
+    public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final long tx_bytes, final long logout_at) {
     	//System.out.println(String.format("wifiDeviceHandsetOffline dmac[%s] hmac[%s] logout_at[%s]", dmac,hmac,logout_at));
     	DeviceHandsetsService.getInstance().handsetComming(false, dmac, hmac, logout_at);
-    	final long rb = Long.parseLong(tx_bytes);
-    	if(rb >0){
-    		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, rb);
+    	//final long rb = Long.parseLong(tx_bytes);
+    	if(tx_bytes >0){
+    		DeviceHandsetExtFieldService.getInstance().increaseTrb(dmac, hmac, tx_bytes);
     	}
     	exec_processes.get(determinExecMacHash(hmac)).submit((new Runnable() {
 			@Override
 			public void run() {
-				DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, rb, logout_at);
+				DeviceHandsetLogService.getInstance().hansetLogComming(false, dmac, hmac, tx_bytes, logout_at);
 			}
     	}));
     }
-
+    public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final String tx_bytes, final long logout_at) {
+    	final long rb = Long.parseLong(tx_bytes);
+    	if(rb >0){
+    	}
+    	wifiDeviceHandsetOffline(dmac,hmac,rb,logout_at);
+    }
+    
+    
     public static List<HandsetLogDTO> wifiDeviceHandsetRecentLogs(String dmac, String hmac,int size){
     	return DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
     	/*List<HandsetLogDTO> recentLogs = DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);
