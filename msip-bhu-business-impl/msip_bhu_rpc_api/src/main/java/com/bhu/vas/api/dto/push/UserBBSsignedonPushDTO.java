@@ -9,12 +9,12 @@ import com.bhu.vas.api.rpc.user.model.PushType;
  */
 @SuppressWarnings("serial")
 public class UserBBSsignedonPushDTO extends PushDTO{
-	private int uid;
-	private int countrycode;
-	private String acc;
+//	private int uid;
+//	private int countrycode;
+//	private String acc;
 	private String secretkey;
 	
-	public int getUid() {
+/*	public int getUid() {
 		return uid;
 	}
 
@@ -42,7 +42,7 @@ public class UserBBSsignedonPushDTO extends PushDTO{
 	public void setAcc(String acc) {
 		this.acc = acc;
 	}
-
+*/
 
 	public String getSecretkey() {
 		return secretkey;
