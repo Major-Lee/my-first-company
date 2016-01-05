@@ -1455,9 +1455,9 @@ public class AsyncMsgHandleService {
 		//logger.info(String.format("AnsyncMsgBackendProcessor userBBSsignedon message[%s]", message));
 		UserBBSsignedonDTO dto = JsonHelper.getDTO(message, UserBBSsignedonDTO.class);
 		UserBBSsignedonPushDTO push_dto = new UserBBSsignedonPushDTO();
-		push_dto.setUid(dto.getUid());
-		push_dto.setCountrycode(dto.getCountrycode());
-		push_dto.setAcc(dto.getAcc());
+//		push_dto.setUid(dto.getUid());
+//		push_dto.setCountrycode(dto.getCountrycode());
+//		push_dto.setAcc(dto.getAcc());
 		push_dto.setSecretkey(dto.getSecretkey());
 		push_dto.setTs(System.currentTimeMillis());
 		
