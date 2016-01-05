@@ -37,7 +37,7 @@ public class CountController extends BaseController {
             @RequestParam(required = true) String field
             ) {
 //        response.setHeader("Access-Control-Allow-Origin", "*");
-        RpcResponseDTO<VapModeUrlViewCountDTO> rpcResult =  vapRp cService.urlView(key, field);
+        RpcResponseDTO<VapModeUrlViewCountDTO> rpcResult =  vapRpcService.urlView(key, field);
         if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
