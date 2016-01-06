@@ -51,6 +51,11 @@ public class VapFacadeService {
 
 
             long count = WifiDeviceModuleStatService.getInstance().hincr(generateDStyleKey(key),generateHttp404ModuleKey(field), 1);
+            WifiDeviceModuleStatService.getInstance().hincr(generateMStyleKey(key),generateHttp404ModuleKey(field), 1);
+
+            System.out.println(String.format("%s, %s, %s, %s", key, generateDStyleKey(key), field, generateHttp404ModuleKey(field)));
+            System.out.println(String.format("%s, %s, %s, %s", key, generateMStyleKey(key), field, generateHttp404ModuleKey(field)));
+
             vapModeUrlViewCountDTO.setCount(count);
             long totalCount = VapModeHashService.getInstance().getTotalCountKey(key);
             vapModeUrlViewCountDTO.setTotal_count(totalCount);
