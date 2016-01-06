@@ -55,7 +55,7 @@ public class WifiDeviceModuleStatService extends AbstractRelationHashCache {
 
 
     public long hincr(String key, String field, long value) {
-        return this.hincrby(generateModuleKey(key), generateModuleKey(field), value);
+        return this.hincrby(generateStyleKey(key), generateModuleKey(field), value);
     }
 
 
