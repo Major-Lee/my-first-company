@@ -16,11 +16,9 @@ import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
-import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.PushType;
-import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -30,7 +28,6 @@ import com.bhu.vas.push.common.context.HandsetOnlineContext;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
@@ -135,7 +132,20 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			System.out.println("访客上线push2:"+presentDto);
 			if(presentDto != null) {
-				HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
+				HandsetOnlineContext context = businessPushContextService.handsetOnlineGuestContext(pushDto, presentDto);
+				if(context.isVaild()){
+					PushMsg pushMsg = this.generatePushMsg(presentDto, pushDto);
+					this.builderHandsetDeviceOnlineGuestPushMsg(pushMsg, context);
+					//发送push
+					ret = pushNotification(pushMsg);
+					if(ret){
+						logger.info("PushHandsetDeviceOnlineGuest Successed " + pushMsg.toString());
+					}else{
+						logger.info("PushHandsetDeviceOnlineGuest Failed " + pushMsg.toString());
+					}
+				}
+				
+/*				HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
 				//判断是否是自己
 				if (hd_push_dto.getHd_mac().equals(presentDto.getDm())) {
 					return false;
@@ -174,7 +184,7 @@ public class PushService{
 							}
 						}
 					}
-				}
+				}*/
 			}
 
 		} catch (Exception e) {
@@ -194,7 +204,7 @@ public class PushService{
 		try{
 			HandsetDeviceWSOnlinePushDTO wspush_dto = (HandsetDeviceWSOnlinePushDTO)pushDto;
 			if(presentDto != null){
-				PushMsg pushMsg = this.generatePushMsg(presentDto, wspush_dto);
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
 					String push_deviceName = StringHelper.EMPTY_STRING_GAP;
 					if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
@@ -210,7 +220,7 @@ public class PushService{
 							}
 						}
 						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), name));
-						//pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
+						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					}else{
 						if(presentDto.isMulti()){
 							String deviceName = deviceFacadeService.getUserDeviceName(presentDto.getUid(), wspush_dto.getMac());
@@ -220,7 +230,7 @@ public class PushService{
 						}
 						pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), push_deviceName));
 						pushMsg.setText(String.format(PushType.HandsetDeviceWSOnline.getText(), wspush_dto.getHd_mac()));
-						//pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
+						pushMsg.setPaylod(JsonHelper.getJSONString(wspush_dto));
 					}
 					//发送push
 					ret = pushNotification(pushMsg);
@@ -249,11 +259,11 @@ public class PushService{
 		try{
 			UserBBSsignedonPushDTO bbs_push_dto = (UserBBSsignedonPushDTO)pushDto;
 			if(presentDto != null){
-				PushMsg pushMsg = this.generatePushMsg(presentDto, bbs_push_dto);
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
 					pushMsg.setText(PushType.UserBBSsignedon.getText());
 					pushMsg.setTitle(PushType.UserBBSsignedon.getTitle());
-					//pushMsg.setPaylod(JsonHelper.getJSONString(bbs_push_dto));
+					pushMsg.setPaylod(JsonHelper.getJSONString(bbs_push_dto));
 					//发送push
 					ret = pushAndroidTransmissionAndIosNotification(pushMsg);
 					if(ret){
@@ -281,9 +291,9 @@ public class PushService{
 			if(WifiDeviceDTO.UserCmdRebootReason.equals(reboot_dto.getJoin_reason())){
 				DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 				if(presentDto != null){
-					PushMsg pushMsg = this.generatePushMsg(presentDto, reboot_dto);
+					PushMsg pushMsg = this.generatePushMsg(presentDto);
 					if(pushMsg != null){
-						//pushMsg.setPaylod(JsonHelper.getJSONString(reboot_dto));
+						pushMsg.setPaylod(JsonHelper.getJSONString(reboot_dto));
 						//发送push
 						ret = pushTransmission(pushMsg);
 						if(ret){
@@ -312,9 +322,9 @@ public class PushService{
 
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			if(presentDto != null){
-				PushMsg pushMsg = this.generatePushMsg(presentDto, wds_changed_dto);
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
-					//pushMsg.setPaylod(JsonHelper.getJSONString(wds_changed_dto));
+					pushMsg.setPaylod(JsonHelper.getJSONString(wds_changed_dto));
 					//发送push
 					ret = pushTransmission(pushMsg);
 					if(ret){
@@ -341,6 +351,17 @@ public class PushService{
 	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, HandsetOnlineContext context){
 		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange()));
 		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+	}
+	/**
+	 * 构建访客上线push的透传内容
+	 * @param pushMsg
+	 * @param context
+	 * @return
+	 */
+	public void builderHandsetDeviceOnlineGuestPushMsg(PushMsg pushMsg, HandsetOnlineContext context){
+		pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange()));
+		pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
 				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
 	}
 
@@ -488,6 +509,9 @@ public class PushService{
 		}
 	}
 	
+	protected PushMsg generatePushMsg(DeviceMobilePresentDTO presentDto){
+		return generatePushMsg(presentDto, null);
+	}
 	/**
 	 * 根据mobile push信息数据生成PushMsg对象
 	 * @param mac 设备mac
