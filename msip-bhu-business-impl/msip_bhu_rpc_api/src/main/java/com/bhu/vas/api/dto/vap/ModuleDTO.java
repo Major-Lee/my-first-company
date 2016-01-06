@@ -1,12 +1,14 @@
 package com.bhu.vas.api.dto.vap;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
+
 public abstract class ModuleDTO {
 	
 	public static String Type_Http404 = "http404";
 	public static String Type_Redirect = "redirect";
 	
-	public static String Enable = "enable";
-	public static String Disable = "disable";
+	/*public static String Enable = "enable";
+	public static String Disable = "disable";*/
 	
 	//type="http404" enable="enable" ver="style001-00.00.03"
 	//private String type;
@@ -34,6 +36,6 @@ public abstract class ModuleDTO {
 	public abstract String getType();
 	
 	public boolean wasEnable(){
-		return Enable.equals(enable);
+		return WifiDeviceHelper.Enable.equals(enable);
 	}
 }

@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.dto;
 
 import java.util.Date;
 
+import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
@@ -96,5 +97,15 @@ public class UserWifiTimerSettingDTO extends UserSettingDTO{
 		this.days = days;
 	}
 	
-	
+	public ParamCmdWifiTimerStartDTO toParamCmdWifiTimerStartDTO(){
+		if(on){
+			ParamCmdWifiTimerStartDTO dto = new ParamCmdWifiTimerStartDTO();
+			dto.setEnable(WifiDeviceHelper.Enable);
+			dto.setDays(this.getDays());
+			dto.setTimeslot(this.getTimeslot());
+			return dto;
+		}else{
+			return null;
+		}
+	}
 }
