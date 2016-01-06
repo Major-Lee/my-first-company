@@ -961,7 +961,7 @@ public class DeviceURouterRestBusinessFacadeService {
 //					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
 					//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
 					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(block_hd_macs);
-					List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, block_hd_macs);
+					//List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, block_hd_macs);
 					if(!block_hd_macs.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
 //						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
@@ -1037,7 +1037,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterPlugins(Integer uid, String wifiId){
 		try{
-			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDevice wifiDevice = deviceFacadeService.validateUserDevice(uid, wifiId);
 			
 			UserSettingState user_setting_entity = userSettingStateService.getById(wifiId);
 			if(user_setting_entity == null){
@@ -1046,7 +1046,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			
 			Map<String,Object> ret = new HashMap<String,Object>();
 			//终端上线通知插件
-			this.urouterPlugins4TerminalOnline(user_setting_entity, ret);
+			this.urouterPlugins4TerminalOnline(wifiDevice,user_setting_entity, ret);
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
@@ -1143,7 +1143,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param user_setting_entity
 	 * @return
 	 */
-	protected void urouterPlugins4TerminalOnline(UserSettingState user_setting_entity,
+	protected void urouterPlugins4TerminalOnline(WifiDevice wifiDevice,UserSettingState user_setting_entity,
 			Map<String,Object> ret){
 		//终端上线设置数据
 		UserTerminalOnlineSettingDTO uto_dto = user_setting_entity.getUserSetting(UserTerminalOnlineSettingDTO.
@@ -1170,7 +1170,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				Setting_Key, UserVistorWifiSettingDTO.class);
 		if(uvw_dto == null){
 			uvw_dto = new UserVistorWifiSettingDTO();
-			uvw_dto.setVw(ParamVapVistorWifiDTO.builderDefault());
+			uvw_dto.setVw(ParamVapVistorWifiDTO.builderDefault(wifiDevice==null?true:WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode())));
 			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		}else{
 			uvw_dto.setC(WifiDeviceVisitorService.getInstance().countAuthPresent(user_setting_entity.getId()));

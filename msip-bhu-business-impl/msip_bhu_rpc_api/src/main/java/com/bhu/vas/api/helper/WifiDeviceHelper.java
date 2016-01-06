@@ -27,19 +27,21 @@ public class WifiDeviceHelper {
 	
 	public static final int Upgrade_Module_Default_Retry_Count = 1;
 	public static final int Upgrade_Module_Default_RetryInterval = 60;
-
 	
-	public final static String WIFI_URouter_DEVICE_ORIGIN_MODEL = "uRouter";
-	
+	//public final static String WIFI_URouter_DEVICE_ORIGIN_MODEL = "uRouter";
 	public final static boolean WIFI_DEVICE_UPGRADE_FW = true;
 	public final static boolean WIFI_DEVICE_UPGRADE_OM = false;
+	
+	public final static String WorkMode_Router = "router-ap";
+	public final static String WorkMode_Bridge = "bridge-ap";
+	public final static String Default_BlockMode_Router = "route";
+	public final static String Default_BlockMode_Bridge = "bridge";
 	
 	//private static Set<String> URouter_HdTypes = new HashSet<String>();
 	//private static Set<String> Soc_HdTypes = new HashSet<String>();
 	private static Set<String> vapExceptDevices = new HashSet<String>();
 	static{
 		/*URouter_HdTypes.add("H106");
-		
 		//Mass AP H103 H110
 		Soc_HdTypes.add("H103");
 		Soc_HdTypes.add("H110");
@@ -53,6 +55,13 @@ public class WifiDeviceHelper {
 		if(ver == null || !ver.valid()) return false;
 		return ver.wasDutURouter();
 	}
+	
+	public static boolean isWorkModeRouter(String work_mode){
+		//如果为空的情况下，则缺省返回true
+		if(StringUtils.isEmpty(work_mode)) return true;
+		return WorkMode_Router.equals(work_mode);
+	}
+	
 	/*public static boolean isURouterDevice(String orig_model) {
 		DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null) return false;

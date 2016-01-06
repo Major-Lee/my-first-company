@@ -446,14 +446,14 @@ public class TaskFacadeService {
 						ods_cmd = OperationDS.DS_VistorWifi_Start;
 					case DS_VistorWifi_Start:
 						{
-							ParamVapVistorWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-							ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
+							ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
+							vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 							UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
 							vistorwifi.setOn(true);
 							vistorwifi.setDs(false);
-							vistorwifi.setVw(ad_dto);
+							vistorwifi.setVw(vistor_dto);
 							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
 						}
 						break;
 					case DS_VistorWifi_Stop:

@@ -2,6 +2,7 @@ package com.bhu.vas.api.dto.ret.param;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 
@@ -22,7 +23,9 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	private int idle_timeout;
 	private int force_timeout;
 	private String open_resource;
+	private String block_mode;
 	private String ssid;
+	
 	
 	public Object[] builderProperties() {
 		Object[] properties = new Object[8];
@@ -33,7 +36,8 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		properties[4] = idle_timeout;
 		properties[5] = force_timeout;
 		properties[6] = open_resource;
-		properties[7] = ssid;
+		properties[7] = block_mode;
+		properties[8] = ssid;
 		return properties;
 	}
 
@@ -101,6 +105,14 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		this.ssid = ssid;
 	}
 
+	public String getBlock_mode() {
+		return block_mode;
+	}
+
+	public void setBlock_mode(String block_mode) {
+		this.block_mode = block_mode;
+	}
+
 	private final static String Default_Redirect_url = "www.bhuwifi.com";
 	private final static String Default_Open_resource = "bhuwifi.com,bhunetworks.com";
 	private final static String Default_SSID = "BhuWiFi-访客";
@@ -111,7 +123,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	private final static int Default_Idle_timeout= 3*60*60;
 	private final static int Default_Force_timeout= 12*60*60;
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
-	public static ParamVapVistorWifiDTO builderDefault(){
+	public static ParamVapVistorWifiDTO builderDefault(boolean router){
 		ParamVapVistorWifiDTO dto = new ParamVapVistorWifiDTO();
 		dto.setUsers_tx_rate(Default_Users_tx_rate);
 		dto.setUsers_rx_rate(Default_Users_rx_rate);
@@ -120,12 +132,13 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		dto.setIdle_timeout(Default_Idle_timeout);//
 		dto.setForce_timeout(Default_Force_timeout);
 		dto.setOpen_resource(Default_Open_resource);
+		dto.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		dto.setSsid(Default_SSID);
 		return dto;
 	}
 	
-	public static ParamVapVistorWifiDTO fufillWithDefault(ParamVapVistorWifiDTO param){
-		if(param == null) return builderDefault();
+	public static ParamVapVistorWifiDTO fufillWithDefault(ParamVapVistorWifiDTO param,boolean router){
+		if(param == null) return builderDefault(router);
 		//if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(Default_Users_tx_rate);
 		//if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(Default_Users_rx_rate);
 		
@@ -136,15 +149,16 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		if(StringUtils.isEmpty(param.getOpen_resource()) || param.getOpen_resource().indexOf(Default_Open_resource) == -1) {
 			param.setOpen_resource(Default_Open_resource);
 		}
+		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(Default_SSID);
 		return param;
 	}
 	
 	public static void main(String[] argv){
-		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null)));
+		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null,true)));
 		
 		ParamVapVistorWifiDTO param = new ParamVapVistorWifiDTO();
 		param.setSsid("GOOO理论");
-		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param)));
+		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param,false)));
 	}
 }

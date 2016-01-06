@@ -685,6 +685,9 @@ public class DeviceHelper {
      "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";*/
 	
 	//开启访客网络指令
+	//开启访客网络isolation="14"，关闭访客网络isolation="0".
+	//open_resource=bhuwifi.com,bhunetworks.com
+	//切AP模式需修改参数：将block_mode="route"改为block_mode="bridge"。
 	//参数顺序 users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static final String DeviceSetting_Start_VisitorWifi =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
@@ -693,9 +696,10 @@ public class DeviceHelper {
 				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"+
 				"<webportal>"+
 					"<setting>"+
-						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"%s\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   "
+						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"%s\" "
+						+ "extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   "
 						+ "redirect_url=\"%s\"  max_clients=\"256\" idle_timeout=\"%s\" force_timeout=\"%s\" "
-						+ "open_resource=\"%s/\" forbid_management=\"enable\"/>"+
+						+ "open_resource=\"%s/\" forbid_management=\"enable\" block_mode=\"%s\"/>"+
 					"</setting>"+
 				"</webportal>"+
 				"</net>"+
@@ -961,11 +965,11 @@ public class DeviceHelper {
 	}
 	
 	public static String builderDSStartVisitorWifiOuter(String extparams){
-		ParamVapVistorWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-		ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
+		ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
+		//ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
 		//if(ad_dto == null)
 		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		return builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi,ad_dto.builderProperties());
+		return builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi,vistor_dto.builderProperties());
 		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
 		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
