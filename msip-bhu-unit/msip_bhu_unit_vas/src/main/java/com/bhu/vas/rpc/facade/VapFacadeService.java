@@ -16,10 +16,7 @@ import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.VapModeHashService;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bluesand on 5/26/15.
@@ -33,10 +30,36 @@ public class VapFacadeService {
     public RpcResponseDTO<VapModeUrlViewCountDTO> urlView(String key, String field) {
         VapModeUrlViewCountDTO vapModeUrlViewCountDTO = new VapModeUrlViewCountDTO();
         if (vailidateVapMode(key, field)) {
-            long count = VapModeHashService.getInstance().incrStatistics(key, field, 1);
+//            long count = VapModeHashService.getInstance().incrStatistics(key, field, 1);
+//            vapModeUrlViewCountDTO.setCount(count);
+//            long totalCount = VapModeHashService.getInstance().getTotalCountKey(key);
+//            vapModeUrlViewCountDTO.setTotal_count(totalCount);
+
+
+//            long time = System.currentTimeMillis();
+//
+//            String dStyleKey = generateDStyleKey(key);
+//            String modlueKey = generateHttp404ModuleKey(field);
+//
+//            String mStyleKey = generateMStyleKey(key);
+//
+//            Map<String, Map<String, Long>> dmaps = new HashMap<String,Map<String,Long>>();
+//            Map<String, Map<String, Long>> mmaps = new HashMap<String,Map<String,Long>>();
+//
+//            Map<String,Long> dayRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateDStyleKey(key));
+//            Map<String,Long> monthRets = WifiDeviceModuleStatService.getInstance().hgetModuleStatsWithKey(generateMStyleKey(key));
+
+
+            long count = WifiDeviceModuleStatService.getInstance().hincr(generateDStyleKey(key),generateHttp404ModuleKey(field), 1);
+            WifiDeviceModuleStatService.getInstance().hincr(generateMStyleKey(key),generateHttp404ModuleKey(field), 1);
+
+            System.out.println(String.format("%s, %s, %s, %s", key, generateDStyleKey(key), field, generateHttp404ModuleKey(field)));
+            System.out.println(String.format("%s, %s, %s, %s", key, generateMStyleKey(key), field, generateHttp404ModuleKey(field)));
+
             vapModeUrlViewCountDTO.setCount(count);
             long totalCount = VapModeHashService.getInstance().getTotalCountKey(key);
             vapModeUrlViewCountDTO.setTotal_count(totalCount);
+
         }
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(vapModeUrlViewCountDTO);
     }
@@ -261,6 +284,10 @@ public class VapFacadeService {
 
 
 
+
+    private String generateHttp404ModuleKey(String field) {
+        return 1 + "." + field;
+    }
 
     private String generateMStyleKey(String style) {
         return style + "." + DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyyMM");
