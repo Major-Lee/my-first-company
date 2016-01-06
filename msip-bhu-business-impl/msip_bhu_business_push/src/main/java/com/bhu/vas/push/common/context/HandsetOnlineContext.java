@@ -13,7 +13,7 @@ public class HandsetOnlineContext {
 	//第一次接入设备的终端额外显示名
 	public static final String Android_Stranger = "陌生";
 	//如果用户管理多个设备,需要显示设备信息, 设备信息模板
-	public static final String Device_Info_Template = "在 %s";
+	public static final String Device_Info_Template = "在%s";
 	//本次push是否进行推送
 	private boolean vaild;
 	//终端厂家名称
