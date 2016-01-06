@@ -12,6 +12,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class WifiDeviceHelper {
+	//配置通用开关可用
+	public static final String Enable = "enable";
+	//配置通用开关不可用
+	public static final String Disable = "disable";
+	
 	public static final String WifiSniffer_Start_Sta_Sniffer = "enable";
 	public static final String WifiSniffer_Stop_Sta_Sniffer  = "disable";
 	
@@ -36,6 +41,8 @@ public class WifiDeviceHelper {
 	public final static String WorkMode_Bridge = "bridge-ap";
 	public final static String Default_BlockMode_Router = "route";
 	public final static String Default_BlockMode_Bridge = "bridge";
+	public final static String SwitchMode_Router2Bridge = "0";
+	public final static String SwitchMode_Bridge2Router = "1";
 	
 	//private static Set<String> URouter_HdTypes = new HashSet<String>();
 	//private static Set<String> Soc_HdTypes = new HashSet<String>();

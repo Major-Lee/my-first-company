@@ -135,6 +135,8 @@ public class DeviceBusinessFacadeService {
 		//wifi设备是否是新设备
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
+		//String currentWorkmode = dto.getWork_mode();
+		String oldWorkmode = null;
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
 		
@@ -157,6 +159,7 @@ public class DeviceBusinessFacadeService {
 			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
+			oldWorkmode = wifi_device_entity.getWork_mode();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(reged_at);
@@ -183,7 +186,7 @@ public class DeviceBusinessFacadeService {
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
-				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery);
+				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery,oldWorkmode,dto.getWork_mode());
 	}
 	
 	/**
@@ -1030,17 +1033,19 @@ public class DeviceBusinessFacadeService {
 		try{
 			WifiDevice wifiDevice = wifiDeviceService.getById(wifiId);
 			if(wifiDevice != null){
+				boolean deviceURouter = false;
 				//获取设备配置之后的指令分发
 				List<String> afterQueryPayloads = new ArrayList<String>();
 				//只有URouter的设备才需进行此操作
 				if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())){
-					//验证URouter设备配置是否符合约定
+					deviceURouter = true;
+					/*//验证URouter设备配置是否符合约定
 					if(!DeviceHelper.validateURouterBlackList(dto)){
 						//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
 						String modify_urouter_acl = DeviceHelper.builderDSURouterDefaultVapAndAcl(dto);
 						afterQueryPayloads.add(CMDBuilder.builderDeviceSettingModify(wifiId, 
 								CMDBuilder.auto_taskid_fragment.getNextSequence(), modify_urouter_acl));
-					}
+					}*/
 					//如果是uRouter 插件更新下发策略
 					//查询配置上报的过程中，配置>0的情况下,并且 不存在指定的plugin
 					if((StringUtils.isNotEmpty(dto.getSequence()) && Integer.parseInt(dto.getSequence()) > 0) && !dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
@@ -1051,45 +1056,25 @@ public class DeviceBusinessFacadeService {
 						afterQueryPayloads.add(pluginCmd);
 					}
 					//System.out.println("~~~~~~~~~~~~~3:mac:"+wifiId);
-				}
-				//如果是dhcp模式 则下发指令查询dhcp相关数据
-				String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
-				if(!StringUtils.isEmpty(queryDHCPStatus)){
-					//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
-					afterQueryPayloads.add(queryDHCPStatus);
-				}
-				/*{//如果是uRouter插件更新下发策略
-					if(WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())){
-						if(dto.getPlugins() == null || dto.getPlugins().isEmpty()){
-							String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
-									CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
-									deviceFacadeService);
-							afterQueryPayloads.add(pluginCmd);
-						}
+					
+					//如果是dhcp模式 则下发指令查询dhcp相关数据
+					String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
+					if(!StringUtils.isEmpty(queryDHCPStatus)){
+						//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
+						afterQueryPayloads.add(queryDHCPStatus);
 					}
-				}*/
-				//设备持久指令分发
-				/*List<String> persistencePayloads = null;
-				if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
-					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(wifiId,true);
-				}else{
-					persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceCMD4VapModuleNotSupportedDevice(wifiId);
-				}*/
-				List<String> cmdPaylaods = null;
-				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
+				}
 				
+				List<String> cmdPaylaods = null;
+				//设备持久指令分发
+				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
 				if((persistencePayloads != null && !persistencePayloads.isEmpty()) ||
 						(afterQueryPayloads != null && !afterQueryPayloads.isEmpty())){
-
 					cmdPaylaods = new ArrayList<String>();
 					if(persistencePayloads != null) cmdPaylaods.addAll(persistencePayloads);
 					if(afterQueryPayloads != null) cmdPaylaods.addAll(afterQueryPayloads);
-					
-					//deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId, cmdPaylaods);
-					//DaemonHelper.daemonCmdsDown(mac,persistencePayloads,daemonRpcService);
-					//System.out.println("~~~~~~~~~~~~~~~:persistencePayloads "+persistencePayloads.size());
 				}
-				deliverMessageService.sendDeviceSettingQueryActionMessage(wifiId, refresh_status, cmdPaylaods);
+				deliverMessageService.sendDeviceSettingQueryActionMessage(wifiId,deviceURouter, refresh_status, cmdPaylaods);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

@@ -618,8 +618,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 
 			for(WifiDeviceSettingVapDTO vap : vaps){
-				if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getEnable())
-						&& !WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getGuest_en())){
+				if(WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getEnable())
+						&& !WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getGuest_en())){
 					return vap.getSsid();
 				}
 			}

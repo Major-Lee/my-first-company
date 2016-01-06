@@ -76,7 +76,7 @@ public class DeviceHelper {
 	 */
 	public static boolean isVapEnable(WifiDeviceSettingVapDTO vap){
 		if(vap == null) return false;
-		if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getEnable())){
+		if(WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getEnable())){
 			return true;
 		}
 		return false;
@@ -90,7 +90,7 @@ public class DeviceHelper {
 	 */
 	public static boolean isVapGuestEnable(WifiDeviceSettingVapDTO vap){
 		if(vap == null) return false;
-		if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getGuest_en())){
+		if(WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getGuest_en())){
 			return true;
 		}
 		return false;
@@ -260,7 +260,7 @@ public class DeviceHelper {
 		if(vap_dtos == null || vap_dtos.isEmpty()) return false;
 		int index = vap_dtos.indexOf(new WifiDeviceSettingVapDTO(vapname));
 		if(index == -1) return false;
-		if(WifiDeviceSettingVapDTO.Enable.equals(vap_dtos.get(index).getGuest_en())){
+		if(WifiDeviceHelper.Enable.equals(vap_dtos.get(index).getGuest_en())){
 			return true;
 		}
 		return false;

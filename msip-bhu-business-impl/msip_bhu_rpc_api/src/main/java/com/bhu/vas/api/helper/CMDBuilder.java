@@ -341,7 +341,7 @@ public class CMDBuilder {
 	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams/*,String orig_swver*/,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
 		if(opt != null){
-			if(taskid == 0){
+			if(taskid <= 0){
 				taskid = auto_taskid_fragment.getNextSequence();
 			}
 			switch(opt){

@@ -630,6 +630,7 @@ public class WifiDeviceGrayFacadeService {
     	
     	List<DownCmds> downCmds = new ArrayList<DownCmds>();
     	String upgradeUrl = null;
+    	String upgrade_slaver_urls = null;
     	String dut = null;
     	if(fw){
     		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
@@ -638,6 +639,7 @@ public class WifiDeviceGrayFacadeService {
     		}
     		dut = versionfw.getDut();
     		upgradeUrl = versionfw.getUpgrade_url();
+    		upgrade_slaver_urls = versionfw.getUpgrade_slaver_urls();
     		if(StringUtils.isEmpty(beginTime)) beginTime = StringUtils.EMPTY;
     		if(StringUtils.isEmpty(endTime)) endTime = StringUtils.EMPTY;
     	}else{
@@ -647,11 +649,13 @@ public class WifiDeviceGrayFacadeService {
     		}
     		dut = versionom.getDut();
     		upgradeUrl = versionom.getUpgrade_url();
+    		upgrade_slaver_urls = versionom.getUpgrade_slaver_urls();
     	}
     	for(String mac:onlineMacs){
     		UpgradeDTO dto = new UpgradeDTO(fw,true);
     		dto.setDut(dut);
     		dto.setUpgradeurl(upgradeUrl);
+    		dto.setUpgrade_slaver_urls(upgrade_slaver_urls);
     		downCmds.add(DownCmds.builderDownCmds(mac, dto.buildUpgradeCMD(mac, 0l, beginTime, endTime)));
     	}
     	return downCmds;
