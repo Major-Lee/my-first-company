@@ -95,9 +95,9 @@ public class BusinessPushContextService {
 		
 		HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
 		//判断是否是自己
-		if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
+/*		if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
 			return context;
-		}
+		}*/
 		
 		UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
 		if(userSettingState != null){
