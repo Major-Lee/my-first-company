@@ -170,10 +170,11 @@ public class BusinessPushContextService {
 						//如果终端主机名显示为"android-", 则终端显示名为 安卓终端
 						if(hostname.toLowerCase().startsWith(HandsetOnlineContext.Android_Host_Name_Match)){
 							context.setHandsetName(HandsetOnlineContext.Android_Terminal);
+						}else{
+							//按照macbook的截取字符串方式缩略终端主机名
+							context.setHandsetName(StringHelper.chopMiddleString(hostname, 16, 
+									StringHelper.ELLIPSIS_STRING_GAP));
 						}
-						//按照macbook的截取字符串方式缩略终端主机名
-						context.setHandsetName(StringHelper.chopMiddleString(hostname, 16, 
-								StringHelper.ELLIPSIS_STRING_GAP));
 					}
 				}
 				
