@@ -699,7 +699,7 @@ public class DeviceHelper {
 					"</setting>"+
 				"</webportal>"+
 				"</net>"+
-				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
 			"</dev>";
 	//访客网络单独限速指令
@@ -716,7 +716,7 @@ public class DeviceHelper {
 			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
 			     "</net>"+
 			     "<wifi>"+
-			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"7\" /></vap>"+
+			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" /></vap>"+
 			     "</wifi>"+
 			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
 		    "</dev>";
