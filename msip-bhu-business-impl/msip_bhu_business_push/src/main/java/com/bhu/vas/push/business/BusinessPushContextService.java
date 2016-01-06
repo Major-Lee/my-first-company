@@ -106,17 +106,18 @@ public class BusinessPushContextService {
 	 */
 	protected boolean validateHandsetStrangerOn(UserTerminalOnlineSettingDTO dto, boolean newedHandset, 
 			HandsetOnlineContext context){
+		//第一次接入的终端算是陌生终端
+		if(newedHandset) {
+			context.setStrange(HandsetOnlineContext.Android_Stranger);
+			return true;
+		}
+		
 		if(dto.isStranger_on()) {
-			//第一次接入的终端算是陌生终端
-			if(newedHandset) {
-				context.setStrange(HandsetOnlineContext.Android_Stranger);
-				return true;
-			}
+			return false;
 		}
 		else{
 			return true;
 		}
-		return false;
 	}
 	
 	/**
