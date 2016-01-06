@@ -129,16 +129,17 @@ public class BusinessPushContextService {
 	 */
 	protected boolean validateHandsetAliasOn(UserTerminalOnlineSettingDTO dto, String mac, String hd_mac, 
 			HandsetOnlineContext context){
+		
+		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+		if (!bindDevices.isEmpty()) {
+			String alias = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(bindDevices.get(0).
+					getUid(), hd_mac);
+			context.setHandsetName(alias);
+		}
 		//验证终端昵称探测开关
 		if (dto.isAlias_on()) { //开启陌生人终端和昵称
-			List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
-			if (!bindDevices.isEmpty()) {
-				String alias = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(bindDevices.get(0).
-						getUid(), hd_mac);
-				context.setHandsetName(alias);
-				if(!StringUtils.isEmpty(alias)) {
-					return true;
-				}
+			if(!StringUtils.isEmpty(context.getHandsetName())) {
+				return true;
 			}
 		}else{
 			return true;
