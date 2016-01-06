@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
+import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
@@ -41,6 +42,12 @@ public class BusinessPushContextService {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
+	/**
+	 * 终端上线上下文组成
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
 	public HandsetOnlineContext handsetOnlineContext(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
 		HandsetOnlineContext context = new HandsetOnlineContext();
 		
@@ -65,10 +72,50 @@ public class BusinessPushContextService {
 							//验证终端昵称探测开关
 							boolean aliasOn = validateHandsetAliasOn(dto, hd_push_dto.getMac(), hd_push_dto.getHd_mac(), context);
 							if(aliasOn){
+								//构建终端上下文
 								builderHandsetOnlineContext(presentDto.getUid(), hd_push_dto.getMac(), hd_push_dto.getHd_mac(),
 										presentDto.isMulti(), context);
 							}
 						}
+					}
+				}
+			}
+		}
+		return context;
+	}
+	
+	/**
+	 * 访客上线上下文组成
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public HandsetOnlineContext handsetOnlineGuestContext(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+		HandsetOnlineContext context = new HandsetOnlineContext();
+		
+		HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
+		//判断是否是自己
+		if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
+			return context;
+		}
+		
+		UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
+		if(userSettingState != null){
+			UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
+					.Setting_Key, UserTerminalOnlineSettingDTO.class);
+			if(dto != null){
+				//判断终端上线通知开关
+				if(dto.isOn()){
+					//验证终端上线时间段
+					if(validateHandsetValidTime(dto)){
+						//获取终端别名
+						String alias = getHandsetAliasName(hd_push_dto.getMac(), hd_push_dto.getHd_mac());
+						if(!StringUtils.isEmpty(alias)){
+							context.setHandsetName(alias);
+						}
+						//构建访客上下文
+						builderHandsetOnlineContext(presentDto.getUid(), hd_push_dto.getMac(), hd_push_dto.getHd_mac(),
+								presentDto.isMulti(), context);
 					}
 				}
 			}
@@ -121,6 +168,19 @@ public class BusinessPushContextService {
 	}
 	
 	/**
+	 * 获取终端别名
+	 * @param mac
+	 * @return
+	 */
+	protected String getHandsetAliasName(String mac, String hd_mac){
+		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+		if (!bindDevices.isEmpty()) {
+			return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(bindDevices.get(0).
+					getUid(), hd_mac);
+		}
+		return null;
+	}
+	/**
 	 * 验证终端昵称探测开关
 	 * @param dto
 	 * @param mac 设备mac
@@ -131,10 +191,14 @@ public class BusinessPushContextService {
 	protected boolean validateHandsetAliasOn(UserTerminalOnlineSettingDTO dto, String mac, String hd_mac, 
 			HandsetOnlineContext context){
 		
-		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+/*		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
 		if (!bindDevices.isEmpty()) {
 			String alias = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(bindDevices.get(0).
 					getUid(), hd_mac);
+			context.setHandsetName(alias);
+		}*/
+		String alias = getHandsetAliasName(mac, hd_mac);
+		if(!StringUtils.isEmpty(alias)){
 			context.setHandsetName(alias);
 		}
 		//验证终端昵称探测开关
