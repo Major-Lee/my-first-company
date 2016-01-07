@@ -105,6 +105,9 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceSettingModify(String wifi_mac,long taskid, String payload){
+		if(taskid <= 0){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
 		return String.format(OperationCMD.ModifyDeviceSetting.getCmdtpl(),//query_device_flow_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid), payload);
 	}
