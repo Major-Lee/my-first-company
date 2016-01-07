@@ -1153,11 +1153,11 @@ public class DeviceBusinessFacadeService {
 			}*/
 			if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_NotHappen){
 				WifiDeviceSettingDTO currentDto = entity.getInnerModel();
-				boolean workModeChanged = needGenerate4WorkModeChanged(currentDto, dto);
-				System.out.println(String.format("device[%s] workModeChanged", mac));
-				if(workModeChanged){
+				int switchAct = needGenerate4WorkModeChanged(currentDto, dto);
+				System.out.println(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
+				if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
 					//TODO:模式切换需要下发的指令集合
-					afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac));
+					afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
 				}
 			}
 			entity.putInnerModel(dto);
@@ -1185,7 +1185,7 @@ public class DeviceBusinessFacadeService {
 	 * @param new_dto
 	 * @return
 	 */
-	private boolean needGenerate4WorkModeChanged(WifiDeviceSettingDTO currentDto, WifiDeviceSettingDTO new_dto){
+	private int needGenerate4WorkModeChanged(WifiDeviceSettingDTO currentDto, WifiDeviceSettingDTO new_dto){
 		if(currentDto != null){
 			WifiDeviceSettingModeDTO current_mode_dto = currentDto.getMode();
 			if(current_mode_dto != null && StringUtils.isNotEmpty(current_mode_dto.getMode())){
@@ -1195,14 +1195,17 @@ public class DeviceBusinessFacadeService {
 					//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
 					DeviceHelper.mergeDS(currentDto, new_dto);
 					new_dto.getMode().setMode(new_mode);
-					return true;
+					if(WifiDeviceHelper.WorkMode_Router.equals(new_mode)) 
+						return WifiDeviceHelper.SwitchMode_Bridge2Router;
+					if(WifiDeviceHelper.WorkMode_Bridge.equals(new_mode)) 
+						return WifiDeviceHelper.SwitchMode_Router2Bridge;
 				}
 			}
 		}
-		return false;
+		return WifiDeviceHelper.SwitchMode_NoAction;
 	}
 	
-	private List<String> cmdGenerate4WorkModeChanged(String dmac){
+	private List<String> cmdGenerate4WorkModeChanged(String dmac,int switchAct){
 		List<String> payloads = new ArrayList<String>();
 		//1、访客网络指令
 		//2、wifi定时开关
@@ -1212,21 +1215,19 @@ public class DeviceBusinessFacadeService {
 				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
 				if(vistorWifi != null && vistorWifi.isOn()){
 					//TODO:ParamVapVistorWifiDTO block_mode变更并且更新配置 或者数据库中就不存ParamVapVistorWifiDTO字段block_mode
+					vistorWifi.getVw().switchWorkMode(switchAct);
 					payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_VistorWifi_Start, dmac, 
 							0l,JsonHelper.getJSONString(vistorWifi.getVw()),deviceFacadeService));
-					//if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
-					//cmdPayloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(dto.getMac(), WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
 				}
-				
 				UserWifiTimerSettingDTO timerWifi = settingState.getUserSetting(UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
 				if(timerWifi != null && timerWifi.isOn()){
-					//ParamCmdWifiTimerStartDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamCmdWifiTimerStartDTO.class);
 					ParamCmdWifiTimerStartDTO dto = timerWifi.toParamCmdWifiTimerStartDTO();
 					if(dto != null){
 						payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.DeviceWifiTimerStart, dmac, 
 								0l, JsonHelper.getJSONString(dto)));
 					}
-				}
+				}			
+				userSettingStateService.update(settingState);
 			}
 		}
 		//3、黑名单

@@ -43,6 +43,7 @@ public class WifiDeviceHelper {
 	public final static String WorkMode_Bridge = "bridge-ap";
 	public final static String Default_BlockMode_Router = "route";
 	public final static String Default_BlockMode_Bridge = "bridge";
+	public final static int SwitchMode_NoAction = -1;
 	public final static int SwitchMode_Router2Bridge = 0;
 	public final static int SwitchMode_Bridge2Router = 1;
 	
