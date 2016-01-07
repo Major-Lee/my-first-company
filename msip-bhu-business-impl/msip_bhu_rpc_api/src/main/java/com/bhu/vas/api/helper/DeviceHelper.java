@@ -1027,6 +1027,7 @@ public class DeviceHelper {
 
 	/**
 	 * 设备切换工作模式以后需要下发的配置修改生成
+	 *  //ssid 密码
 	 * 	//黑名单
 		//别名(暂时不需要下发指令)
 		//限速
@@ -1062,6 +1063,13 @@ public class DeviceHelper {
 					String acl_items = builderDeviceSettingItem(DeviceSetting_AclItem, acl_dto.builderProperties());
 					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_AclOuter, 
 							Common_Config_Sequence, acl_items));
+				}
+				//ssid 密码
+				List<WifiDeviceSettingVapDTO> vap_dtos = ds_dto.getVaps();
+				if(vap_dtos != null && !vap_dtos.isEmpty()){
+					String vap_items = builderDeviceSettingItemsWithDto(DeviceSetting_VapItem, vap_dtos);
+					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_VapOuter, 
+							Common_Config_Sequence, vap_items));
 				}
 			}
 		}
