@@ -503,9 +503,9 @@ public class DeviceHelper {
 					target.setRadios(m_radios);
 				}
 				//合并 wan
-				WifiDeviceSettingLinkModeDTO mode = source.getMode();
-				if(mode != null){
-					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
+				WifiDeviceSettingLinkModeDTO linkmode = source.getLinkmode();
+				if(linkmode != null){
+					ReflectionHelper.copyProperties(source.getLinkmode(), target.getLinkmode());
 				}
 				//合并 vaps
 				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
@@ -540,6 +540,10 @@ public class DeviceHelper {
 				List<WifiDeviceSettingUserDTO> m_users = mergeList(source.getUsers(), target.getUsers());
 				if(m_users != null){
 					target.setUsers(m_users);
+				}
+				//合并mode
+				if(source.getMode() != null){
+					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
 				}
 			}
 		}catch(Exception ex){

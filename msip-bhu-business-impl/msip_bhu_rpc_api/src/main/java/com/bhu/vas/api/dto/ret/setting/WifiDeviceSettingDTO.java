@@ -26,7 +26,7 @@ public class WifiDeviceSettingDTO {
 	private List<WifiDeviceSettingRadioDTO> radios;
 	//上网方式
 	//private String mode;
-	private WifiDeviceSettingLinkModeDTO mode;
+	private WifiDeviceSettingLinkModeDTO linkmode;
 	//配置流水号
 	private String sequence;
 	//取值0和1， 1 表示设备做过reset后重启进行的上报数据。
@@ -50,6 +50,8 @@ public class WifiDeviceSettingDTO {
 	//广告
 	private WifiDeviceSettingVapAdDTO ad;
 	
+	private WifiDeviceSettingModeDTO mode;
+	
 //	public String getPower() {
 //		return power;
 //	}
@@ -63,13 +65,25 @@ public class WifiDeviceSettingDTO {
 		return sequence;
 	}
 
-	public WifiDeviceSettingLinkModeDTO getMode() {
+	public WifiDeviceSettingLinkModeDTO getLinkmode() {
+		return linkmode;
+	}
+
+
+	public void setLinkmode(WifiDeviceSettingLinkModeDTO linkmode) {
+		this.linkmode = linkmode;
+	}
+
+
+	public WifiDeviceSettingModeDTO getMode() {
 		return mode;
 	}
 
-	public void setMode(WifiDeviceSettingLinkModeDTO mode) {
+
+	public void setMode(WifiDeviceSettingModeDTO mode) {
 		this.mode = mode;
 	}
+
 
 	public void setSequence(String sequence) {
 		this.sequence = sequence;
