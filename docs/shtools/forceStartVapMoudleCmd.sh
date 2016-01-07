@@ -2,7 +2,7 @@
 TargetFile=$1
 while read line 
 do
-  echo "正在下发固件升级指令...$line"
+  echo "正在下发增值模板下发指令...$line"
   curl -H "A-Token-Header: JTNGUlJXAUNKGxFdWlYM" -d "mac=$line&uid=3&&opt=151&subopt=25&extparams={\"style\":\"style006\"} &channel=VAS" "http://vap.bhunetworks.com/bhu_api/v1/cmd/generate"
   echo "$line send ok!"
   sleep 2m
