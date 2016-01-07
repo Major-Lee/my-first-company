@@ -46,6 +46,9 @@ public class WifiDeviceHelper {
 	public final static int SwitchMode_Router2Bridge = 0;
 	public final static int SwitchMode_Bridge2Router = 1;
 	
+	
+	public static final int Boot_On_Reset_Happen = 1;
+	public static final int Boot_On_Reset_NotHappen = 0;
 	//private static Set<String> URouter_HdTypes = new HashSet<String>();
 	//private static Set<String> Soc_HdTypes = new HashSet<String>();
 	private static Set<String> vapExceptDevices = new HashSet<String>();

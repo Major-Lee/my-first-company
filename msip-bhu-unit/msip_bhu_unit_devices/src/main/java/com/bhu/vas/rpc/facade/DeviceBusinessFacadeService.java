@@ -138,7 +138,7 @@ public class DeviceBusinessFacadeService {
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
 		//String currentWorkmode = dto.getWork_mode();
-		String oldWorkmode = null;
+		//String oldWorkmode = null;
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
 		
@@ -161,7 +161,7 @@ public class DeviceBusinessFacadeService {
 			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
-			oldWorkmode = wifi_device_entity.getWork_mode();
+			//oldWorkmode = wifi_device_entity.getWork_mode();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(reged_at);
@@ -188,7 +188,7 @@ public class DeviceBusinessFacadeService {
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
-				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery,oldWorkmode,dto.getWork_mode());
+				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery/*,oldWorkmode,dto.getWork_mode()*/);
 	}
 	
 	/**
@@ -1129,15 +1129,8 @@ public class DeviceBusinessFacadeService {
 			}
 		}*/
 		int state = DeviceHelper.RefreashDeviceSetting_Normal;
-		if(dto.getBoot_on_reset() == WifiDeviceSettingDTO.Boot_On_Reset_Happen) {
+		if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_Happen) {
 			state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
-			//BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(mac);
-		}else{//非重置状态需要判定是否是路由工作模式切换
-			//String marker = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
-			if(StringUtils.isNotEmpty("marker")){
-				//TODO:模式切换需要下发的指令集合
-				afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac));
-			}
 		}
 		//todo(bluesand)新增&&更新 配置
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
@@ -1158,9 +1151,11 @@ public class DeviceBusinessFacadeService {
 				}
 				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
 			}*/
-			if(dto.getBoot_on_reset() == WifiDeviceSettingDTO.Boot_On_Reset_NotHappen){
+			if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_NotHappen){
 				WifiDeviceSettingDTO currentDto = entity.getInnerModel();
-				if(needGenerate4WorkModeChanged(currentDto, dto)){
+				boolean workModeChanged = needGenerate4WorkModeChanged(currentDto, dto);
+				System.out.println(String.format("device[%s] workModeChanged", mac));
+				if(workModeChanged){
 					//TODO:模式切换需要下发的指令集合
 					afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac));
 				}
@@ -1193,7 +1188,7 @@ public class DeviceBusinessFacadeService {
 	private boolean needGenerate4WorkModeChanged(WifiDeviceSettingDTO currentDto, WifiDeviceSettingDTO new_dto){
 		if(currentDto != null){
 			WifiDeviceSettingModeDTO current_mode_dto = currentDto.getMode();
-			if(current_mode_dto != null && !StringUtils.isEmpty(current_mode_dto.getMode())){
+			if(current_mode_dto != null && StringUtils.isNotEmpty(current_mode_dto.getMode())){
 				WifiDeviceSettingModeDTO new_mode_dto = new_dto.getMode();
 				String new_mode = new_mode_dto.getMode();
 				if(!current_mode_dto.getMode().equals(new_mode)){

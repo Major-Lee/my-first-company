@@ -590,10 +590,10 @@ public class RPCMessageParseHelper {
 			if(config_element != null){
 				dto.setSequence(config_element.attributeValue("sequence"));
 				String boot_on_reset = config_element.attributeValue("boot_on_reset");
-				if(StringUtils.isNotEmpty(boot_on_reset) && Integer.parseInt(boot_on_reset) == WifiDeviceSettingDTO.Boot_On_Reset_Happen)
-					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_Happen);
+				if(StringUtils.isNotEmpty(boot_on_reset) && Integer.parseInt(boot_on_reset) == WifiDeviceHelper.Boot_On_Reset_Happen)
+					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_Happen);
 				else
-					dto.setBoot_on_reset(WifiDeviceSettingDTO.Boot_On_Reset_NotHappen);
+					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_NotHappen);
 			}
 			
 			//解析插件配置
