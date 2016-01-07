@@ -10,10 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-
-
-
-
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -31,6 +27,7 @@ import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.task.TaskEngine;
@@ -203,6 +200,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	
 	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
 		String mac = headers.getMac();
+		if(mac.startsWith(BusinessRuntimeConfiguration.DeviceTesting_Mac_Prefix)) return;
 		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
 		hits[hash] = hits[hash]+1;
 		exec_processes.get(hash).submit((new Runnable() {
