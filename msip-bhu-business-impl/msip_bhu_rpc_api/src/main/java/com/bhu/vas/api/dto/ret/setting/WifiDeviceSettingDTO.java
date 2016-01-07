@@ -17,9 +17,6 @@ public class WifiDeviceSettingDTO {
 	public static final String Mode_Pppoe = "pppoe";
 	public static final String Mode_Pppol2tp = "pppol2tp";
 	
-	public static final int Boot_On_Reset_Happen = 1;
-	public static final int Boot_On_Reset_NotHappen = 0;
-	
 	//信号强度
 //	private String power;
 	//信号强度 多频设备会有多个dto

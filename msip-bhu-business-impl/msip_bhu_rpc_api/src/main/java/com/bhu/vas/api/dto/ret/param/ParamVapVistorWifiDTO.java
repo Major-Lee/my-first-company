@@ -112,6 +112,19 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	public void setBlock_mode(String block_mode) {
 		this.block_mode = block_mode;
 	}
+	
+	public void switchWorkMode(int switchAct){
+		switch(switchAct){
+			case WifiDeviceHelper.SwitchMode_Router2Bridge:
+				this.block_mode = WifiDeviceHelper.Default_BlockMode_Bridge;
+			break;
+			case WifiDeviceHelper.SwitchMode_Bridge2Router:
+				this.block_mode = WifiDeviceHelper.Default_BlockMode_Router;
+				break;
+			default:
+				break;
+		}
+	}
 
 	private final static String Default_Redirect_url = "www.bhuwifi.com";
 	private final static String Default_Open_resource = "bhuwifi.com,bhunetworks.com";
@@ -155,10 +168,10 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	}
 	
 	public static void main(String[] argv){
-		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null,true)));
+		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null,false)));
 		
 		ParamVapVistorWifiDTO param = new ParamVapVistorWifiDTO();
 		param.setSsid("GOOO理论");
-		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param,false)));
+		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param,true)));
 	}
 }

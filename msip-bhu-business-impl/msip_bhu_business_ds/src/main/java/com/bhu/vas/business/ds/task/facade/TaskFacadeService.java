@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
@@ -387,7 +388,6 @@ public class TaskFacadeService {
 			}
 		}
 
-
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
@@ -419,9 +419,6 @@ public class TaskFacadeService {
 				}
 			}else{
 				switch(ods_cmd){
-					/*case DS_Http_Portal_Start:
-						downTask.setPayload(CMDBuilder.builderCMD4HttpPortalResourceUpdate(mac, downTask.getId(), extparams));
-						break;*/
 					case DS_Http_VapModuleCMD_Stop:
 						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
 						break;	
@@ -471,16 +468,12 @@ public class TaskFacadeService {
 							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
 						}
 						break;
-					/*case DS_Http_404_Start:
-					case DS_Http_404_Stop:
-					case DS_Http_Redirect_Start:
-					case DS_Http_Redirect_Stop:
-						if(WifiDeviceHelper.isVapModuleSupported(wifiDevice.getOrig_swver())){
-							
-						}else{
-							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
-						}
-						break;*/
+					case DS_Switch_WorkMode:
+						//需要判定是否可以进行切换
+						ParamVasSwitchWorkmodeDTO param_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
+						WifiDeviceHelper.deviceWorkModeNeedChanged(wifiDevice.getWork_mode(),param_dto.getWmode());
+						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+						break;
 					default:
 						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
 						break;
@@ -514,8 +507,6 @@ public class TaskFacadeService {
 					break;
 
 			}
-
-
 		}
 		this.taskComming(downTask);
 		return downTask;
