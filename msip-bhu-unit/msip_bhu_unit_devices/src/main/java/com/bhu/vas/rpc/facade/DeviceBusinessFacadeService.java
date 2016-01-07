@@ -36,6 +36,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -1089,7 +1090,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public String updateDeviceModeStatusWithMode(String wifiId, WifiDeviceSettingDTO dto){
 		//根据设备的mode更新status数据
-		WifiDeviceSettingLinkModeDTO mode = dto.getMode();
+		WifiDeviceSettingLinkModeDTO mode = dto.getLinkmode();
 		if(mode != null){
 			//dhcpc
 			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
@@ -1100,7 +1101,7 @@ public class DeviceBusinessFacadeService {
 //							OperationCMD.QueryDhcpcStatus.getNo()*/, cmdPayload);
 				}
 			}else{
-				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getMode());
+				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getLinkmode());
 			}
 		}
 		return null;
@@ -1136,7 +1137,7 @@ public class DeviceBusinessFacadeService {
 			String marker = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
 			if(StringUtils.isNotEmpty(marker)){
 				//TODO:模式切换需要下发的指令集合
-				afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,marker));
+				afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac));
 			}
 		}
 		//todo(bluesand)新增&&更新 配置
@@ -1147,7 +1148,7 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.insert(entity);
 		}else{
-			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+/*			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 			if(currentDto != null){
 				String current_sequence = currentDto.getSequence();
 				if(StringUtils.isNotEmpty(current_sequence) && StringUtils.isNotEmpty(dto.getSequence())){
@@ -1157,6 +1158,13 @@ public class DeviceBusinessFacadeService {
 					}
 				}
 				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
+			}*/
+			if(dto.getBoot_on_reset() == WifiDeviceSettingDTO.Boot_On_Reset_NotHappen){
+				WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+				if(needGenerate4WorkModeChanged(currentDto, dto)){
+					//TODO:模式切换需要下发的指令集合
+					afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac));
+				}
 			}
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
@@ -1169,7 +1177,38 @@ public class DeviceBusinessFacadeService {
 		return state;
 	}
 	
-	private List<String> cmdGenerate4WorkModeChanged(String dmac,String marker){
+	/**
+	 * 获取配置信息进行设备是否切换工作模式的判断
+	 * 如果切换工作模式，需要下发部分配置同步信息
+	 * 如果切换工作模式，特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
+	 * 	//1、访客网络指令
+		//2、wifi定时开关
+		//3、黑名单
+		//4、别名(暂时不需要下发指令)
+		//5、限速
+		//6、功率
+	 * @param currentDto
+	 * @param new_dto
+	 * @return
+	 */
+	private boolean needGenerate4WorkModeChanged(WifiDeviceSettingDTO currentDto, WifiDeviceSettingDTO new_dto){
+		if(currentDto != null){
+			WifiDeviceSettingModeDTO current_mode_dto = currentDto.getMode();
+			if(current_mode_dto != null && !StringUtils.isEmpty(current_mode_dto.getMode())){
+				WifiDeviceSettingModeDTO new_mode_dto = new_dto.getMode();
+				String new_mode = new_mode_dto.getMode();
+				if(!current_mode_dto.getMode().equals(new_mode)){
+					//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
+					DeviceHelper.mergeDS(currentDto, new_dto);
+					new_dto.getMode().setMode(new_mode);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private List<String> cmdGenerate4WorkModeChanged(String dmac){
 		List<String> payloads = new ArrayList<String>();
 		//1、访客网络指令
 		//2、wifi定时开关
@@ -1203,19 +1242,13 @@ public class DeviceBusinessFacadeService {
 		{
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dmac);
 			if(setting_entity != null){
-				//ggggg
-				//黑名单 DS_AclMacs
-				//Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_AclMacs, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-				//限速 DS_RateControl
-				//Map<String, List<RateControlParamDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, RateControlParamDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_RateControl, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-				//功率 DS_Power
-				//WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Power, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
+				List<String> dsworkModelChangedList = DeviceHelper.builderDSWorkModeChanged(setting_entity);
+				if(dsworkModelChangedList != null && !dsworkModelChangedList.isEmpty()){
+					for(String dsworkModelChanged : dsworkModelChangedList){
+						payloads.add(CMDBuilder.builderDeviceSettingModify(dmac, 0l, dsworkModelChanged));
+					}
+					
+				}
 			}
 		}
 		return payloads;

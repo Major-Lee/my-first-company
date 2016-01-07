@@ -33,6 +33,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
@@ -502,9 +503,9 @@ public class DeviceHelper {
 					target.setRadios(m_radios);
 				}
 				//合并 wan
-				WifiDeviceSettingLinkModeDTO mode = source.getMode();
-				if(mode != null){
-					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
+				WifiDeviceSettingLinkModeDTO linkmode = source.getLinkmode();
+				if(linkmode != null){
+					ReflectionHelper.copyProperties(source.getLinkmode(), target.getLinkmode());
 				}
 				//合并 vaps
 				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
@@ -540,6 +541,10 @@ public class DeviceHelper {
 				if(m_users != null){
 					target.setUsers(m_users);
 				}
+				//合并mode
+				if(source.getMode() != null){
+					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -569,6 +574,8 @@ public class DeviceHelper {
 	}
 	
 	/*******************************    设备配置修改模板  ****************************************/
+	//修改设备配置的通用序列号
+	public static final String Common_Config_Sequence = "-1";
 	
 	public static final String DeviceSetting_ConfigSequenceOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
 	public static final String DeviceSetting_ConfigSequenceInner = "<sys><config><ITEM sequence=\"%s\"/></config></sys>";
@@ -995,6 +1002,49 @@ public class DeviceHelper {
 	public static String builderDSPluginOuter(String extparams){
 		ParamVasPluginDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasPluginDTO.class);
 		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
+	}
+	
+	/**
+	 * 设备切换工作模式以后需要下发的配置修改生成
+	 * 	//黑名单
+		//别名(暂时不需要下发指令)
+		//限速
+		//功率
+	 * @param setting_entity
+	 * @return
+	 */
+	public static List<String> builderDSWorkModeChanged(WifiDeviceSetting setting_entity){
+		List<String> dsworkModelChangedList = null;
+		if(setting_entity != null){
+			WifiDeviceSettingDTO ds_dto = setting_entity.getInnerModel();
+			if(ds_dto != null){
+				dsworkModelChangedList = new ArrayList<String>();
+				//获取当前配置功率
+				WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
+				if(radio_dto != null){
+					//功率
+					String radio_item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+							radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
+							Common_Config_Sequence, radio_item));
+				}
+				//限速
+				List<WifiDeviceSettingRateControlDTO> rc_dtos = ds_dto.getRatecontrols();
+				if(rc_dtos != null && !rc_dtos.isEmpty()){
+					String rc_items = builderDeviceSettingItemsWithDto(DeviceSetting_RatecontrolItem, rc_dtos);
+					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, 
+							Common_Config_Sequence, rc_items));
+				}
+				//黑名单
+				WifiDeviceSettingAclDTO acl_dto = matchDefaultAcl(ds_dto);
+				if(acl_dto != null){
+					String acl_items = builderDeviceSettingItem(DeviceSetting_AclItem, acl_dto.builderProperties());
+					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_AclOuter, 
+							Common_Config_Sequence, acl_items));
+				}
+			}
+		}
+		return dsworkModelChangedList;
 	}
 	
 	/**

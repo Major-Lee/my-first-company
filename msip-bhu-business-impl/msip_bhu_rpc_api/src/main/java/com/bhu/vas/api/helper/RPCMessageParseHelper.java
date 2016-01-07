@@ -28,6 +28,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
@@ -472,7 +473,7 @@ public class RPCMessageParseHelper {
 				//linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
 				linkmodel_dto.setUsername(wan_item.attributeValue("username"));
 				//dto.setMode(wan_item.attributeValue("mode"));
-				dto.setMode(linkmodel_dto);
+				dto.setLinkmode(linkmodel_dto);
 			}
 			//解析 vaps
 			List<Element> vap_items = Dom4jHelper.selectElements(doc, "dev/wifi/vap/ITEM");
@@ -611,6 +612,15 @@ public class RPCMessageParseHelper {
 				}
 				dto.setPlugins(plugin_dtos);
 			}
+			
+			//解析mode配置
+			Element mode_element = Dom4jHelper.select(doc, "dev/mod/basic/mode/ITEM");
+			if(mode_element != null){
+				WifiDeviceSettingModeDTO mode_dto = new WifiDeviceSettingModeDTO();
+				mode_dto.setMode(mode_element.attributeValue("mode"));
+				dto.setMode(mode_dto);
+			}
+			
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());

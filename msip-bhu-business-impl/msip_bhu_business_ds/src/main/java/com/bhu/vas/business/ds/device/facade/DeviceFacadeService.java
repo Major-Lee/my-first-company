@@ -879,8 +879,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
-	//修改设备配置的通用序列号
-	public static final String Common_Config_Sequence = "-1";
+
 	
 	/**
 	 * 生成设备配置的广告配置数据
@@ -893,7 +892,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception {
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String config_sequence = Common_Config_Sequence;
+		String config_sequence = DeviceHelper.Common_Config_Sequence;
 		
 		switch(ods){
 			case DS_Http_Ad_Start:
