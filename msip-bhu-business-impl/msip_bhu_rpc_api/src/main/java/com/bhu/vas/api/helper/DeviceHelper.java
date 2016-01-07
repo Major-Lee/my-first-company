@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -703,7 +704,7 @@ public class DeviceHelper {
 					"</setting>"+
 				"</webportal>"+
 				"</net>"+
-				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
 			"</dev>";
 	//访客网络单独限速指令
@@ -733,6 +734,20 @@ public class DeviceHelper {
 	        "</external_plugins>"+
 	    "</sys>"+
 	"</dev>";
+	//bridge-ap 和 router-ap之间的设备工作模式切换
+	public static final String DeviceSetting_Switch_Workmode =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode>"+
+							"<ITEM mode=\"%s\" scene=\"ap\"/>"+
+						"</mode>"+
+					"</basic>"+
+				"</mod>"+
+			"</dev>";
 	
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
@@ -997,6 +1012,12 @@ public class DeviceHelper {
 		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
 	
+	public static String builderDSWorkModeSwitchOuter(String extparams){
+		ParamVasSwitchWorkmodeDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
+		//ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+		return builderDeviceSettingItem(DeviceSetting_Switch_Workmode,ad_dto.builderProperties());
+	}
+
 	/**
 	 * 构建信号强度配置数据
 	 * @param config_sequence

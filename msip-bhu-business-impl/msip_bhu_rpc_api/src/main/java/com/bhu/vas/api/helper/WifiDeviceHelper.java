@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 
 public class WifiDeviceHelper {
@@ -41,8 +43,8 @@ public class WifiDeviceHelper {
 	public final static String WorkMode_Bridge = "bridge-ap";
 	public final static String Default_BlockMode_Router = "route";
 	public final static String Default_BlockMode_Bridge = "bridge";
-	public final static String SwitchMode_Router2Bridge = "0";
-	public final static String SwitchMode_Bridge2Router = "1";
+	public final static int SwitchMode_Router2Bridge = 0;
+	public final static int SwitchMode_Bridge2Router = 1;
 	
 	//private static Set<String> URouter_HdTypes = new HashSet<String>();
 	//private static Set<String> Soc_HdTypes = new HashSet<String>();
@@ -67,6 +69,15 @@ public class WifiDeviceHelper {
 		//如果为空的情况下，则缺省返回true
 		if(StringUtils.isEmpty(work_mode)) return true;
 		return WorkMode_Router.equals(work_mode);
+	}
+	
+	public static void deviceWorkModeNeedChanged(String d_work_mode,int act){
+		if(act <0 || act >1)
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"mode:"+act});
+		String paramWorkMode = SwitchMode_Router2Bridge==act?WorkMode_Bridge:WorkMode_Router;
+		if(paramWorkMode.equals(d_work_mode)) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_WORKMODE_NOCHANGED,new String[]{d_work_mode});
+		}
 	}
 	
 	/*public static boolean isURouterDevice(String orig_model) {

@@ -211,7 +211,7 @@ public class AsyncMsgHandleService {
 				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 					payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
-				//added by Edmond Lee @20160106 for mark workmode changed of device
+				/*//added by Edmond Lee @20160106 for mark workmode changed of device
 				if(!dto.isNewWifi()){
 					//workmode切换只支持uRouter，并且只能在router-ap和bridge-ap之间互相切换
 					//判定workmode是否变更
@@ -227,7 +227,7 @@ public class AsyncMsgHandleService {
 							}
 						}
 					}
-				}
+				}*/
 			}
 			/*try{
 				//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持

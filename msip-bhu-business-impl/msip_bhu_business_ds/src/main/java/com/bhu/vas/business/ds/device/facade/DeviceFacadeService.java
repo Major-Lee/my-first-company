@@ -918,6 +918,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSStopVisitorWifiOuter();
 			case DS_Plugins:
 				return DeviceHelper.builderDSPluginOuter(extparams);
+			case DS_Switch_WorkMode:
+				return DeviceHelper.builderDSWorkModeSwitchOuter(extparams);
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
 			case DS_RealChannel:
