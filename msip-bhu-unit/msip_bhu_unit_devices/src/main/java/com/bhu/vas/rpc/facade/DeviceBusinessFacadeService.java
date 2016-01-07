@@ -59,7 +59,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocation
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -70,8 +69,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.bhu.vas.rpc.facade.search.WifiDeviceStautsIndexIncrementService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -1132,10 +1131,10 @@ public class DeviceBusinessFacadeService {
 		int state = DeviceHelper.RefreashDeviceSetting_Normal;
 		if(dto.getBoot_on_reset() == WifiDeviceSettingDTO.Boot_On_Reset_Happen) {
 			state = DeviceHelper.RefreashDeviceSetting_RestoreFactory;
-			BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(mac);
+			//BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(mac);
 		}else{//非重置状态需要判定是否是路由工作模式切换
-			String marker = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
-			if(StringUtils.isNotEmpty(marker)){
+			//String marker = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
+			if(StringUtils.isNotEmpty("marker")){
 				//TODO:模式切换需要下发的指令集合
 				afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac));
 			}
