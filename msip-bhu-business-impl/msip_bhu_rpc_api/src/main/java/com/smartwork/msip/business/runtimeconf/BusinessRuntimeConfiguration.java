@@ -35,6 +35,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	logger.info("loading runtime configuration successfully!");  
         }  
     }  
+	public static String DeviceTesting_Mac_Prefix = "42:66";
 	//缺省值 是否针对日志分析的数据进行过滤 agent.charging.param.filter
 	public static boolean Agent_Charging_Param_Filter = false;
 	//缺省值 计费时间单位 4分钟 agent.charging.param.timeunit
