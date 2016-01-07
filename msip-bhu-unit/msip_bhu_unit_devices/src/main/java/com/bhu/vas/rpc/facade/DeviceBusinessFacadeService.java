@@ -1147,7 +1147,7 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.insert(entity);
 		}else{
-			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+/*			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 			if(currentDto != null){
 				String current_sequence = currentDto.getSequence();
 				if(StringUtils.isNotEmpty(current_sequence) && StringUtils.isNotEmpty(dto.getSequence())){
@@ -1157,7 +1157,7 @@ public class DeviceBusinessFacadeService {
 					}
 				}
 				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
-			}
+			}*/
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
@@ -1203,19 +1203,13 @@ public class DeviceBusinessFacadeService {
 		{
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dmac);
 			if(setting_entity != null){
-				//ggggg
-				//黑名单 DS_AclMacs
-				//Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_AclMacs, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-				//限速 DS_RateControl
-				//Map<String, List<RateControlParamDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, RateControlParamDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_RateControl, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-				//功率 DS_Power
-				//WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Power, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
+				List<String> dsworkModelChangedList = DeviceHelper.builderDSWorkModeChanged(setting_entity);
+				if(dsworkModelChangedList != null && !dsworkModelChangedList.isEmpty()){
+					for(String dsworkModelChanged : dsworkModelChangedList){
+						payloads.add(CMDBuilder.builderDeviceSettingModify(dmac, 0l, dsworkModelChanged));
+					}
+					
+				}
 			}
 		}
 		return payloads;
