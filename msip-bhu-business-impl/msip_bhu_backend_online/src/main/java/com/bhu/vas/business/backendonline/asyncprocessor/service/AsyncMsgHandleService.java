@@ -25,18 +25,13 @@ import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
-import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
-import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.ExchangeBBSHelper;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
@@ -45,9 +40,7 @@ import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
-import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
-import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
@@ -984,14 +977,14 @@ public class AsyncMsgHandleService {
 					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 					logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
 				}
-				BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(dto.getMac());
-			}else{
+				//BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(dto.getMac());
+			}/*else{//移到device组件中的配置查询响应函数中实现
 				String marker = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(dto.getMac());
 				if(StringUtils.isNotEmpty(marker)){
 					//TODO:模式切换需要下发的指令集合
 					cmdPayloads.addAll(cmdGenerate4WorkModeChanged(dto.getMac(),marker));
 				}
-			}
+			}*/
 			if(DeviceHelper.RefreashDeviceSetting_Normal == dto.getRefresh_status()){
 				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
@@ -1009,57 +1002,6 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
 	}
 	
-	
-	private List<String> cmdGenerate4WorkModeChanged(String dmac,String marker){
-		List<String> payloads = new ArrayList<String>();
-		//1、访客网络指令
-		//2、wifi定时开关
-		{
-			UserSettingState settingState = userSettingStateService.getById(dmac);
-			if(settingState != null){
-				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
-				if(vistorWifi != null && vistorWifi.isOn()){
-					payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_VistorWifi_Start, dmac, 
-							0l,JsonHelper.getJSONString(vistorWifi.getVw()),deviceFacadeService));
-					//if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
-					//cmdPayloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(dto.getMac(), WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
-				}
-				
-				UserWifiTimerSettingDTO timerWifi = settingState.getUserSetting(UserWifiTimerSettingDTO.Setting_Key, UserWifiTimerSettingDTO.class);
-				if(timerWifi != null && timerWifi.isOn()){
-					//ParamCmdWifiTimerStartDTO dto = JsonHelper.getDTO(downTask.getContext_var(), ParamCmdWifiTimerStartDTO.class);
-					ParamCmdWifiTimerStartDTO dto = timerWifi.toParamCmdWifiTimerStartDTO();
-					if(dto != null){
-						payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.DeviceWifiTimerStart, dmac, 
-								0l, JsonHelper.getJSONString(dto)));
-					}
-				}
-			}
-		}
-		//3、黑名单
-		//4、别名(暂时不需要下发指令)
-		//5、限速
-		//6、功率
-		{
-			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dmac);
-			if(setting_entity != null){
-				//ggggg
-				//黑名单 DS_AclMacs
-				//Map<String, WifiDeviceSettingAclDTO> acl_dto_map = JsonHelper.getDTOMapKeyDto(extparams, WifiDeviceSettingAclDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_AclMacs, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-				//限速 DS_RateControl
-				//Map<String, List<RateControlParamDTO>> rc_dto_map = JsonHelper.getDTOMapKeyList(extparams, RateControlParamDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_RateControl, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-				//功率 DS_Power
-				//WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
-				payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Power, dmac, 
-						0l,JsonHelper.getJSONString(null),deviceFacadeService));
-			}
-		}
-		return payloads;
-	}
 	
 	/**
 	 * 配置变更或者获取设备配置的后续处理
