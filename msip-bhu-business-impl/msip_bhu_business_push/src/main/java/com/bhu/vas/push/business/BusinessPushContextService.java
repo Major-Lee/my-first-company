@@ -48,16 +48,15 @@ public class BusinessPushContextService {
 	 * @param presentDto
 	 * @return
 	 */
-	public HandsetOnlineContext handsetOnlineContext(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+	public HandsetOnlineContext handsetOnlineContext(HandsetDeviceOnlinePushDTO hd_push_dto, DeviceMobilePresentDTO presentDto){
 		HandsetOnlineContext context = new HandsetOnlineContext();
 		
-		HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
 		//判断是否是自己
 		if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
 			return context;
 		}
 		
-		UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
+		UserSettingState userSettingState = userSettingStateService.getById(hd_push_dto.getMac());
 		if(userSettingState != null){
 			UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
 					.Setting_Key, UserTerminalOnlineSettingDTO.class);
