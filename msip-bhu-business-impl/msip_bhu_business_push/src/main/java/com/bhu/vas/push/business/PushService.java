@@ -135,10 +135,11 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			System.out.println("访客上线push2:"+presentDto);
 			if(presentDto != null) {
-				HandsetOnlineContext context = businessPushContextService.handsetOnlineGuestContext(pushDto, presentDto);
+				HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
+				HandsetOnlineContext context = businessPushContextService.handsetOnlineGuestContext(hd_push_dto, presentDto);
 				if(context.isVaild()){
-					PushMsg pushMsg = this.generatePushMsg(presentDto, pushDto);
-					this.builderHandsetDeviceOnlineGuestPushMsg(pushMsg, context);
+					PushMsg pushMsg = this.generatePushMsg(presentDto);
+					this.builderHandsetDeviceOnlineGuestPushMsg(pushMsg, hd_push_dto, context);
 					//发送push
 					ret = pushNotification(pushMsg);
 					if(ret){
@@ -367,10 +368,15 @@ public class PushService{
 	 * @param context
 	 * @return
 	 */
-	public void builderHandsetDeviceOnlineGuestPushMsg(PushMsg pushMsg, HandsetOnlineContext context){
-		pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange()));
-		pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+	public void builderHandsetDeviceOnlineGuestPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, HandsetOnlineContext context){
+		String title = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange());
+		String text = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
+		pushMsg.setTitle(title);
+		pushMsg.setText(text);
+		notificationPushDto.setTitle(title);
+		notificationPushDto.setText(text);
+		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 
 
