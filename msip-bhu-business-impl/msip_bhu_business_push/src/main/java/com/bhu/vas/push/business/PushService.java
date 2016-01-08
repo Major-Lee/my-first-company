@@ -12,6 +12,7 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
+import com.bhu.vas.api.dto.push.NotificationPushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
@@ -106,8 +107,8 @@ public class PushService{
 				HandsetDeviceOnlinePushDTO hd_push_dto = (HandsetDeviceOnlinePushDTO)pushDto;
 				HandsetOnlineContext context = businessPushContextService.handsetOnlineContext(hd_push_dto, presentDto);
 				if(context.isVaild()){
-					PushMsg pushMsg = this.generatePushMsg(presentDto, pushDto);
-					this.builderHandsetDeviceOnlinePushMsg(pushMsg, context);
+					PushMsg pushMsg = this.generatePushMsg(presentDto);
+					this.builderHandsetDeviceOnlinePushMsg(pushMsg, hd_push_dto, context);
 					//发送push
 					ret = pushNotification(pushMsg);
 					if(ret){
@@ -134,10 +135,11 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			System.out.println("访客上线push2:"+presentDto);
 			if(presentDto != null) {
-				HandsetOnlineContext context = businessPushContextService.handsetOnlineGuestContext(pushDto, presentDto);
+				HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
+				HandsetOnlineContext context = businessPushContextService.handsetOnlineGuestContext(hd_push_dto, presentDto);
 				if(context.isVaild()){
-					PushMsg pushMsg = this.generatePushMsg(presentDto, pushDto);
-					this.builderHandsetDeviceOnlineGuestPushMsg(pushMsg, context);
+					PushMsg pushMsg = this.generatePushMsg(presentDto);
+					this.builderHandsetDeviceOnlineGuestPushMsg(pushMsg, hd_push_dto, context);
 					//发送push
 					ret = pushNotification(pushMsg);
 					if(ret){
@@ -350,13 +352,15 @@ public class PushService{
 	 * @param context
 	 * @return
 	 */
-	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, HandsetOnlineContext context){
+	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, HandsetOnlineContext context){
 		String title = String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange());
 		String text = String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
 				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
 		pushMsg.setTitle(title);
 		pushMsg.setText(text);
-		//pushMsg.setPaylod(JsonHelper.getJSONString(push_dto));
+		notificationPushDto.setTitle(title);
+		notificationPushDto.setText(text);
+		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 	/**
 	 * 构建访客上线push的透传内容
@@ -364,10 +368,15 @@ public class PushService{
 	 * @param context
 	 * @return
 	 */
-	public void builderHandsetDeviceOnlineGuestPushMsg(PushMsg pushMsg, HandsetOnlineContext context){
-		pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange()));
-		pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+	public void builderHandsetDeviceOnlineGuestPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, HandsetOnlineContext context){
+		String title = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange());
+		String text = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
+		pushMsg.setTitle(title);
+		pushMsg.setText(text);
+		notificationPushDto.setTitle(title);
+		notificationPushDto.setText(text);
+		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 
 

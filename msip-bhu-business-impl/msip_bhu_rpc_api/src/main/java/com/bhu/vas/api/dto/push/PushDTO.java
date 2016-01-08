@@ -1,6 +1,8 @@
 package com.bhu.vas.api.dto.push;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * 用于业务数据的传递的pushDto
  * @author tangzichao
@@ -11,8 +13,9 @@ public abstract class PushDTO implements Serializable{
 //	//用户id
 //	private Integer uid;
 	//设备mac
+	@JsonIgnore
 	private String mac;
-	
+	@JsonIgnore
 	private long ts;
 //	//透传内容
 //	private String payload;
