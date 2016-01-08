@@ -1152,13 +1152,18 @@ public class DeviceBusinessFacadeService {
 				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
 			}*/
 			if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_NotHappen){
-				WifiDeviceSettingDTO currentDto = entity.getInnerModel();
-				int switchAct = needGenerate4WorkModeChanged(currentDto, dto);
-				System.out.println(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
-				if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
-					//TODO:模式切换需要下发的指令集合
-					afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
+				try{
+					WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+					int switchAct = needGenerate4WorkModeChanged(currentDto, dto);
+					System.out.println(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
+					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
+						//模式切换需要下发的指令集合
+						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
+					}
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
 				}
+				
 			}
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
@@ -1230,10 +1235,11 @@ public class DeviceBusinessFacadeService {
 				userSettingStateService.update(settingState);
 			}
 		}
-		//3、黑名单
-		//4、别名(暂时不需要下发指令)
-		//5、限速
-		//6、功率
+		//3、ssid 密码
+		//4、黑名单
+		//5、别名(暂时不需要下发指令)
+		//6、限速
+		//7、功率
 		{
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(dmac);
 			if(setting_entity != null){
