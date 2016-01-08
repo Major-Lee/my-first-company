@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @SuppressWarnings("serial")
 public class HandsetDeviceOnlinePushDTO extends NotificationPushDTO{
 	//上线的终端的mac
+	@JsonIgnore
 	private String hd_mac;
 	//终端别名或主机名
 	@JsonIgnore
