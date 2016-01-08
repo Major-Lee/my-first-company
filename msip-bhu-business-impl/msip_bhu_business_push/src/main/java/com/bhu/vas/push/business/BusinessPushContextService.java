@@ -12,7 +12,6 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
-import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -89,16 +88,15 @@ public class BusinessPushContextService {
 	 * @param presentDto
 	 * @return
 	 */
-	public HandsetOnlineContext handsetOnlineGuestContext(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+	public HandsetOnlineContext handsetOnlineGuestContext(HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto, DeviceMobilePresentDTO presentDto){
 		HandsetOnlineContext context = new HandsetOnlineContext();
 		
-		HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto = (HandsetDeviceVisitorAuthorizeOnlinePushDTO) pushDto;
 		//判断是否是自己
 		if(hd_push_dto.getHd_mac().equals(presentDto.getDm())){
 			return context;
 		}
 		
-		UserSettingState userSettingState = userSettingStateService.getById(pushDto.getMac());
+		UserSettingState userSettingState = userSettingStateService.getById(hd_push_dto.getMac());
 		if(userSettingState != null){
 			UserTerminalOnlineSettingDTO dto = userSettingState.getUserSetting(UserTerminalOnlineSettingDTO
 					.Setting_Key, UserTerminalOnlineSettingDTO.class);
