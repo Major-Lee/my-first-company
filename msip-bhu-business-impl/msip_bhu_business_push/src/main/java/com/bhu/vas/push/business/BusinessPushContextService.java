@@ -73,8 +73,14 @@ public class BusinessPushContextService {
 								//构建终端上下文
 								builderHandsetOnlineContext(presentDto.getUid(), hd_push_dto.getMac(), hd_push_dto.getHd_mac(),
 										presentDto.isMulti(), context);
+							}else{
+								logger.info(String.format("HandsetOnlineContext Alias stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
 							}
+						}else{
+							logger.info(String.format("HandsetOnlineContext Stranger stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
 						}
+					}else{
+						logger.info(String.format("HandsetOnlineContext Vaildtime stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
 					}
 				}
 			}
@@ -113,6 +119,8 @@ public class BusinessPushContextService {
 						//构建访客上下文
 						builderHandsetOnlineContext(presentDto.getUid(), hd_push_dto.getMac(), hd_push_dto.getHd_mac(),
 								presentDto.isMulti(), context);
+					}else{
+						logger.info(String.format("HandsetOnlineGuestContext Vaildtime stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
 					}
 				}
 			}
@@ -240,9 +248,10 @@ public class BusinessPushContextService {
 					}
 				}
 				
-				//3) 如果别名和主机名都不存在 则终端显示名为mac地址
+				//3) 如果别名和主机名都不存在 则终端显示名为未知终端
 				if(StringUtils.isEmpty(context.getHandsetName())){
-					context.setHandsetName(hd_mac);
+					//context.setHandsetName(hd_mac);
+					context.setHandsetName(HandsetOnlineContext.Android_Terminal_Unkown);
 				}
 			}
 			

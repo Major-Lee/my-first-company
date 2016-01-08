@@ -361,7 +361,7 @@ public class PushService{
 				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
 		notificationPushDto.setTitle(String.format(PushType.HandsetDeviceOnline.getP_title(), context.getStrange()));
 		notificationPushDto.setText(String.format(PushType.HandsetDeviceOnline.getP_text(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+				context.getHandsetNameChop(), context.getDeviceInfoChop(), context.getStrange()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 	/**
@@ -379,7 +379,7 @@ public class PushService{
 				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
 		notificationPushDto.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_title(), context.getStrange()));
 		notificationPushDto.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_text(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+				context.getHandsetNameChop(), context.getDeviceInfoChop(), context.getStrange()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 
