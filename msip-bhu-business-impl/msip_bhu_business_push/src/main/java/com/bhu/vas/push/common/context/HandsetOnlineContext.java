@@ -46,7 +46,7 @@ public class HandsetOnlineContext {
 	}
 	public String getHandsetNameChop(){
 		if(StringUtils.isEmpty(handsetName)) return handsetName;
-		return StringHelper.chopMiddleString(handsetName, 6, StringHelper.ELLIPSIS_STRING_GAP);
+		return StringHelper.chopMiddleString(handsetName, 5, StringHelper.ELLIPSIS_STRING_GAP);
 	}
 	public void setHandsetName(String handsetName) {
 		this.handsetName = handsetName;
@@ -62,7 +62,7 @@ public class HandsetOnlineContext {
 	}
 	public String getDeviceInfoChop() {
 		if(StringUtils.isEmpty(deviceInfo)) return deviceInfo;
-		return StringHelper.chopMiddleString(deviceInfo, 10, StringHelper.ELLIPSIS_STRING_GAP);
+		return StringHelper.chopMiddleString(deviceInfo, 6, StringHelper.ELLIPSIS_STRING_GAP);
 	}
 	public void setDeviceInfo(String deviceInfo) {
 		this.deviceInfo = deviceInfo;
