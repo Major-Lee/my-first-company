@@ -240,9 +240,10 @@ public class BusinessPushContextService {
 					}
 				}
 				
-				//3) 如果别名和主机名都不存在 则终端显示名为mac地址
+				//3) 如果别名和主机名都不存在 则终端显示名为未知终端
 				if(StringUtils.isEmpty(context.getHandsetName())){
-					context.setHandsetName(hd_mac);
+					//context.setHandsetName(hd_mac);
+					context.setHandsetName(HandsetOnlineContext.Android_Terminal_Unkown);
 				}
 			}
 			
