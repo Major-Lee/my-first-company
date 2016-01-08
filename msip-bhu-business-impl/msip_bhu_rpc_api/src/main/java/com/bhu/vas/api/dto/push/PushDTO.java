@@ -13,6 +13,7 @@ public abstract class PushDTO implements Serializable{
 //	//用户id
 //	private Integer uid;
 	//设备mac
+	@JsonIgnore
 	private String mac;
 	@JsonIgnore
 	private long ts;
