@@ -13,23 +13,28 @@ import org.springframework.util.StringUtils;
  */
 public enum PushType {
 	
-	HandsetDeviceOnline("HDO", "%s终端上线", "%s %s %s %s终端上线"),//终端上线
-	HandsetDeviceVisitorAuthorizeOnline("HDVO", "%s访客上线", "%s %s %s %s访客上线"), //访客网络认证
-	HandsetDeviceWSOnline("HDWSO", "周边探测%s", "%s在附近出现"),//终端探测上线
-	WifiDeviceReboot("WDR", null, null),//设备重启成功后
-	WifiDeviceSettingChanged("WDC", null, null),//设备配置变更
-	UserBBSsignedon("UBS", "论坛登录", "论坛登录"),//用户bbs登录
+	HandsetDeviceOnline("HDO", "%s终端上线", "%s %s %s %s终端上线", "%s", "%s %s %s %s"),//终端上线
+	HandsetDeviceVisitorAuthorizeOnline("HDVO", "%s访客上线", "%s %s %s %s访客上线", "%s", "%s %s %s %s"), //访客网络认证
+	HandsetDeviceWSOnline("HDWSO", "周边探测%s", "%s在附近出现", null, null),//终端探测上线
+	WifiDeviceReboot("WDR", null, null, null, null),//设备重启成功后
+	WifiDeviceSettingChanged("WDC", null, null, null, null),//设备配置变更
+	UserBBSsignedon("UBS", "论坛登录", "论坛登录", null, null),//用户bbs登录
 	;
 	String type;
 	String title;
 	String text;
+	//payload info
+	String p_title;
+	String p_text;
 	
 	static Map<String, PushType> allPushEnums;
 	
-	PushType(String type, String title, String text){
+	PushType(String type, String title, String text, String p_title, String p_text){
 		this.type = type;
 		this.title = title;
 		this.text = text;
+		this.p_title = p_title;
+		this.p_text = p_text;
 	}
 	
 	static {
@@ -61,6 +66,22 @@ public enum PushType {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+	
+	public String getP_title() {
+		return p_title;
+	}
+
+	public void setP_title(String p_title) {
+		this.p_title = p_title;
+	}
+
+	public String getP_text() {
+		return p_text;
+	}
+
+	public void setP_text(String p_text) {
+		this.p_text = p_text;
 	}
 
 	public static PushType getPushTypeFromType(String type) {

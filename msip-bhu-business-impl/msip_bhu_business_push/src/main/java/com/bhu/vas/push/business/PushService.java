@@ -353,13 +353,15 @@ public class PushService{
 	 * @return
 	 */
 	public void builderHandsetDeviceOnlinePushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, HandsetOnlineContext context){
-		String title = String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange());
-		String text = String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
-		pushMsg.setTitle(title);
-		pushMsg.setText(text);
-		notificationPushDto.setTitle(title);
-		notificationPushDto.setText(text);
+//		String title = String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange());
+//		String text = String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
+//				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
+		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange()));
+		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+		notificationPushDto.setTitle(String.format(PushType.HandsetDeviceOnline.getP_title(), context.getStrange()));
+		notificationPushDto.setText(String.format(PushType.HandsetDeviceOnline.getP_text(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 	/**
@@ -369,13 +371,15 @@ public class PushService{
 	 * @return
 	 */
 	public void builderHandsetDeviceOnlineGuestPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, HandsetOnlineContext context){
-		String title = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange());
-		String text = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
-		pushMsg.setTitle(title);
-		pushMsg.setText(text);
-		notificationPushDto.setTitle(title);
-		notificationPushDto.setText(text);
+//		String title = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange());
+//		String text = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
+//				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
+		pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange()));
+		pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
+		notificationPushDto.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_title(), context.getStrange()));
+		notificationPushDto.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_text(), context.getManufactor(), 
+				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 
