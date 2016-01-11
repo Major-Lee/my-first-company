@@ -40,7 +40,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 	
 	public void execute() {
 		logger.info("WifiDeviceOnlineUpgradeLoader starting...");
-		beforeExecute();
+		//beforeExecute();
 		int total = 0;
 		try{
 			List<DownCmds> downCmds = new ArrayList<DownCmds>();
@@ -105,8 +105,8 @@ public class WifiDeviceOnlineUpgradeLoader {
 		logger.info(String.format("WifiDeviceOnlineUpgradeLoader ended total[%s]",total));
 	}
 	
-	public void beforeExecute(){
+	/*public void beforeExecute(){
 		wifiDeviceGrayFacadeService.updateRelatedFieldAction();
 		wifiDeviceGrayFacadeService.updateRelatedDevice4GrayVersion();
-	}
+	}*/
 }
