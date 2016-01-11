@@ -599,6 +599,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Portal_Outer = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("%s</dev>");
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
+	public static final String DeviceSetting_VapEnableWdsItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	
 	
@@ -1067,7 +1068,7 @@ public class DeviceHelper {
 				//ssid 密码
 				List<WifiDeviceSettingVapDTO> vap_dtos = ds_dto.getVaps();
 				if(vap_dtos != null && !vap_dtos.isEmpty()){
-					String vap_items = builderDeviceSettingItemsWithDto(DeviceSetting_VapItem, vap_dtos);
+					String vap_items = builderDeviceSettingItemsWithDto(DeviceSetting_VapEnableWdsItem, vap_dtos);
 					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_VapOuter, 
 							Common_Config_Sequence, vap_items));
 				}
