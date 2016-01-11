@@ -652,7 +652,8 @@ public class AsyncMsgHandleService {
 			boolean terminal_notify_push_mark = businessCacheService.getQTerminalPushNotifyCacheByQ(dto.getWifiId(), dto.getMac());
 			if(!terminal_notify_push_mark){
 				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle do Push");
-
+				businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
+				
 				HandsetDeviceOnlinePushDTO pushDto = new HandsetDeviceOnlinePushDTO();
 				pushDto.setMac(dto.getWifiId());
 				pushDto.setHd_mac(dto.getMac());
@@ -663,7 +664,7 @@ public class AsyncMsgHandleService {
 				if(push_successed){
 					logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle push mac[%s] hd_mac[%s] result[%s] ", 
 							dto.getWifiId(), dto.getMac(), push_successed));
-					businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
+					//businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(), dto.getMac());
 				}
 			}else{
 				logger.info("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle push has mark");
