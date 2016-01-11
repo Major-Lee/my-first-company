@@ -743,7 +743,35 @@ public class DeviceHelper {
 	    "</sys>"+
 	"</dev>";
 	//bridge-ap 和 router-ap之间的设备工作模式切换
-	public static final String DeviceSetting_Switch_Workmode =
+	public static final String DeviceSetting_Switch_Workmode_Router2Bridge =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode><ITEM mode=\"bridge-ap\" scene=\"ap\"/></mode>"+
+						"<lan><ITEM ip_mode=\"dhcpc\" /></lan>"+
+					"</basic>"+
+				"</mod>"+
+				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
+			"</dev>";
+	public static final String DeviceSetting_Switch_Workmode_Bridge2Router =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode><ITEM mode=\"router-ap\" scene=\"router\"/></mode>"+
+						"<wan><ITEM mode=\"dhcpc\" /></wan>"+
+						"<lan><ITEM ip=\"192.168.62.1\" netmask=\"255.255.255.0\" dhcp_enable=\"enable\" /></lan>"+
+					"</basic>"+
+				"</mod>"+
+				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
+			"</dev>";
+	
+	/*public static final String DeviceSetting_Switch_Workmode =
 			"<dev>"+
 			    "<sys>"+
 			    	"<config><ITEM sequence=\"-1\" /></config>"+
@@ -755,7 +783,10 @@ public class DeviceHelper {
 						"</mode>"+
 					"</basic>"+
 				"</mod>"+
-			"</dev>";
+			"</dev>";*/
+	
+	
+	
 	
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
@@ -1021,9 +1052,13 @@ public class DeviceHelper {
 	}
 	
 	public static String builderDSWorkModeSwitchOuter(String extparams){
-		ParamVasSwitchWorkmodeDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
-		//ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
-		return builderDeviceSettingItem(DeviceSetting_Switch_Workmode,ad_dto.builderProperties());
+		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
+		if(wk_dto.getWmode() == WifiDeviceHelper.SwitchMode_Router2Bridge){
+			return DeviceSetting_Switch_Workmode_Router2Bridge;
+		}else{
+			return DeviceSetting_Switch_Workmode_Bridge2Router;
+		}
+		//return builderDeviceSettingItem(DeviceSetting_Switch_Workmode,ad_dto.builderProperties());
 	}
 
 	/**
