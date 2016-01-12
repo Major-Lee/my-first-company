@@ -1311,6 +1311,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			info_vto.setWan_ip(device_entity.getWan_ip());
 			info_vto.setAdr(device_entity.getFormatted_address());
 			info_vto.setCarrier(device_entity.getCarrier());
+			info_vto.setWm(device_entity.getWork_mode());
 			vto.setInfo(info_vto);
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
