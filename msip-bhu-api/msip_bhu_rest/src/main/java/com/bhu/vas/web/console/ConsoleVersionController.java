@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
@@ -136,12 +135,12 @@ public class ConsoleVersionController extends BaseController {
 	public void adddv(
 			HttpServletRequest request, 
 			HttpServletResponse response, 
-			@RequestParam("file") CommonsMultipartFile file,
-			@RequestParam(required = true) int uid,			
+			@RequestParam("file") File file,
+			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String dut,
 			@RequestParam(required = true) boolean fw) {
 		
-		uploadYun(file.getBytes(),file.getName());
+		uploadYun(file);
 		String QNurl = yunUploadService.QN_BUCKET_URL+file.getName();
 		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+file.getName();
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, file.getName(),QNurl,ALurl);
@@ -155,7 +154,7 @@ public class ConsoleVersionController extends BaseController {
 	private ExecutorService exec = Executors.newFixedThreadPool(2);
 
 	// 异步的上传至阿里云、七牛云
-	private void uploadYun(final byte[] bs,final String fileName) {
+	private void uploadYun(final File file) {
 		
 		exec.submit((new Runnable() {
 			@Override
@@ -163,9 +162,9 @@ public class ConsoleVersionController extends BaseController {
 				
 				try {
 					// 阿里云
-					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
+					yunUploadService.uploadFile(file,yunUploadService.AL_REMATE_NAME);
 					// 七牛云
-					yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
+					yunUploadService.uploadFile(file, yunUploadService.QN_REMATE_NAME, yunUploadService.QN_bucket_name);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
