@@ -134,6 +134,11 @@
 			<artifactId>aliyun-java-sdk-cms</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 
 		<!-- QNyunSDK -->
 		<dependency>
