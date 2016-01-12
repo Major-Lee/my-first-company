@@ -76,7 +76,7 @@ public class AgentStatisticsUnitFacadeService {
 		try{
 
 			User operUser = userService.getById(user);
-			UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+			UserTypeValidateService.validUserType(operUser, UserType.AgentNormal.getSname());
 
 			AgentRevenueStatisticsVTO vto = new AgentRevenueStatisticsVTO();
 			//vto.setRcm(ArithHelper.getFormatter(String.valueOf(76696999l)));
@@ -220,7 +220,7 @@ public class AgentStatisticsUnitFacadeService {
 		try{
 
 			User operUser = userService.getById(uid);
-			UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+			UserTypeValidateService.validUserType(operUser, UserType.AgentNormal.getSname());
 
 			Date currentDate = DateTimeHelper.parseDate(dateEndStr, DateTimeHelper.FormatPattern5);
 			//String yesterday = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(currentDate,1),DateTimeHelper.FormatPattern5);
@@ -742,7 +742,7 @@ public class AgentStatisticsUnitFacadeService {
 		}
 
 		User operUser = userService.getById(agentuser);
-		UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+		UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
 
 		AgentDeviceStatisticsVTO statistics = businessCacheService.getAgentDSCacheByUser(agentuser);

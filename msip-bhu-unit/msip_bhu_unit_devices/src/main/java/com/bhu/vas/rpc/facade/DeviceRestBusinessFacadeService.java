@@ -590,7 +590,7 @@ public class DeviceRestBusinessFacadeService {
 	
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex());
+		mc.createCriteria().andColumnEqualTo("utype", UserType.AgentNormal.getIndex());
 		List<User> agents = userService.findModelByModelCriteria(mc);
 		List<UserAgentVTO> vtos = null;
 		if(agents != null && !agents.isEmpty()){

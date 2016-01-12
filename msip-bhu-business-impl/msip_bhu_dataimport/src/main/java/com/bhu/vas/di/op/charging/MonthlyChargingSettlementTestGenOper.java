@@ -79,7 +79,7 @@ public class MonthlyChargingSettlementTestGenOper {
     	List<Integer> agents = new ArrayList<Integer>();
 		
 		ModelCriteria mc_user = new ModelCriteria();
-		mc_user.createCriteria().andColumnEqualTo("utype", UserType.Agent.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		mc_user.createCriteria().andColumnEqualTo("utype", UserType.AgentNormal.getIndex()).andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		mc_user.setPageNumber(1);
 		mc_user.setPageSize(100);
 		EntityIterator<Integer, User> it_user = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userService.getEntityDao(), mc_user);

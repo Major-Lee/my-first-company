@@ -160,7 +160,7 @@ public class AgentUserUnitFacadeService {
 			user.setRegdevice(device);
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
 			user.setLastlogindevice(device);
-			user.setUtype(UserType.Agent.getIndex());
+			user.setUtype(UserType.AgentNormal.getIndex());
 			UserTokenDTO uToken = null;
 			if(isReg){
 				user = this.userService.insert(user);
@@ -305,7 +305,7 @@ public class AgentUserUnitFacadeService {
 			UserTypeValidateService.validNotNormalUser(user);
 			ModelCriteria mc = new ModelCriteria();
 			Criteria cri = mc.createCriteria();
-			cri.andColumnEqualTo("utype", UserType.Agent.getIndex());
+			cri.andColumnEqualTo("utype", UserType.AgentNormal.getIndex());
 
 			if(keywords!=null && StringUtils.isNotEmpty(keywords.trim())){
 				cri.andColumnLike("org", "%"+keywords+"%");
