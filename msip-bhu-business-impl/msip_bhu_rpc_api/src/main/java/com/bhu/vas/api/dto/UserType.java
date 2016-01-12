@@ -5,10 +5,15 @@ import java.util.Map;
 
 public enum UserType {
 	Normal(1,"N","普通用户"),
-	Agent(10,"A","分销商用户"),
-	Finance(15,"F","财务用户"),
-	WarehouseManager(20,"W","仓储用户"),
-	Sellor(30,"S","销售用户"),
+	AgentNormal(10,"A","分销商用户"),
+	AgentFinance(15,"F","财务用户"),
+	AgentWarehouseManager(20,"W","仓储用户"),
+	AgentSellor(30,"S","销售用户"),
+	
+	//商业 wifi 小型运营商客户
+	BusinessNormal(40,"B","商业 wifi 小型运营商客户"),
+	//自运营的商户
+	BusinessSelfor(41,"E","自运营的商户"),
 	;
 	//private String index;
 	private int index;
