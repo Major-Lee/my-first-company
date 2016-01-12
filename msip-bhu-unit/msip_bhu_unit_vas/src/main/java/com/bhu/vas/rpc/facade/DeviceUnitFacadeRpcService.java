@@ -122,7 +122,7 @@ public class DeviceUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 		
 	}

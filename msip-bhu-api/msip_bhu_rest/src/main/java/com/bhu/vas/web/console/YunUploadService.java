@@ -1,5 +1,6 @@
 package com.bhu.vas.web.console;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -34,19 +35,18 @@ public class YunUploadService  {
 	 * 七牛云上传
 	 * 
 	 * @param file
-	 * @param fileName
+	 * @param remoteName
 	 *            上传到七牛云之后的文件名称
 	 * @param bucketName
 	 *            库名字
 	 */
-	void uploadFile(File file,String remoteName,String bucketName) {
+	void uploadFile(byte[] bs,String remoteName,String bucketName) {
 
 		Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 		UploadManager uploadManager = new UploadManager();
-
 		try {
 			System.out.println("正在上传：");
-			Response res = uploadManager.put(file, remoteName+file.getName(), auth.uploadToken(bucketName));
+			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
 		} catch (QiniuException e) {
 			Response r = e.response;
 			System.out.println(r.toString());
@@ -62,18 +62,19 @@ public class YunUploadService  {
 	/**
 	 * 阿里云上传
 	 * 
-	 * @param file 
+	 * @param bs 
 	 * @param remotePath
 	 * @return
 	 * @throws Exception
 	 */
-	 void uploadFile(File file, String remotePath) throws Exception {
-
-		OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
+	 void uploadFile(byte[] bs, String remotePath) throws Exception {
+		ByteArrayInputStream in = new ByteArrayInputStream(bs);
+		
+		OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);	
 		String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/") + "/";
 		// 创建上传Object的Metadata
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		// 上传文件
-		ossClient.putObject(AL_BUCKET_NAME, remoteFilePath + file.getName(), file, objectMetadata);
+		ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
 	}
 }
