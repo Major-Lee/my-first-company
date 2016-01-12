@@ -14,6 +14,7 @@ import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
+@Service
 public class YunUploadService  {
 
 	// 七牛云参数

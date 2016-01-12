@@ -136,7 +136,7 @@ public class ConsoleVersionController extends BaseController {
 			HttpServletRequest request, 
 			HttpServletResponse response, 
 			@RequestParam("file") File file,
-			@RequestParam(required = true) int uid, 
+			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String dut,
 			@RequestParam(required = true) boolean fw) {
 		
