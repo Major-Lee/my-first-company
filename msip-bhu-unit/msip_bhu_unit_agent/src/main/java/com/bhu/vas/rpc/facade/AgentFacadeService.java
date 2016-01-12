@@ -148,7 +148,7 @@ public class AgentFacadeService {
     public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentNormal.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
@@ -305,7 +305,7 @@ public class AgentFacadeService {
 
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnGreaterThan("agentuser", 0).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
@@ -500,7 +500,7 @@ public class AgentFacadeService {
                                                           String inputPath, String outputPath,
                                                           String originName, String remark) {
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
         //代理商导入记录
         AgentDeviceImportLog agentDeviceImportLog = new AgentDeviceImportLog();
@@ -545,7 +545,7 @@ public class AgentFacadeService {
     public AgentDeviceImportLogVTO findAgentDeviceImportLogById(int uid, long logId) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
         AgentDeviceImportLog agentDeviceImportLog = agentDeviceImportLogService.getById(logId);
 
@@ -584,7 +584,7 @@ public class AgentFacadeService {
     public TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int uid, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.setOrderByClause("id desc");
@@ -664,7 +664,7 @@ public class AgentFacadeService {
     public TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.Agent.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentNormal.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("consumer", uid);
@@ -708,7 +708,7 @@ public class AgentFacadeService {
     public TailPage<UserVTO> pageUserVTO(int uid, int utype, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", utype);
@@ -733,10 +733,10 @@ public class AgentFacadeService {
 
     public TailPage<UserAgentVTO>  pageUserAgentVTO(int uid, int pageNo, int pageSize) {
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
         ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.Agent.getIndex());
+        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("utype", UserType.AgentNormal.getIndex());
         int total = userService.countByCommonCriteria(mc);
         mc.setPageNumber(pageNo);
         mc.setPageSize(pageSize);
@@ -760,7 +760,7 @@ public class AgentFacadeService {
     public boolean updateAgentImportImport(int uid, long logId) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
         AgentDeviceImportLog agentDeviceImportLog =  agentDeviceImportLogService.getById(logId);
         if (agentDeviceImportLog != null) {
             agentDeviceImportLog.setStatus(AgentDeviceImportLog.CONFIRM_DONE);
@@ -776,7 +776,7 @@ public class AgentFacadeService {
 
     public boolean cancelAgentImport(int uid, long logId) {
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.WarehouseManager.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentWarehouseManager.getSname());
 
 
         agentDeviceImportLogService.deleteById(logId);
@@ -798,9 +798,9 @@ public class AgentFacadeService {
     		}
     		double amount = Double.parseDouble(settlementAmount);
 	    	User operUser = userService.getById(uid);
-	    	UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
+	    	UserTypeValidateService.validUserType(operUser, UserType.AgentFinance.getSname());
 	    	User agentUser = userService.getById(aid);
-	    	UserTypeValidateService.validUserType(agentUser, UserType.Agent.getSname());
+	    	UserTypeValidateService.validUserType(agentUser, UserType.AgentNormal.getSname());
 	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, amount);
 	    	AgentFinancialSettlement agentFinancialSettlement = new AgentFinancialSettlement();
 	        agentFinancialSettlement.setUid(uid);
@@ -837,7 +837,7 @@ public class AgentFacadeService {
     public TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.Finance.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.AgentFinance.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.setOrderByClause("updated_at desc");
