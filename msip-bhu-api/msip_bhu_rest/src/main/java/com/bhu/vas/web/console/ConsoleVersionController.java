@@ -142,11 +142,11 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) boolean fw) {
 		
 		System.out.println("我准备上传了。");
-		uploadYun(file.getBytes(),file.getName());
+		uploadYun(file.getBytes(),file.getOriginalFilename());
 		System.out.println("上传结束。");
 
-		String QNurl = yunUploadService.QN_BUCKET_URL+file.getName();
-		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+file.getName();
+		String QNurl = yunUploadService.QN_BUCKET_URL+file.getOriginalFilename();
+		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+file.getOriginalFilename();
 		
 		System.out.println("QUurl:"+QNurl+",ALurl:"+ALurl);
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, file.getName(),QNurl,ALurl);
@@ -167,11 +167,6 @@ public class ConsoleVersionController extends BaseController {
 			public void run() {
 				
 				try {
-					// 阿里云
-					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-					// 七牛云
-					yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
-
 					System.out.println("已进入线程");
 					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
 					System.out.println("阿里云上传完毕，开始七牛云上传");
