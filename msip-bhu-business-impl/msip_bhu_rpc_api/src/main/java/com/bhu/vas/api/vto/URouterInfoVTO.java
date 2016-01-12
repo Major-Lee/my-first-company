@@ -5,6 +5,7 @@ public class URouterInfoVTO implements java.io.Serializable{
 	private String wan_ip;//wan ip
 	private String adr;//设备地址
 	private String carrier; //设备网络运营商信息
+	private String wm;//设备工作模式
 	
 	public String getWan_ip() {
 		return wan_ip;
@@ -23,5 +24,11 @@ public class URouterInfoVTO implements java.io.Serializable{
 	}
 	public void setCarrier(String carrier) {
 		this.carrier = carrier;
+	}
+	public String getWm() {
+		return wm;
+	}
+	public void setWm(String wm) {
+		this.wm = wm;
 	}
 }
