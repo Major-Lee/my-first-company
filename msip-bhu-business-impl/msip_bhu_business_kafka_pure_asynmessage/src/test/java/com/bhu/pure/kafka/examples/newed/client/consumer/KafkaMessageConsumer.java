@@ -16,12 +16,15 @@
  */
 package com.bhu.pure.kafka.examples.newed.client.consumer;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 
+import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
 import com.bhu.pure.kafka.examples.newed.subscribe.Subscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicPatternSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicRebalanceSubscriber;
@@ -95,21 +98,43 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageC
 		}else{
 			return false;
 		}
+
+		poll(notify);
 		
+		return true;
+	}
+	
+	@Override
+	public boolean doAssgin(Assigner assigner, final IteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+		if(assigner == null) return false;
+		
+		List<TopicPartition> topicPartitions = assigner.getTopicPartitions();
+		if(topicPartitions == null || topicPartitions.isEmpty()) return false;
+		
+		consumer.assign(topicPartitions);
+		
+		poll(notify);
+		
+		return true;
+	}
+	
+	protected void poll(final IteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
 		Executors.newSingleThreadExecutor().submit((new Runnable() {
 			@Override
 			public void run() {
 				while(true){
 					System.out.println("start consumer poll");
-					ConsumerRecords<KEY, VALUE> records = consumer.poll(1000);
+					ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
 					notify.notifyComming(records);
 				}
 			}
 		}));
-		
-		return true;
 	}
 	
+	@Override
+	public long pollSize() {
+		return DEFAULT_POLLSIZE;
+	}
 //	public abstract Subscriber getSubscriber();
 	
 }

@@ -23,4 +23,9 @@ public class CustomKafkaMessageConsumer extends KafkaMessageConsumer<Integer, St
 		return props;
 	}
 
+	@Override
+	public long pollSize() {
+		return DEFAULT_POLLSIZE;
+	}
+
 }

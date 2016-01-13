@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
@@ -13,7 +12,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 public class KafkaMessageTest {
 	public static final String TOPIC = "topic";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		//consumer
 		CustomKafkaMessageConsumer consumer = new CustomKafkaMessageConsumer();
 		TopicSubscriber subscriber = new TopicSubscriber(Collections.singletonList(TOPIC));
@@ -31,20 +30,19 @@ public class KafkaMessageTest {
 				}
 			}
 		});
+		
+		Thread.sleep(2000l);
 		//producer
 		CustomKafkaMessageProducer producer = new CustomKafkaMessageProducer();
 		int key = 0;
 		while(true){
-			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+/*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
 			RecordMetadata ret = producer.send(record);
 			if(ret != null){
 				System.out.println("successed");
-			}
-			try {
-				Thread.sleep(2000l);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			}*/
+			RecordMetadata ret = producer.send(TOPIC, null, key, "msg"+key);
+			Thread.sleep(2000l);
 			key++;
 		}
 	}

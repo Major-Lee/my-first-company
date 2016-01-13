@@ -16,9 +16,4 @@ public class TopicSubscriber implements Subscriber{
 	public void setTopics(List<String> topics) {
 		this.topics = topics;
 	}
-	
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
 }
