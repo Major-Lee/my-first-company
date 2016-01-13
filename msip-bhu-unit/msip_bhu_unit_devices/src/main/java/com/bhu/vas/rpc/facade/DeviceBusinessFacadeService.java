@@ -46,6 +46,7 @@ import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
@@ -64,6 +65,7 @@ import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
@@ -118,6 +120,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
+	@Resource
+	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	@Resource
 	private WifiDeviceStautsIndexIncrementService wifiDeviceStautsIndexIncrementService;
@@ -1671,7 +1676,42 @@ public class DeviceBusinessFacadeService {
 		ModuleReturnDTO resultDto = RPCMessageParseHelper.generateDTOFromMessage(doc, 
 				ModuleReturnDTO.class);
 		//2:任务callback
-		doTaskCallback(taskid, resultDto.getResult(), response);
+		WifiDeviceDownTaskCompleted task = doTaskCallback(taskid, resultDto.getResult(), response);
+		if (WifiDeviceDownTask.State_Ok.equals(resultDto.getResult())) {
+			if(task != null){//任务下发的指令响应
+				if (WifiDeviceDownTask.State_Ok.equals(resultDto.getResult())) {
+					try{
+						//如果是增值指令开启response ok的情况下需要回写数据库相关设备ds标记
+						if(OperationCMD.ModifyDeviceSetting.getNo().equals(task.getOpt()) 
+								&& (OperationDS.DS_Http_VapModuleCMD_Start.getNo().equals(task.getSubopt()) || OperationDS.DS_Http_VapModuleCMD_Stop.getNo().equals(task.getSubopt()))){
+							wifiDevicePersistenceCMDStateService.updateDs4PersistenceDetailCMD(mac, task.getOpt(), task.getSubopt());
+						}
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}else{//可能是自动下发的指令响应
+				if(CMDBuilder.wasAutoVapStartTaskid(taskid)){
+					wifiDevicePersistenceCMDStateService.updateDs4PersistenceDetailCMD(mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_VapModuleCMD_Start.getNo());
+				}
+				if(CMDBuilder.wasAutoVapStartTaskid(taskid)){
+					wifiDevicePersistenceCMDStateService.updateDs4PersistenceDetailCMD(mac, OperationCMD.ModifyDeviceSetting.getNo(), OperationDS.DS_Http_VapModuleCMD_Stop.getNo());
+				}
+			}
+		}
+		
+		/*if (WifiDeviceDownTask.State_Ok.equals(resultDto.getResult())) {
+			try{
+				//如果是增值指令开启response ok的情况下需要回写数据库相关设备ds标记
+				if(OperationCMD.ModifyDeviceSetting.getNo().equals(task.getOpt()) 
+						&& (OperationDS.DS_Http_VapModuleCMD_Start.getNo().equals(task.getSubopt()) || OperationDS.DS_Http_VapModuleCMD_Stop.getNo().equals(task.getSubopt()))){
+					//WifiDevicePersistenceCMDState cmdState = this.getById(mac);
+					wifiDevicePersistenceCMDStateService.updateDs4PersistenceDetailCMD(mac, task.getOpt(), task.getSubopt());
+				}
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+			}
+		}*/
 	}
 	
 	/**

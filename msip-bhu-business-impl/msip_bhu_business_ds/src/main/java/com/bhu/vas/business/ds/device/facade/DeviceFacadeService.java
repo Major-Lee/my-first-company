@@ -978,9 +978,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 							if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
 								continue;
 							}
-							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(),cmdDefined.getTemplate()));
+							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstart_fragment.getNextSequence(),cmdDefined.getTemplate()));
 						}else if(OperationDS.DS_Http_VapModuleCMD_Stop == ods_cmd){
-							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
+							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstop_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
 						}else{
 							vap_module_ds.add(ods_cmd);
 							vap_module_ds_extparams.add(dto.getExtparams());
