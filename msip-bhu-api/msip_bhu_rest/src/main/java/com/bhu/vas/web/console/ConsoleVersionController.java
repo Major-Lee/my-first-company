@@ -141,15 +141,16 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) String dut,
 			@RequestParam(required = true) boolean fw) {
 		
+		String fileName = file.getOriginalFilename();
 		System.out.println("我准备上传了。");
-		uploadYun(file.getBytes(),file.getOriginalFilename());
+		uploadYun(file.getBytes(),fileName);
 		System.out.println("上传结束。");
 
-		String QNurl = yunUploadService.QN_BUCKET_URL+file.getOriginalFilename();
-		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+file.getOriginalFilename();
+		String QNurl = yunUploadService.QN_BUCKET_URL+yunUploadService.QN_REMATE_NAME+fileName;
+		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+fileName;
 		
 		System.out.println("QUurl:"+QNurl+",ALurl:"+ALurl);
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, file.getName(),QNurl,ALurl);
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,QNurl,ALurl);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
@@ -167,6 +168,7 @@ public class ConsoleVersionController extends BaseController {
 			public void run() {
 				
 				try {
+					//阿里云
 					System.out.println("已进入线程");
 					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
 					System.out.println("阿里云上传完毕，开始七牛云上传");
