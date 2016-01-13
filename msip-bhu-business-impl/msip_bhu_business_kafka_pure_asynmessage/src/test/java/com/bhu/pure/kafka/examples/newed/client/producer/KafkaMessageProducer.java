@@ -53,6 +53,21 @@ public abstract class KafkaMessageProducer<KEY, VALUE> implements IKafkaMessageP
 	}
 	
 	@Override
+	public RecordMetadata send(String topic, Integer partition, KEY key, VALUE value){
+		try {
+			return producer.send(new ProducerRecord<KEY, VALUE>(topic, partition, key, value)).get();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public void sendAsync(String topic, Integer partition, KEY key, VALUE value, Callback callback){
+		producer.send(new ProducerRecord<KEY, VALUE>(topic, partition, key, value), callback);
+	}
+	
+/*	@Override
 	public RecordMetadata send(ProducerRecord<KEY, VALUE> record){
 		try {
 			return producer.send(record).get();
@@ -65,6 +80,5 @@ public abstract class KafkaMessageProducer<KEY, VALUE> implements IKafkaMessageP
 	@Override
 	public void sendAsync(ProducerRecord<KEY, VALUE> record, Callback callback){
 		producer.send(record, callback);
-	}
-
+	}*/
 }
