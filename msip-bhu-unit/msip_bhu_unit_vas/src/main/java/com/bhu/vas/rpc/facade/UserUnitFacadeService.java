@@ -121,6 +121,14 @@ public class UserUnitFacadeService {
 		//user.addSafety(SafetyBitMarkHelper.mobileno);
 		//user.setPlainpwd(RuntimeConfiguration.Default_Whisper_Pwd);
 		user.setNick(nick);
+		if(StringUtils.isNotEmpty(nick)){
+			//判定nick是否已经存在
+			if(UniqueFacadeService.checkNickExist(nick)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+			}else{
+				user.setNick(nick);
+			}
+		}
 		user.setSex(sex);
 		user.setLastlogindevice_uuid(deviceuuid);
 		user.setRegip(regIp);
@@ -130,7 +138,6 @@ public class UserUnitFacadeService {
 		user.setLastlogindevice(device);
 		user = this.userService.insert(user);
 		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
-		
 		// token validate code
 		uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 		{//write header to response header
