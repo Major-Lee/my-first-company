@@ -1,0 +1,11 @@
+package com.bhu.pure.kafka.examples.newed.client.consumer;
+
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+
+import com.bhu.pure.kafka.examples.newed.client.IKafkaMessageClient;
+import com.bhu.pure.kafka.examples.newed.subscribe.Subscriber;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
+
+public interface IKafkaMessageConsumer<KEY, VALUE> extends IKafkaMessageClient{
+	public boolean doSubscribe(Subscriber subscriber, IteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
+}
