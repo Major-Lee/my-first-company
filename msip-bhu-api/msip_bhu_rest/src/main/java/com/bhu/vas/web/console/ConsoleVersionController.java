@@ -160,8 +160,7 @@ public class ConsoleVersionController extends BaseController {
 
 	}
 
-	private ExecutorService exec = Executors.newFixedThreadPool(1);
-
+	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	// 异步的上传至阿里云、七牛云
 	private void uploadYun(final byte[] bs,final String fileName) {
 		
@@ -176,8 +175,8 @@ public class ConsoleVersionController extends BaseController {
 					
 					System.out.println("阿里云上传完毕，开始七牛云上传");
 					//阿里云
-					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-					System.out.println("七牛云上传完毕");
+//					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
+//					System.out.println("七牛云上传完毕");
 				} catch (Exception e) {
 					System.out.println("我在线程中出错了");
 					e.printStackTrace();
