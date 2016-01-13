@@ -62,7 +62,7 @@ public class YunUploadService  {
 	/**
 	 * 阿里云上传
 	 * 
-	 * @param bs 
+	 * @param bs 	
 	 * @param remotePath
 	 * @return
 	 * @throws Exception
@@ -71,7 +71,7 @@ public class YunUploadService  {
 		ByteArrayInputStream in = new ByteArrayInputStream(bs);
 		
 		OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);	
-		String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/") + "/";
+		String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/");
 		// 创建上传Object的Metadata
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		// 上传文件
