@@ -30,7 +30,7 @@
 		<spring-integration-stream.version>4.1.0.RELEASE</spring-integration-stream.version>
 		 -->
 		<spring-integration-kafka.version>1.2.1.RELEASE</spring-integration-kafka.version>
-		<kafka.version>0.8.2.1</kafka.version>
+		<kafka.version>0.9.0.0</kafka.version>
 	</properties>
 
 	<dependencies>

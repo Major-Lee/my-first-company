@@ -94,4 +94,20 @@ public class WifiDevicePersistenceCMDStateService extends AbstractCoreService<St
 		}
 	}
 	
+	public void updateDs4PersistenceDetailCMD(String mac,String opt,String subopt){
+		try{
+			WifiDevicePersistenceCMDState cmdState = this.getById(mac);
+			if(cmdState == null || cmdState.getExtension().isEmpty()) return;
+			String key = WifiDeviceHelper.builderPersistenceKey(opt,subopt);
+			PersistenceCMDDTO innerModel = cmdState.getInnerModel(key);
+			if(innerModel == null) return;
+			if(!innerModel.isDs()){
+				innerModel.setDs(true);
+				this.update(cmdState);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }
