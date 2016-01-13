@@ -16,7 +16,7 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
 @Service
-public class YunUploadService  {
+public class YunUploadService {
 
 	// 七牛云参数
 	static final String QN_ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
@@ -31,6 +31,7 @@ public class YunUploadService  {
 	static final String AL_REMATE_NAME = "test/";
 	static final String AL_BUCKET_NAME = "bhudemo";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
+
 	/**
 	 * 七牛云上传
 	 * 
@@ -40,42 +41,42 @@ public class YunUploadService  {
 	 * @param bucketName
 	 *            库名字
 	 */
-	void uploadFile(byte[] bs,String remoteName,String bucketName) {
+	public void uploadFile(byte[] bs, String remoteName, String bucketName) {
 
-		Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
-		UploadManager uploadManager = new UploadManager();
 		try {
+			System.out.println("正在上传至七牛云：begin");
+			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
+			UploadManager uploadManager = new UploadManager();
 			System.out.println("正在上传至七牛云：");
 			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
-		} catch (QiniuException e) {
-			Response r = e.response;
-			System.out.println(r.toString());
-			try {
-				// 响应的文本信息
-				System.out.println(r.bodyString());
-			} catch (QiniuException e1) {
-				// ignore
-			}
+			System.out.println("res===" + res.toString());
+		} catch (Exception e) {
+			System.out.println("上传七牛yun时出错了。");
 		}
 	}
 
 	/**
 	 * 阿里云上传
 	 * 
-	 * @param bs 	
+	 * @param bs
 	 * @param remotePath
 	 * @return
 	 * @throws Exception
 	 */
-	 void uploadFile(byte[] bs, String remotePath) throws Exception {
-		ByteArrayInputStream in = new ByteArrayInputStream(bs);
-		
-		OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);	
-		String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/");
-		// 创建上传Object的Metadata
-		ObjectMetadata objectMetadata = new ObjectMetadata();
-		// 上传文件
-		System.out.println("正在上传至阿里云:");
-		ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
+	public void uploadFile(byte[] bs, String remotePath) throws Exception {
+		try {
+			ByteArrayInputStream in = new ByteArrayInputStream(bs);
+
+			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
+			String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/");
+			// 创建上传Object的Metadata
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			// 上传文件
+			System.out.println("正在上传至阿里云:");
+			ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("阿里云出错了");
+		}
 	}
 }
