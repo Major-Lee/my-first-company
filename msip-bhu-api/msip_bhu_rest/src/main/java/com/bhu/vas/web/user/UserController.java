@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.business.helper.BusinessWebHelper;
+import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -34,6 +39,7 @@ public class UserController extends BaseController{
 	 * 1、支持用户快速直接注册
 	 * 2、支持输入accemail或者mobileno 和密码注册
 	 * 3、支持注册是填写 sex，lang，region
+	 * 备注：此接口合并到LoginSessionController create 接口里
 	 * @param request
 	 * @param response
 	 * @param deviceuuid 设备uuid
@@ -47,7 +53,7 @@ public class UserController extends BaseController{
 	 * @param token  渠道邀请码
 	 * 
 	 */
-	/*@ResponseBody()
+	@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.GET,RequestMethod.POST})
 	public void create(HttpServletRequest request,
 			HttpServletResponse response, 
@@ -77,12 +83,15 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}
-			RpcResponseDTO<UserDTO> createNewUserResult = userRpcService.createNewUser(countrycode, acc, nick, sex, from_device, remoteIp, deviceuuid, captcha);
-			if(createNewUserResult.getErrorCode() == null){
-				BusinessWebHelper.setCustomizeHeader(response, createNewUserResult.getPayload().getAtoken(),createNewUserResult.getPayload().getRtoken());
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(createNewUserResult.getPayload()));
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick, sex, from_device, remoteIp, deviceuuid, captcha);
+			if(!rpcResult.hasError()){
+				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
+				rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(createNewUserResult.getErrorCode()));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -90,7 +99,7 @@ public class UserController extends BaseController{
 		}finally{
 			
 		}
-	}*/
+	}
 	
 	/**
 	 * 用户信息修改
@@ -171,6 +180,34 @@ public class UserController extends BaseController{
 				return;
 			}else{
 				RpcResponseDTO<Boolean> checkAcc = userRpcService.checkAcc(countrycode, oldacc);
+				if(checkAcc.getErrorCode() == null)
+					SpringMVCHelper.renderJson(response, Response.SUCCESS);
+				else
+					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc));
+				return;
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/check_nick",method={RequestMethod.POST})
+	public void check_nick(
+			HttpServletResponse response,
+			@RequestParam(required = true) String nick,
+            @RequestParam(required = false) String oldacc) {
+		try{
+			if (nick == null || nick.equals(oldacc)) {
+				SpringMVCHelper.renderJson(response, Response.SUCCESS);//renderHtml(response, html, headers)
+				return;
+			}
+			ResponseError validateError = ValidateService.validateNick(nick);
+			if(validateError != null){//本地正则验证
+				SpringMVCHelper.renderJson(response, validateError);
+				return;
+			}else{
+				RpcResponseDTO<Boolean> checkAcc = userRpcService.checkNick(nick);
 				if(checkAcc.getErrorCode() == null)
 					SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				else

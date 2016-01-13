@@ -17,7 +17,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	/*public RpcResponseDTO<UserDTO> createNewUser(
+	public RpcResponseDTO<Map<String, Object>> createNewUser(
 			int countrycode,
 			String acc,
 			String nick,
@@ -25,7 +25,7 @@ public interface IUserRpcService {
 			String device,
 			String regIp,String deviceuuid,
 			String captcha
-			);*/
+			);
 	
 	/**
 	 * 检测token是否合法
@@ -42,7 +42,7 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc);
-	
+	public RpcResponseDTO<Boolean> checkNick(String nick);
 	
 	/**
 	 * 验证码的用户登录
