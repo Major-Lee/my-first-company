@@ -63,6 +63,7 @@ public class YunUploadService {
 	 */
 	public void uploadFile(byte[] bs, String remotePath) throws Exception {
 		try {
+			System.out.println("阿里云upload:begin");
 			ByteArrayInputStream in = new ByteArrayInputStream(bs);
 
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
