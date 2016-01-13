@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bhu.pure.kafka.examples.zero9;
+package com.bhu.pure.kafka.examples.lawliet;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class KafkaConsumerProducerDemo implements KafkaProperties
@@ -24,7 +25,7 @@ public class KafkaConsumerProducerDemo implements KafkaProperties
   public static void main(String[] args)
   {
     final boolean isAsync = args.length > 0 ? !args[0].trim().toLowerCase().equals("sync") : true;
-    Producer producerThread = new Producer(KafkaProperties.topic, isAsync);
+    Producer producerThread = new Producer(Arrays.asList(new String[]{KafkaProperties.topic,KafkaProperties.topic2}), isAsync);
     producerThread.start();
 
 //    Producer producerThread2 = new Producer(KafkaProperties.topic2, isAsync);
@@ -33,7 +34,7 @@ public class KafkaConsumerProducerDemo implements KafkaProperties
 //    producerThread3.start();
     
     
-    Consumer consumerThread = new Consumer(KafkaProperties.topic);
+    Consumer consumerThread = new Consumer(Arrays.asList(new String[]{KafkaProperties.topic,KafkaProperties.topic2}));
     consumerThread.start();
 //    List<String> ss = Arrays.asList(new String[]{KafkaProperties.topic,KafkaProperties.topic2,KafkaProperties.topic2});
 //    MultiConsumer consumerThread = new MultiConsumer(ss);
