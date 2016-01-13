@@ -40,19 +40,17 @@ public class YunUploadService {
 	 *            上传到七牛云之后的文件名称
 	 * @param bucketName
 	 *            库名字
+	 * @throws QiniuException 
 	 */
-	public void uploadFile(byte[] bs, String remoteName, String bucketName) {
+	public void uploadFile(byte[] bs, String remoteName, String bucketName) throws QiniuException  {
 
-		try {
 			System.out.println("正在上传至七牛云：begin");
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
+			System.out.println("正在上传至七牛云：creat auth" + QN_ACCESS_KEY + ":" + QN_SECRET_KEY + ":" + auth);
 			UploadManager uploadManager = new UploadManager();
 			System.out.println("正在上传至七牛云：");
 			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
 			System.out.println("res===" + res.toString());
-		} catch (Exception e) {
-			System.out.println("上传七牛yun时出错了。");
-		}
 	}
 
 	/**
