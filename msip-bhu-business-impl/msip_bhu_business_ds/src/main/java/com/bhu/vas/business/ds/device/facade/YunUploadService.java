@@ -1,12 +1,7 @@
-package com.bhu.vas.web.console;
-
+package com.bhu.vas.business.ds.device.facade;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -43,14 +38,14 @@ public class YunUploadService {
 	 * @throws QiniuException 
 	 */
 	public void uploadFile(byte[] bs, String remoteName, String bucketName) throws QiniuException  {
-
-			System.out.println("正在上传至七牛云：begin");
+		try {
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
-			System.out.println("正在上传至七牛云：creat auth" + QN_ACCESS_KEY + ":" + QN_SECRET_KEY + ":" + auth);
 			UploadManager uploadManager = new UploadManager();
-			System.out.println("正在上传至七牛云：");
 			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
-			System.out.println("res===" + res.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("七牛云上传出错。");
+		}
 	}
 
 	/**
@@ -61,23 +56,18 @@ public class YunUploadService {
 	 * @return
 	 * @throws Exception
 	 */
-	public void uploadFile(byte[] bs, String remotePath) throws Exception {
+	public void uploadFile(byte[] bs, String remotePath){
 		try {
-			System.out.println("阿里云upload:begin");
 			ByteArrayInputStream in = new ByteArrayInputStream(bs);
-			System.out.println("1111111111111");
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
-			System.out.println("2222222222222222");
 			String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/");
-			System.out.println("33333333333333333");
 			// 创建上传Object的Metadata
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			// 上传文件
-			System.out.println("正在上传至阿里云:");
 			ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("阿里云出错了");
+			System.out.println("阿里云上传出错了");
 		}
 	}
 }
