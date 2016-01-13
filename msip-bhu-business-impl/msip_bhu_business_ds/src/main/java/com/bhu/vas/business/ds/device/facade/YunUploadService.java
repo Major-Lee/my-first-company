@@ -1,4 +1,4 @@
-package com.bhu.vas.web.console;
+package com.bhu.vas.business.ds.device.facade;
 import java.io.ByteArrayInputStream;
 
 import org.springframework.stereotype.Service;
