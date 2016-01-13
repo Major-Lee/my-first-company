@@ -24,6 +24,7 @@ import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.qiniu.common.QiniuException;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -32,6 +33,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @RequestMapping("/console/ver")
 public class ConsoleVersionController extends BaseController {
 
+	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	@Resource
 	private IVapRpcService vapRpcService;
 	@Resource
@@ -160,28 +162,25 @@ public class ConsoleVersionController extends BaseController {
 
 	}
 
-	private ExecutorService exec = Executors.newFixedThreadPool(5);
+	
 	// 异步的上传至阿里云、七牛云
 	private void uploadYun(final byte[] bs,final String fileName) {
 		
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
-				
-				try {
-					//七牛云
-					System.out.println("已进入线程:"+fileName);
-					yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
-					
-					System.out.println("阿里云上传完毕，开始七牛云上传");
-					//阿里云
-//					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-//					System.out.println("七牛云上传完毕");
-				} catch (Exception e) {
-					System.out.println("我在线程中出错了");
-					e.printStackTrace();
-				}
-
+					try {
+						//七牛云
+						System.out.println("已进入线程:"+fileName);
+						yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
+						System.out.println("阿里云上传完毕，开始七牛云上传");
+						//阿里云
+//						yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
+//						System.out.println("七牛云上传完毕");
+					} catch (QiniuException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 		}));
 	}
