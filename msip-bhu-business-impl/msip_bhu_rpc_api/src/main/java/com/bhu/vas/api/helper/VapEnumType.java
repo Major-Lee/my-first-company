@@ -121,6 +121,14 @@ public class VapEnumType {
 		MicroStation_5_306("TS_H306","AP306",DUT_soc,"MicroStation 5 H306","MicroStation 5","5GHz室外单频AP","16M Flash、64M内存、9344芯片"),
 		uRouterTS_106("TS_H106",	 "AP106",DUT_soc,"uRouter","uRouter","商用","---"),
 		uRouterPlusTS_112("TS_H112","AP112",DUT_soc,"uRouter Plus","uRouter","商用","64M内存、TF卡版本、9341芯片"),
+		
+		BXO2000n2SLite_104("TC_H104","AP104",DUT_CWifi,"BXO2000n(2S-Lite) H104","BXO2000n(2S-Lite)","",""),
+		BXO2000n2SLiteU_108("TC_H108","AP108",DUT_CWifi,"BXO2000n(2S-Lite-U) H108","BXO2000n(2S-Lite-U)","",""),
+		BXO2000n2SLite_109("TC_H109","AP109",DUT_CWifi,"BXO2000n(2S-Lite) H109","BXO2000n(2S-Lite)","",""),
+		BXI2050n2_201("TC_H201","AP201",DUT_CWifi,"BXI2050n(2) H201","BXI2050n(2)","",""),
+		BXI2050n2v2_112("TC_H303","AP303",DUT_CWifi,"BXI2050n(2) v2 H303","BXI2050n(2) v2","",""),
+		
+		//H104, H108, H109,H201, H110, H303
 		;
 		//key index,value DeviceUnitType
 		static Map<String, DeviceUnitType> allDeviceUnitHDTypes;
