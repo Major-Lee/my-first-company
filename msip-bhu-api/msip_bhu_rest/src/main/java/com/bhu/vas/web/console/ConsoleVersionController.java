@@ -1,6 +1,8 @@
 package com.bhu.vas.web.console;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.qiniu.common.QiniuException;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -29,9 +32,11 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @RequestMapping("/console/ver")
 public class ConsoleVersionController extends BaseController {
 
-
+	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	@Resource
 	private IVapRpcService vapRpcService;
+	@Resource
+	private YunUploadService yunUploadService;
 
 	/**
 	 * 获取设备定义的类型
@@ -118,12 +123,14 @@ public class ConsoleVersionController extends BaseController {
 
 	/**
 	 * 增加固件版本或者增值组件版本信息
+	 * 
 	 * @param request
 	 * @param response
-	 * @param file
 	 * @param uid
 	 * @param dut
 	 * @param fw
+	 * @param versionid
+	 * @param upgrade_url
 	 */
 	@ResponseBody()
 	@RequestMapping(value = "/adddv", method = { RequestMethod.POST })
@@ -138,14 +145,46 @@ public class ConsoleVersionController extends BaseController {
 		byte[] bs = new byte[1000];
 		bs = file.getBytes();
 		String fileName = file.getOriginalFilename();
-		
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,bs,fileName);
+		System.out.println("我准备上传了。");
+		uploadYun(bs,fileName);
+		System.out.println("上传结束。");
 
+		String QNurl = yunUploadService.QN_BUCKET_URL+yunUploadService.QN_REMATE_NAME+fileName;
+		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+fileName;
+		
+		System.out.println("QUurl:"+QNurl+",ALurl:"+ALurl);
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,QNurl,ALurl);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 
+	}
+
+	
+	// 异步的上传至阿里云、七牛云
+	private void uploadYun(final byte[] bs,final String fileName) {
+		
+		exec.submit((new Runnable() {
+			@Override
+			public void run() {
+					try {
+						//七牛云
+						System.out.println("已进入线程:"+fileName);
+						yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
+						System.out.println("阿里云上传完毕，开始七牛云上传");
+						//阿里云
+						yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
+						System.out.println("七牛云上传完毕");
+					} catch (QiniuException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		}));
 	}
 
 	@ResponseBody()
