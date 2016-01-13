@@ -71,9 +71,9 @@ public class VapRpcService  implements IVapRpcService{
 
 	@Override
 	public RpcResponseDTO<VersionVTO> addDeviceVersion(int uid, String dut,
-			boolean fw, String versionid,byte[] bs,String fileName) {
-		logger.info(String.format("addDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s] upgrade_url[%s]",uid,dut,fw,versionid));
-		return deviceUnitFacadeRpcService.addDeviceVersion(uid, dut, fw, versionid,bs,fileName);
+			boolean fw, String versionid, String upgrade_url,String upgrade_slaver_urls) {
+		logger.info(String.format("addDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s] upgrade_url[%s]",uid,dut,fw,versionid,upgrade_url));
+		return deviceUnitFacadeRpcService.addDeviceVersion(uid, dut, fw, versionid, upgrade_url,upgrade_slaver_urls);
 	}
 
 	@Override

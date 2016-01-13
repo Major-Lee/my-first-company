@@ -2,8 +2,6 @@ package com.bhu.vas.business.ds.device.facade;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
@@ -34,7 +32,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionFWService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceVersionOMService;
-import com.qiniu.common.QiniuException;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
@@ -69,11 +66,6 @@ public class WifiDeviceGrayFacadeService {
     
     @Resource
     private WifiDeviceVersionOMService wifiDeviceVersionOMService;
-
-	@Resource
-	private YunUploadService yunUploadService;
-	
-	private ExecutorService exec = Executors.newFixedThreadPool(5);
 
     /**
      * 返回设备型号列表 root，root里面带有childen
@@ -288,18 +280,9 @@ public class WifiDeviceGrayFacadeService {
      * @param versionid
      * @param upgrade_url
      */
-    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid,byte[] bs,String fileName){
-    	
-    	System.out.println("开始上传");
-		uploadYun(bs,fileName);
-		System.out.println("上传完成");
-		String QNurl = yunUploadService.QN_BUCKET_URL+yunUploadService.QN_REMATE_NAME+fileName;
-		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+fileName;
-		
-		System.out.println(QNurl+":"+ALurl);
-		
+    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls){
     	validateDut(dut);
-    	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(QNurl) || StringUtils.isEmpty(ALurl)) 
+    	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(upgrade_url)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
     	this.validateVersionFormat(versionid, fw);
     	if(fw){
@@ -311,8 +294,8 @@ public class WifiDeviceGrayFacadeService {
     		versionfw.setId(versionid);
     		versionfw.setName(versionid);
     		versionfw.setDut(dut.getIndex());
-    		versionfw.setUpgrade_url(QNurl);
-    		versionfw.setUpgrade_slaver_urls(ALurl);
+    		versionfw.setUpgrade_url(upgrade_url);
+    		versionfw.setUpgrade_slaver_urls(upgrade_slaver_urls);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
     		return versionfw.toVersionVTO();
     	}else{
@@ -324,35 +307,14 @@ public class WifiDeviceGrayFacadeService {
     		versionom.setId(versionid);
     		versionom.setName(versionid);
     		versionom.setDut(dut.getIndex());
-    		versionom.setUpgrade_url(QNurl);
-    		versionom.setUpgrade_slaver_urls(ALurl);
+    		versionom.setUpgrade_url(upgrade_url);
+    		versionom.setUpgrade_slaver_urls(upgrade_slaver_urls);
     		versionom = wifiDeviceVersionOMService.insert(versionom);
     		return versionom.toVersionVTO();
     	}
     }
-	// 异步的上传至阿里云、七牛云
-	private void uploadYun(final byte[] bs,final String fileName) {
-		
-		exec.submit((new Runnable() {
-			@Override
-			public void run() {
-					try {
-						//七牛云
-						yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
-						//阿里云
-						yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-					} catch (QiniuException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			}
-		}));
-	}
     
-	/**
+    /**
      * 删除指定设备类型的固件或增值组件版本
      * @param dut
      * @param fw
