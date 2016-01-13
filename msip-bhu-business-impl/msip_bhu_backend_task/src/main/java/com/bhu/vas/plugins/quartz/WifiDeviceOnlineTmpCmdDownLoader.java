@@ -57,7 +57,7 @@ public class WifiDeviceOnlineTmpCmdDownLoader {
 				for(String mac:next){
 					//logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),payloads));
 					//downCmds.add(DownCmds.builderDownCmds(mac, CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop)));
-					String cmd = CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop);
+					String cmd = CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstop_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop);
 					boolean ret = daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 					Thread.sleep(50);
 					//System.out.println(ret+"  "+ cmd);

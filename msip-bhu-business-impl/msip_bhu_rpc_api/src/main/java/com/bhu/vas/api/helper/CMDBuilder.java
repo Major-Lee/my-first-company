@@ -537,11 +537,24 @@ public class CMDBuilder {
 	
 	//用于特殊渠道后台指定定时任务给商业wifi发送查询在线终端指令
 	//public static TaskSequenceFragment auto_special_query_commercial_terminals_taskid_fragment = new TaskSequenceFragment(1,10000);
-	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(1,999999);
+	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(1,899999);
+	
+	public static TaskSequenceFragment auto_taskid_vapstart_fragment = new TaskSequenceFragment(900000,950000);
+	public static TaskSequenceFragment auto_taskid_vapstop_fragment = new TaskSequenceFragment(950001,999999);
+	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(1000000,Integer.MAX_VALUE);
+	
 	public static boolean wasAutoTaskid(long taskid){
 		return !normal_taskid_fragment.wasInFragment(taskid);
+	}
+	
+	public static boolean wasAutoVapStartTaskid(long taskid){
+		return auto_taskid_vapstart_fragment.wasInFragment(taskid);
+	}
+	
+	public static boolean wasAutoVapStopTaskid(long taskid){
+		return auto_taskid_vapstop_fragment.wasInFragment(taskid);
 	}
 	
 	public static boolean wasNormalTaskid(long taskid){
