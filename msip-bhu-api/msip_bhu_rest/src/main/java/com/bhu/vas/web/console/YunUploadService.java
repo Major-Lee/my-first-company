@@ -26,8 +26,8 @@ public class YunUploadService {
 	static final String QN_bucket_name = "test";
 
 	// 阿里云参数
-	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
 	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
+	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
 	static final String AL_REMATE_NAME = "test/";
 	static final String AL_BUCKET_NAME = "bhudemo";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
@@ -65,9 +65,11 @@ public class YunUploadService {
 		try {
 			System.out.println("阿里云upload:begin");
 			ByteArrayInputStream in = new ByteArrayInputStream(bs);
-
+			System.out.println("1111111111111");
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
+			System.out.println("2222222222222222");
 			String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/");
+			System.out.println("33333333333333333");
 			// 创建上传Object的Metadata
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			// 上传文件
