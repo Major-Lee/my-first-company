@@ -175,9 +175,12 @@ public class ConsoleVersionController extends BaseController {
 						yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
 						System.out.println("阿里云上传完毕，开始七牛云上传");
 						//阿里云
-//						yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-//						System.out.println("七牛云上传完毕");
+						yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
+						System.out.println("七牛云上传完毕");
 					} catch (QiniuException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
