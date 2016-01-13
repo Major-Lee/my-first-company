@@ -144,7 +144,7 @@ public class UserUnitFacadeService {
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 		}
-		deliverMessageService.sendUserSignedonActionMessage(user.getId(), regIp, device);
+		deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,regIp);
 		
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
