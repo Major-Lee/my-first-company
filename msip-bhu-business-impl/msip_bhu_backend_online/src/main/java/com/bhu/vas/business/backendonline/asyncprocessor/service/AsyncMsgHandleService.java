@@ -1436,8 +1436,8 @@ public class AsyncMsgHandleService {
 		
 		//WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(dto.getMac());
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
-		
-		userSettingStateService.deleteById(dto.getMac());
+		//用户解绑设备后其开启的插件不需要清除 20160113 by EdmondLee
+		//userSettingStateService.deleteById(dto.getMac());
 
 		/*//如果没有绑定其他设备，删除别名
 		int count = userDeviceService.countBindDevices(dto.getUid());
