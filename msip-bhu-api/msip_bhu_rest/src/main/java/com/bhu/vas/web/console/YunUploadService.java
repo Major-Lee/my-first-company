@@ -28,7 +28,7 @@ public class YunUploadService  {
 	// 阿里云参数
 	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
 	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
-	static final String AL_REMATE_NAME = "test";
+	static final String AL_REMATE_NAME = "test/";
 	static final String AL_BUCKET_NAME = "bhudemo";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
 	/**
@@ -45,7 +45,7 @@ public class YunUploadService  {
 		Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 		UploadManager uploadManager = new UploadManager();
 		try {
-			System.out.println("正在上传：");
+			System.out.println("正在上传至七牛云：");
 			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
 		} catch (QiniuException e) {
 			Response r = e.response;
@@ -75,6 +75,7 @@ public class YunUploadService  {
 		// 创建上传Object的Metadata
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		// 上传文件
+		System.out.println("正在上传至阿里云:");
 		ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
 	}
 }

@@ -141,9 +141,11 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) String dut,
 			@RequestParam(required = true) boolean fw) {
 		
+		byte[] bs = new byte[1000];
+		bs = file.getBytes();
 		String fileName = file.getOriginalFilename();
 		System.out.println("我准备上传了。");
-		uploadYun(file.getBytes(),fileName);
+		uploadYun(bs,fileName);
 		System.out.println("上传结束。");
 
 		String QNurl = yunUploadService.QN_BUCKET_URL+yunUploadService.QN_REMATE_NAME+fileName;
@@ -168,12 +170,13 @@ public class ConsoleVersionController extends BaseController {
 			public void run() {
 				
 				try {
-					//阿里云
-					System.out.println("已进入线程");
-					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-					System.out.println("阿里云上传完毕，开始七牛云上传");
-					// 七牛云
+					//七牛云
+					System.out.println("已进入线程:"+fileName);
 					yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
+					
+					System.out.println("阿里云上传完毕，开始七牛云上传");
+					//阿里云
+					yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
 					System.out.println("七牛云上传完毕");
 				} catch (Exception e) {
 					System.out.println("我在线程中出错了");
