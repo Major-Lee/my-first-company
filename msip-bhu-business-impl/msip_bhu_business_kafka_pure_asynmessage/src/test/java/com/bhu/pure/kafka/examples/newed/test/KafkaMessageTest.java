@@ -188,8 +188,8 @@ public class KafkaMessageTest {
 	
 	public static void TestStringKafkaMessage() throws Exception{
 		//consumer
-		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
-		consumer.doSubscribeTopics(Collections.singletonList(TOPIC1), new PollIteratorNotify<ConsumerRecords<String, String>>(){
+//		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
+		StringKafkaMessageConsumer.getInstance().doSubscribeTopics(Collections.singletonList(TOPIC1), new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
 			public void notifyComming(ConsumerRecords<String, String> records) {
 				for(ConsumerRecord<String, String> record : records){
@@ -205,7 +205,7 @@ public class KafkaMessageTest {
 		
 		Thread.sleep(2000l);
 		//producer
-		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+//		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
 		while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
@@ -214,7 +214,7 @@ public class KafkaMessageTest {
 				System.out.println("successed");
 			}*/
 			
-			RecordMetadata ret = producer.send(TOPIC1, null, String.valueOf(key), "msg"+key);
+			RecordMetadata ret = StringKafkaMessageProducer.getInstance().send(TOPIC1, null, String.valueOf(key), "msg"+key);
 			Thread.sleep(2000l);
 			key++;
 		}
