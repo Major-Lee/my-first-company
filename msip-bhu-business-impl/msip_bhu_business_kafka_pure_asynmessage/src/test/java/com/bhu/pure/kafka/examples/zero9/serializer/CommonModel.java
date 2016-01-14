@@ -1,6 +1,5 @@
 package com.bhu.pure.kafka.examples.zero9.serializer;
 
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class CommonModel {
 	private String p;
@@ -20,11 +19,12 @@ public class CommonModel {
 	}
 	public static CommonModel invoke(Object object){
 		CommonModel model = new CommonModel();
-		model.setP(JsonHelper.getJSONString(object));
+		//model.setP(JsonHelper.getJSONString(object));
 		return model;
 	}
 	
 	public <T> T fetch(Class<T> classz){
-		return JsonHelper.getDTO(getP(), classz);
+		//return JsonHelper.getDTO(getP(), classz);
+		return null;
 	}
 }
