@@ -1,6 +1,5 @@
 package com.bhu.vas.web.console;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -170,11 +169,10 @@ public class ConsoleVersionController extends BaseController {
 						yunOperateService.uploadFile(bs, yunOperateService.QN_REMATE_NAME+fileName, yunOperateService.QN_bucket_name);
 						//阿里云
 						yunOperateService.uploadFile(bs,yunOperateService.AL_REMATE_NAME+fileName);
+						System.out.println("删除成功。");
 					} catch (QiniuException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 			}
