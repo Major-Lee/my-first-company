@@ -1,7 +1,17 @@
 package com.bhu.pure.kafka.examples.newed.client.producer;
 
-import com.bhu.pure.kafka.examples.newed.client.producer.KafkaMessageProducer;
 
 public class StringKafkaMessageProducer extends KafkaMessageProducer<String, String>{
+	
+	private static class ServiceHolder{ 
+		private static StringKafkaMessageProducer instance =new StringKafkaMessageProducer(); 
+	}
 
+	public static StringKafkaMessageProducer getInstance() { 
+		return ServiceHolder.instance; 
+	}
+	
+	private StringKafkaMessageProducer(){
+		
+	}
 }
