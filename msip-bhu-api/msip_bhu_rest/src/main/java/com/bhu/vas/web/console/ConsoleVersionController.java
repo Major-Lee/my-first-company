@@ -37,7 +37,7 @@ public class ConsoleVersionController extends BaseController {
 	@Resource
 	private IVapRpcService vapRpcService;
 	@Resource
-	private YunUploadService yunUploadService;
+	private YunOperateService yunOperateService;
 
 	/**
 	 * 获取设备定义的类型
@@ -146,14 +146,10 @@ public class ConsoleVersionController extends BaseController {
 		byte[] bs = new byte[1000];
 		bs = file.getBytes();
 		String fileName = file.getOriginalFilename();
-		System.out.println("我准备上传了。");
 		uploadYun(bs,fileName);
-		System.out.println("上传结束。");
-
-		String QNurl = yunUploadService.QN_BUCKET_URL+yunUploadService.QN_REMATE_NAME+fileName;
-		String ALurl = yunUploadService.AL_BUCKET_NAME+"."+yunUploadService.AL_END_POINT+"/"+yunUploadService.AL_REMATE_NAME+fileName;
+		String QNurl = yunOperateService.QN_BUCKET_URL+yunOperateService.QN_REMATE_NAME+fileName;
+		String ALurl = yunOperateService.AL_BUCKET_NAME+"."+yunOperateService.AL_END_POINT+"/"+yunOperateService.AL_REMATE_NAME+fileName;
 		
-		System.out.println("QUurl:"+QNurl+",ALurl:"+ALurl);
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,QNurl,ALurl);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -171,12 +167,9 @@ public class ConsoleVersionController extends BaseController {
 			public void run() {
 					try {
 						//七牛云
-						System.out.println("已进入线程:"+fileName);
-						yunUploadService.uploadFile(bs, yunUploadService.QN_REMATE_NAME+fileName, yunUploadService.QN_bucket_name);
-						System.out.println("阿里云上传完毕，开始七牛云上传");
+						yunOperateService.uploadFile(bs, yunOperateService.QN_REMATE_NAME+fileName, yunOperateService.QN_bucket_name);
 						//阿里云
-						yunUploadService.uploadFile(bs,yunUploadService.AL_REMATE_NAME+fileName);
-						System.out.println("七牛云上传完毕");
+						yunOperateService.uploadFile(bs,yunOperateService.AL_REMATE_NAME+fileName);
 					} catch (QiniuException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -187,13 +180,29 @@ public class ConsoleVersionController extends BaseController {
 			}
 		}));
 	}
-
+	/**
+	 * 删除固件版本或者增值组件版本信息
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param dut
+	 * @param fw
+	 * @param fileName
+	 */
 	@ResponseBody()
 	@RequestMapping(value = "/removedv", method = { RequestMethod.POST })
-	public void removedv(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(required = true) int uid, @RequestParam(required = true) String dut,
-			@RequestParam(required = true) boolean fw, @RequestParam(required = true) String versionid) {
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, versionid);
+	public void removedv(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(required = true) int uid, 
+			@RequestParam(required = true) String dut,
+			@RequestParam(required = true) boolean fw, 
+			@RequestParam(required = true) String fileName) {
+		
+		System.out.println("deleteFile:begin");
+		yunOperateService.deleteFile(fileName);
+		System.out.println("deleteFile:finish");
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, fileName);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

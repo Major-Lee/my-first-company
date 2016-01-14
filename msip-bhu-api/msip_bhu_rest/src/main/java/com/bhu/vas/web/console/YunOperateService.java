@@ -12,11 +12,12 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
 @Service
-public class YunUploadService {
+public class YunOperateService {
 
 	// 七牛云参数
 	static final String QN_ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
@@ -40,17 +41,19 @@ public class YunUploadService {
 	 *            上传到七牛云之后的文件名称
 	 * @param bucketName
 	 *            库名字
-	 * @throws QiniuException 
+	 * @throws QiniuException
 	 */
-	public void uploadFile(byte[] bs, String remoteName, String bucketName) throws QiniuException  {
+	public void uploadFile(byte[] bs, String remoteName, String bucketName) throws QiniuException {
+		try {
 
-			System.out.println("正在上传至七牛云：begin");
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
-			System.out.println("正在上传至七牛云：creat auth" + QN_ACCESS_KEY + ":" + QN_SECRET_KEY + ":" + auth);
 			UploadManager uploadManager = new UploadManager();
-			System.out.println("正在上传至七牛云：");
 			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
-			System.out.println("res===" + res.toString());
+			
+		} catch (Exception e) {
+			System.out.println("七牛yun上传错误");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -63,21 +66,49 @@ public class YunUploadService {
 	 */
 	public void uploadFile(byte[] bs, String remotePath) throws Exception {
 		try {
-			System.out.println("阿里云upload:begin");
 			ByteArrayInputStream in = new ByteArrayInputStream(bs);
-			System.out.println("1111111111111");
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
-			System.out.println("2222222222222222");
 			String remoteFilePath = remotePath.substring(0, remotePath.length()).replaceAll("\\\\", "/");
-			System.out.println("33333333333333333");
 			// 创建上传Object的Metadata
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			// 上传文件
-			System.out.println("正在上传至阿里云:");
 			ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("阿里云出错了");
+			System.out.println("阿里云上传出错了");
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 阿里云删除文件
+	 * 
+	 * @param ossConfigure
+	 * @param filePath
+	 *            文件夹+文件名
+	 * @return
+	 */
+	public static void deleteFile(String fileName) {
+		try {
+			System.out.println("阿里,即将删除:" + fileName);
+			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
+			System.out.println("阿里,开始删除:");
+			ossClient.deleteObject(AL_BUCKET_NAME, AL_REMATE_NAME + fileName);
+
+			System.out.println("阿里,删除成功。开始删除七牛云");
+
+			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
+			System.out.println("七牛云开始删除:");
+			BucketManager bucketManager = new BucketManager(auth);
+			System.out.println("七牛云正在删除：");
+			bucketManager.delete(QN_bucket_name, QN_REMATE_NAME+fileName);
+			System.out.println("七牛yun删除成功。");
+		} catch (QiniuException e) {
+			System.out.println("七牛云删除失败。");
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("删除失败。");
+			e.printStackTrace();
 		}
 	}
 }
