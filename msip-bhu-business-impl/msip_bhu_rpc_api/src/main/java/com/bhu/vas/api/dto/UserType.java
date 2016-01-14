@@ -11,9 +11,9 @@ public enum UserType {
 	AgentSellor(30,"S","销售用户"),
 	
 	//商业 wifi 小型运营商客户
-	BusinessNormal(40,"B","商业 wifi 小型运营商客户"),
+	BusinessNormal(40,"BN","商业 wifi 小型运营商客户"),
 	//自运营的商户
-	BusinessSelfor(41,"E","自运营的商户"),
+	BusinessSelfor(41,"BS","自运营的商户"),
 	;
 	//private String index;
 	private int index;
