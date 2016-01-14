@@ -25,11 +25,11 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 
 import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
+import com.bhu.pure.kafka.examples.newed.client.consumer.callback.PollIteratorNotify;
 import com.bhu.pure.kafka.examples.newed.subscribe.Subscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicPatternSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicRebalanceSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageConsumer<KEY, VALUE>{
 	
@@ -81,7 +81,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageC
 	}*/
 
 	@Override
-	public boolean doSubscribe(Subscriber subscriber, final IteratorNotify<ConsumerRecords<KEY, VALUE>> notify) {
+	public boolean doSubscribe(Subscriber subscriber, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify) {
 		if(subscriber == null || notify == null) return false;
 		
 		if(subscriber instanceof TopicPatternSubscriber){
@@ -105,7 +105,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageC
 	}
 	
 	@Override
-	public boolean doAssgin(Assigner assigner, final IteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+	public boolean doAssgin(Assigner assigner, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
 		if(assigner == null) return false;
 		
 		List<TopicPartition> topicPartitions = assigner.getTopicPartitions();
@@ -118,7 +118,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageC
 		return true;
 	}
 	
-	protected void poll(final IteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+	protected void poll(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
 		Executors.newSingleThreadExecutor().submit((new Runnable() {
 			@Override
 			public void run() {
