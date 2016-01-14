@@ -17,18 +17,24 @@ public class UserRpcService implements IUserRpcService{
 	private final Logger logger = LoggerFactory.getLogger(UserRpcService.class);
 	@Resource
 	private UserUnitFacadeService userUnitFacadeService;
-	/*@Override
-	public RpcResponseDTO<UserDTO> createNewUser(int countrycode, String acc,
+	@Override
+	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
 			String nick, String sex, String device,String regIp,String deviceuuid, String captcha) {
 		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] nick[%s] sex[%s] device[%s] captcha[%s]",
 				countrycode,acc,nick,sex,device,captcha));
 		return userUnitFacadeService.createNewUser(countrycode, acc, nick, sex, device,regIp, deviceuuid, captcha);
-	}*/
+	}
 	
 	@Override
 	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc){
 		logger.info(String.format("checkAcc with countrycode[%s] acc[%s]",countrycode,acc));
 		return userUnitFacadeService.checkAcc(countrycode, acc);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> checkNick(String nick){
+		logger.info(String.format("checkNick with nick[%s]",nick));
+		return userUnitFacadeService.checkNick(nick);
 	}
 
 	@Override
@@ -55,7 +61,6 @@ public class UserRpcService implements IUserRpcService{
 
 	@Override
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
-		// TODO Auto-generated method stub
 		return userUnitFacadeService.tokenValidate(uidParam, token);
 	}
 	

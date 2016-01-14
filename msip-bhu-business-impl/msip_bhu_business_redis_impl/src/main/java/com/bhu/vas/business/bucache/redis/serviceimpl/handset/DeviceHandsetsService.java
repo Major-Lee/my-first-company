@@ -12,8 +12,8 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
- * 设备所有接入终端存储
- * key dmac field hmac value 最后一次登录或登出时间ts
+ * 设备所有接入终端存储 用于标记此终端是否再此设备中接入过
+ * key dmac field hmac value 最后一次登录或登出时间ts，此时间用于进行数据清除
  * @author Edmond Lee
  *
  */

@@ -46,7 +46,7 @@ public class LoginSessionController extends BaseController{
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.POST})
-	public void login(
+	public void create(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,

@@ -29,6 +29,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
  *
  */
 //@Service
+@Deprecated
 public class WifiHandsetDeviceRelationMService {
 	
 	@Resource

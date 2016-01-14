@@ -73,13 +73,36 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
 	}
+	
+	/**
+	 * 检查nick是否注册过
+	 * @param nick
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> checkNick(String nick){
+		if(UniqueFacadeService.checkNickExist(nick)){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST,Boolean.FALSE);
+		}else{
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}
+	}
 			
-/*	public RpcResponseDTO<UserDTO> createNewUser(int countrycode, String acc,
+	/**
+	 * 用户注册接口
+	 * @param countrycode
+	 * @param acc
+	 * @param nick
+	 * @param sex
+	 * @param device
+	 * @param regIp
+	 * @param deviceuuid
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
 			String nick, String sex, String device,String regIp,String deviceuuid, String captcha) {
-		
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
-			//return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
 		
 		if(!RuntimeConfiguration.SecretInnerTest){
@@ -91,12 +114,21 @@ public class UserUnitFacadeService {
 				}
 			}
 		}
+		UserTokenDTO uToken = null;
 		User user = new User();
 		user.setCountrycode(countrycode);
 		user.setMobileno(acc);
 		//user.addSafety(SafetyBitMarkHelper.mobileno);
 		//user.setPlainpwd(RuntimeConfiguration.Default_Whisper_Pwd);
 		user.setNick(nick);
+		if(StringUtils.isNotEmpty(nick)){
+			//判定nick是否已经存在
+			if(UniqueFacadeService.checkNickExist(nick)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+			}else{
+				user.setNick(nick);
+			}
+		}
 		user.setSex(sex);
 		user.setLastlogindevice_uuid(deviceuuid);
 		user.setRegip(regIp);
@@ -105,28 +137,22 @@ public class UserUnitFacadeService {
 		//标记用户最后登录设备，缺省为DeviceEnum.PC
 		user.setLastlogindevice(device);
 		user = this.userService.insert(user);
-		UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
-		
+		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		// token validate code
-		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+		uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 		{//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 		}
-		deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
-		UserDTO payload = new UserDTO();
-		payload.setId(user.getId());
-		payload.setCountrycode(countrycode);
-		payload.setMobileno(acc);
-		payload.setNick(nick);
-		payload.setAtoken(uToken.getAccess_token());
-		payload.setRtoken(uToken.getRefresh_token());
-		payload.setReg(true);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
-	}
-	*/
-	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
+		deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,regIp);
 		
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user,
+				uToken, true,fetchBindDevices(user.getId()));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
+	
+	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
 		//step 2.生产环境下的手机号验证码验证
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
 		if(uid == null || uid.intValue() == 0){
@@ -140,8 +166,6 @@ public class UserUnitFacadeService {
 		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
 		}
-		
-		
 		if(StringUtils.isEmpty(user.getRegip())){
 			user.setRegip(remoteIp);
 		}
@@ -216,7 +240,7 @@ public class UserUnitFacadeService {
 	}
 	
 	/**
-	 * 登录或注册接口
+	 * uRouter APP 登录或注册接口
 	 * @param countrycode
 	 * @param acc
 	 * @param device
@@ -303,7 +327,7 @@ public class UserUnitFacadeService {
 	/**
 	 * 更新用户信息接口
 	 * @param countrycode
-	 * @param acc
+	 * @param nick 需要进行唯一性验证
 	 * @param device
 	 * @param remoteIp
 	 * @param captcha
@@ -315,10 +339,6 @@ public class UserUnitFacadeService {
 		if(user == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
-		if(StringUtils.isNotEmpty(nick)){
-			user.setNick(nick);
-		}
-		
 		if(StringUtils.isNotEmpty(avatar)){
 			user.setAvatar(avatar);
 		}
@@ -327,8 +347,24 @@ public class UserUnitFacadeService {
 		}
 		if(StringUtils.isNotEmpty(birthday)){
 			user.setBirthday(birthday);
+		}		
+		boolean isNickUpdated = false;
+		String oldNick = user.getNick();
+		if(StringUtils.isNotEmpty(nick)){
+			if(!nick.equals(oldNick)){
+				//判定nick是否已经存在
+				if(UniqueFacadeService.checkNickExist(nick)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+				}else{
+					user.setNick(nick);
+					isNickUpdated = true;
+				}
+			}
 		}
 		this.userService.update(user);
+		if(isNickUpdated){
+			UniqueFacadeService.uniqueNickChanged(user.getId(), nick,oldNick);
+		}
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
 				null, false,null);
