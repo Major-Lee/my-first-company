@@ -23,63 +23,106 @@ import java.util.concurrent.Executors;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
+import com.bhu.pure.kafka.examples.newed.client.KafkaMessageClient;
 import com.bhu.pure.kafka.examples.newed.client.consumer.callback.PollIteratorNotify;
 import com.bhu.pure.kafka.examples.newed.subscribe.Subscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicPatternSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicRebalanceSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
 
-public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageConsumer<KEY, VALUE>{
+public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClient implements IKafkaMessageConsumer<KEY, VALUE>{
+	private static final Logger logger = LoggerFactory.getLogger(KafkaMessageConsumer.class);
 	
 	private KafkaConsumer<KEY, VALUE> consumer;
-
+	//private List<TopicPartition> topicPartitions;
+	
 	public KafkaMessageConsumer(){
 		initialize();
 	}
 	
-	public void initialize(){
-		System.out.println("start consumer initialize");
-		Properties consumerProperties = getClientProperties();
-		if(consumerProperties == null){
+	private void initialize(){
+		logger.info("start consumer initialize");
+		
+		Properties clientProperties = loadProperties();
+		if(clientProperties == null){
 			throw new RuntimeException("KafkaMessageConsumer initialize failed require properties object");
 		}
-		consumer = new KafkaConsumer<KEY, VALUE>(consumerProperties);
+		consumer = new KafkaConsumer<KEY, VALUE>(clientProperties);
+		
+		//parseConsumerClientConfig(clientProperties);
 	}
-/*	public KafkaMessageConsumer(String topic) {
-		Properties props = new Properties();
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
-		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
-		props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
-//		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-//				"org.apache.kafka.common.serialization.IntegerDeserializer");
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
-//		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-//				"org.apache.kafka.common.serialization.StringDeserializer");
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());		
-
-		consumer = new KafkaConsumer<>(props);
-	}*/
-
-/*	@Override
-	public void doWork() {
-		consumer.subscribe(pattern, listener);.subscribe(Collections.singletonList(this.topic));
-		ConsumerRecords<Integer, String> records = consumer.poll(1000);
-		for (ConsumerRecord<Integer, String> record : records) {
-			System.out
-					.println(String
-							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
-									record.topic(), record.partition(),
-									record.key(), record.value(),
-									record.offset()));
-			System.out.println("Received message: (" + record.key() + ", "
-					+ record.value() + ") at offset " + record.offset());
+	
+/*	private void parseConsumerClientConfig(Properties clientProperties){
+		try{
+			String consumer_topics = clientProperties.getProperty(ClientConfig.CONSUMER_TOPIC);
+			if(StringUtils.isNotEmpty(consumer_topics)){
+				String[] consumer_topics_array = consumer_topics.split(StringHelper.COMMA_STRING_GAP);
+				int topics_length = consumer_topics_array.length;
+				if(topics_length > 0){
+					topicPartitions = new ArrayList<TopicPartition>();
+					for(String consumer_topic : consumer_topics_array){
+						String[] consumer_topic_array = consumer_topic.split(StringHelper.AT_STRING_GAP);
+						int topic_length = consumer_topic_array.length;
+						String topic = null;
+						String partitions_text = null;
+						if(topic_length > 0){
+							List<Integer> partitions = new ArrayList<Integer>();
+							topic = consumer_topic_array[0];
+							//如果只配置topic而没有指名具体的分区, 则表示消费该topic的所有分区
+							if(topic_length == 1){
+								List<PartitionInfo> partitionInfos = consumer.partitionsFor(topic);
+								int num_partitions = partitionInfos.size();
+								for(int i = 0;i<num_partitions;i++){
+									partitions.add(i);
+								}
+							}
+							//如果只配置topic并且指名具体的分区, 则表示消费该topic的指定分区
+							else if(topic_length == 2){
+								partitions_text = consumer_topic_array[1];
+								if(StringUtils.isNotEmpty(partitions_text)){
+									String[] partitions_text_array = partitions_text.split(StringHelper.POINT_STRING_GAP);
+									int length = partitions_text_array.length;
+									if(length > 0){
+										for(String partition_text : partitions_text_array){
+											partitions.add(Integer.parseInt(partition_text));
+										}
+									}
+								}
+							}
+							
+							if(!partitions.isEmpty()){
+								for(Integer partition : partitions){
+									topicPartitions.add(new TopicPartition(topic, partition));
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			printTopicPartitionsLog();
+		}catch(Exception ex){
+			throw new RuntimeException("KafkaMessageProducer parseClientConfig failed", ex);
+		}
+	}
+	
+	private void printTopicPartitionsLog(){
+		if(topicPartitions != null && !topicPartitions.isEmpty()){
+			for(TopicPartition topic_partition : topicPartitions){
+				logger.info(String.format("ParseConsumerClientConfig specify topicPartition [%s %s]", 
+						topic_partition.topic(), topic_partition.partition()));
+			}
 		}
 	}*/
-
+	@Override
+	public boolean doSubscribeTopics(List<String> topics, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+		return doSubscribe(new TopicSubscriber(topics), notify);
+	}
+	
 	@Override
 	public boolean doSubscribe(Subscriber subscriber, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify) {
 		if(subscriber == null || notify == null) return false;

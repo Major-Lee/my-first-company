@@ -8,7 +8,9 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 
 import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
 import com.bhu.pure.kafka.examples.newed.assigner.TopicAssigner;
+import com.bhu.pure.kafka.examples.newed.client.consumer.StringKafkaMessageConsumer;
 import com.bhu.pure.kafka.examples.newed.client.consumer.callback.PollIteratorNotify;
+import com.bhu.pure.kafka.examples.newed.client.producer.StringKafkaMessageProducer;
 import com.bhu.pure.kafka.examples.newed.client.producer.callback.KeyValueProducerCallback;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
 
@@ -23,8 +25,9 @@ public class KafkaMessageTest {
 	public static void main(String[] args) throws Exception{
 //		TestConsumerSubscriber();
 //		TestConsumerAssgin();
-		TestProducerAsync();
+//		TestProducerAsync();
 //		TestDTO();
+		TestStringKafkaMessage();
 	}
 	
 	/**
@@ -182,4 +185,39 @@ public class KafkaMessageTest {
 			key++;
 		}
 	}
+	
+	public static void TestStringKafkaMessage() throws Exception{
+		//consumer
+		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
+		consumer.doSubscribeTopics(Collections.singletonList(TOPIC1), new PollIteratorNotify<ConsumerRecords<String, String>>(){
+			@Override
+			public void notifyComming(ConsumerRecords<String, String> records) {
+				for(ConsumerRecord<String, String> record : records){
+					System.out.println(String
+							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] "
+									+ "offset[%s]",
+									record.topic(), record.partition(),
+									record.key(), record.value(),
+									record.offset()));
+				}
+			}
+		});
+		
+		Thread.sleep(2000l);
+		//producer
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		int key = 0;
+		while(true){
+/*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+			RecordMetadata ret = producer.send(record);
+			if(ret != null){
+				System.out.println("successed");
+			}*/
+			
+			RecordMetadata ret = producer.send(TOPIC1, null, String.valueOf(key), "msg"+key);
+			Thread.sleep(2000l);
+			key++;
+		}
+	}
+	
 }
