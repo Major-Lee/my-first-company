@@ -78,9 +78,9 @@ public class VapRpcService  implements IVapRpcService{
 
 	@Override
 	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, String dut,
-			boolean fw, String versionid) {
-		logger.info(String.format("removeDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s]",uid,dut,fw,versionid));
-		return deviceUnitFacadeRpcService.removeDeviceVersion(uid, dut, fw, versionid);
+			boolean fw, String fileName) {
+		logger.info(String.format("removeDeviceVersion uid[%s] dut[%s] fw[%s] fileName[%s]",uid,dut,fw,fileName));
+		return deviceUnitFacadeRpcService.removeDeviceVersion(uid, dut, fw, fileName);
 	}
 	@Override
 	public RpcResponseDTO<List<String>> saveMacs2Gray(int uid, String dut, int gl,

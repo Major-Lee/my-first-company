@@ -142,9 +142,9 @@ public class DeviceUnitFacadeRpcService{
 	}
 
 	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, String dut,
-			boolean fw, String versionid) {
+			boolean fw, String fileName) {
 		try{
-			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.removeDeviceVersion(VapEnumType.DeviceUnitType.fromIndex(dut), fw, versionid);
+			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.removeDeviceVersion(VapEnumType.DeviceUnitType.fromIndex(dut), fw, fileName);
 			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
