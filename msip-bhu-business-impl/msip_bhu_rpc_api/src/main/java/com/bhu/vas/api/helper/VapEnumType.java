@@ -97,6 +97,11 @@ public class VapEnumType {
 	/**
 	 * 采用正式的设备的hdtype中的数字作为子类型的index
 	 * @author Edmond
+	 *  init sql
+	 * 	insert into t_wifi_devices_grayversions values ('TC_H104',1,0,'-','-',now(),NOW());
+		insert into t_wifi_devices_grayversions values ('TC_H104',2,0,'-','-',now(),NOW());
+		insert into t_wifi_devices_grayversions values ('TC_H104',90,0,'-','-',now(),NOW());
+		insert into t_wifi_devices_grayversions values ('TC_H104',100,0,'-','-',now(),NOW());
 	 *
 	 */
 	public enum DeviceUnitType{

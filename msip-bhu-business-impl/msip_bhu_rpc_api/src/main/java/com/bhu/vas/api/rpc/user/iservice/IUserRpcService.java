@@ -17,16 +17,27 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	/*public RpcResponseDTO<UserDTO> createNewUser(
+	public RpcResponseDTO<Map<String, Object>> createNewUser(
 			int countrycode,
 			String acc,
 			String nick,
+			String pwd,
 			String sex,
 			String device,
 			String regIp,String deviceuuid,
 			String captcha
-			);*/
+			);
 	
+	/**
+	 * 帐号密码登录 帐号可以是手机号和昵称
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 * @param remoteIp
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd, String device,String remoteIp);
 	/**
 	 * 检测token是否合法
 	 * @param countrycode
@@ -42,7 +53,7 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc);
-	
+	public RpcResponseDTO<Boolean> checkNick(String nick);
 	
 	/**
 	 * 验证码的用户登录

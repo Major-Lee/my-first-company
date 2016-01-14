@@ -16,17 +16,20 @@
  */
 package com.bhu.pure.kafka.examples.newed.client.consumer;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 
+import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
+import com.bhu.pure.kafka.examples.newed.client.consumer.callback.PollIteratorNotify;
 import com.bhu.pure.kafka.examples.newed.subscribe.Subscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicPatternSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicRebalanceSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageConsumer<KEY, VALUE>{
 	
@@ -78,7 +81,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageC
 	}*/
 
 	@Override
-	public boolean doSubscribe(Subscriber subscriber, final IteratorNotify<ConsumerRecords<KEY, VALUE>> notify) {
+	public boolean doSubscribe(Subscriber subscriber, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify) {
 		if(subscriber == null || notify == null) return false;
 		
 		if(subscriber instanceof TopicPatternSubscriber){
@@ -95,21 +98,43 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> implements IKafkaMessageC
 		}else{
 			return false;
 		}
+
+		poll(notify);
 		
+		return true;
+	}
+	
+	@Override
+	public boolean doAssgin(Assigner assigner, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+		if(assigner == null) return false;
+		
+		List<TopicPartition> topicPartitions = assigner.getTopicPartitions();
+		if(topicPartitions == null || topicPartitions.isEmpty()) return false;
+		
+		consumer.assign(topicPartitions);
+		
+		poll(notify);
+		
+		return true;
+	}
+	
+	protected void poll(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
 		Executors.newSingleThreadExecutor().submit((new Runnable() {
 			@Override
 			public void run() {
 				while(true){
 					System.out.println("start consumer poll");
-					ConsumerRecords<KEY, VALUE> records = consumer.poll(1000);
+					ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
 					notify.notifyComming(records);
 				}
 			}
 		}));
-		
-		return true;
 	}
 	
+	@Override
+	public long pollSize() {
+		return DEFAULT_POLLSIZE;
+	}
 //	public abstract Subscriber getSubscriber();
 	
 }

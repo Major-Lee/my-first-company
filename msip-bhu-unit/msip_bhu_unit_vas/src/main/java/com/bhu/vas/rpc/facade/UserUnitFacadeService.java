@@ -73,61 +73,21 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
 	}
-			
-/*	public RpcResponseDTO<UserDTO> createNewUser(int countrycode, String acc,
-			String nick, String sex, String device,String regIp,String deviceuuid, String captcha) {
-		
-		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
-			//return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
+	
+	/**
+	 * 检查nick是否注册过
+	 * @param nick
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> checkNick(String nick){
+		if(UniqueFacadeService.checkNickExist(nick)){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST,Boolean.FALSE);
+		}else{
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}
-		
-		if(!RuntimeConfiguration.SecretInnerTest){
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
-				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
-				if(errorCode != null){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
-				}
-			}
-		}
-		User user = new User();
-		user.setCountrycode(countrycode);
-		user.setMobileno(acc);
-		//user.addSafety(SafetyBitMarkHelper.mobileno);
-		//user.setPlainpwd(RuntimeConfiguration.Default_Whisper_Pwd);
-		user.setNick(nick);
-		user.setSex(sex);
-		user.setLastlogindevice_uuid(deviceuuid);
-		user.setRegip(regIp);
-		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
-		user.setRegdevice(device);
-		//标记用户最后登录设备，缺省为DeviceEnum.PC
-		user.setLastlogindevice(device);
-		user = this.userService.insert(user);
-		UniqueFacadeService.uniqueRegister(user.getId(), user.getCountrycode(), user.getMobileno());
-		
-		// token validate code
-		UserToken uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
-		{//write header to response header
-			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAccess_token());
-		}
-		deliverMessageService.sendUserRegisteredActionMessage(user.getId(), null, device,regIp);
-		UserDTO payload = new UserDTO();
-		payload.setId(user.getId());
-		payload.setCountrycode(countrycode);
-		payload.setMobileno(acc);
-		payload.setNick(nick);
-		payload.setAtoken(uToken.getAccess_token());
-		payload.setRtoken(uToken.getRefresh_token());
-		payload.setReg(true);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 	}
-	*/
+			
 	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
-		
-		//step 2.生产环境下的手机号验证码验证
 		Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
 		if(uid == null || uid.intValue() == 0){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
@@ -140,8 +100,6 @@ public class UserUnitFacadeService {
 		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
 		}
-		
-		
 		if(StringUtils.isEmpty(user.getRegip())){
 			user.setRegip(remoteIp);
 		}
@@ -216,7 +174,7 @@ public class UserUnitFacadeService {
 	}
 	
 	/**
-	 * 登录或注册接口
+	 * uRouter APP 登录或注册接口
 	 * @param countrycode
 	 * @param acc
 	 * @param device
@@ -301,9 +259,119 @@ public class UserUnitFacadeService {
 	
 	
 	/**
-	 * 更新用户信息接口
+	 * 通用用户注册接口
 	 * @param countrycode
 	 * @param acc
+	 * @param nick
+	 * @param sex
+	 * @param device
+	 * @param regIp
+	 * @param deviceuuid
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
+			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String captcha) {
+		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
+		}
+		if(!RuntimeConfiguration.SecretInnerTest){
+			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+			if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+				if(errorCode != null){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+				}
+			}
+		}
+		UserTokenDTO uToken = null;
+		User user = new User();
+		user.setCountrycode(countrycode);
+		user.setMobileno(acc);
+		if(StringUtils.isNotEmpty(pwd)){
+			user.setPlainpwd(pwd);
+		}
+		if(StringUtils.isNotEmpty(nick)){
+			//判定nick是否已经存在
+			if(UniqueFacadeService.checkNickExist(nick)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+			}else{
+				user.setNick(nick);
+			}
+		}
+		user.setSex(sex);
+		user.setLastlogindevice_uuid(deviceuuid);
+		user.setRegip(regIp);
+		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
+		user.setRegdevice(device);
+		//标记用户最后登录设备，缺省为DeviceEnum.PC
+		user.setLastlogindevice(device);
+		user = this.userService.insert(user);
+		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+		if(StringUtils.isNotEmpty(nick)){
+			UniqueFacadeService.uniqueNickRegister(user.getId(), nick);
+		}
+		
+		// token validate code
+		uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+		{//write header to response header
+			//BusinessWebHelper.setCustomizeHeader(response, uToken);
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}
+		deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,regIp);
+		
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+				user,
+				uToken, true,fetchBindDevices(user.getId()));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
+	
+	/**
+	 * 帐号密码登录，帐号指手机号或者昵称
+	 * @param countrycode
+	 * @param acc 手机号或者昵称
+	 * @param nick
+	 * @param pwd
+	 * @param device
+	 * @param regIp
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd, String device,String remoteIp) {
+		Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+		if(uid == null || uid.intValue() == 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		User user = this.userService.getById(uid);
+		if(user == null){//存在不干净的数据，需要清理数据
+			cleanDirtyUserData(uid,countrycode,acc);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
+		}
+		if(StringUtils.isEmpty(user.getRegip())){
+			user.setRegip(remoteIp);
+		}
+		if(!user.getLastlogindevice().equals(device)){
+			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
+		}
+		this.userService.update(user);
+		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+		{//write header to response header
+			//BusinessWebHelper.setCustomizeHeader(response, uToken);
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}
+		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
+				user,
+				uToken, false);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
+	
+	/**
+	 * 更新用户信息接口
+	 * @param countrycode
+	 * @param nick 需要进行唯一性验证
 	 * @param device
 	 * @param remoteIp
 	 * @param captcha
@@ -315,10 +383,6 @@ public class UserUnitFacadeService {
 		if(user == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
-		if(StringUtils.isNotEmpty(nick)){
-			user.setNick(nick);
-		}
-		
 		if(StringUtils.isNotEmpty(avatar)){
 			user.setAvatar(avatar);
 		}
@@ -327,8 +391,24 @@ public class UserUnitFacadeService {
 		}
 		if(StringUtils.isNotEmpty(birthday)){
 			user.setBirthday(birthday);
+		}		
+		boolean isNickUpdated = false;
+		String oldNick = user.getNick();
+		if(StringUtils.isNotEmpty(nick)){
+			if(!nick.equals(oldNick)){
+				//判定nick是否已经存在
+				if(UniqueFacadeService.checkNickExist(nick)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+				}else{
+					user.setNick(nick);
+					isNickUpdated = true;
+				}
+			}
 		}
 		this.userService.update(user);
+		if(isNickUpdated){
+			UniqueFacadeService.uniqueNickChanged(user.getId(), nick,oldNick);
+		}
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
 				null, false,null);

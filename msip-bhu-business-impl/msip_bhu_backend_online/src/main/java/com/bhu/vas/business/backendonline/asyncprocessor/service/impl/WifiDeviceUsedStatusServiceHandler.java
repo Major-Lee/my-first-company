@@ -1,7 +1,5 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.dom4j.Document;
@@ -19,13 +17,10 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceUsedStatusDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
-import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayUsedLogMDTO;
-import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayUsedLogMService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 @Service
@@ -47,8 +42,8 @@ public class WifiDeviceUsedStatusServiceHandler implements IMsgHandlerService {
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 
-	@Resource
-	private WifiDeviceWholeDayUsedLogMService wifiDeviceWholeDayUsedLogMService;
+	//@Resource
+	//private WifiDeviceWholeDayUsedLogMService wifiDeviceWholeDayUsedLogMService;
 
 
 	@Override
@@ -62,14 +57,14 @@ public class WifiDeviceUsedStatusServiceHandler implements IMsgHandlerService {
 					&& OperationCMD.QueryDeviceUsedStatus.getCmd().equals(serialDto.getCmd())){
 				DeviceUsedStatisticsDTO parser_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceUsedStatus(doc);
 				BusinessMarkerService.getInstance().deviceUsedStatisticsSet(dto.getMac(), parser_dto);
-				//TODO：写入mongo日志表中
+/*				//TODO：写入mongo日志表中
 				Date current = new Date();
 				String today = DateTimeHelper.formatDate(current, DateTimeHelper.FormatPattern5);
 				wifiDeviceWholeDayUsedLogMService.upsertUsedStatus(today, dto.getMac(),
 						WifiDeviceWholeDayUsedLogMDTO.fromDailyUsedStatisticsDTO(today, dto.getMac(), parser_dto.getToday()) );
 				String yesterday = DateTimeHelper.formatDate( DateTimeHelper.getDateDaysAgo(1), DateTimeHelper.FormatPattern5);
 				wifiDeviceWholeDayUsedLogMService.upsertUsedStatus(yesterday, dto.getMac(), 
-						WifiDeviceWholeDayUsedLogMDTO.fromDailyUsedStatisticsDTO(yesterday, dto.getMac(), parser_dto.getYesterday()));
+						WifiDeviceWholeDayUsedLogMDTO.fromDailyUsedStatisticsDTO(yesterday, dto.getMac(), parser_dto.getYesterday()));*/
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

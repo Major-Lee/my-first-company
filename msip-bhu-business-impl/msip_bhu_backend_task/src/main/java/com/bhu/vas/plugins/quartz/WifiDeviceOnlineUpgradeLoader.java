@@ -46,7 +46,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 			List<DownCmds> downCmds = new ArrayList<DownCmds>();
 			//缩小范围，目前只在uRouter中进行
 			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnEqualTo("hdtype", "H106").andColumnEqualTo("online", 1);
+			mc.createCriteria()/*.andColumnEqualTo("hdtype", "H106")*/.andColumnEqualTo("online", 1);
 	    	mc.setPageNumber(1);
 	    	mc.setPageSize(50);
 	    	
@@ -65,7 +65,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 						if(deviceModule!=null && StringUtils.isNotEmpty(deviceModule.getOrig_vap_module())){
 							UpgradeDTO omUpgrade = wifiDeviceGrayFacadeService.deviceOMUpgradeAutoAction(device.getId(), device.getOrig_swver(), deviceModule.getOrig_vap_module());
 							if(omUpgrade != null && omUpgrade.isForceDeviceUpgrade()){
-								String payload = upgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
+								String payload = omUpgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
 								downCmds.add(DownCmds.builderDownCmds(device.getId(), payload));
 								System.out.println(String.format("mac[%s] cmd[%s]", device.getId(),payload));
 							}
@@ -78,25 +78,6 @@ public class WifiDeviceOnlineUpgradeLoader {
 					downCmds.clear();
 				}
 			}
-			/*EntityIterator<String, WifiDeviceGray> it = new KeyBasedEntityBatchIterator<String,WifiDeviceGray>(String.class
-					,WifiDeviceGray.class, wifiDeviceGrayFacadeService.getWifiDeviceGrayService().getEntityDao(), mc);
-			while(it.hasNext()){
-				List<WifiDeviceGray> wdgs = it.next();
-				for(WifiDeviceGray wdg:wdgs){
-					GrayLevel gl = VapEnumType.GrayLevel.fromIndex(wdg.getGl());
-					String dmac = wdg.getId();
-					grayMacs.add(dmac);
-					if(gl == null || gl == GrayLevel.Special) continue;
-					WifiDeviceGrayVersion wdgv = wifiDeviceGrayFacadeService.getWifiDeviceGrayVersionService().getById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
-					if(wdgv == null) 	continue;
-					WifiDevice wifiDevice = wifiDeviceGrayFacadeService.getWifiDeviceService().getById(dmac);
-					if(wifiDevice == null || !wifiDevice.isOnline() || wifiDevice.getOrig_swver().equals(wdgv.getD_fwid()))	continue;
-					int ret = DeviceVersion.compareVersions(wifiDevice.getOrig_swver(), wdgv.getD_fwid());
-					if(ret == -1){
-						
-					}
-				}
-			}*/
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(ex.getMessage(), ex);

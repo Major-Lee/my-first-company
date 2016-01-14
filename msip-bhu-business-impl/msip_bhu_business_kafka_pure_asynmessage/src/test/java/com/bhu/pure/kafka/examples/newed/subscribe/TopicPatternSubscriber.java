@@ -26,9 +26,4 @@ public class TopicPatternSubscriber implements Subscriber{
 			ConsumerRebalanceListener consumerRebalanceListener) {
 		this.consumerRebalanceListener = consumerRebalanceListener;
 	}
-
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
 }
