@@ -29,7 +29,7 @@ public class YunOperateService {
 	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
 	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
 	static final String AL_REMATE_NAME = "device/build/";
-	static final String AL_BUCKET_NAME = "deivcefw";
+	static final String AL_BUCKET_NAME = "devicefw";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
 
 	/**

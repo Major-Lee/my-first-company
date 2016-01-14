@@ -149,6 +149,7 @@ public class ConsoleVersionController extends BaseController {
 		String QNurl = yunOperateService.QN_BUCKET_URL+yunOperateService.QN_REMATE_NAME+fileName;
 		String ALurl = yunOperateService.AL_BUCKET_NAME+"."+yunOperateService.AL_END_POINT+"/"+yunOperateService.AL_REMATE_NAME+fileName;
 		
+		System.out.println(QNurl+"::::::::::::::::"+ALurl);
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,QNurl,ALurl);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -169,7 +170,7 @@ public class ConsoleVersionController extends BaseController {
 						yunOperateService.uploadFile(bs, yunOperateService.QN_REMATE_NAME+fileName, yunOperateService.QN_bucket_name);
 						//阿里云
 						yunOperateService.uploadFile(bs,yunOperateService.AL_REMATE_NAME+fileName);
-						System.out.println("删除成功。");
+						System.out.println("上传成功。");
 					} catch (QiniuException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
