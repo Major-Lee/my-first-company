@@ -13,6 +13,9 @@ public class QuerySerialReturnDTO implements Serializable{
 	
 	//资源包版本
 	private String resource_ver;
+	
+	private String result;
+	private String config_sequence;
 	public String getCmd() {
 		return cmd;
 	}
@@ -48,6 +51,18 @@ public class QuerySerialReturnDTO implements Serializable{
 	}
 	public void setResource_ver(String resource_ver) {
 		this.resource_ver = resource_ver;
+	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
+	}
+	public String getConfig_sequence() {
+		return config_sequence;
+	}
+	public void setConfig_sequence(String config_sequence) {
+		this.config_sequence = config_sequence;
 	}
 	
 //	public boolean isDone(){
