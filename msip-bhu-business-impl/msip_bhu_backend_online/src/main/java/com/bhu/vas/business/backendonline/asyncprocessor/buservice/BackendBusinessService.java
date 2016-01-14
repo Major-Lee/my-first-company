@@ -29,8 +29,8 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 @Service
 public class BackendBusinessService {
 	
-	@Resource
-	private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
+	//@Resource
+	//private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 	
 	//@Resource
 	//private UserSettingStateService userSettingStateService;
@@ -89,8 +89,12 @@ public class BackendBusinessService {
 		}
 	}
 
+	/**
+	 * TBD待实现
+	 * @param mac
+	 */
 	public void clearDeviceHandsetData(String mac) {
-		try{
+		/*try{
 			Query query = new Query(Criteria.where(WifiHandsetDeviceRelationMDao.M_WIFIID).is(mac));
 			Update update = new Update();
 			update.set(WifiHandsetDeviceRelationMDao.M_TOTAL_RX_BYTES, 0);
@@ -98,9 +102,7 @@ public class BackendBusinessService {
 			wifiHandsetDeviceRelationMDao.updateMulti(query, update);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-		}
-
-
+		}*/
 	}
 
 	/**
