@@ -79,7 +79,7 @@ public class CMDBuilder {
 			taskid = auto_taskid_fragment.getNextSequence();
 		}
 		return String.format(OperationCMD.DeviceCmdPassThrough.getCmdtpl(), 
-				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.DeviceCmdPassThrough.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()),cmdContent);
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.DeviceCmdPassThrough.getNo(),builderTaskidFormat(taskid),cmdContent);
 	}
 	
 	public static final long AutoGen = 0l;
