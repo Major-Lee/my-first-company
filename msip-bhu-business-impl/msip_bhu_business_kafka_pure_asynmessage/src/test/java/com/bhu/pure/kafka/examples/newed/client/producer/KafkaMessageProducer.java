@@ -22,35 +22,62 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract class KafkaMessageProducer<KEY, VALUE> implements IKafkaMessageProducer<KEY, VALUE>{
+import com.bhu.pure.kafka.examples.newed.client.KafkaMessageClient;
+
+public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClient implements IKafkaMessageProducer<KEY, VALUE>{
+	private static final Logger logger = LoggerFactory.getLogger(KafkaMessageProducer.class);
 	
 	private KafkaProducer<KEY, VALUE> producer;
-
+	//properties set
+	//private TopicPartition producerTopicPartition;
+	
 	public KafkaMessageProducer() {
 		initialize();
 	}
-/*	public KafkaMessageProducer() {
-		Properties props = new Properties();
-		props.put("bootstrap.servers", "localhost:9092");
-		props.put("client.id", "DemoProducer");
-		props.put("key.serializer",
-				"org.apache.kafka.common.serialization.IntegerSerializer");
-		props.put("value.serializer",
-				"org.apache.kafka.common.serialization.StringSerializer");
-		producer = new KafkaProducer<Integer, String>(props);
-		this.topic = topic;
-		this.isAsync = isAsync;
-	}*/
 	
 	public void initialize(){
-		System.out.println("start producer initialize");
-		Properties clientProperties = getClientProperties();
+		logger.info("KafkaMessageProducer start initialize");
+		
+		Properties clientProperties = loadProperties();
 		if(clientProperties == null){
 			throw new RuntimeException("KafkaMessageProducer initialize failed require properties object");
 		}
 		producer = new KafkaProducer<KEY, VALUE>(clientProperties);
+		
+		//parseProducerClientConfig(clientProperties);
 	}
+	
+/*	public void parseProducerClientConfig(Properties clientProperties){
+		try{
+			String producer_topic = clientProperties.getProperty(ClientConfig.PRODUCER_TOPIC);
+			if(StringUtils.isNotEmpty(producer_topic)){
+				String[] producer_topic_array = producer_topic.split(StringHelper.AT_STRING_GAP);
+				int length = producer_topic_array.length;
+				String topic = null;
+				int partition = ClientConfig.Partition.ALLPARTITION;
+				if(length > 0){
+					topic = producer_topic_array[0];
+					if(length == 2){
+						partition = Integer.parseInt(producer_topic_array[1]);
+					}
+					producerTopicPartition = new TopicPartition(topic, partition);
+				}
+			}
+		}catch(Exception ex){
+			throw new RuntimeException("KafkaMessageProducer parseClientConfig failed", ex);
+		}
+	}*/
+	
+/*	@Override
+	public RecordMetadata send(KEY key, VALUE value){
+		if(producerTopicPartition == null){
+			throw new RuntimeException("KafkaMessageProducer send failed require producerTopicPartition object");
+		}
+		return send(producerTopicPartition.topic(), producerTopicPartition.partition(), key, value);
+	}*/
 	
 	@Override
 	public RecordMetadata send(String topic, Integer partition, KEY key, VALUE value){
@@ -61,6 +88,15 @@ public abstract class KafkaMessageProducer<KEY, VALUE> implements IKafkaMessageP
 		}
 		return null;
 	}
+	
+/*	@Override
+	public void sendAsync(KEY key, VALUE value, Callback callback){
+		if(producerTopicPartition == null){
+			throw new RuntimeException("KafkaMessageProducer sendAsync failed require producerTopicPartition object");
+		}
+		producer.send(new ProducerRecord<KEY, VALUE>(producerTopicPartition.topic(), producerTopicPartition.partition(), 
+				key, value), callback);
+	}*/
 	
 	@Override
 	public void sendAsync(String topic, Integer partition, KEY key, VALUE value, Callback callback){

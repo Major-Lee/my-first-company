@@ -74,7 +74,10 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid));
 	}
 	
-	public static String builderDeviceCmdPassThrough(String wifi_mac,String cmdContent){
+	public static String builderDeviceCmdPassThrough(String wifi_mac,long taskid,String cmdContent){
+		if(taskid == AutoGen){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
 		return String.format(OperationCMD.DeviceCmdPassThrough.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.DeviceCmdPassThrough.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()),cmdContent);
 	}
@@ -412,7 +415,7 @@ public class CMDBuilder {
 							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),dto.getHd_mac());
 					break;
 				case DeviceCmdPassThrough:
-					resultCmd = CMDBuilder.builderDeviceCmdPassThrough(wifi_mac,extparams);
+					resultCmd = CMDBuilder.builderDeviceCmdPassThrough(wifi_mac,taskid,extparams);
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
