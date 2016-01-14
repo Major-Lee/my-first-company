@@ -27,6 +27,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 
 public class Consumer extends ShutdownableThread
@@ -43,7 +44,6 @@ public class Consumer extends ShutdownableThread
     props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
     props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
     props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
-    props.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, "30000");
     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 
@@ -54,8 +54,8 @@ public class Consumer extends ShutdownableThread
   @Override
   public void doWork() {
 	//doSubscribe();
-	//doAssign();
-	doMultiAssign();
+	doAssign();
+	//doMultiAssign();
     ConsumerRecords<Integer, String> records = consumer.poll(1000);
     for (ConsumerRecord<Integer, String> record : records) {
     	System.out.println(String.format("Received message: topic[%s] partition[%s] key[%s] value[%s] offset[%s]",record.topic(),record.partition(), record.key() ,record.value(), record.offset()));
@@ -68,8 +68,11 @@ public class Consumer extends ShutdownableThread
   }
   
   public void doAssign(){
-	TopicPartition tp = new TopicPartition(topics.get(0), 1);
+	TopicPartition tp = new TopicPartition(topics.get(0), 0);
 	consumer.assign(Collections.singletonList(tp));
+	
+	List<PartitionInfo> ps = consumer.partitionsFor(topics.get(0));
+	System.out.println(ps.size());
   }
   
   public void doMultiAssign(){

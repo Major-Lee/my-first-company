@@ -1,17 +1,10 @@
 package com.bhu.pure.kafka.examples.newed.test;
 
-import java.util.Properties;
-
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.IntegerSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-
 import com.bhu.pure.kafka.examples.newed.client.producer.KafkaMessageProducer;
-import com.bhu.pure.kafka.examples.newed.partitioner.HashPartitioner;
 
 public class SimpleKafkaMessageProducer extends KafkaMessageProducer<Integer, String>{
 
-	@Override
+/*	@Override
 	public Properties getClientProperties() {
 		Properties props = new Properties();
 	    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -21,6 +14,6 @@ public class SimpleKafkaMessageProducer extends KafkaMessageProducer<Integer, St
 	    //Custom Partitioner
 	    props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, HashPartitioner.class.getName());
 		return props;
-	}
+	}*/
 
 }
