@@ -46,6 +46,15 @@ public class UniqueFacadeService {
 		}
 	}
 	
+	public static Integer fetchUidByAcc(int countryCode,String acc){
+		Integer uid = fetchUidByMobileno(countryCode,acc);
+		if(uid == null){
+			uid = fetchUidByNick(acc);
+		}
+		return uid;
+	}
+	
+	
 	public static Integer fetchUidByMobileno(int countryCode,String mobileno){
 		String uidStr =  UniqueMobilenoHashService.getInstance().fetchUidByMobileno(countryCode,mobileno);
 		if(uidStr == null) return null;
@@ -106,10 +115,10 @@ public class UniqueFacadeService {
 	}
 	
 	/*public static void uniqueRegister(int uid,String email,String pwd,String nick,String mobileno){
-	System.out.println(String.format("uid[%s] email[%s] pwd[%s] nick[%s] mobileno[%s]", uid, email, pwd, nick, mobileno));
-	UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,null);
-	UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, null);
-	UniqueMobilenoHashService.getInstance().registerOrUpdate(mobileno, uid, null);
+		//System.out.println(String.format("uid[%s] email[%s] pwd[%s] nick[%s] mobileno[%s]", uid, email, pwd, nick, mobileno));
+		//UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,null);
+		UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, null);
+		UniqueMobilenoHashService.getInstance().registerOrUpdate(mobileno, uid, null);
 	}
 	
 	public static void uniquePwdChanged(int uid,String email,String pwd){

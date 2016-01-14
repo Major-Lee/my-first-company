@@ -50,13 +50,15 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
 	static{
 		ignoreTokensValidateUrlSet.add("/sessions/create");
+		ignoreTokensValidateUrlSet.add("/sessions/create_traditional");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
 		ignoreTokensValidateUrlSet.add("/sessions/bbs_login");
-		//ignoreTokensValidateUrlSet.add("/account/create");
+		ignoreTokensValidateUrlSet.add("/account/create");
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
 		//检测名称唯一性
 		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
+		ignoreTokensValidateUrlSet.add("/account/check_nick");
 		ignoreTokensValidateUrlSet.add("/account/check_device_binded");
 		//请求验证码
 		ignoreTokensValidateUrlSet.add("/user/captcha/fetch_captcha");
