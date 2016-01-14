@@ -256,7 +256,7 @@ public class TaskFacadeService {
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 		}
 		
-		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
+		/*if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
 			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
 			simulateTask.setId(-1l);
 			simulateTask.setChannel(channel);
@@ -264,7 +264,7 @@ public class TaskFacadeService {
 			simulateTask.setPayload(CMDBuilder.builderDeviceCmdPassThrough(mac,extparams));
 			simulateTask.setMac(mac);
 			return simulateTask;
-		}
+		}*/
 		
 		
 		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {

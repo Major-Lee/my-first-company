@@ -411,6 +411,9 @@ public class CMDBuilder {
 					resultCmd = String.format(opt.getCmdtpl(),
 							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),dto.getHd_mac());
 					break;
+				case DeviceCmdPassThrough:
+					resultCmd = CMDBuilder.builderDeviceCmdPassThrough(wifi_mac,extparams);
+					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
 					//resultCmd = String.format(operationCMDFromNo.getCmdtpl(),params);
