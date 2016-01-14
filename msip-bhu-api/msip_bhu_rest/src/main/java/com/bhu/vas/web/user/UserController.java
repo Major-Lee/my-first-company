@@ -34,18 +34,20 @@ public class UserController extends BaseController{
 	private IUserRpcService userRpcService;
 
 	/**
-	 * 用户账号创建
+	 * 通用用户账号创建
 	 * 实现方式：deviceuuid 通过此方式 直接缺省新注册个帐号，不考虑以前是否此设备曾经登录使用过
+	 * 前置条件 手机号必须采用真实的手机号 验证码必须验证
 	 * 1、支持用户快速直接注册
-	 * 2、支持输入accemail或者mobileno 和密码注册
-	 * 3、支持注册是填写 sex，lang，region
+	 * 2、支持mobileno 和验证码注册
+	 * 3、支持nick和密码注册 nick可以为空 密码不可以为空
+	 * 4、支持注册是填写 sex，lang，region
 	 * 备注：此接口合并到LoginSessionController create 接口里
 	 * @param request
 	 * @param response
 	 * @param deviceuuid 设备uuid
-	 * @param acc 登录帐号指email或者mobileno
+	 * @param acc 登录帐号mobileno 不能为空 后续支持手机号变更
 	 * @param nick 昵称
-	 * @param pwd 密码 在acc不为空的情况下 pwd必须不为空
+	 * @param pwd 密码 在acc不为空的情况下 pwd可以为空，如果密码为空则采用缺省密码
 	 * @param lang 语言
 	 * @param region 区域
 	 * @param device 设备类型
@@ -62,6 +64,7 @@ public class UserController extends BaseController{
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = true) String captcha,
 			@RequestParam(required = false) String nick,
+			@RequestParam(required = false) String pwd,
 			@RequestParam(required = false,defaultValue="男") String sex,
 			@RequestParam(required = false, value="d",defaultValue="R") String device//,
 			) {
@@ -83,7 +86,15 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick, sex, from_device, remoteIp, deviceuuid, captcha);
+			if(StringUtils.isNotEmpty(nick)){
+				validateError = ValidateService.validateNick(nick);
+				if(validateError != null){
+					SpringMVCHelper.renderJson(response, validateError);
+					return;
+				}
+			}
+			
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, sex, from_device, remoteIp, deviceuuid, captcha);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

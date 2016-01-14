@@ -21,12 +21,23 @@ public interface IUserRpcService {
 			int countrycode,
 			String acc,
 			String nick,
+			String pwd,
 			String sex,
 			String device,
 			String regIp,String deviceuuid,
 			String captcha
 			);
 	
+	/**
+	 * 帐号密码登录 帐号可以是手机号和昵称
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 * @param remoteIp
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd, String device,String remoteIp);
 	/**
 	 * 检测token是否合法
 	 * @param countrycode

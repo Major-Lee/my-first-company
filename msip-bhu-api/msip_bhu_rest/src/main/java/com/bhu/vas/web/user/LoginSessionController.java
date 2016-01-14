@@ -35,7 +35,7 @@ public class LoginSessionController extends BaseController{
 	private IUserRpcService userRpcService;
 
 	/**
-	 * 帐号密码登录或快速注册
+	 * 手机帐号密码登录或快速注册
 	 * 帐号包括：email&mobileno
 	 * @param request
 	 * @param response
@@ -55,7 +55,6 @@ public class LoginSessionController extends BaseController{
 			//@RequestParam(required = true) String pwd,
 			//@RequestParam(required = false,defaultValue="") String lang,
 			@RequestParam(required = false, value="d",defaultValue="R") String device) {
-		
 		//step 1.手机号正则验证
 		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
 		if(validateError != null){
@@ -79,6 +78,50 @@ public class LoginSessionController extends BaseController{
 		
 	}
 
+	
+	/**
+	 * 手机帐号或昵称帐号、密码登录，非验证码登录
+	 * 帐号包括：nick&mobileno
+	 * @param request
+	 * @param response
+	 * @param acc mobileno
+	 * @param pwd 登录密码
+	 * @param lang 区域
+	 * @param device 设备 
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/create_traditional",method={RequestMethod.POST})
+	public void create_custom(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			//@RequestParam(required = true) String captcha,
+			@RequestParam(required = true) String pwd,
+			//@RequestParam(required = false,defaultValue="") String lang,
+			@RequestParam(required = false, value="d",defaultValue="R") String device) {
+		/*//step 1.手机号正则验证
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}*/
+		String remoteIp = WebHelper.getRemoteAddr(request);
+		String from_device = DeviceEnum.getBySName(device).getSname();
+		//RpcResponseDTO<UserDTO> userLogin = userRpcService.userLogin(countrycode, acc, from_device, remoteIp, captcha);
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userLogin(countrycode, acc,pwd, from_device, remoteIp);
+		if(!rpcResult.hasError()){
+			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+			//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
+			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+		
+	}
+	
 	/**
 	 * token登录验证
 	 * @param request
