@@ -1668,7 +1668,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}*/
 		//2:任务callback
-		doTaskCallback(taskid, resultDto.getStatus(), response);
+		doTaskCallback(taskid, (resultDto.getStatus()!=null)?resultDto.getStatus():resultDto.getResult(), response);
 	}
 
 	public void taskModuleProcessor(String ctx, String response, String mac, long taskid){
