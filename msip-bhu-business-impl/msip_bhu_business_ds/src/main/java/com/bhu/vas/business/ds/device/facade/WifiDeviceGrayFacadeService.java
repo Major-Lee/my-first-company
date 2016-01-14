@@ -374,9 +374,7 @@ public class WifiDeviceGrayFacadeService {
     /**
      * 设备类型灰度动作定义
      * 用户判定设备是否需要升级的业务
-     * TODO：目前先uRouter TU的设备，其他产品型号的稍后支持
-     * TODO：目前先考虑设备固件版本，增值模块版本比对升级稍后增加
-     * 备注：如果设备属于特殊灰度 
+     * 备注：如果设备属于特殊灰度 不进行升级
      * @param dmac 设备的mac地址 UpgradeDTO中的forceDeviceUpgrade强制false
      * @return
      */
@@ -384,7 +382,7 @@ public class WifiDeviceGrayFacadeService {
     	WifiDeviceGrayVersionPK deviceUnitGrayPk = this.deviceUnitGray(dmac);
     	String dut = null;
     	int gl = 0;
-		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
+		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义 属于其他灰度
 			//获取d_version中的dut
 			DeviceVersion dvparser = DeviceVersion.parser(d_version);
 			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getDut(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
