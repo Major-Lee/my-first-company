@@ -19,6 +19,7 @@ public enum PushType {
 	WifiDeviceReboot("WDR", null, null, null, null),//设备重启成功后
 	WifiDeviceSettingChanged("WDC", null, null, null, null),//设备配置变更
 	UserBBSsignedon("UBS", "论坛登录", "论坛登录", null, null),//用户bbs登录
+	WifiDeviceWorkModeChanged("WMC", null, null, null, null),//设备切换工作模式上线
 	;
 	String type;
 	String title;

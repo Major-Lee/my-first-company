@@ -8,7 +8,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
@@ -17,6 +16,7 @@ import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceWorkModeChangedDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
@@ -80,6 +80,9 @@ public class PushService{
 						break;
 					case HandsetDeviceVisitorAuthorizeOnline:
 						push_ret = this.pushHandsetDeviceVisitorOnline(pushDto);
+						break;
+					case WifiDeviceWorkModeChanged:
+						push_ret = this.pushWifiDeviceWorkModeChanged(pushDto);
 						break;
 					default:
 						break;
@@ -292,22 +295,22 @@ public class PushService{
 		boolean ret = false;
 		try{
 			WifiDeviceRebootPushDTO reboot_dto = (WifiDeviceRebootPushDTO)pushDto;
-			if(WifiDeviceDTO.UserCmdRebootReason.equals(reboot_dto.getJoin_reason())){
-				DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
-				if(presentDto != null){
-					PushMsg pushMsg = this.generatePushMsg(presentDto);
-					if(pushMsg != null){
-						pushMsg.setPaylod(JsonHelper.getJSONString(reboot_dto));
-						//发送push
-						ret = pushTransmission(pushMsg);
-						if(ret){
-							logger.info("PushWifiDeviceReboot Successed " + pushMsg.toString());
-						}else{
-							logger.info("PushWifiDeviceReboot Failed " + pushMsg.toString());
-						}
+			
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					pushMsg.setPaylod(JsonHelper.getJSONString(reboot_dto));
+					//发送push
+					ret = pushTransmission(pushMsg);
+					if(ret){
+						logger.info("PushWifiDeviceReboot Successed " + pushMsg.toString());
+					}else{
+						logger.info("PushWifiDeviceReboot Failed " + pushMsg.toString());
 					}
 				}
 			}
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("pushWifiDeviceReboot exception " + ex.getMessage(), ex);
@@ -342,6 +345,37 @@ public class PushService{
 		}catch(Exception ex){
 			ex.printStackTrace();
 			logger.error("pushWifiDeviceSettingChanged exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	/**
+	 * 设备切换工作模式上线push
+	 * @param pushDto
+	 * @return
+	 */
+	public boolean pushWifiDeviceWorkModeChanged(PushDTO pushDto){
+		boolean ret = false;
+		try{
+			WifiDeviceWorkModeChangedDTO wm_changed_dto = (WifiDeviceWorkModeChangedDTO)pushDto;
+
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			if(presentDto != null){
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				if(pushMsg != null){
+					pushMsg.setPaylod(JsonHelper.getJSONString(wm_changed_dto));
+					//发送push
+					ret = pushTransmission(pushMsg);
+					if(ret){
+						logger.info("pushWifiDeviceWorkModeChanged Successed " + pushMsg.toString());
+					}else{
+						logger.info("pushWifiDeviceWorkModeChanged Failed " + pushMsg.toString());
+					}
+				}
+			}
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("pushWifiDeviceWorkModeChanged exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}
