@@ -18,6 +18,7 @@ package com.bhu.pure.kafka.examples.newed.client.consumer;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -36,6 +37,8 @@ import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
 
 public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClient implements IKafkaMessageConsumer<KEY, VALUE>{
 	private static final Logger logger = LoggerFactory.getLogger(KafkaMessageConsumer.class);
+	
+	private final ExecutorService consumerExecutorService = Executors.newSingleThreadExecutor();
 	
 	private KafkaConsumer<KEY, VALUE> consumer;
 	//private List<TopicPartition> topicPartitions;
@@ -148,6 +151,12 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	}
 	
 	@Override
+	public void unsubscribe(){
+		consumer.unsubscribe();
+		consumerExecutorServiceShutdown();
+	}
+	
+	@Override
 	public boolean doAssgin(Assigner assigner, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
 		if(assigner == null) return false;
 		
@@ -162,13 +171,42 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	}
 	
 	protected void poll(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
-		Executors.newSingleThreadExecutor().submit((new Runnable() {
+		consumerExecutorService.submit((new Runnable() {
 			@Override
 			public void run() {
 				while(true){
 					System.out.println("start consumer poll");
 					ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
 					notify.notifyComming(records);
+				}
+			}
+		}));
+	}
+	
+	public void consumerExecutorServiceShutdown(){
+		Executors.newSingleThreadExecutor().submit((new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					System.out.println("exec正在shutdown");
+					consumerExecutorService.shutdown();
+					System.out.println("exec正在shutdown成功");
+					while(true){
+						System.out.println("正在判断exec是否执行完毕");
+						if(consumerExecutorService.isTerminated()){
+							System.out.println("exec是否执行完毕,终止exec...");
+							consumerExecutorService.shutdownNow();
+							System.out.println("exec是否执行完毕,终止exec成功");
+							break;
+						}else{
+							System.out.println("exec未执行完毕...");
+							try {
+								Thread.sleep(2*1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
 				}
 			}
 		}));

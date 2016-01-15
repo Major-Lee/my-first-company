@@ -10,8 +10,5 @@ public class StringKafkaMessageProducer extends KafkaMessageProducer<String, Str
 	public static StringKafkaMessageProducer getInstance() { 
 		return ServiceHolder.instance; 
 	}
-	
-	private StringKafkaMessageProducer(){
-		
-	}
+
 }
