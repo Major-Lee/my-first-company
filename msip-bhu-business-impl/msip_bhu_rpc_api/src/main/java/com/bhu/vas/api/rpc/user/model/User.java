@@ -5,7 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.UserType;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 @SuppressWarnings("serial")
@@ -23,7 +23,7 @@ public class User extends BaseIntModel{// implements ISequenceGenable,TableSplit
 	//不唯一的nick
 	private String nick;
 	private String password;
-	private String plainpwd = RuntimeConfiguration.Default_Pwd;
+	private String plainpwd = BusinessRuntimeConfiguration.Default_Pwd;
 	
 	/**
 	 * 标识用户是否绑定sns，email，

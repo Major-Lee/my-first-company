@@ -11,7 +11,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
 import com.bhu.vas.api.dto.ret.transfer.ParamDeviceRemoteControlDTO;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -61,7 +61,10 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceWifiSnifferSetting(String wifi_mac,String sta_sniffer){
-		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac), sta_sniffer, RuntimeConfiguration.Vap_Wifistasniffer_Batch_Num, RuntimeConfiguration.Vap_Wifistasniffer_Delay, RuntimeConfiguration.Vap_Wifistasniffer_Url);
+		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac), sta_sniffer, 
+				BusinessRuntimeConfiguration.Vap_Wifistasniffer_Batch_Num, 
+				BusinessRuntimeConfiguration.Vap_Wifistasniffer_Delay, 
+				BusinessRuntimeConfiguration.Vap_Wifistasniffer_Url);
 	}
 	
 	public static String builderDeviceUsedStatusQuery(String wifi_mac){
@@ -121,19 +124,18 @@ public class CMDBuilder {
 		String upload_url = StringHelper.EMPTY_STRING_GAP;
 		switch(type){
 			case DeviceHelper.Device_Peak_Section_Type_OnlyDownload:
-				download_url = RuntimeConfiguration.Device_SpeedTest_Download_url;
+				download_url = BusinessRuntimeConfiguration.Device_SpeedTest_Download_url;
 				break;
 			case DeviceHelper.Device_Peak_Section_Type_OnlyUpload:
-				upload_url = RuntimeConfiguration.Device_SpeedTest_Upload_url;
+				upload_url = BusinessRuntimeConfiguration.Device_SpeedTest_Upload_url;
 				break;
 			case DeviceHelper.Device_Peak_Section_Type_All:
-				download_url = RuntimeConfiguration.Device_SpeedTest_Download_url;
-				upload_url = RuntimeConfiguration.Device_SpeedTest_Upload_url;
+				download_url = BusinessRuntimeConfiguration.Device_SpeedTest_Download_url;
+				upload_url = BusinessRuntimeConfiguration.Device_SpeedTest_Upload_url;
 				break;
 			default:
 				return null;
 		}
-		
 		return builderDeviceSpeedNotifyQuery(wifi_mac, taskid, period, duration, download_url, upload_url);
 	}
 	

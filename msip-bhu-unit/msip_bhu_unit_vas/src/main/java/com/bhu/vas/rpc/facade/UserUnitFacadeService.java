@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -29,6 +30,7 @@ import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
@@ -187,13 +189,13 @@ public class UserUnitFacadeService {
 		//step 2.生产环境下的手机号验证码验证
 		if(!RuntimeConfiguration.SecretInnerTest){
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
 				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
 				if(errorCode != null){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
 				}
 			}else{
-				if(!RuntimeConfiguration.DefaultCaptchaCode.equals(captcha)){//和系统定义的缺省码进行匹配
+				if(!BusinessRuntimeConfiguration.DefaultCaptchaCode.equals(captcha)){//和系统定义的缺省码进行匹配
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_CAPTCHA_DATA_NOTEXIST);
 				}
 			}
@@ -267,17 +269,19 @@ public class UserUnitFacadeService {
 	 * @param device
 	 * @param regIp
 	 * @param deviceuuid
+	 * @param ut
 	 * @param captcha
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String captcha) {
+			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String ut,String org, String captcha) {
+		UserType userType = UserType.getBySName(ut);
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
 		if(!RuntimeConfiguration.SecretInnerTest){
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
 				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
 				if(errorCode != null){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
@@ -306,6 +310,8 @@ public class UserUnitFacadeService {
 		user.setRegdevice(device);
 		//标记用户最后登录设备，缺省为DeviceEnum.PC
 		user.setLastlogindevice(device);
+		user.setUtype(userType.getIndex());
+		user.setOrg(org);
 		user = this.userService.insert(user);
 		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		if(StringUtils.isNotEmpty(nick)){

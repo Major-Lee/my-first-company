@@ -308,7 +308,7 @@ public class AgentDeviceClaimServiceHandler {
             logger.info("agent excel over..... ");
 
         }catch(Exception ex) {
-            logger.error(String.format("ex[%s]", ex.getStackTrace()));
+            logger.error("Excel import :"+dto.getInputPath(), ex);//.error(String.format("ex[%s]", ex.getStackTrace()));
         	ex.printStackTrace();
         }finally{
         	if(hssfWorkbook != null){

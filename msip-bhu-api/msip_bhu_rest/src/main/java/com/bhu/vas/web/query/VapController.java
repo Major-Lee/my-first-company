@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.StaticResultController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.jdo.ResponseSuccess;
 import com.smartwork.msip.localunit.RandomData;
 
@@ -32,9 +32,9 @@ public class VapController extends BaseController {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		String index = String.format("%02d", RandomData.intNumber(1, 4+1));
 		if(StringUtils.isNotEmpty(jsonpcallback)){
-			SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/404_link")+index+".html"));
+			SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/404_link")+index+".html"));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/404_link")+index+".html"));
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("404/404_link")+index+".html"));
 	}
 	
 	

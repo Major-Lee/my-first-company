@@ -18,4 +18,6 @@ public interface IKafkaMessageConsumer<KEY, VALUE>{
 	public boolean doSubscribe(Subscriber subscriber, PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
 	
 	public boolean doAssgin(Assigner assigner, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
+	
+	public void unsubscribe();
 }

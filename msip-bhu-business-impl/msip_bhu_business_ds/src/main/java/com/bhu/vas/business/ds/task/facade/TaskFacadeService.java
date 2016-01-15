@@ -42,7 +42,7 @@ import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -225,7 +225,7 @@ public class TaskFacadeService {
 	public void validateTaskTimeout(WifiDeviceDownTask pending_task){
 		if(pending_task == null || !WifiDeviceDownTask.State_Pending.equals(pending_task.getState())) return;
 		if((System.currentTimeMillis() - pending_task.getCreated_at().getTime()) 
-				> RuntimeConfiguration.TaskTimeoutMilliSecs){
+				> BusinessRuntimeConfiguration.TaskTimeoutMilliSecs){
 			//设置任务状态为timeout 此处不算任务完成
 			pending_task.setState(WifiDeviceDownTask.State_Timeout);
 			//this.taskUpdate(pending_task);
@@ -250,7 +250,7 @@ public class TaskFacadeService {
 
 		//如果是管理员用户 不进行用户所属设备的验证
 		WifiDevice wifiDevice = null;
-		if(RuntimeConfiguration.isConsoleUser(uid)){
+		if(BusinessRuntimeConfiguration.isConsoleUser(uid)){
 			wifiDevice = deviceFacadeService.validateDeviceIgoneOffline(mac);
 		}else{
 			wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
@@ -522,7 +522,7 @@ public class TaskFacadeService {
 		
 		//WifiDevice wifiDevice = null;
 		//如果是管理员用户 不进行用户所属设备的验证
-		if(RuntimeConfiguration.isConsoleUser(uid)){
+		if(BusinessRuntimeConfiguration.isConsoleUser(uid)){
 			deviceFacadeService.validateDevice(mac);
 		}else{
 			deviceFacadeService.validateUserDevice(uid, mac);

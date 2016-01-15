@@ -1,10 +1,12 @@
 package com.bhu.vas.validate;
 
 //import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.api.dto.UserType;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
 import com.smartwork.msip.cores.plugins.wordfilter.WordFilterHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 //import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
 //import com.smartwork.msip.cores.plugins.wordfilter.WordFilterHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -36,6 +38,14 @@ public class ValidateService {
 		if(error == null) return false;
 		else return true;
 	}*/
+	
+	public static boolean validateUserTypeApiGen(UserType ut){
+		if(!ut.isApiGen()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_PARAM_USERTYPE_APIGEN_FORBIDDEN, new String[]{ut.getSname()});
+		}
+		return true;
+	}
+	
 	
 	public static boolean checkNickValidate(String nick){
 		ResponseError error = validateNick(nick);

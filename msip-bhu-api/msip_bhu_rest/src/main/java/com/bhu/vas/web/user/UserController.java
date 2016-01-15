@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
@@ -23,6 +24,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -51,8 +53,6 @@ public class UserController extends BaseController{
 	 * @param lang 语言
 	 * @param region 区域
 	 * @param device 设备类型
-	 * @param itoken 注册邀请码
-	 * @param token  渠道邀请码
 	 * 
 	 */
 	@ResponseBody()
@@ -66,6 +66,8 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = false) String pwd,
 			@RequestParam(required = false,defaultValue="男") String sex,
+			@RequestParam(required = false) String org,
+			@RequestParam(required = false,defaultValue="N") String ut,//用户类型标识 UserType
 			@RequestParam(required = false, value="d",defaultValue="R") String device//,
 			) {
 		//step 1.deviceuuid 验证
@@ -80,6 +82,8 @@ public class UserController extends BaseController{
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		try{
+			UserType userType = UserType.getBySName(ut);
+			ValidateService.validateUserTypeApiGen(userType);
 			//step 2.手机号正则验证及手机是否存在验证
 			validateError = ValidateService.validateMobileno(countrycode,acc);
 			if(validateError != null){
@@ -94,7 +98,9 @@ public class UserController extends BaseController{
 				}
 			}
 			
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, sex, from_device, remoteIp, deviceuuid, captcha);
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, sex, 
+					from_device, remoteIp, 
+					deviceuuid, ut, org, captcha);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
@@ -104,6 +110,8 @@ public class UserController extends BaseController{
 			}else{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
 			ex.printStackTrace();
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);

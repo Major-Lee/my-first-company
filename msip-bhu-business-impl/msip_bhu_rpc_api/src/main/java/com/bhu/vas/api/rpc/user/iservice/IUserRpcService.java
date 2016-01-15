@@ -24,7 +24,10 @@ public interface IUserRpcService {
 			String pwd,
 			String sex,
 			String device,
-			String regIp,String deviceuuid,
+			String regIp,
+			String deviceuuid,
+			String ut,
+			String org,
 			String captcha
 			);
 	

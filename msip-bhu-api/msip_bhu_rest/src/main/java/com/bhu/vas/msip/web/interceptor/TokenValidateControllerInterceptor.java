@@ -17,6 +17,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -135,7 +136,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			}else{//验证通过的情况下，如果uri是以/console开头的,则需要进行uid<=100000区间才能访问
 				if(uri.startsWith(ConsolePrefixUrl)){
 					//if(StringUtils.isNotEmpty(UID) && Integer.parseInt(UID) <=100000){
-					if(RuntimeConfiguration.isConsoleUser(new Integer(UID))){
+					if(BusinessRuntimeConfiguration.isConsoleUser(new Integer(UID))){
 						System.out.println(UID+"~~~~~~~~~~~~~~能访问管理页面啦！！！！！！！！");
 						return true; 
 					}else{

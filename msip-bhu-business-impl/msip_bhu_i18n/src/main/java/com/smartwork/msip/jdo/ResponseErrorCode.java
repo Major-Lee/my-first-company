@@ -123,11 +123,11 @@ public enum ResponseErrorCode {
 	AUTH_TOKEN_TIMEOUT("252","auth.token.timeout"),
 	AUTH_TOKEN_EMPTY("253","auth.token.empty"),
 	AUTH_TOKEN_VALIDATE_EXCEPTION("254","auth.token.validate.exception"),
-	
+	AUTH_PASSWORD_EMPTY("259","auth.password.empty"),
     AUTH_EMAIL_INVALID_FORMAT("261","auth.email.format.invalid"),
     AUTH_EMAIL_DATA_EXIST("262","auth.email.data.exist"),
     AUTH_EMAIL_EMPTY("263","auth.email.empty"),
-
+    
 	AUTH_ORG_DATA_EXIST("264","auth.org.data.exist"),
 
 	AUTH_UUID_INVALID_FORMAT("265","auth.uuid.format.invalid"),
@@ -147,8 +147,7 @@ public enum ResponseErrorCode {
 	AUTH_NICKNAME_DATA_EXIST("282","auth.nickname.data.exist"),
 	AUTH_NICKNAME_INVALID_LENGTH("283","auth.nickname.length.invalid"),
 	
-	AUTH_PASSWORD_EMPTY("263","auth.password.empty"),
-	
+	AUTH_PARAM_USERTYPE_APIGEN_FORBIDDEN("290","auth.param.usertype.apigen.forbidden"),
 	//AUTH_TOPIC_TITLE_INVALID_LENGTH("231","auth.topic.title.length.invalid"),
 	//AUTH_REMOTECOOKIES_EMPTY("255","auth.remotecookies.empty"),
 	//AUTH_REMOTECOOKIES_INVALID("256","auth.remotecookies.invalid"),

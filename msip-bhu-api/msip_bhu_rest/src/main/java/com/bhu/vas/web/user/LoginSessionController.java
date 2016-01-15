@@ -91,7 +91,7 @@ public class LoginSessionController extends BaseController{
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/create_traditional",method={RequestMethod.POST})
-	public void create_custom(
+	public void create_traditional(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
