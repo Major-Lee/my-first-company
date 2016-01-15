@@ -153,6 +153,7 @@ public class DeviceBusinessFacadeService {
 		//wifi设备是否是新设备
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
+		boolean workModeChanged = false;
 		//String currentWorkmode = dto.getWork_mode();
 		//String oldWorkmode = null;
 		//wifi设备上一次登录时间
@@ -177,6 +178,7 @@ public class DeviceBusinessFacadeService {
 			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
+			String oldWorkMode = wifi_device_entity.getWork_mode();
 			//oldWorkmode = wifi_device_entity.getWork_mode();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
@@ -185,6 +187,9 @@ public class DeviceBusinessFacadeService {
 			wifiDeviceService.update(wifi_device_entity);
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
 				wanIpChanged = true;
+			}
+			if(StringUtils.isNotEmpty(wifi_device_entity.getWork_mode()) && !wifi_device_entity.getWork_mode().equals(oldWorkMode)){
+				workModeChanged = true;
 			}
 		}
 		wifi_device_module.setOnline(true);
@@ -204,7 +209,7 @@ public class DeviceBusinessFacadeService {
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
-				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery/*,oldWorkmode,dto.getWork_mode()*/);
+				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery, workModeChanged/*,oldWorkmode,dto.getWork_mode()*/);
 	}
 	
 	/**

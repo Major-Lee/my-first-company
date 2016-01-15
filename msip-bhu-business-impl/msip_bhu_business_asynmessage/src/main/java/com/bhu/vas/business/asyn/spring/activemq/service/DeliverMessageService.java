@@ -110,8 +110,8 @@ public class DeliverMessageService {
 	}
 	
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
-			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery/*,
-			String o_wmode,String n_wmode*/
+			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery,/*,
+			String o_wmode,String n_wmode*/boolean workModeChanged
 			){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
 		dto.setMac(wifiId);
@@ -121,6 +121,7 @@ public class DeliverMessageService {
 		dto.setLast_login_at(last_login_at);
 		dto.setNeedLocationQuery(needLocationQuery);
 		dto.setWanIpChanged(wanIpChanged);
+		dto.setWorkModeChanged(workModeChanged);
 		//dto.setO_wmode(o_wmode);
 		//dto.setN_wmode(n_wmode);
 		dto.setTs(System.currentTimeMillis());
