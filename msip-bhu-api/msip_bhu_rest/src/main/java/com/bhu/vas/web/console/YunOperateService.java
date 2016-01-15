@@ -54,8 +54,8 @@ public class YunOperateService {
 				uploadManager.put(bs, "/" + dut + "/build/" + fileName, auth.uploadToken(QN_BUCKET_NAME_FW));
 			}
 			if (!fw) {
-				uploadManager.put(bs, "/" + getRemoteName(fileName) + fileName, auth.uploadToken(QN_BUCKET_NAME_OM));
-				uploadManager.put(JsFilePath, "/" + getRemoteName(fileName) +"version.js", auth.uploadToken(QN_BUCKET_NAME_OM));
+				uploadManager.put(bs, "/" + getRemoteName(fileName)+"/" + fileName, auth.uploadToken(QN_BUCKET_NAME_OM));
+				uploadManager.put(JsFilePath, "/" + getRemoteName(fileName)+"/" +"version.js", auth.uploadToken(QN_BUCKET_NAME_OM));
 				
 			}
 			System.out.println("七牛云上传成功。");

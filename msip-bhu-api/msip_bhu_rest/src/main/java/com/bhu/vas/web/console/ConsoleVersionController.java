@@ -150,7 +150,7 @@ public class ConsoleVersionController extends BaseController {
 					+ "/build/" + fileName;
 		}
 		if (!fw) {
-			 QNurl = yunOperateService.QN_BUCKET_URL_OM + "/" + dut + "/build/" + fileName;
+			 QNurl = yunOperateService.QN_BUCKET_URL_OM + "/" + yunOperateService.getRemoteName(fileName) + "/" + fileName;
 			 ALurl = yunOperateService.AL_BUCKET_NAME_OM + "." + yunOperateService.AL_END_POINT + "/" + dut
 					+ "/build/" + fileName;
 		}
