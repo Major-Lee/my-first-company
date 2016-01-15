@@ -71,6 +71,7 @@ public class RpcResponseDTOBuilder {
 		UserDTO ret = new UserDTO(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(),user.getUtype(),isReg);
 		ret.setAvatar(user.getAvatar());
 		ret.setSex(user.getSex());
+		ret.setOrg(user.getOrg());
 		return ret;
 	}
 	

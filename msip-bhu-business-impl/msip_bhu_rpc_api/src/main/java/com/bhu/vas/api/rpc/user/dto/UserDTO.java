@@ -9,7 +9,7 @@ public class UserDTO implements java.io.Serializable{
 	
 	private String avatar;
 	private String sex;
-	
+	private String org;
 	//是否是注册  true 注册  false 登录
 	private boolean reg = false;
 	private int utype;
@@ -62,6 +62,13 @@ public class UserDTO implements java.io.Serializable{
 	}
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+	
+	public String getOrg() {
+		return org;
+	}
+	public void setOrg(String org) {
+		this.org = org;
 	}
 	public UserDTO() {
 	}
