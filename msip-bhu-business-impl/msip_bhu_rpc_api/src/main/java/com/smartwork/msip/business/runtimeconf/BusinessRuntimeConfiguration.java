@@ -113,9 +113,6 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         }  
     }  
 	
-	public static final int UserForgotPwdTimesLimit_Perday = 2;
-	public static final int UserForgotPwdLength = 6;
-	public static final boolean isUserForgotPwdAllNumbers = true;
 	public static String DeviceTesting_Mac_Prefix = "42:66";
 	//缺省值 是否针对日志分析的数据进行过滤 agent.charging.param.filter
 	public static boolean Agent_Charging_Param_Filter = false;
