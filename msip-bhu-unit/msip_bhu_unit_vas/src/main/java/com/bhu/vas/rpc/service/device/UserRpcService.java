@@ -19,10 +19,10 @@ public class UserRpcService implements IUserRpcService{
 	private UserUnitFacadeService userUnitFacadeService;
 	@Override
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String sex, String device,String regIp,String deviceuuid,String ut, String captcha) {
-		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] nick[%s] pwd[%s] sex[%s] device[%s] ut[%s] captcha[%s]",
-				countrycode,acc,nick,pwd,sex,device,ut,captcha));
-		return userUnitFacadeService.createNewUser(countrycode, acc, nick,pwd, sex, device,regIp, deviceuuid, ut, captcha);
+			String nick,String pwd, String sex, String device,String regIp,String deviceuuid,String ut,String org, String captcha) {
+		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] nick[%s] pwd[%s] sex[%s] device[%s] ut[%s] org[%s] captcha[%s]",
+				countrycode,acc,nick,pwd,sex,device,ut,org,captcha));
+		return userUnitFacadeService.createNewUser(countrycode, acc, nick,pwd, sex, device,regIp, deviceuuid, ut,org, captcha);
 	}
 	
 	@Override

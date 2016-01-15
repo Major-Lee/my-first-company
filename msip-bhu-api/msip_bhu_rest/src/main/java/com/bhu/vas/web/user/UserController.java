@@ -53,8 +53,6 @@ public class UserController extends BaseController{
 	 * @param lang 语言
 	 * @param region 区域
 	 * @param device 设备类型
-	 * @param itoken 注册邀请码
-	 * @param token  渠道邀请码
 	 * 
 	 */
 	@ResponseBody()
@@ -68,6 +66,7 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = false) String pwd,
 			@RequestParam(required = false,defaultValue="男") String sex,
+			@RequestParam(required = false) String org,
 			@RequestParam(required = false,defaultValue="N") String ut,//用户类型标识 UserType
 			@RequestParam(required = false, value="d",defaultValue="R") String device//,
 			) {
@@ -99,7 +98,9 @@ public class UserController extends BaseController{
 				}
 			}
 			
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, sex, from_device, remoteIp, deviceuuid,ut, captcha);
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, sex, 
+					from_device, remoteIp, 
+					deviceuuid, ut, org, captcha);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

@@ -27,6 +27,7 @@ public interface IUserRpcService {
 			String regIp,
 			String deviceuuid,
 			String ut,
+			String org,
 			String captcha
 			);
 	

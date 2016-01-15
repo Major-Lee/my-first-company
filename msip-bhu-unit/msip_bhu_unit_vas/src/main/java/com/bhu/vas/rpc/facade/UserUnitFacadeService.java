@@ -273,7 +273,7 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String ut, String captcha) {
+			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String ut,String org, String captcha) {
 		UserType userType = UserType.getBySName(ut);
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
@@ -310,6 +310,7 @@ public class UserUnitFacadeService {
 		//标记用户最后登录设备，缺省为DeviceEnum.PC
 		user.setLastlogindevice(device);
 		user.setUtype(userType.getIndex());
+		user.setOrg(org);
 		user = this.userService.insert(user);
 		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		if(StringUtils.isNotEmpty(nick)){
