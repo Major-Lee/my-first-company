@@ -55,7 +55,7 @@ public class YunOperateService {
 			}
 			if (!fw) {
 				uploadManager.put(bs, "/" + getRemoteName(fileName) + fileName, auth.uploadToken(QN_BUCKET_NAME_OM));
-				uploadManager.put(JsFilePath, "/" + getRemoteName(fileName) + fileName, auth.uploadToken(QN_BUCKET_NAME_OM));
+				uploadManager.put(JsFilePath, "/" + getRemoteName(fileName) +"version.js", auth.uploadToken(QN_BUCKET_NAME_OM));
 				
 			}
 			System.out.println("七牛云上传成功。");
@@ -164,7 +164,7 @@ public class YunOperateService {
 		String str02 = fileFullName.substring(5,10);
 		String remoteName = str01+"/"+str02;
 		//flag
-		System.out.println("remoteName:"+str01+"/"+str02);
+		System.out.println("remoteName:"+str01+"/"+str02+"/");
 		return remoteName;
 	}
 	
