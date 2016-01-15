@@ -87,9 +87,9 @@ public class YunOperateService {
 				ossClient.putObject(AL_BUCKET_NAME_FW, dut + "/build/" + fileName, in, objectMetadata);
 			}
 			if (!fw) {
-				ossClient.putObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+fileName, in, objectMetadata);
+				ossClient.putObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+"/" +fileName, in, objectMetadata);
 				File file = new File(JsFilePath);
-				ossClient.putObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+"version.js", file, objectMetadata);
+				ossClient.putObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+"/" +"version.js", file, objectMetadata);
 			}
 			System.out.println("阿里云上传成功");
 		} catch (Exception e) {
