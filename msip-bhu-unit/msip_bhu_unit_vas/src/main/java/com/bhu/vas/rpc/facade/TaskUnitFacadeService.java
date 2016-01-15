@@ -12,6 +12,7 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
@@ -175,10 +176,9 @@ public class TaskUnitFacadeService {
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);
-			dto.setState(formatedTaskState(task.getState()));
+			dto.setState(TaskFacadeService.formatedTaskState(task.getState()));
 			dto.setMac(task.getMac());
 			dto.setTaskid(task.getId());
-			
 			return new RpcResponseDTO<TaskResDTO>(null,dto);
 		}catch(BusinessI18nCodeException bex){
 			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
@@ -192,21 +192,27 @@ public class TaskUnitFacadeService {
 		}
 	}
 	
-	/**
-	 * 任务状态查询接口的状态转换
-	 * api接口只提供4种状态
-	 * State_Done State_Timeout State_Failed State_Pending
-	 * @param state
-	 * @return
-	 */
-	protected String formatedTaskState(String state){
-		if(StringUtils.isEmpty(state)) return WifiDeviceDownTask.State_Failed;
-		if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Pending.equals(state)
-				|| WifiDeviceDownTask.State_Timeout.equals(state)){
-			return state;
+	public RpcResponseDTO<TaskResDetailDTO> taskDetailStatus(Integer uid, String channel, String channel_taskid, Long taskid){
+		logger.info("uid==" + uid + ",channel==" + channel + ",channel_taskid==" + channel_taskid + ",taskid=="+taskid);
+		try{
+			
+			TaskResDetailDTO detail = null;
+			if(taskid != null){
+				detail = taskFacadeService.queryTaskDetail(taskid);
+			}else{
+				detail = taskFacadeService.queryTaskDetail(channel, channel_taskid);
+			}
+			return new RpcResponseDTO<TaskResDetailDTO>(null,detail);
+		}catch(BusinessI18nCodeException bex){
+			logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		return WifiDeviceDownTask.State_Failed;
 	}
+	
 	
 //	public RpcResponseDTO<TaskResDTO> taskGenerate(String mac, String opt, String subopt, String extparams,
 //			String channel, String channel_taskid){

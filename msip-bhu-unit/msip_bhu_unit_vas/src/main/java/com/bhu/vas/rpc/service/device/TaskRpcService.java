@@ -8,6 +8,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.rpc.facade.TaskUnitFacadeService;
 
@@ -54,8 +55,15 @@ public class TaskRpcService implements ITaskRpcService{
 	@Override
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
 			String channel_taskid, Long taskid) {
-		logger.info(String.format("taskStatusFetch4ThirdParties uid:%s channel:%s channel_taskid:%s", uid, channel,channel_taskid));
+		logger.info(String.format("taskStatusFetch4ThirdParties uid:%s channel:%s channel_taskid:%s taskid:%s", uid, channel,channel_taskid,taskid));
 		return taskUnitFacadeService.taskStatus(uid, channel, channel_taskid, taskid);	
+	}
+
+	@Override
+	public RpcResponseDTO<TaskResDetailDTO> taskStatusDetailFetch4ThirdParties(
+			Integer uid, String channel, String channel_taskid, Long taskid) {
+		logger.info(String.format("taskStatusDetailFetch4ThirdParties uid:%s channel:%s channel_taskid:%s taskid:%s", uid, channel,channel_taskid,taskid));
+		return taskUnitFacadeService.taskDetailStatus(uid, channel, channel_taskid, taskid);	
 	}
 
 }

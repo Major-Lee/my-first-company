@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -141,4 +142,32 @@ public class CmdController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
+	
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param channel
+	 * @param channel_taskid
+	 * @param taskid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/detail",method={RequestMethod.POST})
+	public void cmdDetail(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
+			@RequestParam(required = false) String channel_taskid,
+			@RequestParam(required = false) Long taskid) {
+		
+		RpcResponseDTO<TaskResDetailDTO> rpcResult = taskRpcService.taskStatusDetailFetch4ThirdParties(uid, channel, channel_taskid, taskid);
+		
+		//System.out.println("~~~~~~~~~~~~~~~~~:"+resp.getResCode());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
 }
