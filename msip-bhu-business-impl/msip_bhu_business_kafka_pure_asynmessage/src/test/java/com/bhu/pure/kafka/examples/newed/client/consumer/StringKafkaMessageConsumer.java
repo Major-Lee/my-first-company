@@ -10,10 +10,7 @@ public class StringKafkaMessageConsumer extends KafkaMessageConsumer<String, Str
 	public static StringKafkaMessageConsumer getInstance() { 
 		return ServiceHolder.instance; 
 	}
-	
-	private StringKafkaMessageConsumer(){
-		
-	}
+
 	
 	@Override
 	public long pollSize() {
