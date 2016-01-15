@@ -43,6 +43,8 @@ public enum ActionMessageType {
 	USERDEVICEDESTORY("用户设备注销","user device destory","DD"),
 	USERBBSSIGNEDON("用户bbs登陆","user bbs signedon","UB"),//用户登陆
 	
+	USERDEVICEFORCEBIND("用户设备强制绑定","user device force bind","DF"),
+	
 	TOPICCMJoinNotify("topic消息CM加入通知","topic cm join","TJ"),
 	TOPICCMLeaveNotify("topic消息CM离开通知","topic cm leave","TL"),
 	TOPICDeviceOnlineNotify("topic消息Device上线","topic device online","TO"),

@@ -54,6 +54,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlin
 import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
@@ -1450,6 +1451,31 @@ public class AsyncMsgHandleService {
 		}*/
 
 		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
+	}
+	
+	/**
+	 * 设备被用户强制绑定
+	 * 如果设备是urouter设备，需要清除用户移动设备push数据
+	 * 增量索引用户绑定数据更新
+	 * @param message
+	 */
+	public void userDeviceForceBind(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceForceBind message[%s]", message));
+		UserDeviceForceBindDTO dto = JsonHelper.getDTO(message, UserDeviceForceBindDTO.class);
+		
+		User user = userService.getById(dto.getUid());
+		if(user != null){
+			DeviceVersion parser = DeviceVersion.parser(dto.getOrig_swver());
+			//如果设备是urouter，需要清除用户移动设备push数据
+			if(parser.wasDutURouter()){
+				if(dto.getOld_uid() != null){
+					deviceFacadeService.removeMobilePresent(dto.getOld_uid(), dto.getMac());
+				}
+			}
+			wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
+		}
+		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	
