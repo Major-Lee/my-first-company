@@ -383,7 +383,7 @@ public class UserUnitFacadeService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday) {
+	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org) {
 		User user = this.userService.getById(uid);
 		System.out.println("2. user:"+user);
 		if(user == null){
@@ -397,7 +397,11 @@ public class UserUnitFacadeService {
 		}
 		if(StringUtils.isNotEmpty(birthday)){
 			user.setBirthday(birthday);
-		}		
+		}	
+		
+		if(StringUtils.isNotEmpty(org)){
+			user.setOrg(org);
+		}	
 		boolean isNickUpdated = false;
 		String oldNick = user.getNick();
 		if(StringUtils.isNotEmpty(nick)){

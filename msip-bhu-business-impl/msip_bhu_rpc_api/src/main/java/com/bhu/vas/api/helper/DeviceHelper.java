@@ -591,6 +591,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
+	public static final String DeviceSetting_KeyStatusOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><syskey>%s</syskey></sys></dev>");
 
 	public static final String DeviceSetting_MMOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><mac_management>%s</mac_management></net></dev>");
 	public static final String DeviceSetting_LinkModeOuter ="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mod><basic><wan>%s</wan></basic></mod></dev>");
@@ -601,6 +602,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_VapEnableWdsItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
+	public static final String DeviceSetting_KeyStatusItem = "<ITEM keystatus=\"%s\" />";
 	
 	
 	public static final String DeviceSetting_Start_HttpAdItem 	= "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
@@ -1475,7 +1477,16 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_MMOuter, config_sequence, ds.toString());
 	}
 	
-	
+	/**
+	 * 用户强制绑定设备的修改配置
+	 * @param config_sequence
+	 * @param dto
+	 * @return
+	 */
+	public static String builderDSKeyStatusOuter(DeviceSettingBuilderDTO dto){
+		String item = builderDeviceSettingItem(DeviceSetting_KeyStatusItem, dto.builderProperties());
+		return builderDeviceSettingOuter(DeviceSetting_KeyStatusOuter, Common_Config_Sequence, item);
+	}
 	
 	/**
 	 * 解析设备的软件版本

@@ -142,16 +142,17 @@ public class UserController extends BaseController{
 			@RequestParam(required = false) String avatar,
 			@RequestParam(required = false,value="bday") String birthday,
 			@RequestParam(required = false) String sex,
+			@RequestParam(required = false) String org,
 			//@RequestParam(required = false,defaultValue="") String lang,
 			//@RequestParam(required = false,defaultValue="") String region,
 			@RequestParam(required = false) String memo
 			) {
 			if(StringUtils.isEmpty(nick) && StringUtils.isEmpty(birthday) && StringUtils.isEmpty(sex) 
-					&& StringUtils.isEmpty(avatar) && StringUtils.isEmpty(memo)){
+					&& StringUtils.isEmpty(avatar) && StringUtils.isEmpty(org) && StringUtils.isEmpty(memo)){
 				SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				return;
 			}
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(uid, nick, avatar, sex, birthday);
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(uid, nick, avatar, sex, birthday,org);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else

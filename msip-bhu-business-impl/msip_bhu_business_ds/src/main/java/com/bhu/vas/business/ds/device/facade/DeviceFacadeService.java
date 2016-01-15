@@ -57,6 +57,7 @@ import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -110,6 +111,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
+	@Resource
+	private UserService userService;
 
 	
 	/**

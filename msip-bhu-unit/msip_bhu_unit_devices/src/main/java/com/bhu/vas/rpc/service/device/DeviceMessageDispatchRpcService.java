@@ -137,7 +137,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case ParserHeader.Transfer_stype_12://增值指令
 					deviceVapModuleResponse(ctx, payload, parserHeader);
 					//taskNotifyResponse(ctx, payload, parserHeader);
-					break;	
+					break;
+				case 13:
+					deviceBusinessFacadeService.wifiDeviceForceBind(ctx, payload, parserHeader);
+					break;
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;

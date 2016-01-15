@@ -70,7 +70,7 @@ public class UserDeviceFacadeService {
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceDTO);
         }
     }
-
+    
     public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
         //TODO(bluesand):有没有被其他用户绑定，现在一台设备只能被一个客户端绑定。
         List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
@@ -89,7 +89,6 @@ public class UserDeviceFacadeService {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(
                     ResponseErrorCode.RPC_MESSAGE_UNSUPPORT, Boolean.FALSE);
         }
-
     }
 
     public boolean isBinded(String mac) {

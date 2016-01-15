@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.WifiDeviceForceBindDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
@@ -52,7 +53,10 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
@@ -69,6 +73,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.rpc.facade.search.WifiDeviceStautsIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -121,6 +127,12 @@ public class DeviceBusinessFacadeService {
 	private UserSettingStateService userSettingStateService;
 	
 	@Resource
+	private UserDeviceService userDeviceService;
+	
+	@Resource
+	private UserService userService;
+	
+	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	@Resource
@@ -141,6 +153,7 @@ public class DeviceBusinessFacadeService {
 		//wifi设备是否是新设备
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
+		boolean workModeChanged = false;
 		//String currentWorkmode = dto.getWork_mode();
 		//String oldWorkmode = null;
 		//wifi设备上一次登录时间
@@ -165,6 +178,7 @@ public class DeviceBusinessFacadeService {
 			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
+			String oldWorkMode = wifi_device_entity.getWork_mode();
 			//oldWorkmode = wifi_device_entity.getWork_mode();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
@@ -173,6 +187,9 @@ public class DeviceBusinessFacadeService {
 			wifiDeviceService.update(wifi_device_entity);
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
 				wanIpChanged = true;
+			}
+			if(StringUtils.isNotEmpty(wifi_device_entity.getWork_mode()) && !wifi_device_entity.getWork_mode().equals(oldWorkMode)){
+				workModeChanged = true;
 			}
 		}
 		wifi_device_module.setOnline(true);
@@ -192,7 +209,7 @@ public class DeviceBusinessFacadeService {
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
-				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery/*,oldWorkmode,dto.getWork_mode()*/);
+				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery, workModeChanged/*,oldWorkmode,dto.getWork_mode()*/);
 	}
 	
 	/**
@@ -300,6 +317,57 @@ public class DeviceBusinessFacadeService {
 //
 //		WifiDeviceAlarm wifi_device_alarm_entity = BusinessModelBuilder.wifiDeviceAlarmDtoToEntity(dto);
 //		wifiDeviceAlarmService.insert(wifi_device_alarm_entity);
+	}
+	/**
+	 * 通过连接设备进行的绑定设备操作
+	 * 1：如果该设备已经被该用户绑定，不做任何操作
+	 * 2：如果该设备已经被其他用户绑定，则重新绑定当前用户
+	 * @param ctx
+	 * @param payload
+	 */
+	public void wifiDeviceForceBind(String ctx, String payload, ParserHeader parserHeader){
+		String mac = parserHeader.getMac().toLowerCase();
+		String keystatus = WifiDeviceForceBindDTO.KEY_STATUS_VALIDATE_FAILED;
+		WifiDeviceForceBindDTO dto = null;
+		try{
+			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceForceBindDTO.class);
+			if(dto != null){
+				String keynum = dto.getKeynum();
+				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(keynum)){
+					int uid = Integer.parseInt(keynum);
+			    	User user = userService.getById(uid);
+			    	if(user != null){
+			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+			    		if(wifiDevice != null){
+					    	UserDevice userDevice = null;
+					    	Integer old_uid = userDeviceService.fetchBindUid(mac);
+					    	if(old_uid != null){
+					    		userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
+					    	}
+					    	
+							userDevice = new UserDevice();
+					        userDevice.setId(new UserDevicePK(mac, uid));
+					        userDevice.setCreated_at(new Date());
+					        userDeviceService.insert(userDevice);
+					        //异步执行搜索引擎数据同步和业务数据同步
+					        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
+					        
+					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
+			    		}
+			    	}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			keystatus = WifiDeviceForceBindDTO.KEY_STATUS_FAILED;
+		}finally{
+			if(dto != null){
+				dto.setKeystatus(keystatus);
+				String cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
+						DeviceHelper.builderDSKeyStatusOuter(dto));
+				deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
+			}
+		}
 	}
 	
 	/**

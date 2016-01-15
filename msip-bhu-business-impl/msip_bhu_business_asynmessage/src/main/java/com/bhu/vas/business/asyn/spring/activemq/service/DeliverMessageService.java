@@ -22,6 +22,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlin
 import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
@@ -109,8 +110,8 @@ public class DeliverMessageService {
 	}
 	
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
-			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery/*,
-			String o_wmode,String n_wmode*/
+			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery,/*,
+			String o_wmode,String n_wmode*/boolean workModeChanged
 			){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
 		dto.setMac(wifiId);
@@ -120,6 +121,7 @@ public class DeliverMessageService {
 		dto.setLast_login_at(last_login_at);
 		dto.setNeedLocationQuery(needLocationQuery);
 		dto.setWanIpChanged(wanIpChanged);
+		dto.setWorkModeChanged(workModeChanged);
 		//dto.setO_wmode(o_wmode);
 		//dto.setN_wmode(n_wmode);
 		dto.setTs(System.currentTimeMillis());
@@ -272,6 +274,18 @@ public class DeliverMessageService {
 		UserDeviceRegisterDTO dto = new UserDeviceRegisterDTO();
 		dto.setUid(uid);
 		dto.setMac(mac);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserDeviceForceBindActionMessage(int uid, int old_uid, String mac, String orig_swver){
+		UserDeviceForceBindDTO dto = new UserDeviceForceBindDTO();
+		dto.setUid(uid);
+		dto.setOld_uid(old_uid);
+		dto.setMac(mac);
+		dto.setOrig_swver(orig_swver);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

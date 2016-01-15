@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
+import com.bhu.vas.api.dto.push.WifiDeviceWorkModeChangedDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -54,6 +55,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlin
 import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
@@ -200,7 +202,12 @@ public class AsyncMsgHandleService {
 					}
 				}*/
 				//设备上线push
-				pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+				if(WifiDeviceDTO.UserCmdRebootReason.equals(dto.getJoin_reason())){
+					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
+				}
+				if(dto.isWorkModeChanged()){
+					pushService.push(new WifiDeviceWorkModeChangedDTO(dto.getMac(), wifiDevice.getWork_mode()));
+				}
 				/*try{
 					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8064");
 					if(ret == -1) forceFirmwareUpdate = true;
@@ -1451,6 +1458,31 @@ public class AsyncMsgHandleService {
 		}*/
 
 		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
+	}
+	
+	/**
+	 * 设备被用户强制绑定
+	 * 如果设备是urouter设备，需要清除用户移动设备push数据
+	 * 增量索引用户绑定数据更新
+	 * @param message
+	 */
+	public void userDeviceForceBind(String message){
+		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceForceBind message[%s]", message));
+		UserDeviceForceBindDTO dto = JsonHelper.getDTO(message, UserDeviceForceBindDTO.class);
+		
+		User user = userService.getById(dto.getUid());
+		if(user != null){
+			DeviceVersion parser = DeviceVersion.parser(dto.getOrig_swver());
+			//如果设备是urouter，需要清除用户移动设备push数据
+			if(parser.wasDutURouter()){
+				if(dto.getOld_uid() != null){
+					deviceFacadeService.removeMobilePresent(dto.getOld_uid(), dto.getMac());
+				}
+			}
+			wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
+		}
+		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	
