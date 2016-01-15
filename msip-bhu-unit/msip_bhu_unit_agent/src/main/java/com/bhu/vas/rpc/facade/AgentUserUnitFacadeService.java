@@ -22,7 +22,7 @@ import com.bhu.vas.business.ds.agent.facade.AgentBillFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -48,7 +48,7 @@ public class AgentUserUnitFacadeService {
 				boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
 				//还需验证此用户是否是代理商用户或者是管理员用户
 				if(validate){
-					if(RuntimeConfiguration.isConsoleUser(uid))//管理员账户直接通过验证
+					if(BusinessRuntimeConfiguration.isConsoleUser(uid))//管理员账户直接通过验证
 						return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 					User user = userService.getById(uid);
 					if(user == null){
@@ -145,7 +145,7 @@ public class AgentUserUnitFacadeService {
 			user.setMobileno(acc);
 			//user.addSafety(SafetyBitMarkHelper.mobileno);
 			if(StringUtils.isEmpty(pwd)) 
-				user.setPlainpwd(RuntimeConfiguration.Default_Agent_Pwd);
+				user.setPlainpwd(BusinessRuntimeConfiguration.Default_Agent_Pwd);
 			else
 				user.setPlainpwd(pwd);
 			user.setNick(nick);

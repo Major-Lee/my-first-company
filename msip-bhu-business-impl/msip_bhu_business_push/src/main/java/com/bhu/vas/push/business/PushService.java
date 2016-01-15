@@ -29,7 +29,7 @@ import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
@@ -211,7 +211,7 @@ public class PushService{
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				if(pushMsg != null){
 					String push_deviceName = StringHelper.EMPTY_STRING_GAP;
-					if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
+					if(!BusinessRuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
 						pushMsg.setTitle(String.format(PushType.HandsetDeviceWSOnline.getTitle(), push_deviceName));
 						String name = wspush_dto.getHd_mac();
 						if(!StringUtils.isEmpty(wspush_dto.getN())){
@@ -391,7 +391,7 @@ public class PushService{
 	 */
 	public void builderHandsetDeviceVisitorAuthorizeOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto,
 												  HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto){
-		if(!RuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
+		if(!BusinessRuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
 			//构造payload
 //			String aliasName = deviceFacadeService.queryPushHandsetDeviceAliasName(hd_push_dto.getHd_mac(), hd_push_dto.getMac());
 			String aliasName = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(presentDto.getUid(), hd_push_dto.getHd_mac());

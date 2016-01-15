@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
@@ -47,14 +48,14 @@ public class UserCaptchaCodeUnitFacadeService {
 			/*result.setErrorCode(null);
 			result.setPayload(payload);*/
 			if(!RuntimeConfiguration.SecretInnerTest){
-				if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
 					if(countrycode == PhoneHelper.Default_CountryCode_Int){
-						final String smsg = String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, code.getCaptcha());
+						final String smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, code.getCaptcha());
 						exec.submit((new Runnable() {
 							@Override
 							public void run() {
 								String response = SmsSenderFactory.buildSender(
-										RuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+										BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
 								logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
 							}
 						}));

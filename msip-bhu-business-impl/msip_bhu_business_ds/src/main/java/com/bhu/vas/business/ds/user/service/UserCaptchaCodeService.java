@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.business.ds.user.dao.UserCaptchaCodeDao;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -84,7 +84,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 				return code;
 			}else{
 				if(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5).equals(code.getDate())){//如果是同一天
-					if(code.getTimes()>=RuntimeConfiguration.UserCaptchaCodeLimit){//同一天，次数超出限制
+					if(code.getTimes()>=BusinessRuntimeConfiguration.UserCaptchaCodeLimit){//同一天，次数超出限制
 						throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_TIMES_NOENOUGH);
 					}else{
 						/*if(igonreExpired){

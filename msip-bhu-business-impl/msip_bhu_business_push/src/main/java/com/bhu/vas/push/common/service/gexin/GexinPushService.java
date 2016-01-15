@@ -15,16 +15,16 @@ import com.gexin.rp.sdk.base.impl.Target;
 import com.gexin.rp.sdk.http.IGtPush;
 import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 
 
 public class GexinPushService{
 	private static final Logger logger = LoggerFactory.getLogger(GexinPushService.class);
 	
-	private static final IGtPush official_push = new IGtPush(RuntimeConfiguration.GexinPushXmApi, RuntimeConfiguration.GexinPushXmAppKey, 
-			RuntimeConfiguration.GexinPushXmMasterSecret);
-	private static final IGtPush development_push = new IGtPush(RuntimeConfiguration.GexinPushXmApi, RuntimeConfiguration.GexinPushXmAppKey, 
-			RuntimeConfiguration.GexinPushXmMasterSecret);
+	private static final IGtPush official_push = new IGtPush(BusinessRuntimeConfiguration.GexinPushXmApi, BusinessRuntimeConfiguration.GexinPushXmAppKey, 
+			BusinessRuntimeConfiguration.GexinPushXmMasterSecret);
+	private static final IGtPush development_push = new IGtPush(BusinessRuntimeConfiguration.GexinPushXmApi, BusinessRuntimeConfiguration.GexinPushXmAppKey, 
+			BusinessRuntimeConfiguration.GexinPushXmMasterSecret);
 	
 	private static class ServiceHolder{ 
 		private static GexinPushService instance =new GexinPushService(); 
@@ -49,8 +49,8 @@ public class GexinPushService{
 		try{
 			if(validatePushMsg(pushMsg)){
 		        TransmissionTemplate template = new TransmissionTemplate();
-		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
-		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
+		        template.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID); //应用APPID
+		        template.setAppkey(BusinessRuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
 		        // 收到消息是否立即启动应用，1为立即启动，2则广播等待客户端自启动
 				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
@@ -58,13 +58,13 @@ public class GexinPushService{
 		        SingleMessage message = new SingleMessage();
 	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
-		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		        message.setOfflineExpireTime(BusinessRuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
 		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
 		        message.setPushNetWorkType(0); 
 		        
 		        Target target = new Target();
-		        target.setAppId(RuntimeConfiguration.GexinPushXmAppID);
+		        target.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID);
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);
@@ -83,8 +83,8 @@ public class GexinPushService{
 		try{
 			if(validatePushMsg(pushMsg)){
 				NotificationTemplate template = new NotificationTemplate();
-		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
-		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
+		        template.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID); //应用APPID
+		        template.setAppkey(BusinessRuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
 		        // 收到消息是否立即启动应用，1为立即启动，2则广播等待客户端自启动
 				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
@@ -104,7 +104,7 @@ public class GexinPushService{
 		        message.setPushNetWorkType(0); 
 		        
 		        Target target = new Target();
-		        target.setAppId(RuntimeConfiguration.GexinPushXmAppID);
+		        target.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID);
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);
@@ -123,8 +123,8 @@ public class GexinPushService{
 		try{
 			if(validatePushMsg(pushMsg)){
 				TransmissionTemplate template = new TransmissionTemplate();
-		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
-		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
+		        template.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID); //应用APPID
+		        template.setAppkey(BusinessRuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
 			    // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动。
 			    template.setTransmissionType(1);
 			    template.setTransmissionContent(pushMsg.getPaylod());
@@ -138,13 +138,13 @@ public class GexinPushService{
 		        SingleMessage message = new SingleMessage();
 	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
-		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		        message.setOfflineExpireTime(BusinessRuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
 		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
 		        message.setPushNetWorkType(0); 
 		        
 		        Target target = new Target();
-		        target.setAppId(RuntimeConfiguration.GexinPushXmAppID);
+		        target.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID);
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);
@@ -163,8 +163,8 @@ public class GexinPushService{
 		try{
 			if(validatePushMsg(pushMsg)){
 				TransmissionTemplate template = new TransmissionTemplate();
-		        template.setAppId(RuntimeConfiguration.GexinPushXmAppID); //应用APPID
-		        template.setAppkey(RuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
+		        template.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID); //应用APPID
+		        template.setAppkey(BusinessRuntimeConfiguration.GexinPushXmAppKey); //应用APPKEY
 			    // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动。
 			    template.setTransmissionType(2);
 			    template.setTransmissionContent(pushMsg.getPaylod());
@@ -178,13 +178,13 @@ public class GexinPushService{
 		        SingleMessage message = new SingleMessage();
 	            message.setOffline(true); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
-		        message.setOfflineExpireTime(RuntimeConfiguration.GexinPushXmTimelive);
+		        message.setOfflineExpireTime(BusinessRuntimeConfiguration.GexinPushXmTimelive);
 		        message.setData(template);
 		        //可选。判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为不限制网络环境。
 		        message.setPushNetWorkType(0); 
 		        
 		        Target target = new Target();
-		        target.setAppId(RuntimeConfiguration.GexinPushXmAppID);
+		        target.setAppId(BusinessRuntimeConfiguration.GexinPushXmAppID);
 		        target.setClientId(pushMsg.getDt());
 		        //用户别名推送，cid和用户别名只能2者选其一
 		        //target.setAlias(alias);

@@ -1,6 +1,6 @@
 package com.bhu.vas.api.rpc.user.model;
 
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.MobileCaptchaCodeHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
@@ -48,14 +48,14 @@ public class UserCaptchaCode extends BaseStringModel{
 
 	@Override
 	public void preUpdate() {
-		this.setExpired_sec(RuntimeConfiguration.UserCaptchaCodeExpired);
+		this.setExpired_sec(BusinessRuntimeConfiguration.UserCaptchaCodeExpired);
 		this.setCaptcha(MobileCaptchaCodeHelper.generateCaptchaCode());
 		this.setDate(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
 		super.preUpdate();
 	}
 	@Override
 	public void preInsert() {
-		this.setExpired_sec(RuntimeConfiguration.UserCaptchaCodeExpired);
+		this.setExpired_sec(BusinessRuntimeConfiguration.UserCaptchaCodeExpired);
 		this.setCaptcha(MobileCaptchaCodeHelper.generateCaptchaCode());
 		this.setDate(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
 		super.preInsert();
@@ -69,7 +69,7 @@ public class UserCaptchaCode extends BaseStringModel{
 	 */
 	public boolean canFetchNext(){
 		long gap = System.currentTimeMillis() - this.getUpdated_at().getTime();
-		if(gap > RuntimeConfiguration.UserCanFetchNextCaptchaCode*1000) return true;
+		if(gap > BusinessRuntimeConfiguration.UserCanFetchNextCaptchaCode*1000) return true;
 		
 		return false;
 	}

@@ -28,7 +28,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleS
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
@@ -55,7 +55,7 @@ public class ConsoleServiceHandler {
 		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
 		if(dto == null) return;
 		
-		String exportFilePath = RuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
+		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
 				.concat(File.separator).concat(dto.getExportFileName());
 		BufferedWriter fw = null;
 		try {

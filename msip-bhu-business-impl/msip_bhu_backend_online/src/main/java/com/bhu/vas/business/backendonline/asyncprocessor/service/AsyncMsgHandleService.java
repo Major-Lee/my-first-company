@@ -92,6 +92,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.bhu.vas.push.business.PushService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -1579,13 +1580,13 @@ public class AsyncMsgHandleService {
 				//logger.info("step 1");
 				String mobileWithCountryCode = PhoneHelper.format(dto.getCountrycode(), dto.getAcc());
 				//logger.info("step 2");
-				if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
+				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
 					//logger.info("step 3");
 					if(dto.getCountrycode() == PhoneHelper.Default_CountryCode_Int){
 						//logger.info("step 4 -1");
-						String smsg = String.format(RuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha());
+						String smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, dto.getCaptcha());
 						String response = SmsSenderFactory.buildSender(
-								RuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, dto.getAcc());
+								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, dto.getAcc());
 						//String response = ChanzorSMSHelper.postSendMsg(smsg, dto.getAcc());
 						//String response = WangjianSMSHelper.postSendMsg(smsg, new String[]{dto.getAcc()});
 						//logger.info("CaptchaCodeNotifyActHandler Guodu msg:"+message);
