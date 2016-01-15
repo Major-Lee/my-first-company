@@ -19,7 +19,6 @@ import com.qiniu.api.auth.AuthException;
 import com.qiniu.api.auth.digest.Mac;
 import com.qiniu.api.config.Config;
 import com.qiniu.api.rs.PutPolicy;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;

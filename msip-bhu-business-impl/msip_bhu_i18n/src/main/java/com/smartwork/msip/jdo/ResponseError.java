@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 
 public class ResponseError extends Response{
@@ -131,6 +132,11 @@ public class ResponseError extends Response{
 	}
 	public static ResponseError embed(ResponseErrorCode code, Object result, String[] txts){
 		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, result, txts);
+		return re;
+	}
+	
+	public static ResponseError embed(BusinessI18nCodeException ex){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),ex.getErrorCode(),ex.getPayload());
 		return re;
 	}
 	

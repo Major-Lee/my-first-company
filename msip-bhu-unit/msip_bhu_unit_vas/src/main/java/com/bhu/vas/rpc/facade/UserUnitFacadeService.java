@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -267,11 +268,13 @@ public class UserUnitFacadeService {
 	 * @param device
 	 * @param regIp
 	 * @param deviceuuid
+	 * @param ut
 	 * @param captcha
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String captcha) {
+			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String ut, String captcha) {
+		UserType userType = UserType.getBySName(ut);
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
@@ -306,6 +309,7 @@ public class UserUnitFacadeService {
 		user.setRegdevice(device);
 		//标记用户最后登录设备，缺省为DeviceEnum.PC
 		user.setLastlogindevice(device);
+		user.setUtype(userType.getIndex());
 		user = this.userService.insert(user);
 		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
 		if(StringUtils.isNotEmpty(nick)){
