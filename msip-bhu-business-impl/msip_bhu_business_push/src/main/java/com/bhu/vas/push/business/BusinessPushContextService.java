@@ -22,7 +22,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
@@ -227,7 +227,7 @@ public class BusinessPushContextService {
 	protected void builderHandsetOnlineContext(int uid, String mac, String hd_mac, boolean multi_devices, 
 			HandsetOnlineContext context){
 		context.setVaild(true);
-		if(!RuntimeConfiguration.isSystemTestUsers(uid)){
+		if(!BusinessRuntimeConfiguration.isSystemTestUsers(uid)){
 			//组装text
 			//1:组装终端显示名
 			//1) 如果终端存在别名 终端显示名为别名
