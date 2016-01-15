@@ -202,7 +202,7 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) boolean fw, @RequestParam(required = true) String fileName) {
 
 		System.out.println("deleteFile:begin");
-		yunOperateService.deleteFile(fileName);
+		yunOperateService.deleteFile(fileName,dut,fw);
 		System.out.println("deleteFile:finish");
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, fileName);
 		if (!rpcResult.hasError())

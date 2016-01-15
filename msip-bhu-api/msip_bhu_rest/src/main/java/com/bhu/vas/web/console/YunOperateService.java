@@ -102,20 +102,31 @@ public class YunOperateService {
 	}
 
 	/**
-	 * 阿里云删除文件
-	 * 
-	 * @param ossConfigure
-	 * @param filePath
-	 *            文件夹+文件名
-	 * @return
+	 * 删除云备份文件
+	 * @param fileName 文件名
+	 * @param dut 版本号
+	 * @param fw  判断是固件版本还是模块版本
 	 */
-	public static void deleteFile(String fileName) {
+	public static void deleteFile(String fileName,String dut,boolean fw) {
 		try {
+
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
-			ossClient.deleteObject(AL_BUCKET_NAME_FW, "/build/" + fileName);
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 			BucketManager bucketManager = new BucketManager(auth);
-			bucketManager.delete(QN_BUCKET_NAME_FW, "/build/" + fileName);
+			if(fw){
+				//阿里云删除			
+				ossClient.deleteObject(AL_BUCKET_NAME_FW, dut + "/build/" + fileName);
+				//七牛云删除
+				bucketManager.delete(QN_BUCKET_NAME_FW,"/" + dut + "/build/" + fileName);
+			}
+			if(!fw){
+				//阿里云删除			
+				ossClient.deleteObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+"/" +fileName);
+				ossClient.deleteObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+"/" +"version.js");
+				//七牛云删除
+				bucketManager.delete(QN_BUCKET_NAME_OM,"/" + getRemoteName(fileName)+"/" + fileName);	
+				bucketManager.delete(QN_BUCKET_NAME_OM,"/" + getRemoteName(fileName)+"/" +"version.js");	
+			}
 			System.out.println("删除成功。");
 		} catch (QiniuException e) {
 			e.printStackTrace();
