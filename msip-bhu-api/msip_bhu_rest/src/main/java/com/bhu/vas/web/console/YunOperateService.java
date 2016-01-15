@@ -22,14 +22,17 @@ public class YunOperateService {
 	// 七牛云参数
 	static final String QN_ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
 	static final String QN_SECRET_KEY = "edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
-	static final String QN_REMATE_NAME = "/device/build/";
-	static final String QN_BUCKET_URL = "http://7xq32u.com2.z0.glb.qiniucdn.com/@";
-	static final String QN_bucket_name = "devicefw";
+	static final String QN_REMATE_NAME = "/build/";
+	static final String QN_BUCKET_URL_FW = "http://7xq32u.com2.z0.glb.qiniucdn.com/@";
+	static final String QN_BUCKET_URL_OM = "http://7xq3nw.com2.z0.glb.qiniucdn.com/@";
+	static final String QN_BUCKET_NAME_FW = "devicefw";
+	static final String QN_BUCKET_NAME_OM = "deviceom";
 	// 阿里云参数
 	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
 	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
-	static final String AL_REMATE_NAME = "device/build/";
-	static final String AL_BUCKET_NAME = "devicefw";
+	static final String AL_REMATE_NAME = "/build/";
+	static final String AL_BUCKET_NAME_FW = "devicefw";
+	static final String AL_BUCKET_NAME_OM = "deviceom";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
 
 	/**
@@ -48,7 +51,7 @@ public class YunOperateService {
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 			UploadManager uploadManager = new UploadManager();
 			Response res = uploadManager.put(bs, remoteName, auth.uploadToken(bucketName));
-			
+			System.out.println("七牛云上传成功。");
 		} catch (Exception e) {
 			System.out.println("七牛yun上传错误");
 			e.printStackTrace();
@@ -71,7 +74,8 @@ public class YunOperateService {
 			// 创建上传Object的Metadata
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			// 上传文件
-			ossClient.putObject(AL_BUCKET_NAME, remoteFilePath, in, objectMetadata);
+			ossClient.putObject(AL_BUCKET_NAME_FW, remoteFilePath, in, objectMetadata);
+			System.out.println("阿里云上传成功");
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("阿里云上传出错了");
@@ -90,10 +94,10 @@ public class YunOperateService {
 	public static void deleteFile(String fileName) {
 		try {
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
-			ossClient.deleteObject(AL_BUCKET_NAME, AL_REMATE_NAME + fileName);
+			ossClient.deleteObject(AL_BUCKET_NAME_FW, AL_REMATE_NAME + fileName);
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 			BucketManager bucketManager = new BucketManager(auth);
-			bucketManager.delete(QN_bucket_name, QN_REMATE_NAME+fileName);
+			bucketManager.delete(QN_BUCKET_NAME_FW, QN_REMATE_NAME+fileName);
 			System.out.println("删除成功。");
 		} catch (QiniuException e) {
 			e.printStackTrace();

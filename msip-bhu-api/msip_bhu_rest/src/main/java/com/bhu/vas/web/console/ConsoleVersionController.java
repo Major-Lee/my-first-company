@@ -145,9 +145,9 @@ public class ConsoleVersionController extends BaseController {
 		byte[] bs = new byte[1000];
 		bs = file.getBytes();
 		String fileName = file.getOriginalFilename();
-		uploadYun(bs,fileName);
-		String QNurl = yunOperateService.QN_BUCKET_URL+yunOperateService.QN_REMATE_NAME+fileName;
-		String ALurl = yunOperateService.AL_BUCKET_NAME+"."+yunOperateService.AL_END_POINT+"/"+yunOperateService.AL_REMATE_NAME+fileName;
+		uploadYun(bs,dut,fw,fileName);
+		String QNurl = yunOperateService.QN_BUCKET_URL_FW+"/"+dut+yunOperateService.QN_REMATE_NAME+fileName;
+		String ALurl = yunOperateService.AL_BUCKET_NAME_FW+"."+yunOperateService.AL_END_POINT+"/"+dut+yunOperateService.AL_REMATE_NAME+fileName;
 		
 		System.out.println(QNurl+"::::::::::::::::"+ALurl);
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,QNurl,ALurl);
@@ -160,17 +160,18 @@ public class ConsoleVersionController extends BaseController {
 
 	
 	// 异步的上传至阿里云、七牛云
-	private void uploadYun(final byte[] bs,final String fileName) {
+	private void uploadYun(final byte[] bs,final String dut,final boolean fw,final String fileName) {
 		
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
 					try {
-						//七牛云
-						yunOperateService.uploadFile(bs, yunOperateService.QN_REMATE_NAME+fileName, yunOperateService.QN_bucket_name);
-						//阿里云
-						yunOperateService.uploadFile(bs,yunOperateService.AL_REMATE_NAME+fileName);
-						System.out.println("上传成功。");
+						if(fw){
+							//七牛云
+							yunOperateService.uploadFile(bs, "/"+dut+yunOperateService.QN_REMATE_NAME+fileName, yunOperateService.QN_BUCKET_NAME_FW);
+							//阿里云
+							yunOperateService.uploadFile(bs, dut+yunOperateService.AL_REMATE_NAME+fileName);
+						}
 					} catch (QiniuException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
