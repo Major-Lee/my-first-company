@@ -426,9 +426,9 @@ public class UserUnitFacadeService {
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 		}
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
 				user,
-				uToken, true,fetchBindDevices(user.getId()));
+				uToken, false);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
