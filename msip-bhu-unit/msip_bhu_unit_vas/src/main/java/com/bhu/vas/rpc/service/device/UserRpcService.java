@@ -92,4 +92,13 @@ public class UserRpcService implements IUserRpcService{
 		return userUnitFacadeService.profile(uid);
 	}
 
+	@Override
+	public RpcResponseDTO<Map<String, Object>> userResetPwd(int countrycode,
+			String acc, String pwd, String device, String resetIp,
+			String captcha) {
+		logger.info(String.format("userResetPwd with countrycode[%s] acc[%s] pwd[%s] device[%s] resetIp[%s] captcha[%s]",
+				countrycode,acc,pwd,device,resetIp,captcha));
+		return userUnitFacadeService.userResetPwd(countrycode, acc, pwd, device, resetIp, captcha);
+	}
+
 }

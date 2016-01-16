@@ -177,6 +177,7 @@ public class UserUnitFacadeService {
 	
 	/**
 	 * uRouter APP 登录或注册接口
+	 * 验证码登录和注册都会进行token重置
 	 * @param countrycode
 	 * @param acc
 	 * @param device
@@ -246,7 +247,7 @@ public class UserUnitFacadeService {
 			}
 			this.userService.update(user);
 			
-			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
@@ -334,6 +335,7 @@ public class UserUnitFacadeService {
 	
 	/**
 	 * 帐号密码登录，帐号指手机号或者昵称
+	 * 帐号密码登录 需要重置token
 	 * @param countrycode
 	 * @param acc 手机号或者昵称
 	 * @param nick
@@ -362,7 +364,7 @@ public class UserUnitFacadeService {
 			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
 		}
 		this.userService.update(user);
-		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 		{//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
@@ -373,6 +375,63 @@ public class UserUnitFacadeService {
 				uToken, false);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
+	
+	/**
+	 * 根据验证码进行密码重置操作
+	 * 此操作需要进行token重置
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 * @param resetIp
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> userResetPwd(int countrycode, String acc,
+			String pwd, String device,String resetIp, String captcha) {
+		if(!RuntimeConfiguration.SecretInnerTest){
+			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+				if(errorCode != null){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+				}
+			}
+		}
+		UserTokenDTO uToken = null;
+		
+		Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+		if(uid == null || uid.intValue() == 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		User user = this.userService.getById(uid);
+		if(user == null){//存在不干净的数据，需要清理数据
+			cleanDirtyUserData(uid,countrycode,acc);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		user.setCountrycode(countrycode);
+		user.setMobileno(acc);
+		if(StringUtils.isNotEmpty(pwd)){
+			user.setPlainpwd(pwd);
+		}
+		user.setRegip(resetIp);
+		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
+		user.setRegdevice(device);
+		//标记用户最后登录设备，缺省为DeviceEnum.PC
+		user.setLastlogindevice(device);
+		user = this.userService.update(user);
+		// token validate code
+		uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+		{//write header to response header
+			//BusinessWebHelper.setCustomizeHeader(response, uToken);
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
+				user,
+				uToken, false);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
+	
 	
 	/**
 	 * 更新用户信息接口

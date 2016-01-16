@@ -154,6 +154,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	//public static final String InternalCaptchaCodeSMS_Template = "【uRouter】验证码：%s,欢迎使用uRouter智能路由器！【华信联创】";//【华信联创】
 	//验证码：@，请勿将验证码泄露给他人！【必虎路由】
 	public static final String InternalCaptchaCodeSMS_Template = "验证码:%s，请勿将验证码泄露给他人！【必虎路由】";//【华信联创】
+	public static final String InternalCaptchaCodePwdResetSMS_Template = "验证码:%s，密码重置操作，请勿将验证码泄露给他人！【必虎路由】";//【华信联创】
 	//public static final String InternalCaptchaCodeSMS_Template = "[uRouter]验证码:%s,欢迎使用uRouter智能路由器！";//【华信联创】
 	//public static final String WillExpiredPush_Template = "【快看】你有%s条消息将于1小时候后过期销毁，赶快过来看看吧!";
 	//public static final String WillExpiredSMSPush_HasAddressBookFriend_Template = "【快看】%s在快看上给你发送的消息将于1小时候过期销毁, 赶快看看他们发了什么给你!";

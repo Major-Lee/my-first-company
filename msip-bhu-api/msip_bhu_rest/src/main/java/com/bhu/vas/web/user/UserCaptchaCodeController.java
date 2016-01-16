@@ -37,7 +37,9 @@ public class UserCaptchaCodeController extends BaseController{
 	public void fetch_captcha(
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
-			@RequestParam(required = true) String acc) {
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = false,defaultValue="R") String act
+			) {
 		/*int charlen = acc.length();
 		if(charlen < 6 || charlen > 16){
 			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
@@ -51,7 +53,7 @@ public class UserCaptchaCodeController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc);
+		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc,act);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 		}else{

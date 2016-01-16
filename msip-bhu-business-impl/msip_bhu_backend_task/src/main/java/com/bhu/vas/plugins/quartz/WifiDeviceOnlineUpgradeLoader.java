@@ -86,8 +86,8 @@ public class WifiDeviceOnlineUpgradeLoader {
 		logger.info(String.format("WifiDeviceOnlineUpgradeLoader ended total[%s]",total));
 	}
 	
-	/*public void beforeExecute(){
+	public void beforeExecute(){
 		wifiDeviceGrayFacadeService.updateRelatedFieldAction();
 		wifiDeviceGrayFacadeService.updateRelatedDevice4GrayVersion();
-	}*/
+	}
 }

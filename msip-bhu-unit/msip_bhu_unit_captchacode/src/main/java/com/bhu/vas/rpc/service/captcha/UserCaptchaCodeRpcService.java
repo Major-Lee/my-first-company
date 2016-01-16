@@ -18,9 +18,9 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 	private UserCaptchaCodeUnitFacadeService userCaptchaCodeUnitFacadeService;
 	@Override
 	public RpcResponseDTO<UserCaptchaCodeDTO> fetchCaptchaCode(int countrycode,
-			String acc) {
-		logger.info(String.format("fetchCaptchaCode with [%s] [%s]", countrycode,acc));
-		return userCaptchaCodeUnitFacadeService.fetchCaptchaCode(countrycode, acc);
+			String acc,String act) {
+		logger.info(String.format("fetchCaptchaCode with countrycode[%s] acc[%s] act[%s]", countrycode,acc,act));
+		return userCaptchaCodeUnitFacadeService.fetchCaptchaCode(countrycode, acc,act);
 	}
 
 }
