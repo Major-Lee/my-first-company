@@ -413,6 +413,7 @@ public class UserUnitFacadeService {
 		user.setMobileno(acc);
 		if(StringUtils.isNotEmpty(pwd)){
 			user.setPlainpwd(pwd);
+			user.setPassword(null);
 		}
 		user.setRegip(resetIp);
 		//标记用户注册时使用的设备，缺省为DeviceEnum.Android

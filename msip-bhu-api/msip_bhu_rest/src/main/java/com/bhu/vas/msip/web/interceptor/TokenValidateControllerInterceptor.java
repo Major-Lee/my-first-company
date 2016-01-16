@@ -55,6 +55,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
 		ignoreTokensValidateUrlSet.add("/sessions/bbs_login");
 		ignoreTokensValidateUrlSet.add("/account/create");
+		ignoreTokensValidateUrlSet.add("/account/reset_password");
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
 		//检测名称唯一性
