@@ -512,7 +512,7 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setCurrentDVB(d_version);
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{
-						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined!",dmac,fw));
+						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined or invalid!",dmac,fw));
 					}
 				}else{
 					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_fwid()));
@@ -532,7 +532,7 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setCurrentDVB(d_version);
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{
-						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined!",dmac,fw));
+						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined! or invalid",dmac,fw));
 					}
 				}else{
 					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_omid()));
