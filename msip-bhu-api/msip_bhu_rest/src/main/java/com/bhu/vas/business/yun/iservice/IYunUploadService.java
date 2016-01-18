@@ -4,7 +4,7 @@ import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 
 public interface IYunUploadService {
 
-	void deleteFile(String fileName, String dut, boolean fw);
+	void deleteFile(String versionId, String dut, boolean fw);
 	
 	String[] getURL(boolean fw, String versionId, String dut);
 	
