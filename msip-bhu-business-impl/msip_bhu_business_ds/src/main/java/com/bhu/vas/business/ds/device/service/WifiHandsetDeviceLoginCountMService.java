@@ -9,6 +9,7 @@ package com.bhu.vas.business.ds.device.service;
  *
  */
 //@Service
+@Deprecated
 public class WifiHandsetDeviceLoginCountMService {
 	/*	
 	@Resource
