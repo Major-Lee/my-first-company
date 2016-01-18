@@ -135,8 +135,10 @@ public class ConsoleVersionController extends BaseController {
 	@ResponseBody()
 	@RequestMapping(value = "/adddv", method = { RequestMethod.POST })
 	public void adddv(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam("file") CommonsMultipartFile file, @RequestParam(required = true) int uid,
-			@RequestParam(required = true) String dut, @RequestParam(required = true) boolean fw) {
+			@RequestParam("file") CommonsMultipartFile file,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = true) String dut, 
+			@RequestParam(required = true) boolean fw) {
 
 		byte[] bs = new byte[1000];
 		bs = file.getBytes();

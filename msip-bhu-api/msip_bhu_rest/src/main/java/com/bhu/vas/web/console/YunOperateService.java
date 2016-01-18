@@ -116,8 +116,10 @@ public class YunOperateService {
 			if(fw){
 				//阿里云删除			
 				ossClient.deleteObject(AL_BUCKET_NAME_FW, dut + "/build/" + fileName);
+				System.out.println("阿里云删除成功:"+dut + "/build/" + fileName);
 				//七牛云删除
 				bucketManager.delete(QN_BUCKET_NAME_FW,"/" + dut + "/build/" + fileName);
+				System.out.println("七牛云删除成功:"+"/" + dut + "/build/" + fileName);
 			}
 			if(!fw){
 				//阿里云删除			
