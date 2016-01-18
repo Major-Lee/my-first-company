@@ -134,22 +134,28 @@ public class ConsoleVersionController extends BaseController {
 	 */
 	@ResponseBody()
 	@RequestMapping(value = "/adddv", method = { RequestMethod.POST })
-	public void adddv(
-			HttpServletRequest request, 
-			HttpServletResponse response, 
-			@RequestParam("file") CommonsMultipartFile file,
-			@RequestParam(required = true) int uid,			
-			@RequestParam(required = true) String dut,
-			@RequestParam(required = true) boolean fw) {
-		
+	public void adddv(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("file") CommonsMultipartFile file, @RequestParam(required = true) int uid,
+			@RequestParam(required = true) String dut, @RequestParam(required = true) boolean fw) {
+
 		byte[] bs = new byte[1000];
 		bs = file.getBytes();
 		String fileName = file.getOriginalFilename();
-		uploadYun(bs,fileName);
-		String QNurl = yunOperateService.QN_BUCKET_URL+yunOperateService.QN_REMATE_NAME+fileName;
-		String ALurl = yunOperateService.AL_BUCKET_NAME+"."+yunOperateService.AL_END_POINT+"/"+yunOperateService.AL_REMATE_NAME+fileName;
-		
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName,QNurl,ALurl);
+		uploadYun(bs, dut, fw, fileName);
+		String QNurl = null;
+		String ALurl = null;
+		if (fw) {
+			 QNurl = yunOperateService.QN_BUCKET_URL_FW + "/" + dut + "/build/" + fileName;
+			 ALurl = yunOperateService.AL_BUCKET_NAME_FW + "." + yunOperateService.AL_END_POINT + "/" + dut
+					+ "/build/" + fileName;
+		}
+		if (!fw) {
+			 QNurl = yunOperateService.QN_BUCKET_URL_OM + "/" + yunOperateService.getRemoteName(fileName) + "/" + fileName;
+			 ALurl = yunOperateService.AL_BUCKET_NAME_OM + "." + yunOperateService.AL_END_POINT + "/" + dut
+					+ "/build/" + fileName;
+		}
+		System.out.println(QNurl + "::::::::::::::::" + ALurl);
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, fileName, QNurl, ALurl);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
@@ -157,30 +163,31 @@ public class ConsoleVersionController extends BaseController {
 
 	}
 
-	
 	// 异步的上传至阿里云、七牛云
-	private void uploadYun(final byte[] bs,final String fileName) {
-		
+	private void uploadYun(final byte[] bs, final String dut, final boolean fw, final String fileName) {
+
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
-					try {
-						//七牛云
-						yunOperateService.uploadFile(bs, yunOperateService.QN_REMATE_NAME+fileName, yunOperateService.QN_bucket_name);
-						//阿里云
-						yunOperateService.uploadFile(bs,yunOperateService.AL_REMATE_NAME+fileName);
-					} catch (QiniuException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				try {
+						String JsFilePath = null;
+						if(!fw){
+							JsFilePath = yunOperateService.getFilePath(fileName);
+						}
+						// 七牛云
+						yunOperateService.uploadFile2QN(bs,dut,fileName,fw,JsFilePath);
+						// 阿里云
+						yunOperateService.uploadFile2AL(bs,dut,fileName,fw,JsFilePath);
+				}  catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}));
 	}
+
 	/**
 	 * 删除固件版本或者增值组件版本信息
+	 * 
 	 * @param request
 	 * @param response
 	 * @param uid
@@ -190,16 +197,12 @@ public class ConsoleVersionController extends BaseController {
 	 */
 	@ResponseBody()
 	@RequestMapping(value = "/removedv", method = { RequestMethod.POST })
-	public void removedv(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@RequestParam(required = true) int uid, 
-			@RequestParam(required = true) String dut,
-			@RequestParam(required = true) boolean fw, 
-			@RequestParam(required = true) String fileName) {
-		
+	public void removedv(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = true) int uid, @RequestParam(required = true) String dut,
+			@RequestParam(required = true) boolean fw, @RequestParam(required = true) String fileName) {
+
 		System.out.println("deleteFile:begin");
-		yunOperateService.deleteFile(fileName);
+		yunOperateService.deleteFile(fileName,dut,fw);
 		System.out.println("deleteFile:finish");
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, fileName);
 		if (!rpcResult.hasError())
