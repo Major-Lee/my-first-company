@@ -203,9 +203,10 @@ public class YunOperateService implements IYunUploadService{
 					+ versionId;
 			ALurl = YunOperateService.AL_BUCKET_NAME_OM + "." + YunOperateService.AL_END_POINT + "/" + dut + "/build/"
 					+ versionId;
-			url[0] = QNurl;
-			url[1] = ALurl;
+
 		}
+		url[0] = QNurl;
+		url[1] = ALurl;
 		return url;
 	}
 
