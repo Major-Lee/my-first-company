@@ -39,6 +39,11 @@
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_asynmessage</artifactId>
         </dependency>
+        <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_springdata_search</artifactId>
+        </dependency>  
+     
         <!-- 
         <dependency>
             <groupId>com.smartwork</groupId>

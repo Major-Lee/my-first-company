@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.facade.search;
+package com.bhu.vas.business.search.service.increment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,18 +15,19 @@ import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 /**
- * wifi设备增量索引状态service
+ * wifi设备增量索引状态的service,同步进行处理，需要数据实时性强的可以使用此service
  * 只在设备状态发生变化时触发的索引增量处理
  * @author tangzichao
  *
  */
 @Service
-public class WifiDeviceStautsIndexIncrementService{
-	private final Logger logger = LoggerFactory.getLogger(WifiDeviceStautsIndexIncrementService.class);
+public class WifiDeviceStatusIndexIncrementService{
+	private final Logger logger = LoggerFactory.getLogger(WifiDeviceStatusIndexIncrementService.class);
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
@@ -130,6 +131,43 @@ public class WifiDeviceStautsIndexIncrementService{
 			
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 		wifiDeviceDataSearchService.updateIndex(entity.getId(), sourceMap, true, true, true);
+	}
+	
+	/**
+	 * 设备绑定或解绑的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) u_id
+	 * 2) u_nick
+	 * 3) u_mno
+	 * 4) u_mcc
+	 * 5) u_type
+	 * 6) u_binded
+	 * @param id 设备mac
+	 * @param bindUser 如果为null表示解绑设备
+	 */
+	public void bindUserUpdIncrement(String id, User bindUser){
+		logger.info(String.format("BindUserUpdIncrement Request id [%s] bindUser [%s]", id, bindUser));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		if(bindUser != null){
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), bindUser.getId());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), bindUser.getNick());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILENO.getName(), bindUser.getMobileno());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), bindUser.getCountrycode());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), bindUser.getUtype());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
+		}else{
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILENO.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
+		}
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
 
 }
