@@ -216,7 +216,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
-	public void bindUserUpdIncrement(final String id, final User bindUser){
+/*	public void bindUserUpdIncrement(final String id, final User bindUser){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
@@ -230,7 +230,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 				}
 			}));
 		}
-	}
+	}*/
 	
 	/**
 	 * 设备运营模板的变更

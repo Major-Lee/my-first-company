@@ -61,7 +61,7 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
-	public void bindUserUpdIncrement(String id, User bindUser);
+	//public void bindUserUpdIncrement(String id, User bindUser);
 	
 	/**
 	 * 设备运营模板的变更

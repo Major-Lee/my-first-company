@@ -330,7 +330,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
-	@Override
+/*	@Override
 	public void bindUserUpdIncrement(String id, User bindUser){
 		logger.info(String.format("bindUserUpdIncrement Request id [%s] bindUser [%s]", id, bindUser));
 		if(StringUtils.isEmpty(id)) return;
@@ -354,7 +354,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
-	}
+	}*/
 	
 	/**
 	 * 设备运营模板的变更
