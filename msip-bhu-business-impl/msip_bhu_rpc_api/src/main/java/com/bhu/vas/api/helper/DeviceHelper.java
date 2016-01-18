@@ -1055,7 +1055,7 @@ public class DeviceHelper {
 	
 	public static String builderDSWorkModeSwitchOuter(String extparams){
 		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
-		if(wk_dto.getWmode() == WifiDeviceHelper.SwitchMode_Router2Bridge){
+		if(wk_dto.getWmode() == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
 			return DeviceSetting_Switch_Workmode_Router2Bridge;
 		}else{
 			return DeviceSetting_Switch_Workmode_Bridge2Router;
