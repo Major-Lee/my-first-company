@@ -349,7 +349,9 @@ public class DeviceBusinessFacadeService {
 					        userDevice.setId(new UserDevicePK(mac, uid));
 					        userDevice.setCreated_at(new Date());
 					        userDeviceService.insert(userDevice);
-					        //异步执行搜索引擎数据同步和业务数据同步
+					        
+					        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
+					        //业务数据同步
 					        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 					        
 					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;

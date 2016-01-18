@@ -48,6 +48,16 @@ public class UserDeviceService extends EntityService<UserDevicePK, UserDevice, U
         }
         return null;
     }
+    
+    public UserDevice fetchBindByMac(String mac){
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        List<UserDevice> models = super.findModelByModelCriteria(mc);
+        if(models != null && !models.isEmpty()){
+        	return models.get(0);
+        }
+        return null;
+    }
     /**
      * 清除用户所有的绑定设备
      * @param uid

@@ -54,13 +54,14 @@ public class WifiDeviceDocumentHelper {
 	 * @param agentDeviceClaim
 	 * @param wifiDeviceGray
 	 * @param bindUser
+	 * @param bindUserDNick 用户绑定的设备的昵称
 	 * @param agentUser
 	 * @param hoc
 	 * @return
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
-			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, User agentUser, 
-			int hoc){
+			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
+			User agentUser, int hoc){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -138,6 +139,7 @@ public class WifiDeviceDocumentHelper {
 			doc.setU_mno(bindUser.getMobileno());
 			doc.setU_mcc(String.valueOf(bindUser.getCountrycode()));
 			doc.setU_type(String.valueOf(bindUser.getUtype()));
+			doc.setU_dnick(bindUserDNick);
 		}
 		
 		if(agentUser != null){

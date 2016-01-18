@@ -92,7 +92,6 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -139,8 +138,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
 	
-	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 //	@Resource
 //	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
@@ -1486,7 +1485,7 @@ public class AsyncMsgHandleService {
 				}
 			}
 			//wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
-			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dto.getMac(), user);
+//			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dto.getMac(), user);
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
