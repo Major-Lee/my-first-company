@@ -28,7 +28,7 @@ public class KafkaMessageTest {
 //		TestProducerAsync();
 //		TestDTO();
 //		TestStringKafkaMessage();
-		TestUnsubscribe();
+		TestAddSubscribeTopics();
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class KafkaMessageTest {
 		assigner.addTopicPartition(TOPIC2, PARTITION0);
 		consumer.doAssgin(assigner, new PollIteratorNotify<ConsumerRecords<Integer, String>>(){
 			@Override
-			public void notifyComming(ConsumerRecords<Integer, String> records) {
+			public void notifyComming(String consumerId, ConsumerRecords<Integer, String> records) {
 				for(ConsumerRecord<Integer, String> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
@@ -87,7 +87,7 @@ public class KafkaMessageTest {
 		TopicSubscriber subscriber = new TopicSubscriber(Collections.singletonList(TOPIC1));
 		consumer.doSubscribe(subscriber, new PollIteratorNotify<ConsumerRecords<Integer, String>>(){
 			@Override
-			public void notifyComming(ConsumerRecords<Integer, String> records) {
+			public void notifyComming(String consumerId, ConsumerRecords<Integer, String> records) {
 				for(ConsumerRecord<Integer, String> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
@@ -155,7 +155,7 @@ public class KafkaMessageTest {
 		TopicSubscriber subscriber = new TopicSubscriber(Collections.singletonList(TOPIC1));
 		consumer.doSubscribe(subscriber, new PollIteratorNotify<ConsumerRecords<String, TestDTO>>(){
 			@Override
-			public void notifyComming(ConsumerRecords<String, TestDTO> records) {
+			public void notifyComming(String consumerId, ConsumerRecords<String, TestDTO> records) {
 				for(ConsumerRecord<String, TestDTO> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] value_name[%s] "
@@ -190,9 +190,9 @@ public class KafkaMessageTest {
 	public static void TestStringKafkaMessage() throws Exception{
 		//consumer
 //		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
-		StringKafkaMessageConsumer.getInstance().doSubscribeTopics(Collections.singletonList(TOPIC1), new PollIteratorNotify<ConsumerRecords<String, String>>(){
+		new StringKafkaMessageConsumer().doSubscribeTopics(Collections.singletonList(TOPIC1), new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
-			public void notifyComming(ConsumerRecords<String, String> records) {
+			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
 				for(ConsumerRecord<String, String> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] "
@@ -221,19 +221,24 @@ public class KafkaMessageTest {
 		}
 	}
 	
-	public static void TestUnsubscribe() throws Exception{
+	public static void TestAddSubscribeTopics() throws Exception{
 		//consumer
-//		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
-		StringKafkaMessageConsumer.getInstance().doSubscribeTopics(Collections.singletonList(TOPIC1), new PollIteratorNotify<ConsumerRecords<String, String>>(){
+//		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer(); 
+		//StringKafkaMessageConsumer consumer1 = new StringKafkaMessageConsumer("consumerId1");
+//		StringKafkaMessageConsumer consumer1 = new StringKafkaMessageConsumer();
+//		consumer1.setConsumerId("consumerId1");
+		StringKafkaMessageConsumer consumer1 = new StringKafkaMessageConsumer();
+		consumer1.doSubscribeTopics(new PollIteratorNotify<ConsumerRecords<String, String>>(){
+//		StringKafkaMessageConsumer.getInstance().doSubscribePattern("topic.*", new PollIteratorNotify<ConsumerRecords<String, String>>(){	
 			@Override
-			public void notifyComming(ConsumerRecords<String, String> records) {
+			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
 				for(ConsumerRecord<String, String> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] "
-									+ "offset[%s]",
+									+ "offset[%s] consumerId[%s]",
 									record.topic(), record.partition(),
 									record.key(), record.value(),
-									record.offset()));
+									record.offset(), consumerId));
 				}
 			}
 		});
@@ -242,21 +247,27 @@ public class KafkaMessageTest {
 		//producer
 //		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
+		int topic_index = 1;
 		while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
 			RecordMetadata ret = producer.send(record);
 			if(ret != null){
 				System.out.println("successed");
 			}*/
+			System.out.println("send message " + key);
+			for(int i = 0;i<topic_index;i++){
+				StringKafkaMessageProducer.getInstance().send("topic"+i, null, String.valueOf(key), "msg"+key+"-"+System.currentTimeMillis());
+			}
 			
-			RecordMetadata ret = StringKafkaMessageProducer.getInstance().send(TOPIC1, null, String.valueOf(key), "msg"+key);
 			Thread.sleep(2000l);
 			key++;
 			
-			if(key == 5){
-				System.out.println("do unsubscribe");
-				StringKafkaMessageConsumer.getInstance().unsubscribe();
-			}
+			System.out.println("addSubscribeTopic");
+			consumer1.addSubscribeTopic("topic"+topic_index);
+			topic_index++;
+//			
+//				Thread.sleep(2000l);
+
 		}
 	}
 	

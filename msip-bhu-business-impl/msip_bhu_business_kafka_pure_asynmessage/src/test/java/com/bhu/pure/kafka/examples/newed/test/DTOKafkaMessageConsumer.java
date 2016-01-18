@@ -1,5 +1,7 @@
 package com.bhu.pure.kafka.examples.newed.test;
 
+import org.apache.kafka.common.serialization.StringDeserializer;
+
 import com.bhu.pure.kafka.examples.newed.client.consumer.KafkaMessageConsumer;
 
 public class DTOKafkaMessageConsumer extends KafkaMessageConsumer<String, TestDTO>{
@@ -20,6 +22,16 @@ public class DTOKafkaMessageConsumer extends KafkaMessageConsumer<String, TestDT
 	@Override
 	public long pollSize() {
 		return DEFAULT_POLLSIZE;
+	}
+
+	@Override
+	public String keyDeserializer() {
+		return StringDeserializer.class.getName();
+	}
+
+	@Override
+	public String valueDeserializer() {
+		return TestDTODeserializer.class.getName();
 	}
 
 }

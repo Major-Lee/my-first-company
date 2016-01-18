@@ -1,5 +1,8 @@
 package com.bhu.pure.kafka.examples.newed.test;
 
+import org.apache.kafka.common.serialization.IntegerDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+
 import com.bhu.pure.kafka.examples.newed.client.consumer.KafkaMessageConsumer;
 
 public class SimpleKafkaMessageConsumer extends KafkaMessageConsumer<Integer, String>{
@@ -22,4 +25,13 @@ public class SimpleKafkaMessageConsumer extends KafkaMessageConsumer<Integer, St
 		return DEFAULT_POLLSIZE;
 	}
 
+	@Override
+	public String keyDeserializer() {
+		return IntegerDeserializer.class.getName();
+	}
+
+	@Override
+	public String valueDeserializer() {
+		return StringDeserializer.class.getName();
+	}
 }

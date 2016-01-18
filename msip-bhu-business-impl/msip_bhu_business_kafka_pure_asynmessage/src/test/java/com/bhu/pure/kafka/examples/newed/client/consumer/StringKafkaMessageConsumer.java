@@ -1,20 +1,29 @@
 package com.bhu.pure.kafka.examples.newed.client.consumer;
 
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class StringKafkaMessageConsumer extends KafkaMessageConsumer<String, String>{
-
-	private static class ServiceHolder{ 
-		private static StringKafkaMessageConsumer instance =new StringKafkaMessageConsumer(); 
+	
+	public StringKafkaMessageConsumer(){
+		
 	}
-
-	public static StringKafkaMessageConsumer getInstance() { 
-		return ServiceHolder.instance; 
+	
+	public StringKafkaMessageConsumer(String consumerId){
+		super(consumerId);
 	}
-
 	
 	@Override
 	public long pollSize() {
 		return DEFAULT_POLLSIZE;
 	}
 
+	@Override
+	public String keyDeserializer() {
+		return StringDeserializer.class.getName();
+	}
+
+	@Override
+	public String valueDeserializer() {
+		return StringDeserializer.class.getName();
+	}
 }
