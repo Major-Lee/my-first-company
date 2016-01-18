@@ -1,8 +1,6 @@
 package com.bhu.vas.web.console;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -149,7 +147,7 @@ public class ConsoleVersionController extends BaseController {
 
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, versionId, QNurl, ALurl);
 		if (!rpcResult.hasError()){
-			yunOperateService.uploadYun(bs, uid, dut, fw, versionId, vapRpcService);
+			yunOperateService.uploadYun(bs,  uid,  dut,  fw, versionId, vapRpcService);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
@@ -174,11 +172,9 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) int uid, @RequestParam(required = true) String dut,
 			@RequestParam(required = true) boolean fw, @RequestParam(required = true) String versionId) {
 
-		
-		
+		yunOperateService.deleteFile(versionId,dut,fw);	
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, versionId);
 		if (!rpcResult.hasError()){
-			yunOperateService.deleteFile(versionId,dut,fw);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
