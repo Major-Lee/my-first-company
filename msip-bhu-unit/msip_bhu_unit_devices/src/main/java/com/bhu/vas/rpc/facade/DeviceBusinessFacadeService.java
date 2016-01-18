@@ -76,7 +76,7 @@ import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.bhu.vas.rpc.facade.search.WifiDeviceStautsIndexIncrementService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -136,7 +136,7 @@ public class DeviceBusinessFacadeService {
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	@Resource
-	private WifiDeviceStautsIndexIncrementService wifiDeviceStautsIndexIncrementService;
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -196,7 +196,7 @@ public class DeviceBusinessFacadeService {
 		wifi_device_module.setLast_module_reged_at(reged_at);
 		wifiDeviceModuleService.update(wifi_device_module);
 		//设备上线增量索引
-		wifiDeviceStautsIndexIncrementService.onlineUpsertIncrement(wifi_device_entity, newWifi);
+		wifiDeviceStatusIndexIncrementService.onlineUpsertIncrement(wifi_device_entity, newWifi);
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
@@ -274,7 +274,7 @@ public class DeviceBusinessFacadeService {
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
 				WifiDevicePresentCtxService.getInstance().removePresent(lowercase_wifi_id);
 				//设备离线增量索引
-				wifiDeviceStautsIndexIncrementService.offlineUpdIncrement(wifiId, exist_wifi_device_entity.getUptime(), 
+				wifiDeviceStatusIndexIncrementService.offlineUpdIncrement(wifiId, exist_wifi_device_entity.getUptime(), 
 						exist_wifi_device_entity.getLast_logout_at().getTime());
 				/*
 				 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
@@ -349,7 +349,9 @@ public class DeviceBusinessFacadeService {
 					        userDevice.setId(new UserDevicePK(mac, uid));
 					        userDevice.setCreated_at(new Date());
 					        userDeviceService.insert(userDevice);
-					        //异步执行搜索引擎数据同步和业务数据同步
+					        
+					        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
+					        //业务数据同步
 					        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 					        
 					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
@@ -1442,7 +1444,7 @@ public class DeviceBusinessFacadeService {
 					wifiDeviceModuleService.update(wifiDeviceModule);
 					//}
 					//模块上线增量索引
-					wifiDeviceStautsIndexIncrementService.moduleOnlineUpdIncrement(mac, wifiDeviceModule.getOrig_vap_module());
+					wifiDeviceStatusIndexIncrementService.moduleOnlineUpdIncrement(mac, wifiDeviceModule.getOrig_vap_module());
 				}
 				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));
 				if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){

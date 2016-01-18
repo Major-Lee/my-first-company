@@ -22,6 +22,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -46,11 +47,18 @@ public class UserDeviceFacadeService {
 
 	@Resource
 	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
+	
+	@Resource
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	
     //TODO：重复插入异常
     //1、首先得判定UserDevicePK(mac, uid) 是否存在
     //2、存在返回错误，不存在进行insert
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
-
+    	User user = userService.getById(uid);
+    	if(user == null)
+    		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+    	
         UserDevice userDevice;
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
         userDevice = userDeviceService.getById(userDevicePK);
@@ -62,6 +70,8 @@ public class UserDeviceFacadeService {
             userDevice.setCreated_at(new Date());
             userDevice.setDevice_name(deviceName);
             userDeviceService.insert(userDevice);
+            wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName);
+            
             deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
             UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
             userDeviceDTO.setMac(mac);
@@ -83,6 +93,7 @@ public class UserDeviceFacadeService {
 
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
         if (userDeviceService.deleteById(userDevicePK) > 0)  {
+        	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null);
         	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
@@ -133,6 +144,8 @@ public class UserDeviceFacadeService {
             userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setDevice_name(deviceName);
             userDeviceService.update(userDevice);
+            
+            wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);
             return true;
         } catch (Exception e) {
             return false;

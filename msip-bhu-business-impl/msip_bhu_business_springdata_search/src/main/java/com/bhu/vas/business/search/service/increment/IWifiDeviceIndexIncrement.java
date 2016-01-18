@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr;
+package com.bhu.vas.business.search.service.increment;
 
 import java.util.List;
 
@@ -54,14 +54,14 @@ public interface IWifiDeviceIndexIncrement {
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
-	public void onlineCrdIncrement(WifiDevice entity);
+	//public void onlineCrdIncrement(WifiDevice entity);
 	
 	/**
 	 * 设备绑定或解绑的变更
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
-	public void bindUserUpdIncrement(String id, User bindUser);
+	//public void bindUserUpdIncrement(String id, User bindUser);
 	
 	/**
 	 * 设备运营模板的变更

@@ -71,7 +71,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -92,6 +91,7 @@ import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
+import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -137,6 +137,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
+	
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 //	@Resource
 //	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
@@ -1428,9 +1431,9 @@ public class AsyncMsgHandleService {
 		
 		afterUserSignedonThenCmdDown(dto.getMac());
 
-		User user = userService.getById(dto.getUid());
-
-		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
+/*		User user = userService.getById(dto.getUid());
+		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);*/
+		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
 	
@@ -1457,7 +1460,8 @@ public class AsyncMsgHandleService {
 			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
 		}*/
 
-		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
+//		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
+		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	
@@ -1480,7 +1484,8 @@ public class AsyncMsgHandleService {
 					deviceFacadeService.removeMobilePresent(dto.getOld_uid(), dto.getMac());
 				}
 			}
-			wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
+			//wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);
+//			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dto.getMac(), user);
 		}
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));

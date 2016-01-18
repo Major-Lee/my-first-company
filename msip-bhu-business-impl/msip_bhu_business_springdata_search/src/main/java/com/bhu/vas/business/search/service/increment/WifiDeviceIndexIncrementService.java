@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr;
+package com.bhu.vas.business.search.service.increment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,19 +18,8 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
-import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 /**
@@ -47,7 +36,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	@Resource
+/*	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
@@ -63,7 +52,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	private UserService userService;
 	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserDeviceService userDeviceService;*/
 	
 	/**
 	 * 设备位置发生变更
@@ -301,7 +290,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
-	@Deprecated
+/*	@Deprecated
 	@Override
 	public void onlineCrdIncrement(WifiDevice entity){
 		if(entity == null) return;
@@ -327,7 +316,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 				wifiDeviceGray, bindUser, agentUser, (int)hoc);
 		
 		wifiDeviceDataSearchService.getRepository().save(doc);
-	}
+	}*/
 	
 	/**
 	 * 设备绑定或解绑的变更
@@ -341,7 +330,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
-	@Override
+/*	@Override
 	public void bindUserUpdIncrement(String id, User bindUser){
 		logger.info(String.format("bindUserUpdIncrement Request id [%s] bindUser [%s]", id, bindUser));
 		if(StringUtils.isEmpty(id)) return;
@@ -365,7 +354,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
-	}
+	}*/
 	
 	/**
 	 * 设备运营模板的变更

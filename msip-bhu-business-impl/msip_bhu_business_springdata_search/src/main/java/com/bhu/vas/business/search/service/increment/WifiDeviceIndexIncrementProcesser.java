@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendonline.asyncprocessor.service.indexincr;
+package com.bhu.vas.business.search.service.increment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,7 +192,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * 设备认领上线处理或首次上线，按照全字段重建覆盖标准
 	 * @param entity
 	 */
-	@Deprecated
+/*	@Deprecated
 	public void onlineCrdIncrement(final WifiDevice entity){
 		if(entity == null) return;
 		
@@ -209,14 +209,14 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 				}
 			}));
 		}
-	}
+	}*/
 	
 	/**
 	 * 设备绑定或解绑的变更
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 */
-	public void bindUserUpdIncrement(final String id, final User bindUser){
+/*	public void bindUserUpdIncrement(final String id, final User bindUser){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
@@ -230,7 +230,7 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 				}
 			}));
 		}
-	}
+	}*/
 	
 	/**
 	 * 设备运营模板的变更
