@@ -1273,9 +1273,9 @@ public class DeviceBusinessFacadeService {
 					DeviceHelper.mergeDS(currentDto, new_dto);
 					new_dto.getMode().setMode(new_mode);
 					if(WifiDeviceHelper.WorkMode_Router.equals(new_mode)) 
-						return WifiDeviceHelper.SwitchMode_Bridge2Router;
+						return WifiDeviceHelper.SwitchMode_Bridge2Router_Act;
 					if(WifiDeviceHelper.WorkMode_Bridge.equals(new_mode)) 
-						return WifiDeviceHelper.SwitchMode_Router2Bridge;
+						return WifiDeviceHelper.SwitchMode_Router2Bridge_Act;
 				}
 			}
 		}

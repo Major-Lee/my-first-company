@@ -44,8 +44,8 @@ public class WifiDeviceHelper {
 	public final static String Default_BlockMode_Router = "route";
 	public final static String Default_BlockMode_Bridge = "bridge";
 	public final static int SwitchMode_NoAction = -1;
-	public final static int SwitchMode_Router2Bridge = 0;
-	public final static int SwitchMode_Bridge2Router = 1;
+	public final static int SwitchMode_Router2Bridge_Act = 1;
+	public final static int SwitchMode_Bridge2Router_Act = 0;
 	
 	
 	public static final int Boot_On_Reset_Happen = 1;
@@ -74,11 +74,11 @@ public class WifiDeviceHelper {
 		if(StringUtils.isEmpty(work_mode)) return true;
 		return WorkMode_Router.equals(work_mode);
 	}
-	
+	//act 0代表bridge to router 1反之
 	public static void deviceWorkModeNeedChanged(String d_work_mode,int act){
 		if(act <0 || act >1)
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"mode:"+act});
-		String paramWorkMode = SwitchMode_Router2Bridge==act?WorkMode_Bridge:WorkMode_Router;
+		String paramWorkMode = SwitchMode_Router2Bridge_Act==act?WorkMode_Bridge:WorkMode_Router;
 		if(paramWorkMode.equals(d_work_mode)) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_WORKMODE_NOCHANGED,new String[]{d_work_mode});
 		}

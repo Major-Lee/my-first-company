@@ -29,7 +29,7 @@ public class ParamVasSwitchWorkmodeDTO{
 	public static void main(String[] argv){
 		//http://7xpatx.dl1.z0.glb.clouddn.com/uRouter/smb.package.tar.gz
 		ParamVasSwitchWorkmodeDTO dto = new ParamVasSwitchWorkmodeDTO();
-		dto.setWmode(WifiDeviceHelper.SwitchMode_Router2Bridge);
+		dto.setWmode(WifiDeviceHelper.SwitchMode_Router2Bridge_Act);
 		System.out.println(JsonHelper.getJSONString(dto));
 	}
 }

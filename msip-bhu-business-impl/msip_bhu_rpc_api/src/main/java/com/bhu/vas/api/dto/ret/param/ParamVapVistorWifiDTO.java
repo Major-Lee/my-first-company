@@ -115,10 +115,10 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	
 	public void switchWorkMode(int switchAct){
 		switch(switchAct){
-			case WifiDeviceHelper.SwitchMode_Router2Bridge:
+			case WifiDeviceHelper.SwitchMode_Router2Bridge_Act:
 				this.block_mode = WifiDeviceHelper.Default_BlockMode_Bridge;
 			break;
-			case WifiDeviceHelper.SwitchMode_Bridge2Router:
+			case WifiDeviceHelper.SwitchMode_Bridge2Router_Act:
 				this.block_mode = WifiDeviceHelper.Default_BlockMode_Router;
 				break;
 			default:
