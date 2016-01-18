@@ -16,20 +16,29 @@
  */
 package com.bhu.pure.kafka.examples.newed.client.consumer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.internals.NoOpConsumerRebalanceListener;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
 import com.bhu.pure.kafka.examples.newed.client.KafkaMessageClient;
+import com.bhu.pure.kafka.examples.newed.client.config.ClientConfig;
 import com.bhu.pure.kafka.examples.newed.client.consumer.callback.PollIteratorNotify;
+import com.bhu.pure.kafka.examples.newed.helper.StringHelper;
 import com.bhu.pure.kafka.examples.newed.subscribe.Subscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicPatternSubscriber;
 import com.bhu.pure.kafka.examples.newed.subscribe.TopicRebalanceSubscriber;
@@ -37,26 +46,52 @@ import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
 
 public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClient implements IKafkaMessageConsumer<KEY, VALUE>{
 	private static final Logger logger = LoggerFactory.getLogger(KafkaMessageConsumer.class);
-	
+	private final AtomicBoolean closed = new AtomicBoolean(false);
 	private final ExecutorService consumerExecutorService = Executors.newSingleThreadExecutor();
 	
+	private Properties consumerProperties;
+	private String consumerId;
 	private KafkaConsumer<KEY, VALUE> consumer;
+	private List<String> subscribe_topics;
+	private final AtomicBoolean subscribe_topics_changed = new AtomicBoolean(false);
 	//private List<TopicPartition> topicPartitions;
 	
 	public KafkaMessageConsumer(){
+		this(null);
+	}
+	
+	public KafkaMessageConsumer(String consumerId){
+		this.consumerId = consumerId;
 		initialize();
 	}
 	
 	private void initialize(){
 		logger.info("start consumer initialize");
 		
-		Properties clientProperties = loadProperties();
-		if(clientProperties == null){
+		consumerProperties = loadProperties();
+		if(consumerProperties == null){
 			throw new RuntimeException("KafkaMessageConsumer initialize failed require properties object");
 		}
-		consumer = new KafkaConsumer<KEY, VALUE>(clientProperties);
+		consumerProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializer());
+		consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer());
+		consumer = new KafkaConsumer<KEY, VALUE>(consumerProperties);
 		
+		parseConsumerTopics();
 		//parseConsumerClientConfig(clientProperties);
+	}
+	
+	public void parseConsumerTopics(){
+		subscribe_topics = new ArrayList<String>();
+		
+		String consumerSubscribeTopics = consumerProperties.getProperty(ClientConfig.builderConsumerSubscribeTopicsWithId(getConsumerId()));
+		if(StringUtils.isNotEmpty(consumerSubscribeTopics)){
+			String[] topics_array = consumerSubscribeTopics.split(StringHelper.COMMA_STRING_GAP);
+			for(String topic : topics_array){
+				if(!subscribe_topics.contains(topic)){
+					subscribe_topics.add(topic);
+				}
+			}
+		}
 	}
 	
 /*	private void parseConsumerClientConfig(Properties clientProperties){
@@ -121,8 +156,33 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 			}
 		}
 	}*/
+	
+	public void unsubscribe(){
+		consumer.unsubscribe();
+	}
+	
+	public boolean doSubscribePattern(String regex, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+		TopicPatternSubscriber tps = new TopicPatternSubscriber(Pattern.compile(regex), new NoOpConsumerRebalanceListener());
+		return doSubscribe(tps, notify);
+	}
+	
+	@Override
+	public void addSubscribeTopic(String topic){
+		if(!subscribe_topics.contains(topic)){
+			subscribe_topics.add(topic);
+			subscribe_topics_changed.set(true);
+		}
+	}
+	
+	@Override
+	public boolean doSubscribeTopics(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+		if(subscribe_topics.isEmpty()) return false;
+		return doSubscribe(new TopicSubscriber(subscribe_topics), notify);
+	}
+	
 	@Override
 	public boolean doSubscribeTopics(List<String> topics, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
+		subscribe_topics.addAll(topics);
 		return doSubscribe(new TopicSubscriber(topics), notify);
 	}
 	
@@ -150,11 +210,23 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		return true;
 	}
 	
+//	public boolean addSubscribeTopic(String topic){
+//		consumer.wakeup();
+//		
+//		Set<String> current_topics = consumer.subscription();
+//		current_topics.add(topic);
+//
+//		consumer.subscribe(new ArrayList<String>(current_topics));
+//		return true;
+//	}
+	
 	@Override
-	public void unsubscribe(){
-		consumer.unsubscribe();
+	public void shutdown(){
+		closed.set(true);
+		consumer.wakeup();
 		consumerExecutorServiceShutdown();
 	}
+	
 	
 	@Override
 	public boolean doAssgin(Assigner assigner, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
@@ -174,20 +246,47 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		consumerExecutorService.submit((new Runnable() {
 			@Override
 			public void run() {
-				while(true){
-					System.out.println("start consumer poll");
-					ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
-					notify.notifyComming(records);
-				}
+				try{
+					while(!closed.get()){
+						if(subscribe_topics_changed.get()){
+							subscribeTopicsChangedNotify();
+						}
+						System.out.println("start consumer poll");
+						ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
+						notify.notifyComming(consumerId, records);
+					}
+				}catch (WakeupException e) {
+					System.out.println("wakeup");
+		            // Ignore exception if closing
+		            if (!closed.get()) throw e;
+		        }catch(Exception ex){
+		        	ex.printStackTrace();
+		        	consumer.close();
+		        }
+//				finally {
+//		        	System.out.println("finally");
+//		            consumer.close();
+//		        }
 			}
 		}));
 	}
+	
+	public void subscribeTopicsChangedNotify(){
+		System.out.println("notify changed " + subscribe_topics);
+		//consumer.subscribe(Collections.singletonList("topic3"));
+		consumer.subscribe(subscribe_topics);
+		subscribe_topics_changed.set(false);
+	}
+	
+//	protected void validates(){
+//		consumer.s
+//	}
 	
 	public void consumerExecutorServiceShutdown(){
 		Executors.newSingleThreadExecutor().submit((new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(closed.get()){
 					System.out.println("exec正在shutdown");
 					consumerExecutorService.shutdown();
 					System.out.println("exec正在shutdown成功");
@@ -216,6 +315,17 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	public long pollSize() {
 		return DEFAULT_POLLSIZE;
 	}
-//	public abstract Subscriber getSubscriber();
 	
+	public String getConsumerId() {
+		return consumerId;
+	}
+
+	public void setConsumerId(String consumerId) {
+		this.consumerId = consumerId;
+		parseConsumerTopics();
+	}
+
+	public abstract String keyDeserializer();
+	public abstract String valueDeserializer();
+
 }

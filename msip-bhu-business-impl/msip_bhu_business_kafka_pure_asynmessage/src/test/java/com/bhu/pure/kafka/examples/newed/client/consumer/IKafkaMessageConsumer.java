@@ -13,11 +13,15 @@ public interface IKafkaMessageConsumer<KEY, VALUE>{
 	
 	public long pollSize();
 	
+	public void addSubscribeTopic(String topic);
+	
+	public boolean doSubscribeTopics(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
+	
 	public boolean doSubscribeTopics(List<String> topics, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
 	
 	public boolean doSubscribe(Subscriber subscriber, PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
 	
 	public boolean doAssgin(Assigner assigner, final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify);
 	
-	public void unsubscribe();
+	public void shutdown();
 }
