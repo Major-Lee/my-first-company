@@ -45,8 +45,7 @@ public class YunOperateService {
 	 *            库名字
 	 * @throws QiniuException
 	 */
-	public void uploadFile2QN(byte[] bs, String dut, String fileName, boolean fw,String JsFilePath) throws QiniuException {
-		try {
+	public void uploadFile2QN(byte[] bs, String dut, String fileName, boolean fw,String JsFilePath) throws Exception {
 
 			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 			UploadManager uploadManager = new UploadManager();
@@ -59,11 +58,6 @@ public class YunOperateService {
 				
 			}
 			System.out.println("七牛云上传成功。");
-		} catch (Exception e) {
-			System.out.println("七牛yun上传错误");
-			e.printStackTrace();
-		}
-		//
 	}
 
 	/**
@@ -75,9 +69,7 @@ public class YunOperateService {
 	 * @throws Exception
 	 */
 	public void uploadFile2AL(byte[] bs, String dut, String fileName, boolean fw,String JsFilePath) throws Exception {
-		try {
-			// dut + yunOperateService.AL_REMATE_NAME + fileName
-
+		
 			ByteArrayInputStream in = new ByteArrayInputStream(bs);
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
 			// 创建上传Object的Metadata
@@ -92,14 +84,9 @@ public class YunOperateService {
 				ossClient.putObject(AL_BUCKET_NAME_OM, getRemoteName(fileName)+"/" +"version.js", file, objectMetadata);
 			}
 			System.out.println("阿里云上传成功");
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("阿里云上传出错了");
-			e.printStackTrace();
-		}finally{
+			//删除临时缓存文件夹
 			deleteCatchBucket(JsFilePath);
 		}
-	}
 
 	/**
 	 * 删除云备份文件
@@ -107,7 +94,7 @@ public class YunOperateService {
 	 * @param dut 版本号
 	 * @param fw  判断是固件版本还是模块版本
 	 */
-	public static void deleteFile(String fileName,String dut,boolean fw) {
+	public  void deleteFile(String fileName,String dut,boolean fw) {
 		try {
 
 			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
@@ -130,8 +117,6 @@ public class YunOperateService {
 				bucketManager.delete(QN_BUCKET_NAME_OM,"/" + getRemoteName(fileName)+"/" +"version.js");	
 			}
 			System.out.println("删除成功。");
-		} catch (QiniuException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			System.out.println("删除失败。");
 			e.printStackTrace();
@@ -139,11 +124,11 @@ public class YunOperateService {
 	}
 
 	/**
-	 * 上传OM文件时，本体创建version.js文件
+	 * 上传OM文件时，本地创建version.js文件
 	 * @param fileFullName 加后缀的全名
 	 * @return js文件路径
 	 */
-	static String getFilePath(String fileFullName) {
+	 String getFilePath(String fileFullName) {
 		
 		String fileName = fileFullName.substring(0, fileFullName.lastIndexOf("."));
 		String str = "jcb(\n\t\t{\"name\":\""+fileName+"\", \"url\":\""+fileFullName+"\"}\n)";
@@ -185,7 +170,7 @@ public class YunOperateService {
 	 * 删除临时缓存文件和文件夹
 	 * @param jsFilePath
 	 */
-	static void deleteCatchBucket(String jsFilePath){
+	 void deleteCatchBucket(String jsFilePath){
 		File file = new File(jsFilePath);
 		file.delete();
 		

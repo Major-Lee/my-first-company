@@ -147,13 +147,13 @@ public class ConsoleVersionController extends BaseController {
 		String QNurl = null;
 		String ALurl = null;
 		if (fw) {
-			 QNurl = yunOperateService.QN_BUCKET_URL_FW + "/" + dut + "/build/" + fileName;
-			 ALurl = yunOperateService.AL_BUCKET_NAME_FW + "." + yunOperateService.AL_END_POINT + "/" + dut
+			 QNurl = YunOperateService.QN_BUCKET_URL_FW + "/" + dut + "/build/" + fileName;
+			 ALurl = YunOperateService.AL_BUCKET_NAME_FW + "." + YunOperateService.AL_END_POINT + "/" + dut
 					+ "/build/" + fileName;
 		}
 		if (!fw) {
-			 QNurl = yunOperateService.QN_BUCKET_URL_OM + "/" + yunOperateService.getRemoteName(fileName) + "/" + fileName;
-			 ALurl = yunOperateService.AL_BUCKET_NAME_OM + "." + yunOperateService.AL_END_POINT + "/" + dut
+			 QNurl = YunOperateService.QN_BUCKET_URL_OM + "/" + yunOperateService.getRemoteName(fileName) + "/" + fileName;
+			 ALurl = YunOperateService.AL_BUCKET_NAME_OM + "." + YunOperateService.AL_END_POINT + "/" + dut
 					+ "/build/" + fileName;
 		}
 		System.out.println(QNurl + "::::::::::::::::" + ALurl);
