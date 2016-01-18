@@ -75,7 +75,11 @@ public class VapRpcService  implements IVapRpcService{
 		logger.info(String.format("addDeviceVersion uid[%s] dut[%s] fw[%s] versionid[%s] upgrade_url[%s]",uid,dut,fw,versionid,upgrade_url));
 		return deviceUnitFacadeRpcService.addDeviceVersion(uid, dut, fw, versionid, upgrade_url,upgrade_slaver_urls);
 	}
-
+	
+	@Override
+	public RpcResponseDTO<VersionVTO> addDeviceVersionUploadFailCallback(int uid,boolean fw,String versionid) {
+		return deviceUnitFacadeRpcService.addDeviceVersionUploadFailCallback(uid,fw, versionid);
+	}
 	@Override
 	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, String dut,
 			boolean fw, String fileName) {
@@ -125,4 +129,5 @@ public class VapRpcService  implements IVapRpcService{
 		logger.info(String.format("fetchStatDetail uid[%s] style[%s]",uid, style));
 		return vapFacadeService.fetchStatDetail(uid, style);
 	}
+
 }

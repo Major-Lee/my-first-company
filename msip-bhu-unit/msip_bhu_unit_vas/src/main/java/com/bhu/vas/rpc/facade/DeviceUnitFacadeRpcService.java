@@ -141,6 +141,20 @@ public class DeviceUnitFacadeRpcService{
 		}
 	}
 
+	public RpcResponseDTO<VersionVTO> addDeviceVersionUploadFailCallback(int uid,boolean fw,String versionid) {
+		try{
+			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.addDeviceVersionUploadFailCallback(fw,versionid);
+			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	
 	public RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid, String dut,
 			boolean fw, String fileName) {
 		try{
