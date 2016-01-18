@@ -314,6 +314,34 @@ public class WifiDeviceGrayFacadeService {
     	}
     }
     
+    public VersionVTO addDeviceVersionUploadFailCallback(boolean fw,String versionid){
+    	if(StringUtils.isEmpty(versionid)) 
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(fw){
+    		WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionid);
+    		if(versionfw == null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
+    		}
+    		versionfw.setName(versionid);
+    		versionfw.setUpgrade_url(null);
+    		versionfw.setUpgrade_slaver_urls(null);
+    		versionfw = wifiDeviceVersionFWService.update(versionfw);
+    		return versionfw.toVersionVTO();
+    	}else{
+    		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
+    		if(versionom == null){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
+    		}
+    		versionom = new WifiDeviceVersionOM();
+    		versionom.setName(versionid);
+    		versionom.setUpgrade_url(null);
+    		versionom.setUpgrade_slaver_urls(null);
+    		versionom = wifiDeviceVersionOMService.update(versionom);
+    		return versionom.toVersionVTO();
+    	}
+    	
+    }
+    
     /**
      * 删除指定设备类型的固件或增值组件版本
      * @param dut
@@ -510,7 +538,7 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setCurrentDVB(d_version);
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{
-						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined!",dmac,fw));
+						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined or invalid!",dmac,fw));
 					}
 				}else{
 					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_fwid()));
@@ -530,7 +558,7 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setCurrentDVB(d_version);
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{
-						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined!",dmac,fw));
+						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined! or invalid",dmac,fw));
 					}
 				}else{
 					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_omid()));
