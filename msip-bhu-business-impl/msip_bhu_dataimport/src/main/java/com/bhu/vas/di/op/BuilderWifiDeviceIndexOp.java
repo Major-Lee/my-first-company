@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
@@ -159,12 +160,18 @@ public class BuilderWifiDeviceIndexOp {
 					}
 					
 					User bindUser = null;
-					Integer bindUserId = userDeviceService.fetchBindUid(mac);
-					if(bindUserId != null && bindUserId > 0){
-						bindUser = userService.getById(bindUserId);
+					String bindUserDNick = null;
+					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
+					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
+					if(userDevice != null){
+						bindUserDNick = userDevice.getDevice_name();
+						Integer bindUserId = userDevice.getId().getUid();
+						if(bindUserId != null){
+							bindUser = userService.getById(bindUserId);
+						}
 					}
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, agentDeviceClaim, 
-							wifiDeviceGray, bindUser, agentUser, (int)hoc);
+							wifiDeviceGray, bindUser, bindUserDNick, agentUser, (int)hoc);
 					if(doc != null){
 						docs.add(doc);
 						index_count++;

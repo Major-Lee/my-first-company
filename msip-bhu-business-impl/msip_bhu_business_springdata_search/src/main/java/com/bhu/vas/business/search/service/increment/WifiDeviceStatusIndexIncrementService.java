@@ -142,11 +142,13 @@ public class WifiDeviceStatusIndexIncrementService{
 	 * 4) u_mcc
 	 * 5) u_type
 	 * 6) u_binded
+	 * 7) u_dnick
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
+	 * @param bindUserDNick 用户绑定的设备的昵称
 	 */
-	public void bindUserUpdIncrement(String id, User bindUser){
-		logger.info(String.format("BindUserUpdIncrement Request id [%s] bindUser [%s]", id, bindUser));
+	public void bindUserUpdIncrement(String id, User bindUser, String bindUserDNick){
+		logger.info(String.format("BindUserUpdIncrement Request id [%s] bindUser [%s] bindUserDNick [%s]", id, bindUser, bindUserDNick));
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
@@ -157,6 +159,7 @@ public class WifiDeviceStatusIndexIncrementService{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), bindUser.getCountrycode());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), bindUser.getUtype());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), bindUserDNick);
 		}else{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), null);
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), null);
@@ -164,10 +167,28 @@ public class WifiDeviceStatusIndexIncrementService{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), null);
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), null);
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
 		}
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
+	
+	/**
+	 * 用户设置绑定的设备的昵称
+	 * 变更涉及的更改索引字段是
+	 * 1) u_dnick
+	 * @param id 设备mac
+	 * @param bindUserDNick 用户绑定的设备的昵称
+	 */
+	public void bindUserDNickUpdIncrement(String id, String bindUserDNick){
+		logger.info(String.format("BindUserDNickUpdIncrement Request id [%s] bindUserDNick [%s]", id, bindUserDNick));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), bindUserDNick);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
 }
