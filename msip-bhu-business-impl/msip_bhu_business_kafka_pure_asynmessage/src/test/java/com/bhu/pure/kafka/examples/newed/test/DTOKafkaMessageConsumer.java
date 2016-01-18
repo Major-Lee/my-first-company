@@ -2,7 +2,7 @@ package com.bhu.pure.kafka.examples.newed.test;
 
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import com.bhu.pure.kafka.examples.newed.client.consumer.KafkaMessageConsumer;
+import com.bhu.pure.kafka.client.consumer.KafkaMessageConsumer;
 
 public class DTOKafkaMessageConsumer extends KafkaMessageConsumer<String, TestDTO>{
 

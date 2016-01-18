@@ -1,6 +1,6 @@
 package com.bhu.pure.kafka.examples.newed.test;
 
-import com.bhu.pure.kafka.examples.newed.client.producer.KafkaMessageProducer;
+import com.bhu.pure.kafka.client.producer.KafkaMessageProducer;
 
 public class DTOKafkaMessageProducer extends KafkaMessageProducer<String, TestDTO>{
 

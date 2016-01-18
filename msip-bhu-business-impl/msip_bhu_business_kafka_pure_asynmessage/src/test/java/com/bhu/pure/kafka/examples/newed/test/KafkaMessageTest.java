@@ -6,13 +6,13 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import com.bhu.pure.kafka.examples.newed.assigner.Assigner;
-import com.bhu.pure.kafka.examples.newed.assigner.TopicAssigner;
-import com.bhu.pure.kafka.examples.newed.client.consumer.StringKafkaMessageConsumer;
-import com.bhu.pure.kafka.examples.newed.client.consumer.callback.PollIteratorNotify;
-import com.bhu.pure.kafka.examples.newed.client.producer.StringKafkaMessageProducer;
-import com.bhu.pure.kafka.examples.newed.client.producer.callback.KeyValueProducerCallback;
-import com.bhu.pure.kafka.examples.newed.subscribe.TopicSubscriber;
+import com.bhu.pure.kafka.assigner.Assigner;
+import com.bhu.pure.kafka.assigner.TopicAssigner;
+import com.bhu.pure.kafka.client.consumer.StringKafkaMessageConsumer;
+import com.bhu.pure.kafka.client.consumer.callback.PollIteratorNotify;
+import com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer;
+import com.bhu.pure.kafka.client.producer.callback.KeyValueProducerCallback;
+import com.bhu.pure.kafka.subscribe.TopicSubscriber;
 
 public class KafkaMessageTest {
 	public static final String TOPIC1 = "topic1";
