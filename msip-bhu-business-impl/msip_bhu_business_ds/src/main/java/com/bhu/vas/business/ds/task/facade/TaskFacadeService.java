@@ -26,6 +26,7 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
@@ -148,6 +149,31 @@ public class TaskFacadeService {
 			}
 		}
 	}
+	
+	/**
+	 * 查询任务的状态 会对timeout的任务进行标记
+	 * 1：已完成任务中查询
+	 * 2：pending任务中查询
+	 * @param taskid
+	 * @return
+	 */
+	public WifiDeviceDownTask queryTask(Long taskid){
+		if(taskid != null){
+			//从已完成任务中获取
+			WifiDeviceDownTaskCompleted taskCompleted = wifiDeviceDownTaskCompletedService.getById(taskid);
+			if(taskCompleted != null)
+				return taskCompleted;
+			
+			WifiDeviceDownTask pending_task = wifiDeviceDownTaskService.getById(taskid);
+			//如果获取的是pending任务 判断时间是否timeout
+			if(pending_task != null){
+				validateTaskTimeout(pending_task);
+				return pending_task;
+			}
+		}
+		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
+	}
+	
 	/**
 	 * 查询任务的状态 会对timeout的任务进行标记
 	 * 1：已完成任务中查询
@@ -180,30 +206,88 @@ public class TaskFacadeService {
 		}
 		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
 	}
-	
 	/**
-	 * 查询任务的状态 会对timeout的任务进行标记
-	 * 1：已完成任务中查询
-	 * 2：pending任务中查询
-	 * @param taskid
+	 * 任务状态查询接口的状态转换
+	 * api接口只提供4种状态
+	 * State_Done State_Timeout State_Failed State_Pending
+	 * @param state
 	 * @return
 	 */
-	public WifiDeviceDownTask queryTask(Long taskid){
+	public static String formatedTaskState(String state){
+		if(StringUtils.isEmpty(state)) return WifiDeviceDownTask.State_Failed;
+		if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Pending.equals(state)
+				|| WifiDeviceDownTask.State_Timeout.equals(state)){
+			return state;
+		}
+		return WifiDeviceDownTask.State_Failed;
+	}
+	
+	public TaskResDetailDTO queryTaskDetail(Long taskid){
+		TaskResDetailDTO detail = null;
 		if(taskid != null){
 			//从已完成任务中获取
 			WifiDeviceDownTaskCompleted taskCompleted = wifiDeviceDownTaskCompletedService.getById(taskid);
-			if(taskCompleted != null)
-				return taskCompleted;
-			
+			if(taskCompleted != null){
+				detail = new TaskResDetailDTO();
+				detail.setChannel(taskCompleted.getChannel());
+				detail.setChannel_taskid(taskCompleted.getChannel_taskid());
+				detail.setState(formatedTaskState(taskCompleted.getState()));
+				detail.setMac(taskCompleted.getMac());
+				detail.setTaskid(taskCompleted.getId());
+				detail.setResponse(taskCompleted.getResponse());
+				return detail;
+			}
 			WifiDeviceDownTask pending_task = wifiDeviceDownTaskService.getById(taskid);
 			//如果获取的是pending任务 判断时间是否timeout
 			if(pending_task != null){
 				validateTaskTimeout(pending_task);
-				return pending_task;
+				detail = new TaskResDetailDTO();
+				detail.setChannel(pending_task.getChannel());
+				detail.setChannel_taskid(pending_task.getChannel_taskid());
+				detail.setState(formatedTaskState(pending_task.getState()));
+				detail.setMac(pending_task.getMac());
+				detail.setTaskid(pending_task.getId());
+				return detail;
 			}
 		}
 		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
 	}
+	
+	
+	public TaskResDetailDTO queryTaskDetail(String channel, String channel_taskid){
+		TaskResDetailDTO detail = null;
+		WifiDeviceDownTaskCompleted taskCompleted = null;
+		//从已完成任务中获取
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("channel_taskid", channel_taskid).andColumnEqualTo("channel", channel);
+		List<WifiDeviceDownTaskCompleted> taskCompleteds = wifiDeviceDownTaskCompletedService.findModelByModelCriteria(mc);
+		if(!taskCompleteds.isEmpty()){
+			taskCompleted = taskCompleteds.get(0);
+			detail = new TaskResDetailDTO();
+			detail.setChannel(taskCompleted.getChannel());
+			detail.setChannel_taskid(taskCompleted.getChannel_taskid());
+			detail.setState(formatedTaskState(taskCompleted.getState()));
+			detail.setMac(taskCompleted.getMac());
+			detail.setTaskid(taskCompleted.getId());
+			detail.setResponse(taskCompleted.getResponse());
+			return detail;
+		}
+		List<WifiDeviceDownTask> taskDowns = wifiDeviceDownTaskService.findModelByModelCriteria(mc);
+		if(!taskDowns.isEmpty()){
+			//如果获取的是pending任务 判断时间是否timeout
+			WifiDeviceDownTask pending_task = taskDowns.get(0);
+			validateTaskTimeout(pending_task);
+			detail = new TaskResDetailDTO();
+			detail.setChannel(pending_task.getChannel());
+			detail.setChannel_taskid(pending_task.getChannel_taskid());
+			detail.setState(formatedTaskState(pending_task.getState()));
+			detail.setMac(pending_task.getMac());
+			detail.setTaskid(pending_task.getId());
+			return detail;
+		}
+		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_NOT_EXIST);
+	}
+	
 	
 	public WifiDeviceDownTask findWifiDeviceDownTaskById(Long taskid){
 		if(taskid != null){

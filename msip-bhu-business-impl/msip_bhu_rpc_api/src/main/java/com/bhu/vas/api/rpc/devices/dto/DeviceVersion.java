@@ -95,7 +95,7 @@ public class DeviceVersion {
 	}
 	
 	public String toDeviceUnitTypeIndex(){
-		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(dut, prefix);
+		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(getDut(), prefix);
 		if(fromVersionPrefix != null){
 			return fromVersionPrefix.getIndex();
 		}
@@ -227,11 +227,11 @@ public class DeviceVersion {
 	}
 	
 	public static void main(String[] argv){
-		String[] array = {"AP106P06V1.3.2Build8606","AP107P07V1.3.2r1","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		/*String[] array = {"AP106P06V1.3.2Build8606","AP107P07V1.3.2r1","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TU_NGT","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
 		for(String orig:array){
 			DeviceVersion parser = DeviceVersion.parser(orig);
 			String[] parseDeviceSwverVersion = parser.parseDeviceSwverVersion();
-			System.out.println(orig+"   "+/*parser.wasDutURouter() +*/ "  "+ parser.getPrefix()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]+"  "+parser.getDut()+"  "+parser.getMn());
+			System.out.println(orig+"   "+parser.wasDutURouter() + "  "+ parser.getPrefix()+" "+parser.getPno() +"  "+parser.getVer()+ "  "+parseDeviceSwverVersion[0]+"  "+parseDeviceSwverVersion[1]+"  "+parser.getDut()+"  "+parser.getMn());
 		}
 		
 		String ss = "Build8606";
@@ -242,7 +242,7 @@ public class DeviceVersion {
 		for(String orig:array1){
 			int compareDeviceVersions = compareVersions(current, orig);
 			System.out.println(compareDeviceVersions);
-		}
+		}*/
 			
 		/*String Swver_Spliter_Patterns = "[P0|V|_]+";
 		String[] split = "AP106P06V1.3.2Build8606".split(Swver_Spliter_Patterns);
@@ -250,5 +250,13 @@ public class DeviceVersion {
 		for(String orig:split){
 			System.out.println(orig);
 		}*/
+		
+		DeviceVersion parser = DeviceVersion.parser("AP106P06V1.3.0Build8482");
+		System.out.println(" ver:"+parser.toDeviceUnitTypeIndex());
+		
+		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(parser.getDut(), parser.getPrefix());
+		System.out.println(parser.getDut());
+		System.out.println(parser.getPrefix());
+		System.out.println(fromVersionPrefix);
 	}
 }

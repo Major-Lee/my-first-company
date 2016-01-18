@@ -108,6 +108,26 @@ public interface IUserRpcService {
 			String channel_taskid
 			);*/
 	//public boolean taskCompleted(String taskid);
+	
+	/**
+	 * 根据验证码进行密码重置操作
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 * @param resetIp
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> userResetPwd(
+			int countrycode,
+			String acc,
+			String pwd,
+			String device,
+			String resetIp,
+			String captcha
+			);
+	
 
 	RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey);
 }

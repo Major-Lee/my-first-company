@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -33,15 +34,18 @@ public class UserCaptchaCodeUnitFacadeService {
 	//@Resource
 	//private DeliverMessageService deliverMessageService;
 	
+	private static final String FetchCaptchaCode_RegisterOrLogin_Act = "R";
+	private static final String FetchCaptchaCode_PwdReset_Act = "P";
+	
 	public RpcResponseDTO<UserCaptchaCodeDTO> fetchCaptchaCode(int countrycode,
-			final String acc) {
+			final String acc,final String act) {
 		//RpcResponseDTO<UserCaptchaCodeDTO> result = new RpcResponseDTO<UserCaptchaCodeDTO>();
 		try{
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 			UserCaptchaCode code = userCaptchaCodeService.doGenerateCaptchaCode(accWithCountryCode);
 			//deliverMessageService.sendUserCaptchaCodeFetchActionMessage(DeliverMessageType.AC.getPrefix(), countrycode, acc, code.getCaptcha());//sendUserSignedonActionMessage(DeliverMessageType.AC.getPrefix(), user.getId(), remoteIp, from_device);
 			//SpringMVCHelper.renderJson(response, Response.SUCCESS);
-			UserCaptchaCodeDTO payload = new UserCaptchaCodeDTO();
+			final UserCaptchaCodeDTO payload = new UserCaptchaCodeDTO();
 			payload.setAcc(acc);
 			payload.setCountrycode(countrycode);
 			payload.setCaptcha(code.getCaptcha());
@@ -50,13 +54,20 @@ public class UserCaptchaCodeUnitFacadeService {
 			if(!RuntimeConfiguration.SecretInnerTest){
 				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
 					if(countrycode == PhoneHelper.Default_CountryCode_Int){
-						final String smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, code.getCaptcha());
+						
 						exec.submit((new Runnable() {
 							@Override
 							public void run() {
-								String response = SmsSenderFactory.buildSender(
+								String smsg = null;
+								if(FetchCaptchaCode_RegisterOrLogin_Act.equals(act))
+									smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, payload.getCaptcha());
+								if(FetchCaptchaCode_PwdReset_Act.equals(act))
+									smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodePwdResetSMS_Template, payload.getCaptcha());
+								if(StringUtils.isNotEmpty(smsg)){
+									String response = SmsSenderFactory.buildSender(
 										BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-								logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
+									logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
+								}
 							}
 						}));
 					}else{
