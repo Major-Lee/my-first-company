@@ -1,6 +1,6 @@
 package com.bhu.pure.kafka.examples.newed.test;
 
-import com.bhu.pure.kafka.examples.newed.deserializer.DTODeserializer;
+import com.bhu.pure.kafka.deserializer.DTODeserializer;
 
 public class TestDTODeserializer extends DTODeserializer<TestDTO>{
 

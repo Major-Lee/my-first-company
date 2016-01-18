@@ -40,42 +40,63 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 public abstract class AbstractDataSearchConditionService<MODEL extends AbstractDocument> extends AbstractDataSearchService<MODEL>{
 	
 	/**
-	 * 使用search condition message进行搜索
+	 * 使用search condition message进行搜索page
+	 * @param message
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws ElasticsearchIllegalArgumentException
 	 */
 	public Page<MODEL> searchByConditionMessage(String message, int pageNo, int pageSize) 
 			throws ElasticsearchIllegalArgumentException{
-		
-		SearchConditionMessage searchConditionMessage = null;
-		if(!StringUtils.isEmpty(message)){
-			searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
-		}
-		return searchByConditionMessage(searchConditionMessage, pageNo, pageSize);
+		return searchByConditionMessage(getSearchConditionMessageDTO(message), pageNo, pageSize);
+	}
+	/**
+	 * 使用search condition message进行搜索list
+	 * @param message
+	 * @return
+	 * @throws ElasticsearchIllegalArgumentException
+	 */
+	public List<MODEL> searchByConditionMessage(String message) 
+			throws ElasticsearchIllegalArgumentException{
+		return searchByConditionMessage(getSearchConditionMessageDTO(message));
 	}
 
 	/**
-	 * 使用search condition message进行搜索
+	 * 转换message为SearchConditionMessage对象
+	 * @param message
+	 * @return
+	 */
+	public SearchConditionMessage getSearchConditionMessageDTO(String message){
+		if(!StringUtils.isEmpty(message)){
+			return JsonHelper.getDTO(message, SearchConditionMessage.class);
+		}
+		return null;
+	}
+	
+	/**
+	 * 使用search condition message进行搜索page
+	 * @param searchConditionMessage
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws ElasticsearchIllegalArgumentException
 	 */
 	public Page<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) 
 			throws ElasticsearchIllegalArgumentException{
-/*		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-		SearchType searchType = SearchType.QUERY_THEN_FETCH;
-		
-		if(searchConditionMessage != null){
-			//解析condition返回原生搜索QueryBuilder
-			parserCondition(nativeSearchQueryBuilder, searchConditionMessage.getSearchConditions());
-	    	searchType = SearchType.fromId(searchConditionMessage.getSearchType());
-		}else{
-			nativeSearchQueryBuilder.withFilter(FilterBuilders.matchAllFilter());
-		}
-		
-		//使用es原生方式进行查询
-        SearchQuery searchQuery = nativeSearchQueryBuilder
-        		.withSearchType(searchType)
-        		.withPageable(new PageRequest(pageNo, pageSize))
-        		.build();
-        return getElasticsearchTemplate().queryForPage(searchQuery, entityClass);*/
 		return getElasticsearchTemplate().queryForPage(builderSearchQueryByConditionMessage(searchConditionMessage, 
 				pageNo, pageSize), entityClass);
+	}
+	/**
+	 * 使用search condition message进行搜索list
+	 * @param searchConditionMessage
+	 * @return
+	 * @throws ElasticsearchIllegalArgumentException
+	 */
+	public List<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage) 
+			throws ElasticsearchIllegalArgumentException{
+		return getElasticsearchTemplate().queryForList(builderSearchQueryByConditionMessage(searchConditionMessage), 
+				entityClass);
 	}
 	
 	private SearchQuery builderSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
@@ -83,8 +104,11 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		return builderNativeSearchQueryByConditionMessage(searchConditionMessage, pageNo, pageSize).build();
 	}
 	
-	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
-			int pageNo, int pageSize){
+	private SearchQuery builderSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage){
+		return builderNativeSearchQueryByConditionMessage(searchConditionMessage).build();
+	}
+	
+	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage){
 		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
 		SearchType searchType = SearchType.QUERY_THEN_FETCH;
 		
@@ -97,9 +121,15 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		}
 		
 		//使用es原生方式进行查询
-        nativeSearchQueryBuilder
-        		.withSearchType(searchType)
-        		.withPageable(new PageRequest(pageNo, pageSize));
+        nativeSearchQueryBuilder.withSearchType(searchType);
+//        		.withPageable(new PageRequest(pageNo, pageSize));
+        return nativeSearchQueryBuilder;
+	}
+	
+	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
+			int pageNo, int pageSize){
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(searchConditionMessage);
+		nativeSearchQueryBuilder.withPageable(new PageRequest(pageNo, pageSize));
         return nativeSearchQueryBuilder;
 	}
 	

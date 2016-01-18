@@ -3,6 +3,7 @@ package com.bhu.vas.api.dto.search.condition;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 
 /**
  * 用于Search Condition接口的交互消息定义类
@@ -53,5 +54,20 @@ public class SearchConditionMessage implements java.io.Serializable{
 	}
 	public void setSearchType(byte searchType) {
 		this.searchType = searchType;
+	}
+	
+	public static SearchConditionMessage builderSearchConditionMessage(SearchCondition... conditions){
+		return builderSearchConditionMessage(null,conditions);
+	}
+	
+	public static SearchConditionMessage builderSearchConditionMessage(Byte searchType, SearchCondition... conditions){
+		SearchConditionMessage searchConditionMessage = new SearchConditionMessage();
+		if(searchType != null){
+			searchConditionMessage.setSearchType(searchType);
+		}
+		if(conditions != null){
+			searchConditionMessage.setSearchConditions(ArrayHelper.toList(conditions));
+		}
+		return searchConditionMessage;
 	}
 }
