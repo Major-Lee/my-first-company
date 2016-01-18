@@ -12,7 +12,6 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
-import com.bhu.vas.api.vto.modulestat.ModuleDefinedVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
