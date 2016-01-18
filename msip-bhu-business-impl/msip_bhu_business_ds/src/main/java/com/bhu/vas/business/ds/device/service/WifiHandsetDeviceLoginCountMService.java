@@ -1,17 +1,5 @@
 package com.bhu.vas.business.ds.device.service;
 
-import javax.annotation.Resource;
-
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
-
-import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceLoginCountMDao;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 
 /**
  * wifi设备接入移动设备的接入数量 (mongodb)
@@ -20,9 +8,9 @@ import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
  * @author tangzichao
  *
  */
-@Service
+//@Service
 public class WifiHandsetDeviceLoginCountMService {
-	
+	/*	
 	@Resource
 	private WifiHandsetDeviceLoginCountMDao wifiHandsetDeviceLoginCountMDao;
 	
@@ -38,17 +26,17 @@ public class WifiHandsetDeviceLoginCountMService {
 		wifiHandsetDeviceLoginCountMDao.upsert(query, update);
 	}
 	
-	/**
+	*//**
 	 * 按照count从大到小排序
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
-	 */
+	 *//*
 	public Pagination<WifiHandsetDeviceLoginCountMDTO> findWifiDevicesOrderMaxHandset(int pageNo, int pageSize){
 		Query query = new Query();
 		query.with(new Sort(Direction.DESC,"count"));
 		return wifiHandsetDeviceLoginCountMDao.findPagination(pageNo, pageSize, query);
 	}
 	
-	
+	*/
 }
