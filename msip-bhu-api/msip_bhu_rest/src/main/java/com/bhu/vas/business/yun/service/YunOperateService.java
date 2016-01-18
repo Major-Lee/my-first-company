@@ -115,8 +115,7 @@ public class YunOperateService implements IYunUploadService{
 				// 七牛云删除
 				bucketManager.delete(QN_BUCKET_NAME_FW, "/" + dut + "/build/" + versionId);
 				System.out.println("七牛云删除成功:" + "/" + dut + "/build/" + versionId);
-			}
-			if (!fw) {
+			}else{
 				String remoteName = getRemoteName(versionId);
 				// 阿里云删除
 				ossClient.deleteObject(AL_BUCKET_NAME_OM, remoteName + "/" + versionId);
