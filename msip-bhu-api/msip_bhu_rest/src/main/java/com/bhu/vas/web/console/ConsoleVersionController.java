@@ -170,10 +170,10 @@ public class ConsoleVersionController extends BaseController {
 	@RequestMapping(value = "/removedv", method = { RequestMethod.POST })
 	public void removedv(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(required = true) int uid, @RequestParam(required = true) String dut,
-			@RequestParam(required = true) boolean fw, @RequestParam(required = true) String versionId) {
+			@RequestParam(required = true) boolean fw, @RequestParam(required = true) String fileName) {
 
-		yunOperateService.deleteFile(versionId,dut,fw);	
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, versionId);
+		yunOperateService.deleteFile(fileName,dut,fw);	
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, fileName);
 		if (!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
