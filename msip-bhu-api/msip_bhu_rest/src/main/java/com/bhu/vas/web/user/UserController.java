@@ -199,7 +199,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}else{
-				RpcResponseDTO<Boolean> checkAcc = userRpcService.checkAcc(countrycode, oldacc);
+				RpcResponseDTO<Boolean> checkAcc = userRpcService.checkAcc(countrycode, acc);
 				if(checkAcc.getErrorCode() == null)
 					SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				else
