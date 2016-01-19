@@ -63,6 +63,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocation
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -153,9 +154,9 @@ public class DeviceBusinessFacadeService {
 		//wifi设备是否是新设备
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
-		boolean workModeChanged = false;
+		//boolean workModeChanged = false;
 		//String currentWorkmode = dto.getWork_mode();
-		//String oldWorkmode = null;
+		String oldWorkmode = null;
 		//wifi设备上一次登录时间
 		long last_login_at = 0;
 		
@@ -178,8 +179,8 @@ public class DeviceBusinessFacadeService {
 			wanIpChanged = true;
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
-			String oldWorkMode = wifi_device_entity.getWork_mode();
-			//oldWorkmode = wifi_device_entity.getWork_mode();
+			oldWorkmode = wifi_device_entity.getWork_mode();
+			oldWorkmode = wifi_device_entity.getWork_mode();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(reged_at);
@@ -188,9 +189,9 @@ public class DeviceBusinessFacadeService {
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
 				wanIpChanged = true;
 			}
-			if(StringUtils.isNotEmpty(wifi_device_entity.getWork_mode()) && !wifi_device_entity.getWork_mode().equals(oldWorkMode)){
+			/*if(StringUtils.isNotEmpty(wifi_device_entity.getWork_mode()) && !wifi_device_entity.getWork_mode().equals(oldWorkMode)){
 				workModeChanged = true;
-			}
+			}*/
 		}
 		wifi_device_module.setOnline(true);
 		wifi_device_module.setLast_module_reged_at(reged_at);
@@ -209,7 +210,7 @@ public class DeviceBusinessFacadeService {
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
-				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery, workModeChanged/*,oldWorkmode,dto.getWork_mode()*/);
+				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery/*, workModeChanged*/,oldWorkmode,dto.getWork_mode());
 	}
 	
 	/**
@@ -352,6 +353,7 @@ public class DeviceBusinessFacadeService {
 					        
 					        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
 					        //业务数据同步
+					        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
 					        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 					        
 					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
@@ -1227,9 +1229,15 @@ public class DeviceBusinessFacadeService {
 			}*/
 			if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_NotHappen){
 				try{
-					WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+					/*WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 					int switchAct = needGenerate4WorkModeChanged(currentDto, dto);
 					logger.info(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
+					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
+						//模式切换需要下发的指令集合
+						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
+					}*/
+					
+					int switchAct = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
 						//模式切换需要下发的指令集合
 						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
