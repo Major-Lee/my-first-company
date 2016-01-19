@@ -171,8 +171,8 @@ public class YunOperateService implements IYunUploadService {
 	 */
 	static String getRemoteName(String versionId) {
 
-		String str01 = versionId.substring(0, 11);
-		String str02 = versionId.substring(11, versionId.length()-4);
+		String str01 = versionId.substring(0, 10);
+		String str02 = versionId.substring(10, versionId.length()-4);
 		String remoteName = str01 + "/" + str02;
 		// flag
 		System.out.println("remoteName:" + str01 + "/" + str02 + "/");
@@ -207,7 +207,6 @@ public class YunOperateService implements IYunUploadService {
 			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
 			ALurl = String.format("%s://%s.%s/%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
 					getRemoteName(versionId), versionId);
-
 		}
 		url[0] = QNurl;
 		url[1] = ALurl;
