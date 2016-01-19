@@ -19,7 +19,7 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
 @Service
-public class YunOperateService implements IYunUploadService{
+public class YunOperateService implements IYunUploadService {
 
 	// 七牛云参数
 	static final String QN_ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
@@ -31,8 +31,8 @@ public class YunOperateService implements IYunUploadService{
 	// 阿里云参数
 	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
 	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
-	static final String AL_BUCKET_NAME_FW = "devicefw";
-	static final String AL_BUCKET_NAME_OM = "deviceom";
+	static final String AL_BUCKET_NAME_FW = "http://devicefw";
+	static final String AL_BUCKET_NAME_OM = "http://deviceom";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
 
 	/**
@@ -45,8 +45,7 @@ public class YunOperateService implements IYunUploadService{
 	 *            库名字
 	 * @throws QiniuException
 	 */
-	public void uploadFile2QN(byte[] bs, String dut, String versionId, boolean fw, String JsFilePath)
-			throws Exception {
+	public void uploadFile2QN(byte[] bs, String dut, String versionId, boolean fw, String JsFilePath) throws Exception {
 
 		Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 		UploadManager uploadManager = new UploadManager();
@@ -54,7 +53,8 @@ public class YunOperateService implements IYunUploadService{
 			uploadManager.put(bs, "/" + dut + "/build/" + versionId, auth.uploadToken(QN_BUCKET_NAME_FW));
 		}
 		if (!fw) {
-			uploadManager.put(bs, "/" + getRemoteName(versionId) + "/" + versionId, auth.uploadToken(QN_BUCKET_NAME_OM));
+			uploadManager.put(bs, "/" + getRemoteName(versionId) + "/" + versionId,
+					auth.uploadToken(QN_BUCKET_NAME_OM));
 			uploadManager.put(JsFilePath, "/" + getRemoteName(versionId) + "/" + "version.js",
 					auth.uploadToken(QN_BUCKET_NAME_OM));
 
@@ -70,8 +70,7 @@ public class YunOperateService implements IYunUploadService{
 	 * @return
 	 * @throws Exception
 	 */
-	public void uploadFile2AL(byte[] bs, String dut, String versionId, boolean fw, String JsFilePath)
-			throws Exception {
+	public void uploadFile2AL(byte[] bs, String dut, String versionId, boolean fw, String JsFilePath) throws Exception {
 
 		ByteArrayInputStream in = new ByteArrayInputStream(bs);
 		OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
@@ -83,9 +82,9 @@ public class YunOperateService implements IYunUploadService{
 		}
 		if (!fw) {
 			String remateName = getRemoteName(versionId);
-			ossClient.putObject(AL_BUCKET_NAME_OM,  remateName + "/" + versionId, in, objectMetadata);
+			ossClient.putObject(AL_BUCKET_NAME_OM, remateName + "/" + versionId, in, objectMetadata);
 			File file = new File(JsFilePath);
-			ossClient.putObject(AL_BUCKET_NAME_OM,  remateName + "/" + "version.js", file, objectMetadata);
+			ossClient.putObject(AL_BUCKET_NAME_OM, remateName + "/" + "version.js", file, objectMetadata);
 			// 删除临时缓存文件夹
 			deleteCatchBucket(JsFilePath);
 		}
@@ -115,7 +114,7 @@ public class YunOperateService implements IYunUploadService{
 				// 七牛云删除
 				bucketManager.delete(QN_BUCKET_NAME_FW, "/" + dut + "/build/" + versionId);
 				System.out.println("七牛云删除成功:" + "/" + dut + "/build/" + versionId);
-			}else{
+			} else {
 				String remoteName = getRemoteName(versionId);
 				// 阿里云删除
 				ossClient.deleteObject(AL_BUCKET_NAME_OM, remoteName + "/" + versionId);
@@ -198,9 +197,9 @@ public class YunOperateService implements IYunUploadService{
 			QNurl = YunOperateService.QN_BUCKET_URL_FW + "/" + dut + "/build/" + versionId;
 			ALurl = YunOperateService.AL_BUCKET_NAME_FW + "." + YunOperateService.AL_END_POINT + "/" + dut + "/build/"
 					+ versionId;
-		} else {
-			QNurl = YunOperateService.QN_BUCKET_URL_OM + "/" + getRemoteName(versionId) + "/"
-					+ versionId;
+		}
+		if (!fw) {
+			QNurl = YunOperateService.QN_BUCKET_URL_OM + "/" + getRemoteName(versionId) + "/" + versionId;
 			ALurl = YunOperateService.AL_BUCKET_NAME_OM + "." + YunOperateService.AL_END_POINT + "/" + dut + "/build/"
 					+ versionId;
 
@@ -213,8 +212,8 @@ public class YunOperateService implements IYunUploadService{
 	private static ExecutorService exec = Executors.newFixedThreadPool(5);
 
 	// 异步的上传至阿里云、七牛云
-	public void uploadYun(final byte[] bs, final int uid, final String dut, final boolean fw,
-			final String versionId, final IVapRpcService rpcService) {
+	public void uploadYun(final byte[] bs, final int uid, final String dut, final boolean fw, final String versionId,
+			final IVapRpcService rpcService) {
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
@@ -227,7 +226,7 @@ public class YunOperateService implements IYunUploadService{
 					uploadFile2QN(bs, dut, versionId, fw, JsFilePath);
 					// 阿里云
 					uploadFile2AL(bs, dut, versionId, fw, JsFilePath);
-					
+
 				} catch (Exception e) {
 					rpcService.addDeviceVersionUploadFailCallback(uid, fw, versionId);
 					e.printStackTrace();
