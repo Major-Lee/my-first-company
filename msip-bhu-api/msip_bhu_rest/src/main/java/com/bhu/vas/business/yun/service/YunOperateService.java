@@ -171,8 +171,8 @@ public class YunOperateService implements IYunUploadService {
 	 */
 	static String getRemoteName(String versionId) {
 
-		String str01 = versionId.substring(0, 10);
-		String str02 = versionId.substring(10, versionId.length()-4);
+		String str01 = versionId.substring(0, 4);
+		String str02 = versionId.substring(5, 10);
 		String remoteName = str01 + "/" + str02;
 		// flag
 		System.out.println("remoteName:" + str01 + "/" + str02 + "/");
