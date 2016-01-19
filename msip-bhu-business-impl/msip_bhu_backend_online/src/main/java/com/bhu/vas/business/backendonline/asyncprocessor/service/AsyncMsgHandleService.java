@@ -207,9 +207,6 @@ public class AsyncMsgHandleService {
 				if(WifiDeviceDTO.UserCmdRebootReason.equals(dto.getJoin_reason())){
 					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				}
-				if(dto.isWorkModeChanged()){
-					pushService.push(new WifiDeviceWorkModeChangedDTO(dto.getMac(), wifiDevice.getWork_mode()));
-				}
 				/*try{
 					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8064");
 					if(ret == -1) forceFirmwareUpdate = true;
@@ -221,7 +218,7 @@ public class AsyncMsgHandleService {
 				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 					payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
-				/*//added by Edmond Lee @20160106 for mark workmode changed of device
+				//added by Edmond Lee @20160106 for mark workmode changed of device
 				if(!dto.isNewWifi()){
 					//workmode切换只支持uRouter，并且只能在router-ap和bridge-ap之间互相切换
 					//判定workmode是否变更
@@ -230,14 +227,15 @@ public class AsyncMsgHandleService {
 							//在判定workmode变更后打上标记，标记内容代表什么模式切换到什么模式，
 							//由于模式切换还需要和设备重置有所相关，所以在查询配置分析中继续进行模式变更的操作内容
 							if(WifiDeviceHelper.WorkMode_Router.equals(dto.getN_wmode())){
-								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router);
+								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
 							}
 							if(WifiDeviceHelper.WorkMode_Bridge.equals(dto.getN_wmode())){
-								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router);
+								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
 							}
+							pushService.push(new WifiDeviceWorkModeChangedDTO(dto.getMac(), wifiDevice.getWork_mode()));
 						}
 					}
-				}*/
+				}
 			}
 			/*try{
 				//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
