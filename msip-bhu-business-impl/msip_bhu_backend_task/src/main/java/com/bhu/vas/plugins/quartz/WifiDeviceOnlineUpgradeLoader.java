@@ -55,6 +55,8 @@ public class WifiDeviceOnlineUpgradeLoader {
 			while(it.hasNext()){
 				List<WifiDevice> devices = it.next();
 				for(WifiDevice device:devices){
+					if(StringUtils.isEmpty(device.getOrig_swver())) continue;
+					if(!device.getId().startsWith("84:82")) continue;
 					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(device.getId(),device.getOrig_swver());
 					if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 						String payload = upgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
