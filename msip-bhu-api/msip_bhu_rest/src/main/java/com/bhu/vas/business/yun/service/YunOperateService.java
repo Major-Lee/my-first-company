@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
@@ -172,8 +171,8 @@ public class YunOperateService implements IYunUploadService {
 	 */
 	static String getRemoteName(String versionId) {
 
-		String str01 = versionId.substring(0, 4);
-		String str02 = versionId.substring(5, 10);
+		String str01 = versionId.substring(0, 11);
+		String str02 = versionId.substring(11, versionId.length()-4);
 		String remoteName = str01 + "/" + str02;
 		// flag
 		System.out.println("remoteName:" + str01 + "/" + str02 + "/");
@@ -207,7 +206,7 @@ public class YunOperateService implements IYunUploadService {
 		if (!fw) {
 			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
 			ALurl = String.format("%s://%s.%s/%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
-					dut, "build", versionId);
+					getRemoteName(versionId), versionId);
 
 		}
 		url[0] = QNurl;
