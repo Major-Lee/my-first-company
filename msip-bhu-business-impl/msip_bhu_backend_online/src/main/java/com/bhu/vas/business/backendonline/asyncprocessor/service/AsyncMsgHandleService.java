@@ -84,7 +84,6 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -119,8 +118,8 @@ public class AsyncMsgHandleService {
 	//@Resource
 	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 	
-	@Resource
-	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
+	//@Resource
+	//private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -645,11 +644,11 @@ public class AsyncMsgHandleService {
 		//修改为redis实现终端上下线日志 2015-12-11
 		int result_status = HandsetStorageFacadeService.wifiDeviceHandsetOnline(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
 
-		//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
+		/*//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
 		if(result_status == HandsetLogDTO.Element_NewHandset){
 			//5:wifi设备接入移动设备的接入数量增量
 			wifiHandsetDeviceLoginCountMService.incrCount(dto.getWifiId());
-		}
+		}*/
 		
 		//4:移动设备连接wifi设备的流水log
 		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());

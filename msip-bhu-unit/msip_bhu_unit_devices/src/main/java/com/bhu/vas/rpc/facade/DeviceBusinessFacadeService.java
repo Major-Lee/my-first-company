@@ -1229,7 +1229,7 @@ public class DeviceBusinessFacadeService {
 				try{
 					WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 					int switchAct = needGenerate4WorkModeChanged(currentDto, dto);
-					System.out.println(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
+					logger.info(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
 						//模式切换需要下发的指令集合
 						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));

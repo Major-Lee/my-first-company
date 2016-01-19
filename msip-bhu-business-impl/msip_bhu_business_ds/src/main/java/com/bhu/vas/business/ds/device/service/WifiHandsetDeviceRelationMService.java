@@ -32,7 +32,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 @Deprecated
 public class WifiHandsetDeviceRelationMService {
 	
-	@Resource
+	//@Resource
 	private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 	
 //	@Resource

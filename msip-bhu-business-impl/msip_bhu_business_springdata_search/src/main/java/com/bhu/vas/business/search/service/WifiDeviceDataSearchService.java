@@ -1,10 +1,9 @@
 package com.bhu.vas.business.search.service;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.search.condition.SearchCondition;
@@ -36,7 +35,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param d_dut
 	 * @return
 	 */
-	public List<WifiDeviceDocument> searchByUidAndDut(Integer u_id, String d_dut){
+	public Page<WifiDeviceDocument> searchPageByUidAndDut(Integer u_id, String d_dut, int pageNo, int pageSize){
 		if(u_id == null || StringUtils.isEmpty(d_dut)) return null;
 		
 		SearchCondition sc_d_dut = new SearchCondition(BusinessIndexDefine.WifiDevice.
@@ -44,6 +43,6 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		SearchCondition sc_u_id = new SearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(sc_d_dut, sc_u_id);
-		return super.searchByConditionMessage(scm);
+		return super.searchByConditionMessage(scm, pageNo, pageSize);
 	}
 }

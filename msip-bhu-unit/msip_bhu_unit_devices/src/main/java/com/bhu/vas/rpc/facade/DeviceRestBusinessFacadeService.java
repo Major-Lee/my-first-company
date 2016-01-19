@@ -21,7 +21,6 @@ import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
@@ -39,16 +38,13 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatistics
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
 import com.bhu.vas.business.ds.user.service.UserSearchConditionStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
-import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -70,8 +66,8 @@ public class DeviceRestBusinessFacadeService {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
-	@Resource
-	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
+	//@Resource
+	//private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -110,7 +106,8 @@ public class DeviceRestBusinessFacadeService {
 	 * @return
 	 */
 	public List<WifiDeviceMaxBusyVTO> fetchWDevicesOrderMaxHandset(int pageNo, int pageSize) {
-		Pagination<WifiHandsetDeviceLoginCountMDTO> wifiDevices = wifiHandsetDeviceLoginCountMService.
+		return Collections.emptyList();
+		/*Pagination<WifiHandsetDeviceLoginCountMDTO> wifiDevices = wifiHandsetDeviceLoginCountMService.
 				findWifiDevicesOrderMaxHandset(pageNo, pageSize);
 		List<WifiHandsetDeviceLoginCountMDTO> mdtos = wifiDevices.getDatas();
 		if(mdtos == null || mdtos.isEmpty()){
@@ -133,7 +130,7 @@ public class DeviceRestBusinessFacadeService {
 			vtos.add(vto);
 			cursor++;
 		}
-		return vtos;
+		return vtos;*/
 	}
 	
 	/**
