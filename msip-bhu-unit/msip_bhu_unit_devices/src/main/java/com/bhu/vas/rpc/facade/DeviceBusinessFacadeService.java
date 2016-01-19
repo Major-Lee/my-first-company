@@ -353,6 +353,7 @@ public class DeviceBusinessFacadeService {
 					        
 					        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
 					        //业务数据同步
+					        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
 					        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 					        
 					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
