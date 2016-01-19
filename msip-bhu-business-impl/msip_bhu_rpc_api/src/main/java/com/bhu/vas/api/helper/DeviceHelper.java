@@ -600,7 +600,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Portal_Outer = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("%s</dev>");
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
-	public static final String DeviceSetting_VapEnableWdsItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" wds=\"enable\"/>";
+	public static final String DeviceSetting_VapWorkModeChangeItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" auth_key_rsa=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	public static final String DeviceSetting_KeyStatusItem = "<ITEM keystatus=\"%s\" />";
 	
@@ -1105,7 +1105,11 @@ public class DeviceHelper {
 				//ssid 密码
 				List<WifiDeviceSettingVapDTO> vap_dtos = ds_dto.getVaps();
 				if(vap_dtos != null && !vap_dtos.isEmpty()){
-					String vap_items = builderDeviceSettingItemsWithDto(DeviceSetting_VapEnableWdsItem, vap_dtos);
+					List<Object[]> vap_dto_properties = new ArrayList<Object[]>();
+					for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+						vap_dto_properties.add(vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_WorkModeChanged));
+					}
+					String vap_items = builderDeviceSettingItems(DeviceSetting_VapWorkModeChangeItem, vap_dto_properties);
 					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_VapOuter, 
 							Common_Config_Sequence, vap_items));
 				}

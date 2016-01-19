@@ -141,6 +141,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	}
 	//修改vap的密码
 	public static final int BuilderType_VapPassword = 1;
+	public static final int BuilderType_WorkModeChanged = 2;
 	
 	@Override
 	public Object[] builderProperties(int type) {
@@ -153,6 +154,18 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[2] = auth;
 				properties[3] = auth_key;
 				properties[4] = auth_key_rsa;
+				break;
+			case BuilderType_WorkModeChanged:
+				properties = new Object[9];
+				properties[0] = name;
+				properties[1] = radio;
+				properties[2] = ssid;
+				properties[3] = auth;
+				properties[4] = enable;
+				properties[5] = acl_type;
+				properties[6] = acl_name;
+				properties[7] = guest_en;
+				properties[8] = auth_key_rsa;
 				break;
 			default:
 				properties = builderProperties();
