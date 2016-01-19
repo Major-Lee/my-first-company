@@ -50,12 +50,13 @@ public class YunOperateService implements IYunUploadService {
 		Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
 		UploadManager uploadManager = new UploadManager();
 		if (fw) {
-			uploadManager.put(bs, "/" + dut + "/build/" + versionId, auth.uploadToken(QN_BUCKET_NAME_FW));
+			uploadManager.put(bs, String.format("/%s/%s/%s", dut, "build", versionId),
+					auth.uploadToken(QN_BUCKET_NAME_FW));
 		}
 		if (!fw) {
-			uploadManager.put(bs, "/" + getRemoteName(versionId) + "/" + versionId,
+			uploadManager.put(bs,String.format("/%s/%s", getRemoteName(versionId),versionId) ,
 					auth.uploadToken(QN_BUCKET_NAME_OM));
-			uploadManager.put(JsFilePath, "/" + getRemoteName(versionId) + "/" + "version.js",
+			uploadManager.put(JsFilePath, String.format("/%s/%s", getRemoteName(versionId),"version.js"),
 					auth.uploadToken(QN_BUCKET_NAME_OM));
 
 		}
@@ -78,7 +79,8 @@ public class YunOperateService implements IYunUploadService {
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		// 上传文件
 		if (fw) {
-			ossClient.putObject(AL_BUCKET_NAME_FW, dut + "/build/" + versionId, in, objectMetadata);
+			ossClient.putObject(AL_BUCKET_NAME_FW, String.format("%s/%s/%s", dut, "build", versionId), in,
+					objectMetadata);
 		}
 		if (!fw) {
 			String remateName = getRemoteName(versionId);
@@ -110,10 +112,10 @@ public class YunOperateService implements IYunUploadService {
 			if (fw) {
 				// 阿里云删除
 				ossClient.deleteObject(AL_BUCKET_NAME_FW, dut + "/build/" + versionId);
-				System.out.println("阿里云删除成功:" + dut + "/build/" + versionId);
+				System.out.println("阿里云删除成功");
 				// 七牛云删除
 				bucketManager.delete(QN_BUCKET_NAME_FW, "/" + dut + "/build/" + versionId);
-				System.out.println("七牛云删除成功:" + "/" + dut + "/build/" + versionId);
+				System.out.println("七牛云删除成功");
 			} else {
 				String remoteName = getRemoteName(versionId);
 				// 阿里云删除
@@ -194,14 +196,15 @@ public class YunOperateService implements IYunUploadService {
 		String ALurl = null;
 		String url[] = new String[2];
 		if (fw) {
-			QNurl = YunOperateService.QN_BUCKET_URL_FW + "/" + dut + "/build/" + versionId;
-			ALurl = YunOperateService.AL_BUCKET_NAME_FW + "." + YunOperateService.AL_END_POINT + "/" + dut + "/build/"
-					+ versionId;
+
+			QNurl = String.format("%s/%s/%s/%s", YunOperateService.QN_BUCKET_URL_FW, dut, "build", versionId);
+			ALurl = String.format("%s.%s/%s/%s/%s", YunOperateService.AL_BUCKET_NAME_FW, YunOperateService.AL_END_POINT,
+					dut, "build", versionId);
 		}
 		if (!fw) {
-			QNurl = YunOperateService.QN_BUCKET_URL_OM + "/" + getRemoteName(versionId) + "/" + versionId;
-			ALurl = YunOperateService.AL_BUCKET_NAME_OM + "." + YunOperateService.AL_END_POINT + "/" + dut + "/build/"
-					+ versionId;
+			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
+			ALurl = String.format("%s.%s/%s/%s/%s", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
+					dut, "build", versionId);
 
 		}
 		url[0] = QNurl;
