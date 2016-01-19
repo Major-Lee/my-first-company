@@ -34,8 +34,8 @@ public class YunOperateService implements IYunUploadService {
 	// 阿里云参数
 	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
 	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
-	static final String AL_BUCKET_NAME_FW = "http://devicefw";
-	static final String AL_BUCKET_NAME_OM = "http://deviceom";
+	static final String AL_BUCKET_NAME_FW = "devicefw";
+	static final String AL_BUCKET_NAME_OM = "deviceom";
 	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
 
 	/**
@@ -201,20 +201,12 @@ public class YunOperateService implements IYunUploadService {
 		if (fw) {
 
 			QNurl = String.format("%s/%s/%s/%s", YunOperateService.QN_BUCKET_URL_FW, dut, "build", versionId);
-<<<<<<< HEAD
-			ALurl = String.format("%s.%s/%s/%s/%s", YunOperateService.AL_BUCKET_NAME_FW, YunOperateService.AL_END_POINT,
-=======
 			ALurl = String.format("%s://%s.%s/%s/%s/%s","http",YunOperateService.AL_BUCKET_NAME_FW, YunOperateService.AL_END_POINT,
->>>>>>> 71ee40b... 本地创建version.js文件时使用version.js编码
 					dut, "build", versionId);
 		}
 		if (!fw) {
 			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
-<<<<<<< HEAD
-			ALurl = String.format("%s.%s/%s/%s/%s", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
-=======
 			ALurl = String.format("%s://%s.%s/%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
->>>>>>> 71ee40b... 本地创建version.js文件时使用version.js编码
 					dut, "build", versionId);
 
 		}
