@@ -376,10 +376,10 @@ public class TaskFacadeService {
 					String auth = wifiDeviceSettingVapDTO.getAuth();
 					//TODO(bluesand):此处auth：  WPA/WPA2-PSK / open
 
-					if (!"WPA/WPA2-PSK".equals(auth) && !"open".equals(auth)) {
+					if (!"WPA/WPA2-PSK".equals(auth) && !"open".equals(auth) && !"WPA2-PSK".equals(auth)) {
 						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 					} else {
-						if ("WPA/WPA2-PSK".equals(auth)) {
+						if ("WPA/WPA2-PSK".equals(auth) || "WPA2-PSK".equals(auth)) {
 							String auth_key = wifiDeviceSettingVapDTO.getAuth_key();
 							if (auth_key == null) {
 								throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
