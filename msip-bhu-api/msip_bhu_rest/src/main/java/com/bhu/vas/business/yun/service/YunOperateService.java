@@ -205,7 +205,7 @@ public class YunOperateService implements IYunUploadService {
 		}
 		if (!fw) {
 			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
-			ALurl = String.format("%s://%s.%s/%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
+			ALurl = String.format("%s://%s.%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
 					getRemoteName(versionId), versionId);
 		}
 		url[0] = QNurl;
