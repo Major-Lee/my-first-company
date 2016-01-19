@@ -37,7 +37,6 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -1239,6 +1238,13 @@ public class DeviceBusinessFacadeService {
 					
 					int switchAct = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
+						//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
+						WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+						if(currentDto != null){
+							String new_mode = dto.getMode().getMode();
+							DeviceHelper.mergeDS(currentDto, dto);
+							dto.getMode().setMode(new_mode);
+						}
 						//模式切换需要下发的指令集合
 						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
 					}
@@ -1272,7 +1278,7 @@ public class DeviceBusinessFacadeService {
 	 * @param new_dto
 	 * @return
 	 */
-	private int needGenerate4WorkModeChanged(WifiDeviceSettingDTO currentDto, WifiDeviceSettingDTO new_dto){
+/*	private int needGenerate4WorkModeChanged(WifiDeviceSettingDTO currentDto, WifiDeviceSettingDTO new_dto){
 		if(currentDto != null){
 			WifiDeviceSettingModeDTO current_mode_dto = currentDto.getMode();
 			if(current_mode_dto != null && StringUtils.isNotEmpty(current_mode_dto.getMode())){
@@ -1290,7 +1296,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		return WifiDeviceHelper.SwitchMode_NoAction;
-	}
+	}*/
 	
 	private List<String> cmdGenerate4WorkModeChanged(String dmac,int switchAct){
 		List<String> payloads = new ArrayList<String>();
