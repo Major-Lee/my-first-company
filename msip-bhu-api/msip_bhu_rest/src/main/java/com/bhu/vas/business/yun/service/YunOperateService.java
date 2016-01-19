@@ -1,9 +1,12 @@
 package com.bhu.vas.business.yun.service;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -150,10 +153,10 @@ public class YunOperateService implements IYunUploadService {
 			fileBucket.mkdir();
 			filePath = CacheBucketPath + "/version.js";
 			File file = new File(filePath);
-			FileWriter fw = new FileWriter(file);
-			fw.write(str);
-			fw.flush();
-			fw.close();
+			BufferedWriter bw = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (file), "UTF-8"));
+			bw.write(str);
+			bw.flush ();
+			bw.close ();
 		} catch (IOException e) {
 			System.out.println("创建文件夹错误");
 			e.printStackTrace();
@@ -198,12 +201,20 @@ public class YunOperateService implements IYunUploadService {
 		if (fw) {
 
 			QNurl = String.format("%s/%s/%s/%s", YunOperateService.QN_BUCKET_URL_FW, dut, "build", versionId);
+<<<<<<< HEAD
 			ALurl = String.format("%s.%s/%s/%s/%s", YunOperateService.AL_BUCKET_NAME_FW, YunOperateService.AL_END_POINT,
+=======
+			ALurl = String.format("%s://%s.%s/%s/%s/%s","http",YunOperateService.AL_BUCKET_NAME_FW, YunOperateService.AL_END_POINT,
+>>>>>>> 71ee40b... 本地创建version.js文件时使用version.js编码
 					dut, "build", versionId);
 		}
 		if (!fw) {
 			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
+<<<<<<< HEAD
 			ALurl = String.format("%s.%s/%s/%s/%s", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
+=======
+			ALurl = String.format("%s://%s.%s/%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
+>>>>>>> 71ee40b... 本地创建version.js文件时使用version.js编码
 					dut, "build", versionId);
 
 		}
