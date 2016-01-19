@@ -234,6 +234,7 @@ public class YunOperateService implements IYunUploadService {
 					uploadFile2AL(bs, dut, versionId, fw, JsFilePath);
 
 				} catch (Exception e) {
+					System.out.println("uploadYun:fail");
 					rpcService.addDeviceVersionUploadFailCallback(uid, fw, versionId);
 					e.printStackTrace();
 				}
