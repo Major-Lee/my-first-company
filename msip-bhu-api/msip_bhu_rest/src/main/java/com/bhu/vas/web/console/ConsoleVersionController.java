@@ -151,7 +151,6 @@ public class ConsoleVersionController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-
 	}
 
 
