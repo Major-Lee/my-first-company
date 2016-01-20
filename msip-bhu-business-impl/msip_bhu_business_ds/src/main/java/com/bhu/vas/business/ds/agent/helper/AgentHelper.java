@@ -73,8 +73,8 @@ public class AgentHelper {
 	
 	private static long KB = 1024*8;
 	private static long MB = 1024*KB;
-	private static long GB = 1024*MB;
-	private static long TB = 1024*GB;
+	//private static long GB = 1024*MB;
+	//private static long TB = 1024*GB;
 	static java.text.DecimalFormat format = new java.text.DecimalFormat("0.00");
 	public static double flowByte2Megabyte(long x_byte){
 		return ArithHelper.round(ArithHelper.div(x_byte*8, MB),2);///format.format(x_byte*8/MB);
@@ -110,7 +110,7 @@ public class AgentHelper {
 	private static long Day = 	(24 * 60 * 60 * 1000);
 	private static long Hour = (60 * 60 * 1000);
 	private static long Min = 	(60 * 1000);
-	private static long Sec = 	1000;
+	//private static long Sec = 	1000;
 	
 	
 	//正数并且小数点不超过2位

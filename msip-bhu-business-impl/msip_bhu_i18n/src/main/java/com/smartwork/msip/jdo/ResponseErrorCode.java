@@ -181,7 +181,7 @@ public enum ResponseErrorCode {
 	DEVICE_OWNER_REACHLIMIT("343","device.owner.reachlimit"),
 	DEVICE_ALREADY_BEBINDED_OTHER("344","device.already.bebinded.other"),
 	DEVICE_NOT_BINDED("345","device.not.binded"),
-	DEVICE_NOT_UROUTER("346", "device.not.urouter"),
+	DEVICE_NOT_MATCHED("346", "device.not.matched"),
 	DEVICE_NOT_YOURBINDED("347","device.not.yourbinded"),
 	
 	

@@ -15,7 +15,7 @@ import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
 
 @Service
-public class WifiDeviceDataSearchService extends AbstractDataSearchConditionService<WifiDeviceDocument>{
+public class 	WifiDeviceDataSearchService extends AbstractDataSearchConditionService<WifiDeviceDocument>{
     @Resource
     private WifiDeviceDocumentRepository wifiDeviceDocumentRepository;
 	

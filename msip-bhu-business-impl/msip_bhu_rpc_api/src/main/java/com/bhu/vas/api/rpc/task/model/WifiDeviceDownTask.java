@@ -27,6 +27,8 @@ public class WifiDeviceDownTask extends BaseLongModel implements IRedisSequenceG
 
 	
 	public static final String Task_LOCAL_CHANNEL = "VAS";
+	public static final String Task_CWIFI_CHANNEL = "CWIFI";
+	
 	
 	private Integer uid;
 	//上下文变量，用于存储页面表单中的extparams内容 在有些指令下发后可能会，收到消息后可能会触发别的指令需要用到此数据

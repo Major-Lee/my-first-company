@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * Created by bluesand on 15/4/10.
@@ -28,6 +29,10 @@ public interface IUserDeviceRpcService {
     RpcResponseDTO<Boolean> unBindDevice(String mac, int uid);
 
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);
+
+
+    TailPage<UserDeviceDTO> pageBindDevices(int uid, String dut, int pageNo, int pageSize);
+
     //RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid);
     RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid);
     //int validateDeviceStatusIsOnlineAndBinded(String mac);

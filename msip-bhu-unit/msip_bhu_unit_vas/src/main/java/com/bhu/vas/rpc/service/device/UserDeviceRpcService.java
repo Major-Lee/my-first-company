@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -50,7 +51,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
             if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_EXIST) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_EXIST;
             }else if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-                responseErrorCode = ResponseErrorCode.DEVICE_NOT_UROUTER;
+                responseErrorCode = ResponseErrorCode.DEVICE_NOT_MATCHED;
             }else if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
                 responseErrorCode = ResponseErrorCode.DEVICE_DATA_NOT_ONLINE;
             } else if (retStatus == WIFI_DEVICE_STATUS_BINDED) {
@@ -75,7 +76,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
         	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_UROUTER,new String[]{mac});
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
         }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
                 || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
             return userDeviceFacadeService.unBindDevice(mac, uid);
@@ -105,8 +106,15 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         logger.info(String.format("fetchBindDevices with uid[%s]", uid));
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid));
     }
-    
-    /*@Override
+
+    @Override
+    public TailPage<UserDeviceDTO> pageBindDevices(int uid, String dut, int pageNo, int pageSize) {
+        logger.info(String.format("pageBindDevices with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
+
+        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, dut, pageNo, pageSize);
+    }
+
+/*@Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
         logger.info(String.format("fetchBindDevicesByAccOrUid with uid[%s]", uid));
         return userUnitFacadeService.fetchBindDevicesByAccOrUid(countrycode,acc,uid);
@@ -131,9 +139,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
                     ResponseErrorCode.DEVICE_DATA_NOT_ONLINE.i18n(),new String[]{mac}));
         } else if (deviceStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
-            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_UROUTER.code());
+            userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_NOT_MATCHED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(
-                    ResponseErrorCode.DEVICE_NOT_UROUTER.i18n(),new String[]{mac}));
+                    ResponseErrorCode.DEVICE_NOT_MATCHED.i18n(),new String[]{mac}));
         } else if (deviceStatus == WIFI_DEVICE_STATUS_BINDED) {
             userDeviceStatusDTO.setStatus(ResponseErrorCode.DEVICE_ALREADY_BEBINDED.code());
             userDeviceStatusDTO.setMessage(LocalI18NMessageSource.getInstance().getMessage(

@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -127,6 +128,28 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
     }
+
+
+    @ResponseBody()
+    @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
+    public void pageBindedDevice(HttpServletResponse response,
+                               @RequestParam(required = true) int uid,
+                                 @RequestParam(required = true) String  dut,
+                                 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                                 @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+
+                                 ) {
+        TailPage<UserDeviceDTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, dut, pageNo, pageSize);
+        System.out.println("ret===" + rpcResult.isEmpty());
+        if (!rpcResult.isEmpty()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+        }
+    }
+
+
+
 
     @ResponseBody()
     @RequestMapping(value="/modify/device_name",method={RequestMethod.POST})

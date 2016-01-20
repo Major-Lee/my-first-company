@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -69,6 +70,12 @@ public class WifiDeviceHelper {
 		return ver.wasDutURouter();
 	}
 	
+	public static boolean isCWifiDevice(String orig_swver) {
+		return DeviceUnitType.isCWifi(orig_swver);
+		/*DeviceVersion ver = DeviceVersion.parser(orig_swver);
+		if(ver == null || !ver.valid()) return false;
+		return ver.wasDutURouter();*/
+	}
 	public static boolean isWorkModeRouter(String work_mode){
 		//如果为空的情况下，则缺省返回true
 		if(StringUtils.isEmpty(work_mode)) return true;

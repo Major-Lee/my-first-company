@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -169,7 +167,7 @@ public class WifiHandsetDeviceRelationMService {
 
         }
 
-        WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
+        wifiHandsetDeviceRelationMDao.upsert(query, update);
 
     }
 

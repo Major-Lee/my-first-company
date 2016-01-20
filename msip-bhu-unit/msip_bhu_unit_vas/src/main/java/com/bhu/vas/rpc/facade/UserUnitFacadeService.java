@@ -1,12 +1,20 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
@@ -53,6 +61,9 @@ public class UserUnitFacadeService {
 	private WifiDeviceService wifiDeviceService;
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+
 
 	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
 
@@ -540,7 +551,58 @@ public class UserUnitFacadeService {
 		}
 		return bindDevicesDTO;
 	}
-	
+
+
+	/**
+	 * 通过搜索引擎获取用户绑定的设备
+	 * @param uid
+	 * @param dut
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+     */
+	public TailPage<UserDeviceDTO> fetchBindDevicesFromIndex(int uid, String dut, int pageNo, int pageSize) {
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, pageNo, pageSize);
+		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
+
+		List<UserDeviceDTO> vtos = new ArrayList<UserDeviceDTO>();
+		int total = (int)search_result.getTotalElements();//.getTotal();
+		if(total == 0){
+			vtos = Collections.emptyList();
+		}else{
+			List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+			if(searchDocuments.isEmpty()) {
+				vtos = Collections.emptyList();
+			}else{
+				vtos = new ArrayList<UserDeviceDTO>();
+				WifiDeviceVTO1 vto = null;
+				int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
+				for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
+					UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+					userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
+					userDeviceDTO.setUid(uid);
+					userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
+					WifiDevice wifiDevice = wifiDeviceService.getById(wifiDeviceDocument.getD_mac());
+					if (wifiDevice != null) {
+						userDeviceDTO.setOnline(wifiDevice.isOnline());
+						if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
+							userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+									.presentOnlineSize(wifiDeviceDocument.getD_mac()));
+						}
+						userDeviceDTO.setVer(wifiDevice.getOrig_swver());
+					}
+					vtos.add(userDeviceDTO);
+				}
+			}
+		}
+
+		TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
+
+		return returnRet;
+	}
+
+
+
 	/**
 	 * 通过用户手机号或者指定用户的uid得到其绑定的设备
 	 * @param countrycode

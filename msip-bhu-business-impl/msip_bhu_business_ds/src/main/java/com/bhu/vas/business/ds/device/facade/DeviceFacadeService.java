@@ -462,7 +462,30 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		return WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver());
 	}
 	
-
+	public WifiDevice validateUserCWifiDevice(Integer uid, String mac){
+		//验证设备
+		//验证设备是否存在
+		WifiDevice device_entity = wifiDeviceService.getById(mac);
+		if(device_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
+		}
+		//验证设备是否在线
+		if(!device_entity.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
+		}
+		//验证是否是urouter
+		if(!WifiDeviceHelper.isCWifiDevice(device_entity.getOrig_swver())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
+		}
+		//验证用户是否管理设备
+		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+		if(userdevice_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
+		}
+		return device_entity;
+	}
+	
+	
 	/**
 	 * 验证用户所管理的设备
 	 * 1：设备是否存在
@@ -502,7 +525,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		//验证是否是urouter
 		if(!WifiDeviceHelper.isURouterDevice(device_entity.getOrig_swver())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_UROUTER,new String[]{mac});
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
 		}
 		return device_entity;
 	}
