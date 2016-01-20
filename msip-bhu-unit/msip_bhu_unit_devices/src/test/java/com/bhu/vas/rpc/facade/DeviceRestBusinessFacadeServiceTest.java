@@ -46,5 +46,7 @@ public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 		for(WifiDeviceVTO1 vto : items){
 			System.out.println(vto.getId());
 		}
+		
+		System.out.println(1);
 	}
 }
