@@ -295,6 +295,19 @@ public class VapEnumType {
 			return false;
 		}
 		
+		/**
+		 * 以TC结尾的
+		 * @param orig_swver
+		 * @return
+		 */
+		public static boolean isCWifi(String orig_swver) {
+			if(StringUtils.isEmpty(orig_swver)) return false;
+			if(orig_swver.endsWith(CWifiRoot.getIndex())){
+				return true;
+			}
+			return false;
+		}
+		
 		static {
 			allDeviceUnitHDTypes = new HashMap<String,DeviceUnitType>();
 			allDeviceUnitPrefixTypes = new HashMap<String,DeviceUnitType>();

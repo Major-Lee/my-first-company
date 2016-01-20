@@ -94,6 +94,10 @@ public class DeviceVersion {
 		return DeviceUnitType.isURouter(prefix, dut);//DeviceUnitType.uRouterRoot.getIndex().equals(dut);
 	}
 	
+	/*public boolean wasDutCWifi(){
+		return DeviceUnitType.isCWifi(prefix, dut);//DeviceUnitType.uRouterRoot.getIndex().equals(dut);
+	}*/
+	
 	public String toDeviceUnitTypeIndex(){
 		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(getDut(), prefix);
 		if(fromVersionPrefix != null){
