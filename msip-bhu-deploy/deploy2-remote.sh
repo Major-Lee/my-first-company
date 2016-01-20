@@ -165,6 +165,13 @@ echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2ComponentServerBrook
 echo '发布业务组件成功'$Deploy2ComponentServerBrook
 
 echo '准备发布其他服务到'$Deploy2ComponentServerSanji
+
+echo 'deploy msip_bhu_unit_devices to ...@'$Deploy2ComponentServerSanji
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/lib/spring*.RELEASE.jar        root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_devices/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/lib/msip_*.jar     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_devices/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/classes/com/     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_devices/classes/com/
+echo 'deploy msip_bhu_unit_devices successfully @'$Deploy2ComponentServerSanji
+
 echo 'deploy msip_bhu_unit_captchacode to ...@'$Deploy2ComponentServerSanji
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_captchacode/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/lib/msip_*.jar           root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_captchacode/libs/
