@@ -18,6 +18,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -39,6 +40,7 @@ public class BuilderWifiDeviceIndexOp {
 	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	private static AgentDeviceClaimService agentDeviceClaimService;
 	private static WifiDeviceGrayService wifiDeviceGrayService;
+	private static WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	private static UserService userService;
 	private static WifiDeviceService wifiDeviceService;
 	private static WifiDeviceModuleService wifiDeviceModuleService;
@@ -55,6 +57,7 @@ public class BuilderWifiDeviceIndexOp {
 			wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
 			agentDeviceClaimService = (AgentDeviceClaimService)ctx.getBean("agentDeviceClaimService");
 			wifiDeviceGrayService = (WifiDeviceGrayService)ctx.getBean("wifiDeviceGrayService");
+			wifiDevicePersistenceCMDStateService = (WifiDevicePersistenceCMDStateService)ctx.getBean("wifiDevicePersistenceCMDStateService");
 			userService = (UserService)ctx.getBean("userService");
 			
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
@@ -152,6 +155,7 @@ public class BuilderWifiDeviceIndexOp {
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
+					String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
 					//long hoc = 0;
 					User agentUser = null;
@@ -171,7 +175,7 @@ public class BuilderWifiDeviceIndexOp {
 						}
 					}
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, agentDeviceClaim, 
-							wifiDeviceGray, bindUser, bindUserDNick, agentUser, (int)hoc);
+							wifiDeviceGray, bindUser, bindUserDNick, agentUser, o_template, (int)hoc);
 					if(doc != null){
 						docs.add(doc);
 						index_count++;
