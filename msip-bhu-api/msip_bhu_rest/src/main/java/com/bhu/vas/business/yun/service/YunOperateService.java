@@ -171,11 +171,12 @@ public class YunOperateService implements IYunUploadService {
 	 */
 	static String getRemoteName(String versionId) {
 
-		String str01 = versionId.substring(0, 10);
-		String str02 = versionId.substring(10, versionId.length()-4);
-		String remoteName = str01 + "/" + str02;
+		String str01 = versionId.substring(0, 4);
+		String str02 = versionId.substring(5, 10);
+	 	String str03 = versionId.substring(10,16);
+		String remoteName = str03+"/"+str01 + "/" + str02;
 		// flag
-		System.out.println("remoteName:" + str01 + "/" + str02 + "/");
+		System.out.println("remoteName:" + str03+"/"+str01 + "/" + str02);
 		return remoteName;
 	}
 
@@ -204,9 +205,8 @@ public class YunOperateService implements IYunUploadService {
 					dut, "build", versionId);
 		}
 		if (!fw) {
-			QNurl = String.format("%s/%s/%s", YunOperateService.QN_BUCKET_URL_OM, getRemoteName(versionId), versionId);
-			ALurl = String.format("%s://%s.%s/%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,
-					getRemoteName(versionId), versionId);
+			QNurl = YunOperateService.QN_BUCKET_URL_OM+"/"+versionId.substring(10,16);
+			ALurl = String.format("%s://%s.%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,versionId.substring(10,16));
 		}
 		url[0] = QNurl;
 		url[1] = ALurl;
