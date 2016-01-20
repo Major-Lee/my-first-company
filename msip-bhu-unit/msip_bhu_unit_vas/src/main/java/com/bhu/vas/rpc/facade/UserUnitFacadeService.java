@@ -563,6 +563,7 @@ public class UserUnitFacadeService {
      */
 	public TailPage<UserDeviceDTO> fetchBindDevicesFromIndex(int uid, String dut, int pageNo, int pageSize) {
 		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, pageNo, pageSize);
+		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
 
 		List<UserDeviceDTO> vtos = new ArrayList<UserDeviceDTO>();
 		int total = (int)search_result.getTotalElements();//.getTotal();
