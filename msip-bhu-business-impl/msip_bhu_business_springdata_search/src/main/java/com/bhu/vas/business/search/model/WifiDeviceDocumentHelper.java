@@ -56,12 +56,13 @@ public class WifiDeviceDocumentHelper {
 	 * @param bindUser
 	 * @param bindUserDNick 用户绑定的设备的昵称
 	 * @param agentUser
+	 * @param o_template
 	 * @param hoc
 	 * @return
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
 			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
-			User agentUser, int hoc){
+			User agentUser, String o_template, int hoc){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -131,7 +132,7 @@ public class WifiDeviceDocumentHelper {
 		}else{
 			doc.setO_graylevel(String.valueOf(GrayLevel.Other.getIndex()));
 		}
-		//TODO:doc.setO_template(o_template);
+		doc.setO_template(o_template);
 		if(bindUser != null){
 			doc.setU_binded(WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
 			doc.setU_id(String.valueOf(bindUser.getId()));
