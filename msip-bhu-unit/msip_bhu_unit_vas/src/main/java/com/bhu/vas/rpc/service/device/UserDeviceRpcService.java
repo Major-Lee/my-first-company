@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -105,8 +106,15 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         logger.info(String.format("fetchBindDevices with uid[%s]", uid));
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid));
     }
-    
-    /*@Override
+
+    @Override
+    public TailPage<UserDeviceDTO> pageBindDevices(int uid, String dut, int pageNo, int pageSize) {
+        logger.info(String.format("pageBindDevices with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
+
+        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, dut, pageNo, pageSize);
+    }
+
+/*@Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
         logger.info(String.format("fetchBindDevicesByAccOrUid with uid[%s]", uid));
         return userUnitFacadeService.fetchBindDevicesByAccOrUid(countrycode,acc,uid);
