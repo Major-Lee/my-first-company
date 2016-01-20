@@ -819,7 +819,7 @@ public class DeviceBusinessFacadeService {
 				if(isVisitorWifi(ctx, dto)) { //访客网络
 					handsetDeviceVisitorOnline(ctx, dto, mac);
 				} else {
-					WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(mac,
+					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac,
 							handsetId, dto.fetchData_rx_rate_double());
 				}
 
