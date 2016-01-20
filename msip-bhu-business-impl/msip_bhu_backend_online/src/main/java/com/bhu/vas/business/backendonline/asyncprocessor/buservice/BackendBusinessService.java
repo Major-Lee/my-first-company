@@ -1,16 +1,11 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.buservice;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -18,7 +13,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDet
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
-import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 
 /**
