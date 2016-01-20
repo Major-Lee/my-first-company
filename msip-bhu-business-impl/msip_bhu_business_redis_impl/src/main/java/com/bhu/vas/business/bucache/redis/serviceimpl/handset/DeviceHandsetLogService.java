@@ -202,7 +202,7 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 		return ret;
 	}
 	
-	private static final int trim_when_logs_size_largerthen = 100;
+	//private static final int trim_when_logs_size_largerthen = 100;
 	
 	/**
 	 * 保留最后的100条数据（负数下标） 
