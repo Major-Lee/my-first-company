@@ -140,6 +140,7 @@ public class UserDeviceController extends BaseController {
 
                                  ) {
         TailPage<UserDeviceDTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, dut, pageNo, pageSize);
+        System.out.println("ret===" + rpcResult.isEmpty());
         if (!rpcResult.isEmpty()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
         } else {
