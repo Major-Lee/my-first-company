@@ -562,7 +562,9 @@ public class UserUnitFacadeService {
 	 * @return
      */
 	public TailPage<UserDeviceDTO> fetchBindDevicesFromIndex(int uid, String dut, int pageNo, int pageSize) {
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, pageNo, pageSize);
+
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
 		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
 
 		List<UserDeviceDTO> vtos = new ArrayList<UserDeviceDTO>();
@@ -576,7 +578,7 @@ public class UserUnitFacadeService {
 			}else{
 				vtos = new ArrayList<UserDeviceDTO>();
 				WifiDeviceVTO1 vto = null;
-				int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
+				int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
 				for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
 					UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 					userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
