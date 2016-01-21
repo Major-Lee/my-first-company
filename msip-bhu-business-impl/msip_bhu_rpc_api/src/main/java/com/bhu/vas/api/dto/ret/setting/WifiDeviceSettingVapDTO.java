@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
+
 
 /**
  * 设备配置信息的vap item
@@ -36,6 +38,8 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	private String auth_key;
 
 	private String auth_key_rsa;
+	//是否隐藏ssid 默认为关 不隐藏
+	private String hide_ssid = WifiDeviceHelper.Disable;
 
 	public WifiDeviceSettingVapDTO(){
 		
@@ -111,6 +115,12 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
+	public String getHide_ssid() {
+		return hide_ssid;
+	}
+	public void setHide_ssid(String hide_ssid) {
+		this.hide_ssid = hide_ssid;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -148,12 +158,13 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = null;
 		switch(type){
 			case BuilderType_VapPassword:
-				properties = new Object[5];
+				properties = new Object[6];
 				properties[0] = name;
 				properties[1] = ssid;
 				properties[2] = auth;
 				properties[3] = auth_key;
 				properties[4] = auth_key_rsa;
+				properties[5] = hide_ssid;
 				break;
 			case BuilderType_WorkModeChanged:
 				properties = new Object[9];

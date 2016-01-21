@@ -14,6 +14,8 @@ public class URouterDeviceConfigVTO implements Serializable{
 	private String vap_ssid;
 	//vap 密码 加密方式
 	private String vap_auth;
+	//vap 隐藏ssid
+	private String vap_hide_ssid;
 	//信号强度
 	private int power;
 	//当前使用信道
@@ -81,6 +83,12 @@ public class URouterDeviceConfigVTO implements Serializable{
 //		this.block_macs = block_macs;
 //	}
 
+	public String getVap_hide_ssid() {
+		return vap_hide_ssid;
+	}
+	public void setVap_hide_ssid(String vap_hide_ssid) {
+		this.vap_hide_ssid = vap_hide_ssid;
+	}
 	public List<String> getBlock_macs() {
 		return block_macs;
 	}

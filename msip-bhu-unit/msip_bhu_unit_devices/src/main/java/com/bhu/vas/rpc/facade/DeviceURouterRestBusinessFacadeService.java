@@ -1234,6 +1234,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setVap_name(normal_vap.getName());
 				vto.setVap_ssid(normal_vap.getSsid());
 				vto.setVap_pwd(JNIRsaHelper.jniRsaDecryptHexStr(normal_vap.getAuth_key_rsa()));
+				vto.setVap_hide_ssid(normal_vap.getHide_ssid());
 			}
 			//黑名单列表
 			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
