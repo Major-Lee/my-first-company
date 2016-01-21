@@ -29,7 +29,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		SystemNoneedCaptchaValidAccs.add("86 13810048517");//T3
 		//SystemTestUsers.add(7);
 		SystemNoneedCaptchaValidAccs.add("86 15910908280");//T3
-		SystemTestUsers.add(100021);
+		//SystemTestUsers.add(100021);
 		SystemNoneedCaptchaValidAccs.add("86 13910382542");//T3
 		SystemTestUsers.add(100024);
 		SystemNoneedCaptchaValidAccs.add("86 13671096898");//T3
