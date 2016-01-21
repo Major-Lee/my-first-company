@@ -1135,7 +1135,9 @@ public class DeviceBusinessFacadeService {
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
-				
+			}else{
+				//如果设备reset了,要去掉同步设备配置的标记 避免重置以后，又恢复了配置
+				BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(mac);
 			}
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);

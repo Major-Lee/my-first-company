@@ -52,7 +52,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	Thread.sleep(1000);
     }
     
-    @Test
+    //@Test
 	public void test001BatchCreateDocument(){
     	//wifiDeviceDataSearchService.refresh(false);
 		List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
@@ -277,7 +277,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	
 
 	
-	@Test
+	//@Test
 	public void test001UpdateDocument(){
 
 	}
@@ -287,7 +287,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 1：设备从未上线
 	 * 2：设备业务线为urouter
 	 */
-	@Test
+	//@Test
 	public void test002SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备从未上线
@@ -314,7 +314,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 2：设备业务线为商业wifi
 	 * 3：设备灰度为二级
 	 */
-	@Test
+	//@Test
 	public void test003SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备在线
@@ -346,7 +346,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 2：设备业务线为商业wifi
 	 * 3：设备灰度为一级或二级
 	 */
-	@Test
+	//@Test
 	public void test004SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备在线
@@ -411,7 +411,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 	上述条件反向
 	 * 
 	 */
-	@Test
+	//@Test
 	public void test005SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		
@@ -463,7 +463,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 4：导入的批次是20151104开头的
 	 * 5：按照mac地址降序排序
 	 */
-	@Test
+	//@Test
 	public void test006SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -502,7 +502,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 满足条件
 	 * 按照设备位置与"广西壮族自治区柳州市柳南区西堤路"{109.407456,24.315300}的距离升序排序
 	 */
-	@Test
+	//@Test
 	public void test007SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -530,7 +530,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 满足条件
 	 * 按照圆心坐标是"北京市海淀区双清路" {116.345581,40.017058} 半径为30km内的设备
 	 */
-	@Test
+	//@Test
 	public void test008SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -558,7 +558,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * topLeft {116.21520418420414, 40.07323716177983}
 	 * bottomRight {116.5394884295654, 39.75419016772713}
 	 */
-	@Test
+	//@Test
 	public void test009SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -591,7 +591,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		84:82:f4:0a:64:68 = AP201P07V1.2.14z2
 		84:82:f4:05:52:14 = AP201P07V1.2.14r3
 	 */
-	@Test
+	//@Test
 	public void test0010SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号倒序排序
@@ -617,7 +617,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 实例二:
 	 * 	满足上述的条件1 只获取数量
 	 */
-	@Test
+	//@Test
 	public void test0011SearchConditionDocument(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备按照软件版本号大于AP201P07V1.2.14z2匹配
@@ -659,7 +659,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 
 	}
 	
-	@Test
+	//@Test
 	public void test0012SearchConditionDocument(){
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_lastregedat\",\"pattern\":\"btn\",\"payload\":\"{\\\"gtv\\\":\\\"1448341200000\\\",\\\"ltv\\\":\\\"1448430600000\\\"}\"}]}";
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"1\"}]}";
@@ -676,7 +676,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
 	}
 	
-	@Test
+	//@Test
 	public void test0013SearchIteratorAll(){
 		String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"TU \"}]}";
 		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
@@ -689,5 +689,14 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 				System.out.println(pages.getTotalElements());
 			}
 		});
+	}
+	
+	@Test
+	public void test0014SearchTest(){
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchPageByUidAndDut(100153, "TU", 0, 10);
+    	System.out.println("test0014SearchTest" + result.getTotalElements());
+		for(WifiDeviceDocument doc : result){
+    	    System.out.println("test0014SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
 	}
 }
