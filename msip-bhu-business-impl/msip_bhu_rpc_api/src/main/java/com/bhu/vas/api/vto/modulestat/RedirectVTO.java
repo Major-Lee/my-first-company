@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Created by bluesand on 12/11/15.
  */
+@SuppressWarnings("serial")
 public class RedirectVTO extends BaseVTO{
 
     private List<ItemRedirectVTO> items;

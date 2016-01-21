@@ -15,8 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
@@ -48,9 +46,7 @@ import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
-import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
@@ -89,7 +85,6 @@ import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.bhu.vas.business.logger.BusinessWifiHandsetRelationFlowLogger;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -618,7 +613,7 @@ public class AsyncMsgHandleService {
 	/**
 	 * 移动设备上线
 	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
-	 * 4:移动设备连接wifi设备的流水log (backend)
+	 * 4:移动设备连接wifi设备的流水log (backend) removed
 	 * 5:wifi设备接入移动设备的接入数量增量 (backend)
 	 * 6:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
 	 * 7:统计增量 移动设备的daily启动次数增量(backend)
@@ -626,34 +621,28 @@ public class AsyncMsgHandleService {
 	 */
 	public void handsetDeviceOnlineHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOnlineHandle message[%s]", message));
-		
 		HandsetDeviceOnlineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOnlineDTO.class);
-		
 		/*//3:移动设备连接wifi设备的接入记录(非流水)
 		int result_status = wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
-
 		//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
 		if(result_status == WifiHandsetDeviceRelationMService.AddRelation_Insert){
 			//5:wifi设备接入移动设备的接入数量增量
 			wifiHandsetDeviceLoginCountMService.incrCount(dto.getWifiId());
 		}*/
-		
 		//3:移动设备连接wifi设备的接入记录(非流水)
 		//修改为redis实现终端上下线日志 2015-12-11
-		int result_status = HandsetStorageFacadeService.wifiDeviceHandsetOnline(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
-
+		//移植到device组件中实现 edmond 20160121
+		//int result_status = HandsetStorageFacadeService.wifiDeviceHandsetOnline(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
 		/*//如果接入记录是新记录 表示移动设备第一次连接此wifi设备
 		if(result_status == HandsetLogDTO.Element_NewHandset){
 			//5:wifi设备接入移动设备的接入数量增量
 			wifiHandsetDeviceLoginCountMService.incrCount(dto.getWifiId());
 		}*/
-		
-		//4:移动设备连接wifi设备的流水log
-		BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());
-		
-		//终端统计
-		deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())),
-				DeviceStatistics.Statis_HandsetDevice_Type);
+		//4:移动设备连接wifi设备的流水log	增值平台首页面 此部分数据统计暂时移除 edmond 20160121
+		//BusinessWifiHandsetRelationFlowLogger.doFlowMessageLog(dto.getWifiId(), dto.getMac(), dto.getLogin_ts());
+		//终端统计 由于去除了增值平台首页面 此部分数据统计暂时移除 edmond 20160121
+		//deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewHandset(), new Date(dto.getLast_login_at())),
+		//		DeviceStatistics.Statis_HandsetDevice_Type);
 		
 		//如果是urouter设备 才会发push
 		if(deviceFacadeService.isURouterDevice(dto.getWifiId())){
@@ -666,7 +655,8 @@ public class AsyncMsgHandleService {
 				pushDto.setMac(dto.getWifiId());
 				pushDto.setHd_mac(dto.getMac());
 				pushDto.setTs(System.currentTimeMillis());
-				if(result_status == HandsetLogDTO.Element_NewHandset)
+				//if(result_status == HandsetLogDTO.Element_NewHandset)
+				if(dto.isNh4t())
 					pushDto.setNewed(true);
 				boolean push_successed = pushService.push(pushDto);
 				if(push_successed){
@@ -684,21 +674,20 @@ public class AsyncMsgHandleService {
 	
 	/**
 	 * 移动设备下线
-	 * 3:统计增量 移动设备的daily访问时长增量 (backend)
+	 * 3:统计增量 移动设备的daily访问时长增量 (backend) removed
 	 * @param message
 	 */
 	public void handsetDeviceOfflineHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s]", message));
-		
-		HandsetDeviceOfflineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOfflineDTO.class);
+		//HandsetDeviceOfflineDTO dto = JsonHelper.getDTO(message, HandsetDeviceOfflineDTO.class);
 		//修改为redis实现终端上下线日志 2015-12-11
 		//wifiHandsetDeviceRelationMService.offlineWifiHandsetDeviceItems(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
-		HandsetStorageFacadeService.wifiDeviceHandsetOffline(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
+		//HandsetStorageFacadeService.wifiDeviceHandsetOffline(dto.getWifiId(), dto.getMac(), dto.getTx_bytes(), dto.getTs());
 		
-		//3:统计增量 移动设备的daily访问时长增量
-		if(!StringUtils.isEmpty(dto.getUptime())){
+		//3:统计增量 移动设备的daily访问时长增量 增值平台首页面 此部分数据统计暂时移除 edmond 20160121
+		/*if(!StringUtils.isEmpty(dto.getUptime())){
 			deviceFacadeService.deviceStatisticsOffline(Long.parseLong(dto.getUptime()), DeviceStatistics.Statis_HandsetDevice_Type);
-		}
+		}*/
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceOfflineHandle message[%s] successful", message));
 	}
@@ -713,13 +702,13 @@ public class AsyncMsgHandleService {
 	 */
 	public void handsetDeviceSyncHandle(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor handsetDeviceSyncHandle message[%s]", message));
-		HandsetDeviceSyncDTO syncDto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
+		/*HandsetDeviceSyncDTO syncDto = JsonHelper.getDTO(message, HandsetDeviceSyncDTO.class);
 
 		for (HandsetDeviceDTO dto : syncDto.getDtos()) {
 			//修改为redis实现终端上下线日志 2015-12-11
 			//wifiHandsetDeviceRelationMService.addRelation(syncDto.getMac(), dto.getMac(),new Date(dto.getTs()));
 			HandsetStorageFacadeService.wifiDeviceHandsetOnline(syncDto.getMac(), dto.getMac(), dto.getTs());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
-		}
+		}*/
 	}
 
 
