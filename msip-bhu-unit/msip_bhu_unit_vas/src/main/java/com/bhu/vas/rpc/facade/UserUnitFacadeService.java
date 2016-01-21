@@ -258,7 +258,7 @@ public class UserUnitFacadeService {
 			}
 			this.userService.update(user);
 			
-			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
