@@ -95,7 +95,7 @@ public class IegalTokenHashService extends AbstractRelationHashCache{
 		try{
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(token)){
 				Integer uid = TokenServiceHelper.parserAccessToken4User(token);
-				if(uid.intValue() != uidParam){
+				if(uidParam >0 && uid.intValue() != uidParam){
 					throw new TokenValidateBusinessException(uid,ITokenService.Access_Token_CONTENT_UID_NotMatch);
 					//return false;
 				}

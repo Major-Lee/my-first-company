@@ -69,6 +69,8 @@ public class UserRpcService implements IUserRpcService{
 
 	@Override
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_uuid) {
+		logger.info(String.format("tokenValidate with uidParam[%s] token[%s] uuid[%s] ",
+				uidParam,token,d_uuid));
 		return userUnitFacadeService.tokenValidate(uidParam, token,d_uuid);
 	}
 	

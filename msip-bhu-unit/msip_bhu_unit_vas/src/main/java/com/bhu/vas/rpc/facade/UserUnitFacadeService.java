@@ -67,15 +67,25 @@ public class UserUnitFacadeService {
 
 	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
 
+	/**
+	 * 需要兼容uidParam为空的情况
+	 * @param uidParam
+	 * @param token
+	 * @param d_uuid
+	 * @return
+	 */
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_uuid) {
-		if(StringUtils.isEmpty(uidParam)) 
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
+		//if(StringUtils.isEmpty(uidParam)) 
+		//	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
 		try{
-			Integer uid = Integer.parseInt(uidParam);
-			if(uid.intValue() <=0) return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
-			
-			boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uid.intValue());
-			if(!validate && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
+			int uid = -1;
+			if(StringUtils.isNotEmpty(uidParam)){
+				uid = Integer.parseInt(uidParam);
+			}
+			//Integer uid = Integer.parseInt(uidParam);
+			//if(uid.intValue() <=0) return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
+			boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uid);
+			if(!validate && uid>0 && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
 				User user  = userService.getById(uid);
 				if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_uuid)){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
@@ -83,9 +93,9 @@ public class UserUnitFacadeService {
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
 		}catch(TokenValidateBusinessException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}catch(NumberFormatException fex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 	}
 	/**
