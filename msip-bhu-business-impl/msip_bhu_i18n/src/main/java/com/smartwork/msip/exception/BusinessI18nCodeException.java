@@ -7,10 +7,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * i18n集成异常类处理
  * 把i18n的特性和异常的提示消息合成
  * 
- * 
- * 
- * 
- * 
  * @author Edmond
  *
  */
