@@ -253,6 +253,7 @@ public class UserUnitFacadeService {
 			//user.setSex(sex);
 			//user.setLastlogindevice_uuid(deviceuuid);
 			user.setRegip(remoteIp);
+			user.setLastlogindevice_uuid(d_uuid);
 			//标记用户注册时使用的设备，缺省为DeviceEnum.Android
 			user.setRegdevice(device);
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
