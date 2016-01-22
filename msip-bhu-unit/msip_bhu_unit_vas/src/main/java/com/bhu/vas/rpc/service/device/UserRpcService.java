@@ -53,10 +53,10 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_uuid, String device,
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_udid, String device,
 			String remoteIp) {
-		logger.info(String.format("userValidate with aToken[%s] device[%s] remoteIp[%s]",aToken,device,remoteIp));
-		return userUnitFacadeService.userValidate(aToken,d_uuid, device, remoteIp);
+		logger.info(String.format("userValidate with aToken[%s] udid[%s] device[%s] remoteIp[%s]",aToken,d_udid,device,remoteIp));
+		return userUnitFacadeService.userValidate(aToken,d_udid, device, remoteIp);
 	}
 
 	@Override

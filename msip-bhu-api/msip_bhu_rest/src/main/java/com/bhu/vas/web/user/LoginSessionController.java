@@ -135,7 +135,7 @@ public class LoginSessionController extends BaseController{
 	public void validate(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false, value="du") String dudid,
+			//@RequestParam(required = false, value="du") String dudid,
 			@RequestParam(required = false, value="d",defaultValue="R") String device) {
 		/*
 		 1、获取远端IP
@@ -148,6 +148,8 @@ public class LoginSessionController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_EMPTY));
 			return;
 		}
+		
+		String dudid = request.getHeader(RuntimeConfiguration.Param_UDIDHeader);
 		
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();

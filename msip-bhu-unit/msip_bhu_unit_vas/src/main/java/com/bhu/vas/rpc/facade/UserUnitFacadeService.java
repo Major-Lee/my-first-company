@@ -162,7 +162,7 @@ public class UserUnitFacadeService {
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(map));
 	}
 	
-	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_uuid,String device,String remoteIp) {
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_udid,String device,String remoteIp) {
 		UserTokenDTO uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
@@ -174,10 +174,10 @@ public class UserUnitFacadeService {
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
 			//token 验证错误，需要进行uuid比对
-			if(StringUtils.isNotEmpty(d_uuid)){
+			if(StringUtils.isNotEmpty(d_udid)){
 				if(ex.getUid() >0 && (validateCode== ITokenService.Access_Token_NotExist || validateCode== ITokenService.Access_Token_NotMatch)){
 					User user  = userService.getById(uToken.getId());
-					if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_uuid)){
+					if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_udid)){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
 					}
 				}
