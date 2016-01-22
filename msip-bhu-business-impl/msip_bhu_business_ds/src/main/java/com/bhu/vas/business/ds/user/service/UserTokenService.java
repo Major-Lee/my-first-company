@@ -53,7 +53,7 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 	}
 	@Override
 	public UserTokenDTO validateUserAccessToken(String accessToken){
-		try{
+		//try{
 			System.out.println("validateUserAccessToken a accessToken:"+accessToken);
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(accessToken)){
@@ -74,11 +74,11 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 			}else{
 				throw new TokenValidateBusinessException(Access_Token_Expired);
 			}
-		}catch(Exception ex){
+		/*}catch(Exception ex){
 			System.out.println("validateUserAccessToken f accessToken:"+accessToken);
 			ex.printStackTrace(System.out);
 			throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
-		}
+		}*/
 	}
 	@Override
 	public UserTokenDTO doRefreshUserAccessToken(String refreshToken){

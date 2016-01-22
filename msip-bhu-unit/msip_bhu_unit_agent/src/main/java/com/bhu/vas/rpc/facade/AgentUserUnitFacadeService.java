@@ -260,6 +260,8 @@ public class AgentUserUnitFacadeService {
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 		try{
 			User user  = userService.getById(uToken.getId());

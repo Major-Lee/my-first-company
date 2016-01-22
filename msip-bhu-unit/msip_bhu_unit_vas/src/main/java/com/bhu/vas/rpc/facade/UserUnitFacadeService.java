@@ -183,6 +183,8 @@ public class UserUnitFacadeService {
 				}
 			}
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 		
 		User user  = userService.getById(uToken.getId());
