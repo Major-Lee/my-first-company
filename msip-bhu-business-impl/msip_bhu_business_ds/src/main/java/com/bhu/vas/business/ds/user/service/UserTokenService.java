@@ -54,19 +54,19 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 	@Override
 	public UserTokenDTO validateUserAccessToken(String accessToken){
 		//try{
-			System.out.println("validateUserAccessToken a accessToken:"+accessToken);
+			//System.out.println("validateUserAccessToken a accessToken:"+accessToken);
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(accessToken)){
-				System.out.println("validateUserAccessToken b accessToken:"+accessToken);
+				//System.out.println("validateUserAccessToken b accessToken:"+accessToken);
 				Integer uid = TokenServiceHelper.parserAccessToken4User(accessToken);
-				System.out.println("validateUserAccessToken c uid:"+uid);
+				//System.out.println("validateUserAccessToken c uid:"+uid);
 				if(uid == null || uid.intValue() <=0){
 					throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
 				}
-				System.out.println("validateUserAccessToken d uid:"+uid);
+				//System.out.println("validateUserAccessToken d uid:"+uid);
 				UserToken userToken = this.getById(uid);
 				if(userToken == null) throw new TokenValidateBusinessException(uid,Access_Token_NotExist);
-				System.out.println("validateUserAccessToken e userToken:"+userToken.getAccess_token());
+				//System.out.println("validateUserAccessToken e userToken:"+userToken.getAccess_token());
 				if(accessToken.equals(userToken.getAccess_token())){
 					return userToken.toUserTokenDTO();//Access_Token_Matched;
 				}

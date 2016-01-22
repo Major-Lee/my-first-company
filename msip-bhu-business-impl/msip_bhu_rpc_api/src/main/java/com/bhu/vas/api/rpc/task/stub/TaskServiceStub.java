@@ -6,7 +6,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class TaskServiceStub implements ITaskRpcService{
@@ -29,7 +29,7 @@ public class TaskServiceStub implements ITaskRpcService{
 	public RpcResponseDTO<TaskResDTO> createNewTask(Integer uid, String mac, String opt, String subopt, String extparams,/*String payload,*/
 			String channel, String channel_taskid) {
 		if(uid == null || StringUtils.isEmpty(mac)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return taskRpcService.createNewTask(uid, mac, opt, subopt, extparams,/*payload,*/
 				channel, channel_taskid);
 	}
@@ -43,10 +43,10 @@ public class TaskServiceStub implements ITaskRpcService{
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(Integer uid, String channel,
 			String channel_taskid, Long taskid) {
 		if(uid == null)
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		if(StringUtils.isEmpty(channel_taskid) && taskid == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		
 		return taskRpcService.taskStatusFetch4ThirdParties(uid, channel, channel_taskid, taskid);
@@ -57,7 +57,7 @@ public class TaskServiceStub implements ITaskRpcService{
 			boolean dependency, String mac, String opt, String subopt,
 			String extparams, String channel, String channel_taskid) {
 		if(uid == null || (gid == 0 && StringUtils.isEmpty(mac))) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return taskRpcService.createNewTask4Group(uid, gid, dependency, mac, opt, subopt, extparams, channel, channel_taskid);
 	}
 
@@ -65,10 +65,10 @@ public class TaskServiceStub implements ITaskRpcService{
 	public RpcResponseDTO<TaskResDetailDTO> taskStatusDetailFetch4ThirdParties(
 			Integer uid, String channel, String channel_taskid, Long taskid) {
 		if(uid == null)
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		if(StringUtils.isEmpty(channel_taskid) && taskid == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		
 		return taskRpcService.taskStatusDetailFetch4ThirdParties(uid, channel, channel_taskid, taskid);

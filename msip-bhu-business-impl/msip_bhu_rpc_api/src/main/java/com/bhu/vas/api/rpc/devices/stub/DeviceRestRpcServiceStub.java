@@ -16,7 +16,7 @@ import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
@@ -31,7 +31,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public List<WifiDeviceMaxBusyVTO> fetchWDevicesOrderMaxHandset(int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchWDevicesOrderMaxHandset(pageNo, pageSize);
 	}
@@ -39,7 +39,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 //	@Override
 //	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize) {
 //		if(pageNo < 0 || pageSize < 0) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+//			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 //		
 //		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, pageNo, pageSize);
 //	}
@@ -48,7 +48,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword,
 			String region, String excepts, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, region, excepts, pageNo, pageSize);
 	}
@@ -59,7 +59,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 			String config_mode, String devicetype, Boolean online,Boolean moduleonline, Boolean newVersionDevice, Boolean canOperateable,
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,origvapmodule, adr,work_mode, config_mode, 
 				devicetype, online,moduleonline, newVersionDevice,canOperateable, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 	}
@@ -67,7 +67,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions){
 		if(StringUtils.isEmpty(regions)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchWDeviceRegionCount(regions);
 	}
@@ -75,7 +75,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchRecentWDevice(pageNo, pageSize);
 	}
@@ -83,9 +83,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize) {
 		if(StringUtils.isEmpty(wifiId)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
 	}
@@ -98,7 +98,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId) {
 		if(StringUtils.isEmpty(wifiId)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchDevicePersistenceDetailCMD(wifiId);
 	}
@@ -106,14 +106,14 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
 		if (StringUtils.isEmpty(wifiId))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return deviceRestRpcService.fetchDevicePresent(wifiId);
 	}
 
 	@Override
 	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchBySearchConditionMessage(message, pageNo, pageSize);
 
@@ -122,7 +122,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid,String message,String desc) {
 		if(StringUtils.isEmpty(message))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
 	}
@@ -140,7 +140,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
 	}

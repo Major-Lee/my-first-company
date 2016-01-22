@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispatchRpcService{
@@ -22,14 +22,14 @@ public class DeviceMessageDispatchRpcServiceStub implements IDeviceMessageDispat
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
 		if(StringUtils.isEmpty(ctx) || parserHeader == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		deviceMessageDispatchRpcService.messageDispatch(ctx, payload, parserHeader);
 	}
 
 	@Override
 	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> devices) {
 		if(StringUtils.isEmpty(ctx)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, devices);
 	}
 }

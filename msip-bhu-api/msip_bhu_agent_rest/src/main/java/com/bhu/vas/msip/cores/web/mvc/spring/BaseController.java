@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseStatus;
@@ -65,20 +65,20 @@ public abstract class BaseController implements ServletContextAware {
 		CookieUtils.deleteCookie(request, response, CookieUtils.getCookie(request, LoginTokenHelper.RemoteCookieName));
 	}*/
 	
-	@ExceptionHandler(RpcBusinessI18nCodeException.class)
-    protected ModelAndView rpcBusinessI18nCodeException(RpcBusinessI18nCodeException ex, HttpServletRequest request, HttpServletResponse response) {
+	@ExceptionHandler(BusinessI18nCodeException.class)
+    protected ModelAndView rpcBusinessI18nCodeException(BusinessI18nCodeException ex, HttpServletRequest request, HttpServletResponse response) {
         logging(ex, request);
         response.setStatus(ResponseStatus.OK.getStatus());
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(), ex.getPayload()));//, ex.locateResponseErrorCode()));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(), ex.getPayload()));//, ex.locateResponseErrorCode()));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(), ex.locateResponseErrorCode()));
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(), ex.getPayload()));//, ex.locateResponseErrorCode()));
             return null;        	
         }
         ModelAndView mv = new ModelAndView();
