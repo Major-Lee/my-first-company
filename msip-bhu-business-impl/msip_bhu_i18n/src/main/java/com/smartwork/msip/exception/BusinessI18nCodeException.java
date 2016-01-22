@@ -8,7 +8,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * 把i18n的特性和异常的提示消息合成
  * 
  * @author Edmond
- *
  */
 @SuppressWarnings("serial")
 public class BusinessI18nCodeException extends RuntimeException{
