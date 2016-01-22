@@ -1,27 +1,14 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.junit.Test;
-
-import com.bhu.vas.api.dto.search.condition.SearchCondition;
-import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
-import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.vto.WifiDeviceVTO1;
-import com.bhu.vas.business.search.BusinessIndexDefine;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
 
 public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 	@Resource
 	private DeviceRestBusinessFacadeService deviceRestBusinessFacadeService;
 	
-	@Test
+/*	@Test
 	public void fetchBySearchConditionMessage(){
 		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//设备从未上线
@@ -53,5 +40,5 @@ public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 		System.out.println(4);
 		System.out.println(5);
 		
-	}
+	}*/
 }

@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.search.condition.payload;
+package com.bhu.vas.business.search.core.condition.component.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
