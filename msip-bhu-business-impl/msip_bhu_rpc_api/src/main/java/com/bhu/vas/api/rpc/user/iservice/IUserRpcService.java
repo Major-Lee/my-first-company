@@ -47,7 +47,7 @@ public interface IUserRpcService {
 	 * @param acc
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_uuid);
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_udid);
 	
 	/**
 	 * 检测acc是否已经存在
@@ -76,7 +76,7 @@ public interface IUserRpcService {
 	 * @param remoteIp
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_uuid,String device,String remoteIp);
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_udid,String device,String remoteIp);
 	
 	/**
 	 * 用户登录或者注册
@@ -89,7 +89,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String captcha,String device,String remoteIp,String d_uuid);
+	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String captcha,String device,String remoteIp,String d_udid);
 	RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org);
 	RpcResponseDTO<Map<String, Object>> profile(int uid);
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(

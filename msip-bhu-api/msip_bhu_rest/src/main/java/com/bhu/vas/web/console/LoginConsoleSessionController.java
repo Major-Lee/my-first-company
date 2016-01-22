@@ -104,7 +104,7 @@ public class LoginConsoleSessionController extends BaseController{
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
 		//RpcResponseDTO<UserDTO> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
-		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userValidate(aToken,null, from_device, remoteIp);
 		if(!rpcResult.hasError()){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);

@@ -126,8 +126,16 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}
 		}
+		String udid = request.getHeader(RuntimeConfiguration.Param_UDIDHeader);
+		if(StringUtils.isEmpty(udid)){
+			udid = request.getParameter(RuntimeConfiguration.Param_UDIDRequest);
+			/*if(StringUtils.isEmpty(udid)){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+				return false;
+			}*/
+		}
 		
-		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken);
+		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken,udid);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));

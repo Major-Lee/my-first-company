@@ -1,7 +1,5 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.token;
 
-import org.apache.commons.lang.StringUtils;
-
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;

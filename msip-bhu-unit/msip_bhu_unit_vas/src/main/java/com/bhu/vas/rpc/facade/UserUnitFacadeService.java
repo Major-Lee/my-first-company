@@ -74,7 +74,7 @@ public class UserUnitFacadeService {
 			if(uid.intValue() <=0) return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
 			
 			boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uid.intValue());
-			if(!validate){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
+			if(!validate && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
 				User user  = userService.getById(uid);
 				if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_uuid)){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
