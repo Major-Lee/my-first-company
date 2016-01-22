@@ -45,7 +45,7 @@ public class AgentUserUnitFacadeService {
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
 		try{
 				int uid = Integer.parseInt(uidParam); 
-				boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
+				boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,Integer.parseInt(uidParam));
 				//还需验证此用户是否是代理商用户或者是管理员用户
 				if(validate){
 					if(BusinessRuntimeConfiguration.isConsoleUser(uid))//管理员账户直接通过验证
@@ -259,6 +259,8 @@ public class AgentUserUnitFacadeService {
 		}catch(TokenValidateBusinessException ex){
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}catch(Exception ex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 		try{

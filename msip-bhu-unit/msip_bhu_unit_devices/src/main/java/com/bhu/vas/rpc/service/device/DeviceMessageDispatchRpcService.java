@@ -19,7 +19,7 @@ import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.rpc.facade.DeviceBusinessFacadeService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -63,7 +63,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			}
 			//logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",ctx, payload, parserHeader));
 			//logger.info("1");
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("messageDispatch failed ctx [%s] payload [%s] header[%s]", 
 					ctx, payload, parserHeader));
 			throw ex;
@@ -71,7 +71,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			ex.printStackTrace(System.out);
 			logger.error(String.format("messageDispatch exception ctx [%s] payload [%s] header[%s] exmsg[%s]",
 					ctx, payload, parserHeader, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 		
 	}
@@ -382,14 +382,14 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 			deviceBusinessFacadeService.cmupWithWifiDeviceOnlines(ctx, dtos);
 			
 			//logger.info(String.format("cmupWithWifiDeviceOnlines successful ctx [%s] ",ctx));
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("cmupWithWifiDeviceOnlines failed ctx [%s] ", ctx));
 			throw ex;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("cmupWithWifiDeviceOnlines exception ctx [%s] exmsg[%s]",
 					ctx, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 

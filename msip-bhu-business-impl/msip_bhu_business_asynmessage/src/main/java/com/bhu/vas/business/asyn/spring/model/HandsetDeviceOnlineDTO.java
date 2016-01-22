@@ -8,7 +8,8 @@ public class HandsetDeviceOnlineDTO extends ActionDTO {
 	private long login_ts;//移动设备本次接入时间
 	private long last_login_at;//移动设备上次接入时间
 	private boolean newHandset;//是否是新增移动设备
-	
+	//newHandset4this 是否是第一次连接此设备
+	private boolean nh4t;
 	public String getWifiId() {
 		return wifiId;
 	}
@@ -39,6 +40,14 @@ public class HandsetDeviceOnlineDTO extends ActionDTO {
 
 	public void setLast_login_at(long last_login_at) {
 		this.last_login_at = last_login_at;
+	}
+
+	public boolean isNh4t() {
+		return nh4t;
+	}
+
+	public void setNh4t(boolean nh4t) {
+		this.nh4t = nh4t;
 	}
 
 	@Override

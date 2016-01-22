@@ -7,12 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.WifiDeviceVTO1;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.smartwork.msip.cores.orm.support.page.CommonPage;
-import com.smartwork.msip.cores.orm.support.page.PageHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -37,12 +31,17 @@ import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.token.ITokenService;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -67,9 +66,36 @@ public class UserUnitFacadeService {
 
 	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
 
-	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
-		boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uidParam);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
+	/**
+	 * 需要兼容uidParam为空的情况
+	 * @param uidParam
+	 * @param token
+	 * @param d_uuid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_uuid) {
+		//if(StringUtils.isEmpty(uidParam)) 
+		//	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
+		try{
+			int uid = -1;
+			if(StringUtils.isNotEmpty(uidParam)){
+				uid = Integer.parseInt(uidParam);
+			}
+			//Integer uid = Integer.parseInt(uidParam);
+			//if(uid.intValue() <=0) return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
+			boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uid);
+			if(!validate && uid>0 && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
+				User user  = userService.getById(uid);
+				if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_uuid)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
+		}catch(TokenValidateBusinessException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}catch(NumberFormatException fex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}
 	}
 	/**
 	 * 检查手机号是否注册过
@@ -146,7 +172,7 @@ public class UserUnitFacadeService {
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(map));
 	}
 	
-	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp) {
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_udid,String device,String remoteIp) {
 		UserTokenDTO uToken = null;
 		try{
 			uToken = userTokenService.validateUserAccessToken(aToken);
@@ -157,9 +183,18 @@ public class UserUnitFacadeService {
 		}catch(TokenValidateBusinessException ex){
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
+			//token 验证错误，需要进行uuid比对
+			if(StringUtils.isNotEmpty(d_udid)){
+				if(ex.getUid() >0 && (validateCode== ITokenService.Access_Token_NotExist || validateCode== ITokenService.Access_Token_NotMatch)){
+					User user  = userService.getById(ex.getUid());
+					if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_udid)){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
+					}
+				}
+			}
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
-			//SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
-			//return;
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 		
 		User user  = userService.getById(uToken.getId());
@@ -197,7 +232,7 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode,
-			String acc, String device, String remoteIp, String captcha) {
+			String acc, String captcha, String device, String remoteIp,String d_uuid) {
 		//step 2.生产环境下的手机号验证码验证
 		if(!RuntimeConfiguration.SecretInnerTest){
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
@@ -217,6 +252,7 @@ public class UserUnitFacadeService {
 		User user = null;
 		UserTokenDTO uToken = null;
 		boolean reg = false;
+		String old_uuid = null;
 		if(uid == null || uid.intValue() == 0){//注册
 			//return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			reg = true;
@@ -229,6 +265,7 @@ public class UserUnitFacadeService {
 			//user.setSex(sex);
 			//user.setLastlogindevice_uuid(deviceuuid);
 			user.setRegip(remoteIp);
+			user.setLastlogindevice_uuid(d_uuid);
 			//标记用户注册时使用的设备，缺省为DeviceEnum.Android
 			user.setRegdevice(device);
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
@@ -244,14 +281,20 @@ public class UserUnitFacadeService {
 			deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,remoteIp);
 		}else{//登录
 			reg = false;
+			
 			user = this.userService.getById(uid);
 			//System.out.println("2. user:"+user);
 			if(user == null){//存在不干净的数据，需要清理数据
 				cleanDirtyUserData(uid,countrycode,acc);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
+			
 			if(StringUtils.isEmpty(user.getRegip())){
 				user.setRegip(remoteIp);
+			}
+			old_uuid = user.getLastlogindevice_uuid();
+			if(StringUtils.isNotEmpty(d_uuid)){
+				user.setLastlogindevice_uuid(d_uuid);
 			}
 			if(!user.getLastlogindevice().equals(device)){
 				user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
@@ -267,7 +310,9 @@ public class UserUnitFacadeService {
 		}
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
-				uToken, reg,fetchBindDevices(user.getId()));
+				uToken, reg,
+				old_uuid,d_uuid,
+				fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
@@ -286,7 +331,7 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, String ut,String org, String captcha) {
+			String nick,String pwd, String captcha, String sex, String device,String regIp,String deviceuuid, String ut,String org) {
 		UserType userType = UserType.getBySName(ut);
 		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
@@ -577,8 +622,8 @@ public class UserUnitFacadeService {
 				vtos = Collections.emptyList();
 			}else{
 				vtos = new ArrayList<UserDeviceDTO>();
-				WifiDeviceVTO1 vto = null;
-				int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
+				//WifiDeviceVTO1 vto = null;
+				//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
 				for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
 					UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 					userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());

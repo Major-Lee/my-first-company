@@ -8,6 +8,8 @@ public interface ITokenService {
 	public static final int Access_Token_NotExist = 4;
 	public static final int Access_Token_NotMatch = 5;
 	
+	public static final int Access_Token_CONTENT_UID_NotMatch = 10;
+	
 	UserTokenDTO generateUserAccessToken(Integer uid,boolean ifExpiredThenReplaced,boolean ifExistThenReplaced);
 	UserTokenDTO validateUserAccessToken(String accessToken);
 	UserTokenDTO doRefreshUserAccessToken(String refreshToken);

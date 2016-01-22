@@ -154,11 +154,12 @@ public class DeliverMessageService {
 	}
 	
 	public void sendHandsetDeviceOnlineActionMessage(String wifiId, String handsetId, long login_ts, 
-			long last_login_at, boolean newHandset){
+			long last_login_at, boolean newHandset,boolean isNew4This){
 		HandsetDeviceOnlineDTO dto = new HandsetDeviceOnlineDTO();
 		dto.setMac(handsetId);
 		dto.setWifiId(wifiId);
 		dto.setNewHandset(newHandset);
+		dto.setNh4t(isNew4This);
 		dto.setLogin_ts(login_ts);
 		dto.setLast_login_at(last_login_at);
 		dto.setTs(System.currentTimeMillis());

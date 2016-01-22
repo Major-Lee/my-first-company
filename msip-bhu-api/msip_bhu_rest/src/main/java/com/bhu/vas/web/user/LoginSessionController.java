@@ -39,6 +39,7 @@ public class LoginSessionController extends BaseController{
 	 * 帐号包括：email&mobileno
 	 * @param request
 	 * @param response
+	 * @param deviceuuid 设备uuid
 	 * @param acc email或者 mobileno
 	 * @param pwd 登录密码
 	 * @param lang 区域
@@ -49,6 +50,7 @@ public class LoginSessionController extends BaseController{
 	public void create(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			@RequestParam(required = false, value="du") String dudid,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = true) String captcha,
@@ -65,7 +67,7 @@ public class LoginSessionController extends BaseController{
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
 		//RpcResponseDTO<UserDTO> userLogin = userRpcService.userLogin(countrycode, acc, from_device, remoteIp, captcha);
-		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userCreateOrLogin(countrycode, acc, from_device, remoteIp, captcha);
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userCreateOrLogin(countrycode, acc, captcha, from_device, remoteIp,dudid);
 		if(!rpcResult.hasError()){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 			//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
@@ -133,6 +135,7 @@ public class LoginSessionController extends BaseController{
 	public void validate(
 			HttpServletRequest request,
 			HttpServletResponse response,
+			//@RequestParam(required = false, value="du") String dudid,
 			@RequestParam(required = false, value="d",defaultValue="R") String device) {
 		/*
 		 1、获取远端IP
@@ -146,11 +149,13 @@ public class LoginSessionController extends BaseController{
 			return;
 		}
 		
+		String dudid = request.getHeader(RuntimeConfiguration.Param_UDIDHeader);
+		
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
 		//RpcResponseDTO<UserDTO> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
-		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userValidate(aToken, from_device, remoteIp);
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userValidate(aToken,dudid, from_device, remoteIp);
 		if(!rpcResult.hasError()){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);

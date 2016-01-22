@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 12/9/15.
  */
+@SuppressWarnings("serial")
 public class ModuleDefinedDetailVTO implements Serializable {
 
     private int type;

@@ -3,6 +3,8 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.token;
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.exception.TokenValidateBusinessException;
+import com.smartwork.msip.business.token.ITokenService;
 import com.smartwork.msip.business.token.service.TokenServiceHelper;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -82,20 +84,33 @@ public class IegalTokenHashService extends AbstractRelationHashCache{
 		}
 	}
 	
-	public boolean validateUserToken(String token,String uidParam){
+	/**
+	 * uidParam 不为空的情况下进行uidParam和token中解析出来的uid判断
+	 * 如果uidParam为空，则验证反而弱了？
+	 * @param token
+	 * @param uidParam
+	 * @return
+	 */
+	public boolean validateUserToken(String token,int uidParam){
 		try{
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(token)){
 				Integer uid = TokenServiceHelper.parserAccessToken4User(token);
-				if(uidParam != null){
-					if(uid.intValue() != Integer.parseInt(uidParam)){
-						return false;
-					}
+				if(uidParam >0 && uid.intValue() != uidParam){
+					throw new TokenValidateBusinessException(uid,ITokenService.Access_Token_CONTENT_UID_NotMatch);
+					//return false;
 				}
+				/*if(StringUtils.isNotEmpty(uidParam)){
+					if(uid.intValue() != Integer.parseInt(uidParam)){
+						throw new TokenValidateBusinessException(uid,ITokenService.Access_Token_CONTENT_UID_NotMatch);
+						//return false;
+					}
+				}*/
 				return userAndTokenExist(uid.intValue(),token);
 			}else return false;
-		}catch(Exception ex){
+		}catch(NumberFormatException ex){
 			ex.printStackTrace(System.out);
-			return false;
+			throw new TokenValidateBusinessException(ITokenService.Access_Token_CONTENT_UID_NotMatch);
+			//return false;
 		}
 	}
 	

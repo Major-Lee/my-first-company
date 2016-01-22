@@ -53,22 +53,32 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 	}
 	@Override
 	public UserTokenDTO validateUserAccessToken(String accessToken){
-		try{
+		//try{
+			//System.out.println("validateUserAccessToken a accessToken:"+accessToken);
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(accessToken)){
+				//System.out.println("validateUserAccessToken b accessToken:"+accessToken);
 				Integer uid = TokenServiceHelper.parserAccessToken4User(accessToken);
+				//System.out.println("validateUserAccessToken c uid:"+uid);
+				if(uid == null || uid.intValue() <=0){
+					throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
+				}
+				//System.out.println("validateUserAccessToken d uid:"+uid);
 				UserToken userToken = this.getById(uid);
-				if(userToken == null) throw new TokenValidateBusinessException(Access_Token_NotExist);
+				if(userToken == null) throw new TokenValidateBusinessException(uid,Access_Token_NotExist);
+				//System.out.println("validateUserAccessToken e userToken:"+userToken.getAccess_token());
 				if(accessToken.equals(userToken.getAccess_token())){
 					return userToken.toUserTokenDTO();//Access_Token_Matched;
 				}
-				else throw new TokenValidateBusinessException(Access_Token_NotMatch);
+				else throw new TokenValidateBusinessException(uid,Access_Token_NotMatch);
 			}else{
 				throw new TokenValidateBusinessException(Access_Token_Expired);
 			}
-		}catch(Exception ex){
+		/*}catch(Exception ex){
+			System.out.println("validateUserAccessToken f accessToken:"+accessToken);
+			ex.printStackTrace(System.out);
 			throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
-		}
+		}*/
 	}
 	@Override
 	public UserTokenDTO doRefreshUserAccessToken(String refreshToken){

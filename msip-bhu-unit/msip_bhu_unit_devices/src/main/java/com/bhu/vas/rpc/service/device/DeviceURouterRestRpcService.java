@@ -26,7 +26,7 @@ import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -51,14 +51,14 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		logger.info(String.format("DeviceURouterRestRPC urouterMainEnter invoke uid [%s] mac [%s]", uid, wifiId));
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterMainEnter(uid, wifiId.toLowerCase());
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterMainEnter failed uid [%s] mac [%s] ", uid, wifiId));
 			throw ex;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterMainEnter exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	/**
@@ -71,7 +71,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterEnter(uid, wifiId.toLowerCase());
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterEnter failed uid [%s] mac [%s] ", uid, wifiId));
 			throw ex;
 		}
@@ -79,7 +79,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterEnter exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterHdList(uid, wifiId.toLowerCase(), status, start, size,filterWiredHandset);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterHdOnlineList failed uid [%s] mac [%s] st [%s] ps [%s]",
 					uid, wifiId, start, size));
 			throw ex;
@@ -101,7 +101,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterHdOnlineList exception uid [%s] mac [%s] st [%s] ps [%s] exmsg[%s]",
 					uid, wifiId, start, size, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterHdDetail(uid, wifiId, hd_mac);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail failed uid [%s] wifi_mac [%s] hd_mac [%s]",
 					uid, wifiId, hd_mac));
 			throw ex;
@@ -122,7 +122,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail exception uid [%s] wifi_mac [%s] hd_mac [%s] exmsg[%s]",
 					uid, wifiId, hd_mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -134,7 +134,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterHdModifyAlias(uid, wifiId, hd_mac, alias);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail failed uid [%s] wifi_mac [%s] hd_mac [%s], alias [%s]",
 					uid, wifiId, hd_mac, alias));
 			throw ex;
@@ -143,7 +143,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.info(String.format("DeviceURouterRestRPC urouterHdDetail exception uid [%s] wifi_mac [%s] hd_mac [%s] alias [%s] exmsg[%s]",
 					uid, wifiId, hd_mac,alias, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -155,7 +155,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterRealtimeRate(uid, wifiId.toLowerCase());
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterRealtimeRate failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -164,7 +164,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterRealtimeRate exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterPeakSection(uid, wifiId.toLowerCase(), type, period, duration);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterPeakSection failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -185,7 +185,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterPeakSection exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -197,7 +197,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterPeakSectionFetch(uid, wifiId.toLowerCase());
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterPeakSectionFetch failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -206,7 +206,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterPeakSectionFetch exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterBlockList(uid, wifiId.toLowerCase(), start, size);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterBlockList failed uid [%s] mac [%s] st [%s] ps [%s]",
 					uid, wifiId, start, size));
 			throw ex;
@@ -227,7 +227,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterBlockList exception uid [%s] mac [%s] st [%s] ps [%s] exmsg[%s]",
 					uid, wifiId, start, size, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -239,7 +239,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterSetting(uid, wifiId.toLowerCase());
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterSetting failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -248,7 +248,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterSetting exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterLinkMode(uid, wifiId.toLowerCase());
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceMessageRPC urouterLinkMode failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -270,7 +270,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterLinkMode exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -285,7 +285,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			return deviceURouterRestBusinessFacadeService.urouterUserMobileDeviceRegister(uid, d, dt, 
 					dm, cv, pv, ut, pt);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister failed uid [%s] d [%s] dt [%s]",
 					uid, d, dt));
 			throw ex;
@@ -294,7 +294,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister exception uid [%s] d [%s] dt [%s] exmsg[%s]",
 					uid, d, dt, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -307,7 +307,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterUserMobileDeviceDestory(uid, d, dt);
 		}
-		catch(RpcBusinessI18nCodeException ex){
+		catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister failed uid [%s] d [%s] dt [%s]",
 					uid, d, dt));
 			throw ex;
@@ -316,7 +316,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister exception uid [%s] d [%s] dt [%s] exmsg[%s]",
 					uid, d, dt, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -327,7 +327,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterPlugins(uid, wifiId);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterPlugins failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -336,7 +336,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterPlugins exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -350,7 +350,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterUpdPluginTerminalOnline(uid, wifiId, 
 					on, stranger_on,alias_on, timeslot, timeslot_mode);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -359,7 +359,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterUpdPluginTerminalOnline exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -370,7 +370,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 				uid, wifiId));
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterUpdPluginWifisniffer(uid, wifiId,on);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterUpdPluginWifisniffer failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -379,7 +379,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterUpdPluginWifisniffer exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -389,7 +389,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 				uid, wifiId));
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterDeviceUsedStatusQuery(uid, wifiId);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterDeviceUsedStatusQuery failed uid [%s] mac [%s]",
 					uid, wifiId));
 			throw ex;
@@ -398,7 +398,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterDeviceUsedStatusQuery exception uid [%s] mac [%s] exmsg[%s]",
 					uid, wifiId, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -410,7 +410,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterConfigs(uid, mac);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterConfigs failed uid [%s] mac [%s]",
 					uid, mac));
 			throw ex;
@@ -419,7 +419,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterConfigs exception uid [%s] mac [%s] exmsg[%s]",
 					uid, mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -430,7 +430,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.terminalHostnames(uid, macs);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC terminalHostnames failed uid [%s] macs [%s]",
 					uid, macs));
 			throw ex;
@@ -439,7 +439,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC terminalHostnames exception uid [%s] macs [%s] exmsg[%s]",
 					uid, macs, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -465,7 +465,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterWSRecent(uid, mac, start, size);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterWSRecent failed uid [%s] mac [%s]",
 					uid, mac));
 			throw ex;
@@ -474,7 +474,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSRecent exception uid [%s] mac [%s] exmsg[%s]",
 					uid, mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -486,7 +486,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterWSNeighbour(uid, mac, start, size);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] mac [%s]",
 					uid, mac));
 			throw ex;
@@ -495,7 +495,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] mac [%s] exmsg[%s]",
 					uid, mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -506,7 +506,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterWSFocus(uid, hd_mac, focus);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] hd_mac [%s]",
 					uid, hd_mac));
 			throw ex;
@@ -515,7 +515,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] hd_mac [%s] exmsg[%s]",
 					uid, hd_mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
@@ -526,7 +526,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterWSNick(uid, hd_mac, nick);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterWSNeighbour failed uid [%s] hd_mac [%s] nick [%s]",
 					uid, hd_mac, nick));
 			throw ex;
@@ -535,7 +535,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSNeighbour exception uid [%s] hd_mac [%s] nick [%s] exmsg[%s]",
 					uid, hd_mac, nick, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -546,7 +546,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterWSDetails(uid, mac, hd_mac, start, size);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterWSDetails failed uid [%s] mac [%s] hd_mac [%s]",
 					uid, mac, hd_mac));
 			throw ex;
@@ -555,7 +555,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSDetails exception uid [%s] mac [%s] hd_mac [%s] exmsg[%s]",
 					uid, mac, hd_mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
@@ -566,7 +566,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterWSCommunity(uid, mac);
-		}catch(RpcBusinessI18nCodeException ex){
+		}catch(BusinessI18nCodeException ex){
 			logger.info(String.format("DeviceURouterRestRPC urouterWSCommunity failed uid [%s] mac [%s]",
 					uid, mac));
 			throw ex;
@@ -575,7 +575,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceURouterRestRPC urouterWSCommunity exception uid [%s] mac [%s] exmsg[%s]",
 					uid, mac, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 

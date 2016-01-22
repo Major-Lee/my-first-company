@@ -43,59 +43,59 @@ import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class RPCMessageParseHelper {
 	
 	public static <T> T generateDTOFromMessage(String message, Class<T> clazz){
 		if(StringUtils.isEmpty(message)){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		
 		try{
 			return parserMessageByDom4j(message, clazz);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
 	public static <T> List<T> generateDTOListFromMessage(String message, Class<T> clazz){
 		if(StringUtils.isEmpty(message)){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		
 		try{
 			return parserMessageListByDom4j(message, clazz);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
 	public static <T> T generateDTOFromMessage(Document doc, Class<T> clazz){
 		if(doc == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		
 		try{
 			return parserMessageByDom4j(doc, clazz);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
 	public static WifiDeviceVapReturnDTO generateVapDTOFromMessage(Document doc){
 		if(doc == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		try{
 			return parserVapDTOByDom4j(doc);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class RPCMessageParseHelper {
 			return parserDocumentByDom4j(message);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
@@ -212,7 +212,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -262,7 +262,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -303,7 +303,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dtos;
 	}
@@ -387,7 +387,7 @@ public class RPCMessageParseHelper {
 			dto.analyseMaxFlow();
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}finally{
 		}
 		return dto;
@@ -416,7 +416,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -624,7 +624,7 @@ public class RPCMessageParseHelper {
 			
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -666,7 +666,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return Collections.emptyList();
 	}

@@ -48,25 +48,25 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	//private static final String guesturl = "/guest";
 	//private static final String visiturl = "/visit";
 	//private static Set<String> ignoreTokensValidateUrlPrefixSet = new HashSet<String>();
-	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
+	private static Set<String> ignoreTokensValidateUriSet = new HashSet<String>();
 	static{
-		ignoreTokensValidateUrlSet.add("/sessions/create");
-		ignoreTokensValidateUrlSet.add("/sessions/create_traditional");
-		ignoreTokensValidateUrlSet.add("/sessions/validates");
-		ignoreTokensValidateUrlSet.add("/sessions/bbs_login");
-		ignoreTokensValidateUrlSet.add("/account/create");
-		ignoreTokensValidateUrlSet.add("/account/reset_password");
+		ignoreTokensValidateUriSet.add("/sessions/create");
+		ignoreTokensValidateUriSet.add("/sessions/create_traditional");
+		ignoreTokensValidateUriSet.add("/sessions/validates");
+		ignoreTokensValidateUriSet.add("/sessions/bbs_login");
+		ignoreTokensValidateUriSet.add("/account/create");
+		ignoreTokensValidateUriSet.add("/account/reset_password");
 		//ignoreTokensValidateUrlSet.add("/account/post_invitation");
 		//ignoreTokensValidateUrlSet.add("/account/verify_invitation");
 		//检测名称唯一性
-		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
-		ignoreTokensValidateUrlSet.add("/account/check_nick");
-		ignoreTokensValidateUrlSet.add("/account/check_device_binded");
+		ignoreTokensValidateUriSet.add("/account/check_mobileno");
+		ignoreTokensValidateUriSet.add("/account/check_nick");
+		ignoreTokensValidateUriSet.add("/account/check_device_binded");
 		//请求验证码
-		ignoreTokensValidateUrlSet.add("/user/captcha/fetch_captcha");
+		ignoreTokensValidateUriSet.add("/user/captcha/fetch_captcha");
 		
-		ignoreTokensValidateUrlSet.add("/console/sessions/create");
-		ignoreTokensValidateUrlSet.add("/console/sessions/validates");
+		ignoreTokensValidateUriSet.add("/console/sessions/create");
+		ignoreTokensValidateUriSet.add("/console/sessions/validates");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");
@@ -116,9 +116,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 			return false;
 		}
-		if(isIgnoreURL(uri)){
-			return true;
-		}
+		if(isIgnoreUri(uri)) return true;
 		
 		String accessToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
 		if(StringUtils.isEmpty(accessToken)){
@@ -128,8 +126,16 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}
 		}
+		String udid = request.getHeader(RuntimeConfiguration.Param_UDIDHeader);
+		if(StringUtils.isEmpty(udid)){
+			udid = request.getParameter(RuntimeConfiguration.Param_UDIDRequest);
+			/*if(StringUtils.isEmpty(udid)){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+				return false;
+			}*/
+		}
 		
-		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken);
+		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken,udid);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
@@ -154,11 +160,12 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		return true;
 	}
 	
-	private static boolean isIgnoreURL(String requestUrl){
-		for(String igurl:ignoreTokensValidateUrlSet){
+	private static boolean isIgnoreUri(String uri){
+		return ignoreTokensValidateUriSet.contains(uri);
+		/*for(String igurl:ignoreTokensValidateUrlSet){
 			if(requestUrl.endsWith(igurl)) return true;
 		}
-		return false;
+		return false;*/
 	}
 	//private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	//private static final String patternRegx = "^/((noauth)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";

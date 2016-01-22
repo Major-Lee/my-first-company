@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceForceBindDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
@@ -81,7 +82,6 @@ import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -149,7 +149,7 @@ public class DeviceBusinessFacadeService {
 		WifiDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceDTO.class);
 		
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		//wifi设备是否是新设备
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
@@ -233,7 +233,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void wifiDeviceOffline(String ctx, String wifiId) {
 		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(wifiId)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		String lowercase_wifi_id = wifiId.toLowerCase();
 
 		String ctx_present = WifiDevicePresentCtxService.getInstance().getPresent(lowercase_wifi_id);
@@ -410,7 +410,7 @@ public class DeviceBusinessFacadeService {
 			handsetDeviceVisitorAuthorize(ctx, fristDto, parserHeader.getMac());
 		}
 		else{
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT);
 		}
 	}
 
@@ -476,9 +476,9 @@ public class DeviceBusinessFacadeService {
 
 	private void handsetDeviceVisitorAuthorize(String ctx, HandsetDeviceDTO dto, String wifiId) {
 		if(dto == null)
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
 		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
@@ -495,12 +495,11 @@ public class DeviceBusinessFacadeService {
 	 * 访客网络设备上线
 	 * 1:移动设备基础信息更新
 	 *
-	 *
 	 * 移动设备上线
 	 * 1:移动设备基础信息更新
 	 * 2:wifi设备对应handset在线列表redis添加，在终端上线后需要清除掉以前dhcpname和ip
 	 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
-	 * 4:移动设备连接wifi设备的流水log (backend)
+	 * 4:移动设备连接wifi设备的流水log (backend) removed
 	 * 5:wifi设备接入移动设备的接入数量 (backend)
 	 * 6:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
 	 * 7:统计增量 移动设备的daily启动次数增量(backend)
@@ -508,9 +507,9 @@ public class DeviceBusinessFacadeService {
 	 */
 	private void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto, String wifiId){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		//移动设备是否是新设备
 		boolean newHandset = false;
 		//移动设备上一次登录时间
@@ -553,14 +552,16 @@ public class DeviceBusinessFacadeService {
 			handset.setIp(dto.getIp());
 			HandsetStorageFacadeService.handsetComming(handset);
 		}
-
+		boolean isNew4This = false;
+		int result_status = HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId_lowerCase, dto.getMac(), this_login_at);//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
+		if(result_status == HandsetLogDTO.Element_NewHandset)
+			isNew4This = true;
 		if(isVisitorWifi(ctx, dto)) { //访客网络
 			handsetDeviceVisitorOnline(ctx, dto, wifiId);
 		} else {
 			//2:wifi设备对应handset在线列表redis添加
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(),
 					dto.fetchData_rx_rate_double());
-
 		/*
 		 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
 		 * 4:移动设备连接wifi设备的流水log (backend)
@@ -569,7 +570,7 @@ public class DeviceBusinessFacadeService {
 		 * 7:统计增量 移动设备的daily启动次数增量(backend)
 		 */
 			deliverMessageService.sendHandsetDeviceOnlineActionMessage(wifiId_lowerCase, dto.getMac(),
-					this_login_at, last_login_at, newHandset);
+					this_login_at, last_login_at, newHandset,isNew4This);
 		}
 
 	}
@@ -590,9 +591,9 @@ public class DeviceBusinessFacadeService {
 	 */
 	private void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto, String wifiId){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 
 		String lowercase_mac = wifiId.toLowerCase();
 		String lowercase_d_mac = dto.getMac().toLowerCase();
@@ -605,16 +606,14 @@ public class DeviceBusinessFacadeService {
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
 		}
-
 		HandsetStorageFacadeService.handsetComming(dto);
-
-
+		//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121
+		HandsetStorageFacadeService.wifiDeviceHandsetOffline(lowercase_mac, lowercase_d_mac, dto.getTx_bytes(), dto.getTs());
 		if(isVisitorWifi(ctx, dto)) { //访客网络
 			handsetDeviceVisitorOffline(ctx, dto, wifiId);
 		} else {
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac,
 					lowercase_d_mac, dto.fetchData_rx_rate_double());
-
 			deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac,
 					lowercase_d_mac, dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
 		}
@@ -629,10 +628,9 @@ public class DeviceBusinessFacadeService {
 	 */
 	private void handsetDeviceUpdate(String ctx, HandsetDeviceDTO dto, String wifiId){
 		if(dto == null) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) /*|| StringUtils.isEmpty(dto.getDhcp_name())*/ || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新终端的hostname
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
@@ -641,10 +639,8 @@ public class DeviceBusinessFacadeService {
 			handset.setDhcp_name(dto.getDhcp_name());
 			handset.setIp(dto.getIp());
 			handset.setLast_wifi_id(dto.getLast_wifi_id());
-			
 			HandsetStorageFacadeService.handsetComming(handset);
 		}
-
 	}
 	
 	/**
@@ -663,30 +659,23 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void handsetDeviceSync(String ctx, String mac, List<HandsetDeviceDTO> dtos){
 		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx))
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
-		
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		//deliverMessageService.sendHandsetDeviceSyncActionMessage(wifiId.toLowerCase(), dtos);
 		//1:清除wifi设备对应handset在线列表redis
 		deviceFacadeService.allHandsetDoOfflines(mac);
-
 		//清除访客网络列表
 		clearDeviceVisitorList(mac);
-		
 		if(dtos != null && !dtos.isEmpty()){
 			List<String> allIds = new ArrayList<String>();
-
 			//过滤访客网络，默认网络下的终端
 			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
-
 			for(HandsetDeviceDTO dto : dtos){
 				String lowerCaseMac = dto.getMac().toLowerCase();
 				allIds.add(lowerCaseMac);
-
 				if(!isVisitorWifi(ctx, dto)) {
 					defaultWlanDTOs.add(dto);
 				}
 			}
-
 			//1
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(allIds);
 			int cursor = 0;
@@ -708,12 +697,11 @@ public class DeviceBusinessFacadeService {
 					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac,
 							handsetId, dto.fetchData_rx_rate_double());
 				}
-
+				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121
+				HandsetStorageFacadeService.wifiDeviceHandsetOnline(mac, dto.getMac(), dto.getTs());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
 				cursor++;
-
 			}
 			HandsetStorageFacadeService.handsetsComming(dtos);
-
 			//相关统计数据，业务日志，终端接入流水日志，访客网络不统计
 			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, defaultWlanDTOs);
 		}
@@ -770,9 +758,7 @@ public class DeviceBusinessFacadeService {
 			String wifiId, long taskid){
 /*		String rate = serialDto.getRate();
 		if(StringUtils.isEmpty(rate) || "0".equals(rate)) return;
-		
 		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addPeak(wifiId, rate);*/
-		
 		WifiDevicePeakSectionDTO dto = RPCMessageParseHelper.generateDTOFromQuerySpeedTest(doc);
 		if(dto != null){
 			WifiDeviceRxPeakSectionDTO rx_dto = dto.getRx_dto();
@@ -823,14 +809,12 @@ public class DeviceBusinessFacadeService {
 			//TODO:特殊处理商业wifi终端在线列表
 			return;
 		}*/
-
 		//1:清除wifi设备对应handset在线列表redis
 		deviceFacadeService.allHandsetDoOfflines(wifiId);
-
 		//清除访客网络列表
 		clearDeviceVisitorList(wifiId);
-
-
+		
+		long this_login_at = System.currentTimeMillis();
 		if(terminals != null && !terminals.isEmpty()){
 			//获取设备的配置的dto
 			WifiDeviceSetting setting_entity = wifiDeviceSettingService.getById(wifiId);
@@ -850,12 +834,11 @@ public class DeviceBusinessFacadeService {
 					//判断是否在黑名单中
 					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
 						continue;
-					
 					if(handset == null){
 						handset = new HandsetDeviceDTO();
 						handset.setMac(terminal.getMac());
 						handset.setAction(HandsetDeviceDTO.Action_Online);
-						handset.setTs(System.currentTimeMillis());
+						handset.setTs(this_login_at);
 						handset.setLast_wifi_id(wifiId);
 					}else{
 						handset.setAction(HandsetDeviceDTO.Action_Online); // 清除的时候设置成 offline了
@@ -873,6 +856,8 @@ public class DeviceBusinessFacadeService {
 						WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId,
 								terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 					}
+					//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 暂时移除 频繁
+					//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
 					cursor++;
 				}
 				HandsetStorageFacadeService.handsetsComming(handsets);
@@ -880,9 +865,6 @@ public class DeviceBusinessFacadeService {
 		}
 	}
 
-
-
-	
 	/**
 	 * 获取wifi设备的当前状态任务响应处理 (比如cpu,内存利用率)
 	 * 1:记录wifi设备的当前状态数据

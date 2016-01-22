@@ -19,10 +19,10 @@ public class UserRpcService implements IUserRpcService{
 	private UserUnitFacadeService userUnitFacadeService;
 	@Override
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String sex, String device,String regIp,String deviceuuid,String ut,String org, String captcha) {
+			String nick,String pwd, String captcha, String sex, String device,String regIp,String deviceuuid,String ut,String org) {
 		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] nick[%s] pwd[%s] sex[%s] device[%s] ut[%s] org[%s] captcha[%s]",
 				countrycode,acc,nick,pwd,sex,device,ut,org,captcha));
-		return userUnitFacadeService.createNewUser(countrycode, acc, nick,pwd, sex, device,regIp, deviceuuid, ut,org, captcha);
+		return userUnitFacadeService.createNewUser(countrycode, acc, nick,pwd, captcha, sex, device,regIp, deviceuuid, ut,org);
 	}
 	
 	@Override
@@ -53,23 +53,25 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken, String device,
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_udid, String device,
 			String remoteIp) {
-		logger.info(String.format("userValidate with aToken[%s] device[%s] remoteIp[%s]",aToken,device,remoteIp));
-		return userUnitFacadeService.userValidate(aToken, device, remoteIp);
+		logger.info(String.format("userValidate with aToken[%s] udid[%s] device[%s] remoteIp[%s]",aToken,d_udid,device,remoteIp));
+		return userUnitFacadeService.userValidate(aToken,d_udid, device, remoteIp);
 	}
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode,
-			String acc, String device, String remoteIp, String captcha) {
-		logger.info(String.format("userCreateOrLogin with countrycode[%s] acc[%s] device[%s] captcha[%s]",
-				countrycode,acc,device,captcha));
-		return userUnitFacadeService.userCreateOrLogin(countrycode, acc, device, remoteIp, captcha);
+			String acc, String captcha, String device, String remoteIp,String d_uuid) {
+		logger.info(String.format("userCreateOrLogin with countrycode[%s] acc[%s] captcha[%s] uuid[%s] device[%s] ",
+				countrycode,acc,captcha,d_uuid,device));
+		return userUnitFacadeService.userCreateOrLogin(countrycode, acc, captcha, device, remoteIp,d_uuid);
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token) {
-		return userUnitFacadeService.tokenValidate(uidParam, token);
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_uuid) {
+		logger.info(String.format("tokenValidate with uidParam[%s] token[%s] uuid[%s] ",
+				uidParam,token,d_uuid));
+		return userUnitFacadeService.tokenValidate(uidParam, token,d_uuid);
 	}
 	
 	@Override

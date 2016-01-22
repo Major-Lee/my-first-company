@@ -123,16 +123,19 @@ public enum ResponseErrorCode {
 	AUTH_TOKEN_TIMEOUT("252","auth.token.timeout"),
 	AUTH_TOKEN_EMPTY("253","auth.token.empty"),
 	AUTH_TOKEN_VALIDATE_EXCEPTION("254","auth.token.validate.exception"),
+	AUTH_UID_EMPTY("255","auth.uid.empty"),
+	
+	
 	AUTH_PASSWORD_EMPTY("259","auth.password.empty"),
     AUTH_EMAIL_INVALID_FORMAT("261","auth.email.format.invalid"),
     AUTH_EMAIL_DATA_EXIST("262","auth.email.data.exist"),
     AUTH_EMAIL_EMPTY("263","auth.email.empty"),
-    
 	AUTH_ORG_DATA_EXIST("264","auth.org.data.exist"),
-
 	AUTH_UUID_INVALID_FORMAT("265","auth.uuid.format.invalid"),
 	AUTH_UUID_DATA_EXIST("266","auth.uuid.data.exist"),
 	AUTH_UUID_INVALID_LENGTH("267","auth.uuid.length.invalid"),
+	AUTH_UUID_VALID_SELFCURRENT_HANDSET_CHANGED("268","auth.uuid.valid.selfcurrent.handsetchanged"),
+	AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED("268","auth.uuid.valid.selfother.handsetchanged"),
 	AUTH_MOBILENO_INVALID_FORMAT("271","auth.mobileno.format.invalid"),
 	AUTH_MOBILENO_DATA_EXIST("272","auth.mobileno.data.exist"),
 	AUTH_MOBILENO_INVALID_LENGTH("273","auth.mobileno.length.invalid"),

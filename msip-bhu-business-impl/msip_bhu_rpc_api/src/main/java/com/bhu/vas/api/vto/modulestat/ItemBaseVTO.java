@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 12/11/15.
  */
+@SuppressWarnings("serial")
 public class ItemBaseVTO implements Serializable {
 
     private int sequence;
