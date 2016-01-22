@@ -176,7 +176,7 @@ public class UserUnitFacadeService {
 			//token 验证错误，需要进行uuid比对
 			if(StringUtils.isNotEmpty(d_udid)){
 				if(ex.getUid() >0 && (validateCode== ITokenService.Access_Token_NotExist || validateCode== ITokenService.Access_Token_NotMatch)){
-					User user  = userService.getById(uToken.getId());
+					User user  = userService.getById(ex.getUid());
 					if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_udid)){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
 					}
