@@ -98,9 +98,9 @@ public class UserController extends BaseController{
 				}
 			}
 			
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, sex, 
-					from_device, remoteIp, 
-					deviceuuid, ut, org, captcha);
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, captcha,
+					sex,from_device, remoteIp, 
+					deviceuuid, ut, org);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

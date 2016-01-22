@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.consumer;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -82,7 +83,7 @@ public class UserServiceConsumer {
 		//validate登录
 		IUserRpcService userRpcService = (IUserRpcService)context.getBean("userRpcService");
 		
-		RpcResponseDTO<Map<String, Object>> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=", "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
+		RpcResponseDTO<Map<String, Object>> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=",UUID.randomUUID().toString(), "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
 		if(createNewUser.getErrorCode() == null){
 			/*UserDTO retdto = createNewUser.getPayload();
 			System.out.println(retdto.getId());

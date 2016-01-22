@@ -57,12 +57,15 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(accessToken)){
 				Integer uid = TokenServiceHelper.parserAccessToken4User(accessToken);
+				if(uid == null || uid.intValue() <=0){
+					throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
+				}
 				UserToken userToken = this.getById(uid);
-				if(userToken == null) throw new TokenValidateBusinessException(Access_Token_NotExist);
+				if(userToken == null) throw new TokenValidateBusinessException(uid,Access_Token_NotExist);
 				if(accessToken.equals(userToken.getAccess_token())){
 					return userToken.toUserTokenDTO();//Access_Token_Matched;
 				}
-				else throw new TokenValidateBusinessException(Access_Token_NotMatch);
+				else throw new TokenValidateBusinessException(uid,Access_Token_NotMatch);
 			}else{
 				throw new TokenValidateBusinessException(Access_Token_Expired);
 			}

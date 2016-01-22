@@ -22,13 +22,13 @@ public interface IUserRpcService {
 			String acc,
 			String nick,
 			String pwd,
+			String captcha,
 			String sex,
 			String device,
 			String regIp,
 			String deviceuuid,
 			String ut,
-			String org,
-			String captcha
+			String org
 			);
 	
 	/**
@@ -47,7 +47,7 @@ public interface IUserRpcService {
 	 * @param acc
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token);
+	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_uuid);
 	
 	/**
 	 * 检测acc是否已经存在
@@ -76,7 +76,7 @@ public interface IUserRpcService {
 	 * @param remoteIp
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String device,String remoteIp);
+	public RpcResponseDTO<Map<String, Object>> userValidate(String aToken,String d_uuid,String device,String remoteIp);
 	
 	/**
 	 * 用户登录或者注册
@@ -89,7 +89,7 @@ public interface IUserRpcService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String device,String remoteIp,String captcha);
+	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String captcha,String device,String remoteIp,String d_uuid);
 	RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org);
 	RpcResponseDTO<Map<String, Object>> profile(int uid);
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(
