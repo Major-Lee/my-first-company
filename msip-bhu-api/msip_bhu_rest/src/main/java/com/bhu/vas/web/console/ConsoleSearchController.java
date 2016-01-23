@@ -44,7 +44,7 @@ public class ConsoleSearchController extends BaseController {
     public void fetch_by_condition_message(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) int uid,
+            @RequestParam(required = false) int uid,
             @RequestParam(required = false) String message,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
