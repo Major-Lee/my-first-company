@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -16,6 +17,7 @@ import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 public class UserFacadeService {
@@ -67,5 +69,22 @@ public class UserFacadeService {
 			return false;
 		}
 		return clearUsersMarkByUid(uid.intValue());
+	}
+	
+	public User getUserByMobileno(String mobileno){
+		return getUserByMobileno(null, mobileno);
+	}
+	
+	public User getUserByMobileno(Integer countrycode, String mobileno){
+		if(StringUtils.isEmpty(mobileno)) return null;
+		if(countrycode == null) countrycode = 86;
+		
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria()
+				.andColumnEqualTo("countrycode", countrycode)
+				.andColumnEqualTo("mobileno", mobileno);
+		List<User> result = userService.findModelByModelCriteria(mc);
+		if(result == null || result.isEmpty()) return null;
+		return result.get(0);
 	}
 }

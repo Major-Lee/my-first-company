@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search;
+package com.bhu.vas.business.search.core.util;
 
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.search.sort.FieldSortBuilder;

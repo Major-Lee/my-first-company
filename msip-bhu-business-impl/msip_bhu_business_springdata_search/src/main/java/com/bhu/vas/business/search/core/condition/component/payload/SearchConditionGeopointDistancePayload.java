@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.search.condition.payload;
+package com.bhu.vas.business.search.core.condition.component.payload;
 
 /**
  * 对于geopoint distance方式条件匹配扩展condition payload类

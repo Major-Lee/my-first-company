@@ -3,6 +3,8 @@ package com.bhu.vas.business.search;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bhu.vas.business.search.core.field.FieldDefine;
+
 public interface BusinessIndexDefine {
 	
 	interface WifiDevice{
