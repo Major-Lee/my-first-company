@@ -717,7 +717,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 
 	}
 	
-	@Test
+	//@Test
 	public void test0012SearchConditionDocument(){
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_lastregedat\",\"pattern\":\"btn\",\"payload\":\"{\\\"gtv\\\":\\\"1448341200000\\\",\\\"ltv\\\":\\\"1448430600000\\\"}\"}]}";
 		//String message = "{\"search_t\":1,\"search_cs\":[{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"1\"}]}";
@@ -783,28 +783,36 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
 	}
 	//商业wifi功能测试
+	@Test
 	public void test0016SearchTest(){
 		//判断为商业wifi
 		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
 				VapEnumType.DUT_CWifi);
+		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+				String.valueOf("3"));
+		SearchCondition sc_d_onlinestatus = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(),
+				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 		//必须满足此条件
-		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_dut);
+		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(
+				sc_d_dut, sc_u_id, sc_d_onlinestatus);
 		
-		SearchCondition sc_u_id_1 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
-				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
-				String.valueOf("100153"));
-		SearchCondition sc_u_id_2 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
-				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
-				String.valueOf("100019"));
-		SearchConditionPack pack_must_2 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id_1, sc_u_id_2);
+//		SearchCondition sc_u_id_1 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
+//				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+//				String.valueOf("100153"));
+//		SearchCondition sc_u_id_2 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
+//				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+//				String.valueOf("100019"));
+//		SearchConditionPack pack_must_2 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id_1, sc_u_id_2);
 		
-		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1, pack_must_2);
-		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1);
+		System.out.println("JSON test0016:"+ JsonHelper.getJSONString(scm));
 		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(scm, 0, 10);
-    	System.out.println("test0015SearchTest" + result.getTotalElements());
+    	System.out.println("test0016SearchTest" + result.getTotalElements());
 		for(WifiDeviceDocument doc : result){
-    	    System.out.println("test0015SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	    System.out.println("test0016SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
     	}
 	}
 }
