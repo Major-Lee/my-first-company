@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.data.domain.Page;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
@@ -764,6 +765,31 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 				Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
 				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_online);
+		
+		SearchCondition sc_u_id_1 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
+				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+				String.valueOf("100153"));
+		SearchCondition sc_u_id_2 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
+				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+				String.valueOf("100019"));
+		SearchConditionPack pack_must_2 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id_1, sc_u_id_2);
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1, pack_must_2);
+		
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(scm, 0, 10);
+    	System.out.println("test0015SearchTest" + result.getTotalElements());
+		for(WifiDeviceDocument doc : result){
+    	    System.out.println("test0015SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
+	}
+	//商业wifi功能测试
+	public void test0016SearchTest(){
+		//判断为商业wifi
+		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				VapEnumType.DUT_CWifi);
+		//必须满足此条件
+		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_dut);
 		
 		SearchCondition sc_u_id_1 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
 				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),

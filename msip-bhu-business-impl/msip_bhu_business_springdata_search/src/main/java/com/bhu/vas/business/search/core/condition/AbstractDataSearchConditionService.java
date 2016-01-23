@@ -17,8 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
-import com.bhu.vas.business.search.FieldDefine;
-import com.bhu.vas.business.search.SortBuilderHelper;
 import com.bhu.vas.business.search.core.AbstractDataSearchService;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionLogic;
@@ -33,6 +31,8 @@ import com.bhu.vas.business.search.core.condition.component.payload.SearchCondit
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointRectanglePayload;
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionRangePayload;
 import com.bhu.vas.business.search.core.exception.SearchQueryValidateException;
+import com.bhu.vas.business.search.core.field.FieldDefine;
+import com.bhu.vas.business.search.core.util.SortBuilderHelper;
 import com.bhu.vas.business.search.model.AbstractDocument;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;

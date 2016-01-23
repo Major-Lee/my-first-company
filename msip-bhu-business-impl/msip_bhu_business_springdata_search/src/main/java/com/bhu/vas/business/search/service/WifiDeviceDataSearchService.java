@@ -7,12 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.search.BusinessIndexDefine;
-import com.bhu.vas.business.search.FieldDefine;
 import com.bhu.vas.business.search.core.condition.AbstractDataSearchConditionService;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
+import com.bhu.vas.business.search.core.field.FieldDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
 

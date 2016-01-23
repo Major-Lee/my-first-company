@@ -74,6 +74,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -131,6 +132,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private UserFacadeService userFacadeService;
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
@@ -332,11 +336,14 @@ public class DeviceBusinessFacadeService {
 		try{
 			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceForceBindDTO.class);
 			if(dto != null){
-				String keynum = dto.getKeynum();
-				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(keynum)){
-					int uid = Integer.parseInt(keynum);
-			    	User user = userService.getById(uid);
+				//mobileno
+				String mobileno = dto.getKeynum();
+				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(mobileno)){
+					/*int uid = Integer.parseInt(keynum);
+			    	User user = userService.getById(uid);*/
+					User user = userFacadeService.getUserByMobileno(mobileno);
 			    	if(user != null){
+			    		int uid = user.getId();
 			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 			    		if(wifiDevice != null){
 					    	UserDevice userDevice = null;
