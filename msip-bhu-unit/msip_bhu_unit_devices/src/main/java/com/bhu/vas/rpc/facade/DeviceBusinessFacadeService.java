@@ -465,6 +465,10 @@ public class DeviceBusinessFacadeService {
 
 	/**
 	 * 访客网络终端下线
+	 *
+	 *
+	 * 访客网络下线后idle_timeout和force_timeout内都属于离线状态,认证超时后会认为是下线状态
+	 *
 	 * @param ctx
 	 * @param dto
 	 * @param wifiId
@@ -496,7 +500,8 @@ public class DeviceBusinessFacadeService {
 
 			deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
 		} else { //踢掉
-			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+			//WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
 		}
 	}
 

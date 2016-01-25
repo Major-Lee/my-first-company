@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -31,7 +32,7 @@ public interface IUserDeviceRpcService {
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);
 
 
-    TailPage<UserDeviceDTO> pageBindDevices(int uid, String dut, int pageNo, int pageSize);
+    TailPage<UserDeviceVTO> pageBindDevices(int uid, String message, int pageNo, int pageSize);
 
     //RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid);
     RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid);

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -384,10 +385,8 @@ public class UserUnitFacadeService {
 	 * 帐号密码登录 需要重置token
 	 * @param countrycode
 	 * @param acc 手机号或者昵称
-	 * @param nick
 	 * @param pwd
 	 * @param device
-	 * @param regIp
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd, String device,String remoteIp) {
@@ -596,13 +595,13 @@ public class UserUnitFacadeService {
 	 * @param pageSize
 	 * @return
      */
-	public TailPage<UserDeviceDTO> fetchBindDevicesFromIndex(int uid, String dut, int pageNo, int pageSize) {
+	public TailPage<UserDeviceVTO> fetchBindDevicesFromIndex(int uid, String message, int pageNo, int pageSize) {
 
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(message,searchPageNo,pageSize);
 		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
 
-		List<UserDeviceDTO> vtos = new ArrayList<UserDeviceDTO>();
+		List<UserDeviceVTO> vtos = new ArrayList<UserDeviceVTO>();
 		int total = (int)search_result.getTotalElements();//.getTotal();
 		if(total == 0){
 			vtos = Collections.emptyList();
@@ -611,29 +610,27 @@ public class UserUnitFacadeService {
 			if(searchDocuments.isEmpty()) {
 				vtos = Collections.emptyList();
 			}else{
-				vtos = new ArrayList<UserDeviceDTO>();
+				vtos = new ArrayList<UserDeviceVTO>();
 				//WifiDeviceVTO1 vto = null;
 				//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
 				for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
-					UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
-					userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
-					userDeviceDTO.setUid(uid);
-					userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
-					WifiDevice wifiDevice = wifiDeviceService.getById(wifiDeviceDocument.getD_mac());
-					if (wifiDevice != null) {
-						userDeviceDTO.setOnline(wifiDevice.isOnline());
-						if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
-							userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
-									.presentOnlineSize(wifiDeviceDocument.getD_mac()));
-						}
-						userDeviceDTO.setVer(wifiDevice.getOrig_swver());
-					}
-					vtos.add(userDeviceDTO);
+
+					UserDeviceVTO userDeviceVTO = new UserDeviceVTO();
+					userDeviceVTO.setD_mac(wifiDeviceDocument.getD_mac());
+					userDeviceVTO.setD_online(wifiDeviceDocument.getD_online());
+					userDeviceVTO.setD_origmodel(wifiDeviceDocument.getD_origmodel());
+					userDeviceVTO.setD_origswver(wifiDeviceDocument.getD_origswver());
+					userDeviceVTO.setD_wanip(wifiDeviceDocument.getD_wanip());
+					userDeviceVTO.setU_dnick(wifiDeviceDocument.getU_dnick());
+					userDeviceVTO.setU_id(wifiDeviceDocument.getU_id());
+					userDeviceVTO.setD_workmodel(wifiDeviceDocument.getD_workmodel());
+
+					vtos.add(userDeviceVTO);
 				}
 			}
 		}
 
-		TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
+		TailPage<UserDeviceVTO> returnRet = new CommonPage<UserDeviceVTO>(pageNo, pageSize, total, vtos);
 
 		return returnRet;
 	}

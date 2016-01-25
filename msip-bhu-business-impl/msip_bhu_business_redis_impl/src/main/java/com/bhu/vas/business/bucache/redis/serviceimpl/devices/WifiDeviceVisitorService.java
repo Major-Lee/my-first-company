@@ -21,6 +21,9 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
 
 
+    private final long MIN_RANGE_VALUE  = 1000000000000L;
+
+
     private static class ServiceHolder{
         private static WifiDeviceVisitorService instance =new WifiDeviceVisitorService();
     }
@@ -57,7 +60,7 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
 
 
     /**
-     * 访客上线
+     * 访客上线未认证
      * @param wifiId
      * @param handsetId
      * @return
@@ -66,10 +69,33 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         return super.zadd(generateKey(wifiId), 0, handsetId);
     }
 
+    /**
+     * 访客网络终端认证离线
+     * @param wifiId
+     * @param handsetId
+     * @return
+     */
+    public long addVisitorOfflinePresent(String wifiId, String handsetId) {
+        return super.zadd(generateKey(wifiId), 1, handsetId);
+    }
+
+    /**
+     * 访客网络终端认证上线
+     * @param wifiId
+     * @param socre
+     * @param handsetId
+     * @return
+     */
     public long addAuthOnlinePresent(String wifiId, long socre, String handsetId) {
         return super.zadd(generateKey(wifiId), socre, handsetId);
     }
 
+    /**
+     * 访客网络终端认证取消下线
+     * @param wifiId
+     * @param handsetId
+     * @return
+     */
     public long removePresent(String wifiId, String handsetId) {
         return super.zrem(generateKey(wifiId), handsetId);
     }
@@ -84,16 +110,20 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
     }
 
     public long countAuthPresent(String wifiId) {
-        return super.zcount(generateKey(wifiId), 1, Long.MAX_VALUE);
+        return super.zcount(generateKey(wifiId), MIN_RANGE_VALUE, Long.MAX_VALUE);
     }
 
     public Set<Tuple> fetchAuthOnlinePresent(String wifiId, int start, int size) {
-        return super.zrangeByScoreWithScores(generateKey(wifiId),1, Long.MAX_VALUE, start, (start+size-1));
+        return super.zrangeByScoreWithScores(generateKey(wifiId),MIN_RANGE_VALUE, Long.MAX_VALUE, start, (start+size-1));
     }
 
 
 
     public static void main(String args[]) {
+
+
+        System.out.println(System.currentTimeMillis());
+
         System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "6c:e8:73:c2:4b:3c"));
 
         System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
