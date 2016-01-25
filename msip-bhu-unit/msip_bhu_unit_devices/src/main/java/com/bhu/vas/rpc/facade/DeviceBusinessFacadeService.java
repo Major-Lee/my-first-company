@@ -1050,16 +1050,18 @@ public class DeviceBusinessFacadeService {
 		if(linkmode != null && mode != null){
 			//dhcpc
 			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(linkmode.getModel())){
-				if(!StringUtils.isEmpty(linkmode.getWan_interface())){
-					long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-					if(WifiDeviceHelper.isWorkModeRouter(mode.getMode())){
+				long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
+				if(WifiDeviceHelper.isWorkModeRouter(mode.getMode())){
+					if(StringUtils.isNotEmpty(linkmode.getWan_interface())){
 						return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, linkmode.getWan_interface());
-					}else{
-						return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, "br-lan");
 					}
+				}else{
+					return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, "br-lan");
+				}
+
 //					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId/*, taskid, 
 //							OperationCMD.QueryDhcpcStatus.getNo()*/, cmdPayload);
-				}
+				
 			}else{
 				deviceFacadeService.updateDeviceModeStatus(wifiId, dto.getLinkmode());
 			}
@@ -1124,13 +1126,13 @@ public class DeviceBusinessFacadeService {
 					
 					int switchAct = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
-						//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
+						/*						//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
 						WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 						if(currentDto != null){
 							String new_mode = dto.getMode().getMode();
 							DeviceHelper.mergeDS(currentDto, dto);
 							dto.getMode().setMode(new_mode);
-						}
+						}*/
 						//模式切换需要下发的指令集合
 						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
 					}
