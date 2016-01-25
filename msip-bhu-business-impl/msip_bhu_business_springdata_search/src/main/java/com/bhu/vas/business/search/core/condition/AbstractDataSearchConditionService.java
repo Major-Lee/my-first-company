@@ -198,6 +198,8 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 					parserSearchPacks(childBoolFilter, pack.getChildSearchConditionPacks());
 				}else if(pack.hasChildConditions()){
 					parserSearchConditions(childBoolFilter, pack.getChildSearchCondtions());
+				}else{
+					throw new SearchQueryValidateException("ParserSearchPacks all empty with packs and conditions");
 				}
 			}
 		}
