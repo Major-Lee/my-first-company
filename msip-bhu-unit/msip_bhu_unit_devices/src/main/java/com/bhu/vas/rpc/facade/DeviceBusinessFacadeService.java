@@ -1126,13 +1126,13 @@ public class DeviceBusinessFacadeService {
 					
 					int switchAct = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
-						/*						//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库
+						//特殊处理 切换工作模式以后 直接合并要修改的配置信息到数据库, 因为同步配置下发采用taskid为0
 						WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 						if(currentDto != null){
-							String new_mode = dto.getMode().getMode();
-							DeviceHelper.mergeDS(currentDto, dto);
-							dto.getMode().setMode(new_mode);
-						}*/
+							//String new_mode = dto.getMode().getMode();
+							DeviceHelper.mergeDSOnWorkModeChanged(currentDto, dto);
+							//dto.getMode().setMode(new_mode);
+						}
 						//模式切换需要下发的指令集合
 						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
 					}

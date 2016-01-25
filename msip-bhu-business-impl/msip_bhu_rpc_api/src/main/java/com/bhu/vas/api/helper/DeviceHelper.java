@@ -98,6 +98,19 @@ public class DeviceHelper {
 		return false;
 	}
 	
+	/***
+	 * 判断设备上网方式是否为dhcpc
+	 * @param linkmode_value
+	 * @return
+	 */
+	public static boolean isDhcpcLinkMode(String linkmode_value){
+		if(StringUtils.isEmpty(linkmode_value)) return false;
+		if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(linkmode_value)){
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * 匹配终端mac是否有限速设置
 	 * @param dto 设备的配置dto
@@ -352,6 +365,14 @@ public class DeviceHelper {
 		return null;
 	}
 	
+	public static String getLinkModeValue(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		WifiDeviceSettingLinkModeDTO linkmode_dto = dto.getLinkmode();
+		if(linkmode_dto == null) return null;
+		
+		return linkmode_dto.getModel();
+	}
+	
 	
 	/**
 	 * 获取设备的总运行时长
@@ -545,6 +566,40 @@ public class DeviceHelper {
 				//合并mode
 				if(source.getMode() != null){
 					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 针对设备切换工作模式进行合并陪hi
+	 * @param source
+	 * @param target
+	 */
+	public static void mergeDSOnWorkModeChanged(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target){
+		try{
+			if(source != null && target != null){
+				//合并 radio 多频设备会有多个
+				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
+				if(m_radios != null){
+					target.setRadios(m_radios);
+				}
+				//合并 vaps
+				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
+				if(m_vaps != null){
+					target.setVaps(m_vaps);
+				}
+				//合并黑白名单 由于黑名单删除方式不是ssdel的 所以特殊处理
+				List<WifiDeviceSettingAclDTO> m_acls = mergeList(source.getAcls(), target.getAcls());
+				if(m_acls != null){
+					target.setAcls(m_acls);
+				}
+				//合并终端速率控制
+				List<WifiDeviceSettingRateControlDTO> m_ratecontrols = mergeList(source.getRatecontrols(), target.getRatecontrols());
+				if(m_ratecontrols != null){
+					target.setRatecontrols(m_ratecontrols);
 				}
 			}
 		}catch(Exception ex){
