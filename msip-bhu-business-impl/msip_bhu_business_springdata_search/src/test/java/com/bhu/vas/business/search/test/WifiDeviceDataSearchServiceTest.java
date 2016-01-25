@@ -538,7 +538,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	 * 满足条件
 	 * 按照设备位置与"广西壮族自治区柳州市柳南区西堤路"{109.407456,24.315300}的距离升序排序
 	 */
-	@Test
+	//@Test
 	public void test007SearchConditionDocument(){
 //		List<SearchCondition> searchConditions = new ArrayList<SearchCondition>();
 		//已经绑定用户的设备
@@ -789,35 +789,35 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
 				VapEnumType.DUT_CWifi);
-//		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-//				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
-//				String.valueOf("3"));
+		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+				String.valueOf("3"));
 		SearchCondition sc_d_onlinestatus = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(),
 				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 		//必须满足此条件
 		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(
-				sc_d_dut, sc_d_onlinestatus);
+				sc_d_dut, sc_u_id, sc_d_onlinestatus);
 		
-		
+		String content = "66.";
 		SearchCondition sc_u_dnick = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
 				BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), SearchConditionPattern.Contain.getPattern(),
-				"Bhu");
+				content);
 		SearchCondition sc_d_mac = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
 				BusinessIndexDefine.WifiDevice.Field.D_MAC.getName(), SearchConditionPattern.Contain.getPattern(),
-				"01:0c");
+				content);
 		SearchCondition sc_d_ip = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
 				BusinessIndexDefine.WifiDevice.Field.D_WANIP.getName(), SearchConditionPattern.Contain.getPattern(),
-				"66.186");
+				content);
 		SearchCondition sc_d_origmodel = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
 				BusinessIndexDefine.WifiDevice.Field.D_ORIGMODEL.getName(), SearchConditionPattern.Contain.getPattern(),
-				"66.186");
+				content);
 		SearchCondition sc_d_origswver = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
 				BusinessIndexDefine.WifiDevice.Field.D_ORIGSWVER.getName(), SearchConditionPattern.Contain.getPattern(),
-				"AP106");
+				content);
 		SearchCondition sc_d_workmodel = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
 				BusinessIndexDefine.WifiDevice.Field.D_WORKMODEL.getName(), SearchConditionPattern.StringEqual.getPattern(),
-				"router-ap");
+				content);
 		SearchConditionPack pack_must_2 = SearchConditionPack.builderSearchConditionPackWithConditions(
 				sc_u_dnick, sc_d_mac, sc_d_ip, sc_d_origmodel, sc_d_origswver, sc_d_workmodel);
 //		SearchCondition sc_u_id_1 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
