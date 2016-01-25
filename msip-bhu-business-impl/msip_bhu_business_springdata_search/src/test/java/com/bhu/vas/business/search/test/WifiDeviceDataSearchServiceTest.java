@@ -789,16 +789,37 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
 				VapEnumType.DUT_CWifi);
-		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
-				String.valueOf("3"));
+//		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+//				String.valueOf("3"));
 		SearchCondition sc_d_onlinestatus = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(),
 				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 		//必须满足此条件
 		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(
-				sc_d_dut, sc_u_id, sc_d_onlinestatus);
+				sc_d_dut, sc_d_onlinestatus);
 		
+		
+		SearchCondition sc_u_dnick = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
+				BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), SearchConditionPattern.Contain.getPattern(),
+				"Bhu");
+		SearchCondition sc_d_mac = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
+				BusinessIndexDefine.WifiDevice.Field.D_MAC.getName(), SearchConditionPattern.Contain.getPattern(),
+				"01:0c");
+		SearchCondition sc_d_ip = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
+				BusinessIndexDefine.WifiDevice.Field.D_WANIP.getName(), SearchConditionPattern.Contain.getPattern(),
+				"66.186");
+		SearchCondition sc_d_origmodel = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
+				BusinessIndexDefine.WifiDevice.Field.D_ORIGMODEL.getName(), SearchConditionPattern.Contain.getPattern(),
+				"66.186");
+		SearchCondition sc_d_origswver = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
+				BusinessIndexDefine.WifiDevice.Field.D_ORIGSWVER.getName(), SearchConditionPattern.Contain.getPattern(),
+				"AP106");
+		SearchCondition sc_d_workmodel = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
+				BusinessIndexDefine.WifiDevice.Field.D_WORKMODEL.getName(), SearchConditionPattern.StringEqual.getPattern(),
+				"router-ap");
+		SearchConditionPack pack_must_2 = SearchConditionPack.builderSearchConditionPackWithConditions(
+				sc_u_dnick, sc_d_mac, sc_d_ip, sc_d_origmodel, sc_d_origswver, sc_d_workmodel);
 //		SearchCondition sc_u_id_1 = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should, 
 //				BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
 //				String.valueOf("100153"));
@@ -807,7 +828,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 //				String.valueOf("100019"));
 //		SearchConditionPack pack_must_2 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id_1, sc_u_id_2);
 		
-		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1);
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1, pack_must_2);
 		System.out.println("JSON test0016:"+ JsonHelper.getJSONString(scm));
 		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(scm, 0, 10);
     	System.out.println("test0016SearchTest" + result.getTotalElements());
