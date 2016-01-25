@@ -38,6 +38,7 @@ import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -1044,13 +1045,18 @@ public class DeviceBusinessFacadeService {
 	 */
 	public String updateDeviceModeStatusWithMode(String wifiId, WifiDeviceSettingDTO dto){
 		//根据设备的mode更新status数据
-		WifiDeviceSettingLinkModeDTO mode = dto.getLinkmode();
-		if(mode != null){
+		WifiDeviceSettingLinkModeDTO linkmode = dto.getLinkmode();
+		WifiDeviceSettingModeDTO mode = dto.getMode();
+		if(linkmode != null && mode != null){
 			//dhcpc
-			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(mode.getModel())){
-				if(!StringUtils.isEmpty(mode.getWan_interface())){
+			if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(linkmode.getModel())){
+				if(!StringUtils.isEmpty(linkmode.getWan_interface())){
 					long taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-					return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, mode.getWan_interface());
+					if(WifiDeviceHelper.isWorkModeRouter(mode.getMode())){
+						return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, linkmode.getWan_interface());
+					}else{
+						return CMDBuilder.builderDhcpcStatusQuery(wifiId, taskid, "br-lan");
+					}
 //					deliverMessageService.sendWifiCmdsCommingNotifyMessage(wifiId/*, taskid, 
 //							OperationCMD.QueryDhcpcStatus.getNo()*/, cmdPayload);
 				}

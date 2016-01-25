@@ -440,6 +440,19 @@ public class RPCMessageParseHelper {
 	public static WifiDeviceSettingDTO generateDTOFromQueryDeviceSetting(String message, WifiDeviceSettingDTO dto){
 		Document doc = parserMessage(message);
 		try{
+			String current_mode = WifiDeviceHelper.WorkMode_Router;
+			//解析mode配置
+			Element mode_element = Dom4jHelper.select(doc, "dev/mod/basic/mode/ITEM");
+			if(mode_element != null){
+				WifiDeviceSettingModeDTO mode_dto = new WifiDeviceSettingModeDTO();
+				String mode = mode_element.attributeValue("mode");
+				mode_dto.setMode(mode);
+				dto.setMode(mode_dto);
+				
+				if(StringUtils.isEmpty(mode))
+					current_mode = mode;
+			}
+			
 			//解析 radio 多频设备会有多个
 			List<Element> radio_items = Dom4jHelper.selectElements(doc, "dev/wifi/radio/ITEM");
 			if(radio_items != null && !radio_items.isEmpty()){
@@ -457,24 +470,34 @@ public class RPCMessageParseHelper {
 //			if(radio_item != null){
 //				dto.setPower(radio_item.attributeValue("power"));
 //			}
-			
-			//解析 wan
-			Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
-			if(wan_item != null){
-				WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
-				linkmodel_dto.setModel(wan_item.attributeValue("mode"));
-				linkmodel_dto.setGateway(wan_item.attributeValue("gateway"));
-				linkmodel_dto.setDns(wan_item.attributeValue("dns"));
-				linkmodel_dto.setIp(wan_item.attributeValue("ip"));
-				linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
-				linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
-				linkmodel_dto.setWan_interface(wan_item.attributeValue("wan_interface"));
-				//linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
-				//linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
-				linkmodel_dto.setUsername(wan_item.attributeValue("username"));
-				//dto.setMode(wan_item.attributeValue("mode"));
-				dto.setLinkmode(linkmodel_dto);
+			if(WifiDeviceHelper.isWorkModeRouter(current_mode)){
+				//解析 wan
+				Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
+				if(wan_item != null){
+					WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
+					linkmodel_dto.setModel(wan_item.attributeValue("mode"));
+					linkmodel_dto.setGateway(wan_item.attributeValue("gateway"));
+					linkmodel_dto.setDns(wan_item.attributeValue("dns"));
+					linkmodel_dto.setIp(wan_item.attributeValue("ip"));
+					linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
+					linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
+					linkmodel_dto.setWan_interface(wan_item.attributeValue("wan_interface"));
+					//linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
+					//linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
+					linkmodel_dto.setUsername(wan_item.attributeValue("username"));
+					//dto.setMode(wan_item.attributeValue("mode"));
+					dto.setLinkmode(linkmodel_dto);
+				}
+			}else{
+				//由于桥模式只是dhcpc方式，所以只获取上网方式即可，其他信息通过dhcpcstatus指令查询
+				Element lan_item = Dom4jHelper.select(doc, "dev/mod/basic/lan/ITEM");
+				if(lan_item != null){
+					WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
+					linkmodel_dto.setModel(lan_item.attributeValue("ip_mode"));
+					dto.setLinkmode(linkmodel_dto);
+				}
 			}
+			
 			//解析 vaps
 			List<Element> vap_items = Dom4jHelper.selectElements(doc, "dev/wifi/vap/ITEM");
 			if(vap_items != null && !vap_items.isEmpty()){
@@ -612,14 +635,6 @@ public class RPCMessageParseHelper {
 					plugin_dtos.add(mm_dto);
 				}
 				dto.setPlugins(plugin_dtos);
-			}
-			
-			//解析mode配置
-			Element mode_element = Dom4jHelper.select(doc, "dev/mod/basic/mode/ITEM");
-			if(mode_element != null){
-				WifiDeviceSettingModeDTO mode_dto = new WifiDeviceSettingModeDTO();
-				mode_dto.setMode(mode_element.attributeValue("mode"));
-				dto.setMode(mode_dto);
 			}
 			
 		}catch(Exception ex){
