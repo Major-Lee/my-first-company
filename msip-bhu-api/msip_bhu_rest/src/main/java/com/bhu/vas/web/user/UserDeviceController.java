@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -139,7 +140,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
                                  ) {
-        TailPage<UserDeviceDTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, dut, pageNo, pageSize);
+        TailPage<UserDeviceVTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, dut, pageNo, pageSize);
         System.out.println("ret===" + rpcResult.isEmpty());
         if (!rpcResult.isEmpty()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));

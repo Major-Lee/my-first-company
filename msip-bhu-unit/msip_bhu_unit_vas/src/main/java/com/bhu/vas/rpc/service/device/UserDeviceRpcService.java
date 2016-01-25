@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 
@@ -108,10 +109,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
 
     @Override
-    public TailPage<UserDeviceDTO> pageBindDevices(int uid, String dut, int pageNo, int pageSize) {
-        logger.info(String.format("pageBindDevices with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
-
-        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, dut, pageNo, pageSize);
+    public TailPage<UserDeviceVTO> pageBindDevices(int uid, String message, int pageNo, int pageSize) {
+        logger.info(String.format("pageBindDevices with uid[%s] message[%s] pageNo[%s] pageSize[%s]", uid, message, pageNo, pageSize));
+        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, message, pageNo, pageSize);
     }
 
 /*@Override
