@@ -449,7 +449,7 @@ public class RPCMessageParseHelper {
 				mode_dto.setMode(mode);
 				dto.setMode(mode_dto);
 				
-				if(StringUtils.isEmpty(mode))
+				if(StringUtils.isNotEmpty(mode))
 					current_mode = mode;
 			}
 			
