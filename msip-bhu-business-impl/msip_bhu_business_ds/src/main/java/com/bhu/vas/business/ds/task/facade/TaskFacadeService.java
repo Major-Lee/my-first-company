@@ -14,6 +14,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
@@ -39,6 +40,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
@@ -71,6 +73,9 @@ public class TaskFacadeService {
 	
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
+	
+	@Resource
+	private WifiDeviceSettingService wifiDeviceSettingService;
 
 	/**
 	 * 任务执行callback通知
@@ -557,9 +562,11 @@ public class TaskFacadeService {
 						}
 						break;
 					case DS_Switch_WorkMode:
+						WifiDeviceSettingDTO setting_dto = deviceFacadeService.validateDeviceSettingReturnDTO(mac);
 						//需要判定是否可以进行切换
 						ParamVasSwitchWorkmodeDTO param_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
-						WifiDeviceHelper.deviceWorkModeNeedChanged(wifiDevice.getWork_mode(),param_dto.getWmode());
+						WifiDeviceHelper.deviceWorkModeNeedChanged(wifiDevice.getWork_mode(),param_dto.getWmode(), 
+								DeviceHelper.getLinkModeValue(setting_dto));
 						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
 						break;
 					default:

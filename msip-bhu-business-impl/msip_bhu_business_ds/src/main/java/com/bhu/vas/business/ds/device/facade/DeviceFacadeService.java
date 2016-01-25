@@ -543,7 +543,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		return device_entity;
 	}
 	/**
-	 * 验证设备是否加载配置
+	 * 验证设备是否加载正确配置
 	 * @param mac
 	 * @return
 	 */
@@ -557,14 +557,31 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		return entity;
 	}
+	
+	/**
+	 * 验证设备是否加载正确配置
+	 * @param mac
+	 * @return
+	 */
+	public WifiDeviceSettingDTO validateDeviceSettingReturnDTO(String mac){
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_NOTEXIST);
+		}
+		WifiDeviceSettingDTO dto = entity.getInnerModel();
+		if(dto == null) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
+		}
+		return dto;
+	}
 	/**
 	 * 验证设备是否存在配置数据并且返回配置数据dto
 	 * @param mac
 	 * @return
 	 */
-	public WifiDeviceSettingDTO validateDeviceSettingAndGet(String mac){
-		return validateDeviceSetting(mac).getInnerModel();
-	}
+//	public WifiDeviceSettingDTO validateDeviceSettingAndGet(String mac){
+//		return validateDeviceSetting(mac).getInnerModel();
+//	}
 	
 	/**
 	 * 获取用户绑定的设备PKS
@@ -950,21 +967,21 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			case DS_Switch_WorkMode:
 				return DeviceHelper.builderDSWorkModeSwitchOuter(extparams);
 			case DS_Power:
-				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RealChannel:
-				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_VapPassword:
-				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_AclMacs:
-				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RateControl:
-				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_AdminPassword:
 				return DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams);
 			case DS_LinkMode:
 				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams);
 			case DS_MM:
-				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);

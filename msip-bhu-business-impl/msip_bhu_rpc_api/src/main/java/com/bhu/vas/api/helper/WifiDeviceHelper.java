@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -82,13 +83,24 @@ public class WifiDeviceHelper {
 		return WorkMode_Router.equals(work_mode);
 	}
 	//act 0代表bridge to router 1反之
-	public static void deviceWorkModeNeedChanged(String d_work_mode,int act){
+	public static void deviceWorkModeNeedChanged(String d_work_mode,int act, String linkmode_value){
 		if(act <0 || act >1)
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"mode:"+act});
-		String paramWorkMode = SwitchMode_Router2Bridge_Act==act?WorkMode_Bridge:WorkMode_Router;
+//		String paramWorkMode = SwitchMode_Router2Bridge_Act==act?WorkMode_Bridge:WorkMode_Router;
+		String paramWorkMode = null;
+		if(SwitchMode_Router2Bridge_Act==act){
+			paramWorkMode = WorkMode_Bridge;
+			if(!DeviceHelper.isDhcpcLinkMode(linkmode_value)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_WORKMODE_ROUTER2BRIDGE_DHCPC,new String[]{linkmode_value});
+			}
+		}else{
+			paramWorkMode = WorkMode_Router;
+		}
 		if(paramWorkMode.equals(d_work_mode)) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_WORKMODE_NOCHANGED,new String[]{d_work_mode});
 		}
+
+
 	}
 	
 	/*public static boolean isURouterDevice(String orig_model) {
