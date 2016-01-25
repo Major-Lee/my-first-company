@@ -605,10 +605,10 @@ public class UserUnitFacadeService {
 	 * @param pageSize
 	 * @return
      */
-	public TailPage<UserDeviceVTO> fetchBindDevicesFromIndex(int uid, String dut, int pageNo, int pageSize) {
+	public TailPage<UserDeviceVTO> fetchBindDevicesFromIndex(int uid, String message, int pageNo, int pageSize) {
 
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(message,pageNo,pageSize);
 		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
 
 		List<UserDeviceVTO> vtos = new ArrayList<UserDeviceVTO>();

@@ -135,12 +135,12 @@ public class UserDeviceController extends BaseController {
     @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
     public void pageBindedDevice(HttpServletResponse response,
                                @RequestParam(required = true) int uid,
-                                 @RequestParam(required = true) String  dut,
+                                 @RequestParam(required = true) String  message,
                                  @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
                                  ) {
-        TailPage<UserDeviceVTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, dut, pageNo, pageSize);
+        TailPage<UserDeviceVTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, message, pageNo, pageSize);
         System.out.println("ret===" + rpcResult.isEmpty());
         if (!rpcResult.isEmpty()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
