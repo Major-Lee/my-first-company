@@ -135,7 +135,7 @@ public enum ResponseErrorCode {
 	AUTH_UUID_DATA_EXIST("266","auth.uuid.data.exist"),
 	AUTH_UUID_INVALID_LENGTH("267","auth.uuid.length.invalid"),
 	AUTH_UUID_VALID_SELFCURRENT_HANDSET_CHANGED("268","auth.uuid.valid.selfcurrent.handsetchanged"),
-	AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED("268","auth.uuid.valid.selfother.handsetchanged"),
+	AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED("269","auth.uuid.valid.selfother.handsetchanged"),
 	AUTH_MOBILENO_INVALID_FORMAT("271","auth.mobileno.format.invalid"),
 	AUTH_MOBILENO_DATA_EXIST("272","auth.mobileno.data.exist"),
 	AUTH_MOBILENO_INVALID_LENGTH("273","auth.mobileno.length.invalid"),
