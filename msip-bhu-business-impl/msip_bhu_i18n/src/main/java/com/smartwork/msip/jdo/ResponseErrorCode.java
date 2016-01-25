@@ -71,7 +71,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_SETTING_NOTEXIST("701","wifidevice.setting.notexist"),
 	WIFIDEVICE_SETTING_SEQUENCE_NOTEXIST("702","wifidevice.setting.sequence.notexist"),
 	WIFIDEVICE_SETTING_WORKMODE_NOCHANGED("703","wifidevice.setting.workmode.nochanged"),
-	WIFIDEVICE_SETTING_WORKMODE_ROUTER2BRIDGE_DHCPC("704","wifidevice.setting.router2bridge.dhcpc"),
+	WIFIDEVICE_SETTING_WORKMODE_ROUTER2BRIDGE_DHCPC("704","wifidevice.setting.workmode.bridge.dhcpc"),
 	WIFIDEVICE_SETTING_ERROR("710","wifidevice.setting.error"),
 	WIFIDEVICE_SETTING_ACLMAC_MAX_MEMBER("711","wifidevice.setting.aclmac.maxmember"),
 	WIFIDEVICE_SETTING_RATECONTROL_MAX_MEMBER("712","wifidevice.setting.ratecontrol.maxmember"),
