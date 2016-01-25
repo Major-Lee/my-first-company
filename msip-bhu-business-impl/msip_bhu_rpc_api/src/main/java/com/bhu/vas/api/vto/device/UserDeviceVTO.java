@@ -21,6 +21,8 @@ public class UserDeviceVTO implements Serializable {
 
     private String d_origswver;
 
+    private String d_workmodel;
+
 
     public String getD_mac() {
         return d_mac;
@@ -76,5 +78,13 @@ public class UserDeviceVTO implements Serializable {
 
     public void setD_origswver(String d_origswver) {
         this.d_origswver = d_origswver;
+    }
+
+    public String getD_workmodel() {
+        return d_workmodel;
+    }
+
+    public void setD_workmodel(String d_workmodel) {
+        this.d_workmodel = d_workmodel;
     }
 }
