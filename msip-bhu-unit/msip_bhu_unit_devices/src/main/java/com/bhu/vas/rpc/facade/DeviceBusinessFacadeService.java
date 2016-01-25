@@ -343,25 +343,27 @@ public class DeviceBusinessFacadeService {
 			    	User user = userService.getById(uid);*/
 					User user = userFacadeService.getUserByMobileno(mobileno);
 			    	if(user != null){
-			    		int uid = user.getId();
+			    		Integer uid = user.getId();
 			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 			    		if(wifiDevice != null){
 					    	UserDevice userDevice = null;
 					    	Integer old_uid = userDeviceService.fetchBindUid(mac);
-					    	if(old_uid != null){
-					    		userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
+					    	if(uid != old_uid){
+					    		if(old_uid != null){
+					    			userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
+					    		}
+					    		
+								userDevice = new UserDevice();
+						        userDevice.setId(new UserDevicePK(mac, uid));
+						        userDevice.setCreated_at(new Date());
+						        userDeviceService.insert(userDevice);
+						        
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
+						        //业务数据同步
+						        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
+						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
+						        
 					    	}
-					    	
-							userDevice = new UserDevice();
-					        userDevice.setId(new UserDevicePK(mac, uid));
-					        userDevice.setCreated_at(new Date());
-					        userDeviceService.insert(userDevice);
-					        
-					        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
-					        //业务数据同步
-					        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
-					        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
-					        
 					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
 			    		}
 			    	}
