@@ -1,18 +1,17 @@
-package com.bhu.vas.api.dto.search.condition;
+package com.bhu.vas.business.search.core.condition.component;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.dto.search.condition.payload.SearchConditionRangePayload;
-import com.smartwork.msip.cores.helper.JsonHelper;
+import com.bhu.vas.business.search.core.exception.SearchQueryValidateException;
 
 /**
- * 搜索引擎的通用多组合条件定义类
+ * 搜索引擎的通用多组合条件定义具体类
+ * 一个条件对象相当于搜索引擎中一个具体的filter条件
  * @author tangzichao
  *
  */
 @SuppressWarnings("serial")
-public class SearchCondition implements java.io.Serializable{
+public class SearchCondition extends SearchConditionLogic implements ICondition{
 	//搜索引擎中对应的索引字段名称
 	private String key;
 	//条件匹配方式
@@ -48,8 +47,31 @@ public class SearchCondition implements java.io.Serializable{
 	public void setPayload(String payload) {
 		this.payload = payload;
 	}
-
-	public static void main(String[] args) {
+	
+	@Override
+	public void check() throws SearchQueryValidateException {
+		if(StringUtils.isEmpty(key) || StringUtils.isEmpty(pattern))
+			throw new SearchQueryValidateException(String.format("SearchCondition data illegal key[%s] pattern[%s]", key, pattern));
+	}
+	
+	public static SearchCondition builderSearchCondition(SearchConditionLogicEnumType logic, String key,
+			String pattern, String payload){
+		SearchCondition condition = new SearchCondition();
+		if(logic == null){
+			logic = SearchConditionLogicEnumType.Must;
+		}
+		condition.setLogic(logic.getName());
+		condition.setKey(key);
+		condition.setPattern(pattern);
+		condition.setPayload(payload);
+		return condition;
+	}
+	
+	public static SearchCondition builderSearchCondition(String key, String pattern, String payload){
+		return builderSearchCondition(null, key, pattern, payload);
+	}
+	
+/*	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		SearchCondition sc1 = new SearchCondition();
 		sc1.setKey("sn");
@@ -91,5 +113,6 @@ public class SearchCondition implements java.io.Serializable{
 //				System.out.println("0");
 //		}
 		
-	}
+	}*/
+
 }

@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.search.condition;
+package com.bhu.vas.business.search.core.condition.component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,29 +9,29 @@ import java.util.Map;
  */
 public enum SearchConditionPattern {
 	
-	Contain("ctn",1,0,1,"包含匹配条件","模糊匹配字段包含某些关键词"),
-	NotContain("nctn",1,0,2,"非包含匹配条件","模糊匹配字段不包含某些关键词"),
-	Equal("eq",2,0,1,"完全匹配条件","完全匹配字段等于某些关键词"),
-	NotEqual("neq",2,0,2,"非完全匹配条件","完全匹配字段不等于某些关键词"),
-	StringEqual("seq",5,0,1,"字符串匹配条件","字符串匹配字段不匹配某些关键词,支持输入空格自动分词"),
-	NotStringEqual("nseq",5,0,2,"非字符串匹配条件","字符串匹配字段不匹配某些关键词,支持输入空格自动分词"),
-	PrefixContain("pctn",4,0,1,"前缀包含匹配条件","前缀匹配字段包含某个关键词"),
-	NotPrefixContain("npctn",4,0,2,"前缀非包含匹配条件","前缀匹配字段不包含某个关键词"),
+	Contain("ctn",1,0,"包含匹配条件","模糊匹配字段包含某些关键词"),
+//	NotContain("nctn",1,0,2,"非包含匹配条件","模糊匹配字段不包含某些关键词"),
+	Equal("eq",2,0,"完全匹配条件","完全匹配字段等于某些关键词"),
+//	NotEqual("neq",2,0,2,"非完全匹配条件","完全匹配字段不等于某些关键词"),
+	StringEqual("seq",5,0,"字符串匹配条件","字符串匹配字段不匹配某些关键词,支持输入空格自动分词"),
+//	NotStringEqual("nseq",5,0,2,"非字符串匹配条件","字符串匹配字段不匹配某些关键词,支持输入空格自动分词"),
+	PrefixContain("pctn",4,0,"前缀包含匹配条件","前缀匹配字段包含某个关键词"),
+//	NotPrefixContain("npctn",4,0,2,"前缀非包含匹配条件","前缀匹配字段不包含某个关键词"),
 	
-	GreaterThan("gt",3,302,1,"大于匹配条件","匹配字段大于该项"),
-	GreaterThanEqual("gte",3,303,1,"大于等于匹配条件","匹配字段大于等于该项"),
-	LessThan("lt",3,304,1,"小于匹配条件","匹配字段小于该项"),
-	LessThanEqual("lte",3,305,1,"小于等于匹配条件","匹配字段小于等于该项"),
-	Between("btn",3,301,1,"范围匹配条件","范围匹配字段大于并且小于条件"),
-	NotBetween("nbtn",3,301,2,"非范围匹配条件","范围匹配字段非大于并且小于条件"),
+	GreaterThan("gt",3,302,"大于匹配条件","匹配字段大于该项"),
+	GreaterThanEqual("gte",3,303,"大于等于匹配条件","匹配字段大于等于该项"),
+	LessThan("lt",3,304,"小于匹配条件","匹配字段小于该项"),
+	LessThanEqual("lte",3,305,"小于等于匹配条件","匹配字段小于等于该项"),
+	Between("btn",3,301,"范围匹配条件","范围匹配字段大于并且小于条件"),
+//	NotBetween("nbtn",3,301,2,"非范围匹配条件","范围匹配字段非大于并且小于条件"),
 	
-	Missing("miss",6,0,1,"不存在的匹配条件","不存在的匹配条件"),
-	Existing("exist",7,0,1,"存在的匹配条件","存在的匹配条件"),
+	Missing("miss",6,0,"不存在的匹配条件","不存在的匹配条件"),
+	Existing("exist",7,0,"存在的匹配条件","存在的匹配条件"),
 	
-	GeopointDistance("gdtc",8,801,1,"坐标点圆心半径","坐标点为圆心半径内匹配"),
-	GeopointRectangle("grte",8,802,1,"坐标点长方形","左上右下2个坐标点构成的长方形内匹配"),
+	GeopointDistance("gdtc",8,801,"坐标点圆心半径","坐标点为圆心半径内匹配"),
+	GeopointRectangle("grte",8,802,"坐标点长方形","左上右下2个坐标点构成的长方形内匹配"),
 	
-	Unkown("Unkown",99,0,0,"未知条件","未知条件"),
+	Unkown("Unkown",99,0,"未知条件","未知条件"),
 	;
 	
 	
@@ -42,7 +42,7 @@ public enum SearchConditionPattern {
 	//条件对应的搜索方式的扩展子方式
 	int method_ext;
 	//条件的必要性类型
-	int necessity;
+//	int necessity;
 	String name;
 	String desc;
 
@@ -83,19 +83,18 @@ public enum SearchConditionPattern {
 	//搜索方式为特殊的左上右下2个坐标点构成的长方形内匹配
 	public static final int MethodExt_GeopointRectangle = 802;
 	
-	/************************   Necessity   ***************************/
+/*	*//************************   Necessity   ***************************//*
 	//必要性为必须
 	public static final int Necessity_Must = 1;
 	//必要性为必须不
 	public static final int Necessity_MustNot = 2;
 	//必要性为可以有
-	public static final int Necessity_Should = 3;
+	public static final int Necessity_Should = 3;*/
 	
-	SearchConditionPattern(String pattern, int method, int method_ext, int necessity, String name, String desc){
+	SearchConditionPattern(String pattern, int method, int method_ext, String name, String desc){
 		this.pattern = pattern;
 		this.method = method;
 		this.method_ext = method_ext;
-		this.necessity = necessity;
 		this.name = name;
 		this.desc = desc;
 	}
@@ -123,12 +122,12 @@ public enum SearchConditionPattern {
 	public void setMethod_ext(int method_ext) {
 		this.method_ext = method_ext;
 	}
-	public int getNecessity() {
+/*	public int getNecessity() {
 		return necessity;
 	}
 	public void setNecessity(int necessity) {
 		this.necessity = necessity;
-	}
+	}*/
 	public String getDesc() {
 		return desc;
 	}

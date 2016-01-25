@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.service;
+package com.bhu.vas.business.search.core;
 
 import java.util.ArrayList;
 import java.util.List;

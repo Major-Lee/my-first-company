@@ -71,6 +71,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String d_origmodel;//设备的原始设备型号
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String d_origvapmodule;//设备的原始软件增值模块版本号
 
 	
@@ -194,6 +201,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			store = true
 	)
 	private String d_uptime = "0";//设备在线总时长 单位秒
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_wanip;//设备的wanip
 	
 	@Field(
 			type = FieldType.String,
@@ -342,6 +356,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 	public void setD_origswver(String d_origswver) {
 		this.d_origswver = d_origswver;
 	}
+	
+	public String getD_origmodel() {
+		return d_origmodel;
+	}
+
+	public void setD_origmodel(String d_origmodel) {
+		this.d_origmodel = d_origmodel;
+	}
 
 	public String getD_origvapmodule() {
 		return d_origvapmodule;
@@ -461,6 +483,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_uptime(String d_uptime) {
 		this.d_uptime = d_uptime;
+	}
+	
+	public String getD_wanip() {
+		return d_wanip;
+	}
+
+	public void setD_wanip(String d_wanip) {
+		this.d_wanip = d_wanip;
 	}
 
 	public String getUpdatedat() {

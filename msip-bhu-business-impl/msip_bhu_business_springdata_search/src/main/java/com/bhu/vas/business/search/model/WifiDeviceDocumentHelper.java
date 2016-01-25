@@ -71,9 +71,11 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_mac(wifiDevice.getId());
 			doc.setD_sn(wifiDevice.getSn());
 			doc.setD_origswver(wifiDevice.getOrig_swver());
+			doc.setD_origmodel(wifiDevice.getOrig_model());
 			doc.setD_workmodel(wifiDevice.getWork_mode());
 			doc.setD_configmodel(wifiDevice.getConfig_mode());
 			doc.setD_type(wifiDevice.getHdtype());
+			doc.setD_wanip(wifiDevice.getWan_ip());
 			if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
 				doc.setD_geopoint(new double[]{Double.parseDouble(wifiDevice.getLon()), 
 						Double.parseDouble(wifiDevice.getLat())});

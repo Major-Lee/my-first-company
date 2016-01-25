@@ -1,5 +1,6 @@
-package com.bhu.vas.business.search.service;
+package com.bhu.vas.business.search.core.condition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,16 +17,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
-import com.bhu.vas.api.dto.search.condition.SearchCondition;
-import com.bhu.vas.api.dto.search.condition.SearchConditionMessage;
-import com.bhu.vas.api.dto.search.condition.SearchConditionPattern;
-import com.bhu.vas.api.dto.search.condition.SearchConditionSortPattern;
-import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointDistancePayload;
-import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointPayload;
-import com.bhu.vas.api.dto.search.condition.payload.SearchConditionGeopointRectanglePayload;
-import com.bhu.vas.api.dto.search.condition.payload.SearchConditionRangePayload;
-import com.bhu.vas.business.search.FieldDefine;
-import com.bhu.vas.business.search.SortBuilderHelper;
+import com.bhu.vas.business.search.core.AbstractDataSearchService;
+import com.bhu.vas.business.search.core.condition.component.SearchCondition;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionLogic;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionLogicEnumType;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
+import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointDistancePayload;
+import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointPayload;
+import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointRectanglePayload;
+import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionRangePayload;
+import com.bhu.vas.business.search.core.exception.SearchQueryValidateException;
+import com.bhu.vas.business.search.core.field.FieldDefine;
+import com.bhu.vas.business.search.core.util.SortBuilderHelper;
 import com.bhu.vas.business.search.model.AbstractDocument;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -114,7 +121,8 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		
 		if(searchConditionMessage != null){
 			//解析condition返回原生搜索QueryBuilder
-			parserCondition(nativeSearchQueryBuilder, searchConditionMessage.getSearchConditions());
+			//parserCondition(nativeSearchQueryBuilder, searchConditionMessage.getSearchConditions());
+			parser(nativeSearchQueryBuilder, searchConditionMessage);
 	    	searchType = SearchType.fromId(searchConditionMessage.getSearchType());
 		}else{
 			nativeSearchQueryBuilder.withFilter(FilterBuilders.matchAllFilter());
@@ -144,83 +152,183 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	}
 	
 	/**
+	 * 解析搜索对象成为ES查询对象
+	 * @param nativeSearchQueryBuilder
+	 * @param searchConditionMessage
+	 */
+	private void parser(NativeSearchQueryBuilder nativeSearchQueryBuilder, SearchConditionMessage searchConditionMessage){
+		FilterBuilder filterBuilder = null;
+		List<SortBuilder> sortBuilders = null;
+		try{
+			//parser search condition packs
+			List<SearchConditionPack> packs = searchConditionMessage.getSearchConditionPacks();
+			if(packs == null || packs.isEmpty()){
+				filterBuilder = FilterBuilders.matchAllFilter();
+			}else{
+				filterBuilder = parserSearchPacks(FilterBuilders.boolFilter(), packs);
+			}
+			//parser search sort
+			sortBuilders = parserSearchSorts(searchConditionMessage.getSearchConditionSorts());
+		}catch(Exception ex){
+			ex.printStackTrace();
+			filterBuilder = FilterBuilders.matchAllFilter();
+		}finally{
+			nativeSearchQueryBuilder.withFilter(filterBuilder);
+			if(sortBuilders != null && !sortBuilders.isEmpty()){
+				for(SortBuilder sortBuilder : sortBuilders){
+					nativeSearchQueryBuilder.withSort(sortBuilder);
+				}
+			}
+		}
+	}
+	/**
+	 * 解析搜索条件的包装类实现
+	 * @param boolFilter
+	 * @param packs
+	 * @return
+	 * @throws SearchQueryValidateException
+	 */
+	private FilterBuilder parserSearchPacks(BoolFilterBuilder boolFilter, List<SearchConditionPack> packs)
+			throws SearchQueryValidateException{
+		if(packs != null && !packs.isEmpty()){
+			for(SearchConditionPack pack : packs){
+				BoolFilterBuilder childBoolFilter = FilterBuilders.boolFilter();
+				parserSearchLogic(boolFilter, childBoolFilter, pack);
+				if(pack.hasChildPacks()){
+					parserSearchPacks(childBoolFilter, pack.getChildSearchConditionPacks());
+				}else if(pack.hasChildConditions()){
+					parserSearchConditions(childBoolFilter, pack.getChildSearchCondtions());
+				}else{
+					throw new SearchQueryValidateException("ParserSearchPacks all empty with packs and conditions");
+				}
+			}
+		}
+		return boolFilter;
+	}
+	
+	/**
+	 * 解析搜索条件的排序实现
+	 * @param sorts
+	 * @return
+	 * @throws SearchQueryValidateException
+	 */
+	private List<SortBuilder> parserSearchSorts(List<SearchConditionSort> sorts)
+			throws SearchQueryValidateException{
+		List<SortBuilder> sortBuilders = null;
+		if(sorts != null && !sorts.isEmpty()){
+			sortBuilders = new ArrayList<SortBuilder>();
+			for(SearchConditionSort sort : sorts){
+				SortBuilder sortBuilder = parserSortCondition(sort);
+				if(sortBuilder != null){
+					sortBuilders.add(sortBuilder);
+				}
+			}
+		}
+		return sortBuilders;
+	}
+	
+	/**
+	 * 解析搜索条件的逻辑实现
+	 * @param boolFilter
+	 * @param childFilter
+	 * @param logic
+	 * @throws SearchQueryValidateException
+	 */
+	private void parserSearchLogic(BoolFilterBuilder boolFilter, FilterBuilder childFilter, SearchConditionLogic logic)
+			throws SearchQueryValidateException{
+//		logic.check();
+		
+		String logic_name = logic.getLogic();
+		if(StringUtils.isEmpty(logic_name))
+			throw new SearchQueryValidateException(String.format("ParserSearchLogic logic empty [%s]", logic_name));
+		
+		SearchConditionLogicEnumType logicType = SearchConditionLogicEnumType.fromName(logic_name);
+		if(logicType == null)
+			throw new SearchQueryValidateException(String.format("ParserSearchLogic logic illegal [%s]", logic_name));
+		
+		switch(logicType){
+			case Must:
+				boolFilter.must(childFilter);
+				break;
+			case MustNot:
+				boolFilter.mustNot(childFilter);
+				break;
+			case Should:
+				boolFilter.should(childFilter);
+				break;
+			default:
+				throw new SearchQueryValidateException(String.format("ParserSearchLogic logic unsupport [%s]", logic_name));
+		}
+	}
+	
+	/**
 	 * 解析condition条件为ES Search搜索对象
 	 * @param conditions
 	 * @return FilterBuilder
+	 * @throws SearchQueryValidateException 
 	 */
-	private void parserCondition(NativeSearchQueryBuilder nativeSearchQueryBuilder, List<SearchCondition> conditions){
-		FilterBuilder filter = null;
-		try{
-			if(conditions != null && !conditions.isEmpty()) {
-				//以Boolfilter汇总条件列表 暂不初始化 当没有匹配条件存在的时候 会使用全匹配代替
-				BoolFilterBuilder boolFilter = null;
-				for(SearchCondition condition : conditions){
-					if(condition == null || StringUtils.isEmpty(condition.getKey()) || 
-							StringUtils.isEmpty(condition.getPattern())) continue;
+	private void parserSearchConditions(BoolFilterBuilder boolFilter, List<SearchCondition> conditions) 
+			throws SearchQueryValidateException{
+		if(conditions != null && !conditions.isEmpty()) {
+			for(SearchCondition condition : conditions){
+				condition.check();
 				
-					FieldDefine fieldDefine = getFieldByName(condition.getKey());
-					if(fieldDefine != null){
-						//判断是否是搜索匹配条件
-						SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
-						if(SearchConditionPattern.Unkown != conditionPattern){
-							//解析condition搜索匹配条件
-							FilterBuilder conditionFilterBuilder = parserSearchCondition(condition, conditionPattern, fieldDefine);
-							if(conditionFilterBuilder != null){
-								if(boolFilter == null) boolFilter = FilterBuilders.boolFilter();
-								parserSearchConditionRelationship(conditionFilterBuilder, conditionPattern, boolFilter);
-							}
-						}else{
-							//判断是否是排序条件
-							SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(condition.getPattern());
-							if(SearchConditionSortPattern.Unkown != conditionSortPattern){
-								//解析condition排序条件
-								SortBuilder conditionSortBuilder = parserSortCondition(condition, conditionSortPattern, fieldDefine);
-								if(conditionSortBuilder != null){
-									nativeSearchQueryBuilder.withSort(conditionSortBuilder);
-								}
-							}
+				FieldDefine fieldDefine = getFieldByName(condition.getKey());
+				if(fieldDefine != null){
+					//判断是否是搜索匹配条件
+					SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
+					if(SearchConditionPattern.Unkown != conditionPattern){
+						//解析condition搜索匹配条件
+						FilterBuilder conditionFilter = parserSearchCondition(condition, conditionPattern, fieldDefine);
+						if(conditionFilter != null){
+							parserSearchLogic(boolFilter, conditionFilter, condition);
 						}
 					}
 				}
-				filter = boolFilter;
 			}
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
 		}
-		
-		if(filter == null) {
-			filter = FilterBuilders.matchAllFilter();
-		}
-		nativeSearchQueryBuilder.withFilter(filter);
-//		
-//		return nativeSearchQueryBuilder;
 	}
 	
 	/**
 	 * 解析condition的排序条件
-	 * @param condition
-	 * @param fieldDefine
-	 * @param nativeSearchQueryBuilder
+	 * @param conditionSort
 	 * @return 返回SortBuilder
+	 * @throws SearchQueryValidateException 
 	 */
-	private SortBuilder parserSortCondition(SearchCondition condition, SearchConditionSortPattern conditionSortPattern, FieldDefine fieldDefine){
-		String fieldName = fieldDefine.getName();
-		String conditionPayload = condition.getPayload();
-
+	private SortBuilder parserSortCondition(SearchConditionSort conditionSort) throws SearchQueryValidateException{
+		if(conditionSort == null) return null;
+		conditionSort.check();
+	
 		SortBuilder conditionSortBuilder = null;
-		int method = conditionSortPattern.getMethod();
-		String sortFieldName = fieldDefine.getScore_name() != null ? fieldDefine.getScore_name() : fieldName;
-		switch(method){
-			//正常排序
-			case SearchConditionSortPattern.Method_Sort:
-				conditionSortBuilder = parserMethodSort(sortFieldName, conditionSortPattern);
-				break;
-			//根据提供的geopoint当原点,按与原点的距离排序
-			case SearchConditionSortPattern.Method_DistanceSort:
-				conditionSortBuilder = parserMethodSortDistance(sortFieldName, conditionSortPattern, conditionPayload);
-				break;
-			default:
-				break;
+		FieldDefine fieldDefine = getFieldByName(conditionSort.getKey());
+		if(fieldDefine != null){
+			String fieldName = fieldDefine.getName();
+			//判断是否是排序条件
+			SearchConditionSortPattern conditionSortPattern = SearchConditionSortPattern.getByPattern(conditionSort.getPattern());
+			if(SearchConditionSortPattern.Unkown != conditionSortPattern){
+				String conditionPayload = conditionSort.getPayload();
+				
+				int method = conditionSortPattern.getMethod();
+				String sortFieldName = fieldDefine.getScore_name() != null ? fieldDefine.getScore_name() : fieldName;
+				String order = conditionSort.getOrder();
+				SortOrder sortOrder = SortOrder.ASC;
+				if(StringUtils.isNotEmpty(order)){
+					sortOrder = SortOrder.valueOf(order);
+				}
+				
+				switch(method){
+					//正常排序
+					case SearchConditionSortPattern.Method_Sort:
+						conditionSortBuilder = parserMethodSort(sortFieldName, sortOrder);
+						break;
+					//根据提供的geopoint当原点,按与原点的距离排序
+					case SearchConditionSortPattern.Method_DistanceSort:
+						conditionSortBuilder = parserMethodSortDistance(sortFieldName, conditionPayload, sortOrder);
+						break;
+					default:
+						break;
+				}
+			}
 		}
 		return conditionSortBuilder;
 	}
@@ -269,30 +377,6 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 				break;
 		}
 		return conditionFilterBuilder;
-	}
-	
-	/**
-	 * 解析condition搜索条件之间的逻辑匹配关系
-	 * @param conditionPattern
-	 * @param conditionFilterBuilder
-	 * @param boolFilter
-	 */
-	private void parserSearchConditionRelationship(FilterBuilder conditionFilterBuilder, 
-			SearchConditionPattern conditionPattern, BoolFilterBuilder boolFilter){
-		int necessity = conditionPattern.getNecessity();
-		switch(necessity){
-			case SearchConditionPattern.Necessity_Must:
-				boolFilter.must(conditionFilterBuilder);
-				break;
-			case SearchConditionPattern.Necessity_MustNot:
-				boolFilter.mustNot(conditionFilterBuilder);
-				break;
-			case SearchConditionPattern.Necessity_Should:
-				boolFilter.should(conditionFilterBuilder);
-				break;
-			default:
-				break;
-		}
 	}
 	
 	public boolean validateConditionPayloadVaild(String conditionPayload){
@@ -492,29 +576,27 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	/**
 	 * 正常排序方式转换SortBuilder
 	 * @param sortFieldName
-	 * @param conditionSortPattern
+	 * @param order
 	 * @return
 	 */
-	public SortBuilder parserMethodSort(String sortFieldName, SearchConditionSortPattern conditionSortPattern){
-		return SortBuilderHelper.builderSort(sortFieldName, 
-					conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+	public SortBuilder parserMethodSort(String sortFieldName, SortOrder sortOrder){
+		return SortBuilderHelper.builderSort(sortFieldName, sortOrder);
 	}
 	
 	/**
 	 * GeopointDistance排序方式转换SortBuilder
 	 * @param sortFieldName
-	 * @param conditionSortPattern
 	 * @param conditionPayload
+	 * @param order
 	 * @return
 	 */
-	public SortBuilder parserMethodSortDistance(String sortFieldName, SearchConditionSortPattern conditionSortPattern, String conditionPayload){
+	public SortBuilder parserMethodSortDistance(String sortFieldName, String conditionPayload, SortOrder sortOrder){
 		if(validateConditionPayloadVaild(conditionPayload)){
 			SearchConditionGeopointPayload geopointPayload = JsonHelper.getDTO(conditionPayload,
 					SearchConditionGeopointPayload.class);
 			if(geopointPayload != null){
 				return SortBuilderHelper.builderDistanceSort(sortFieldName, 
-							geopointPayload.getLat(), geopointPayload.getLon(), 
-							conditionSortPattern.isModeAsc() ? SortOrder.ASC : SortOrder.DESC);
+							geopointPayload.getLat(), geopointPayload.getLon(), sortOrder);
 			}
 		}
 		return null;
