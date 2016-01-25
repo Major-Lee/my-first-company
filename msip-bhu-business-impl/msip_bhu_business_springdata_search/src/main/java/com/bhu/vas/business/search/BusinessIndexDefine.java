@@ -40,6 +40,7 @@ public interface BusinessIndexDefine {
 			D_MAC("d_mac", null),//设备mac
 			D_SN("d_sn", null),//设备的sn编号
 			D_ORIGSWVER("d_origswver", null),//设备的原始软件版本号
+			D_ORIGMODEL("d_origmodel", null),//设备的原始设备型号
 			D_ORIGVAPMODULE("d_origvapmodule", null),//设备的原始软件增值模块版本号
 			D_WORKMODEL("d_workmodel", null),//设备的工作模式
 			D_CONFIGMODEL("d_configmodel", null),//设备的配置模式
@@ -57,6 +58,7 @@ public interface BusinessIndexDefine {
 			D_CREATEDAT("d_createdat", null),//设备的接入时间(入库时间)
 			D_DEVICEUNITTYPE("d_dut", null),//设备的业务线定义
 			D_UPTIME("d_uptime", null),//设备在线总时长 单位秒
+			D_WANIP("d_wanip", null),//设备wanip
 			/**** 运营信息 operate ****/
 			O_TEMPLATE("o_template",null),//运营模板编号
 			O_GRAYLEVEL("o_graylevel", null),//设备的灰度定义

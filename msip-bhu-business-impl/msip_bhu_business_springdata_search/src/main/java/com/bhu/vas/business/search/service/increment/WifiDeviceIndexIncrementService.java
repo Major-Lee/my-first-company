@@ -261,9 +261,11 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_MAC.getName(), entity.getId());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ONLINE.getName(), WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ORIGSWVER.getName(), entity.getOrig_swver());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ORIGMODEL.getName(), entity.getOrig_model());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_WORKMODEL.getName(), entity.getWork_mode());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_CONFIGMODEL.getName(), entity.getConfig_mode());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE.getName(), entity.getHdtype());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_WANIP.getName(), entity.getWan_ip());
 //			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_HANDSETONLINECOUNT.getName(), 0);
 			if(entity.getLast_reged_at() != null)
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_LASTREGEDAT.getName(), entity.getLast_reged_at().getTime());
