@@ -1,7 +1,9 @@
 package com.bhu.vas.business.search.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -238,12 +240,12 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		//wifiDeviceDataSearchService.getRepository().save(docs);
 		wifiDeviceDataSearchService.bulkIndex(docs);
 		
-//		Map<String,Object> source_map = new HashMap<String,Object>();
-//		//source_map.put("u_type","99");
-//		//source_map.put("u_mcc", "88");
-//		source_map.put("d_geopoint", new double[]{116.345582,40.017052});
-//
-//		wifiDeviceDataSearchService.updateIndex(doc5.getId(), source_map);
+		Map<String,Object> source_map = new HashMap<String,Object>();
+		source_map.put("u_type","99");
+		//source_map.put("u_mcc", "88");
+		source_map.put("d_geopoint", new double[]{116.345582,40.017052});
+
+		wifiDeviceDataSearchService.updateIndex(doc5.getId(), source_map);
 //		
 //		source_map = new HashMap<String,Object>();
 //		source_map.put("a_org", null);
@@ -267,8 +269,15 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 //		UpdateQuery updateQuery = new UpdateQueryBuilder().withId("84:82:f4:05:52:88")
 //				.withDoUpsert(true).withClass(WifiDeviceDocument.class)
 //				.withIndexRequest(indexRequest).build();
-		
-		//wifiDeviceDataSearchService.bulkUpdate(ids, source_map1, false, false);
+		List<String> ids = new ArrayList<String>();
+		ids.add(doc1.getId());
+		ids.add(doc2.getId());
+		ids.add(doc3.getId());
+		ids.add(doc4.getId());
+		ids.add(doc5.getId());
+		source_map = new HashMap<String,Object>();
+		source_map.put("u_mcc","86");
+		wifiDeviceDataSearchService.bulkUpdate(ids, source_map, false, false, false);
 		//wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, true, false, false);
 		//wifiDeviceDataSearchService.getElasticsearchTemplate().update(updateQuery);
 		
@@ -751,13 +760,13 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	}
 	
 	//@Test
-	public void test0014SearchTest(){
-		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchPageByUidAndDut(100153, "TU", 0, 10);
-    	System.out.println("test0014SearchTest" + result.getTotalElements());
-		for(WifiDeviceDocument doc : result){
-    	    System.out.println("test0014SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
-    	}
-	}
+//	public void test0014SearchTest(){
+//		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchPageByUidAndDut(100153, "TU", 0, 10);
+//    	System.out.println("test0014SearchTest" + result.getTotalElements());
+//		for(WifiDeviceDocument doc : result){
+//    	    System.out.println("test0014SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+//    	}
+//	}
 	
 	//@Test
 	public void test0015SearchTest(){
@@ -789,15 +798,15 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
 				VapEnumType.DUT_CWifi);
-		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
-				String.valueOf("3"));
-		SearchCondition sc_d_onlinestatus = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-				Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(),
-				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+//		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(),
+//				String.valueOf("3"));
+//		SearchCondition sc_d_onlinestatus = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//				Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(),
+//				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 		//必须满足此条件
 		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(
-				sc_d_dut, sc_u_id, sc_d_onlinestatus);
+				sc_d_dut);
 		
 		String content = "66.";
 		SearchCondition sc_u_dnick = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,
