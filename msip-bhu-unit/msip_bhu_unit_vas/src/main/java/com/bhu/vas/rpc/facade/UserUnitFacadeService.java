@@ -634,6 +634,8 @@ public class UserUnitFacadeService {
 					userDeviceVTO.setU_dnick(wifiDeviceDocument.getU_dnick());
 					userDeviceVTO.setU_id(wifiDeviceDocument.getU_id());
 					userDeviceVTO.setD_workmodel(wifiDeviceDocument.getD_workmodel());
+					userDeviceVTO.setD_dut(wifiDeviceDocument.getD_dut());
+					userDeviceVTO.setD_type(wifiDeviceDocument.getD_type());
 
 					vtos.add(userDeviceVTO);
 				}
