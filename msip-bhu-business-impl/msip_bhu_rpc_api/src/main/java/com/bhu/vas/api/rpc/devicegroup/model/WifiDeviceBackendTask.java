@@ -31,7 +31,13 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	private long current;
 	
 	//任务状态
-	private String status;
+	private String state = State_Pending;
+	//任务类型 OperationCMD no
+	private String opt;
+	//任务子类型
+	private String subopt;
+	//上下文变量，用于存储页面表单中的extparams内容 在有些指令下发后可能会，收到消息后可能会触发别的指令需要用到此数据
+	private String context_var;
 	//任务描述
 	private String desc;
 	private Date created_at;
@@ -66,13 +72,25 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 		this.desc = desc;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
+	public String getState() {
+		return state;
 	}
 	
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getOpt() {
+		return opt;
+	}
+	public void setOpt(String opt) {
+		this.opt = opt;
+	}
+	public String getSubopt() {
+		return subopt;
+	}
+	public void setSubopt(String subopt) {
+		this.subopt = subopt;
+	}
 	public long getTotal() {
 		return total;
 	}
@@ -84,6 +102,13 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	}
 	public void setCurrent(long current) {
 		this.current = current;
+	}
+	
+	public String getContext_var() {
+		return context_var;
+	}
+	public void setContext_var(String context_var) {
+		this.context_var = context_var;
 	}
 	@Override
 	public void preInsert() {
