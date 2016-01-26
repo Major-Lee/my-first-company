@@ -196,7 +196,7 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 			}
 		}
 	}
-	//当对es进行操作，有可能会遇到Version Conflict的问题，这个值代表出现此问题时的重试次数
+	//当多线程对es进行操作，有可能会遇到Version Conflict的问题，这个值代表出现此问题时的重试次数
 	public static final int Default_RetryOnConflict = 0;
 	public int retryOnConflict(){
 		return Default_RetryOnConflict;
