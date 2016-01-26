@@ -46,7 +46,7 @@
     <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
                    interface="com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService" ref="userDeviceRpcService"/>
     <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
-                   interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceGroupRpcService" ref="deviceGroupRpcService"/>
+                   interface="com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService" ref="deviceGroupRpcService"/>
                    
     <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
                    interface="com.bhu.vas.api.rpc.vap.iservice.IVapRpcService" ref="vapRpcService"/>
