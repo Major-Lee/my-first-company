@@ -60,9 +60,9 @@ public class WifiDeviceGroupFacadeService {
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		createCriteria.andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-		if(creator != null){
+		/*if(creator != null){
 			createCriteria.andColumnEqualTo("creator", creator);
-		}
+		}*/
 		//int total = wifiDeviceGroupService.countByCommonCriteria(mc);
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
