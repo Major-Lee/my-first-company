@@ -66,6 +66,7 @@
 		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup"/>
 		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupRelation"/>
 		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devicegroup.model.pk.WifiDeviceGroupRelationPK"/>
+		<typeAlias alias="wifiDeviceGroupSearchCondition" 	type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition"/>
 
 
 		
@@ -130,6 +131,7 @@
 		
 		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupSearchCondition.sqlMap.xml"/>
 		
 		<!-- Dict defined Area -->
 		<mapper resource="com/bhu/vas/api/rpc/dict/model/sqlMapper/DictMacPrefix.sqlMap.xml"/>

@@ -11,14 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupRelation;
 import com.bhu.vas.api.rpc.devicegroup.model.pk.WifiDeviceGroupRelationPK;
 import com.bhu.vas.business.ds.devicegroup.dao.WifiDeviceGroupRelationDao;
-import com.smartwork.msip.cores.orm.service.EntityService;
+import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 /**
- * Created by bluesand on 7/16/15.
+ * 暂时不用，也许以后增加具体关联的mac设备
+ * @author Edmond
+ *
  */
 @Service
 @Transactional("coreTransactionManager")
-public class WifiDeviceGroupRelationService extends EntityService<WifiDeviceGroupRelationPK, WifiDeviceGroupRelation, WifiDeviceGroupRelationDao>{
+public class WifiDeviceGroupRelationService extends AbstractCoreService<WifiDeviceGroupRelationPK, WifiDeviceGroupRelation, WifiDeviceGroupRelationDao>{
 
     @Resource
     @Override
