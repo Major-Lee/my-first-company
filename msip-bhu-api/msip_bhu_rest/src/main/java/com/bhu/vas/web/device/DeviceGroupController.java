@@ -17,6 +17,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/devices/group")
@@ -52,7 +53,7 @@ public class DeviceGroupController extends BaseController{
 		}*/
 		RpcResponseDTO<TailPage<DeviceGroupVTO>> rpcResult = deviceGroupRpcService.birthTree(uid, pid, pageNo, pageSize);
 		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
@@ -82,7 +83,7 @@ public class DeviceGroupController extends BaseController{
 			) {
 		RpcResponseDTO<DeviceGroupVTO> rpcResult = deviceGroupRpcService.deviceGroupSave(uid, gid, pid, name);
 		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
@@ -106,7 +107,7 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) long gid) {
 		RpcResponseDTO<DeviceGroupVTO> rpcResult = deviceGroupRpcService.deviceGroupDetail(uid, gid);
 		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
@@ -126,7 +127,7 @@ public class DeviceGroupController extends BaseController{
 			@RequestParam(required = true) String gids) {
 		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.deviceGroupCleanUpByIds(uid, gids);
 		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, rpcResult.getPayload());
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
