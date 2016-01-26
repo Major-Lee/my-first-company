@@ -50,7 +50,8 @@ public class SearchCondition extends SearchConditionLogic implements ICondition{
 	
 	@Override
 	public void check() throws SearchQueryValidateException {
-		if(StringUtils.isEmpty(key) || StringUtils.isEmpty(pattern))
+		//if(StringUtils.isEmpty(key) || StringUtils.isEmpty(pattern))
+		if(StringUtils.isEmpty(pattern))
 			throw new SearchQueryValidateException(String.format("SearchCondition data illegal key[%s] pattern[%s]", key, pattern));
 	}
 	
@@ -69,6 +70,10 @@ public class SearchCondition extends SearchConditionLogic implements ICondition{
 	
 	public static SearchCondition builderSearchCondition(String key, String pattern, String payload){
 		return builderSearchCondition(null, key, pattern, payload);
+	}
+	
+	public static SearchCondition builderSearchConditionWithAll(){
+		return builderSearchCondition(null,SearchConditionPattern.All.getPattern(), null);
 	}
 	
 /*	public static void main(String[] args) {
