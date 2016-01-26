@@ -7,16 +7,16 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IDeviceGroupRpcService {
 	
-	TailPage<DeviceGroupVTO> birthTree(Integer uid, long pid, int pageNo, int pageSize);
+	RpcResponseDTO<TailPage<DeviceGroupVTO>> birthTree(Integer uid, long pid, int pageNo, int pageSize);
 	
-	RpcResponseDTO<DeviceGroupVTO> save(Integer uid,long gid,long pid, String name);
+	RpcResponseDTO<DeviceGroupVTO> deviceGroupSave(Integer creator, long gid,long pid, String name);
 	
-	RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, long gid, int pageNo, int pageSize);
+	RpcResponseDTO<DeviceGroupVTO> deviceGroupDetail(Integer uid, long gid);
 
-	RpcResponseDTO<Boolean> remove(Integer uid, String gids);
+	RpcResponseDTO<Boolean> deviceGroupCleanUpByIds(Integer uid, String gids);
 	
-	RpcResponseDTO<Boolean> grant(Integer uid, long gid,String wifi_ids);
+	/*RpcResponseDTO<Boolean> grant(Integer uid, long gid,String wifi_ids);
 	
-	RpcResponseDTO<Boolean> ungrant(Integer uid, long gid,String wifi_ids);
+	RpcResponseDTO<Boolean> ungrant(Integer uid, long gid,String wifi_ids);*/
 	
 }
