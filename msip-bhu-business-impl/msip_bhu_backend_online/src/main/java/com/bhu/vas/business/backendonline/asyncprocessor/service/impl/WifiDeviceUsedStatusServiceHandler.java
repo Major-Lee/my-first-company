@@ -17,8 +17,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiDeviceUsedStatusDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -30,11 +28,11 @@ public class WifiDeviceUsedStatusServiceHandler implements IMsgHandlerService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-	@Resource
+/*	@Resource
 	private WifiDeviceGroupService wifiDeviceGroupService;
 
 	@Resource
-	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
+	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;*/
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;

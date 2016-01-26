@@ -1,20 +1,14 @@
-package com.bhu.vas.business.ds.device.facade;
+package com.bhu.vas.business.ds.devicegroup.facade;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation;
-import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK;
 import org.springframework.stereotype.Service;
 
-
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
+import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by bluesand on 8/4/15.
@@ -27,10 +21,10 @@ public class WifiDeviceGroupFacadeService {
     /**
      * 定义<=10000的群组都为灰度群组
      */
-    private final static Integer GRAY_GROUP_ID_PARENT = 10000;
+/*    private final static Integer GRAY_GROUP_ID_PARENT = 10000;
     private final static Integer GRAY_GROUP_ID_ONE = 9999;
     private final static Integer GRAY_GROUP_ID_TWO = 9998;
-    private final static Integer GRAY_GROUP_ID_THREE = 9997;
+    private final static Integer GRAY_GROUP_ID_THREE = 9997;*/
 
     @Resource
     WifiDeviceGroupService wifiDeviceGroupService;
@@ -48,9 +42,9 @@ public class WifiDeviceGroupFacadeService {
         for(String residstr : arrayresids){
             Long resid = new Long(residstr);
 
-            if (isInGrayGroup(resid)){
+            /*if (isInGrayGroup(resid)){
                 continue; //灰度群组不删除
-            }
+            }*/
 
             WifiDeviceGroup group = wifiDeviceGroupService.getById(resid);
             if(group != null){
@@ -98,22 +92,7 @@ public class WifiDeviceGroupFacadeService {
      * @param gid
      * @return
      */
-    public boolean isInGrayGroup(long gid) {
-//        if (gid == GRAY_GROUP_ID_PARENT || gid == GRAY_GROUP_ID_ONE || gid == GRAY_GROUP_ID_TWO || gid == GRAY_GROUP_ID_THREE) {
-//            return true;
-//        }
-//        WifiDeviceGroup wifiDeviceGroup = wifiDeviceGroupService.getById(gid);
-//        if (wifiDeviceGroup != null) {
-//            String path =  wifiDeviceGroup.getPath();
-//            String[] pids = path.split("/");
-//            for (String pid : pids) {
-//                if (String.valueOf(GRAY_GROUP_ID_PARENT).equals(pid) || String.valueOf(GRAY_GROUP_ID_ONE).equals(pid) ||
-//                String.valueOf(GRAY_GROUP_ID_TWO).equals(pid) || String.valueOf(GRAY_GROUP_ID_THREE).equals(pid)) {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
+/*    public boolean isInGrayGroup(long gid) {
 
         if (gid <= GRAY_GROUP_ID_PARENT) {
             return true;
@@ -129,7 +108,7 @@ public class WifiDeviceGroupFacadeService {
             }
         }
         return false;
-    }
+    }*/
 
     /**
      * 是否设备在灰度测试组里面
@@ -137,7 +116,7 @@ public class WifiDeviceGroupFacadeService {
      * @param mac
      * @return
      */
-    public boolean isDeviceInGrayGroup(String mac) {
+    /*public boolean isDeviceInGrayGroup(String mac) {
 
         List<WifiDeviceGroupRelationPK> ids = new ArrayList<WifiDeviceGroupRelationPK>();
         WifiDeviceGroupRelationPK  pk = new WifiDeviceGroupRelationPK();
@@ -164,7 +143,7 @@ public class WifiDeviceGroupFacadeService {
 
         return  !(wifiDeviceGroupRelations == null || wifiDeviceGroupRelations.isEmpty());
 
-    }
+    }*/
 
 
 

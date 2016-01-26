@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by bluesand on 1/25/16.
+ *
+ * 参照 com.bhu.vas.business.search.model.WifiDeviceDocument注释
  */
 public class UserDeviceVTO implements Serializable {
 
@@ -22,6 +24,10 @@ public class UserDeviceVTO implements Serializable {
     private String d_origswver;
 
     private String d_workmodel;
+
+    private String d_dut;
+
+    private String d_type;
 
 
     public String getD_mac() {
@@ -86,5 +92,21 @@ public class UserDeviceVTO implements Serializable {
 
     public void setD_workmodel(String d_workmodel) {
         this.d_workmodel = d_workmodel;
+    }
+
+    public String getD_dut() {
+        return d_dut;
+    }
+
+    public void setD_dut(String d_dut) {
+        this.d_dut = d_dut;
+    }
+
+    public String getD_type() {
+        return d_type;
+    }
+
+    public void setD_type(String d_type) {
+        this.d_type = d_type;
     }
 }

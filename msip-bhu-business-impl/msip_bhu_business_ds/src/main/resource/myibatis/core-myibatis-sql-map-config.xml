@@ -37,9 +37,6 @@
 		<typeAlias alias="wifiDeviceStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus"/>
 		<typeAlias alias="wifiDevice" 					type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
 		<typeAlias alias="wifiDeviceModule" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceModule"/>
-		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup"/>
-		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroupRelation"/>
-		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGroupRelationPK"/>
 		<typeAlias alias="wifiDeviceAlarm" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm"/>
 		<typeAlias alias="wifiDeviceSetting" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
 		
@@ -65,6 +62,13 @@
 		  -->
 		<typeAlias alias="userMobileDeviceState" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState"/>
 		<typeAlias alias="userMobileDevice" 			type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
+
+		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup"/>
+		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupRelation"/>
+		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devicegroup.model.pk.WifiDeviceGroupRelationPK"/>
+		<typeAlias alias="wifiDeviceGroupSearchCondition" 	type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition"/>
+
+
 		
 		<typeAlias alias="dictMacPrefix" 		type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix"/>
 
@@ -103,8 +107,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceModule.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml"/>
+
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTaskCompleted.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/VasModuleCmdDefined.sqlMap.xml"/>
@@ -125,6 +128,10 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDeviceState.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDevice.sqlMap.xml"/>
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSettingState.sqlMap.xml"/>
+		
+		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml"/>
+		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupSearchCondition.sqlMap.xml"/>
 		
 		<!-- Dict defined Area -->
 		<mapper resource="com/bhu/vas/api/rpc/dict/model/sqlMapper/DictMacPrefix.sqlMap.xml"/>

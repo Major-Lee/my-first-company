@@ -1,8 +1,8 @@
-package com.bhu.vas.business.ds.device.dao;
+package com.bhu.vas.business.ds.devicegroup.dao;
 
 import org.springframework.stereotype.Repository;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 @Repository
