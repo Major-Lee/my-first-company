@@ -16,7 +16,6 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	
 	public static final String State_Pending = "pending";//待处理状态
 	public static final String State_Doing = "doing";//正在做
-	public static final String State_Done = "done";//完成
 	public static final String State_Timeout = "timeout";//任务超时
 	public static final String State_Failed = "failed";//任务失败
 	public static final String State_Completed = "completed";//任务已经完成
@@ -40,6 +39,8 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	private String context_var;
 	//任务描述
 	private String desc;
+	private Date started_at;
+	private Date completed_at;
 	private Date created_at;
 	
 	public Date getCreated_at() {
@@ -136,4 +137,17 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 		if(this.getId() == null) this.setId(0l);
 		return this.getId().hashCode();
 	}
+	public Date getStarted_at() {
+		return started_at;
+	}
+	public void setStarted_at(Date started_at) {
+		this.started_at = started_at;
+	}
+	public Date getCompleted_at() {
+		return completed_at;
+	}
+	public void setCompleted_at(Date completed_at) {
+		this.completed_at = completed_at;
+	}
+	
 }
