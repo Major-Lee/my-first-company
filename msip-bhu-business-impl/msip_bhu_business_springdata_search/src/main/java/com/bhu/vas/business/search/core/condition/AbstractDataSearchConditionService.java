@@ -12,6 +12,8 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -45,6 +47,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  * @param <MODEL>
  */
 public abstract class AbstractDataSearchConditionService<MODEL extends AbstractDocument> extends AbstractDataSearchService<MODEL>{
+	private final Logger logger = LoggerFactory.getLogger(AbstractDataSearchConditionService.class);
 	
 	/**
 	 * 使用search condition message进行搜索page
@@ -87,56 +90,74 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
-	 * @throws ElasticsearchIllegalArgumentException
 	 */
-	public Page<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) 
-			throws ElasticsearchIllegalArgumentException{
-		return getElasticsearchTemplate().queryForPage(builderSearchQueryByConditionMessage(searchConditionMessage, 
-				pageNo, pageSize), entityClass);
+	public Page<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) {
+		try{
+			SearchQuery searchQuery = builderSearchQueryByConditionMessage(searchConditionMessage, pageNo, pageSize);
+			if(searchQuery != null){
+				return getElasticsearchTemplate().queryForPage(searchQuery, entityClass);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("AbstractDataSearchConditionService SearchByConditionMessage Exception", ex);
+		}
+		return null;
 	}
 	/**
 	 * 使用search condition message进行搜索list
 	 * @param searchConditionMessage
 	 * @return
-	 * @throws ElasticsearchIllegalArgumentException
 	 */
-	public List<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage) 
-			throws ElasticsearchIllegalArgumentException{
-		return getElasticsearchTemplate().queryForList(builderSearchQueryByConditionMessage(searchConditionMessage), 
-				entityClass);
+	public List<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage) {
+		try{
+			SearchQuery searchQuery = builderSearchQueryByConditionMessage(searchConditionMessage);
+			if(searchQuery != null){
+				return getElasticsearchTemplate().queryForList(searchQuery, entityClass);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("AbstractDataSearchConditionService SearchByConditionMessage Exception", ex);
+		}
+		return null;
 	}
 	
 	private SearchQuery builderSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
 			int pageNo, int pageSize){
-		return builderNativeSearchQueryByConditionMessage(searchConditionMessage, pageNo, pageSize).build();
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(searchConditionMessage, pageNo, pageSize);
+		if(nativeSearchQueryBuilder == null) return null;
+		return nativeSearchQueryBuilder.build();
 	}
 	
 	private SearchQuery builderSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage){
-		return builderNativeSearchQueryByConditionMessage(searchConditionMessage).build();
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(searchConditionMessage);
+		if(nativeSearchQueryBuilder == null) return null;
+		return nativeSearchQueryBuilder.build();
 	}
 	
 	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage){
-		NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-		SearchType searchType = SearchType.QUERY_THEN_FETCH;
+		if(searchConditionMessage == null) return null;
 		
-		if(searchConditionMessage != null){
+		try{
+			NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+			SearchType searchType = SearchType.QUERY_THEN_FETCH;
 			//解析condition返回原生搜索QueryBuilder
 			//parserCondition(nativeSearchQueryBuilder, searchConditionMessage.getSearchConditions());
 			parser(nativeSearchQueryBuilder, searchConditionMessage);
 	    	searchType = SearchType.fromId(searchConditionMessage.getSearchType());
-		}else{
-			nativeSearchQueryBuilder.withFilter(FilterBuilders.matchAllFilter());
+			//使用es原生方式进行查询
+	        nativeSearchQueryBuilder.withSearchType(searchType);
+	        return nativeSearchQueryBuilder;
+		}catch(Exception ex){
+			logger.error("AbstractDataSearchConditionService Parser Messsage Failed", ex);
+			//ex.printStackTrace();
 		}
-		
-		//使用es原生方式进行查询
-        nativeSearchQueryBuilder.withSearchType(searchType);
-//        		.withPageable(new PageRequest(pageNo, pageSize));
-        return nativeSearchQueryBuilder;
+		return null;
 	}
 	
 	private NativeSearchQueryBuilder builderNativeSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 
 			int pageNo, int pageSize){
 		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(searchConditionMessage);
+		if(nativeSearchQueryBuilder == null) return null;
 		nativeSearchQueryBuilder.withPageable(new PageRequest(pageNo, pageSize));
         return nativeSearchQueryBuilder;
 	}
@@ -145,6 +166,8 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 			String indices, String types, int pageNo, int pageSize){
 		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(
 				searchConditionMessage, pageNo, pageSize);
+		if(nativeSearchQueryBuilder == null) return null;
+		
 		nativeSearchQueryBuilder
 				.withIndices(indices)
 				.withTypes(types);
@@ -155,29 +178,31 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * 解析搜索对象成为ES查询对象
 	 * @param nativeSearchQueryBuilder
 	 * @param searchConditionMessage
+	 * @throws SearchQueryValidateException 
 	 */
-	private void parser(NativeSearchQueryBuilder nativeSearchQueryBuilder, SearchConditionMessage searchConditionMessage){
+	private void parser(NativeSearchQueryBuilder nativeSearchQueryBuilder, SearchConditionMessage searchConditionMessage) 
+			throws SearchQueryValidateException{
 		FilterBuilder filterBuilder = null;
 		List<SortBuilder> sortBuilders = null;
-		try{
-			//parser search condition packs
-			List<SearchConditionPack> packs = searchConditionMessage.getSearchConditionPacks();
-			if(packs == null || packs.isEmpty()){
+		//parser search condition packs
+		List<SearchConditionPack> packs = searchConditionMessage.getSearchConditionPacks();
+		if(packs != null && !packs.isEmpty()){
+			filterBuilder = parserSearchPacks(FilterBuilders.boolFilter(), packs);
+		}
+/*			if(packs == null || packs.isEmpty()){
 				filterBuilder = FilterBuilders.matchAllFilter();
 			}else{
 				filterBuilder = parserSearchPacks(FilterBuilders.boolFilter(), packs);
-			}
-			//parser search sort
-			sortBuilders = parserSearchSorts(searchConditionMessage.getSearchConditionSorts());
-		}catch(Exception ex){
-			ex.printStackTrace();
-			filterBuilder = FilterBuilders.matchAllFilter();
-		}finally{
+			}*/
+		//parser search sort
+		sortBuilders = parserSearchSorts(searchConditionMessage.getSearchConditionSorts());
+		
+		if(filterBuilder != null)
 			nativeSearchQueryBuilder.withFilter(filterBuilder);
-			if(sortBuilders != null && !sortBuilders.isEmpty()){
-				for(SortBuilder sortBuilder : sortBuilders){
-					nativeSearchQueryBuilder.withSort(sortBuilder);
-				}
+		
+		if(sortBuilders != null && !sortBuilders.isEmpty()){
+			for(SortBuilder sortBuilder : sortBuilders){
+				nativeSearchQueryBuilder.withSort(sortBuilder);
 			}
 		}
 	}
@@ -257,7 +282,7 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 				boolFilter.should(childFilter);
 				break;
 			default:
-				throw new SearchQueryValidateException(String.format("ParserSearchLogic logic unsupport [%s]", logic_name));
+				throw new SearchQueryValidateException(String.format("ParserSearchLogic logic not supported [%s]", logic_name));
 		}
 	}
 	
@@ -269,22 +294,23 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 */
 	private void parserSearchConditions(BoolFilterBuilder boolFilter, List<SearchCondition> conditions) 
 			throws SearchQueryValidateException{
-		if(conditions != null && !conditions.isEmpty()) {
-			for(SearchCondition condition : conditions){
-				condition.check();
-				
-				FieldDefine fieldDefine = getFieldByName(condition.getKey());
-				if(fieldDefine != null){
-					//判断是否是搜索匹配条件
-					SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
-					if(SearchConditionPattern.Unkown != conditionPattern){
-						//解析condition搜索匹配条件
-						FilterBuilder conditionFilter = parserSearchCondition(condition, conditionPattern, fieldDefine);
-						if(conditionFilter != null){
-							parserSearchLogic(boolFilter, conditionFilter, condition);
-						}
-					}
-				}
+		if(conditions == null || conditions.isEmpty())
+			throw new SearchQueryValidateException("ParserSearchConditions must be not empty");
+
+		for(SearchCondition condition : conditions){
+			condition.check();
+			
+			FieldDefine fieldDefine = getFieldByName(condition.getKey());
+			//if(fieldDefine != null){
+			//判断是否是搜索匹配条件
+			SearchConditionPattern conditionPattern = SearchConditionPattern.getByPattern(condition.getPattern());
+			if(SearchConditionPattern.Unkown == conditionPattern)
+				throw new SearchQueryValidateException(String.format("ParserSearchConditions conditionPattern unkown [%s]", condition.getPattern()));
+			
+			//解析condition搜索匹配条件
+			FilterBuilder conditionFilter = parserSearchCondition(condition, conditionPattern, fieldDefine);
+			if(conditionFilter != null){
+				parserSearchLogic(boolFilter, conditionFilter, condition);
 			}
 		}
 	}
@@ -326,7 +352,7 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 						conditionSortBuilder = parserMethodSortDistance(sortFieldName, conditionPayload, sortOrder);
 						break;
 					default:
-						break;
+						throw new SearchQueryValidateException(String.format("Not supported sort method [%s]", method));
 				}
 			}
 		}
@@ -339,9 +365,14 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param fieldDefine
 	 * @param boolFilter
 	 * @return 返回FilterBuilder
+	 * @throws SearchQueryValidateException 
 	 */
-	private FilterBuilder parserSearchCondition(SearchCondition condition, SearchConditionPattern conditionPattern, FieldDefine fieldDefine){
-		String fieldName = fieldDefine.getName();
+	private FilterBuilder parserSearchCondition(SearchCondition condition, SearchConditionPattern conditionPattern, 
+			FieldDefine fieldDefine) throws SearchQueryValidateException{
+		String fieldName = null;
+		if(fieldDefine != null)
+			fieldName = fieldDefine.getName();
+		
 		String conditionPayload = condition.getPayload();
 		
 		FilterBuilder conditionFilterBuilder = null;
@@ -349,6 +380,9 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		int method_ext = conditionPattern.getMethod_ext();
 		
 		switch(method){
+			case SearchConditionPattern.Method_All:
+				conditionFilterBuilder = parserMethodAll();
+				break;
 			case SearchConditionPattern.Method_Wildcard:
 				conditionFilterBuilder = parserMethodWildcard(fieldName, conditionPayload);
 				break;
@@ -374,14 +408,21 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 				conditionFilterBuilder = parserMethodGeopoint(fieldName, conditionPayload, method_ext);
 				break;
 			default:
-				break;
+				throw new SearchQueryValidateException(String.format("Not supported condition method [%s]", method));
 		}
 		return conditionFilterBuilder;
 	}
 	
-	public boolean validateConditionPayloadVaild(String conditionPayload){
-		if(StringUtils.isEmpty(conditionPayload)) return false;
-		return true;
+	public void validateMethodParamVaild(String fieldName, String conditionPayload) 
+			throws SearchQueryValidateException{
+		if(StringUtils.isEmpty(fieldName) || StringUtils.isEmpty(conditionPayload))
+			throw new SearchQueryValidateException(String.format("ValidateMethodParamVaild param unvaild fieldName[%s] conditionPayload[%s]", fieldName, conditionPayload));
+	}
+	
+	public void validateMethodParamVaild(String fieldName) 
+			throws SearchQueryValidateException{
+		if(StringUtils.isEmpty(fieldName))
+			throw new SearchQueryValidateException(String.format("ValidateMethodParamVaild param unvaild fieldName[%s]", fieldName));
 	}
 	
 	
@@ -407,20 +448,28 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	
 	/****************************  Method Parser **********************************/
 	//Method Parser是根据不同的method解析成不同的ES查询或排序对象
+	/**
+	 * 全匹配方式转换FilterBuilder
+	 * @return 
+	 */
+	public FilterBuilder parserMethodAll(){
+		return FilterBuilders.matchAllFilter();
+	}
 	
 	/**
 	 * 模糊匹配方式转换FilterBuilder
 	 * @param fieldName
 	 * @param conditionPayload
 	 * @return 
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodWildcard(String fieldName, String conditionPayload){
-		if(validateConditionPayloadVaild(conditionPayload)){
-			return FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(fieldName, 
-					StringHelper.ASTERISK_STRING_GAP.concat(conditionPayload).
-					concat(StringHelper.ASTERISK_STRING_GAP)));
-		}
-		return null;
+	public FilterBuilder parserMethodWildcard(String fieldName, String conditionPayload) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName, conditionPayload);
+		return FilterBuilders.queryFilter(QueryBuilders.wildcardQuery(fieldName, 
+				StringHelper.ASTERISK_STRING_GAP.concat(conditionPayload).
+				concat(StringHelper.ASTERISK_STRING_GAP)));
+
 	}
 	
 	/**
@@ -428,12 +477,12 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param fieldName
 	 * @param conditionPayload
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodTerm(String fieldName, String conditionPayload){
-		if(validateConditionPayloadVaild(conditionPayload)){
-			return FilterBuilders.termFilter(fieldName, conditionPayload);
-		}
-		return null;
+	public FilterBuilder parserMethodTerm(String fieldName, String conditionPayload) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName, conditionPayload);
+		return FilterBuilders.termFilter(fieldName, conditionPayload);
 	}
 	
 	/**
@@ -441,12 +490,12 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param fieldName
 	 * @param conditionPayload
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodPrefix(String fieldName, String conditionPayload){
-		if(validateConditionPayloadVaild(conditionPayload)){
-			return FilterBuilders.prefixFilter(fieldName, conditionPayload);
-		}
-		return null;
+	public FilterBuilder parserMethodPrefix(String fieldName, String conditionPayload) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName, conditionPayload);
+		return FilterBuilders.prefixFilter(fieldName, conditionPayload);
 	}
 	
 	/**
@@ -461,37 +510,39 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param conditionPayload
 	 * @param method_ext
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodRange(String fieldName, String conditionPayload, int method_ext){
+	public FilterBuilder parserMethodRange(String fieldName, String conditionPayload, int method_ext) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName, conditionPayload);
 		FilterBuilder rangeFilterBuilder = null;
-		if(validateConditionPayloadVaild(conditionPayload)){
-			SearchConditionRangePayload rangePayload = JsonHelper.getDTO(conditionPayload, SearchConditionRangePayload.class);
-			if(rangePayload != null){
-				//Range范围搜索的以下几种情况
-				switch(method_ext){
-					case SearchConditionPattern.MethodExt_Range_Between:
-						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-							gt(rangePayload.getGreaterThanValue()).lt(rangePayload.getLessThanValue());
-						break;
-					case SearchConditionPattern.MethodExt_Range_GreaterThan:
-						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-							gt(rangePayload.getGreaterThanValue());
-						break;
-					case SearchConditionPattern.MethodExt_Range_GreaterThanEqual:
-						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-							gte(rangePayload.getGreaterThanValue());
-						break;
-					case SearchConditionPattern.MethodExt_Range_LessThan:
-						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-							lt(rangePayload.getLessThanValue());
-						break;
-					case SearchConditionPattern.MethodExt_Range_LessThanEqual:
-						rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
-							lte(rangePayload.getLessThanValue());
-						break;
-					default:
-						break;
-				}
+
+		SearchConditionRangePayload rangePayload = JsonHelper.getDTO(conditionPayload, SearchConditionRangePayload.class);
+		if(rangePayload != null){
+			//Range范围搜索的以下几种情况
+			switch(method_ext){
+				case SearchConditionPattern.MethodExt_Range_Between:
+					rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+						gt(rangePayload.getGreaterThanValue()).lt(rangePayload.getLessThanValue());
+					break;
+				case SearchConditionPattern.MethodExt_Range_GreaterThan:
+					rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+						gt(rangePayload.getGreaterThanValue());
+					break;
+				case SearchConditionPattern.MethodExt_Range_GreaterThanEqual:
+					rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+						gte(rangePayload.getGreaterThanValue());
+					break;
+				case SearchConditionPattern.MethodExt_Range_LessThan:
+					rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+						lt(rangePayload.getLessThanValue());
+					break;
+				case SearchConditionPattern.MethodExt_Range_LessThanEqual:
+					rangeFilterBuilder = FilterBuilders.rangeFilter(fieldName).
+						lte(rangePayload.getLessThanValue());
+					break;
+				default:
+					throw new SearchQueryValidateException(String.format("Not supported condition methodext [%s]", method_ext));
 			}
 		}
 		return rangeFilterBuilder;
@@ -502,22 +553,24 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param fieldName
 	 * @param conditionPayload
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodString(String fieldName, String conditionPayload){
-		if(validateConditionPayloadVaild(conditionPayload)){
+	public FilterBuilder parserMethodString(String fieldName, String conditionPayload) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName, conditionPayload);
 			//return FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(conditionPayload).field(fieldName));
-			return FilterBuilders.queryFilter(QueryBuilders.matchQuery(fieldName, conditionPayload));
-		}
-		return null;
+		return FilterBuilders.queryFilter(QueryBuilders.matchQuery(fieldName, conditionPayload));
 	}
 	
 	/**
 	 * Missing匹配方式转换FilterBuilder
 	 * @param fieldName
-	 * @param conditionPayload
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodMissing(String fieldName){
+	public FilterBuilder parserMethodMissing(String fieldName) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName);
 		return FilterBuilders.missingFilter(fieldName);
 	}
 	
@@ -525,10 +578,12 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	/**
 	 * Existing匹配方式转换FilterBuilder
 	 * @param fieldName
-	 * @param conditionPayload
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodExisting(String fieldName){
+	public FilterBuilder parserMethodExisting(String fieldName) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName);
 		return FilterBuilders.existsFilter(fieldName);
 	}
 	
@@ -542,33 +597,34 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param conditionPayload
 	 * @param method_ext
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public FilterBuilder parserMethodGeopoint(String fieldName, String conditionPayload, int method_ext){
+	public FilterBuilder parserMethodGeopoint(String fieldName, String conditionPayload, int method_ext) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(fieldName, conditionPayload);
 		FilterBuilder geopointFilterBuilder = null;
-		if(validateConditionPayloadVaild(conditionPayload)){
-			//Geopoint坐标搜索的以下几种情况
-			switch(method_ext){
-				case SearchConditionPattern.MethodExt_GeopointDistance:
-					SearchConditionGeopointDistancePayload geopointDistancePayload = JsonHelper.getDTO(
-							conditionPayload, SearchConditionGeopointDistancePayload.class);
-					if(geopointDistancePayload != null){
-						geopointFilterBuilder = FilterBuilders.geoDistanceFilter(fieldName)
-				                .distance(geopointDistancePayload.getDistance())
-				                .point(geopointDistancePayload.getLat(), geopointDistancePayload.getLon());
-					}
-					break;
-				case SearchConditionPattern.MethodExt_GeopointRectangle:
-					SearchConditionGeopointRectanglePayload geopointRectanglePayload = JsonHelper.getDTO(
-							conditionPayload, SearchConditionGeopointRectanglePayload.class);
-					if(geopointRectanglePayload != null){
-						geopointFilterBuilder = FilterBuilders.geoBoundingBoxFilter(fieldName)
-								.topLeft(geopointRectanglePayload.getTopLeft_lat(), geopointRectanglePayload.getTopLeft_lon())
-								.bottomRight(geopointRectanglePayload.getBottomRight_lat(), geopointRectanglePayload.getBottomRight_lon());
-					}
-					break;
-				default:
-					break;
-			}
+		//Geopoint坐标搜索的以下几种情况
+		switch(method_ext){
+			case SearchConditionPattern.MethodExt_GeopointDistance:
+				SearchConditionGeopointDistancePayload geopointDistancePayload = JsonHelper.getDTO(
+						conditionPayload, SearchConditionGeopointDistancePayload.class);
+				if(geopointDistancePayload != null){
+					geopointFilterBuilder = FilterBuilders.geoDistanceFilter(fieldName)
+			                .distance(geopointDistancePayload.getDistance())
+			                .point(geopointDistancePayload.getLat(), geopointDistancePayload.getLon());
+				}
+				break;
+			case SearchConditionPattern.MethodExt_GeopointRectangle:
+				SearchConditionGeopointRectanglePayload geopointRectanglePayload = JsonHelper.getDTO(
+						conditionPayload, SearchConditionGeopointRectanglePayload.class);
+				if(geopointRectanglePayload != null){
+					geopointFilterBuilder = FilterBuilders.geoBoundingBoxFilter(fieldName)
+							.topLeft(geopointRectanglePayload.getTopLeft_lat(), geopointRectanglePayload.getTopLeft_lon())
+							.bottomRight(geopointRectanglePayload.getBottomRight_lat(), geopointRectanglePayload.getBottomRight_lon());
+				}
+				break;
+			default:
+				throw new SearchQueryValidateException(String.format("Not supported condition methodext [%s]", method_ext));
 		}
 		return geopointFilterBuilder;
 	}
@@ -578,8 +634,11 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param sortFieldName
 	 * @param order
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public SortBuilder parserMethodSort(String sortFieldName, SortOrder sortOrder){
+	public SortBuilder parserMethodSort(String sortFieldName, SortOrder sortOrder) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(sortFieldName);
 		return SortBuilderHelper.builderSort(sortFieldName, sortOrder);
 	}
 	
@@ -589,15 +648,16 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param conditionPayload
 	 * @param order
 	 * @return
+	 * @throws SearchQueryValidateException 
 	 */
-	public SortBuilder parserMethodSortDistance(String sortFieldName, String conditionPayload, SortOrder sortOrder){
-		if(validateConditionPayloadVaild(conditionPayload)){
-			SearchConditionGeopointPayload geopointPayload = JsonHelper.getDTO(conditionPayload,
-					SearchConditionGeopointPayload.class);
-			if(geopointPayload != null){
-				return SortBuilderHelper.builderDistanceSort(sortFieldName, 
-							geopointPayload.getLat(), geopointPayload.getLon(), sortOrder);
-			}
+	public SortBuilder parserMethodSortDistance(String sortFieldName, String conditionPayload, SortOrder sortOrder) 
+			throws SearchQueryValidateException{
+		validateMethodParamVaild(sortFieldName, conditionPayload);
+		SearchConditionGeopointPayload geopointPayload = JsonHelper.getDTO(conditionPayload,
+				SearchConditionGeopointPayload.class);
+		if(geopointPayload != null){
+			return SortBuilderHelper.builderDistanceSort(sortFieldName, 
+						geopointPayload.getLat(), geopointPayload.getLon(), sortOrder);
 		}
 		return null;
 	}

@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.devices.dto;
+package com.bhu.vas.api.rpc.devicegroup.dto;
 
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 

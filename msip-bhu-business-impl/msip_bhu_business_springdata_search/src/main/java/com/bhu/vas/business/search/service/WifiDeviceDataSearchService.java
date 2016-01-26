@@ -2,6 +2,7 @@ package com.bhu.vas.business.search.service;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.search.BusinessIndexDefine;
@@ -21,6 +22,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	
 	@Override
 	public FieldDefine getFieldByName(String fieldName){
+		if(StringUtils.isEmpty(fieldName)) return null;
 		return BusinessIndexDefine.WifiDevice.Field.getByName(fieldName);
 	}
 	

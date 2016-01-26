@@ -467,24 +467,29 @@ public class DeviceRestBusinessFacadeService {
 			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(
 					message, searchPageNo, pageSize);
 			
-			int total = (int)search_result.getTotalElements();//.getTotal();
-			if(total == 0){
-				vtos = Collections.emptyList();
-			}else{
-				List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-				if(searchDocuments.isEmpty()) {
+			int total = 0;
+			if(search_result != null){
+				total = (int)search_result.getTotalElements();//.getTotal();
+				if(total == 0){
 					vtos = Collections.emptyList();
 				}else{
-					vtos = new ArrayList<WifiDeviceVTO1>();
-					WifiDeviceVTO1 vto = null;
-					int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
-					for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
-						vto = new WifiDeviceVTO1();
-						vto.setIndex(++startIndex);
-						BeanUtils.copyProperties(wifiDeviceDocument, vto);
-						vtos.add(vto);
+					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+					if(searchDocuments.isEmpty()) {
+						vtos = Collections.emptyList();
+					}else{
+						vtos = new ArrayList<WifiDeviceVTO1>();
+						WifiDeviceVTO1 vto = null;
+						int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
+						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
+							vto = new WifiDeviceVTO1();
+							vto.setIndex(++startIndex);
+							BeanUtils.copyProperties(wifiDeviceDocument, vto);
+							vtos.add(vto);
+						}
 					}
 				}
+			}else{
+				vtos = Collections.emptyList();
 			}
 			TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);

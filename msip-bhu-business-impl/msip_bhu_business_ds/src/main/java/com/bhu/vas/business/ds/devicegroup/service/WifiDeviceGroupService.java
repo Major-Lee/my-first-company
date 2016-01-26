@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.device.service;
+package com.bhu.vas.business.ds.devicegroup.service;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
-import com.bhu.vas.business.ds.device.dao.WifiDeviceGroupDao;
+import com.bhu.vas.business.ds.devicegroup.dao.WifiDeviceGroupDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;

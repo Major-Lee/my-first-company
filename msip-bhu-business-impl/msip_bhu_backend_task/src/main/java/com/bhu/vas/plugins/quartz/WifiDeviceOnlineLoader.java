@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
@@ -47,8 +46,8 @@ public class WifiDeviceOnlineLoader {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
-	@Resource
-	private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
+	//@Resource
+	//private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;

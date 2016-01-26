@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.devices.iservice;
+package com.bhu.vas.api.rpc.devicegroup.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;

@@ -845,4 +845,35 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	    System.out.println("test0016SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
     	}
 	}
+	
+	@Test
+	public void test0017SearchAllTest(){
+		SearchCondition sc_all = SearchCondition.builderSearchConditionWithAll();
+		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_all);
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1);
+		
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(scm, 0, 10);
+    	System.out.println("test0017SearchTest" + result.getTotalElements());
+		for(WifiDeviceDocument doc : result){
+    	    System.out.println("test0017SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
+	}
+	
+	@Test
+	public void test0018SearchIllegalTest(){
+		String illegal_message1 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"as\":1}]}]}";
+		String illegal_message2 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut\",\"pattern\":\"test\",\"payload\":\"TU \"}]}]}";
+		String illegal_message3 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut1\",\"pattern\":\"seq\",\"payload\":\"TU \"}]}]}";
+		
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(illegal_message3, 0, 10);
+    	if(result == null){
+    		System.out.println("test0018SearchTest return null");
+    		return;
+    	}
+		System.out.println("test0018SearchTest" + result.getTotalElements());
+		for(WifiDeviceDocument doc : result){
+    	    System.out.println("test0018SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
+	}
 }

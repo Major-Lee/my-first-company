@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by bluesand on 10/26/15.
+ * 访客网络
  */
 
 @Controller
@@ -29,7 +30,7 @@ public class URouterVisitorController extends BaseController {
     private IDeviceURouterRestRpcService deviceURouterRestRpcService;
 
     /**
-     * 访客网络列表
+     * 访客网络在线列表
      * @param request
      * @param response
      * @param uid
@@ -53,6 +54,11 @@ public class URouterVisitorController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
     }
+
+
+
+
+
 
 
 //    /**

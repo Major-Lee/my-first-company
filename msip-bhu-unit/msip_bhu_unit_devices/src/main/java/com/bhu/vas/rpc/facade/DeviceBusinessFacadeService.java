@@ -476,7 +476,12 @@ public class DeviceBusinessFacadeService {
 	 */
 	private void handsetDeviceVisitorOffline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
+			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
+		} else {
+			WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+		}
+
 	}
 
 	/**
