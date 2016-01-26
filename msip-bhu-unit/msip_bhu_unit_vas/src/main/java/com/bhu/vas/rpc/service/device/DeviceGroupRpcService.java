@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceGroupRpcService;
+import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.rpc.facade.DeviceGroupUnitFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;

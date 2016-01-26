@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.devices.model.pk;
+package com.bhu.vas.api.rpc.devicegroup.model.pk;
 
 import java.io.Serializable;
 

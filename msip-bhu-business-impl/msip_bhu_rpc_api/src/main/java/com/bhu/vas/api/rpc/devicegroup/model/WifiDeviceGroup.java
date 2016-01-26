@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.devices.model;
+package com.bhu.vas.api.rpc.devicegroup.model;
 
 import java.util.Date;
 

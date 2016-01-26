@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupRelationService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupRelationService;
+import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
