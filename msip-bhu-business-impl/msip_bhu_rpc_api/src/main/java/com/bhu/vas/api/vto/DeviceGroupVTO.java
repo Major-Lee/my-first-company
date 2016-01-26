@@ -1,6 +1,5 @@
 package com.bhu.vas.api.vto;
 
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @SuppressWarnings("serial")
 public class DeviceGroupVTO implements java.io.Serializable{
@@ -18,7 +17,7 @@ public class DeviceGroupVTO implements java.io.Serializable{
 
 	private int device_count;
 
-	private TailPage<WifiDeviceVTO> page_devices;
+	//private TailPage<WifiDeviceVTO> page_devices;
 
 	public long getGid() {
 		return gid;
@@ -76,11 +75,11 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.children = children;
 	}
 
-	public TailPage<WifiDeviceVTO> getPage_devices() {
+	/*public TailPage<WifiDeviceVTO> getPage_devices() {
 		return page_devices;
 	}
 
 	public void setPage_devices(TailPage<WifiDeviceVTO> page_devices) {
 		this.page_devices = page_devices;
-	}
+	}*/
 }

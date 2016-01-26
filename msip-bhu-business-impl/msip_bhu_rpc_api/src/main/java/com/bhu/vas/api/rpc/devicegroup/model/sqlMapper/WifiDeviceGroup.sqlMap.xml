@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceGroup">
+<mapper namespace="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup">
   <resultMap id="modelResult" type="wifiDeviceGroup">
     <id property="id" column="id"/>
     <result property="pid" column="pid"/>
