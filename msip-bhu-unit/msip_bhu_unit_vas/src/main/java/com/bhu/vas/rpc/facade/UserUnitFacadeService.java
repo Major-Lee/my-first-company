@@ -611,33 +611,35 @@ public class UserUnitFacadeService {
 		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(message,searchPageNo,pageSize);
 		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
 
-		List<UserDeviceVTO> vtos = new ArrayList<UserDeviceVTO>();
-		int total = (int)search_result.getTotalElements();//.getTotal();
-		if(total == 0){
-			vtos = Collections.emptyList();
-		}else{
-			List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-			if(searchDocuments.isEmpty()) {
+		List<UserDeviceVTO> vtos = null;
+		int total = 0;
+		if(search_result != null){
+			total = (int)search_result.getTotalElements();//.getTotal();
+			if(total == 0){
 				vtos = Collections.emptyList();
 			}else{
-				vtos = new ArrayList<UserDeviceVTO>();
-				//WifiDeviceVTO1 vto = null;
-				//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
-				for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
-
-					UserDeviceVTO userDeviceVTO = new UserDeviceVTO();
-					userDeviceVTO.setD_mac(wifiDeviceDocument.getD_mac());
-					userDeviceVTO.setD_online(wifiDeviceDocument.getD_online());
-					userDeviceVTO.setD_origmodel(wifiDeviceDocument.getD_origmodel());
-					userDeviceVTO.setD_origswver(wifiDeviceDocument.getD_origswver());
-					userDeviceVTO.setD_wanip(wifiDeviceDocument.getD_wanip());
-					userDeviceVTO.setU_dnick(wifiDeviceDocument.getU_dnick());
-					userDeviceVTO.setU_id(wifiDeviceDocument.getU_id());
-					userDeviceVTO.setD_workmodel(wifiDeviceDocument.getD_workmodel());
-					userDeviceVTO.setD_dut(wifiDeviceDocument.getD_dut());
-					userDeviceVTO.setD_type(wifiDeviceDocument.getD_type());
-
-					vtos.add(userDeviceVTO);
+				List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+				if(searchDocuments.isEmpty()) {
+					vtos = Collections.emptyList();
+				}else{
+					vtos = new ArrayList<UserDeviceVTO>();
+					//WifiDeviceVTO1 vto = null;
+					//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
+					for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
+						UserDeviceVTO userDeviceVTO = new UserDeviceVTO();
+						userDeviceVTO.setD_mac(wifiDeviceDocument.getD_mac());
+						userDeviceVTO.setD_online(wifiDeviceDocument.getD_online());
+						userDeviceVTO.setD_origmodel(wifiDeviceDocument.getD_origmodel());
+						userDeviceVTO.setD_origswver(wifiDeviceDocument.getD_origswver());
+						userDeviceVTO.setD_wanip(wifiDeviceDocument.getD_wanip());
+						userDeviceVTO.setU_dnick(wifiDeviceDocument.getU_dnick());
+						userDeviceVTO.setU_id(wifiDeviceDocument.getU_id());
+						userDeviceVTO.setD_workmodel(wifiDeviceDocument.getD_workmodel());
+						userDeviceVTO.setD_dut(wifiDeviceDocument.getD_dut());
+						userDeviceVTO.setD_type(wifiDeviceDocument.getD_type());
+	
+						vtos.add(userDeviceVTO);
+					}
 				}
 			}
 		}

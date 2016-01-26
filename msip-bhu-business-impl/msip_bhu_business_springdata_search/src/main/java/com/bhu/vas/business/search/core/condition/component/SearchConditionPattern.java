@@ -8,7 +8,7 @@ import java.util.Map;
  *
  */
 public enum SearchConditionPattern {
-	
+	All("all",0,0,"匹配所有","匹配所有"),
 	Contain("ctn",1,0,"包含匹配条件","模糊匹配字段包含某些关键词"),
 //	NotContain("nctn",1,0,2,"非包含匹配条件","模糊匹配字段不包含某些关键词"),
 	Equal("eq",2,0,"完全匹配条件","完全匹配字段等于某些关键词"),
@@ -47,6 +47,8 @@ public enum SearchConditionPattern {
 	String desc;
 
 	/************************   Methods   ***************************/
+	//搜索方式为匹配所有
+	public static final int Method_All = 0;
 	//搜索方式为模糊匹配
 	public static final int Method_Wildcard = 1;
 	//搜索方式为项匹配
