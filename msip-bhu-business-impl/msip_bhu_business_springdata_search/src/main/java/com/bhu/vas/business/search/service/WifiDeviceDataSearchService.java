@@ -2,16 +2,10 @@ package com.bhu.vas.business.search.service;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.AbstractDataSearchConditionService;
-import com.bhu.vas.business.search.core.condition.component.SearchCondition;
-import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
-import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
-import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
 import com.bhu.vas.business.search.core.field.FieldDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
@@ -29,6 +23,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	public FieldDefine getFieldByName(String fieldName){
 		return BusinessIndexDefine.WifiDevice.Field.getByName(fieldName);
 	}
+	
+	@Override
+	public int retryOnConflict(){
+		return BusinessIndexDefine.WifiDevice.RetryOnConflict;
+	}
 	/**
 	 * 根据条件搜索数据
 	 * 绑定设备的用户id
@@ -38,7 +37,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param d_
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchPageByUidAndDut(Integer u_id, String d_dut, int pageNo, int pageSize){
+/*	public Page<WifiDeviceDocument> searchPageByUidAndDut(Integer u_id, String d_dut, int pageNo, int pageSize){
 		if(u_id == null || StringUtils.isEmpty(d_dut)) return null;
 		
 //		SearchCondition sc_d_dut = new SearchCondition(BusinessIndexDefine.WifiDevice.
@@ -55,5 +54,5 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		return super.searchByConditionMessage(scm, pageNo, pageSize);
-	}
+	}*/
 }

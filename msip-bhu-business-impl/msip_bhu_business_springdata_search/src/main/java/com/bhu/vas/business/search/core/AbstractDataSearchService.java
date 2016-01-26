@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Page;
@@ -85,10 +85,13 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 			boolean refresh, boolean waitForOperation){
 		if(StringUtils.isEmpty(id) || sourceMap == null || sourceMap.isEmpty()) return;
 		
-		IndexRequest indexRequest = new IndexRequest();
-		indexRequest.source(sourceMap);
+		/*IndexRequest indexRequest = new IndexRequest();
+		indexRequest.source(sourceMap);*/
+		UpdateRequest updateRequest = new UpdateRequest();
+		updateRequest.doc(sourceMap);
+		updateRequest.retryOnConflict(retryOnConflict());
 		UpdateQuery updateQuery = new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
-				.withClass(entityClass).withIndexRequest(indexRequest).build();
+				.withClass(entityClass).withUpdateRequest(updateRequest).build();
 		this.getElasticsearchTemplate().update(updateQuery);
 		if(refresh){
 			getElasticsearchTemplate().refresh(entityClass, waitForOperation);
@@ -115,14 +118,20 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 		List<UpdateQuery> updateQuerys = new ArrayList<UpdateQuery>();
 		int cursor = 0;
 		for(String id : ids){
-			if(StringUtils.isEmpty(id)) continue;
-			Map<String, Object> sourceMap = sourceMaps.get(cursor);
-			if(sourceMap == null || sourceMap.isEmpty()) continue;
-
-			IndexRequest indexRequest = new IndexRequest();
-			indexRequest.source(sourceMap);
-			updateQuerys.add(new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
-					.withClass(entityClass).withIndexRequest(indexRequest).build());
+			if(StringUtils.isNotEmpty(id)) {
+				Map<String, Object> sourceMap = sourceMaps.get(cursor);
+				if(sourceMap != null && !sourceMap.isEmpty()) {
+					/*					
+					 * IndexRequest indexRequest = new IndexRequest();
+						indexRequest.source(sourceMap);*/
+					UpdateRequest updateRequest = new UpdateRequest();
+					updateRequest.doc(sourceMap);
+					updateRequest.retryOnConflict(retryOnConflict());
+					updateQuerys.add(new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
+							.withClass(entityClass).withUpdateRequest(updateRequest).build());
+					
+				}
+			}
 			cursor++;
 		}
 		
@@ -150,10 +159,13 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 		for(String id : ids){
 			if(StringUtils.isEmpty(id)) continue;
 
-			IndexRequest indexRequest = new IndexRequest();
-			indexRequest.source(sourceMap);
+/*			IndexRequest indexRequest = new IndexRequest();
+			indexRequest.source(sourceMap);*/
+			UpdateRequest updateRequest = new UpdateRequest();
+			updateRequest.doc(sourceMap);
+			updateRequest.retryOnConflict(retryOnConflict());
 			updateQuerys.add(new UpdateQueryBuilder().withId(id).withDoUpsert(upsert)
-					.withClass(entityClass).withIndexRequest(indexRequest).build());
+					.withClass(entityClass).withUpdateRequest(updateRequest).build());
 		}
 		
 		if(!updateQuerys.isEmpty()){
@@ -183,6 +195,11 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 				hasRecords = false;
 			}
 		}
+	}
+	//当对es进行操作，有可能会遇到Version Conflict的问题，这个值代表出现此问题时的重试次数
+	public static final int Default_RetryOnConflict = 0;
+	public int retryOnConflict(){
+		return Default_RetryOnConflict;
 	}
 	
 /*	public Map getSetting(){
