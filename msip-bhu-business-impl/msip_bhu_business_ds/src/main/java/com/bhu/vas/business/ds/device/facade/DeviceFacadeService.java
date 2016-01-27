@@ -1006,7 +1006,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 					vw_dto = vistorWifi.getVw();
 					//TODO:ParamVapVistorWifiDTO block_mode变更并且更新配置 或者数据库中就不存ParamVapVistorWifiDTO字段block_mode
 					vw_dto.switchWorkMode(switchAct);
-					userSettingStateService.update(settingState);
+					//更新操作应该在设备切换工作模式后上线后，如果模式变更了，再更新状态
+					//userSettingStateService.update(settingState);
 				}
 			}
 			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);

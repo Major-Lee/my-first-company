@@ -227,6 +227,26 @@ public class AsyncMsgHandleService {
 							if(WifiDeviceHelper.WorkMode_Bridge.equals(dto.getN_wmode())){
 								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
 							}*/
+							/*//在切换模式后，如果设备开启过访客网络，则
+							ParamVapVistorWifiDTO vw_dto = null;
+							UserSettingState settingState = userSettingStateService.getById(dto.getMac());
+							if(settingState != null){
+								UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+								if(vistorWifi != null && vistorWifi.isOn()){
+									vw_dto = vistorWifi.getVw();
+									//TODO:ParamVapVistorWifiDTO block_mode变更并且更新配置 或者数据库中就不存ParamVapVistorWifiDTO字段block_mode
+									int switchAct = 0;
+									if(WifiDeviceHelper.WorkMode_Router.equals(dto.getN_wmode())){
+										switchAct = WifiDeviceHelper.SwitchMode_Bridge2Router_Act;
+									}
+									if(WifiDeviceHelper.WorkMode_Bridge.equals(dto.getN_wmode())){
+										switchAct = WifiDeviceHelper.SwitchMode_Bridge2Router_Act;
+									}
+									vw_dto.switchWorkMode(switchAct);
+									//更新操作应该在设备切换工作模式后上线后，如果模式变更了，再更新状态
+									userSettingStateService.update(settingState);
+								}
+							}*/
 							pushService.push(new WifiDeviceWorkModeChangedDTO(dto.getMac(), wifiDevice.getWork_mode()));
 						}
 					}

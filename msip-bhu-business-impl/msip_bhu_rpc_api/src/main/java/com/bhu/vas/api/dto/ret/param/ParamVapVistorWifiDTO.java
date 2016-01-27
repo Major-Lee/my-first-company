@@ -23,6 +23,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	private int idle_timeout;
 	private int force_timeout;
 	private String open_resource;
+	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值
 	private String block_mode;
 	private String ssid;
 	
