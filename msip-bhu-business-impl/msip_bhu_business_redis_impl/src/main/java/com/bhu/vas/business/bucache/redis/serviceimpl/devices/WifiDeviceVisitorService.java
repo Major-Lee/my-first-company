@@ -23,6 +23,10 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
 
     private final long MIN_RANGE_VALUE  = 1000000000000L;
 
+    private final long ONLINE_SCORE_VALUE = 0;
+
+    private final long OFFLINE_SCORE_VALUE = 1;
+
 
     private static class ServiceHolder{
         private static WifiDeviceVisitorService instance =new WifiDeviceVisitorService();
@@ -66,7 +70,7 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
      * @return
      */
     public long addVisitorOnlinePresent(String wifiId, String handsetId){
-        return super.zadd(generateKey(wifiId), 0, handsetId);
+        return super.zadd(generateKey(wifiId), ONLINE_SCORE_VALUE, handsetId);
     }
 
     /**
@@ -117,61 +121,80 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         return super.zrangeByScoreWithScores(generateKey(wifiId),MIN_RANGE_VALUE, Long.MAX_VALUE, start, (start+size-1));
     }
 
+    public Set<Tuple> fetchOnlinePresent(String wifiId, int start, int size) {
+        return super.zrangeByScoreWithScores(generateKey(wifiId), ONLINE_SCORE_VALUE, ONLINE_SCORE_VALUE, start, (start+size-1));
+    }
+
+    public Set<Tuple> fetchOfflinePresent(String wifiId, int start, int size) {
+        return super.zrangeByScoreWithScores(generateKey(wifiId), OFFLINE_SCORE_VALUE, OFFLINE_SCORE_VALUE, start, (start+size-1));
+    }
+
+
+
 
 
     public static void main(String args[]) {
 
 
-        System.out.println(System.currentTimeMillis());
-
-        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "6c:e8:73:c2:4b:3c"));
-
-        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
-
         System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
-
+        System.out.println(WifiDeviceVisitorService.getInstance().fetchOnlinePresent("84:82:f4:19:01:0c",0, 10));
+        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
+        System.out.println(WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c",0, 10));
+        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+        System.out.println(WifiDeviceVisitorService.getInstance().fetchOfflinePresent("84:82:f4:19:01:0c",0, 10));
         System.out.println(WifiDeviceVisitorService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
 
-        System.out.println(WifiDeviceVisitorService.getInstance().countAuthPresent("84:82:f4:19:01:0c"));
 
-
-        Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:23:06:68", 0, 5);
-
-        System.out.println(!presents.isEmpty());
-        System.out.println(presents.size());
-        for(Tuple tuple : presents){
-            System.out.println(tuple.getScore());
-            System.out.println(tuple.getElement());
-        }
-
-
-        System.out.println();
-
-        String payload = "<event>\n" +
-                "        <wlan>\n" +
-                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-啊\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
-                "        </wlan>\n" +
-                "</event>";
-
-
-
-        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
-                HandsetDeviceDTO.class);
-
-        System.out.println(dtos.get(0).getPortal());
-        System.out.println(dtos.get(0).getVapname());
-        System.out.println(dtos.get(0).getAuthorized());
-
-
-
-        String text2 = "<return>\n" +
-                "        <ITEM result=\"ok\" config_sequence=\"247\" />\n" +
-                "</return>";
-        for(int i=0;i<100;i++){
-            WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
-                    text2);
-            System.out.println(dto.getSequence());
-        }
+//        System.out.println(System.currentTimeMillis());
+//
+//        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "6c:e8:73:c2:4b:3c"));
+//
+//        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
+//
+//        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+//
+//        System.out.println(WifiDeviceVisitorService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+//
+//        System.out.println(WifiDeviceVisitorService.getInstance().countAuthPresent("84:82:f4:19:01:0c"));
+//
+//
+//        Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:23:06:68", 0, 5);
+//
+//        System.out.println(!presents.isEmpty());
+//        System.out.println(presents.size());
+//        for(Tuple tuple : presents){
+//            System.out.println(tuple.getScore());
+//            System.out.println(tuple.getElement());
+//        }
+//
+//
+//        System.out.println();
+//
+//        String payload = "<event>\n" +
+//                "        <wlan>\n" +
+//                "                <ITEM action=\"online\" mac=\"b4:0b:44:0d:96:31\" channel=\"1\" ssid=\"BhuWifi-啊\" bssid=\"96:82:f4:23:06:69\" location=\"\" vapname=\"wlan3\" portal=\"local\" authorized=\"true\" phy_rate=\"72M\" rssi=\"-56dBm\" snr=\"51dB\" ethernet=\"false\" />\n" +
+//                "        </wlan>\n" +
+//                "</event>";
+//
+//
+//
+//        List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,
+//                HandsetDeviceDTO.class);
+//
+//        System.out.println(dtos.get(0).getPortal());
+//        System.out.println(dtos.get(0).getVapname());
+//        System.out.println(dtos.get(0).getAuthorized());
+//
+//
+//
+//        String text2 = "<return>\n" +
+//                "        <ITEM result=\"ok\" config_sequence=\"247\" />\n" +
+//                "</return>";
+//        for(int i=0;i<100;i++){
+//            WifiDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(
+//                    text2);
+//            System.out.println(dto.getSequence());
+//        }
 
     }
 

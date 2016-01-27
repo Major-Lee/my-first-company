@@ -75,6 +75,10 @@ public interface IDeviceURouterRestRpcService {
 
 	RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String mac, int start, int size);
 
+	RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOffline(Integer uid, String mac, int start, int size);
+
+	RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOnline(Integer uid, String mac, int start, int size);
+
 	RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac);
 
 
