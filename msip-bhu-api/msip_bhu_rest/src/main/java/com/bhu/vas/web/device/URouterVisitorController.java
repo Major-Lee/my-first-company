@@ -48,7 +48,7 @@ public class URouterVisitorController extends BaseController {
             ) {
 
         RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorList(uid, mac,start, size);
-        if(!rpcResult.hasError()){
+        if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
@@ -77,7 +77,7 @@ public class URouterVisitorController extends BaseController {
     ) {
 
         RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOffline(uid, mac,start, size);
-        if(!rpcResult.hasError()){
+        if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
@@ -106,7 +106,7 @@ public class URouterVisitorController extends BaseController {
     ) {
 
         RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOnline(uid, mac,start, size);
-        if(!rpcResult.hasError()){
+        if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
