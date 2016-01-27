@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
-import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -148,7 +147,6 @@ public class ConsoleDeviceGroupController extends BaseController{
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
-	
 	
 	/**
 	 * 给指定的群组分配wifi设备
