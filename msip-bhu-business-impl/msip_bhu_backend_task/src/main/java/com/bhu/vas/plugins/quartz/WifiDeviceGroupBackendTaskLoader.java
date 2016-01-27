@@ -13,15 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
+import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 /**
- * 对于所属灰度的设备 进行定时任务自动升级
- * 定时任务只对固件进行升级
- * 前置条件：
- * 	1、灰度定义的设备除了特殊灰度外
- * 	2、其他灰度的设备就是除去所有的t_wifi_devices_grays内的设备外的设备
- *  3、所有条件均需加上设备类型dut
+ * 此任务暂定5分钟执行一次
+ * 根据配置的同时运行的任务数量决定是否需要重新把新的任务加入到任务池中
  * @author Edmond Lee
  *
  */
@@ -42,7 +41,17 @@ public class WifiDeviceGroupBackendTaskLoader {
 		logger.info("WifiDeviceGroupBackendTaskLoader starting...");
 		
 		int activeCount = ((ThreadPoolExecutor)task_exec).getActiveCount();
-		
+		if(activeCount < 3){
+			List<WifiDeviceBackendTask> pendingTask = wifiDeviceGroupFacadeService.fetchRecentPendingBackendTask(1, 3-activeCount);
+			if(pendingTask != null && !pendingTask.isEmpty()){
+				task_exec.submit((new Runnable() {
+					@Override
+					public void run() {
+						
+					}
+				}));
+			}
+		}
 		
 		int total = 0;
 		try{

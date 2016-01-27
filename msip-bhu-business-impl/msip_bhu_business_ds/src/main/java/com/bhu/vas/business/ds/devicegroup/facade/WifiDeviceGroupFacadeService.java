@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.devicegroup.facade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +11,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
@@ -271,7 +273,9 @@ public class WifiDeviceGroupFacadeService {
 		return dto;
     }
     
-    
+    public List<WifiDeviceBackendTask> fetchRecentPendingBackendTask(int pageNo,int pageSize){
+    	return Collections.emptyList();
+    }
 
     /*public Boolean remove(Integer uid, String gids) {
     	this.cleanUpByIds(uid,gids);
