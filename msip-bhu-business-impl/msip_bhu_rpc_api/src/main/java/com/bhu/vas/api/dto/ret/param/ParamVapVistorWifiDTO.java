@@ -3,6 +3,7 @@ package com.bhu.vas.api.dto.ret.param;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 
@@ -24,6 +25,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	private int force_timeout;
 	private String open_resource;
 	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值
+	@JsonIgnore
 	private String block_mode;
 	private String ssid;
 	
