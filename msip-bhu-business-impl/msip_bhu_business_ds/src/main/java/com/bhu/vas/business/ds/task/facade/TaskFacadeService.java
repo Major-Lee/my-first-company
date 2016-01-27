@@ -220,7 +220,9 @@ public class TaskFacadeService {
 	 */
 	public static String formatedTaskState(String state){
 		if(StringUtils.isEmpty(state)) return WifiDeviceDownTask.State_Failed;
-		if(WifiDeviceDownTask.State_Done.equals(state) || WifiDeviceDownTask.State_Ok.equals(state) || WifiDeviceDownTask.State_Pending.equals(state)
+		if(WifiDeviceDownTask.State_Done.equals(state) 
+				|| WifiDeviceDownTask.State_Ok.equals(state) 
+				|| WifiDeviceDownTask.State_Pending.equals(state)
 				|| WifiDeviceDownTask.State_Timeout.equals(state)){
 			return state;
 		}
