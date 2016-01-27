@@ -219,14 +219,14 @@ public class AsyncMsgHandleService {
 					//判定workmode是否变更
 					if(StringUtils.isNotEmpty(dto.getO_wmode()) && StringUtils.isNotEmpty(dto.getN_wmode())){
 						if(!dto.getO_wmode().equals(dto.getN_wmode())){
-							//在判定workmode变更后打上标记，标记内容代表什么模式切换到什么模式，
+							/*//在判定workmode变更后打上标记，标记内容代表什么模式切换到什么模式，
 							//由于模式切换还需要和设备重置有所相关，所以在查询配置分析中继续进行模式变更的操作内容
 							if(WifiDeviceHelper.WorkMode_Router.equals(dto.getN_wmode())){
 								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
 							}
 							if(WifiDeviceHelper.WorkMode_Bridge.equals(dto.getN_wmode())){
 								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
-							}
+							}*/
 							pushService.push(new WifiDeviceWorkModeChangedDTO(dto.getMac(), wifiDevice.getWork_mode()));
 						}
 					}

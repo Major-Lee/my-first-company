@@ -52,7 +52,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
-import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -64,7 +63,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocation
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -1119,15 +1117,15 @@ public class DeviceBusinessFacadeService {
 				}
 				//List<WifiDeviceSettingMMDTO> mms = currentDto.getMms();
 			}*/
-			if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_NotHappen){
+/*			if(dto.getBoot_on_reset() == WifiDeviceHelper.Boot_On_Reset_NotHappen){
 				try{
-					/*WifiDeviceSettingDTO currentDto = entity.getInnerModel();
+					WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 					int switchAct = needGenerate4WorkModeChanged(currentDto, dto);
 					logger.info(String.format("device[%s] workModeChanged switchAct[%s]", mac,switchAct));
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
 						//模式切换需要下发的指令集合
 						afterQueryPayloads.addAll(cmdGenerate4WorkModeChanged(mac,switchAct));
-					}*/
+					}
 					
 					int switchAct = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(mac);
 					if(switchAct != WifiDeviceHelper.SwitchMode_NoAction){
@@ -1147,7 +1145,7 @@ public class DeviceBusinessFacadeService {
 			}else{
 				//如果设备reset了,要去掉同步设备配置的标记 避免重置以后，又恢复了配置
 				BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(mac);
-			}
+			}*/
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
@@ -1193,7 +1191,7 @@ public class DeviceBusinessFacadeService {
 		return WifiDeviceHelper.SwitchMode_NoAction;
 	}*/
 	
-	private List<String> cmdGenerate4WorkModeChanged(String dmac,int switchAct){
+/*	private List<String> cmdGenerate4WorkModeChanged(String dmac,int switchAct){
 		List<String> payloads = new ArrayList<String>();
 		//1、访客网络指令
 		//2、wifi定时开关
@@ -1236,7 +1234,7 @@ public class DeviceBusinessFacadeService {
 			}
 		}
 		return payloads;
-	}
+	}*/
 	
 	/**
 	 * 获取dhcp模式下的状态信息 (ip,网关,dns,子网掩码)
