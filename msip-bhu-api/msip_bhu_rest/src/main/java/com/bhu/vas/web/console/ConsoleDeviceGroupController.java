@@ -1,4 +1,4 @@
-package com.bhu.vas.web.device;
+package com.bhu.vas.web.console;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +20,8 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/devices/group")
-public class DeviceGroupController extends BaseController{
+@RequestMapping("/console/device/group")
+public class ConsoleDeviceGroupController extends BaseController{
 	
 	@Resource
 	private IDeviceGroupRpcService deviceGroupRpcService;
