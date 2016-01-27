@@ -609,7 +609,7 @@ public class UserUnitFacadeService {
 
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
 		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(message,searchPageNo,pageSize);
-		System.out.println("fetchBindDevicesFromIndex === " +  search_result);
+		//System.out.println("fetchBindDevicesFromIndex === " +  search_result);
 
 		List<UserDeviceVTO> vtos = null;
 		int total = 0;
