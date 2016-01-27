@@ -48,7 +48,7 @@ public class URouterVisitorController extends BaseController {
             ) {
 
         RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorList(uid, mac,start, size);
-        if(!rpcResult.hasError()){
+        if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
@@ -66,7 +66,7 @@ public class URouterVisitorController extends BaseController {
      * @param size
      */
     @ResponseBody()
-    @RequestMapping(value="/list_offline",method={RequestMethod.POST})
+    @RequestMapping(value="/auth/offline",method={RequestMethod.POST})
     public void listOffLine(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -77,7 +77,7 @@ public class URouterVisitorController extends BaseController {
     ) {
 
         RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOffline(uid, mac,start, size);
-        if(!rpcResult.hasError()){
+        if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
@@ -95,7 +95,7 @@ public class URouterVisitorController extends BaseController {
      * @param size
      */
     @ResponseBody()
-    @RequestMapping(value="/list_online",method={RequestMethod.POST})
+    @RequestMapping(value="/noauth/online",method={RequestMethod.POST})
     public void listAll(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -106,7 +106,7 @@ public class URouterVisitorController extends BaseController {
     ) {
 
         RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOnline(uid, mac,start, size);
-        if(!rpcResult.hasError()){
+        if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));

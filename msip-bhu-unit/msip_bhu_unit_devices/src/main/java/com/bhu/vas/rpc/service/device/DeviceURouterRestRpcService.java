@@ -592,14 +592,14 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOffline(Integer uid, String mac, int start, int size) {
 		logger.info(String.format("DeviceURouterRestRPC urouterVisitorListOffline invoke uid [%s] mac [%s] start[%s] size[%s]",
 				uid, mac, start, size));
-		return null;
+		return deviceURouterRestBusinessFacadeService.urouterVisitorListOffline(uid, mac, start, size);
 	}
 
 	@Override
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOnline(Integer uid, String mac, int start, int size) {
 		logger.info(String.format("DeviceURouterRestRPC urouterVisitorListOnline invoke uid [%s] mac [%s] start[%s] size[%s]",
 				uid, mac, start, size));
-		return null;
+		return deviceURouterRestBusinessFacadeService.urouterVisitorListOnline(uid, mac, start, size);
 	}
 
 	@Override
