@@ -6,7 +6,9 @@ import com.bhu.vas.api.rpc.devicegroup.model.pk.WifiDeviceGroupRelationPK;
 import com.smartwork.msip.cores.orm.model.BasePKModel;
 
 /**
- * Created by bluesand on 7/16/15.
+ * 群组关联的设备mac
+ * @author Edmond
+ *
  */
 @SuppressWarnings("serial")
 public class WifiDeviceGroupRelation extends BasePKModel<WifiDeviceGroupRelationPK> {

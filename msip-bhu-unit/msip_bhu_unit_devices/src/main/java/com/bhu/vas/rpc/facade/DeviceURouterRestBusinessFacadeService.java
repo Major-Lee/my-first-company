@@ -1673,10 +1673,29 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String wifiId, int start, int size) {
 
+		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
+
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+	}
+
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOffline(Integer uid, String wifiId, int start, int size) {
+
+		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchOfflinePresent(wifiId, start, size);
+
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+	}
+
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOnline(Integer uid, String wifiId, int start, int size) {
+
+		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchOnlinePresent(wifiId, start, size);
+
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+	}
+
+
+	private URouterVisitorListVTO builderURouterVisitorListVTO(Set<Tuple> presents, Integer uid, String wifiId) {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
-
-		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
 
 		UserSettingState settingState = userSettingStateService.getById(wifiId);
 
@@ -1720,18 +1739,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			}
 			vto.setItems(vtos);
 		}
-
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		return vto;
 	}
 
-//	private String getHandsetName(int uid, String hd_mac) {
-//		String name = WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
-//		if (StringUtils.isEmpty(name)) {
-//			HandsetDeviceDTO dto = HandsetStorageFacadeService.handset(hd_mac);
-//			name = dto.getDhcp_name();
-//		}
-//		return name;
-//	}
 
 
 	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String wifiId, String hd_mac) {

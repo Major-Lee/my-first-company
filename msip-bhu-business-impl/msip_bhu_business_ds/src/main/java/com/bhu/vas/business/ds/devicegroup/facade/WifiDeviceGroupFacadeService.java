@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition;
+import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
-import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupRelationService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupSearchConditionService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -46,8 +47,8 @@ public class WifiDeviceGroupFacadeService {
     private WifiDeviceGroupSearchConditionService wifiDeviceGroupSearchConditionService;
     
 
-    @Resource
-    private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
+    //@Resource
+    //private WifiDeviceGroupRelationService wifiDeviceGroupRelationService;
     
 	/**
 	 * 通过pid取得pid=pid的节点
@@ -232,9 +233,9 @@ public class WifiDeviceGroupFacadeService {
                     ;
                 }
                 //删除绑定的设备
-                ModelCriteria mc = new ModelCriteria();
+                /*ModelCriteria mc = new ModelCriteria();
                 mc.createCriteria().andColumnEqualTo("gid", resid);
-                wifiDeviceGroupRelationService.deleteByCommonCriteria(mc);
+                wifiDeviceGroupRelationService.deleteByCommonCriteria(mc);*/
             }
         }
     }
@@ -247,6 +248,30 @@ public class WifiDeviceGroupFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,new String[]{String.valueOf(gid)});
 		}
     }
+    
+    public UserSearchConditionDTO assignUserSearchCondition4DeviceGroup(int assignor,long gid,String message,String desc){
+    	if (gid <= 0 ) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,new String[]{String.valueOf(gid)});
+		}
+    	WifiDeviceGroupSearchCondition searchCondition = wifiDeviceGroupSearchConditionService.getById(gid);
+    	boolean newed = false;
+		if(searchCondition == null){
+			searchCondition = new WifiDeviceGroupSearchCondition();
+			searchCondition.setId(gid);
+			newed = true;
+		}
+		UserSearchConditionDTO dto = new UserSearchConditionDTO(message, desc);
+		dto.setTs(System.currentTimeMillis());
+		searchCondition.replaceInnerModel(dto);
+		if(newed){
+			wifiDeviceGroupSearchConditionService.insert(searchCondition);
+		}else{
+			wifiDeviceGroupSearchConditionService.update(searchCondition);
+		}
+		return dto;
+    }
+    
+    
 
     /*public Boolean remove(Integer uid, String gids) {
     	this.cleanUpByIds(uid,gids);

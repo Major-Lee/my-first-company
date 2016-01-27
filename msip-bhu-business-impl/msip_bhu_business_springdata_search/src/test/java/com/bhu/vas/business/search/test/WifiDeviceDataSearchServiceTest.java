@@ -852,7 +852,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_all);
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1);
-		
+		System.out.println("JSON test0017:"+ JsonHelper.getJSONString(scm));
 		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(scm, 0, 10);
     	System.out.println("test0017SearchTest" + result.getTotalElements());
 		for(WifiDeviceDocument doc : result){
