@@ -21,7 +21,9 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -38,10 +40,12 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
+import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -965,7 +969,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			case DS_Plugins:
 				return DeviceHelper.builderDSPluginOuter(extparams);
 			case DS_Switch_WorkMode:
-				return DeviceHelper.builderDSWorkModeSwitchOuter(extparams);
+				return generateDeviceSettingWithSwitchWorkMode(mac, extparams);
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RealChannel:
@@ -988,6 +992,26 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			default:
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
+	}
+	
+	public String generateDeviceSettingWithSwitchWorkMode(String mac, String extparams){
+		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
+		int switchAct = wk_dto.getWmode();
+		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act || switchAct == WifiDeviceHelper.SwitchMode_Bridge2Router_Act){
+			ParamVapVistorWifiDTO vw_dto = null;
+			UserSettingState settingState = userSettingStateService.getById(mac);
+			if(settingState != null){
+				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+				if(vistorWifi != null && vistorWifi.isOn()){
+					vw_dto = vistorWifi.getVw();
+					//TODO:ParamVapVistorWifiDTO block_mode变更并且更新配置 或者数据库中就不存ParamVapVistorWifiDTO字段block_mode
+					vw_dto.switchWorkMode(switchAct);
+					userSettingStateService.update(settingState);
+				}
+			}
+			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);
+		}
+		return null;
 	}
 	
 	/**

@@ -18,7 +18,6 @@ import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -34,7 +33,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
@@ -811,6 +809,39 @@ public class DeviceHelper {
 						"<lan><ITEM ip_mode=\"dhcpc\" /></lan>"+
 					"</basic>"+
 				"</mod>"+
+				"<net>"
+				+ "<interface>"
+					+ "<ITEM name=\"wlan2\" enable=\"disable\" />"
+					+ "<ITEM name=\"wlan3\" enable=\"disable\" />"
+				+ "</interface>"
+				+ "</net>"+
+			"</dev>";
+	
+	public static final String DeviceSetting_Switch_Workmode_Bridge2Router =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode><ITEM mode=\"router-ap\" scene=\"router\"/></mode>"+
+						"<wan><ITEM mode=\"dhcpc\" /></wan>"+
+						"<lan><ITEM ip=\"192.168.62.1\" netmask=\"255.255.255.0\" dhcp_enable=\"enable\" /></lan>"+
+					"</basic>"+
+				"</mod>"+
+				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
+			"</dev>";
+/*	public static final String DeviceSetting_Switch_Workmode_Router2Bridge =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode><ITEM mode=\"bridge-ap\" scene=\"ap\"/></mode>"+
+						"<lan><ITEM ip_mode=\"dhcpc\" /></lan>"+
+					"</basic>"+
+				"</mod>"+
 				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
 			"</dev>";
 	public static final String DeviceSetting_Switch_Workmode_Bridge2Router =
@@ -826,25 +857,7 @@ public class DeviceHelper {
 					"</basic>"+
 				"</mod>"+
 				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
-			"</dev>";
-	
-	/*public static final String DeviceSetting_Switch_Workmode =
-			"<dev>"+
-			    "<sys>"+
-			    	"<config><ITEM sequence=\"-1\" /></config>"+
-			    "</sys>"+
-			    "<mod>"+
-					"<basic>"+
-						"<mode>"+
-							"<ITEM mode=\"%s\" scene=\"ap\"/>"+
-						"</mode>"+
-					"</basic>"+
-				"</mod>"+
 			"</dev>";*/
-	
-	
-	
-	
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" />";
@@ -1108,14 +1121,39 @@ public class DeviceHelper {
 		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
 	
-	public static String builderDSWorkModeSwitchOuter(String extparams){
-		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
-		if(wk_dto.getWmode() == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
-			return DeviceSetting_Switch_Workmode_Router2Bridge;
+	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, ParamVapVistorWifiDTO vw_dto){
+		StringBuffer workModeSwitchBuilder = new StringBuffer();
+		//组装切换工作模式配置修改指令
+		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
+			workModeSwitchBuilder.append(DeviceSetting_Switch_Workmode_Router2Bridge);
 		}else{
-			return DeviceSetting_Switch_Workmode_Bridge2Router;
+			workModeSwitchBuilder.append(DeviceSetting_Switch_Workmode_Bridge2Router);
 		}
-		//return builderDeviceSettingItem(DeviceSetting_Switch_Workmode,ad_dto.builderProperties());
+		//组装访客网络配置修改指令
+		if(vw_dto != null){
+			workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
+					vw_dto.builderProperties()));
+		}
+		//3、ssid 密码
+		//4、黑名单
+		//5、别名(暂时不需要下发指令)
+		//6、限速
+		//7、功率
+		if(s_dto != null){
+			List<String> dsworkModelChangedCMDList = DeviceHelper.builderDSWorkModeChanged(s_dto);
+			if(dsworkModelChangedCMDList != null && !dsworkModelChangedCMDList.isEmpty()){
+				for(String dsworkModelChangedCMD : dsworkModelChangedCMDList){
+					workModeSwitchBuilder.append(dsworkModelChangedCMD);
+//					payloads.add(CMDBuilder.builderDeviceSettingModify(dmac, 0l, dsworkModelChanged));
+				}
+			}
+		}
+		
+		if(workModeSwitchBuilder.length() > 0){
+			return workModeSwitchBuilder.toString();
+			//return CMDBuilder.builderDeviceSettingModify(mac, 0l, workModeSwitchBuilder.toString());
+		}
+		return null;
 	}
 
 	/**
@@ -1125,49 +1163,46 @@ public class DeviceHelper {
 		//别名(暂时不需要下发指令)
 		//限速
 		//功率
-	 * @param setting_entity
+	 * @param ds_dto
 	 * @return
 	 */
-	public static List<String> builderDSWorkModeChanged(WifiDeviceSetting setting_entity){
+	public static List<String> builderDSWorkModeChanged(WifiDeviceSettingDTO ds_dto){
 		List<String> dsworkModelChangedList = null;
-		if(setting_entity != null){
-			WifiDeviceSettingDTO ds_dto = setting_entity.getInnerModel();
-			if(ds_dto != null){
-				dsworkModelChangedList = new ArrayList<String>();
-				//获取当前配置功率
-				WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
-				if(radio_dto != null){
-					//功率
-					String radio_item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
-							radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
-					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
-							Common_Config_Sequence, radio_item));
+		if(ds_dto != null){
+			dsworkModelChangedList = new ArrayList<String>();
+			//获取当前配置功率
+			WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
+			if(radio_dto != null){
+				//功率
+				String radio_item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+						radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
+						Common_Config_Sequence, radio_item));
+			}
+			//限速
+			List<WifiDeviceSettingRateControlDTO> rc_dtos = ds_dto.getRatecontrols();
+			if(rc_dtos != null && !rc_dtos.isEmpty()){
+				String rc_items = builderDeviceSettingItemsWithDto(DeviceSetting_RatecontrolItem, rc_dtos);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, 
+						Common_Config_Sequence, rc_items));
+			}
+			//黑名单
+			WifiDeviceSettingAclDTO acl_dto = matchDefaultAcl(ds_dto);
+			if(acl_dto != null){
+				String acl_items = builderDeviceSettingItem(DeviceSetting_AclItem, acl_dto.builderProperties());
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_AclOuter, 
+						Common_Config_Sequence, acl_items));
+			}
+			//ssid 密码
+			List<WifiDeviceSettingVapDTO> vap_dtos = ds_dto.getVaps();
+			if(vap_dtos != null && !vap_dtos.isEmpty()){
+				List<Object[]> vap_dto_properties = new ArrayList<Object[]>();
+				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+					vap_dto_properties.add(vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_WorkModeChanged));
 				}
-				//限速
-				List<WifiDeviceSettingRateControlDTO> rc_dtos = ds_dto.getRatecontrols();
-				if(rc_dtos != null && !rc_dtos.isEmpty()){
-					String rc_items = builderDeviceSettingItemsWithDto(DeviceSetting_RatecontrolItem, rc_dtos);
-					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, 
-							Common_Config_Sequence, rc_items));
-				}
-				//黑名单
-				WifiDeviceSettingAclDTO acl_dto = matchDefaultAcl(ds_dto);
-				if(acl_dto != null){
-					String acl_items = builderDeviceSettingItem(DeviceSetting_AclItem, acl_dto.builderProperties());
-					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_AclOuter, 
-							Common_Config_Sequence, acl_items));
-				}
-				//ssid 密码
-				List<WifiDeviceSettingVapDTO> vap_dtos = ds_dto.getVaps();
-				if(vap_dtos != null && !vap_dtos.isEmpty()){
-					List<Object[]> vap_dto_properties = new ArrayList<Object[]>();
-					for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
-						vap_dto_properties.add(vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_WorkModeChanged));
-					}
-					String vap_items = builderDeviceSettingItems(DeviceSetting_VapWorkModeChangeItem, vap_dto_properties);
-					dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_VapOuter, 
-							Common_Config_Sequence, vap_items));
-				}
+				String vap_items = builderDeviceSettingItems(DeviceSetting_VapWorkModeChangeItem, vap_dto_properties);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_VapOuter, 
+						Common_Config_Sequence, vap_items));
 			}
 		}
 		return dsworkModelChangedList;

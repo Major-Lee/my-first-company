@@ -107,7 +107,7 @@ public class BusinessMarkerService extends AbstractRelationHashCache{
 	}
 	
 	
-	//设备workmode状态临时变更标记
+/*	//设备workmode状态临时变更标记
 	private static final String DeviceWorkmodeChangedPrefixKey = "DWC";
 	
 	public void deviceWorkmodeChangedMarker(String mac,int switchMode){
@@ -130,7 +130,7 @@ public class BusinessMarkerService extends AbstractRelationHashCache{
 	
 	public Long deviceWorkmodeChangedStatusClear(String mac){
 		return this.hdel(generateMarkPrefixKey(DeviceWorkmodeChangedPrefixKey,mac), mac);
-	}
+	}*/
 	
 	@Override
 	public String getRedisKey() {
