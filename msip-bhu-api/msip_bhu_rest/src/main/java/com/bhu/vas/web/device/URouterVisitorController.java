@@ -66,7 +66,7 @@ public class URouterVisitorController extends BaseController {
      * @param size
      */
     @ResponseBody()
-    @RequestMapping(value="/list_offline",method={RequestMethod.POST})
+    @RequestMapping(value="/auth/offline",method={RequestMethod.POST})
     public void listOffLine(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -95,7 +95,7 @@ public class URouterVisitorController extends BaseController {
      * @param size
      */
     @ResponseBody()
-    @RequestMapping(value="/list_online",method={RequestMethod.POST})
+    @RequestMapping(value="/noauth/online",method={RequestMethod.POST})
     public void listAll(
             HttpServletRequest request,
             HttpServletResponse response,
