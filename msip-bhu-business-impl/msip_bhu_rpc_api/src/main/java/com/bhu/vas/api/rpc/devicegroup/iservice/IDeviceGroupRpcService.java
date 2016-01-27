@@ -14,6 +14,7 @@ public interface IDeviceGroupRpcService {
 	RpcResponseDTO<DeviceGroupVTO> deviceGroupDetail(Integer uid, long gid);
 
 	RpcResponseDTO<Boolean> deviceGroupCleanUpByIds(Integer uid, String gids);
+	RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(Integer assignor,Long gid, String message, String desc);
 	
 	/*RpcResponseDTO<Boolean> grant(Integer uid, long gid,String wifi_ids);
 	

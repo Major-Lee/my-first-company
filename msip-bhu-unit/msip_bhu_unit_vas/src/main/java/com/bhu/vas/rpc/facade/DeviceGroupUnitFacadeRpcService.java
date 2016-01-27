@@ -86,6 +86,37 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 	}
 	
+	public RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(Integer assignor,Long gid, String message, String desc){
+		try{
+			wifiDeviceGroupFacadeService.assignUserSearchCondition4DeviceGroup(assignor, gid, message, desc);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+		
+		
+/*		Map<String,Object> payload = new HashMap<String,Object>();
+		
+		UserSearchConditionDTO dto = new UserSearchConditionDTO(message, desc);
+		String dtojson = JsonHelper.getJSONString(dto);
+		
+		Double exist_ts = UserSearchConditionSortedSetService.getInstance().zscore(uid, dtojson);
+		if(exist_ts != null && exist_ts > 0){
+			payload.put("ts", exist_ts);
+			payload.put("stored", false);
+		}else{
+			long ts = System.currentTimeMillis();
+			Long ret = UserSearchConditionSortedSetService.getInstance().storeUserSearchCondition(uid, ts, dtojson);
+			if(ret != null && ret > 0){
+				payload.put("ts", ts);
+				payload.put("stored", true);
+			}
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
+	}
 	/*public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

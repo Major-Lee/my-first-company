@@ -30,7 +30,7 @@ public class URouterVisitorController extends BaseController {
     private IDeviceURouterRestRpcService deviceURouterRestRpcService;
 
     /**
-     * 访客网络在线列表
+     * 访客网络认证在线列表
      * @param request
      * @param response
      * @param uid
@@ -54,6 +54,65 @@ public class URouterVisitorController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
     }
+
+
+    /**
+     * 访客网络认证离线列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param start
+     * @param size
+     */
+    @ResponseBody()
+    @RequestMapping(value="/list_offline",method={RequestMethod.POST})
+    public void listOffLine(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+    ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOffline(uid, mac,start, size);
+        if(!rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+
+    /**
+     * 访客网络未认证仅连接上线的列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param start
+     * @param size
+     */
+    @ResponseBody()
+    @RequestMapping(value="/list_online",method={RequestMethod.POST})
+    public void listAll(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+    ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOnline(uid, mac,start, size);
+        if(!rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
 
 
 
