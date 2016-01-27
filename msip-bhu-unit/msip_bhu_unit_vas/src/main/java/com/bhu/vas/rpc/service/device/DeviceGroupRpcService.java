@@ -14,7 +14,6 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @Service("deviceGroupRpcService")
 public class DeviceGroupRpcService implements IDeviceGroupRpcService{
-
 	private final Logger logger = LoggerFactory.getLogger(DeviceGroupRpcService.class);
 	@Resource
 	private DeviceGroupUnitFacadeRpcService deviceGroupUnitFacadeRpcService;
@@ -41,7 +40,12 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		logger.info(String.format("deviceGroupCleanUpByIds uid:%s gids:%s",uid,gids));
 		return deviceGroupUnitFacadeRpcService.deviceGroupCleanUpByIds(uid, gids);
 	}
-	
+	@Override
+	public RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(
+			Integer assignor, Long gid, String message, String desc) {
+		logger.info(String.format("assignUserSearchCondition4DeviceGroup assignor:%s gid:%s message:%s desc:%s",assignor,gid,message,desc));
+		return deviceGroupUnitFacadeRpcService.assignUserSearchCondition4DeviceGroup(assignor, gid, message, desc);
+	}
 	/*@Override
 	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
 		logger.info(String.format("grant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
@@ -52,6 +56,4 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
 		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids);
 	}*/
-
-	
 }
