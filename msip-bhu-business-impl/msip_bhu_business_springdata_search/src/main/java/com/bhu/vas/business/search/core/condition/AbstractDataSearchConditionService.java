@@ -71,6 +71,17 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 			throws ElasticsearchIllegalArgumentException{
 		return searchByConditionMessage(getSearchConditionMessageDTO(message));
 	}
+	
+	/**
+	 * 使用search condition message进行搜索count
+	 * @param message
+	 * @return
+	 * @throws ElasticsearchIllegalArgumentException
+	 */
+	public long searchCountByConditionMessage(String message) 
+			throws ElasticsearchIllegalArgumentException{
+		return searchCountByConditionMessage(getSearchConditionMessageDTO(message));
+	}
 
 	/**
 	 * 转换message为SearchConditionMessage对象
@@ -119,6 +130,24 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 			logger.error("AbstractDataSearchConditionService SearchByConditionMessage Exception", ex);
 		}
 		return null;
+	}
+	
+	/**
+	 * 使用search condition message进行搜索count
+	 * @param searchConditionMessage
+	 * @return
+	 */
+	public long searchCountByConditionMessage(SearchConditionMessage searchConditionMessage) {
+		try{
+			SearchQuery searchQuery = builderSearchQueryByConditionMessage(searchConditionMessage);
+			if(searchQuery != null){
+				return getElasticsearchTemplate().count(searchQuery, entityClass);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("AbstractDataSearchConditionService SearchCountByConditionMessage Exception", ex);
+		}
+		return 0l;
 	}
 	
 	private SearchQuery builderSearchQueryByConditionMessage(SearchConditionMessage searchConditionMessage, 

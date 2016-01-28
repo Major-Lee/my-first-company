@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.device.UserDeviceVTO;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -17,6 +15,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserUnitFacadeService;
@@ -109,9 +108,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
 
     @Override
-    public TailPage<UserDeviceVTO> pageBindDevices(int uid, String message, int pageNo, int pageSize) {
-        logger.info(String.format("pageBindDevices with uid[%s] message[%s] pageNo[%s] pageSize[%s]", uid, message, pageNo, pageSize));
-        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, message, pageNo, pageSize);
+    public UserDeviceTCPageVTO pageBindDevices(Integer uid, Integer u_id, 
+			String d_online, String s_content, int pageNo, int pageSize) {
+        logger.info(String.format("pageBindDevices with uid[%s] u_id[%s] d_online[%s] s_content[%s] pageNo[%s] pageSize[%s]", 
+        		uid, u_id, d_online, s_content, pageNo, pageSize));
+        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, u_id, d_online, s_content, pageNo, pageSize);
     }
 
 /*@Override
