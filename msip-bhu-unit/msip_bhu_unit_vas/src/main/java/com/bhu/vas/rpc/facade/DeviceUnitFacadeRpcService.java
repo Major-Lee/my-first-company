@@ -206,7 +206,7 @@ public class DeviceUnitFacadeRpcService{
 	public RpcResponseDTO<TailPage<ModuleStyleVTO>> pagesVapStyles(int uid,int pn,int ps){
 		try{
 	    	ModelCriteria mc = new ModelCriteria();
-	    	mc.createCriteria().andSimpleCaulse(" 1=1 ");
+	    	mc.createCriteria().andColumnNotEqualTo("id", StringHelper.MINUS_STRING_GAP).andSimpleCaulse(" 1=1 ");
 	    	mc.setPageNumber(pn);
 	    	mc.setPageSize(ps);
 	    	mc.setOrderByClause(" created_at desc ");
@@ -218,7 +218,7 @@ public class DeviceUnitFacadeRpcService{
 			TailPage<ModuleStyleVTO> result_pages = new CommonPage<ModuleStyleVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
 			{
 				//增加一条无的数据，用于关闭增值模板指令
-				result_pages.getItems().add(0, VasModuleCmdDefined.BuildEmptyModuleStyleVTO());
+				result_pages.getItems().add(0, VasModuleCmdDefined.BuildStopModuleStyleVTO());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException i18nex){
