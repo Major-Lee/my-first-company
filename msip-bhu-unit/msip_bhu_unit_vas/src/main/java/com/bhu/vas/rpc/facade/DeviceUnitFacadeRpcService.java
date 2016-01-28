@@ -206,7 +206,7 @@ public class DeviceUnitFacadeRpcService{
 	public RpcResponseDTO<TailPage<ModuleStyleVTO>> pagesVapStyles(int uid,int pn,int ps){
 		try{
 	    	ModelCriteria mc = new ModelCriteria();
-	    	mc.createCriteria().andColumnNotEqualTo("id", StringHelper.MINUS_STRING_GAP).andSimpleCaulse(" 1=1 ");
+	    	mc.createCriteria().andColumnNotEqualTo("style", StringHelper.MINUS_STRING_GAP).andSimpleCaulse(" 1=1 ");
 	    	mc.setPageNumber(pn);
 	    	mc.setPageSize(ps);
 	    	mc.setOrderByClause(" created_at desc ");
