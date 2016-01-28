@@ -866,7 +866,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		String illegal_message2 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut\",\"pattern\":\"test\",\"payload\":\"TU \"}]}]}";
 		String illegal_message3 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut1\",\"pattern\":\"seq\",\"payload\":\"TU \"}]}]}";
 		String illegal_message4 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"TC\"},{\"key\":\"u_id\",\"pattern\":\"seq\",\"payload\":\"90021\"},{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"1\"}]},{\"cs\":[{\"logic\":\"should\",\"key\":\"u_dnick\",\"pattern\":\"ctn\",\"payload\":\"\"},{\"logic\":\"should\",\"key\":\"d_mac\",\"pattern\":\"ctn\",\"payload\":\"\"},{\"logic\":\"should\",\"key\":\"d_wanip\",\"pattern\":\"ctn\",\"payload\":\"\"},{\"logic\":\"should\",\"key\":\"d_origmodel\",\"pattern\":\"ctn\",\"payload\":\"\"},{\"logic\":\"should\",\"key\":\"d_origswver\",\"pattern\":\"ctn\",\"payload\":\"\"},{\"logic\":\"should\",\"key\":\"d_workmodel\",\"pattern\":\"seq\",\"payload\":\"\"}]}]}";
-		String test = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"TC\"},{\"key\":\"u_id\",\"pattern\":\"seq\",\"payload\":\"100146\"},{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"0\"}]}]}";
+		String test = "{\"search_t\":5,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"TC\"},{\"key\":\"u_id\",\"pattern\":\"seq\",\"payload\":\"100146\"},{\"key\":\"d_online\",\"pattern\":\"seq\",\"payload\":\"1\"}]}]}";
 		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(test, 0, 10);
     	if(result == null){
     		System.out.println("test0018SearchTest return null");
