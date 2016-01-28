@@ -147,8 +147,11 @@ public class HandsetStorageFacadeService{
     	}));
     }
     public static void wifiDeviceHandsetOffline(final String dmac, final String hmac, final String tx_bytes, final long logout_at) {
-    	final long rb = Long.parseLong(tx_bytes);
-    	if(rb >0){
+    	long rb = 0l;
+    	try{
+    		rb = Long.parseLong(tx_bytes);	
+    	}catch(Exception ex){
+    		ex.printStackTrace(System.out);
     	}
     	wifiDeviceHandsetOffline(dmac,hmac,rb,logout_at);
     }
