@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
@@ -29,8 +27,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -665,25 +661,31 @@ public class DeviceHelper {
 		    bhu_http_redirect_rule="1,20:00:00,21:00:00,http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com ..."
 		 />*/
 	//public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"http://auth.wi2o.cn/404/\" bhu_http404_codes=\"404,502\"/>";
-	public static final String DeviceSetting_Start_Http404Item 		= "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
+	/*public static final String DeviceSetting_Start_Http404Item 		= "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
 	public static final String DeviceSetting_Stop_Http404Item 		= "<ITEM bhu_http404_enable=\"disable\"/>";
 	public static final String DeviceSetting_Start_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
 	public static final String DeviceSetting_Stop_HttpRedirectItem 	= "<ITEM bhu_http_redirect_enable=\"disable\"/>";
 	
-	public static final String DeviceSetting_Start_VapItem_Begin_Fragment 		= "<ITEM ";
-	public static final String DeviceSetting_Start_HttpAdItem_Inner_Fragment 	= " bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" ";
+	
+	
 	public static final String DeviceSetting_Start_Http404Item_Inner_Fragment 	= " bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"%s\" ";
 	public static final String DeviceSetting_Start_HttpRedirectItem_Inner_Fragment = " bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\" ";
+	*/
+	
+	public static final String DeviceSetting_Start_VapItem_Begin_Fragment 		= "<ITEM ";
+	public static final String DeviceSetting_Start_HttpAdItem_Inner_Fragment 	= " bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" ";
 	public static final String DeviceSetting_Start_VapItem_End_Fragment 	= " />";
 	
 	//mac type opt taskid
 	public static final String DeviceSetting_VapModule_VapItem_Header_Fragment 	= "00001001%s0000000000000000100000012%s%s%s";
-	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
+/*	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
 	public static final String DeviceSetting_VapModule_VapItem_End_Fragment 	= "</bhu_module>";
 	public static final String DeviceSetting_VapModule_Start_Http404Item 		= "<http404><ITEM enable=\"%s\" url=\"%s\" codes=\"%s\" ver=\"%s\"/></http404>";
 	public static final String DeviceSetting_VapModule_Stop_Http404Item 		= "<http404><ITEM enable=\"disable\"/></http404>";
 	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<redirect><ITEM enable=\"%s\" rule=\"%s\" ver=\"%s\" /></redirect>";
 	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<redirect><ITEM enable=\"disable\"/></redirect>";
+*/	
+	
 	public static final String DeviceSetting_VapModule_Upgrade = "<upgrade><ITEM url = “” retry_count=”” retry_interval=”” /></upgrade>";
 	
 	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
@@ -1028,6 +1030,7 @@ public class DeviceHelper {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem_Inner_Fragment, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
 	}
+	/*
 	public static String builderDSHttpRedirectStartFragmentOuter(String extparams){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		if(pad_dto == null)
@@ -1041,7 +1044,7 @@ public class DeviceHelper {
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item_Inner_Fragment, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
-	}
+	}*/
 	
 	/**
 	 * 构建广告配置数据
@@ -1063,7 +1066,7 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpAdItem);
 	}
 	
-	public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams){
+	/*public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		//WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
 		if(pad_dto == null)
@@ -1086,7 +1089,7 @@ public class DeviceHelper {
 	}
 	public static String builderDSHttp404StopOuter(String config_sequence){
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
-	}
+	}*/
 	
 	public static String builderDSStartVisitorWifiOuter(String extparams){
 		ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);

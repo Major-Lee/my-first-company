@@ -509,14 +509,15 @@ public class TaskFacadeService {
 						}
 						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(),cmdDefined.getTemplate()));
 						break;
+					case DS_Http_VapModuleCMD_Stop:
+						String stopTemplate = vasModuleCmdDefinedService.fetchCommonStopTemplate();
+						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), stopTemplate));
+						break;	
 					default:
 						break;	
 				}
 			}else{
 				switch(ods_cmd){
-					case DS_Http_VapModuleCMD_Stop:
-						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), DeviceHelper.DeviceSetting_VapModuleFull_Stop));
-						break;	
 					case DS_VistorWifi_Limit:
 						//需要判定访客网络是否开启
 						UserSettingState user_setting_entity = userSettingStateService.getById(mac);

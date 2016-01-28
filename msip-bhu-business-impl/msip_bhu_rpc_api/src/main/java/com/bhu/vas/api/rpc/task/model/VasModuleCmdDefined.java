@@ -13,6 +13,7 @@ import com.smartwork.msip.cores.orm.model.BasePKModel;
 @SuppressWarnings("serial")
 public class VasModuleCmdDefined extends BasePKModel<VasModuleCmdPK> {
 
+	public final static VasModuleCmdPK stopCmdPk = new VasModuleCmdPK(OperationDS.DS_Http_VapModuleCMD_Stop.getRef(),"style---");
 	private String version;
 	private String template;
 	private String memo;
