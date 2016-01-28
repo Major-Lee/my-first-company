@@ -37,7 +37,7 @@ public enum OperationDS {
 	//DS_Http_Redirect_Stop("21","关闭http redirect"),
 	
 	DS_Http_VapModuleCMD_Start("25","ModuleCMD","开启全部增值指令-404、redirect、品牌及渠道指令"),
-	DS_Http_VapModuleCMD_Stop("26","关闭全部增值指令-404、redirect、品牌及渠道指令"),
+	DS_Http_VapModuleCMD_Stop("26","ModuleCMD","关闭全部增值指令-404、redirect、品牌及渠道指令"),
 	
 	DS_Switch_WorkMode("30","设备工作模式切换指令"),
 	
