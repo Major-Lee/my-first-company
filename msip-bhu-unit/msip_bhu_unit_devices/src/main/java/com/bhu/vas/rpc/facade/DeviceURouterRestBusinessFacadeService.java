@@ -1753,7 +1753,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				Object score =  handsetScores.get(cursor);
 				if (score!=null) {
-					Long s = Long.parseLong(score.toString());
+					Double s = Double.parseDouble(score.toString());
 					if (s == 0) {
 						detailVTO.setS("online");
 					}
