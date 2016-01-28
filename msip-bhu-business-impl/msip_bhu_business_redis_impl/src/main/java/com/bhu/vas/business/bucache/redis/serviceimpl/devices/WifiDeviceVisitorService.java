@@ -136,13 +136,17 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
     public static void main(String args[]) {
 
 
-        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
-        System.out.println(WifiDeviceVisitorService.getInstance().fetchOnlinePresent("84:82:f4:19:01:0c",0, 10));
-        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
-        System.out.println(WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c",0, 10));
-        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
-        System.out.println(WifiDeviceVisitorService.getInstance().fetchOfflinePresent("84:82:f4:19:01:0c",0, 10));
-        System.out.println(WifiDeviceVisitorService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+        System.out.println(WifiDeviceVisitorService.getInstance().fetchOnlinePresent("84:82:f4:28:8f:ac",0, 10));
+        System.out.println(WifiDeviceVisitorService.getInstance().zrangeByScore(generateKey("84:82:f4:28:8f:ac"), 1, 1));
+        System.out.println(WifiDeviceVisitorService.getInstance().zrangeByScoreWithScores(generateKey("84:82:f4:28:8f:ac"), 1, 1, 0, 5));
+
+//        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+//        System.out.println(WifiDeviceVisitorService.getInstance().fetchOnlinePresent("84:82:f4:19:01:0c",0, 10));
+//        System.out.println(WifiDeviceVisitorService.getInstance().addAuthOnlinePresent("84:82:f4:19:01:0c", System.currentTimeMillis(), "bc:f5:ac:ac:a4:ce"));
+//        System.out.println(WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent("84:82:f4:19:01:0c",0, 10));
+//        System.out.println(WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
+//        System.out.println(WifiDeviceVisitorService.getInstance().fetchOfflinePresent("84:82:f4:19:01:0c",0, 10));
+//        System.out.println(WifiDeviceVisitorService.getInstance().removePresent("84:82:f4:19:01:0c", "b4:0b:44:0d:96:31"));
 
 
 //        System.out.println(System.currentTimeMillis());
