@@ -80,7 +80,7 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
      * @return
      */
     public long addVisitorOfflinePresent(String wifiId, String handsetId) {
-        return super.zadd(generateKey(wifiId), 1, handsetId);
+        return super.zadd(generateKey(wifiId), OFFLINE_SCORE_VALUE, handsetId);
     }
 
     /**
@@ -129,6 +129,14 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         return super.zrangeByScoreWithScores(generateKey(wifiId), OFFLINE_SCORE_VALUE, OFFLINE_SCORE_VALUE, start, (start+size-1));
     }
 
+    public Set<Tuple> fetchAllPresent(String wifiId, int start, int size) {
+        return super.zrangeByScoreWithScores(generateKey(wifiId), ONLINE_SCORE_VALUE, Long.MAX_VALUE, start, (start+size-1));
+    }
+
+
+    public List<Object> pipelineAllPresentScores(String wifiId,String[] handsetIds) {
+        return super.pipelineZScore_sameKeyWithDiffMember(generateKey(wifiId), handsetIds);
+    }
 
 
 

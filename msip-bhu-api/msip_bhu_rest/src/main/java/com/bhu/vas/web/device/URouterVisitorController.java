@@ -96,6 +96,35 @@ public class URouterVisitorController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/noauth/online",method={RequestMethod.POST})
+    public void listNoauth(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+    ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOnline(uid, mac,start, size);
+        if(rpcResult != null && !rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+
+    /**
+     * 访客网络所有在线终端(包括未认证,认证在线,认证离线)
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param start
+     * @param size
+     */
+    @ResponseBody()
+    @RequestMapping(value="/all",method={RequestMethod.POST})
     public void listAll(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -112,6 +141,9 @@ public class URouterVisitorController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
     }
+
+
+
 
 
 

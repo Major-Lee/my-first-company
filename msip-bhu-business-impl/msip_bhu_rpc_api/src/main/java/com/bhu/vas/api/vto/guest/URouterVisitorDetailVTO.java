@@ -12,6 +12,11 @@ public class URouterVisitorDetailVTO implements Serializable {
 
     private String n;
 
+    /**
+     * 终端状态: online:0, authonline: 时间戳 , authoffline:1,
+     */
+    private String s;
+
     public String getHd_mac() {
         return hd_mac;
     }
@@ -26,5 +31,13 @@ public class URouterVisitorDetailVTO implements Serializable {
 
     public void setN(String n) {
         this.n = n;
+    }
+
+    public String getS() {
+        return s;
+    }
+
+    public void setS(String s) {
+        this.s = s;
     }
 }
