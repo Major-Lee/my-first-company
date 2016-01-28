@@ -603,6 +603,13 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String mac, int start, int size) {
+		logger.info(String.format("DeviceURouterRestRPC urouterVisitorListAll invoke uid [%s] mac [%s] start[%s] size[%s]",
+				uid, mac, start, size));
+		return deviceURouterRestBusinessFacadeService.urouterVisitorListAll(uid, mac, start, size);
+	}
+
+	@Override
 	public RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac) {
 		logger.info(String.format("DeviceURouterRestRPC urouterVisitorRemoveHandset invoke uid[%s] mac[%s] hd_mac[%s]",
 				uid, mac, hd_mac));

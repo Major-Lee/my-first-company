@@ -1693,6 +1693,14 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 
 
+	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String wifiId, int start, int size) {
+
+		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAllPresent(wifiId, start, size);
+
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+	}
+
+
 	private URouterVisitorListVTO builderURouterVisitorListVTO(Set<Tuple> presents, Integer uid, String wifiId) {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
@@ -1713,12 +1721,18 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		if(!presents.isEmpty()) {
 			List<String> hd_macs = new ArrayList<String>();
+			String[] hd_macs_array = new String[presents.size()];
+			int i =0 ;
 			for(Tuple tuple : presents){
-				hd_macs.add(tuple.getElement());
+				String mac = tuple.getElement();
+				hd_macs.add(mac);
+				hd_macs_array[i] =mac;
+				i++;
 			}
 
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
 			List<String> handsetIds = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
+			List<Object> handsetScores = WifiDeviceVisitorService.getInstance().pipelineAllPresentScores(wifiId, hd_macs_array);
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
 
 			vto.setOhd_count(presents.size());
@@ -1729,11 +1743,28 @@ public class DeviceURouterRestBusinessFacadeService {
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
 				String hostname = handsetIds.get(cursor);
+
 				if (StringUtils.isEmpty(hostname)) {
 					HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 					hostname = handsetDeviceDTO.getDhcp_name();
 				}
 				detailVTO.setN(hostname);
+
+
+				Object score =  handsetScores.get(cursor);
+				if (score!=null) {
+					Long s = Long.parseLong(score.toString());
+					if (s == 0) {
+						detailVTO.setS("online");
+					}
+					if (s == 1) {
+						detailVTO.setS("authoffline");
+					}
+					if (s > 1) {
+						detailVTO.setS("authonline");
+					}
+				}
+
 				vtos.add(detailVTO);
 				cursor++;
 			}
