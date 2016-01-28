@@ -134,7 +134,7 @@ public class URouterVisitorController extends BaseController {
             @RequestParam(required = false, defaultValue="5", value = "ps") int size
     ) {
 
-        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOnline(uid, mac,start, size);
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListAll(uid, mac,start, size);
         if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
