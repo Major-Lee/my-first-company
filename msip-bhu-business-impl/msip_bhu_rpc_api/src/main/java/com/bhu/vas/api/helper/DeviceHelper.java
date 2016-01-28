@@ -688,7 +688,7 @@ public class DeviceHelper {
 	
 	public static final String DeviceSetting_VapModule_Upgrade = "<upgrade><ITEM url = “” retry_count=”” retry_interval=”” /></upgrade>";
 	
-	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
+/*	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
 								"<stat_server>"+
 									"<ITEM enable=\"disable\"/>"+
 								"</stat_server>"+
@@ -704,7 +704,7 @@ public class DeviceHelper {
 							    "<http404>"+
 							        "<ITEM enable=\"disable\"/>"+
 							    "</http404>"+
-							"</bhu_module>";
+							"</bhu_module>";*/
 	
 /*	public static final String DeviceSetting_VapModuleFull_StatSetting = 
 		"<bhu_module>"+
