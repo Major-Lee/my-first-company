@@ -3,6 +3,8 @@ package com.bhu.vas.api.helper;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 public class WifiDeviceDocumentEnumType {
 	
 	public enum OnlineEnum{
@@ -43,6 +45,7 @@ public class WifiDeviceDocumentEnumType {
 		}
 		
 		public static OnlineEnum getOnlineEnumFromType(String type) {
+			if(StringUtils.isEmpty(type)) return null;
 			return allOperationOnline.get(type);
 		}
 	}

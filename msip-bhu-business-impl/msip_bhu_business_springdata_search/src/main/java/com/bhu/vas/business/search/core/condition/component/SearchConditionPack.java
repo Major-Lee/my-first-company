@@ -1,5 +1,6 @@
 package com.bhu.vas.business.search.core.condition.component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.bhu.vas.business.search.core.exception.SearchQueryValidateException;
@@ -60,6 +61,14 @@ public class SearchConditionPack extends SearchConditionLogic implements ICondit
 
 	public void setChildSearchCondtions(List<SearchCondition> childSearchCondtions) {
 		this.childSearchCondtions = childSearchCondtions;
+	}
+	
+	public void addChildSearchCondtions(SearchCondition... conditions){
+		if(conditions == null || conditions.length == 0) return;
+		
+		if(childSearchCondtions == null) 
+			childSearchCondtions = new ArrayList<SearchCondition>();
+		childSearchCondtions.addAll(ArrayHelper.toList(conditions));
 	}
 	
 	public static SearchConditionPack builderSearchConditionPackWithPacks(SearchConditionPack... childPacks){

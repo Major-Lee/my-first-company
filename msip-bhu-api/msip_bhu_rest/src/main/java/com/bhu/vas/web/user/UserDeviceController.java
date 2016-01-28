@@ -6,8 +6,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -130,18 +132,20 @@ public class UserDeviceController extends BaseController {
         }
     }
 
-
     @ResponseBody()
     @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
     public void pageBindedDevice(HttpServletResponse response,
-                               @RequestParam(required = true) int uid,
-                                 @RequestParam(required = true) String  message,
+                               	 @RequestParam(required = true) Integer uid,
+                               	 @RequestParam(required = false) Integer u_id,
+                                 @RequestParam(required = false) String d_online,
+                                 @RequestParam(required = false) String s_content,
                                  @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
                                  ) {
-        TailPage<UserDeviceVTO> rpcResult = userDeviceRpcService.pageBindDevices(uid, message, pageNo, pageSize);
-        System.out.println("ret===" + rpcResult.isEmpty());
+        UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
+        		s_content, pageNo, pageSize);
+//        System.out.println("ret===" + rpcResult.isEmpty());
         if (rpcResult != null) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
         } else {

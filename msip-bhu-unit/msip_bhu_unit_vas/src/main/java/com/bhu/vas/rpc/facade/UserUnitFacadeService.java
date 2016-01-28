@@ -7,12 +7,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -22,6 +23,9 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
+import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -32,6 +36,8 @@ import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
+import com.bhu.vas.business.search.builder.WifiDeviceTCSearchMessageBuilder;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
@@ -605,12 +611,14 @@ public class UserUnitFacadeService {
 	 * @param pageSize
 	 * @return
      */
-	public TailPage<UserDeviceVTO> fetchBindDevicesFromIndex(int uid, String message, int pageNo, int pageSize) {
+	public UserDeviceTCPageVTO fetchBindDevicesFromIndex(Integer uid, Integer u_id, 
+			String d_online, String s_content, int pageNo, int pageSize) {
 
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(message,searchPageNo,pageSize);
+		SearchConditionMessage sm = WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, d_online, s_content);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(sm,searchPageNo,pageSize);
 		//System.out.println("fetchBindDevicesFromIndex === " +  search_result);
-
+		
 		List<UserDeviceVTO> vtos = null;
 		int total = 0;
 		if(search_result != null){
@@ -643,13 +651,48 @@ public class UserUnitFacadeService {
 				}
 			}
 		}
+		TailPage<UserDeviceVTO> pages = new CommonPage<UserDeviceVTO>(pageNo, pageSize, total, vtos);
 
-		TailPage<UserDeviceVTO> returnRet = new CommonPage<UserDeviceVTO>(pageNo, pageSize, total, vtos);
-
-		return returnRet;
+		//获取3种在线状态的数量，在线，离线，全部
+		UserDeviceStatisticsVTO statistics = new UserDeviceStatisticsVTO();
+		OnlineEnum onlineEnum = WifiDeviceDocumentEnumType.OnlineEnum.getOnlineEnumFromType(d_online);
+		//当前搜索条件为全部，则查询在线和离线数量
+		long to = 0l;
+		long on = 0l;
+		long of = 0l;
+		if(onlineEnum == null){
+			to = total;
+			on = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
+					.builderSearchTCMessage(u_id, OnlineEnum.Online.getType(), null));
+			of = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
+					.builderSearchTCMessage(u_id, OnlineEnum.Offline.getType(), null));
+		}
+		//当前搜索条件为在线，则查询全部和离线数量
+		else if(onlineEnum.getType().equals(OnlineEnum.Online.getType())){
+			on = total;
+			to = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
+					.builderSearchTCMessage(u_id, null, null));
+			of = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
+					.builderSearchTCMessage(u_id, OnlineEnum.Offline.getType(), null));
+		}
+		//当前搜索条件为离线，则查询全部和在线数量
+		else if(onlineEnum.getType().equals(OnlineEnum.Offline.getType())){
+			of = total;
+			to = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
+					.builderSearchTCMessage(u_id, null, null));
+			on = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
+					.builderSearchTCMessage(u_id, OnlineEnum.Online.getType(), null));
+		}
+		statistics.setTo(to);
+		statistics.setOn(on);
+		statistics.setOf(of);
+		
+		UserDeviceTCPageVTO vto = new UserDeviceTCPageVTO();
+		vto.setPages(pages);
+		vto.setStatistics(statistics);
+		return vto;
 	}
-
-
+		
 
 	/**
 	 * 通过用户手机号或者指定用户的uid得到其绑定的设备
