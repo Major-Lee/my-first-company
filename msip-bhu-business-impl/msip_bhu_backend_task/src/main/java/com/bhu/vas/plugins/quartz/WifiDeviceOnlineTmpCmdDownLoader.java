@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -31,6 +31,9 @@ public class WifiDeviceOnlineTmpCmdDownLoader {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
 	
 	public void execute() {
 		logger.info("WifiDeviceOnlineTmpCmdDownLoader starting...");
@@ -57,7 +60,8 @@ public class WifiDeviceOnlineTmpCmdDownLoader {
 				for(String mac:next){
 					//logger.info(String.format("id[%s] orig_model[%s] cmd[%s]", device.getId(),device.getOrig_model(),payloads));
 					//downCmds.add(DownCmds.builderDownCmds(mac, CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop)));
-					String cmd = CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstop_fragment.getNextSequence(), DeviceHelper.DeviceSetting_VapModuleFull_Stop);
+					String templated = vasModuleCmdDefinedService.fetchCommonStopTemplate();
+					String cmd = CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstop_fragment.getNextSequence(), templated);
 					boolean ret = daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 					Thread.sleep(50);
 					//System.out.println(ret+"  "+ cmd);

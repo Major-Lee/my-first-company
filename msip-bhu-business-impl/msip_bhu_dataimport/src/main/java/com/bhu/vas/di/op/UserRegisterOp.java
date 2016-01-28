@@ -1,8 +1,11 @@
 package com.bhu.vas.di.op;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -11,6 +14,7 @@ import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 /**
  * @author Edmond Lee
  * ./startupbuilder_bhu_userregister.sh ADD 1 13901076750 bhunetworks 徐冬冬
@@ -55,19 +59,25 @@ import com.smartwork.msip.business.token.UserTokenDTO;
 public class UserRegisterOp {
 	
 	public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
-		if(argv.length <1) return;
+		if(argv.length < 5) return;
 		String oper = argv[0];// ADD REMOVE
 		
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		UserService userService = (UserService)ctx.getBean("userService");
 		UserTokenService userTokenService = (UserTokenService)ctx.getBean("userTokenService");
 		UserFacadeService userFacadeService = (UserFacadeService)ctx.getBean("userFacadeService");
-		if(argv.length < 5) return;
+		
 		int id = Integer.parseInt(argv[1]);
 		String acc = argv[2];
 		String pwd = argv[3];
 		String nick = argv[4];
-		
+		String ut = UserType.Normal.getSname();
+		//int utype = UserType.Normal.getIndex();
+		//UserType userType = UserType.getBySName(ut);
+		if(argv.length > 5){
+			ut = argv[5];
+		}
+		UserType userType = UserType.getBySName(ut);
 		if("ADD".equals(oper)){
 			/*if(argv.length < 5) return;
 			int id = Integer.parseInt(argv[1]);
@@ -92,15 +102,27 @@ public class UserRegisterOp {
 			user.setMobileno(acc);
 			user.setPlainpwd(pwd);
 			user.setRegip("127.0.0.1");
-			user.setNick(nick);
+			if(StringUtils.isNotEmpty(nick)){
+				//判定nick是否已经存在
+				if(UniqueFacadeService.checkNickExist(nick)){
+					System.out.println("选用的nick已经被别人使用了，请换个nick！");
+					return;
+				}else{
+					user.setNick(nick);
+				}
+			}
 			//标记用户注册时使用的设备，缺省为DeviceEnum.Android
 			user.setRegdevice(DeviceEnum.PC.getSname());
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
 			user.setLastlogindevice(DeviceEnum.PC.getSname());
+			user.setUtype(userType.getIndex());
 			user = userService.insert(user);
 			//user.setId(id);
 			System.out.println("uid:"+user.getId());
 			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			if(StringUtils.isNotEmpty(nick)){
+				UniqueFacadeService.uniqueNickRegister(user.getId(), nick);
+			}
 			// token validate code
 			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
@@ -112,24 +134,16 @@ public class UserRegisterOp {
 			userFacadeService.clearUsersMarkByUid(id);
 			userFacadeService.clearUsersMarkByMobileno(86, acc);
 		}else if("RemoveAndADD".equals(oper)){
+			if(StringUtils.isNotEmpty(nick)){
+				//判定nick是否已经存在
+				if(UniqueFacadeService.checkNickExist(nick)){
+					System.out.println("选用的nick已经被别人使用了，请换个nick！");
+					return;
+				}
+			}
 			{//empty user mark from system
 				userFacadeService.clearUsersMarkByUid(id);
 				userFacadeService.clearUsersMarkByMobileno(86, acc);
-				/*userService.deleteById(id);
-				UniqueFacadeService.removeByMobileno(86, acc);
-				List<String> bindedMacs = new ArrayList<String>();
-				List<UserDevice> bindedDevices = userDeviceService.fetchBindDevicesWithLimit(id, 100);
-				if(bindedDevices!= null && !bindedDevices.isEmpty()){
-					for(UserDevice device:bindedDevices){
-						bindedMacs.add(device.getMac());
-					}
-				}
-				if(!bindedMacs.isEmpty()){
-					WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(bindedMacs);
-				}
-				userDeviceService.clearBindedDevices(id);
-				userMobileDeviceService.deleteById(id);
-				userMobileDeviceStateService.deleteById(id);*/
 			}
 			User user = new User();
 			user.setId(id);
@@ -142,17 +156,21 @@ public class UserRegisterOp {
 			user.setRegdevice(DeviceEnum.PC.getSname());
 			//标记用户最后登录设备，缺省为DeviceEnum.PC
 			user.setLastlogindevice(DeviceEnum.PC.getSname());
+			user.setUtype(userType.getIndex());
 			user = userService.insert(user);
 			//user.setId(id);
 			System.out.println("uid:"+user.getId());
 			UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+			if(StringUtils.isNotEmpty(nick)){
+				UniqueFacadeService.uniqueNickRegister(user.getId(), nick);
+			}
 			// token validate code
 			UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
 			}
-			System.out.println(String.format("userReg[id:%s mobileno:%s nick:%s] successfully!", user.getId(),user.getMobileno(),user.getNick()));
+			System.out.println(String.format("RemoveAndADD[id:%s mobileno:%s nick:%s] successfully!", user.getId(),user.getMobileno(),user.getNick()));
 		}
 	}
 }
