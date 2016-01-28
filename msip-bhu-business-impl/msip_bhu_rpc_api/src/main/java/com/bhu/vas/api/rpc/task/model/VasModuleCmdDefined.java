@@ -13,7 +13,7 @@ import com.smartwork.msip.cores.orm.model.BasePKModel;
 @SuppressWarnings("serial")
 public class VasModuleCmdDefined extends BasePKModel<VasModuleCmdPK> {
 
-	public final static VasModuleCmdPK stopCmdPk = new VasModuleCmdPK(OperationDS.DS_Http_VapModuleCMD_Stop.getRef(),"style---");
+	public final static VasModuleCmdPK stopCmdPk = new VasModuleCmdPK(OperationDS.DS_Http_VapModuleCMD_Stop.getRef(), StringHelper.MINUS_STRING_GAP);
 	private String version;
 	private String template;
 	private String memo;
@@ -75,10 +75,10 @@ public class VasModuleCmdDefined extends BasePKModel<VasModuleCmdPK> {
         return VasModuleCmdPK.class;
     }
 
-	public static ModuleStyleVTO BuildEmptyModuleStyleVTO(){
+	public static ModuleStyleVTO BuildStopModuleStyleVTO(){
 		ModuleStyleVTO vto = new ModuleStyleVTO();
-		vto.setDref(OperationDS.DS_Http_VapModuleCMD_Start.getRef());
-		vto.setStyle(StringHelper.MINUS_STRING_GAP);
+		vto.setDref(stopCmdPk.getDref());
+		vto.setStyle(stopCmdPk.getStyle());
 		vto.setVersion(StringHelper.EMPTY_STRING_GAP);
 		vto.setMemo(StringHelper.EMPTY_STRING_GAP);
 		vto.setUpdated_at(StringHelper.EMPTY_STRING_GAP);
