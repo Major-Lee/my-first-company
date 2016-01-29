@@ -7,142 +7,216 @@
 	<settings>
 		<setting name="cacheEnabled" value="false" />
 		<setting name="lazyLoadingEnabled" value="false" />
-  		<setting name="multipleResultSetsEnabled" value="true"/>
-  		<setting name="useColumnLabel" value="true"/>
-  		<setting name="useGeneratedKeys" value="false"/>
-  		<setting name="autoMappingBehavior" value="PARTIAL"/>
-  		<setting name="defaultExecutorType" value="SIMPLE"/>
-  		<setting name="defaultStatementTimeout" value="25000"/>
-  		<setting name="safeRowBoundsEnabled" value="false"/>
-  		<setting name="mapUnderscoreToCamelCase" value="false"/>
-  		<setting name="localCacheScope" value="SESSION"/>
-  		<setting name="jdbcTypeForNull" value="OTHER"/>
-  		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
-  		<setting name="logPrefix" value="mybatisDaoLogger."/> 
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+		<setting name="autoMappingBehavior" value="PARTIAL" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25000" />
+		<setting name="safeRowBoundsEnabled" value="false" />
+		<setting name="mapUnderscoreToCamelCase" value="false" />
+		<setting name="localCacheScope" value="SESSION" />
+		<setting name="jdbcTypeForNull" value="OTHER" />
+		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString" />
+		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-  		<typeAlias alias="sequence" 					type="com.bhu.vas.api.rpc.sequence.model.Sequence"/>
-  		<typeAlias alias="user" 						type="com.bhu.vas.api.rpc.user.model.User"/>
-		<typeAlias alias="userToken" 					type="com.bhu.vas.api.rpc.user.model.UserToken"/>
-		<typeAlias alias="userLoginState" 				type="com.bhu.vas.api.rpc.user.model.UserLoginState"/>
-		<typeAlias alias="userSettingState" 			type="com.bhu.vas.api.rpc.user.model.UserSettingState"/>
-		<typeAlias alias="userCaptchaCode" 				type="com.bhu.vas.api.rpc.user.model.UserCaptchaCode"/>
-		<typeAlias alias="userDevice" 					type="com.bhu.vas.api.rpc.user.model.UserDevice"/>
-		<typeAlias alias="userSearchConditionState" 	type="com.bhu.vas.api.rpc.user.model.UserSearchConditionState"/>
-		<typeAlias alias="userDevicePK" 				type="com.bhu.vas.api.rpc.user.model.pk.UserDevicePK"/>
-		<typeAlias alias="userAccessStatistics" 		type="com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics"/>
-		<typeAlias alias="userBrandStatistics" 			type="com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics"/>
-		<typeAlias alias="userUrlStatistics" 			type="com.bhu.vas.api.rpc.statistics.model.UserUrlStatistics"/>
-		<typeAlias alias="userDatePK" 					type="com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK"/>
-		<typeAlias alias="wifiDeviceStatus" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus"/>
-		<typeAlias alias="wifiDevice" 					type="com.bhu.vas.api.rpc.devices.model.WifiDevice"/>
-		<typeAlias alias="wifiDeviceModule" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceModule"/>
-		<typeAlias alias="wifiDeviceAlarm" 				type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm"/>
-		<typeAlias alias="wifiDeviceSetting" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting"/>
-		
-		<typeAlias alias="wifiDevicePersistenceCMDState" 	type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState"/>
-		<typeAlias alias="wifiDeviceVersionBuilder" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder"/>
-		
-		<typeAlias alias="wifiDeviceGray" 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray"/>
-		<typeAlias alias="wifiDeviceGrayVersionPK" 	type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK"/>
-		<typeAlias alias="wifiDeviceGrayVersion" 	type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion"/>
-		<typeAlias alias="wifiDeviceVersionFW" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW"/>
-		<typeAlias alias="wifiDeviceVersionOM" 		type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM"/>
-		
-		
-		<typeAlias alias="wifiDeviceDownTaskCompleted" 	type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted"/>
-		<typeAlias alias="wifiDeviceDownTask" 			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask"/>
-		
-		<typeAlias alias="vasModuleCmdPK" 				type="com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK"/>
-		<typeAlias alias="vasModuleCmdDefined" 			type="com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined"/>
-		
-		<!--
-		<typeAlias alias="wifiHandsetDeviceMark" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark"/>
-		<typeAlias alias="wifiHandsetDeviceMarkPK" 			type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK"/>
-		  -->
-		<typeAlias alias="userMobileDeviceState" 		type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState"/>
-		<typeAlias alias="userMobileDevice" 			type="com.bhu.vas.api.rpc.user.model.UserMobileDevice"/>
+		<typeAlias alias="sequence"
+			type="com.bhu.vas.api.rpc.sequence.model.Sequence" />
+		<typeAlias alias="user" type="com.bhu.vas.api.rpc.user.model.User" />
+		<typeAlias alias="userToken" type="com.bhu.vas.api.rpc.user.model.UserToken" />
+		<typeAlias alias="userLoginState"
+			type="com.bhu.vas.api.rpc.user.model.UserLoginState" />
+		<typeAlias alias="userSettingState"
+			type="com.bhu.vas.api.rpc.user.model.UserSettingState" />
+		<typeAlias alias="userCaptchaCode"
+			type="com.bhu.vas.api.rpc.user.model.UserCaptchaCode" />
+		<typeAlias alias="userDevice" type="com.bhu.vas.api.rpc.user.model.UserDevice" />
+		<typeAlias alias="userSearchConditionState"
+			type="com.bhu.vas.api.rpc.user.model.UserSearchConditionState" />
+		<typeAlias alias="userDevicePK"
+			type="com.bhu.vas.api.rpc.user.model.pk.UserDevicePK" />
+		<typeAlias alias="userAccessStatistics"
+			type="com.bhu.vas.api.rpc.statistics.model.UserAccessStatistics" />
+		<typeAlias alias="userBrandStatistics"
+			type="com.bhu.vas.api.rpc.statistics.model.UserBrandStatistics" />
+		<typeAlias alias="userUrlStatistics"
+			type="com.bhu.vas.api.rpc.statistics.model.UserUrlStatistics" />
+		<typeAlias alias="userDatePK"
+			type="com.bhu.vas.api.rpc.statistics.model.pk.UserDatePK" />
+		<typeAlias alias="wifiDeviceStatus"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus" />
+		<typeAlias alias="wifiDevice"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDevice" />
+		<typeAlias alias="wifiDeviceModule"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceModule" />
+		<typeAlias alias="wifiDeviceAlarm"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm" />
+		<typeAlias alias="wifiDeviceSetting"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting" />
 
-		<typeAlias alias="wifiDeviceGroup" 				type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup"/>
-		<typeAlias alias="wifiDeviceGroupRelation" 		type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupRelation"/>
-		<typeAlias alias="wifiDeviceGroupRelationPK" 	type="com.bhu.vas.api.rpc.devicegroup.model.pk.WifiDeviceGroupRelationPK"/>
-		<typeAlias alias="wifiDeviceGroupSearchCondition" 	type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition"/>
+		<typeAlias alias="wifiDevicePersistenceCMDState"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState" />
+		<typeAlias alias="wifiDeviceVersionBuilder"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder" />
+
+		<typeAlias alias="wifiDeviceGray"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray" />
+		<typeAlias alias="wifiDeviceGrayVersionPK"
+			type="com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK" />
+		<typeAlias alias="wifiDeviceGrayVersion"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion" />
+		<typeAlias alias="wifiDeviceVersionFW"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionFW" />
+		<typeAlias alias="wifiDeviceVersionOM"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionOM" />
 
 
-		
-		<typeAlias alias="dictMacPrefix" 		type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix"/>
+		<typeAlias alias="wifiDeviceDownTaskCompleted"
+			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted" />
+		<typeAlias alias="wifiDeviceDownTask"
+			type="com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask" />
 
-		<typeAlias alias="agentDeviceClaim"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim"/>
-		<typeAlias alias="agentBulltinBoard"  type="com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard"/>
-		<typeAlias alias="agentDeviceImportLog"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog"/>
-		<typeAlias alias="agentFinancialSettlement"  type="com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement"/>
-		<typeAlias alias="agentBillSettlements"  type="com.bhu.vas.api.rpc.agent.model.AgentBillSettlements"/>
-		<typeAlias alias="agentBillSummaryView"  type="com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView"/>
-		<typeAlias alias="agentDeviceMark"  type="com.bhu.vas.api.rpc.agent.model.AgentDeviceMark"/>
-		
+		<typeAlias alias="vasModuleCmdPK"
+			type="com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK" />
+		<typeAlias alias="vasModuleCmdDefined"
+			type="com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined" />
+
+		<!-- <typeAlias alias="wifiHandsetDeviceMark" type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMark"/> 
+			<typeAlias alias="wifiHandsetDeviceMarkPK" type="com.bhu.vas.api.rpc.devices.model.WifiHandsetDeviceMarkPK"/> -->
+		<typeAlias alias="userMobileDeviceState"
+			type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState" />
+		<typeAlias alias="userMobileDevice"
+			type="com.bhu.vas.api.rpc.user.model.UserMobileDevice" />
+
+		<typeAlias alias="WifiDeviceBackendTask"
+			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask" />
+		<typeAlias alias="wifiDeviceGroup"
+			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup" />
+		<typeAlias alias="wifiDeviceGroupRelation"
+			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupRelation" />
+		<typeAlias alias="wifiDeviceGroupRelationPK"
+			type="com.bhu.vas.api.rpc.devicegroup.model.pk.WifiDeviceGroupRelationPK" />
+		<typeAlias alias="wifiDeviceGroupSearchCondition"
+			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition" />
+
+
+
+		<typeAlias alias="dictMacPrefix"
+			type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix" />
+
+		<typeAlias alias="agentDeviceClaim"
+			type="com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim" />
+		<typeAlias alias="agentBulltinBoard"
+			type="com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard" />
+		<typeAlias alias="agentDeviceImportLog"
+			type="com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog" />
+		<typeAlias alias="agentFinancialSettlement"
+			type="com.bhu.vas.api.rpc.agent.model.AgentFinancialSettlement" />
+		<typeAlias alias="agentBillSettlements"
+			type="com.bhu.vas.api.rpc.agent.model.AgentBillSettlements" />
+		<typeAlias alias="agentBillSummaryView"
+			type="com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView" />
+		<typeAlias alias="agentDeviceMark"
+			type="com.bhu.vas.api.rpc.agent.model.AgentDeviceMark" />
+
 	</typeAliases>
-	
-	<!-- 
-	<plugins>
-        <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin">
-                <property name="shardingConfig" value="myibatis/shard_ucenter_config.xml"/>
-        </plugin>
-	</plugins>
-	 -->
-	
+
+	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
+		<property name="shardingConfig" value="myibatis/shard_ucenter_config.xml"/> 
+		</plugin> </plugins> -->
+
 	<mappers>
-		 
-		<mapper resource="com/bhu/vas/api/rpc/sequence/model/sqlMapper/Sequence.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/User.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserToken.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserLoginState.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserCaptchaCode.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserDevice.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserDevice.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSearchConditionState.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserAccessStatistics.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserBrandStatistics.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserUrlStatistics.sqlMap.xml"/>
-		
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceModule.sqlMap.xml"/>
 
-		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTaskCompleted.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/task/model/sqlMapper/VasModuleCmdDefined.sqlMap.xml"/>
-		
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceAlarm.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml"/>
-		
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGray.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGrayVersion.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionFW.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionOM.sqlMap.xml"/>
-		
-		<!--
-		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiHandsetDeviceMark.sqlMap.xml"/>
-		-->
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDeviceState.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDevice.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSettingState.sqlMap.xml"/>
-		
-		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroup.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupSearchCondition.sqlMap.xml"/>
-		
+		<mapper
+			resource="com/bhu/vas/api/rpc/sequence/model/sqlMapper/Sequence.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/User.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserToken.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserLoginState.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserCaptchaCode.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserDevice.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserDevice.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSearchConditionState.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserAccessStatistics.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserBrandStatistics.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserUrlStatistics.sqlMap.xml" />
+
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceModule.sqlMap.xml" />
+
+		<mapper
+			resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTaskCompleted.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/task/model/sqlMapper/WifiDeviceDownTask.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/task/model/sqlMapper/VasModuleCmdDefined.sqlMap.xml" />
+
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceAlarm.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml" />
+
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGray.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGrayVersion.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionFW.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionOM.sqlMap.xml" />
+
+		<!-- <mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiHandsetDeviceMark.sqlMap.xml"/> -->
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDeviceState.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDevice.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSettingState.sqlMap.xml" />
+
+		<mapper
+			resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceBackendTask.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroup.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupRelation.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceGroupSearchCondition.sqlMap.xml" />
+
 		<!-- Dict defined Area -->
-		<mapper resource="com/bhu/vas/api/rpc/dict/model/sqlMapper/DictMacPrefix.sqlMap.xml"/>
+		<mapper
+			resource="com/bhu/vas/api/rpc/dict/model/sqlMapper/DictMacPrefix.sqlMap.xml" />
 
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceClaim.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBulltinBoard.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceImportLog.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentFinancialSettlement.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSettlements.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSummaryView.sqlMap.xml"/>
-		<mapper resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceMark.sqlMap.xml"/>
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceClaim.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBulltinBoard.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceImportLog.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentFinancialSettlement.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSettlements.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSummaryView.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceMark.sqlMap.xml" />
 	</mappers>
-	
+
 </configuration>

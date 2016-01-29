@@ -405,6 +405,7 @@ public class DeviceBusinessFacadeService {
 			handsetDeviceOnline(ctx, fristDto, parserHeader.getMac());
 		}
 		else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+			System.out.println("acition offline ====");
 			handsetDeviceOffline(ctx, fristDto, parserHeader.getMac());
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
@@ -474,6 +475,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	private void handsetDeviceVisitorOffline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 		String wifiId_lowerCase = wifiId.toLowerCase();
+//		System.out.println("handsetDeviceVisitorOffline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
 		} else {
@@ -498,7 +500,7 @@ public class DeviceBusinessFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 
 		String wifiId_lowerCase = wifiId.toLowerCase();
-		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
+//		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 
@@ -608,6 +610,7 @@ public class DeviceBusinessFacadeService {
 	 * modified by Edmond Lee for handset storage
 	 */
 	private void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto, String wifiId){
+//		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline" + wifiId);
 		if(dto == null) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
@@ -617,16 +620,19 @@ public class DeviceBusinessFacadeService {
 		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新移动设备的online状态为false
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
+//		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
-			dto.setVapname(handset.getVapname());
+			//dto.setVapname(handset.getVapname());
 			dto.setIp(handset.getIp());
 			dto.setDhcp_name(handset.getDhcp_name());
 			dto.setData_tx_rate(handset.getData_tx_rate());
 			dto.setData_rx_rate(handset.getData_rx_rate());
 		}
 		HandsetStorageFacadeService.handsetComming(dto);
+//		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 1" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121
 		HandsetStorageFacadeService.wifiDeviceHandsetOffline(lowercase_mac, lowercase_d_mac, dto.getTx_bytes(), dto.getTs());
+//		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 2" + JsonHelper.getJSONString(dto)  + "===" + isVisitorWifi(ctx, dto));
 		if(isVisitorWifi(ctx, dto)) { //访客网络
 			handsetDeviceVisitorOffline(ctx, dto, wifiId);
 		} else {

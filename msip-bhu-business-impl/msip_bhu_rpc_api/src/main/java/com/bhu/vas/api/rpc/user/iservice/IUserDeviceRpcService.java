@@ -28,7 +28,10 @@ public interface IUserDeviceRpcService {
 
     RpcResponseDTO<Boolean> unBindDevice(String mac, int uid);
 
+    @Deprecated
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);
+
+    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut);
 
 
     public UserDeviceTCPageVTO pageBindDevices(Integer uid, Integer u_id, 

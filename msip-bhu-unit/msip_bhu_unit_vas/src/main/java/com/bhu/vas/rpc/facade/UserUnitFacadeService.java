@@ -497,11 +497,7 @@ public class UserUnitFacadeService {
 	
 	/**
 	 * 更新用户信息接口
-	 * @param countrycode
 	 * @param nick 需要进行唯一性验证
-	 * @param device
-	 * @param remoteIp
-	 * @param captcha
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org) {
@@ -604,9 +600,42 @@ public class UserUnitFacadeService {
 
 
 	/**
-	 * 通过搜索引擎获取用户绑定的设备
+	 * 获取用户绑定的设备，设备状态只有在线和不在线
 	 * @param uid
 	 * @param dut
+	 * @return
+	 */
+	public List<UserDeviceDTO>  fetchBindDevices(int uid, String dut) {
+
+		List<UserDeviceDTO> dtos = new ArrayList<UserDeviceDTO>();
+		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut);
+
+		if (searchDocuments != null && !searchDocuments.isEmpty()) {
+			for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
+				UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+				userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
+				userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
+				userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
+				WifiDevice wifiDevice = wifiDeviceService.getById(wifiDeviceDocument.getD_mac());
+				if (wifiDevice != null) {
+					userDeviceDTO.setOnline(wifiDevice.isOnline());
+					if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
+						userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								.presentOnlineSize(wifiDeviceDocument.getD_mac()));
+					}
+					userDeviceDTO.setVer(wifiDevice.getOrig_swver());
+				}
+				dtos.add(userDeviceDTO);
+			}
+		}
+
+		return dtos;
+	}
+
+
+	/**
+	 * 通过搜索引擎获取用户绑定的设备
+	 * @param uid
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
