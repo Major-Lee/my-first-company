@@ -20,6 +20,7 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	public static final String State_Failed = "failed";//任务失败
 	public static final String State_Completed = "completed";//任务已经完成
 	
+	
 	//此后台对于的群组id
 	private long gid;
 	//此任务创建人
@@ -28,7 +29,7 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	private long total;
 	//当前执行到多少条，执行过程中进行更新，每千次更新一次
 	private long current;
-	
+	 
 	//任务状态
 	private String state = State_Pending;
 	//任务类型 OperationCMD no
@@ -38,7 +39,7 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	//上下文变量，用于存储页面表单中的extparams内容 在有些指令下发后可能会，收到消息后可能会触发别的指令需要用到此数据
 	private String context_var;
 	//任务描述
-	private String desc;
+	private String description;
 	private Date started_at;
 	private Date completed_at;
 	private Date created_at;
@@ -65,12 +66,12 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 		this.gid = gid;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getState() {

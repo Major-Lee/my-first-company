@@ -288,6 +288,7 @@ public class UserServiceTest extends BaseTest{
 		mc.setPageNumber(1);
 		mc.setPageSize(10);
 		Page<User> users = this.userService.findModelPageByModelCriteria(mc);
+		System.out.println("123123123``````````");
 		System.out.println(users.getItems().size());
 		System.out.println(users.isFirstPage());
 		System.out.println(users.isLastPage());
