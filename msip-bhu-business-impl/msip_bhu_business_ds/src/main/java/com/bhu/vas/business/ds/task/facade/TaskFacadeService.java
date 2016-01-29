@@ -541,12 +541,15 @@ public class TaskFacadeService {
 						{
 							ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
 							vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
 							UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
 							vistorwifi.setOn(true);
 							vistorwifi.setDs(false);
+							//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
+							vistor_dto.setBlock_mode(null);
 							vistorwifi.setVw(vistor_dto);
 							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
+							
 						}
 						break;
 					case DS_VistorWifi_Stop:
