@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
  */
 public enum PushType {
 	
-	HandsetDeviceOnline("HDO", "%s终端上线", "%s %s %s %s终端上线", "%s", "%s %s %s %s"),//终端上线
+	HandsetDeviceOnline("HDO", "%s上线", "%s %s %s %s上线", "%s", "%s %s %s %s"),//终端上线
 	HandsetDeviceVisitorAuthorizeOnline("HDVO", "%s访客上线", "%s %s %s %s访客上线", "%s", "%s %s %s %s"), //访客网络认证
 	HandsetDeviceWSOnline("HDWSO", "周边探测%s", "%s在附近出现", null, null),//终端探测上线
 	WifiDeviceReboot("WDR", null, null, null, null),//设备重启成功后
