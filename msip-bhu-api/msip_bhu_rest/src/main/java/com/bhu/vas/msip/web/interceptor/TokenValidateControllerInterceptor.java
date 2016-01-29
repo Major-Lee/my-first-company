@@ -103,8 +103,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			HttpServletResponse response, Object handler) throws Exception {
 		String uri = request.getServletPath();
 		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
-		logger.info(String.format("Req uri[%s] URL[%s] uid [%s]",uri, request.getRequestURI(), UID));
 		if(uriStartWithThenSkip(uri)){
+			logger.info(String.format("Req uri[%s] URL[%s] uid [%s]",uri, request.getRequestURI(), UID));
 			return true;
 		}
 		String method = request.getMethod();
@@ -135,7 +135,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}*/
 		}
-		
+		logger.info(String.format("Req uri[%s] URL[%s] uid [%s] token[%s] udid[%s] ",uri, request.getRequestURI(), UID,accessToken,udid));
 		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken,udid);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
