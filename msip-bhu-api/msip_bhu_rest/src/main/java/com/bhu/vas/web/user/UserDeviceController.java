@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -123,8 +124,9 @@ public class UserDeviceController extends BaseController {
     @ResponseBody()
     @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
     public void listBindDevice(HttpServletResponse response,
-                               @RequestParam(required = true, value = "uid") int uid) {
-        RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid);
+                               @RequestParam(required = true, value = "uid") int uid,
+                               @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut) {
+        RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid, dut);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
