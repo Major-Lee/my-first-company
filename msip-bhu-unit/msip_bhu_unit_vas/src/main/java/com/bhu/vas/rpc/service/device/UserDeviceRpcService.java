@@ -108,6 +108,12 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
 
     @Override
+    public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut) {
+        logger.info(String.format("fetchBindDevices with uid[%s] dut[%s]", uid, dut));
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid, dut));
+    }
+
+    @Override
     public UserDeviceTCPageVTO pageBindDevices(Integer uid, Integer u_id, 
 			String d_online, String s_content, int pageNo, int pageSize) {
         logger.info(String.format("pageBindDevices with uid[%s] u_id[%s] d_online[%s] s_content[%s] pageNo[%s] pageSize[%s]", 
