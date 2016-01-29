@@ -10,4 +10,5 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
  */
 @Repository
 public class WifiDeviceGroupSearchConditionDao extends AbstractCoreDao<Long, WifiDeviceGroupSearchCondition> {
+
 }

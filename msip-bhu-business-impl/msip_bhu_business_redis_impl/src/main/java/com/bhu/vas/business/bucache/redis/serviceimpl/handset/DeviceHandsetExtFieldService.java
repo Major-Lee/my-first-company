@@ -41,7 +41,12 @@ public class DeviceHandsetExtFieldService extends AbstractRelationHashCache {
 	}
 	private static final String Field_TRB = "trb";
 	public long increaseTrb(String dmac,String hmac,long trb){
-		return this.hincrby(generateKey(dmac,hmac), Field_TRB, trb);
+		try{
+			return this.hincrby(generateKey(dmac,hmac), Field_TRB, trb);
+		}catch(Exception ex){
+			return 0l;
+		}
+		
 	}
 	
 	public long trb(String dmac,String hmac){

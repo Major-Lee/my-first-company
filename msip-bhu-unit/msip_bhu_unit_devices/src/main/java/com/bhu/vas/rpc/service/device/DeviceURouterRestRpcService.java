@@ -301,20 +301,20 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	@Override
 	public RpcResponseDTO<Boolean> urouterUserMobileDeviceDestory(Integer uid,
 			String d, String dt) {
-		logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister invoke uid [%s] d [%s] dt [%s]", 
+		logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceDestory invoke uid [%s] d [%s] dt [%s]", 
 				uid, d, dt));
 		
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterUserMobileDeviceDestory(uid, d, dt);
 		}
 		catch(BusinessI18nCodeException ex){
-			logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister failed uid [%s] d [%s] dt [%s]",
+			logger.info(String.format("DeviceURouterRestRPC urouterUserMobileDeviceDestory failed uid [%s] d [%s] dt [%s]",
 					uid, d, dt));
 			throw ex;
 		}
 		catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceURouterRestRPC urouterUserMobileDeviceRegister exception uid [%s] d [%s] dt [%s] exmsg[%s]",
+			logger.error(String.format("DeviceURouterRestRPC urouterUserMobileDeviceDestory exception uid [%s] d [%s] dt [%s] exmsg[%s]",
 					uid, d, dt, ex.getMessage()), ex);
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}

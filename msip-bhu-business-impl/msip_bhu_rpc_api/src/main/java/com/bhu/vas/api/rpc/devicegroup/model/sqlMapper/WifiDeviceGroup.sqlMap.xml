@@ -13,8 +13,8 @@
     <result property="creator" column="creator"/>
     <result property="updator" column="updator"/>
     
-    <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
+    <result property="created_at" column="created_at"/>
   </resultMap>
   
   	<sql id="modelTableName">
