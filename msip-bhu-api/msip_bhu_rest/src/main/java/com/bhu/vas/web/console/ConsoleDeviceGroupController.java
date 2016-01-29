@@ -166,6 +166,7 @@ public class ConsoleDeviceGroupController extends BaseController{
             @RequestParam(required = true, defaultValue = "All") String state,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+		
     }
 	
 	/**
@@ -192,7 +193,8 @@ public class ConsoleDeviceGroupController extends BaseController{
 			@RequestParam(required = false) String extparams,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    }
+		
+	}
 	
 	
 	/**

@@ -43,7 +43,7 @@ public class WifiDevcieBackendTaskThread implements Runnable{
 			
 			for(int i=1; i<=taskTotal;i++){
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					
 				}
