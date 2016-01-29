@@ -148,6 +148,53 @@ public class ConsoleDeviceGroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
 	
+	
+	/**
+	 * 分页查询现有任务状态
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+    @RequestMapping(value = "/fetch_backendtask", method = {RequestMethod.POST})
+    public void fetch_backendtask(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true, defaultValue = "All") String state,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+    }
+	
+	/**
+	 * 生成后台群组任务
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param gid
+	 * @param opt
+	 * @param subopt
+	 * @param extparams
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+    @RequestMapping(value = "/generate_backendtask", method = {RequestMethod.POST})
+    public void generate_backendtask(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) long gid,
+			@RequestParam(required = true) String opt,
+			@RequestParam(required = false, defaultValue="00") String subopt,
+			@RequestParam(required = false) String extparams,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+    }
+	
+	
 	/**
 	 * 给指定的群组分配wifi设备
 	 * @param request
