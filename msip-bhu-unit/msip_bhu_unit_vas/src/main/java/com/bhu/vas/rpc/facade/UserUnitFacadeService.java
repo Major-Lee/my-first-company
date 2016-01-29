@@ -497,11 +497,7 @@ public class UserUnitFacadeService {
 	
 	/**
 	 * 更新用户信息接口
-	 * @param countrycode
 	 * @param nick 需要进行唯一性验证
-	 * @param device
-	 * @param remoteIp
-	 * @param captcha
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org) {
@@ -618,7 +614,7 @@ public class UserUnitFacadeService {
 			for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
 				UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 				userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
-				userDeviceDTO.setUid(wifiDeviceDocument.getU_id().);
+				userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
 				userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
 				WifiDevice wifiDevice = wifiDeviceService.getById(wifiDeviceDocument.getD_mac());
 				if (wifiDevice != null) {
@@ -633,8 +629,6 @@ public class UserUnitFacadeService {
 			}
 		}
 
-
-
 		return dtos;
 	}
 
@@ -642,7 +636,6 @@ public class UserUnitFacadeService {
 	/**
 	 * 通过搜索引擎获取用户绑定的设备
 	 * @param uid
-	 * @param dut
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
