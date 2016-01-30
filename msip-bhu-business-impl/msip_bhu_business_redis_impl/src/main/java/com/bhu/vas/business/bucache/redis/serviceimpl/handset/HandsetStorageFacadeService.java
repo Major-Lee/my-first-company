@@ -156,6 +156,13 @@ public class HandsetStorageFacadeService{
     	wifiDeviceHandsetOffline(dmac,hmac,rb,logout_at);
     }
     
+    public static void wifiDeviceHandsetsOffline(final String dmac, final List<String> hmacs, final long logout_at) {
+    	if(hmacs == null || hmacs.isEmpty()) return;
+    	for(String hmac:hmacs){
+    		wifiDeviceHandsetOffline(dmac,hmac,0l,logout_at);
+    	}
+    	
+    }
     
     public static List<HandsetLogDTO> wifiDeviceHandsetRecentLogs(String dmac, String hmac,int size){
     	return DeviceHandsetLogService.getInstance().fetchRecentHandsetLogs(dmac, hmac, size);

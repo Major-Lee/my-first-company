@@ -128,6 +128,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @return  在线设备
 	 */
 	public List<HandsetDeviceDTO> allHandsetDoOfflines(String wifiId){
+		long current = System.currentTimeMillis();
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
@@ -141,6 +142,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
 			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
+			//修改为redis实现终端上下线日志 2015-12-11
+			HandsetStorageFacadeService.wifiDeviceHandsetsOffline(wifiId, onlinePresents, current);
 			//清除设备在线终端列表
 			WifiDeviceHandsetPresentSortedSetService.getInstance().changeOnlinePresentsToOffline(wifiId);
 			return handsets;
