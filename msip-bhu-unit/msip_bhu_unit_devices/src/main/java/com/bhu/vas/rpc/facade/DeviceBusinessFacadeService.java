@@ -405,7 +405,7 @@ public class DeviceBusinessFacadeService {
 			handsetDeviceOnline(ctx, fristDto, parserHeader.getMac());
 		}
 		else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-			System.out.println("acition offline ====");
+			//System.out.println("acition offline ====");
 			handsetDeviceOffline(ctx, fristDto, parserHeader.getMac());
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
@@ -477,7 +477,13 @@ public class DeviceBusinessFacadeService {
 		String wifiId_lowerCase = wifiId.toLowerCase();
 //		System.out.println("handsetDeviceVisitorOffline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
-			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
+
+			if (WifiDeviceVisitorService.getInstance().isOnlinePresent(wifiId_lowerCase, dto.getMac())) {
+				WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+			} else {
+				WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
+			}
+
 		} else {
 			WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
 		}
@@ -503,12 +509,9 @@ public class DeviceBusinessFacadeService {
 //		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 
-			if (WifiDeviceVisitorService.getInstance().isOnlinePresent(wifiId_lowerCase, dto.getMac())) {
-				WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 
-				deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
-			}
-
+			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+			deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
 
 		} else { //踢掉
 			//WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());

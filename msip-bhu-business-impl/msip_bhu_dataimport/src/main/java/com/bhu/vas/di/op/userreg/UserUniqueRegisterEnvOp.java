@@ -3,8 +3,7 @@ package com.bhu.vas.di.op.userreg;
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -23,7 +22,10 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class UserUniqueRegisterEnvOp {
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:/com/whisper/di/business/dataimport/dataImportCtx.xml");
+		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
+		ctx.start();
+		//ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		UserService userService = (UserService)ctx.getBean("userService");
 
 		ModelCriteria mc = new ModelCriteria();
@@ -42,6 +44,8 @@ public class UserUniqueRegisterEnvOp {
 			}
 		}
 		System.out.println("数据增量导入，共耗时"+((System.currentTimeMillis()-t0)/1000)+"s");
+		ctx.stop();
+		ctx.close();
 		System.exit(1);
 	}
 }

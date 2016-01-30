@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.elasticsearch.ElasticsearchException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * 销毁用户数据
  * 1：删除用户的设备device绑定信息数据
@@ -55,7 +54,9 @@ public class UserDestoryOp {
 	
 	public static void main(String[] argv) throws ElasticsearchException, IOException{
 		
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:/com/whisper/di/business/dataimport/dataImportCtx.xml");
+		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
+		ctx.start();
 
 /*		userService = (UserService)ctx.getBean("userService");
 		userIndexService = (UserIndexService)ctx.getBean("userIndexService");
@@ -75,7 +76,8 @@ public class UserDestoryOp {
 		System.out.println("用户数据销毁执行完毕，总耗时"+((System.currentTimeMillis()-t0)/1000)+"s 共处理用户的数量:" +  success_count);
 		
 		//printStepStrings();
-		
+		ctx.stop();
+		ctx.close();
 		System.exit(1);
 	}
 	
