@@ -39,6 +39,14 @@ public class UserDeviceController extends BaseController {
     @Resource
     private IUserDeviceRpcService userDeviceRpcService;
 
+
+    /**
+     * 用户绑定设备
+     * @param response
+     * @param mac
+     * @param uid
+     * @throws Exception
+     */
     @ResponseBody()
     @RequestMapping(value="/bind",method={RequestMethod.POST})
     public void bindDevice(HttpServletResponse response,
@@ -121,6 +129,13 @@ public class UserDeviceController extends BaseController {
         //SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
     }
 
+
+    /**
+     * 获取用户绑定列表,默认为urouter
+     * @param response
+     * @param uid
+     * @param dut
+     */
     @ResponseBody()
     @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
     public void listBindDevice(HttpServletResponse response,
@@ -134,6 +149,17 @@ public class UserDeviceController extends BaseController {
         }
     }
 
+
+    /**
+     * 新增云平台接口
+     * @param response
+     * @param uid
+     * @param u_id
+     * @param d_online
+     * @param s_content
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
     public void pageBindedDevice(HttpServletResponse response,
@@ -156,8 +182,15 @@ public class UserDeviceController extends BaseController {
     }
 
 
-
-
+    /**
+     * 修改设备昵称
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param deviceName
+     * @throws Exception
+     */
     @ResponseBody()
     @RequestMapping(value="/modify/device_name",method={RequestMethod.POST})
     public void modifyDeviceName(HttpServletRequest request,

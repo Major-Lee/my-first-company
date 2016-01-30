@@ -104,6 +104,19 @@ public class WifiDeviceVisitorService extends AbstractRelationSortedSetCache {
         return super.zrem(generateKey(wifiId), handsetId);
     }
 
+
+    /**
+     * 如果存在列表中,表示当前终端在线或者在已经认证,否则表示终端已经完全下线,不在认证期间.
+     * @param wifiId
+     * @param handsetId
+     * @return
+     */
+    public boolean isOnlinePresent(String wifiId, String handsetId) {
+        return super.zscore(generateKey(wifiId), handsetId) != null;
+    }
+
+
+
     public long clearPresent(String wifiId) {
         return super.del(generateKey(wifiId));
     }

@@ -20,7 +20,6 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	public static final String State_Failed = "failed";//任务失败
 	public static final String State_Completed = "completed";//任务已经完成
 	
-	
 	//此后台对于的群组id
 	private long gid;
 	//此任务创建人
