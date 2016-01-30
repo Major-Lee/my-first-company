@@ -880,8 +880,8 @@ public class DeviceBusinessFacadeService {
 						WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId,
 								terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
 					}
-					//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 暂时移除 频繁
-					//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
+					//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
+					HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
 					cursor++;
 				}
 				HandsetStorageFacadeService.handsetsComming(handsets);
