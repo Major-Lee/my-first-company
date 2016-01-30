@@ -502,9 +502,14 @@ public class DeviceBusinessFacadeService {
 		String wifiId_lowerCase = wifiId.toLowerCase();
 //		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
-			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
 
-			deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
+			if (WifiDeviceVisitorService.getInstance().isOnlinePresent(wifiId_lowerCase, dto.getMac())) {
+				WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+
+				deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
+			}
+
+
 		} else { //踢掉
 			//WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
 			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
