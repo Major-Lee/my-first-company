@@ -2,8 +2,7 @@ package com.bhu.vas.di.op.userreg;
 
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -34,7 +33,9 @@ public class UserRegTokenInvalidOp {
 			return;
 		}
 		
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:/com/whisper/di/business/dataimport/dataImportCtx.xml");
+		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
+		ctx.start();
 		//UserService userService = (UserService)ctx.getBean("userService");
 		UserTokenService userTokenService = (UserTokenService)ctx.getBean("userTokenService");
 		
@@ -66,7 +67,8 @@ public class UserRegTokenInvalidOp {
 				System.out.println(String.format("uid[%s] redis and db clear!",uid));
 			}
 		}
-		
+		ctx.stop();
+		ctx.close();
 	}
 
 }

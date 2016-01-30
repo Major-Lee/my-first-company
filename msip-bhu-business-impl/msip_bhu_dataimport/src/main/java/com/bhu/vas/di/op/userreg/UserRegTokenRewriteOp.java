@@ -3,6 +3,7 @@ package com.bhu.vas.di.op.userreg;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.user.model.UserToken;
@@ -21,7 +22,9 @@ public class UserRegTokenRewriteOp {
 	
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:/com/whisper/di/business/dataimport/dataImportCtx.xml");
+		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
+		ctx.start();
 		//UserService userService = (UserService)ctx.getBean("userService");
 		UserTokenService userTokenService = (UserTokenService)ctx.getBean("userTokenService");
 		

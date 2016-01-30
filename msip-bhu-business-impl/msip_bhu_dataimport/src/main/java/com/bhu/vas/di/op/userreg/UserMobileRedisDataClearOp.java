@@ -2,8 +2,7 @@ package com.bhu.vas.di.op.userreg;
 
 import java.util.Set;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.impl.mobleno.UniqueMobilenoHashService;
@@ -17,7 +16,9 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.impl.mobleno.Unique
  */
 public class UserMobileRedisDataClearOp {
 	public static void main(String[] argv){
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:/com/whisper/di/business/dataimport/dataImportCtx.xml");
+		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
+		ctx.start();
 		
 		//UserService userService = (UserService)ctx.getBean("userService");
 
@@ -41,5 +42,7 @@ public class UserMobileRedisDataClearOp {
 				}
 			}*/
 		}
+		ctx.stop();
+		ctx.close();
 	}
 }
