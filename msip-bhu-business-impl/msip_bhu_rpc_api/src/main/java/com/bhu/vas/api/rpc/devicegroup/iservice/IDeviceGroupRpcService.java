@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.devicegroup.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
+import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -15,7 +16,13 @@ public interface IDeviceGroupRpcService {
 	RpcResponseDTO<DeviceGroupDetailVTO> deviceGroupDetail(Integer uid, long gid);
 
 	RpcResponseDTO<Boolean> deviceGroupCleanUpByIds(Integer uid, String gids);
+	
 	RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(Integer assignor,Long gid, String message, String desc);
+
+	RpcResponseDTO<TailPage<BackendTaskVTO>> fetch_backendtask(int uid , String state, int pageNo, int pageSize);
+
+	RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt, String subopt, String extparams);
+
 	
 	/*RpcResponseDTO<Boolean> grant(Integer uid, long gid,String wifi_ids);
 	

@@ -10,10 +10,14 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
 import com.smartwork.msip.localunit.RandomPicker;
@@ -37,6 +41,8 @@ public class UserService1Test extends BaseTest{
 	int batch_create_size = 10;
 	@Resource
 	UserService userService;
+	@Resource
+	WifiDeviceBackendTaskService wifiDeviceBackendTaskService
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	@SuppressWarnings("unused")
 	private static Set<Integer> key_gen = new HashSet<Integer>();
@@ -91,4 +97,5 @@ public class UserService1Test extends BaseTest{
 //	public void testDelete(){
 //    	userService.deleteAndCount();
 //    }
+	
 }

@@ -15,11 +15,10 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WifiDeviceBackendTaskTest extends BaseTest {
 	@Resource
 	WifiDeviceBackendTaskService wifiDeviceBackendTaskService;
-
+	
 	//@Test
 	public void test001() throws Exception {
 		WifiDeviceBackendTask bean = new WifiDeviceBackendTask();
@@ -62,24 +61,29 @@ public class WifiDeviceBackendTaskTest extends BaseTest {
 		System.out.println("更新成功");
 	}
 
-	//@Test
+	@Test
 	public void test005() {
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse("gid=0001");
+		mc.createCriteria().andColumnEqualTo("state", "completed");
 		List<WifiDeviceBackendTask> result = wifiDeviceBackendTaskService.findModelByModelCriteria(mc);
-		if (result.get(0).getCurrent()%1000==0) {
-			System.out.println(result.get(0).getState());
-		}else{
-			System.out.println("not ready...");
-		}
+		System.out.println(result.get(0).getId());
+		System.out.println(result.size());
+		System.out.println("success~~~");
 	}
-	@Test
+	//@Test
 	public void test006(){
 		Long id = 10003L;
 		WifiDeviceBackendTask bean = wifiDeviceBackendTaskService.getById(id);
 		System.out.println(bean.getCurrent());
 	}
-
 	
+	//@Test
+	public void test007() {
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse("1=1");
+		System.out.println("ready");
+		List<WifiDeviceBackendTask> result = wifiDeviceBackendTaskService.findModelByModelCriteria(mc);
+		System.out.println(result.size());
+	}
 	
 }

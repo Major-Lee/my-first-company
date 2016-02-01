@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
+import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
@@ -86,7 +87,7 @@ public class DeviceGroupUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+		
 	public RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(Integer assignor,Long gid, String message, String desc){
 		try{
 			wifiDeviceGroupFacadeService.assignUserSearchCondition4DeviceGroup(assignor, gid, message, desc);
@@ -118,6 +119,49 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);*/
 	}
+	/**
+	 * 后台生成群组任务
+	 * @param uid
+	 * @param gid
+	 * @param opt
+	 * @param subopt
+	 * @param extparams
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt, String subopt, String extparams) {
+		try{
+			wifiDeviceGroupFacadeService.generateBackendTask(uid,gid,opt,subopt,extparams);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	/**
+	 * 分页查询现有任务
+	 * @param uid
+	 * @param state
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<BackendTaskVTO>> fetch_backendtask(int uid, String state, int pageNo, int pageSize) {
+		try{
+			TailPage<BackendTaskVTO> backEndTask = wifiDeviceGroupFacadeService.fetch_backendtask(uid,state,pageNo,pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(backEndTask);
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	/*public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -171,6 +215,9 @@ public class DeviceGroupUnitFacadeRpcService{
 
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}*/
+
+
+
 
 //	private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup){
 //		DeviceGroupVTO vto = new DeviceGroupVTO();

@@ -28,11 +28,14 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
 	@JsonInclude(Include.NON_NULL)
 	private String block_mode;
+	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
+	@JsonInclude(Include.NON_NULL)
+	private String complete_isolate_ports;
 	private String ssid;
 	
 	
 	public Object[] builderProperties() {
-		Object[] properties = new Object[9];
+		Object[] properties = new Object[10];
 		properties[0] = users_tx_rate * 8;
 		properties[1] = users_rx_rate * 8;
 		properties[2] = signal_limit;
@@ -41,7 +44,8 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		properties[5] = force_timeout;
 		properties[6] = open_resource;
 		properties[7] = block_mode;
-		properties[8] = ssid;
+		properties[8] = complete_isolate_ports;
+		properties[9] = ssid;
 		return properties;
 	}
 
@@ -121,9 +125,11 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		switch(switchAct){
 			case WifiDeviceHelper.SwitchMode_Router2Bridge_Act:
 				this.block_mode = WifiDeviceHelper.Default_BlockMode_Bridge;
+				this.complete_isolate_ports = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
 			break;
 			case WifiDeviceHelper.SwitchMode_Bridge2Router_Act:
 				this.block_mode = WifiDeviceHelper.Default_BlockMode_Router;
+				this.complete_isolate_ports = WifiDeviceHelper.Default_CompleteIsolatePorts_Router;
 				break;
 			default:
 				break;

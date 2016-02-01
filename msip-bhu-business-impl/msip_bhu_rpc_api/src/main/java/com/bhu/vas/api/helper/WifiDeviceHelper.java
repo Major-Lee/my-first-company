@@ -45,6 +45,8 @@ public class WifiDeviceHelper {
 	public final static String WorkMode_Bridge = "bridge-ap";
 	public final static String Default_BlockMode_Router = "route";
 	public final static String Default_BlockMode_Bridge = "bridge";
+	public final static String Default_CompleteIsolatePorts_Router = "wlan3";
+	public final static String Default_CompleteIsolatePorts_Bridge = "";
 	public final static int SwitchMode_NoAction = -1;
 	public final static int SwitchMode_Router2Bridge_Act = 1;
 	public final static int SwitchMode_Bridge2Router_Act = 0;
