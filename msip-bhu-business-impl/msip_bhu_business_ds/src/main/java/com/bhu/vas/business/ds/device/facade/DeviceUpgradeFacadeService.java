@@ -78,7 +78,7 @@ public class DeviceUpgradeFacadeService {
 		return resultDto;*/
 	}
 	
-	public UpgradeDTO checkDeviceUpgradeWithClientVer(String dmac,WifiDevice wifiDevice,String handset_device,String appVer){
+	public UpgradeDTO checkDeviceUpgradeWithClientVer(String dmac,WifiDevice wifiDevice,String handset_device,String appCurrentVer){
 		return wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(dmac, wifiDevice.getOrig_swver());
 		/*UpgradeDTO resultDto = null;
 		boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);

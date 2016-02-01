@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -90,7 +91,7 @@ public class ConsoleDeviceGroupController extends BaseController{
 	
 
 	/**
-	 * 群组详细信息
+	 * 群组详细信息及分配的搜索条件
 	 * @param request
 	 * @param response
 	 * @param uid
@@ -105,7 +106,7 @@ public class ConsoleDeviceGroupController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) long gid) {
-		RpcResponseDTO<DeviceGroupVTO> rpcResult = deviceGroupRpcService.deviceGroupDetail(uid, gid);
+		RpcResponseDTO<DeviceGroupDetailVTO> rpcResult = deviceGroupRpcService.deviceGroupDetail(uid, gid);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

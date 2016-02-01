@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupSearchConditionService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupService;
@@ -242,10 +243,10 @@ public class WifiDeviceGroupFacadeService {
         }
     }
 
-    public DeviceGroupVTO deviceGroupDetail(int uid, long gid) {
+    public DeviceGroupDetailVTO deviceGroupDetail(int uid, long gid) {
     	WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
 		if(dgroup != null){
-			return (fromWifiDeviceGroup(dgroup));
+			return (toDeviceGroupDetailVTO(dgroup));
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,new String[]{String.valueOf(gid)});
 		}
@@ -285,6 +286,27 @@ public class WifiDeviceGroupFacadeService {
     public Boolean grant(Integer uid, long gid) {
     	return null;
     }
+    
+    private DeviceGroupDetailVTO toDeviceGroupDetailVTO(WifiDeviceGroup dgroup){
+    	DeviceGroupDetailVTO vto = new DeviceGroupDetailVTO();
+		vto.setGid(dgroup.getId());
+		vto.setName(dgroup.getName());
+		vto.setPid(dgroup.getPid());
+		if(dgroup.getPid() == 0){
+			vto.setPname("根节点");
+		}else{
+			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
+			vto.setPname((parent_group != null) ? parent_group.getName() : null);
+		}
+		vto.setChildren(dgroup.getChildren());
+		vto.setPath(dgroup.getPath());
+		WifiDeviceGroupSearchCondition conditon = wifiDeviceGroupSearchConditionService.getById(dgroup.getId());
+		if(conditon != null){
+			vto.setCondition(conditon.getExtension_content());
+		}
+		return vto;
+	}
+    
     private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup){
 		DeviceGroupVTO vto = new DeviceGroupVTO();
 		vto.setGid(dgroup.getId());

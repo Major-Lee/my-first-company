@@ -8,6 +8,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.rpc.facade.DeviceGroupUnitFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -30,7 +31,7 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<DeviceGroupVTO> deviceGroupDetail(Integer uid, long gid) {
+	public RpcResponseDTO<DeviceGroupDetailVTO> deviceGroupDetail(Integer uid, long gid) {
 		logger.info(String.format("deviceGroupDetail uid:%s gid:%s ",uid,gid));
 		return deviceGroupUnitFacadeRpcService.deviceGroupDetail(uid, gid);
 	}
