@@ -9,6 +9,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
 import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
+import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.rpc.facade.DeviceGroupUnitFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -41,11 +42,24 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		logger.info(String.format("deviceGroupCleanUpByIds uid:%s gids:%s",uid,gids));
 		return deviceGroupUnitFacadeRpcService.deviceGroupCleanUpByIds(uid, gids);
 	}
+	
 	@Override
 	public RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(
 			Integer assignor, Long gid, String message, String desc) {
 		logger.info(String.format("assignUserSearchCondition4DeviceGroup assignor:%s gid:%s message:%s desc:%s",assignor,gid,message,desc));
 		return deviceGroupUnitFacadeRpcService.assignUserSearchCondition4DeviceGroup(assignor, gid, message, desc);
+	}
+	
+	@Override
+	public RpcResponseDTO<TailPage<BackendTaskVTO>> fetch_backendtask(int uid, String state, int pageNo, int pageSize) {
+		logger.info(String.format("fetchBackendtask uid:%s state:%s pageNo:%s pageSize:%s",uid,state,pageNo,pageSize));
+		return deviceGroupUnitFacadeRpcService.fetch_backendtask(uid,state,pageNo,pageSize);
+	}
+	@Override
+	public RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt,
+			String subopt, String extparams) {
+		logger.info(String.format("generateBackendTask uid:%s gid:%s opt:%s subopt:%s extparams:%s pageNo:%s pageSize:%s",uid,gid,opt,subopt,extparams));
+		return deviceGroupUnitFacadeRpcService.generateBackendTask(uid,gid,opt,subopt,extparams);
 	}
 	/*@Override
 	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
@@ -57,4 +71,5 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
 		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids);
 	}*/
+
 }

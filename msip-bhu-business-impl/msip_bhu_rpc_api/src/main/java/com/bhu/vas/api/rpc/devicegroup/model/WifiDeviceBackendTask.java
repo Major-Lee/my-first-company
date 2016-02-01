@@ -23,7 +23,7 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 	//此后台对于的群组id
 	private long gid;
 	//此任务创建人
-	private int creator;
+	private int uid;
 	//符合条件的记录，任务创建的时候和开始执行的时候会进行更新
 	private long total;
 	//当前执行到多少条，执行过程中进行更新，每千次更新一次
@@ -50,11 +50,11 @@ public class WifiDeviceBackendTask extends BaseLongModel{
 		this.created_at = created_at;
 	}
 	
-	public int getCreator() {
-		return creator;
+	public int getUid() {
+		return uid;
 	}
-	public void setCreator(int creator) {
-		this.creator = creator;
+	public void setUid(int uid) {
+		this.uid = uid;
 	}
 	
 	public long getGid() {

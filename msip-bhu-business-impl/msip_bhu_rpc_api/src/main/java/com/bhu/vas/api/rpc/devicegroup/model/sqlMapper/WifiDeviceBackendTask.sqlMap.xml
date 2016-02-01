@@ -6,7 +6,7 @@
 	<resultMap id="modelResult" type="wifiDeviceBackendTask">
 		<id property="id" column="id" />
 		<result property="gid" column="gid" />
-		<result property="creator" column="creator" />
+		<result property="uid" column="uid" />
 		<result property="total" column="total" />
 		<result property="current" column="current" />
 		<result property="state" column="state" />
@@ -29,7 +29,7 @@
 	    <![CDATA[
 	    	id,
 			gid,
-			creator,
+			uid,
 			total,
 			current,
 			state,
@@ -46,7 +46,7 @@
 	<sql id="modelInsertValues">
 		#{id},
 		#{gid},
-		#{creator},
+		#{uid},
 		#{total},
 		#{current},
 		#{state},
@@ -62,7 +62,7 @@
 	<sql id="modelUpdateValues">
 		id = #{id},
 		gid = #{gid},
-		creator = #{creator},
+		uid = #{uid},
 		total =#{total},
 		current = #{current},
 		state = #{state},
