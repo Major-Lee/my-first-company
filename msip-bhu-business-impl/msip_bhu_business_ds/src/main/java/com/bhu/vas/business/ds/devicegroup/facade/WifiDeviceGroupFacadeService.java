@@ -15,8 +15,8 @@ import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
-import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.BackendTaskVTO;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceBackendTaskService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupSearchConditionService;
@@ -92,7 +92,8 @@ public class WifiDeviceGroupFacadeService {
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		vto.setChildren(dgroup.getChildren());
+		//vto.setChildren(dgroup.getChildren());
+		vto.setParent(dgroup.getChildren()>0);
 		vto.setPath(dgroup.getPath());
 		//ModelCriteria mc = new ModelCriteria();
 		//mc.createCriteria().andColumnEqualTo("gid", dgroup.getId());
@@ -301,7 +302,8 @@ public class WifiDeviceGroupFacadeService {
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		vto.setChildren(dgroup.getChildren());
+		//vto.setChildren(dgroup.getChildren());
+		vto.setParent(dgroup.getChildren()>0);
 		vto.setPath(dgroup.getPath());
 		WifiDeviceGroupSearchCondition conditon = wifiDeviceGroupSearchConditionService.getById(dgroup.getId());
 		if(conditon != null){
@@ -321,7 +323,8 @@ public class WifiDeviceGroupFacadeService {
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(dgroup.getPid());
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		vto.setChildren(dgroup.getChildren());
+		//vto.setChildren(dgroup.getChildren());
+		vto.setParent(dgroup.getChildren()>0);
 		vto.setPath(dgroup.getPath());
 
 		/*ModelCriteria mc = new ModelCriteria();
