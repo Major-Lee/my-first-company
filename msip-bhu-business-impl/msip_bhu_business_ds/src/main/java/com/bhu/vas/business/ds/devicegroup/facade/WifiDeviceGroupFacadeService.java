@@ -421,9 +421,9 @@ public class WifiDeviceGroupFacadeService {
 		entity.setOpt(opt);
 		entity.setSubopt(subopt);
 		entity.setDescription(extparams);
-		wifiDeviceBackendTaskService.insert(entity);
-		
-		return fromBackendTask(entity);
+		entity = wifiDeviceBackendTaskService.insert(entity);
+		BackendTaskVTO vto = fromBackendTask(entity);
+		return vto;	
 	}
 	
     public static void main(String[] argv){

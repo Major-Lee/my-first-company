@@ -130,10 +130,10 @@ public class DeviceGroupUnitFacadeRpcService{
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt, String subopt, String extparams) {
+	public RpcResponseDTO<BackendTaskVTO> generateBackendTask(int uid, long gid, String opt, String subopt, String extparams) {
 		try{
-			wifiDeviceGroupFacadeService.generateBackendTask(uid,gid,opt,subopt,extparams);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			BackendTaskVTO backEndTask = wifiDeviceGroupFacadeService.generateBackendTask(uid,gid,opt,subopt,extparams);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(backEndTask);
 		}catch(BusinessI18nCodeException i18nex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
 		}catch(Exception ex){
