@@ -759,7 +759,6 @@ public class DeviceHelper {
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 				"<net>"+
 				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
-				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"+
 				"<webportal>"+
 					"<setting>"+
 						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"%s\" "
@@ -768,6 +767,7 @@ public class DeviceHelper {
 						+ "open_resource=\"%s/\" forbid_management=\"enable\" block_mode=\"%s\"/>"+
 					"</setting>"+
 				"</webportal>"+
+				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\" /></bridge>"+	
 				"</net>"+
 				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
