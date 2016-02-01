@@ -547,6 +547,7 @@ public class TaskFacadeService {
 							vistorwifi.setDs(false);
 							//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
 							vistor_dto.setBlock_mode(null);
+							vistor_dto.setComplete_isolate_ports(null);
 							vistorwifi.setVw(vistor_dto);
 							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
 							

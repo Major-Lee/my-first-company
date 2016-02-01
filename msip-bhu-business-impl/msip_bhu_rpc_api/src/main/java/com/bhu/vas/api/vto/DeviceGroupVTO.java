@@ -12,8 +12,8 @@ public class DeviceGroupVTO implements java.io.Serializable{
 	private String pname;
 	
 	private String path;
-
-	private int children;
+	private boolean parent;
+	//private int children;
 
 	//private boolean isParent;
 	//private int device_count;
@@ -60,13 +60,13 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.device_count = device_count;
 	}*/
 
-	public int getChildren() {
+/*	public int getChildren() {
 		return children;
 	}
 
 	public void setChildren(int children) {
 		this.children = children;
-	}
+	}*/
 
 	/*public long getpId() {
 		return pId;
@@ -85,8 +85,16 @@ public class DeviceGroupVTO implements java.io.Serializable{
 	}
 
 	public boolean isParent() {
-		return children>0;
+		return parent;
 	}
+
+	public void setParent(boolean parent) {
+		this.parent = parent;
+	}
+
+	/*public boolean isParent() {
+		return children>0;
+	}*/
 
 	/*public void setParent(boolean isParent) {
 		this.isParent = isParent;
@@ -103,7 +111,6 @@ public class DeviceGroupVTO implements java.io.Serializable{
 	public void setParent(boolean isParent) {
 		this.isParent = isParent;
 	}*/
-	
 	
 
 	/*public TailPage<WifiDeviceVTO> getPage_devices() {

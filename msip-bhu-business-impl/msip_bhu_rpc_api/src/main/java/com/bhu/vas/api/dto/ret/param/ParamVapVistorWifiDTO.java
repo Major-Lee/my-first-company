@@ -121,6 +121,14 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		this.block_mode = block_mode;
 	}
 	
+	public String getComplete_isolate_ports() {
+		return complete_isolate_ports;
+	}
+
+	public void setComplete_isolate_ports(String complete_isolate_ports) {
+		this.complete_isolate_ports = complete_isolate_ports;
+	}
+
 	public void switchWorkMode(int switchAct){
 		switch(switchAct){
 			case WifiDeviceHelper.SwitchMode_Router2Bridge_Act:
@@ -156,6 +164,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		dto.setForce_timeout(Default_Force_timeout);
 		dto.setOpen_resource(Default_Open_resource);
 		dto.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
+		dto.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		dto.setSsid(Default_SSID);
 		return dto;
 	}
@@ -173,6 +182,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 			param.setOpen_resource(Default_Open_resource);
 		}
 		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
+		param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(Default_SSID);
 		return param;
 	}
