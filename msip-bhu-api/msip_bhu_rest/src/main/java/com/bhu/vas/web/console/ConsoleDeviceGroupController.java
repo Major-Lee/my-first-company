@@ -28,11 +28,11 @@ public class ConsoleDeviceGroupController extends BaseController{
 	private IDeviceGroupRpcService deviceGroupRpcService;
 	
 	/**
-	 * 获取值为pid所有节点数据
+	 * 获取值为gid所有节点数据
 	 * @param request
 	 * @param response
 	 * @param uid
-	 * @param pid
+	 * @param gid 当前节点的gid
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/birthTree",method={RequestMethod.POST})
@@ -40,7 +40,7 @@ public class ConsoleDeviceGroupController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue="0") long pid,
+			@RequestParam(required = false,defaultValue="0") long gid,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 		//RpcResponseDTO<List<DeviceGroupVTO>> birthTree = deviceGroupRpcService.birthTree(uid, pid);
@@ -52,7 +52,7 @@ public class ConsoleDeviceGroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 
 		}*/
-		RpcResponseDTO<TailPage<DeviceGroupVTO>> rpcResult = deviceGroupRpcService.birthTree(uid, pid, pageNo, pageSize);
+		RpcResponseDTO<TailPage<DeviceGroupVTO>> rpcResult = deviceGroupRpcService.birthTree(uid, gid, pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
