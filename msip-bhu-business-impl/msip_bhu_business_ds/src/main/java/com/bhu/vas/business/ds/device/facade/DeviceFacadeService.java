@@ -42,7 +42,6 @@ import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
@@ -66,7 +65,6 @@ import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
@@ -697,7 +695,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 * @return
 	 */
-	public String queryPushHandsetDeviceAliasName(String hd_mac, String mac){
+/*	public String queryPushHandsetDeviceAliasName(String hd_mac, String mac){
 		WifiDeviceSettingDTO setting_dto = queryDeviceSettingDTO(mac);
 		if(setting_dto != null){
 			//查询终端别名
@@ -707,7 +705,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * 获取终端主机名
@@ -716,7 +714,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @return
 	 * modified by Edmond Lee for handset storage
 	 */
-	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
+/*	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
 		
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(hd_mac);
 		//System.out.println(String.format("queryPushHandsetDeviceHostname handset [%s] hd_mac [%s]", handset, hd_mac));
@@ -732,7 +730,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		return null;
 		//如果没有别名 以终端主机名填充
-		/*HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
+		HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
@@ -742,8 +740,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
-		return null;*/
-	}
+		return null;
+	}*/
 	
 	/**
 	 * 获取设备的名称

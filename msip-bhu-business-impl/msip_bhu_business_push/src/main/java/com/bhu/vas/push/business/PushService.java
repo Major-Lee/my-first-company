@@ -21,7 +21,6 @@ import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.PushType;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -423,7 +422,7 @@ public class PushService{
 	 * @param hd_push_dto
 	 * @return
 	 */
-	public void builderHandsetDeviceVisitorAuthorizeOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto,
+	/*public void builderHandsetDeviceVisitorAuthorizeOnlinePushMsg(PushMsg pushMsg, DeviceMobilePresentDTO presentDto,
 												  HandsetDeviceVisitorAuthorizeOnlinePushDTO hd_push_dto){
 		if(!BusinessRuntimeConfiguration.isSystemTestUsers(presentDto.getUid())){
 			//构造payload
@@ -505,7 +504,7 @@ public class PushService{
 			pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), StringHelper.EMPTY_STRING_GAP, hd_push_dto.getHd_mac()));
 			pushMsg.setPaylod(JsonHelper.getJSONString(hd_push_dto));
 		}
-	}
+	}*/
 	
 	/**
 	 * 获取用户的mobile push信息数据

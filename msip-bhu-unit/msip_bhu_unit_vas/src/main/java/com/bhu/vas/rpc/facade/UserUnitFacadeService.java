@@ -583,6 +583,7 @@ public class UserUnitFacadeService {
 				userDeviceDTO.setMac(userDevice.getMac());
 				userDeviceDTO.setUid(userDevice.getUid());
 				userDeviceDTO.setDevice_name(userDevice.getDevice_name());
+
 				WifiDevice wifiDevice = wifiDeviceService.getById(userDevice.getMac());
 				if (wifiDevice != null) {
 					userDeviceDTO.setOnline(wifiDevice.isOnline());
@@ -591,6 +592,7 @@ public class UserUnitFacadeService {
 								.presentOnlineSize(userDevice.getMac()));
 					}
 					userDeviceDTO.setVer(wifiDevice.getOrig_swver());
+					userDeviceDTO.setWork_mode(wifiDevice.getWork_mode());
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}
@@ -616,15 +618,14 @@ public class UserUnitFacadeService {
 				userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
 				userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
 				userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
-				WifiDevice wifiDevice = wifiDeviceService.getById(wifiDeviceDocument.getD_mac());
-				if (wifiDevice != null) {
-					userDeviceDTO.setOnline(wifiDevice.isOnline());
-					if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
-						userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
-								.presentOnlineSize(wifiDeviceDocument.getD_mac()));
-					}
-					userDeviceDTO.setVer(wifiDevice.getOrig_swver());
+				userDeviceDTO.setWork_mode(wifiDeviceDocument.getD_workmodel());
+
+				if ("1".equals(wifiDeviceDocument.getD_online())) {
+					userDeviceDTO.setOnline(true);
+					WifiDeviceHandsetPresentSortedSetService.getInstance()
+							.presentOnlineSize(wifiDeviceDocument.getD_mac());
 				}
+				userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
 				dtos.add(userDeviceDTO);
 			}
 		}
