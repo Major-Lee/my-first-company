@@ -21,7 +21,7 @@ public interface IDeviceGroupRpcService {
 
 	RpcResponseDTO<TailPage<BackendTaskVTO>> fetch_backendtask(int uid , String state, int pageNo, int pageSize);
 
-	RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt, String subopt, String extparams);
+	RpcResponseDTO<BackendTaskVTO> generateBackendTask(int uid, long gid, String opt, String subopt, String extparams);
 
 	
 	/*RpcResponseDTO<Boolean> grant(Integer uid, long gid,String wifi_ids);
