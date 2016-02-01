@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
@@ -62,9 +63,9 @@ public class DeviceGroupUnitFacadeRpcService{
 		}
 	}
 
-	public RpcResponseDTO<DeviceGroupVTO> deviceGroupDetail(Integer creator, long gid) {
+	public RpcResponseDTO<DeviceGroupDetailVTO> deviceGroupDetail(Integer creator, long gid) {
 		try{
-			DeviceGroupVTO result = wifiDeviceGroupFacadeService.deviceGroupDetail(creator, gid);
+			DeviceGroupDetailVTO result = wifiDeviceGroupFacadeService.deviceGroupDetail(creator, gid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException i18nex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());

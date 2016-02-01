@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devicegroup.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -11,7 +12,7 @@ public interface IDeviceGroupRpcService {
 	
 	RpcResponseDTO<DeviceGroupVTO> deviceGroupSave(Integer creator, long gid,long pid, String name);
 	
-	RpcResponseDTO<DeviceGroupVTO> deviceGroupDetail(Integer uid, long gid);
+	RpcResponseDTO<DeviceGroupDetailVTO> deviceGroupDetail(Integer uid, long gid);
 
 	RpcResponseDTO<Boolean> deviceGroupCleanUpByIds(Integer uid, String gids);
 	RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(Integer assignor,Long gid, String message, String desc);
