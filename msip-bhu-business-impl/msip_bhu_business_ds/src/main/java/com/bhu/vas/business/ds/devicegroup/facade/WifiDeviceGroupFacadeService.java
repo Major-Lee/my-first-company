@@ -386,7 +386,7 @@ public class WifiDeviceGroupFacadeService {
 		mc.setPageSize(pageSize);
 		TailPage<WifiDeviceBackendTask> tailPages = null;
 		
-		if (state.equals("ALL")) {
+		if (state.equals("All")) {
 			createCriteria.andSimpleCaulse(" 1=1");
 			tailPages = wifiDeviceBackendTaskService.findModelTailPageByModelCriteria(mc);
 		}else{
