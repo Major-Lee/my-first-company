@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
+
 public class RpcResponseDTOBuilder {
 	public static <T> RpcResponseDTO<T> builderErrorRpcResponse(ResponseErrorCode errorCode){//,Class<T> classz){
 		/*RpcResponseDTO<T> res = new RpcResponseDTO<T>();
