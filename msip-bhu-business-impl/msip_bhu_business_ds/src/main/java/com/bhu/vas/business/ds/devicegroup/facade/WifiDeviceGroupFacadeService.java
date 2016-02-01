@@ -82,7 +82,7 @@ public class WifiDeviceGroupFacadeService {
 		DeviceGroupVTO vto = new DeviceGroupVTO();
 		vto.setGid(dgroup.getId());
 		vto.setName(dgroup.getName());
-		vto.setpId(dgroup.getPid());
+		vto.setPid(dgroup.getPid());
 		if(dgroup.getPid() == 0){
 			vto.setPname("根节点");
 		}else{
@@ -291,7 +291,7 @@ public class WifiDeviceGroupFacadeService {
     	DeviceGroupDetailVTO vto = new DeviceGroupDetailVTO();
 		vto.setGid(dgroup.getId());
 		vto.setName(dgroup.getName());
-		vto.setpId(dgroup.getPid());
+		vto.setPid(dgroup.getPid());
 		if(dgroup.getPid() == 0){
 			vto.setPname("根节点");
 		}else{
@@ -311,7 +311,7 @@ public class WifiDeviceGroupFacadeService {
 		DeviceGroupVTO vto = new DeviceGroupVTO();
 		vto.setGid(dgroup.getId());
 		vto.setName(dgroup.getName());
-		vto.setpId(dgroup.getPid());
+		vto.setPid(dgroup.getPid());
 		if(dgroup.getPid() == 0){
 			vto.setPname("根节点");
 		}else{

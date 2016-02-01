@@ -5,7 +5,7 @@ package com.bhu.vas.api.vto;
 public class DeviceGroupVTO implements java.io.Serializable{
 	private long gid;
 
-	private long pId;
+	private long pid;
 	
 	private String name;
 
@@ -15,6 +15,7 @@ public class DeviceGroupVTO implements java.io.Serializable{
 
 	private int children;
 
+	//private boolean isParent;
 	//private int device_count;
 
 	//private TailPage<WifiDeviceVTO> page_devices;
@@ -67,17 +68,43 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.children = children;
 	}
 
-	public long getpId() {
+	/*public long getpId() {
 		return pId;
 	}
 
 	public void setpId(long pId) {
 		this.pId = pId;
+	}*/
+
+	public long getPid() {
+		return pid;
 	}
 
-	public boolean isIsparent() {
+	public void setPid(long pid) {
+		this.pid = pid;
+	}
+
+	public boolean isParent() {
 		return children>0;
 	}
+
+	/*public void setParent(boolean isParent) {
+		this.isParent = isParent;
+	}*/
+
+	/*public boolean isIsparent() {
+		return children>0;
+	}
+
+	public boolean isParent() {
+		return isParent;
+	}
+
+	public void setParent(boolean isParent) {
+		this.isParent = isParent;
+	}*/
+	
+	
 
 	/*public TailPage<WifiDeviceVTO> getPage_devices() {
 		return page_devices;
