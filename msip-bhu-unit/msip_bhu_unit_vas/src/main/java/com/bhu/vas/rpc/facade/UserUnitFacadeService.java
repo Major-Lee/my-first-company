@@ -622,8 +622,8 @@ public class UserUnitFacadeService {
 
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
-					WifiDeviceHandsetPresentSortedSetService.getInstance()
-							.presentOnlineSize(wifiDeviceDocument.getD_mac());
+					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+							.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 				}
 				userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
 				dtos.add(userDeviceDTO);
