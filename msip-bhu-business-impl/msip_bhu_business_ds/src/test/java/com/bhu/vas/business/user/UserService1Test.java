@@ -41,8 +41,6 @@ public class UserService1Test extends BaseTest{
 	int batch_create_size = 10;
 	@Resource
 	UserService userService;
-	@Resource
-	WifiDeviceBackendTaskService wifiDeviceBackendTaskService
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	@SuppressWarnings("unused")
 	private static Set<Integer> key_gen = new HashSet<Integer>();
