@@ -141,10 +141,10 @@ public class ConsoleDeviceGroupController extends BaseController {
 
 	/**
 	 * 分页查询现有任务状态
-	 * 
 	 * @param request
 	 * @param response
 	 * @param uid
+	 * @param state
 	 * @param pageNo
 	 * @param pageSize
 	 */

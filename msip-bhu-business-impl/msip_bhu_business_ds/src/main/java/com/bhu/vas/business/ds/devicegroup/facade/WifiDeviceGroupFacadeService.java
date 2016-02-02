@@ -420,7 +420,7 @@ public class WifiDeviceGroupFacadeService {
 		entity.setGid(gid);
 		entity.setOpt(opt);
 		entity.setSubopt(subopt);
-		entity.setDescription(extparams);
+		entity.setContext_var(extparams);
 		entity = wifiDeviceBackendTaskService.insert(entity);
 		BackendTaskVTO vto = fromBackendTask(entity);
 		return vto;	
