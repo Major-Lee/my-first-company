@@ -136,6 +136,7 @@ public class WifiDeviceGroupFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
 			}
 		}
+		boolean needParentChildrenInr = false;
 		//WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
 		WifiDeviceGroup dgroup= null;
 		if(gid == 0){//新建一个组
@@ -145,6 +146,7 @@ public class WifiDeviceGroupFacadeService {
 			dgroup.setCreator(creator);
 			dgroup.setUpdator(creator);
 			dgroup = wifiDeviceGroupService.insert(dgroup);
+			needParentChildrenInr = true;
 		}else{
 			dgroup = wifiDeviceGroupService.getById(gid);
 			if (dgroup == null) {
@@ -183,6 +185,7 @@ public class WifiDeviceGroupFacadeService {
 						}
 					}
 				}
+				needParentChildrenInr = true;
 			}else{
 				dgroup.setName(name);
 				dgroup.setUpdator(creator);
@@ -190,7 +193,7 @@ public class WifiDeviceGroupFacadeService {
 			}
 		}
 		//其parent节点的haschild = true
-		if(pid != 0){
+		if(pid > 0 && needParentChildrenInr){
 			WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(pid);
 			if(parent_group != null){
 				parent_group.setChildren(parent_group.getChildren()+1);
