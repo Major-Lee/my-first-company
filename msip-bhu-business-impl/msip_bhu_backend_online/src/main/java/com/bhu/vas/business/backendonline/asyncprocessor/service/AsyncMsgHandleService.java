@@ -969,7 +969,7 @@ public class AsyncMsgHandleService {
 	/**
 	 * 设备配置查询后续动作处理
 	 * 1、设备重置情况下操作（考虑设备模式切换）如果是设备重置则直接清除设备模式切换标记，如果不是设备重置状态则需要判定是否需要进行模式切换操作下发一些指令
-	 * 2、周边探测是否继续重复下发
+	 * 2、uRouter 设备才进行周边探测是否继续重复下发
 	 * @param message
 	 * @throws Exception
 	 */
@@ -982,27 +982,6 @@ public class AsyncMsgHandleService {
 		//只有urouter设备才会执行
 		//配置状态如果为恢复出厂 则清空设备的相关业务数据,只限于家用 TU uRouter
 		if(dto.isDeviceURouter()){//deviceFacadeService.isURouterDevice(dto.getMac())){
-			if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
-				try{
-					logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
-					backendBusinessService.deviceResetFactory(dto.getMac());
-					//解绑后需要发送指令通知设备
-					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
-					logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
-				}catch(Exception ex){
-					//ex.printStackTrace();
-					//清除失败后是否需要通知设备清除状态
-					cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
-					logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
-				}
-				//BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusClear(dto.getMac());
-			}/*else{//移到device组件中的配置查询响应函数中实现
-				String marker = BusinessMarkerService.getInstance().deviceWorkmodeChangedStatusGetAndClear(dto.getMac());
-				if(StringUtils.isNotEmpty(marker)){
-					//TODO:模式切换需要下发的指令集合
-					cmdPayloads.addAll(cmdGenerate4WorkModeChanged(dto.getMac(),marker));
-				}
-			}*/
 			if(DeviceHelper.RefreashDeviceSetting_Normal == dto.getRefresh_status()){
 				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
@@ -1014,9 +993,24 @@ public class AsyncMsgHandleService {
 					}
 				}
 			}
-			//分发指令
-			this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
 		}
+		
+		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
+			try{
+				logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
+				backendBusinessService.deviceResetFactory(dto.getMac());
+				//解绑后需要发送指令通知设备
+				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
+				logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
+			}catch(Exception ex){
+				//ex.printStackTrace();
+				//清除失败后是否需要通知设备清除状态
+				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
+				logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
+			}
+		}
+		//分发指令
+		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
 		logger.info(String.format("AsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
 	}
 	
