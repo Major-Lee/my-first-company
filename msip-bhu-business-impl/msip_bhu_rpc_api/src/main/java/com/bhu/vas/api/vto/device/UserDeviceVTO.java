@@ -7,6 +7,7 @@ import java.io.Serializable;
  *
  * 参照 com.bhu.vas.business.search.model.WifiDeviceDocument注释
  */
+@SuppressWarnings("serial")
 public class UserDeviceVTO implements Serializable {
 
     private String d_mac;

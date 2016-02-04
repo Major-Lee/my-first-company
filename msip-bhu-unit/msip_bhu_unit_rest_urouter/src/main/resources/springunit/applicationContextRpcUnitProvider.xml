@@ -32,5 +32,15 @@
     <dubbo:protocol name="dubbo" port="${provider.port}" />
 	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<!--  accesslog="/Users/tangzichao/access.log"-->
-	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" loadbalance="random"  interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService" ref="deviceMessageDispatchRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceMessageDispatchRpcServiceStub" />
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
+		interface="com.bhu.vas.api.rpc.task.iservice.ITaskRpcService" ref="taskRpcService" 
+		stub="com.bhu.vas.api.rpc.task.stub.TaskServiceStub" />
+	<!-- 
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
+		interface="com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService" ref="userCaptchaCodeRpcService"/>
+		 -->
+    <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  interface="com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService" ref="userDeviceRpcService"/>
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" loadbalance="random"  interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService" ref="deviceRestRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceRestRpcServiceStub" />
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" loadbalance="random"  interface="com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService" ref="deviceURouterRestRpcService" stub="com.bhu.vas.api.rpc.devices.stub.DeviceURouterRestRpcServiceStub" />
+                   
 </beans>

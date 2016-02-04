@@ -62,6 +62,9 @@ cp ../../msip-bhu-unit/msip_bhu_unit_daemon_processor/target/msip_bhu_unit_daemo
 echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zip ./$CuDateDir
 
+echo '拷贝文件 msip_bhu_unit_rest_urouter-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_rest_urouter/target/msip_bhu_unit_rest_urouter-bin.zip ./$CuDateDir
+
 echo '拷贝文件 msip_bhu_unit_vas-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_vas/target/msip_bhu_unit_vas-bin.zip ./$CuDateDir
 
@@ -100,6 +103,11 @@ unzip -q msip_bhu_unit_daemon_processor-bin.zip
 unzip -qo msip_bhu_unit_daemon_processor/bin/msip_bhu_unit_daemon_processor.jar -d msip_bhu_unit_daemon_processor/classes/
 unzip -q msip_bhu_unit_devices-bin.zip
 unzip -qo msip_bhu_unit_devices/bin/msip_bhu_unit_devices.jar -d msip_bhu_unit_devices/classes/
+
+
+unzip -q msip_bhu_unit_rest_urouter-bin.zip
+unzip -qo msip_bhu_unit_rest_urouter/bin/msip_bhu_unit_rest_urouter.jar -d msip_bhu_unit_rest_urouter/classes/
+
 unzip -q msip_bhu_unit_vas-bin.zip
 unzip -qo msip_bhu_unit_vas/bin/msip_bhu_unit_vas.jar -d msip_bhu_unit_vas/classes/
 unzip -q msip_bhu_unit_captchacode-bin.zip
@@ -177,6 +185,13 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/lib/spring*.REL
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/lib/msip_*.jar           root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_captchacode/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/classes/com/             root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_captchacode/classes/com/
 echo 'deploy msip_bhu_unit_captchacode successfully @'$Deploy2Server1
+
+
+echo 'deploy msip_bhu_unit_rest_urouter to ...@'$Deploy2Server1
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_rest_urouter/lib/spring*.RELEASE.jar  root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_rest_urouter/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_rest_urouter/lib/msip_*.jar           root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_rest_urouter/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_rest_urouter/classes/com/             root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_rest_urouter/classes/com/
+echo 'deploy msip_bhu_unit_rest_urouter successfully @'$Deploy2Server1
 
 echo 'deploy msip_bhu_unit_agent to ...@'$Deploy2Server2
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/spring*.RELEASE.jar      root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/

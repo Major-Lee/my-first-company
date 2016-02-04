@@ -1,12 +1,10 @@
 package com.bhu.vas.rpc.facade;
 
-import javax.annotation.Resource;
-
 import com.smartwork.msip.localunit.BaseTest;
 
 public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
-	@Resource
-	private DeviceRestBusinessFacadeService deviceRestBusinessFacadeService;
+	//@Resource
+	//private DeviceRestBusinessFacadeService deviceRestBusinessFacadeService;
 	
 /*	@Test
 	public void fetchBySearchConditionMessage(){
