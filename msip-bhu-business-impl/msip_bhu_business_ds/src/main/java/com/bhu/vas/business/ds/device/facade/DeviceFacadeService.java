@@ -172,7 +172,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			if(geocodingDto != null && geocodingDto.getStatus() == GeocodingDTO.Success_Status){
 				GeocodingResultDTO resultDto = geocodingDto.getResult();
 				if(resultDto != null){
-					entity.setFormatted_address(resultDto.getFormatted_address());
+					//entity.setFormatted_address(resultDto.getFormatted_address());
 					GeocodingAddressDTO addressDto = geocodingDto.getResult().getAddressComponent();
 					if(addressDto != null){
 						entity.setCountry(addressDto.getCountry());
@@ -180,6 +180,15 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 						entity.setCity(addressDto.getCity());
 						entity.setDistrict(addressDto.getDistrict());
 						entity.setStreet(addressDto.getStreet());
+						
+						StringBuffer formatted_address_buffer = new StringBuffer();
+						if(StringUtils.isNotEmpty(addressDto.getCountry())){
+							formatted_address_buffer.append(addressDto.getCountry());
+						}
+						if(StringUtils.isNotEmpty(resultDto.getFormatted_address())){
+							formatted_address_buffer.append(resultDto.getFormatted_address());
+						}
+						entity.setFormatted_address(formatted_address_buffer.toString());
 						return true;
 					}
 				}
