@@ -24,6 +24,7 @@ public class UserCredentialsHelper {
     }
     
     public static int cancelUserType(int source,UserType ut){
+    	if(ut == null) return source;
     	return SafetyBitMarkHelper.cancelBitMark(source, ut.getIndex());
     }
     

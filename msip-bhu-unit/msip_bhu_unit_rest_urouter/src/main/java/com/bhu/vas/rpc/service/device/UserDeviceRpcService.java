@@ -17,8 +17,8 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.rpc.facade.UserDeviceFacadeService;
-import com.bhu.vas.rpc.facade.UserUnitFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.rpc.facade.UserDeviceUnitFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -31,18 +31,21 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     private final Logger logger = LoggerFactory.getLogger(UserDeviceRpcService.class);
 
     @Resource
+    private UserDeviceUnitFacadeService userDeviceUnitFacadeService;
+    
+    @Resource
     private UserDeviceFacadeService userDeviceFacadeService;
-
+    
     @Resource
     private DeviceFacadeService deviceFacadeService;
 
-    @Resource
-    private UserUnitFacadeService userUnitFacadeService;
+    //@Resource
+    //private UserUnitFacadeService userUnitFacadeService;
 
     @Override
     public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid) {
         logger.info(String.format("bindDevice with mac[%s] uid[%s]",mac, uid));
-        if (userDeviceFacadeService.countBindDevices(uid) >= UserUnitFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM) {
+        if (userDeviceFacadeService.countBindDevices(uid) >= UserDeviceFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_OWNER_REACHLIMIT);
         }
         int retStatus = validateDeviceStatusIsOnlineAndBinded(mac);
@@ -64,7 +67,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         
         String deviceName = deviceFacadeService.getUrouterSSID(mac);
 
-        RpcResponseDTO<UserDeviceDTO> result = userDeviceFacadeService.bindDevice(mac,uid,deviceName == null ? "":deviceName );
+        RpcResponseDTO<UserDeviceDTO> result = userDeviceUnitFacadeService.bindDevice(mac,uid,deviceName == null ? "":deviceName );
         return result;
     }
 
@@ -79,7 +82,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
         }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
                 || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
-            return userDeviceFacadeService.unBindDevice(mac, uid);
+            return userDeviceUnitFacadeService.unBindDevice(mac, uid);
         } /*else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
             //TODO(bluesand):未绑定过装备的时候，取消绑定
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -104,13 +107,13 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
         logger.info(String.format("fetchBindDevices with uid[%s]", uid));
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid));
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceFacadeService.fetchBindDevices(uid));
     }
 
     @Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut) {
         logger.info(String.format("fetchBindDevices with uid[%s] dut[%s]", uid, dut));
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userUnitFacadeService.fetchBindDevices(uid, dut));
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceUnitFacadeService.fetchBindDevices(uid, dut));
     }
 
     @Override
@@ -118,7 +121,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 			String d_online, String s_content, int pageNo, int pageSize) {
         logger.info(String.format("pageBindDevices with uid[%s] u_id[%s] d_online[%s] s_content[%s] pageNo[%s] pageSize[%s]", 
         		uid, u_id, d_online, s_content, pageNo, pageSize));
-        return userUnitFacadeService.fetchBindDevicesFromIndex(uid, u_id, d_online, s_content, pageNo, pageSize);
+        return userDeviceUnitFacadeService.fetchBindDevicesFromIndex(uid, u_id, d_online, s_content, pageNo, pageSize);
     }
 
 /*@Override
@@ -130,7 +133,7 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid){
     	logger.info(String.format("unBindDevicesByAccOrUid with uid[%s]", uid));
-        return userUnitFacadeService.unBindDevicesByAccOrUid(countrycode,acc,uid);
+        return userDeviceUnitFacadeService.unBindDevicesByAccOrUid(countrycode,acc,uid);
     }
     @Override
     public RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac) {
@@ -164,24 +167,24 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Override
     public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
         logger.info(String.format("fetchBindDeviceUser with mac[%s]", mac));
-        return userDeviceFacadeService.fetchBindDeviceUser(mac);
+        return userDeviceUnitFacadeService.fetchBindDeviceUser(mac);
     }
 
     @Override
     public boolean modifyDeviceName(String mac, int uid, String deviceName) {
         logger.info(String.format("modifyDeviceName with mac[%s] uid[%s] deviceName[%s]", mac, uid, deviceName));
-        return userDeviceFacadeService.modifyUserDeviceName(mac, uid, deviceName);
+        return userDeviceUnitFacadeService.modifyUserDeviceName(mac, uid, deviceName);
     }
 
 	@Override
 	public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid,String mac, String appver) {
 		logger.info(String.format("checkDeviceUpdate with uid[%s] mac[%s] appver[%s]", uid,mac,  appver));
-		return userDeviceFacadeService.checkDeviceUpdate(uid, mac, appver);
+		return userDeviceUnitFacadeService.checkDeviceUpdate(uid, mac, appver);
 	}
 
 	@Override
 	public RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac) {
 		logger.info(String.format("forceDeviceUpdate with uid[%s] mac[%s]", uid,mac));
-		return userDeviceFacadeService.forceDeviceUpdate(uid, mac);
+		return userDeviceUnitFacadeService.forceDeviceUpdate(uid, mac);
 	}
 }

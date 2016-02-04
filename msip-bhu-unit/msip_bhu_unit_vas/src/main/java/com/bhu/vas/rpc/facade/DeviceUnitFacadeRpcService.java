@@ -37,6 +37,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
+import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -244,7 +245,7 @@ public class DeviceUnitFacadeRpcService{
 			}
 			tid = ret_uid.intValue();
 		}
-		List<UserDevice> userDevices = userDeviceService.fetchBindDevicesWithLimit(tid, UserUnitFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM);
+		List<UserDevice> userDevices = userDeviceService.fetchBindDevicesWithLimit(tid, UserDeviceFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM);
 		
 		List<DeviceDetailVTO> resultVTOs = new ArrayList<>();
 		for(UserDevice udevice:userDevices){
