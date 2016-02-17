@@ -96,18 +96,18 @@ public class UserOAuthServiceTest extends BaseTest{
     	userFacadeService.getUserOAuthStateService().getById(pk);
     	userFacadeService.getUserOAuthStateService().getById(pk);
     }
-/*
-    @Test
+
+    /*@Test
     public void test003CountAllRecords(){
 		int all = userService.countAllRecords();
 		AssertHelper.isTrue(all == batch_create_size);
-	}
-    
+	}*/
+   
     @Test
 	public void test004ByModelCriteriaEqualCondition(){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("regip", "192.168.1.6");
-		List<User> result = userService.findModelByModelCriteria(mc);
+		mc.createCriteria().andColumnEqualTo("identify", "weichat");
+		List<UserOAuthState> result = userFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
 		AssertHelper.isTrue(!result.isEmpty());
 		AssertHelper.isTrue(result.size() == batch_create_size);
 	}
@@ -115,28 +115,33 @@ public class UserOAuthServiceTest extends BaseTest{
     @Test
    	public void test005ByModelCriteriaLikeCondition(){
    		ModelCriteria mc = new ModelCriteria();
-   		mc.createCriteria().andColumnLike("regip", "192.168%");
-   		List<User> result = userService.findModelByModelCriteria(mc);
+   		mc.createCriteria().andColumnLike("identify", "weichat%");
+   		List<UserOAuthState> result = userFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
    		AssertHelper.isTrue(!result.isEmpty());
-   		AssertHelper.isTrue(result.size() == batch_create_size);
+   		
+   		System.out.println(result.size());
    	}
+     
     @Test
 	public void test006IterAlltables(){
     	int total  = 0;
 		ModelCriteria mc = new ModelCriteria();
 		System.out.println(String.format("UserIterOp开始，startid[%s]", "未指定"));
 		mc.createCriteria().andSimpleCaulse(" 1=1 ");
-		mc.setOrderByClause(" id asc ");
+		mc.setOrderByClause(" uid asc ");
     	mc.setPageNumber(1);
-    	mc.setPageSize(500);
-		EntityIterator<Integer, User> it = new KeyBasedEntityBatchIterator<Integer,User>(Integer.class,User.class, userService.getEntityDao(), mc);
+    	mc.setPageSize(20);
+		EntityIterator<UserOAuthStatePK, UserOAuthState> it = new KeyBasedEntityBatchIterator<UserOAuthStatePK,UserOAuthState>(UserOAuthStatePK.class,UserOAuthState.class, userFacadeService.getUserOAuthStateService().getEntityDao(), mc);
 		while(it.hasNext()){
-			List<User> users = it.next();
+			List<UserOAuthState> users = it.next();
+			for(UserOAuthState state:users){
+				System.out.println(state.getId().toString());
+			}
 			total += users.size();
 		}
 		AssertHelper.isTrue(total == batch_create_size);
 	}
-    
+    /*
     @Test
   	public void test007FindByIds(){
     	List<User> result = userService.findByIds(new ArrayList<Integer>(key_gen));
