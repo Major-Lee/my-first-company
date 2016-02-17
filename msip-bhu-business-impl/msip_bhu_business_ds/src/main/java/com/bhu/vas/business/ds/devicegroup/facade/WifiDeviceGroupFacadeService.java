@@ -2,6 +2,8 @@ package com.bhu.vas.business.ds.devicegroup.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -281,8 +283,28 @@ public class WifiDeviceGroupFacadeService {
 		return dto;
     }
     
-    public List<WifiDeviceBackendTask> fetchRecentPendingBackendTask(int pageNo,int pageSize){
-    	return Collections.emptyList();
+    public List<WifiDeviceBackendTask> fetchRecentPendingBackendTask(int size){
+    	
+		ModelCriteria mc = new ModelCriteria();
+		Criteria createCriteria = mc.createCriteria();
+		createCriteria.andColumnEqualTo("state", WifiDeviceBackendTask.State_Pending);
+		List<WifiDeviceBackendTask> Tasklist = wifiDeviceBackendTaskService.findModelByModelCriteria(mc);
+	    
+		if (Tasklist.size()>1) {
+			Collections.sort(Tasklist,new Comparator<WifiDeviceBackendTask>(){
+				public int compare(WifiDeviceBackendTask task0, WifiDeviceBackendTask task1) {  
+		           return task0.compareTo(task1);  
+		        }  
+		    });
+		}
+		
+		List<WifiDeviceBackendTask> returnList = new ArrayList<>();
+		
+		for (int i = 0; i < size; i++) {
+			returnList.add(Tasklist.get(i));
+		}
+		
+		return returnList;
     }
 
     /*public Boolean remove(Integer uid, String gids) {
@@ -382,7 +404,6 @@ public class WifiDeviceGroupFacadeService {
 	}
     
 	public TailPage<BackendTaskVTO> fetch_backendtask(int uid, String state, int pageNo, int pageSize) {
-				
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		mc.setPageNumber(pageNo);
@@ -396,7 +417,7 @@ public class WifiDeviceGroupFacadeService {
 			createCriteria.andColumnEqualTo("state", state);
 			tailPages = wifiDeviceBackendTaskService.findModelTailPageByModelCriteria(mc);
 		}
-
+		
 		List<BackendTaskVTO> result = new ArrayList<BackendTaskVTO>();
     	for(WifiDeviceBackendTask group:tailPages){
     		result.add(fromBackendTask(group));
@@ -408,32 +429,27 @@ public class WifiDeviceGroupFacadeService {
 		BackendTaskVTO vto = new BackendTaskVTO();
 		vto.setId(dgroup.getId());
 		vto.setGid(dgroup.getGid());
-		vto.setUid(dgroup.getUid());
 		vto.setTotal(dgroup.getTotal());
 		vto.setState(dgroup.getState());
+		vto.setCurrent(dgroup.getCurrent());
 		vto.setDescription(dgroup.getDescription());
+		vto.setCompleted_at(dgroup.getCompleted_at());
 		
 		return vto;
 	}
 	
-	public BackendTaskVTO generateBackendTask(int uid, long gid, String opt, String subopt, String extparams) {
+	public void generateBackendTask(int uid, long gid, String opt, String subopt, String extparams) {
 		WifiDeviceBackendTask entity = new WifiDeviceBackendTask();
-		
 		entity.setUid(uid);
 		entity.setGid(gid);
 		entity.setOpt(opt);
 		entity.setSubopt(subopt);
 		entity.setContext_var(extparams);
-		entity = wifiDeviceBackendTaskService.insert(entity);
-		BackendTaskVTO vto = fromBackendTask(entity);
-		return vto;	
+		wifiDeviceBackendTaskService.insert(entity);
 	}
-	
+		
     public static void main(String[] argv){
     	System.out.println(WifiDeviceGroupFacadeService.countSubString("afa/1sfsfd/gdgsdfasd/fa/1/s/fd","/"));
     }
-
-
-
 
 }

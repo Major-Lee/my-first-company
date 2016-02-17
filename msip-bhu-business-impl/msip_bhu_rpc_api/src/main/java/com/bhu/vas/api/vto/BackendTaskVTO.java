@@ -1,5 +1,7 @@
 package com.bhu.vas.api.vto;
 
+import java.util.Date;
+
 @SuppressWarnings("serial")
 public class BackendTaskVTO implements java.io.Serializable {
 
@@ -15,13 +17,9 @@ public class BackendTaskVTO implements java.io.Serializable {
 	
 	private String state;
 
-	private String opt;
-	
-	private String subopt;
-	
-	private String context_var;
-
 	private String description;
+	
+	private Date completed_at;
 	
 	public long getId() {
 		return id;
@@ -63,36 +61,12 @@ public class BackendTaskVTO implements java.io.Serializable {
 		this.current = current;
 	}
 
-	public String getSubopt() {
-		return subopt;
-	}
-
-	public void setSubopt(String subopt) {
-		this.subopt = subopt;
-	}
-
-	public String getContext_var() {
-		return context_var;
-	}
-
-	public void setContext_var(String context_var) {
-		this.context_var = context_var;
-	}
-	
 	public String getState() {
 		return state;
 	}
 
 	public void setState(String state) {
 		this.state = state;
-	}
-
-	public String getOpt() {
-		return opt;
-	}
-
-	public void setOpt(String opt) {
-		this.opt = opt;
 	}
 
 	public String getDescription() {
@@ -103,4 +77,11 @@ public class BackendTaskVTO implements java.io.Serializable {
 		this.description = description;
 	}
 
+	public Date getCompleted_at() {
+		return completed_at;
+	}
+
+	public void setCompleted_at(Date completed_at) {
+		this.completed_at = completed_at;
+	}
 }

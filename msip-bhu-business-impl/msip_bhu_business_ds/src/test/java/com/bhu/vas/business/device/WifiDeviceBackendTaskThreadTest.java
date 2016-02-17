@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceBackendTaskService;
 import com.smartwork.msip.localunit.BaseTest;
 public class WifiDeviceBackendTaskThreadTest extends BaseTest{
+	
 	@Resource
 	WifiDeviceBackendTaskService wifiDeviceBackendTaskService;
 
