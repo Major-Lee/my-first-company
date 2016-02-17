@@ -5,11 +5,20 @@ import java.util.Map;
 
 import com.smartwork.msip.cores.helper.authorization.SafetyBitMarkHelper;
 
-public enum UserType {
+/**
+ * 用户角色定义
+ * 或者用apache shiro实现？
+ * @author Edmond
+ *
+ */
+public enum UserRoleType {
 	//管理员账户 系统创建
 	SuperAdmin(SafetyBitMarkHelper.All,"SA","管理员用户",false),
+	//普通用户
 	Normal(SafetyBitMarkHelper.None,"NO","普通用户"),
-	
+	//运营人员
+	Operator(SafetyBitMarkHelper.A01,"OP","运营人员"),
+	/*
 	//增值平台
 	//增值平台管理员
 	VapAdmin(SafetyBitMarkHelper.A31,"VA","管理员用户",false),
@@ -27,7 +36,7 @@ public enum UserType {
 	//商业 wifi 小型运营商客户
 	BusinessNormal(SafetyBitMarkHelper.A24,"BN","商业 wifi 小型运营商客户"),
 	//自运营的商户
-	BusinessSelfor(SafetyBitMarkHelper.A25,"BS","自运营的商户"),
+	BusinessSelfor(SafetyBitMarkHelper.A25,"BS","自运营的商户"),*/
 	;
 	//private String index;
 	private int index;
@@ -38,14 +47,14 @@ public enum UserType {
 	//是否可以通过通用api进行创建
 	private boolean apiGen;
 	
-	private static Map<String, UserType> 	allUserTypesWithSName;
-	private static Map<Integer, UserType> 	allUserTypesWithIndex;
+	private static Map<String, UserRoleType> 	allUserTypesWithSName;
+	private static Map<Integer, UserRoleType> 	allUserTypesWithIndex;
 	
-	UserType(int index,String sname,String fname){
+	UserRoleType(int index,String sname,String fname){
 		this(index,sname,fname,true);
 	}
 	
-	UserType(int index,String sname,String fname,boolean apiGen){
+	UserRoleType(int index,String sname,String fname,boolean apiGen){
 		this.index = index;
 		this.sname = sname;
 		this.fname = fname;
@@ -84,27 +93,27 @@ public enum UserType {
 		this.apiGen = apiGen;
 	}
 
-	public static UserType getBySName(String sname) {
-		UserType utype = allUserTypesWithSName.get(sname);
+	public static UserRoleType getBySName(String sname) {
+		UserRoleType utype = allUserTypesWithSName.get(sname);
 		if(utype != null)
 			return utype;
 		else
-			return UserType.Normal;
+			return UserRoleType.Normal;
 	}	
 	
-	public static UserType getByIndex(int index) {
-		UserType utype = allUserTypesWithIndex.get(index);
+	public static UserRoleType getByIndex(int index) {
+		UserRoleType utype = allUserTypesWithIndex.get(index);
 		if(utype != null)
 			return utype;
 		else
-			return UserType.Normal;
+			return UserRoleType.Normal;
 	}
 	
 	static {
-		allUserTypesWithSName = new HashMap<String,UserType>();
-		allUserTypesWithIndex = new HashMap<Integer,UserType>();
-		UserType[] types = values();
-		for (UserType type : types){
+		allUserTypesWithSName = new HashMap<String,UserRoleType>();
+		allUserTypesWithIndex = new HashMap<Integer,UserRoleType>();
+		UserRoleType[] types = values();
+		for (UserRoleType type : types){
 			allUserTypesWithSName.put(type.sname, type);
 			allUserTypesWithIndex.put(type.index, type);
 		}
