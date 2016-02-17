@@ -23,7 +23,6 @@ import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceBackendTaskService;
-import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
@@ -77,7 +76,13 @@ public class WifiDeviceGroupBackendTaskLoader {
 						@Override
 						public void run() {
 							for(int i=0;i<macList.size();i++){
-								System.out.println(macList.get(i)+"-------------"+Thread.currentThread().getName());
+								try {
+									Thread.sleep(40*1000);
+									System.out.println(macList.get(i)+"-------------"+Thread.currentThread().getName()+"---- "+i);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 						}
 					}));
@@ -171,8 +176,5 @@ public class WifiDeviceGroupBackendTaskLoader {
 		}
 		backendTask.setState(WifiDeviceBackendTask.State_Completed);
 		wifiDeviceBackendTaskService.update(backendTask);
-	}
-	public static void main(String[] args) {
-
 	}
 }
