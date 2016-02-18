@@ -39,6 +39,9 @@
 				<ref bean="wifiDeviceOnlineSimulateLoaderCronTrigger" />		
 				<!-- 每天凌晨2点执行一次   0 0 2 * * ?   -->
 				<ref bean="wifiDeviceOnlineUpgradeLoaderCronTrigger" />		
+							
+				<!-- 每隔5分钟执行一次 -->
+				<ref bean="wifiDeviceGroupBackendTaskLoaderCronTrigger" />		
 				
 			</list>
 		</property>
@@ -237,8 +240,6 @@
 	<!-- 被Cron执行的普通Spring Bean -->
 	<bean id="wifiDeviceOnlineSimulateLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineSimulateLoader" />
 	
-	
-	
 	<!-- Cron式Trigger定义 -->
 	<bean id="wifiDeviceOnlineUpgradeLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="wifiDeviceOnlineUpgradeLoaderJobDetail" />
@@ -257,5 +258,21 @@
 	<!-- 被Cron执行的普通Spring Bean -->
 	<bean id="wifiDeviceOnlineUpgradeLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceOnlineUpgradeLoader" />
 	
+		<!-- Cron式Trigger定义 -->
+	<bean id="wifiDeviceGroupBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="wifiDeviceGroupBackendTaskLoaderCronJobDetail" />
+		<!-- 每隔5分钟执行一次   0 0/5 * * * ?  -->
+		<property name="cronExpression" value="0 0/2 * * * ?" />
+	</bean>
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="wifiDeviceGroupBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="wifiDeviceGroupBackendTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="wifiDeviceGroupBackendTaskLoaderJob" class="com.bhu.vas.plugins.quartz.WifiDeviceGroupBackendTaskLoader" />
 	
 </beans>
