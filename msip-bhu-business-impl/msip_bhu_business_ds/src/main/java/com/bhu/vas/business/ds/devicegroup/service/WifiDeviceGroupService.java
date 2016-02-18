@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.devicegroup.dao.WifiDeviceGroupDao;
@@ -126,5 +127,4 @@ public class WifiDeviceGroupService extends AbstractCoreService<Long,WifiDeviceG
 		createCriteria.andColumnLike("path", path+"%");
 		return mc;
 	}
-
 }

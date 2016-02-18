@@ -75,8 +75,10 @@ public class ConsoleDeviceGroupController extends BaseController {
 	@ResponseBody()
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public void save(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(required = true) Integer uid, @RequestParam(required = false, defaultValue = "0") long gid,
-			@RequestParam(required = true) String name, @RequestParam(required = false, defaultValue = "0") long pid) {
+			@RequestParam(required = true) Integer uid, 
+			@RequestParam(required = true) String name, 
+			@RequestParam(required = false, defaultValue = "0") long gid,
+			@RequestParam(required = false, defaultValue = "0") long pid) {
 		RpcResponseDTO<DeviceGroupVTO> rpcResult = deviceGroupRpcService.deviceGroupSave(uid, gid, pid, name);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -184,7 +186,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 			@RequestParam(required = false, defaultValue = "00") String subopt,
 			@RequestParam(required = false) String extparams){
 
-		RpcResponseDTO<BackendTaskVTO> rpcResult = deviceGroupRpcService.generateBackendTask(uid, gid, opt,subopt, extparams);
+		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.generateBackendTask(uid, gid, opt,subopt, extparams);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

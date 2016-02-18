@@ -55,6 +55,7 @@ public class WifiDevcieBackendTaskThread implements Runnable{
 				}
 			}
 			bean.setState(WifiDeviceBackendTask.State_Completed);
+			bean.setCompleted_at(new Date());
 			wifiDeviceBackendTaskService.update(bean);
 			System.out.println("Task:"+taskId+"，状态:"+bean.getState());
 		}

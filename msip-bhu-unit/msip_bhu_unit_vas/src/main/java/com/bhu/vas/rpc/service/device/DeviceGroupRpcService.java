@@ -56,7 +56,7 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		return deviceGroupUnitFacadeRpcService.fetch_backendtask(uid,state,pageNo,pageSize);
 	}
 	@Override
-	public RpcResponseDTO<BackendTaskVTO> generateBackendTask(int uid, long gid, String opt,
+	public RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt,
 			String subopt, String extparams) {
 		logger.info(String.format("generateBackendTask uid:%s gid:%s opt:%s subopt:%s extparams:%s",uid,gid,opt,subopt,extparams));
 		return deviceGroupUnitFacadeRpcService.generateBackendTask(uid,gid,opt,subopt,extparams);
