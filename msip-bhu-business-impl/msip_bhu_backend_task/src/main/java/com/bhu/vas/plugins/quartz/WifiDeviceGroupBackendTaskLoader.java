@@ -75,22 +75,14 @@ public class WifiDeviceGroupBackendTaskLoader {
 					task_exec.submit((new Runnable() {
 						@Override
 						public void run() {
-//							for(int i=0;i<macList.size();i++){
-//								
-//									try {
-//										Thread.sleep(30*1000);
-//									} catch (InterruptedException e) {
-//									}
-//									System.out.println(macList.get(i)+"-------------"+Thread.currentThread().getName()+"---- "+i);
-//								}
-							OperationCMD opt = OperationCMD.getOperationCMDFromNo("152");
-							System.out.println(opt);
-							try {
-								CMDBuilder.autoBuilderCMD4Opt(opt, "84:82:F4:28:7A:EC", 0, "123123");
-							} catch (Exception e) {
-								System.out.println("----------指令下发失败");
-							}
-							System.out.println("------------------指令下发成功。");
+							for(int i=0;i<macList.size();i++){
+								
+									try {
+										Thread.sleep(30*1000);
+									} catch (InterruptedException e) {
+									}
+									System.out.println(macList.get(i)+"-------------"+Thread.currentThread().getName()+"---- "+i);
+								}
 							}
 						}
 					));
