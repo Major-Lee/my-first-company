@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
@@ -30,5 +31,5 @@ public interface IUserOAuthRpcService {
 	 * @param avatar
 	 * @return
 	 */
-	public RpcResponseDTO<UserOAuthStateDTO> createIdentifies(Integer uid,String identify,String auid,String nick,String avatar);
+	public RpcResponseDTO<Map<String, Object>> createIdentifies(String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut);
 }

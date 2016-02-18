@@ -1,5 +1,9 @@
 package com.bhu.vas.web.user;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,30 +14,44 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.business.helper.BusinessWebHelper;
+import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping(value = "/oauth")
 public class UserOAuthController extends BaseController{
 	
-	//@Resource
-	//private UserSnsStateService userSnsStateService;
+	@Resource
+	private IUserOAuthRpcService userOAuthRpcService;
 
 	@ResponseBody()
 	@RequestMapping(value="/fetch_identifies", method={RequestMethod.GET,RequestMethod.POST})
 	public void fetch_identifies(HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
-		/*CommonCriteria mc = new CommonCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid);
-		List<UserSnsState> models = userSnsStateService.findModelByCommonCriteria(mc);
-		
-		List<UserSnsIndetifyDTO> dtos = new ArrayList<UserSnsIndetifyDTO>();
-		if(!models.isEmpty()){
-			for(UserSnsState model : models){
-				dtos.add(new UserSnsIndetifyDTO(model.getIdentify(), model.getUpdated_at().getTime()));
+		try{
+			RpcResponseDTO<List<UserOAuthStateDTO>> rpcResult = userOAuthRpcService.fetchRegisterIdentifies(uid);
+			if(!rpcResult.hasError()){
+				//UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
+				//rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+				//BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(dtos));*/
 	}
 	
 	
@@ -43,62 +61,45 @@ public class UserOAuthController extends BaseController{
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=true) String identify){
-		
-		/*UserSnsState model = userSnsStateService.getById(new UserSnsStatePK(uid, identify.toString()));
-		if(model != null){
-			bindManager.unbind(uid, identify);
-			//userSnsStateService.removeByIdAndIdentify(uid, identify.toString());
-			userSnsStateService.delete(model);
-			UniqueSnsRelationHashService.getInstance().userSnsRemove(identify.toString(), model.getAuid());
-			
-			SnsFriendService.getInstance().deleteFriendList(uid, identify.toString());
-			SnsFriendService.getInstance().deleteBlackList(uid, identify.toString());
+		try{
+			RpcResponseDTO<Boolean> rpcResult = userOAuthRpcService.removeIdentifies(uid, identify);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-		SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);*/
 	}
 	
 	@ResponseBody()
 	@RequestMapping(value="/create", method={RequestMethod.GET,RequestMethod.POST})
-	public void bind(ModelAndView mv, HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam(required=true) Integer uid,
-			@RequestParam(required=true) String identify) throws Exception{
-		/*try{
-			//GeneralOAuth2AccessToken generalOAuth2AccessToken = super.currentGeneralAccessToken(request, identify, null);
-			GeneralOAuth2AccessToken generalOAuth2AccessToken = TokenStoreUtils.getBindToken(uid, identify);
-			if(generalOAuth2AccessToken == null){
-				SpringMVCHelper.renderJson(response,ResponseError.embed(ResponseErrorCode.SNS_FIND_NOT_TOKEN));
-				return;
+	public void create(ModelAndView mv, HttpServletRequest request, HttpServletResponse response, 
+			@RequestParam(required = false, value="du") String deviceuuid,
+			@RequestParam(required=true) String identify,
+			@RequestParam(required=true) String auid,
+			@RequestParam(required = false) String nick,
+			@RequestParam(required = false) String avatar,
+			@RequestParam(required = false,defaultValue="N") String ut,//用户类型标识 UserType
+			@RequestParam(required = false, value="d",defaultValue="R") String device
+			) throws Exception{
+		try{
+			String remoteIp = WebHelper.getRemoteAddr(request);
+			String from_device = DeviceEnum.getBySName(device).getSname();
+			RpcResponseDTO<Map<String,Object>> rpcResult = userOAuthRpcService.createIdentifies(identify, auid, nick, avatar,
+					from_device, remoteIp, deviceuuid, ut);
+			if(!rpcResult.hasError()){
+				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+				rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
-			String existouid = UniqueSnsRelationHashService.getInstance().userSnsQuery(identify.toString(), 
-					generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
-			if(StringHelper.isEmpty(existouid)){
-				bindManager.bind(uid, identify, generalOAuth2AccessToken);
-				super.associationUser(uid, identify, generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
-			}
-			//else if(state.getId().getUid() == uid.intValue()){
-			else if(existouid.equals(String.valueOf(uid))){
-				bindManager.bind(uid, identify, generalOAuth2AccessToken);
-			}
-			else {
-				//System.out.println("snsbind 1:" + state.getId().getUid() + " " + uid.intValue());
-				//throw new OAuth2Exception(ResponseErrorCode.SNS_SAME_AUID_BIND);
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.SNS_SAME_AUID_BIND));
-				return;
-			}
-			super.addAvator(uid, generalOAuth2AccessToken.getGeneralOAuth2User().getAuid(),
-					generalOAuth2AccessToken.getGeneralOAuth2User().getPortrait(), 
-					generalOAuth2AccessToken.getGeneralOAuth2User().getPortraitTiny(), identify);
-			//super.addCurrentAvator(uid, generalOAuth2AccessToken.getGeneralOAuth2User().getPortrait());
-			super.mqHandle(uid, identify, generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
-			//super.unlockSNSBadge(uid, identify);
-			//super.dolockUserMenu(uid, identify, true);
-	//		Map<String,Object> ret = new HashMap<String,Object>();
-	//		ret.put("token", generalOAuth2AccessToken.getAccessToken());
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(generalOAuth2AccessToken.getAccessToken()));
 		}catch(Exception ex){
-			ex.printStackTrace();
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}*/
+		}
 	}
 
 }

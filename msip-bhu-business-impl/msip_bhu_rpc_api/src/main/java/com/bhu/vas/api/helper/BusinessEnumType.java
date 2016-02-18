@@ -38,6 +38,11 @@ public class BusinessEnumType {
 		public static OAuthType fromType(String type){
 			return allOAuthTypeTypes.get(type);
 		}
+		
+		public static boolean supported(String type){
+			return allOAuthTypeTypes.containsKey(type);
+		}
+		
 		static {
 			allOAuthTypeTypes = new HashMap<String, OAuthType>();
 			OAuthType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};

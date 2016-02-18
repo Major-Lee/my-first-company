@@ -1,8 +1,5 @@
 package com.bhu.vas.business.user;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -14,17 +11,13 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
-import com.bhu.vas.business.ds.user.facade.UserFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.smartwork.msip.cores.helper.AssertHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.page.Page;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
 import com.smartwork.msip.localunit.RandomPicker;
@@ -45,9 +38,9 @@ public class UserOAuthServiceTest extends BaseTest{
 	long batch_total_cost_time = 0;
 	int batch_create_size = 100;
 	@Resource
-	private UserFacadeService userFacadeService;
+	private UserOAuthFacadeService userOAuthFacadeService;
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
-	private static Set<Integer> key_gen = new HashSet<Integer>();
+	//private static Set<Integer> key_gen = new HashSet<Integer>();
 	@BeforeClass
     public static void setUp() throws Exception {
 		System.out.println("111111111");
@@ -71,11 +64,11 @@ public class UserOAuthServiceTest extends BaseTest{
     	System.out.println(Integer.MAX_VALUE);
     	ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1");
-		userFacadeService.getUserOAuthStateService().deleteByModelCriteria(mc);//.deleteByCommonCriteria(mc);
+		userOAuthFacadeService.getUserOAuthStateService().deleteByModelCriteria(mc);//.deleteByCommonCriteria(mc);
     	unit_test_start = System.currentTimeMillis();
 		//int count = 10;
 		for(int i=0;i<batch_create_size;i++){
-			userFacadeService.createOrUpdateIdentifies(
+			userOAuthFacadeService.createOrUpdateIdentifies(
 					i,
 					RandomPicker.pick(BusinessEnumType.OAuthType.values()).getType(),
 					String.format("1861%s2%s", RandomData.intNumber(100,999),RandomData.intNumber(100,999)),
@@ -89,12 +82,12 @@ public class UserOAuthServiceTest extends BaseTest{
     @Test
     public void test002OAuthExistAndCached(){
     	UserOAuthStatePK pk = new UserOAuthStatePK(0,BusinessEnumType.OAuthType.Weichat.getType());
-    	UserOAuthState random_user = userFacadeService.getUserOAuthStateService().getById(pk);
+    	UserOAuthState random_user = userOAuthFacadeService.getUserOAuthStateService().getById(pk);
     	AssertHelper.notNull(random_user);
     	
     	UserOAuthStateDTO dto = random_user.getInnerModel();
-    	userFacadeService.getUserOAuthStateService().getById(pk);
-    	userFacadeService.getUserOAuthStateService().getById(pk);
+    	userOAuthFacadeService.getUserOAuthStateService().getById(pk);
+    	userOAuthFacadeService.getUserOAuthStateService().getById(pk);
     }
 
     /*@Test
@@ -107,7 +100,7 @@ public class UserOAuthServiceTest extends BaseTest{
 	public void test004ByModelCriteriaEqualCondition(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("identify", "weichat");
-		List<UserOAuthState> result = userFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
+		List<UserOAuthState> result = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
 		AssertHelper.isTrue(!result.isEmpty());
 		AssertHelper.isTrue(result.size() == batch_create_size);
 	}
@@ -116,7 +109,7 @@ public class UserOAuthServiceTest extends BaseTest{
    	public void test005ByModelCriteriaLikeCondition(){
    		ModelCriteria mc = new ModelCriteria();
    		mc.createCriteria().andColumnLike("identify", "weichat%");
-   		List<UserOAuthState> result = userFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
+   		List<UserOAuthState> result = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
    		AssertHelper.isTrue(!result.isEmpty());
    		
    		System.out.println(result.size());
@@ -131,7 +124,7 @@ public class UserOAuthServiceTest extends BaseTest{
 		mc.setOrderByClause(" uid asc ");
     	mc.setPageNumber(1);
     	mc.setPageSize(20);
-		EntityIterator<UserOAuthStatePK, UserOAuthState> it = new KeyBasedEntityBatchIterator<UserOAuthStatePK,UserOAuthState>(UserOAuthStatePK.class,UserOAuthState.class, userFacadeService.getUserOAuthStateService().getEntityDao(), mc);
+		EntityIterator<UserOAuthStatePK, UserOAuthState> it = new KeyBasedEntityBatchIterator<UserOAuthStatePK,UserOAuthState>(UserOAuthStatePK.class,UserOAuthState.class, userOAuthFacadeService.getUserOAuthStateService().getEntityDao(), mc);
 		while(it.hasNext()){
 			List<UserOAuthState> users = it.next();
 			for(UserOAuthState state:users){

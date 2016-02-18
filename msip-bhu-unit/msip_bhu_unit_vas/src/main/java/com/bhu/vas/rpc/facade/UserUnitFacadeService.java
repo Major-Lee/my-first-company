@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
@@ -30,6 +31,7 @@ import com.smartwork.msip.business.token.ITokenService;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -319,9 +321,6 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
 			String nick,String pwd, String captcha, String sex, String device,String regIp,String deviceuuid, String ut,String org) {
 		UserType userType = UserType.getBySName(ut);
-		if(UniqueFacadeService.checkMobilenoExist(countrycode,acc)){//userService.isPermalinkExist(permalink)){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
-		}
 		if(!RuntimeConfiguration.SecretInnerTest){
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
@@ -331,7 +330,7 @@ public class UserUnitFacadeService {
 				}
 			}
 		}
-		UserTokenDTO uToken = null;
+		/*UserTokenDTO uToken = null;
 		User user = new User();
 		user.setCountrycode(countrycode);
 		user.setMobileno(acc);
@@ -366,13 +365,19 @@ public class UserUnitFacadeService {
 		{//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}*/
+		try{
+			UserInnerExchangeDTO userExchange = this.commonUserCreate(countrycode, acc, nick, pwd, sex, device, regIp, deviceuuid, userType, org);
+			deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, device,regIp);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,regIp);
 		
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				user,
-				uToken, true,userDeviceFacadeService.fetchBindDevices(user.getId()));
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	/**
@@ -572,5 +577,93 @@ public class UserUnitFacadeService {
 		deliverMessageService.sendUserBBSsignedonMessage(uid, entity.getDt(), entity.getD(), countrycode, acc, secretkey);
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	public UserInnerExchangeDTO commonOAuthUserCreate(String nick,String device,String regIp,String deviceuuid, UserType userType){
+		return commonUserCreate(0,null,nick,null,null,device,regIp,deviceuuid,userType,null);
+	}
+	
+	public UserInnerExchangeDTO commonOAuthUserLogin(int uid,String device,String regIp,String deviceuuid, UserType userType){
+		User user = this.userService.getById(uid);
+		if(user == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		if(StringUtils.isEmpty(user.getRegip())){
+			user.setRegip(regIp);
+		}
+		if(!user.getLastlogindevice().equals(device)){
+			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
+		}
+		this.userService.update(user);
+		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+		{//write header to response header
+			//BusinessWebHelper.setCustomizeHeader(response, uToken);
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}
+		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), uToken);
+	}
+	/**
+	 * 通用创建用户接口
+	 * @param countrycode
+	 * @param acc  可以为空
+	 * @param nick 可以为空
+	 * @param pwd
+	 * @param sex
+	 * @param device
+	 * @param regIp
+	 * @param deviceuuid
+	 * @param userType
+	 * @param org
+	 * @return
+	 */
+	public UserInnerExchangeDTO commonUserCreate(int countrycode, String acc,
+			String nick,String pwd, String sex, String device,String regIp,String deviceuuid, UserType userType,String org){
+		//判定acc是否已经存在
+		if(StringUtils.isNotEmpty(acc) && UniqueFacadeService.checkMobilenoExist(countrycode,acc)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
+		}
+		//判定nick是否已经存在
+		if(StringUtils.isNotEmpty(nick) && UniqueFacadeService.checkNickExist(nick)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+		}
+		
+		UserTokenDTO uToken = null;
+		User user = new User();
+		user.setCountrycode(countrycode);
+		user.setMobileno(acc);
+		if(StringUtils.isNotEmpty(pwd)){
+			user.setPlainpwd(pwd);
+		}
+		/*if(StringUtils.isNotEmpty(nick)){
+			//判定nick是否已经存在
+			if(UniqueFacadeService.checkNickExist(nick)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+			}else{
+				user.setNick(nick);
+			}
+		}*/
+		user.setNick(nick);
+		user.setSex(sex);
+		user.setLastlogindevice_uuid(deviceuuid);
+		user.setRegip(regIp);
+		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
+		user.setRegdevice(device);
+		//标记用户最后登录设备，缺省为DeviceEnum.PC
+		user.setLastlogindevice(device);
+		user.setUtype(userType.getIndex());
+		user.setOrg(org);
+		user = this.userService.insert(user);
+		UniqueFacadeService.uniqueMobilenoRegister(user.getId(), user.getCountrycode(), user.getMobileno());
+		if(StringUtils.isNotEmpty(nick)){
+			UniqueFacadeService.uniqueNickRegister(user.getId(), nick);
+		}
+		
+		// token validate code
+		uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+		{//write header to response header
+			//BusinessWebHelper.setCustomizeHeader(response, uToken);
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}
+		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, true), uToken);
 	}
 }

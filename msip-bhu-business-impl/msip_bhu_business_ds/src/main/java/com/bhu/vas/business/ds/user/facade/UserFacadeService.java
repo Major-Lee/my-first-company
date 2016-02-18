@@ -8,17 +8,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.api.rpc.user.model.UserOAuthState;
-import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
-import com.bhu.vas.business.ds.user.service.UserOAuthStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -41,6 +37,8 @@ public class UserFacadeService {
 	@Resource
 	private UserMobileDeviceStateService userMobileDeviceStateService;
 
+	//@Resource
+	//private UserOAuthStateService userOAuthStateService;
 	
 	public boolean clearUsersMarkByUid(int uid){
 		User byId = userService.getById(uid);
@@ -91,64 +89,6 @@ public class UserFacadeService {
 		if(result == null || result.isEmpty()) return null;
 		return result.get(0);
 	}
-	
-	@Resource
-	private UserOAuthStateService userOAuthStateService;
-
-	
-	public List<UserOAuthStateDTO> fetchRegisterIdentifies(Integer uid){
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid);
-		List<UserOAuthState> models = userOAuthStateService.findModelByModelCriteria(mc);
-		List<UserOAuthStateDTO> dtos = new ArrayList<UserOAuthStateDTO>();
-		if(!models.isEmpty()){
-			for(UserOAuthState model : models){
-				dtos.add(model.getInnerModel());
-			}
-		}
-		return dtos;
-	}
-	
-	public boolean removeIdentifies(Integer uid,String identify){
-		/*ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("identify", identify);
-		userOAuthStateService.deleteByModelCriteria(mc);*/
-		UserOAuthStatePK pk = new UserOAuthStatePK(uid,identify);
-		userOAuthStateService.deleteById(pk);
-		return true;
-	}
-	
-	public UserOAuthStateDTO createOrUpdateIdentifies(Integer uid,String identify,String auid,String nick,String avatar){
-		UserOAuthStatePK pk = new UserOAuthStatePK(uid,identify);
-		UserOAuthState oauthState = userOAuthStateService.getById(pk);
-		UserOAuthStateDTO dto = null;
-		if(oauthState != null){
-			dto = new UserOAuthStateDTO();
-			dto.setIdentify(identify);
-			dto.setAuid(auid);
-			dto.setNick(nick);
-			dto.setAvatar(avatar);
-			oauthState.putInnerModel(dto);
-			userOAuthStateService.update(oauthState);
-		}else{
-			oauthState = new UserOAuthState();
-			oauthState.setId(pk);
-			oauthState.setAuid(auid);
-			dto = new UserOAuthStateDTO();
-			dto.setIdentify(identify);
-			dto.setAuid(auid);
-			dto.setNick(nick);
-			dto.setAvatar(avatar);
-			oauthState.putInnerModel(dto);
-			userOAuthStateService.insert(oauthState);
-		}
-		return dto;
-	}
-
-	public UserOAuthStateService getUserOAuthStateService() {
-		return userOAuthStateService;
-	}
-
 	
 /*	public UserSnsStateDTO updateUserSnsInfo(int uid, ApplicationIdentify identify, GeneralOAuth2AccessToken generalOAuth2AccessToken) throws Exception{
 		UserSnsStatePK pk = new UserSnsStatePK(uid,identify.toString());
