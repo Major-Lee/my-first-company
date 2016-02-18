@@ -76,6 +76,11 @@ public class WifiDeviceGroupBackendTaskLoader {
 						@Override
 						public void run() {
 							for(int i=0;i<macList.size();i++){
+								
+									try {
+										Thread.sleep(30*1000);
+									} catch (InterruptedException e) {
+									}
 									System.out.println(macList.get(i)+"-------------"+Thread.currentThread().getName()+"---- "+i);
 								}
 							}
