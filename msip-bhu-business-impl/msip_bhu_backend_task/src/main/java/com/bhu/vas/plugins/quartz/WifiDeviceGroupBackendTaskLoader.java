@@ -81,6 +81,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 										Thread.sleep(30*1000);
 									} catch (InterruptedException e) {
 									}
+									System.out.println("taskId-------------"+task.getId());
 									System.out.println(macList.get(i)+"-------------"+Thread.currentThread().getName()+"---- "+i);
 								}
 							}
