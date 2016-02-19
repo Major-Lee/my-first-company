@@ -32,11 +32,12 @@ public class UserOAuthRpcService implements IUserOAuthRpcService{
 	}
 	@Override
 	public RpcResponseDTO<Map<String, Object>> createIdentifies(
+			Integer uid,
 			String identify,String auid, String nick, String avatar,
 			String device,String regIp,String deviceuuid, String ut
 			) {
 		logger.info(String.format("createIdentifies with identify[%s] auid [%s] nick[%s] avatar[%s]",identify,auid,nick,avatar));
-		return userOAuthUnitFacadeService.createOrUpdateIdentifies(identify, auid, nick, avatar, 
+		return userOAuthUnitFacadeService.createOrUpdateIdentifies(uid,identify, auid, nick, avatar, 
 				device, regIp, deviceuuid, ut);
 	}
 }

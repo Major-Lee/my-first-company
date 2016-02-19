@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
@@ -80,7 +81,7 @@ public class UserOAuthUnitFacadeService {
 	 * @param avatar
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> createOrUpdateIdentifies(String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut){
+	public RpcResponseDTO<Map<String, Object>> createOrUpdateIdentifies(Integer uid,String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut){
 		if(StringUtils.isEmpty(identify) || !BusinessEnumType.OAuthType.supported(identify)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"identify:".concat(identify)});
 		}
@@ -89,18 +90,34 @@ public class UserOAuthUnitFacadeService {
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
 			List<UserOAuthState> models = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
-			if(models == null || models.isEmpty()){//创建新用户
-				userExchange = userUnitFacadeService.commonOAuthUserCreate(nick, device, regIp, deviceuuid, UserType.getBySName(ut));
-				//exchangeDTO.setOauths(oauths);
-				//不进行异步消息发送通知
-				//deliverMessageService.sendUserRegisteredActionMessage(exchangeDTO.getUser().getId(),acc, null, device,regIp);
+			if(uid != null && uid.intValue() >0){
+				//第一步确认identify 和 auid 是否不存在
+				if(models != null && !models.isEmpty()){
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_OAUTH_DATA_ALREADY_EXIST,new String[]{identify,auid});
+				}
+				//第二步确认用户已经存在
+				User user = userService.getById(uid);
+				if(user == null){
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST,new String[]{uid.toString()});
+				}
+				userExchange = userUnitFacadeService.commonOAuthUserLogin(user.getId(),device,regIp,deviceuuid, UserType.getBySName(ut));
 			}else{
-				UserOAuthState userOAuthState = models.get(0);
-				userExchange = userUnitFacadeService.commonOAuthUserLogin(userOAuthState.getUid(),device,regIp,deviceuuid, UserType.getBySName(ut));
-				//exchangeDTO.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(exchangeDTO.getUser().getId()));
+				/*ModelCriteria mc = new ModelCriteria();
+				mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
+				List<UserOAuthState> models = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);*/
+				if(models == null || models.isEmpty()){//创建新用户
+					userExchange = userUnitFacadeService.commonOAuthUserCreate(nick, device, regIp, deviceuuid, UserType.getBySName(ut));
+					//exchangeDTO.setOauths(oauths);
+					//不进行异步消息发送通知
+					//deliverMessageService.sendUserRegisteredActionMessage(exchangeDTO.getUser().getId(),acc, null, device,regIp);
+				}else{
+					UserOAuthState userOAuthState = models.get(0);
+					userExchange = userUnitFacadeService.commonOAuthUserLogin(userOAuthState.getUid(),device,regIp,deviceuuid, UserType.getBySName(ut));
+					//exchangeDTO.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(exchangeDTO.getUser().getId()));
+				}
+				//UserOAuthStateDTO oauthStateDTO = 
+				userOAuthFacadeService.createOrUpdateIdentifies(userExchange.getUser().getId(), identify, auid, nick, avatar);
 			}
-			//UserOAuthStateDTO oauthStateDTO = 
-			userOAuthFacadeService.createOrUpdateIdentifies(userExchange.getUser().getId(), identify, auid, nick, avatar);
 			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));

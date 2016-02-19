@@ -24,12 +24,13 @@ public interface IUserOAuthRpcService {
 	
 	/**
 	 * 创建或更新第三方帐号关联信息
-	 * @param uid
+	 * 生成一个新的帐号
+	 * @param uid 如果uid！=null && uid >0 则为关联帐号操作，否则为新建
 	 * @param identify
 	 * @param auid
 	 * @param nick
 	 * @param avatar
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> createIdentifies(String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut);
+	public RpcResponseDTO<Map<String, Object>> createIdentifies(Integer uid,String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut);
 }

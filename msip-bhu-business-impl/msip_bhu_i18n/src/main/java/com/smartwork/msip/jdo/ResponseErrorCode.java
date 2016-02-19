@@ -162,6 +162,7 @@ public enum ResponseErrorCode {
 	
 	
 	USER_DATA_NOT_EXIST("301","user.data.notexist"),
+	USER_OAUTH_DATA_ALREADY_EXIST("301","user.oauth.data.already.exist"),
 	USER_TOKENS_GEN_ALREADY_FULL("310","user.tokens.gen.already.full"),
 	USER_TOKENS_INVALID("311","user.tokens.invalid"),
 	USER_AVATAR_UPLOAD_IMAGE_FILEFORMAT_INVALID("312","user.avatar.upload.image.fileformat.invalid"),

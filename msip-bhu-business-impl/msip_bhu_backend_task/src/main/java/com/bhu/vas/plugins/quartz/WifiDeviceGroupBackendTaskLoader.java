@@ -99,6 +99,11 @@ public class WifiDeviceGroupBackendTaskLoader {
 		}
 		logger.info(String.format("WifiDeviceGroupBackendTaskLoader ended total[%s]",total));
 	}
-	
-	//public 
+	/*public static void main(String[] argv){
+		
+		List<String> downCmds = new ArrayList<String>();
+		downCmds.add("1234");
+		downCmds.add("12343");
+		System.out.println(downCmds.toArray(new String[0]).length);
+	}*/
 }
