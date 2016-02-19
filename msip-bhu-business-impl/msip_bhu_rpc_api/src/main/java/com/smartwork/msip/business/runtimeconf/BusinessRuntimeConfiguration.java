@@ -114,7 +114,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             Device_SpeedTest_Download_url = PropertiesHelper.getString("device.speedtest.download.url", paramProperties, Device_SpeedTest_Download_url);
             Device_SpeedTest_Upload_url = PropertiesHelper.getString("device.speedtest.upload.url", paramProperties, Device_SpeedTest_Upload_url);
             Search_Result_Export_Dir = PropertiesHelper.getString("search.result.export.dir", paramProperties, Search_Result_Export_Dir);
-            String initialVersions = PropertiesHelper.getString("device.firmware.initial.versions", paramProperties, "AP106P06V1.2.15Build8064,AP106P06V1.3.0Build8482,AP106P06V1.3.2Build8715_TU");
+            String initialVersions = PropertiesHelper.getString("device.firmware.initial.versions", paramProperties, "AP106P06V1.3.0Build8482,AP106P06V1.3.2Build8715_TU");
             if(StringUtils.isNotEmpty(initialVersions)){
             	String[] versions = initialVersions.split(StringHelper.COMMA_STRING_GAP);
             	for(String version:versions){
