@@ -20,6 +20,8 @@ db/*.sqlite3
 **/.project
 **/msip-bhu-deploy/deploy/*
 .idea
+.metadata/
+.recommenders/
 *.iml
 **/.gitignore
 bhu-parent.ipr

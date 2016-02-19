@@ -7,6 +7,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -74,6 +79,10 @@ public class UserDeviceUnitFacadeService {
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+
+	@Resource
+	private WifiDeviceSettingService wifiDeviceSettingService;
+
 	
     //TODO：重复插入异常
     //1、首先得判定UserDevicePK(mac, uid) 是否存在
@@ -206,6 +215,19 @@ public class UserDeviceUnitFacadeService {
         }   	
     }
     
+    /**
+     * 客户端接口响应
+     * 期望目标：只有固件固化版本才考虑给客户端提示升级，其他版本由于有灰度的存在，升级还是很及时的
+     * 规则
+     * 		配置文件中定义固件固化版本定义在配置中并加载配置
+     * 		如果发现设备版本不是固件固化版本则直接false
+     * 		如果发现设备版本是固件固化版本则直接走检测升级流程
+     * 		
+     * @param uid
+     * @param mac
+     * @param appver
+     * @return
+     */
     public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid, String mac, String appver){
     	User user = userService.getById(uid);
     	if(user == null){
@@ -224,12 +246,18 @@ public class UserDeviceUnitFacadeService {
         	if(!wifiDevice.isOnline()){
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
         	}
-        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
-        	/*app检测设备是否需要升级的时候不进行定时升级指令的操作
-        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
-        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-        	}*/
+        	UpgradeDTO upgrade = null;
+        	if(!BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(wifiDevice.getOrig_swver())){
+        		//非固件固化定义的版本，直接返回不需要强制升级
+        		System.out.println(String.format("not initial device firmware version:[%s] for[%s]", wifiDevice.getOrig_swver(),wifiDevice.getId()));
+        	}else{
+            	upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
+            	/*app检测设备是否需要升级的时候不进行定时升级指令的操作
+            	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
+            		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
+            		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+            	}*/
+        	}
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
@@ -308,6 +336,9 @@ public class UserDeviceUnitFacadeService {
 					vtos = new ArrayList<UserDeviceVTO>();
 					//WifiDeviceVTO1 vto = null;
 					//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
+
+					List<String> macs = new ArrayList<String>();
+
 					for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
 						UserDeviceVTO userDeviceVTO = new UserDeviceVTO();
 						userDeviceVTO.setD_mac(wifiDeviceDocument.getD_mac());
@@ -322,7 +353,28 @@ public class UserDeviceUnitFacadeService {
 						userDeviceVTO.setD_type(wifiDeviceDocument.getD_type());
 	
 						vtos.add(userDeviceVTO);
+
+						macs.add(wifiDeviceDocument.getD_mac());
 					}
+
+					List<WifiDeviceSetting> wifiDeviceSettings = wifiDeviceSettingService.findByIds(macs, true, true);
+
+					int index = 0;
+					if (wifiDeviceSettings != null) {
+						for (int i= 0; i < macs.size(); i++) {
+							WifiDeviceSetting wifiDeviceSetting = wifiDeviceSettings.get(i);
+							if (wifiDeviceSetting != null) {
+								WifiDeviceSettingDTO setting_dto = wifiDeviceSetting.getInnerModel();
+								//信号强度和当前信道
+								String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
+								UserDeviceVTO userDeviceVTO = vtos.get(index);
+								userDeviceVTO.setD_power(powerAndRealChannel[0]);
+								userDeviceVTO.setD_channel(powerAndRealChannel[1]);
+							}
+							index ++;
+						}
+					}
+
 				}
 			}
 		}

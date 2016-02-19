@@ -1049,13 +1049,16 @@ public class DeviceBusinessFacadeService {
 					}*/
 					//如果是uRouter 插件更新下发策略
 					//查询配置上报的过程中，配置>0的情况下,并且 不存在指定的plugin
-					if((StringUtils.isNotEmpty(dto.getSequence()) && Integer.parseInt(dto.getSequence()) > 0) && !dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
-						String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
-								CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
-								deviceFacadeService);
-						//System.out.println("~~~~~~~~~~~~~2:cmd:"+pluginCmd);
-						afterQueryPayloads.add(pluginCmd);
+					if("H106".equals(wifiDevice.getHdtype())){//uRouter才下发，uRouter plus不下发
+						if((StringUtils.isNotEmpty(dto.getSequence()) && Integer.parseInt(dto.getSequence()) > 0) && !dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
+							String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
+									CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
+									deviceFacadeService);
+							//System.out.println("~~~~~~~~~~~~~2:cmd:"+pluginCmd);
+							afterQueryPayloads.add(pluginCmd);
+						}
 					}
+					
 					//System.out.println("~~~~~~~~~~~~~3:mac:"+wifiId);
 					
 					//如果是dhcp模式 则下发指令查询dhcp相关数据

@@ -37,6 +37,8 @@ public class UserFacadeService {
 	@Resource
 	private UserMobileDeviceStateService userMobileDeviceStateService;
 
+	//@Resource
+	//private UserOAuthStateService userOAuthStateService;
 	
 	public boolean clearUsersMarkByUid(int uid){
 		User byId = userService.getById(uid);
@@ -87,4 +89,26 @@ public class UserFacadeService {
 		if(result == null || result.isEmpty()) return null;
 		return result.get(0);
 	}
+	
+/*	public UserSnsStateDTO updateUserSnsInfo(int uid, ApplicationIdentify identify, GeneralOAuth2AccessToken generalOAuth2AccessToken) throws Exception{
+		UserSnsStatePK pk = new UserSnsStatePK(uid,identify.toString());
+		UserSnsState model = userSnsStateService.getById(pk);
+		System.out.println("++++++++++++++ updateUserSnsInfo :" + model);
+		if(model != null){
+			System.out.println("++++++++++++++ getJUser :" + generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
+			UserSnsFriendDTO snsUserDto = applicationSupport.getJUser(identify, generalOAuth2AccessToken, generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
+			System.out.println("++++++++++++++ getJUser :" + snsUserDto);
+			if(snsUserDto != null){
+				UserSnsStateDTO dto = new UserSnsStateDTO();
+				dto.setAuid(snsUserDto.getAuid());
+				dto.setNick(snsUserDto.getNick());
+				dto.setAvatar(snsUserDto.getAvatar());
+				dto.setIdentify(identify.toString());
+				model.putInnerModel(dto);
+				userSnsStateService.update(model);
+				return dto;
+			}
+		}
+		return null;
+	}*/
 }

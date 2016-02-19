@@ -158,8 +158,8 @@ public class UserDeviceController extends BaseController {
      * @param pageSize
      */
     @ResponseBody()
-    @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
-    public void pageBindedDevice(HttpServletResponse response,
+    @RequestMapping(value="/pagebinded_custom",method={RequestMethod.POST})
+    public void pageBindedDeviceCustom(HttpServletResponse response,
                                	 @RequestParam(required = true) Integer uid,
                                	 @RequestParam(required = false) Integer u_id,
                                  @RequestParam(required = false) String d_online,
@@ -170,6 +170,38 @@ public class UserDeviceController extends BaseController {
                                  ) {
         UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
         		s_content, pageNo, pageSize);
+//        System.out.println("ret===" + rpcResult.isEmpty());
+        if (rpcResult != null) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+        }
+    }
+
+
+    /**
+     * 新增云平台接口
+     * @param response
+     * @param uid
+     * @param u_id
+     * @param d_online
+     * @param s_content
+     * @param pageNo
+     * @param pageSize
+     */
+    @ResponseBody()
+    @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
+    public void pageBindedDevice(HttpServletResponse response,
+                                 @RequestParam(required = true) Integer uid,
+                                 @RequestParam(required = false) Integer u_id,
+                                 @RequestParam(required = false) String d_online,
+                                 @RequestParam(required = false) String s_content,
+                                 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                                 @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+
+    ) {
+        UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
+                s_content, pageNo, pageSize);
 //        System.out.println("ret===" + rpcResult.isEmpty());
         if (rpcResult != null) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));

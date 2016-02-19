@@ -10,6 +10,7 @@ import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -98,6 +99,20 @@ public class RpcResponseDTOBuilder {
 	}
 
 	
+	public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO,List<UserDeviceDTO> userDeviceDTOList){
+		Map<String,Object> ret = new HashMap<String,Object>();
+		ret.put(Key_User, exchangeDTO.getUser());
+		if(exchangeDTO.getToken() != null)
+			ret.put(Key_UserToken,exchangeDTO.getToken());
+		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(exchangeDTO.getUser().getMobileno()));
+		ret.put(Key_Cm, "60");
+		if(exchangeDTO.getOauths() != null && !exchangeDTO.getOauths().isEmpty())
+			ret.put(Key_UserOAuth, exchangeDTO.getOauths());
+		if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
+			ret.put(Key_Devices, userDeviceDTOList);
+		return ret;
+	}
+	
 	public static UserDTO builderUserDTOFromUser(User user,boolean isReg){
 		UserDTO ret = new UserDTO(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(),user.getUtype(),isReg);
 		ret.setAvatar(user.getAvatar());
@@ -127,6 +142,7 @@ public class RpcResponseDTOBuilder {
 		return ret;
 	}
 	public static String Key_User = "usr";
+	public static String Key_UserOAuth = "uoa";
 	public static String Key_UserToken = "utk";
 	public static String Key_UserToken_BBS = "utb";
 	public static String Key_Setting = "setting";
