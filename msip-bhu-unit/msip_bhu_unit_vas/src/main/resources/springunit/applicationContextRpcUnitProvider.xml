@@ -41,6 +41,9 @@
 		 -->
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
 		interface="com.bhu.vas.api.rpc.user.iservice.IUserRpcService" ref="userRpcService"/>
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"  
+		interface="com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService" ref="userOAuthRpcService"/>
+		
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
 		interface="com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService" ref="statisticsRpcService"/>
     <dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"

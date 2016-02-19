@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.common.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,19 +17,12 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.IGenerateDeviceSetting;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceBackendTaskService;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * 此任务暂定5分钟执行一次 根据配置的同时运行的任务数量决定是否需要重新把新的任务加入到任务池中

@@ -43,6 +43,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -214,6 +215,19 @@ public class UserDeviceUnitFacadeService {
         }   	
     }
     
+    /**
+     * 客户端接口响应
+     * 期望目标：只有固件固化版本才考虑给客户端提示升级，其他版本由于有灰度的存在，升级还是很及时的
+     * 规则
+     * 		配置文件中定义固件固化版本定义在配置中并加载配置
+     * 		如果发现设备版本不是固件固化版本则直接false
+     * 		如果发现设备版本是固件固化版本则直接走检测升级流程
+     * 		
+     * @param uid
+     * @param mac
+     * @param appver
+     * @return
+     */
     public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid, String mac, String appver){
     	User user = userService.getById(uid);
     	if(user == null){
@@ -232,12 +246,18 @@ public class UserDeviceUnitFacadeService {
         	if(!wifiDevice.isOnline()){
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
         	}
-        	UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
-        	/*app检测设备是否需要升级的时候不进行定时升级指令的操作
-        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
-        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-        	}*/
+        	UpgradeDTO upgrade = null;
+        	if(!BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(wifiDevice.getOrig_swver())){
+        		//非固件固化定义的版本，直接返回不需要强制升级
+        		System.out.println(String.format("not initial device firmware version:[%s] for[%s]", wifiDevice.getOrig_swver(),wifiDevice.getId()));
+        	}else{
+            	upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
+            	/*app检测设备是否需要升级的时候不进行定时升级指令的操作
+            	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
+            		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
+            		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+            	}*/
+        	}
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);
         	retDTO.setUid(uid);
