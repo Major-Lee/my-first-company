@@ -357,23 +357,23 @@ public class UserDeviceUnitFacadeService {
 						macs.add(wifiDeviceDocument.getD_mac());
 					}
 
-
-					List<WifiDeviceSetting> wifiDeviceSettings = wifiDeviceSettingService.findByIds(macs);
+					List<WifiDeviceSetting> wifiDeviceSettings = wifiDeviceSettingService.findByIds(macs, true, true);
 
 					int index = 0;
 					if (wifiDeviceSettings != null) {
-						for (WifiDeviceSetting wifiDeviceSetting : wifiDeviceSettings) {
-							WifiDeviceSettingDTO setting_dto = wifiDeviceSetting.getInnerModel();
-							//信号强度和当前信道
-							String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
-							UserDeviceVTO userDeviceVTO = vtos.get(index);
-							userDeviceVTO.setD_power(powerAndRealChannel[0]);
-							userDeviceVTO.setD_channel(powerAndRealChannel[1]);
-							index++;
+						for (int i= 0; i < macs.size(); i++) {
+							WifiDeviceSetting wifiDeviceSetting = wifiDeviceSettings.get(i);
+							if (wifiDeviceSetting != null) {
+								WifiDeviceSettingDTO setting_dto = wifiDeviceSetting.getInnerModel();
+								//信号强度和当前信道
+								String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
+								UserDeviceVTO userDeviceVTO = vtos.get(index);
+								userDeviceVTO.setD_power(powerAndRealChannel[0]);
+								userDeviceVTO.setD_channel(powerAndRealChannel[1]);
+							}
+							index ++;
 						}
 					}
-
-
 
 				}
 			}
