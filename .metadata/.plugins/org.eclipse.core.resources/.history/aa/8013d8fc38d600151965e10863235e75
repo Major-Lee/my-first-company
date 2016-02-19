@@ -1,9 +1,0 @@
-#Tue Feb 16 14:43:34 CST 2016
-org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.7
-encoding/src/main/resource=UTF-8
-eclipse.preferences.version=1
-encoding/src/test/resource=UTF-8
-encoding/src/main/java=UTF-8
-org.eclipse.jdt.core.compiler.source=1.7
-encoding/src/test/java=UTF-8
-org.eclipse.jdt.core.compiler.compliance=1.7
