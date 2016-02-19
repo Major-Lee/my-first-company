@@ -1,9 +1,12 @@
 package com.smartwork.msip.business.runtimeconf;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyResourceConfigurer;
 
 import com.smartwork.msip.cores.helper.PropertiesHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	private static final Logger logger = LoggerFactory.getLogger(BusinessRuntimeConfiguration.class);
@@ -42,7 +46,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		SystemNoneedCaptchaValidAccs.add("86 18519595789");//T3
 		SystemTestUsers.add(100335);
 		SystemNoneedCaptchaValidAccs.add("86 15910526881");//T3
-		SystemTestUsers.add(101767);	
+		SystemTestUsers.add(101767);
 	}
 	
 	public static void appendProperties(Properties paramProperties) {  
@@ -109,8 +113,16 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             
             Device_SpeedTest_Download_url = PropertiesHelper.getString("device.speedtest.download.url", paramProperties, Device_SpeedTest_Download_url);
             Device_SpeedTest_Upload_url = PropertiesHelper.getString("device.speedtest.upload.url", paramProperties, Device_SpeedTest_Upload_url);
-            
             Search_Result_Export_Dir = PropertiesHelper.getString("search.result.export.dir", paramProperties, Search_Result_Export_Dir);
+            String initialVersions = PropertiesHelper.getString("device.firmware.initial.versions", paramProperties, "AP106P06V1.2.15Build8064,AP106P06V1.3.0Build8482,AP106P06V1.3.2Build8715_TU");
+            if(StringUtils.isNotEmpty(initialVersions)){
+            	String[] versions = initialVersions.split(StringHelper.COMMA_STRING_GAP);
+            	for(String version:versions){
+            		Device_Firmware_Initial_Versions.add(version);
+            	}
+            }
+            
+            
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -195,6 +207,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String Setting_Syncfrds_all_Interval = "0.2";//客户端同步全量用户好友间隔 单位小时 默认0.2小时
 	public static String Setting_Syncfrds_increment_Interval = "0.3";//客户端同步增量用户好友间隔 单位小时 默认0.3小时
 	
+	
+	public static Set<String> Device_Firmware_Initial_Versions = new HashSet<String>();
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){
 		return SystemNoneedCaptchaValidAccs.contains(acc);
 	}
@@ -311,5 +325,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 			if(inviteid == specuid) return false;
 		}
 		return true;
+	}
+	
+	public static boolean isInitialDeviceFirmwareVersion(String orig_swver){
+		return Device_Firmware_Initial_Versions.contains(orig_swver);
 	}
 }
