@@ -73,9 +73,9 @@ public class WifiDeviceGroupBackendTaskLoader {
 			public void run() {
 			    System.out.println("ec start------------"+task.getId());
 			    String payload = autoGenerateCmds(task);
-			    System.out.println("payload：  " + payload);
+			    System.out.println("::::::::::::::::payload：  " + payload);
 			    List<DownCmds> downCmds = new ArrayList<DownCmds>();
-			    downCmds.add(DownCmds.builderDownCmds("84:82:f4:28:7a:ec", payload));
+			    downCmds.add(DownCmds.builderDownCmds("84:82:f4:23:07:0c", payload));
 			    try {
 				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
 				task.setState(WifiDeviceBackendTask.State_Completed);
@@ -187,7 +187,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 	String extparams = backendTask.getContext_var();
 
 	String payload = CMDBuilder.autoBuilderCMD4Opt(opt, ods,
-		"84:82:f4:28:7a:ec", backendTask.getId(), extparams,
+		"84:82:f4:23:07:0c", backendTask.getId(), extparams,
 		generateDeviceSetting);
 
 	wifiDeviceBackendTaskService.update(backendTask);
