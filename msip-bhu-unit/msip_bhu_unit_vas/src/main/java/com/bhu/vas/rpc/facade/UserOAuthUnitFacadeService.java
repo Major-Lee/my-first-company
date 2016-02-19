@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -106,7 +107,10 @@ public class UserOAuthUnitFacadeService {
 				mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
 				List<UserOAuthState> models = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);*/
 				if(models == null || models.isEmpty()){//创建新用户
-					userExchange = userUnitFacadeService.commonOAuthUserCreate(nick, device, regIp, deviceuuid, UserType.getBySName(ut));
+					String userNick = null;
+					if(nick != null && StringUtils.isNotEmpty(nick))
+						userNick = nick.concat(StringHelper.AT_STRING_GAP).concat(identify);
+					userExchange = userUnitFacadeService.commonOAuthUserCreate(userNick, device, regIp, deviceuuid, UserType.getBySName(ut));
 					//exchangeDTO.setOauths(oauths);
 					//不进行异步消息发送通知
 					//deliverMessageService.sendUserRegisteredActionMessage(exchangeDTO.getUser().getId(),acc, null, device,regIp);
@@ -116,8 +120,8 @@ public class UserOAuthUnitFacadeService {
 					//exchangeDTO.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(exchangeDTO.getUser().getId()));
 				}
 				//UserOAuthStateDTO oauthStateDTO = 
-				userOAuthFacadeService.createOrUpdateIdentifies(userExchange.getUser().getId(), identify, auid, nick, avatar);
 			}
+			userOAuthFacadeService.createOrUpdateIdentifies(userExchange.getUser().getId(), identify, auid, nick, avatar);
 			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
