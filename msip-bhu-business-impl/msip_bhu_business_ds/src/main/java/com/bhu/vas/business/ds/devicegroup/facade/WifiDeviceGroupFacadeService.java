@@ -298,7 +298,7 @@ public class WifiDeviceGroupFacadeService {
 		    });
 		}
 		
-		List<WifiDeviceBackendTask> returnList = new ArrayList<>();
+		List<WifiDeviceBackendTask> returnList = new ArrayList<WifiDeviceBackendTask>();
 		
 		for (int i = 0; i < size; i++) {
 			returnList.add(Tasklist.get(i));
