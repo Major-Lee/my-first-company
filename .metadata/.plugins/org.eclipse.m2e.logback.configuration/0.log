@@ -1,0 +1,830 @@
+2016-02-18 20:12:36,631 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_rpc_api:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_rpc_api\pom.xml.
+2016-02-18 20:12:38,307 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_i18n:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\pom.xml.
+2016-02-18 20:12:38,803 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_ds:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_ds\pom.xml.
+2016-02-18 20:12:39,197 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_redis_impl:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_redis_impl\pom.xml.
+2016-02-18 20:12:39,568 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_asynmessage:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_asynmessage\pom.xml.
+2016-02-18 20:12:41,565 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_kafka_asynmessage:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_kafka_asynmessage\pom.xml.
+2016-02-18 20:12:42,645 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-18 20:12:43,333 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_kafka_pure_asynmessage:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_kafka_pure_asynmessage\pom.xml.
+2016-02-18 20:12:43,894 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_springdata_search:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_springdata_search\pom.xml.
+2016-02-18 20:12:44,910 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_input_processor:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\pom.xml.
+2016-02-18 20:12:45,372 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_daemon_processor:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_daemon_processor\pom.xml.
+2016-02-18 20:12:46,503 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_captchacode:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_captchacode\pom.xml.
+2016-02-18 20:12:46,939 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_devices:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_devices\pom.xml.
+2016-02-18 20:12:47,373 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_rest_urouter:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_rest_urouter\pom.xml.
+2016-02-18 20:12:48,013 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_vas:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_vas\pom.xml.
+2016-02-18 20:12:48,631 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_unit_agent:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_agent\pom.xml.
+2016-02-18 20:12:48,979 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_business_push:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_push\pom.xml.
+2016-02-18 20:12:50,273 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_backend_online:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\pom.xml.
+2016-02-18 20:12:51,220 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_backend_wifistasniffer:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\pom.xml.
+2016-02-18 20:12:51,274 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-18 20:12:51,595 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_backend_modulestat:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\pom.xml.
+2016-02-18 20:12:51,629 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-18 20:12:52,654 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_backend_task:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\pom.xml.
+2016-02-18 20:12:52,986 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_rest:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_rest\pom.xml.
+2016-02-18 20:12:54,923 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_agent_rest:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_agent_rest\pom.xml.
+2016-02-18 20:12:55,121 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.bhu:msip_bhu_dataimport:1.0 @ E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\pom.xml.
+2016-02-18 20:13:14,417 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_i18n/src/main/java
+2016-02-18 20:13:14,418 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_i18n/src/main/java overlaps with sources folder /msip_bhu_i18n/src/main/java
+2016-02-18 20:13:14,418 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_i18n/src/main/resource
+2016-02-18 20:13:14,419 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_i18n/src/test/java
+2016-02-18 20:13:14,712 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_rpc_api/src/main/java
+2016-02-18 20:13:14,712 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_rpc_api/src/main/java overlaps with sources folder /msip_bhu_rpc_api/src/main/java
+2016-02-18 20:13:14,730 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_rpc_api/src/main/resource
+2016-02-18 20:13:14,731 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_rpc_api/src/test/java
+2016-02-18 20:13:14,731 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_rpc_api/src/test/java overlaps with sources folder /msip_bhu_rpc_api/src/test/java
+2016-02-18 20:13:14,732 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_rpc_api/src/test/resource
+2016-02-18 20:13:14,951 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_redis_impl/src/main/java
+2016-02-18 20:13:14,951 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_redis_impl/src/main/java overlaps with sources folder /msip_bhu_business_redis_impl/src/main/java
+2016-02-18 20:13:14,952 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_redis_impl/src/main/resource
+2016-02-18 20:13:14,953 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_redis_impl/src/test/java
+2016-02-18 20:13:14,953 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_redis_impl/src/test/resource
+2016-02-18 20:13:15,084 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_kafka_asynmessage/src/main/java
+2016-02-18 20:13:15,084 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_kafka_asynmessage/src/main/java overlaps with sources folder /msip_bhu_business_kafka_asynmessage/src/main/java
+2016-02-18 20:13:15,085 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_kafka_asynmessage/src/main/resource
+2016-02-18 20:13:15,085 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_kafka_asynmessage/src/main/resource
+2016-02-18 20:13:15,086 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_kafka_asynmessage/src/test/java
+2016-02-18 20:13:15,086 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_kafka_asynmessage/src/test/java overlaps with sources folder /msip_bhu_business_kafka_asynmessage/src/test/java
+2016-02-18 20:13:15,087 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_kafka_asynmessage/src/test/resource
+2016-02-18 20:13:15,313 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_modulestat/src/main/java
+2016-02-18 20:13:15,314 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_backend_modulestat/src/main/java overlaps with sources folder /msip_bhu_backend_modulestat/src/main/java
+2016-02-18 20:13:15,314 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_modulestat/src/main/resource
+2016-02-18 20:13:15,318 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_modulestat/src/main/resource
+2016-02-18 20:13:15,319 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_modulestat/src/test/java
+2016-02-18 20:13:15,633 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_ds/src/main/java
+2016-02-18 20:13:15,634 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_ds/src/main/java overlaps with sources folder /msip_bhu_business_ds/src/main/java
+2016-02-18 20:13:15,636 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_ds/src/main/resource
+2016-02-18 20:13:15,637 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_ds/src/test/java
+2016-02-18 20:13:15,637 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_ds/src/test/java overlaps with sources folder /msip_bhu_business_ds/src/test/java
+2016-02-18 20:13:15,638 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_ds/src/test/resource
+2016-02-18 20:13:15,786 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_push/src/main/java
+2016-02-18 20:13:15,787 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_push/src/main/java overlaps with sources folder /msip_bhu_business_push/src/main/java
+2016-02-18 20:13:15,787 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_push/src/main/resource
+2016-02-18 20:13:15,788 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_push/src/test/java
+2016-02-18 20:13:15,788 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_push/src/test/java overlaps with sources folder /msip_bhu_business_push/src/test/java
+2016-02-18 20:13:15,925 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_wifistasniffer/src/main/java
+2016-02-18 20:13:15,926 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_backend_wifistasniffer/src/main/java overlaps with sources folder /msip_bhu_backend_wifistasniffer/src/main/java
+2016-02-18 20:13:15,926 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_wifistasniffer/src/main/resource
+2016-02-18 20:13:15,927 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_wifistasniffer/src/main/resource
+2016-02-18 20:13:15,928 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_wifistasniffer/src/test/java
+2016-02-18 20:13:16,136 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_asynmessage/src/main/java
+2016-02-18 20:13:16,136 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_asynmessage/src/main/java overlaps with sources folder /msip_bhu_business_asynmessage/src/main/java
+2016-02-18 20:13:16,139 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_asynmessage/src/main/resource
+2016-02-18 20:13:16,140 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_asynmessage/src/test/java
+2016-02-18 20:13:16,140 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_asynmessage/src/test/java overlaps with sources folder /msip_bhu_business_asynmessage/src/test/java
+2016-02-18 20:13:16,141 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_asynmessage/src/test/resource
+2016-02-18 20:13:16,318 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_springdata_search/src/main/java
+2016-02-18 20:13:16,318 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_springdata_search/src/main/java overlaps with sources folder /msip_bhu_business_springdata_search/src/main/java
+2016-02-18 20:13:16,319 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_springdata_search/src/main/resource
+2016-02-18 20:13:16,320 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_springdata_search/src/test/java
+2016-02-18 20:13:16,320 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_springdata_search/src/test/java overlaps with sources folder /msip_bhu_business_springdata_search/src/test/java
+2016-02-18 20:13:16,320 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_springdata_search/src/test/resource
+2016-02-18 20:13:16,932 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_online/src/main/java
+2016-02-18 20:13:16,932 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_backend_online/src/main/java overlaps with sources folder /msip_bhu_backend_online/src/main/java
+2016-02-18 20:13:16,933 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_online/src/main/resource
+2016-02-18 20:13:16,934 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_online/src/main/resource
+2016-02-18 20:13:16,935 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_online/src/test/java
+2016-02-18 20:13:17,166 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_task/src/main/java
+2016-02-18 20:13:17,166 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_backend_task/src/main/java overlaps with sources folder /msip_bhu_backend_task/src/main/java
+2016-02-18 20:13:17,167 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_task/src/main/resource
+2016-02-18 20:13:17,167 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_backend_task/src/main/resource
+2016-02-18 20:13:17,168 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_backend_task/src/test/java
+2016-02-18 20:13:17,426 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_captchacode/src/main/java
+2016-02-18 20:13:17,426 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_captchacode/src/main/java overlaps with sources folder /msip_bhu_unit_captchacode/src/main/java
+2016-02-18 20:13:17,426 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_captchacode/src/main/resources
+2016-02-18 20:13:17,429 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_captchacode/src/main/resources
+2016-02-18 20:13:17,432 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_captchacode/src/test/java
+2016-02-18 20:13:17,433 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_captchacode/src/test/java overlaps with sources folder /msip_bhu_unit_captchacode/src/test/java
+2016-02-18 20:13:17,932 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_kafka_pure_asynmessage/src/main/java
+2016-02-18 20:13:17,932 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_kafka_pure_asynmessage/src/main/java overlaps with sources folder /msip_bhu_business_kafka_pure_asynmessage/src/main/java
+2016-02-18 20:13:17,933 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_kafka_pure_asynmessage/src/main/resource
+2016-02-18 20:13:17,936 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_kafka_pure_asynmessage/src/main/resource
+2016-02-18 20:13:17,940 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_business_kafka_pure_asynmessage/src/test/java
+2016-02-18 20:13:17,940 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_business_kafka_pure_asynmessage/src/test/java overlaps with sources folder /msip_bhu_business_kafka_pure_asynmessage/src/test/java
+2016-02-18 20:13:17,940 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_business_kafka_pure_asynmessage/src/test/resource
+2016-02-18 20:13:18,020 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_devices/src/main/java
+2016-02-18 20:13:18,020 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_devices/src/main/java overlaps with sources folder /msip_bhu_unit_devices/src/main/java
+2016-02-18 20:13:18,020 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_devices/src/main/resources
+2016-02-18 20:13:18,021 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_devices/src/main/resources
+2016-02-18 20:13:18,022 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_devices/src/test/java
+2016-02-18 20:13:18,022 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_devices/src/test/java overlaps with sources folder /msip_bhu_unit_devices/src/test/java
+2016-02-18 20:13:18,022 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_devices/src/test/resources
+2016-02-18 20:13:18,265 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_agent_rest/src/main/java
+2016-02-18 20:13:18,265 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_agent_rest/src/main/java overlaps with sources folder /msip_bhu_agent_rest/src/main/java
+2016-02-18 20:13:18,266 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_agent_rest/src/main/resource
+2016-02-18 20:13:18,266 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_agent_rest/src/main/resource
+2016-02-18 20:13:18,267 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_agent_rest/src/test/java
+2016-02-18 20:13:18,267 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_agent_rest/src/test/java overlaps with sources folder /msip_bhu_agent_rest/src/test/java
+2016-02-18 20:13:22,173 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_daemon_processor/src/main/java
+2016-02-18 20:13:22,173 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_daemon_processor/src/main/java overlaps with sources folder /msip_bhu_unit_daemon_processor/src/main/java
+2016-02-18 20:13:22,174 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_daemon_processor/src/main/resources
+2016-02-18 20:13:22,174 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_daemon_processor/src/main/resources
+2016-02-18 20:13:22,175 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_daemon_processor/src/test/java
+2016-02-18 20:13:22,175 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_daemon_processor/src/test/java overlaps with sources folder /msip_bhu_unit_daemon_processor/src/test/java
+2016-02-18 20:13:22,403 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_dataimport/src/main/java
+2016-02-18 20:13:22,404 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_dataimport/src/main/java overlaps with sources folder /msip_bhu_dataimport/src/main/java
+2016-02-18 20:13:22,405 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_dataimport/src/main/resource
+2016-02-18 20:13:22,406 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_dataimport/src/main/resource
+2016-02-18 20:13:22,406 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_dataimport/src/test/java
+2016-02-18 20:13:22,627 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_rest/src/main/java
+2016-02-18 20:13:22,627 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_rest/src/main/java overlaps with sources folder /msip_bhu_rest/src/main/java
+2016-02-18 20:13:22,628 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_rest/src/main/resource
+2016-02-18 20:13:22,628 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_rest/src/main/resource
+2016-02-18 20:13:22,629 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_rest/src/test/java
+2016-02-18 20:13:22,630 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_rest/src/test/java overlaps with sources folder /msip_bhu_rest/src/test/java
+2016-02-18 20:13:25,236 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_rest_urouter/src/main/java
+2016-02-18 20:13:25,236 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_rest_urouter/src/main/java overlaps with sources folder /msip_bhu_unit_rest_urouter/src/main/java
+2016-02-18 20:13:25,237 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_rest_urouter/src/main/resources
+2016-02-18 20:13:25,241 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_rest_urouter/src/main/resources
+2016-02-18 20:13:25,246 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_rest_urouter/src/test/java
+2016-02-18 20:13:25,247 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_rest_urouter/src/test/java overlaps with sources folder /msip_bhu_unit_rest_urouter/src/test/java
+2016-02-18 20:13:25,717 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_agent/src/main/java
+2016-02-18 20:13:25,717 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_agent/src/main/java overlaps with sources folder /msip_bhu_unit_agent/src/main/java
+2016-02-18 20:13:25,717 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_agent/src/main/resources
+2016-02-18 20:13:25,718 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_agent/src/main/resources
+2016-02-18 20:13:25,719 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_agent/src/test/java
+2016-02-18 20:13:25,720 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_agent/src/test/java overlaps with sources folder /msip_bhu_unit_agent/src/test/java
+2016-02-18 20:13:25,996 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_input_processor/src/main/java
+2016-02-18 20:13:25,996 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_input_processor/src/main/java overlaps with sources folder /msip_bhu_unit_input_processor/src/main/java
+2016-02-18 20:13:25,997 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_input_processor/src/main/resources
+2016-02-18 20:13:25,997 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_input_processor/src/main/resources
+2016-02-18 20:13:25,998 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_input_processor/src/test/java
+2016-02-18 20:13:26,265 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_vas/src/main/java
+2016-02-18 20:13:26,265 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_vas/src/main/java overlaps with sources folder /msip_bhu_unit_vas/src/main/java
+2016-02-18 20:13:26,265 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_vas/src/main/resources
+2016-02-18 20:13:26,266 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /msip_bhu_unit_vas/src/main/resources
+2016-02-18 20:13:26,266 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /msip_bhu_unit_vas/src/test/java
+2016-02-18 20:13:26,266 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Resources folder /msip_bhu_unit_vas/src/test/java overlaps with sources folder /msip_bhu_unit_vas/src/test/java
+2016-02-18 20:13:26,726 [Worker-0] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 23 project(s) in 70 sec
+2016-02-18 20:13:32,825 [Worker-18] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-18 20:13:33,106 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:33,111 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:33,112 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 9 resources
+2016-02-18 20:13:33,239 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:33,241 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:33,241 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:13:33,253 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-18 20:13:35,021 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:35,022 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:35,022 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2016-02-18 20:13:35,060 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:35,061 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:35,062 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:35,063 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:13:36,079 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:36,080 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:36,081 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:13:36,152 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:36,152 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\src\test\java
+2016-02-18 20:13:36,152 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\src\test\resource
+2016-02-18 20:13:39,964 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:39,978 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 50 resources
+2016-02-18 20:13:40,885 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-18 20:13:40,905 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:40,905 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:40,905 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:13:47,885 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:47,885 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:13:47,917 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:13:47,982 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:13:48,010 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:48,010 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:13:48,021 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_rest\src\test\resource
+2016-02-18 20:13:49,627 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:49,628 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:49,629 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 13 resources
+2016-02-18 20:13:49,754 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:49,754 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:13:49,765 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-18 20:13:51,360 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:51,361 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:51,361 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:13:51,365 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:51,366 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:51,366 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:13:54,042 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:54,042 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:54,043 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:13:54,048 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:54,048 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_redis_impl\src\test\java
+2016-02-18 20:13:54,048 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:13:56,423 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:56,424 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:13:56,446 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-18 20:13:56,505 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:56,506 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:13:56,506 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:13:59,984 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:13:59,984 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:14:00,044 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:00,081 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:00,121 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:00,122 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\src\test\java
+2016-02-18 20:14:00,122 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\src\test\resource
+2016-02-18 20:14:01,239 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:01,240 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:01,484 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-18 20:14:01,608 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:01,616 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:01,616 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-18 20:14:01,616 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-18 20:14:04,116 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:04,117 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:04,117 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:14:04,157 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:04,157 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:04,157 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_push\src\test\resource
+2016-02-18 20:14:04,860 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-18 20:14:05,737 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:05,737 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:05,738 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:14:05,808 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-18 20:14:05,814 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:05,814 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\src\test\java
+2016-02-18 20:14:05,814 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\src\test\resource
+2016-02-18 20:14:07,338 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:07,339 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:07,339 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2016-02-18 20:14:07,414 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 9 resources
+2016-02-18 20:14:07,423 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:07,423 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\src\test\java
+2016-02-18 20:14:07,423 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\src\test\resource
+2016-02-18 20:14:08,510 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-18 20:14:08,818 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:08,819 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:08,819 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:14:08,927 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-18 20:14:08,933 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:08,933 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\src\test\java
+2016-02-18 20:14:08,933 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\src\test\resource
+2016-02-18 20:14:10,100 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:10,101 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:10,109 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:10,144 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:14:10,164 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:10,164 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:10,164 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_agent_rest\src\test\resource
+2016-02-18 20:14:12,972 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:12,972 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:12,973 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-18 20:14:13,047 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:14:13,124 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:13,125 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:13,127 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_agent\src\test\resources
+2016-02-18 20:14:14,463 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:14,464 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:14,464 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-18 20:14:14,511 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-18 20:14:14,539 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:14,539 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:14,577 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_captchacode\src\test\resources
+2016-02-18 20:14:15,632 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:15,633 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:15,635 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-18 20:14:16,040 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:14:16,163 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:16,164 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:16,180 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_daemon_processor\src\test\resources
+2016-02-18 20:14:17,310 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:17,310 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:17,312 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 9 resources
+2016-02-18 20:14:17,398 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-18 20:14:17,411 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:17,411 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:17,411 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-18 20:14:19,164 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:19,164 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:19,204 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-18 20:14:19,227 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-18 20:14:19,233 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:19,233 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\src\test\java
+2016-02-18 20:14:19,234 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\src\test\resources
+2016-02-18 20:14:20,811 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:20,812 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:20,812 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:20,944 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:20,961 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:20,961 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:20,970 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_rest_urouter\src\test\resources
+2016-02-18 20:14:22,250 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:22,251 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-18 20:14:22,251 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:22,336 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:14:22,357 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:14:22,357 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-18 20:14:22,371 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_vas\src\test\resources
+2016-02-18 20:16:45,241 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:16:45,245 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:16:45,252 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-18 20:16:45,254 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-18 20:16:45,275 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-18 20:16:45,276 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-18 20:16:45,276 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 08:38:28,979 [Worker-13] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-19 08:38:33,027 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:33,031 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:33,032 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 9 resources
+2016-02-19 08:38:33,090 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:33,092 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:33,093 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:38:33,157 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-19 08:38:36,068 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:36,069 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:36,071 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2016-02-19 08:38:36,089 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:36,091 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:36,092 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:36,095 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:38:38,581 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:38,582 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:38,582 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:38:38,584 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:38,585 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\src\test\java
+2016-02-19 08:38:38,585 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\src\test\resource
+2016-02-19 08:38:39,711 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:39,720 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 50 resources
+2016-02-19 08:38:39,882 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-19 08:38:39,885 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:39,885 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:39,885 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:38:46,260 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:46,261 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:38:46,288 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:38:46,320 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:38:46,394 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:46,394 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:38:46,395 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_rest\src\test\resource
+2016-02-19 08:38:51,309 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:51,311 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:51,312 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 13 resources
+2016-02-19 08:38:51,318 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:51,319 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:38:51,320 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-19 08:38:54,648 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:54,649 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:54,649 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:38:54,652 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:54,652 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:54,653 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:38:56,073 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:56,074 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:56,075 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:38:56,080 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:56,080 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_redis_impl\src\test\java
+2016-02-19 08:38:56,080 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:38:57,382 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:57,385 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:38:57,386 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 08:38:57,393 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:57,394 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:38:57,395 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:38:59,783 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:59,784 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:38:59,844 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:38:59,861 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:38:59,896 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:38:59,897 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\src\test\java
+2016-02-19 08:38:59,897 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\src\test\resource
+2016-02-19 08:39:02,229 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:02,230 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:02,233 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 08:39:02,236 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:02,245 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:02,246 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 08:39:02,246 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 08:39:03,197 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:03,198 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:03,198 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:39:03,200 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:03,201 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:03,201 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_push\src\test\resource
+2016-02-19 08:39:04,166 [Worker-10] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-19 08:39:04,540 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:04,540 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:04,541 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:39:04,562 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-19 08:39:04,579 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:04,580 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\src\test\java
+2016-02-19 08:39:04,580 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\src\test\resource
+2016-02-19 08:39:06,010 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:06,011 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:06,011 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2016-02-19 08:39:06,908 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 9 resources
+2016-02-19 08:39:07,280 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:07,280 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\src\test\java
+2016-02-19 08:39:07,280 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\src\test\resource
+2016-02-19 08:39:07,930 [Worker-10] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-19 08:39:08,281 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:08,282 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:08,282 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:39:08,285 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-19 08:39:08,332 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:08,332 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\src\test\java
+2016-02-19 08:39:08,332 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\src\test\resource
+2016-02-19 08:39:09,194 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:09,195 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:09,205 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:09,219 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:39:09,253 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:09,254 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:09,254 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_agent_rest\src\test\resource
+2016-02-19 08:39:13,448 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:13,449 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:13,449 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-19 08:39:13,516 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:39:13,567 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:13,568 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:13,569 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_agent\src\test\resources
+2016-02-19 08:39:14,699 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:14,700 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:14,700 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-19 08:39:14,702 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-19 08:39:14,775 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:14,775 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:14,784 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_captchacode\src\test\resources
+2016-02-19 08:39:15,758 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:15,758 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:15,784 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-19 08:39:15,797 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:39:15,813 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:15,814 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:15,822 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_daemon_processor\src\test\resources
+2016-02-19 08:39:16,893 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:16,894 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:16,895 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 9 resources
+2016-02-19 08:39:16,897 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 5 resources
+2016-02-19 08:39:16,969 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:16,970 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:16,970 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2016-02-19 08:39:17,764 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:17,765 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:18,109 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
+2016-02-19 08:39:18,123 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2016-02-19 08:39:18,151 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:18,152 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\src\test\java
+2016-02-19 08:39:18,152 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\src\test\resources
+2016-02-19 08:39:20,287 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:20,288 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:20,288 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:20,291 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:20,353 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:20,353 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:20,365 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_rest_urouter\src\test\resources
+2016-02-19 08:39:21,407 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:21,408 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 08:39:21,408 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:21,410 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 08:39:21,461 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 08:39:21,462 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 08:39:21,462 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_vas\src\test\resources
+2016-02-19 09:03:43,711 [Worker-32] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-19 09:03:44,868 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:44,871 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:44,871 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:44,871 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:44,874 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:44,875 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:44,875 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:45,366 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:45,366 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:45,366 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:45,367 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:45,368 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:45,369 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:45,369 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:46,024 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:46,025 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:46,025 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:46,026 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:46,026 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\src\test\java
+2016-02-19 09:03:46,026 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_i18n\src\test\resource
+2016-02-19 09:03:46,565 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:46,565 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:46,565 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:46,567 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:46,567 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:46,567 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,396 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:47,396 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,396 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,397 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,399 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:47,399 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,399 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_rest\src\test\resource
+2016-02-19 09:03:47,977 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:47,977 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,977 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,979 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:47,979 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:47,980 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:48,942 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:48,942 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:48,942 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:48,944 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:48,944 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:48,944 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:49,976 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:49,976 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:49,977 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:49,979 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:49,979 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_redis_impl\src\test\java
+2016-02-19 09:03:49,979 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:50,630 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:50,630 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:50,630 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:50,632 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:50,632 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:50,632 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:51,514 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:51,515 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:51,515 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:51,515 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:51,516 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:51,516 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\src\test\java
+2016-02-19 09:03:51,517 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_dataimport\src\test\resource
+2016-02-19 09:03:52,595 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:52,596 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:52,596 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:52,596 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:52,597 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:52,597 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:03:52,598 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:03:53,270 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:53,270 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:53,271 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:53,272 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:53,273 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:53,273 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_business_push\src\test\resource
+2016-02-19 09:03:53,878 [Worker-32] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-19 09:03:54,216 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:54,217 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:54,218 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:54,218 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:54,219 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:54,219 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\src\test\java
+2016-02-19 09:03:54,220 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_wifistasniffer\src\test\resource
+2016-02-19 09:03:55,564 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:55,564 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:55,565 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:55,565 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:55,567 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:55,567 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\src\test\java
+2016-02-19 09:03:55,567 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_online\src\test\resource
+2016-02-19 09:03:56,087 [Worker-32] WARN  o.e.m.c.i.embedder.EclipseLogger - The metadata C:\Users\Administrator.LBDZ-20131003NM\.m2\repository\org\slf4j\slf4j-api\maven-metadata-apache.snapshots.xml is invalid: end tag name </head> must be the same as start tag <meta> from line 4 (position: TEXT seen ...<title>404</title>\r\n</head>... @6:8) 
+2016-02-19 09:03:56,390 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:56,390 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,391 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,391 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,392 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:56,392 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\src\test\java
+2016-02-19 09:03:56,392 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_modulestat\src\test\resource
+2016-02-19 09:03:56,932 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:56,933 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,933 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,933 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,935 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:56,935 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:56,935 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_agent_rest\src\test\resource
+2016-02-19 09:03:58,692 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:58,693 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:58,694 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:58,694 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:58,696 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:58,696 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:58,696 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_agent\src\test\resources
+2016-02-19 09:03:59,341 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:59,341 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:59,341 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:59,341 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:59,342 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:03:59,343 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:03:59,343 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_captchacode\src\test\resources
+2016-02-19 09:04:00,138 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:00,138 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:00,138 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:00,138 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:00,139 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:00,139 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:00,139 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_daemon_processor\src\test\resources
+2016-02-19 09:04:01,270 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:01,270 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:01,270 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:01,271 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:01,272 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:01,272 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:01,272 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,013 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:02,013 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,013 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,013 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,014 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:02,014 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\src\test\java
+2016-02-19 09:04:02,014 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_input_processor\src\test\resources
+2016-02-19 09:04:02,959 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:02,959 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,960 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,960 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,961 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:02,962 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:02,962 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_rest_urouter\src\test\resources
+2016-02-19 09:04:03,913 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:03,913 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:03,913 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:03,913 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:03,915 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:04:03,915 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:04:03,915 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-unit\msip_bhu_unit_vas\src\test\resources
+2016-02-19 09:14:02,443 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:02,447 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:14:02,454 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:14:02,456 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:14:02,477 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:02,477 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:14:02,477 [Worker-35] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:14:03,170 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:03,196 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 50 resources
+2016-02-19 09:14:03,207 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2016-02-19 09:14:03,210 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:03,210 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:14:03,211 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:14:04,065 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:04,072 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2016-02-19 09:14:04,074 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:14:04,078 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:04,079 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:14:04,079 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 09:14:24,985 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:24,987 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:14:24,989 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:14:24,992 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:14:25,005 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:14:25,005 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:14:25,005 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:16:03,316 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:03,318 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:03,322 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:16:03,324 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:03,333 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:03,333 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:16:03,333 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:16:13,232 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:13,234 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:13,236 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:16:13,238 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:13,245 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:13,246 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:16:13,246 [Worker-31] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:16:24,547 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:24,549 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:24,551 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:16:24,554 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:24,561 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:24,561 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:16:24,561 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:16:37,441 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:37,442 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:37,444 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:16:37,446 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:16:37,453 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:16:37,453 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:16:37,453 [Worker-36] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:31:04,333 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:31:04,334 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:31:04,336 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:31:04,339 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:31:04,345 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:31:04,345 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:31:04,345 [Worker-41] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:40:40,099 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:40:40,101 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:40:40,103 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:40:40,107 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:40:40,116 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:40:40,117 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:40:40,117 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:42:23,421 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:42:23,423 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:42:23,427 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:42:23,431 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:42:23,443 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:42:23,443 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:42:23,443 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:43:37,270 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:43:37,271 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:43:37,274 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:43:37,276 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:43:37,283 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:43:37,283 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:43:37,283 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:46:13,465 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:46:13,466 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:46:13,469 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:46:13,472 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:46:13,479 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:46:13,479 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:46:13,479 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:47:27,886 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:47:27,888 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:47:27,890 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:47:27,892 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:47:27,898 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:47:27,898 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:47:27,898 [Worker-43] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:48:10,990 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:48:10,991 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:48:10,993 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:48:10,995 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:48:11,002 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:48:11,002 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:48:11,002 [Worker-37] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:48:53,324 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:48:53,325 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:48:53,327 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:48:53,329 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:48:53,336 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:48:53,337 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:48:53,337 [Worker-45] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:49:26,246 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:49:26,248 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:49:26,251 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:49:26,253 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:49:26,261 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:49:26,261 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:49:26,261 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 09:52:48,293 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:52:48,294 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:52:48,297 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 09:52:48,299 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 09:52:48,305 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 09:52:48,305 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 09:52:48,305 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:04:54,569 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:04:54,570 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:04:54,572 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:04:54,575 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:04:54,583 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:04:54,583 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:04:54,583 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:05:19,335 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:05:19,338 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:05:19,342 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:05:19,345 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:05:19,354 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:05:19,354 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:05:19,354 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:06:33,361 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:06:33,363 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:06:33,365 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:06:33,367 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:06:33,374 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:06:33,375 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:06:33,375 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:07:02,907 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:07:02,909 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:07:02,912 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:07:02,915 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:07:02,924 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:07:02,924 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:07:02,924 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:07:15,841 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:07:15,842 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:07:15,844 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:07:15,847 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:07:15,853 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:07:15,853 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:07:15,854 [Worker-54] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:08:52,177 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:08:52,177 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 10:08:52,177 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 10:08:52,177 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 10:08:52,178 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:08:52,179 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-02-19 10:08:52,179 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-api\msip_bhu_agent_rest\src\test\resource
+2016-02-19 10:11:31,846 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:11:31,847 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:11:31,849 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:11:31,852 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:11:31,859 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:11:31,859 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:11:31,859 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:13:19,482 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:13:19,484 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:13:19,486 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:13:19,488 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:13:19,497 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:13:19,497 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:13:19,497 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:13:22,039 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:13:22,041 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:13:22,044 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:13:22,046 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:13:22,053 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:13:22,054 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:13:22,054 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
+2016-02-19 10:15:15,082 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:15:15,083 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:15:15,085 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 14 resources
+2016-02-19 10:15:15,089 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 8 resources
+2016-02-19 10:15:15,099 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-02-19 10:15:15,099 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\java
+2016-02-19 10:15:15,099 [Worker-60] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory E:\Gitcodespace\msip_bhu_business\msip-bhu-business-impl\msip_bhu_backend_task\src\test\resource
