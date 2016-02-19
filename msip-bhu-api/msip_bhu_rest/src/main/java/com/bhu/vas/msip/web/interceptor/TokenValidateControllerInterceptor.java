@@ -68,6 +68,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/console/sessions/create");
 		ignoreTokensValidateUriSet.add("/console/sessions/validates");
 		ignoreTokensValidateUriSet.add("/console/search/fetch_by_condition_message");
+		
+		
+		ignoreTokensValidateUriSet.add("/oauth/create");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");
@@ -103,7 +106,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			HttpServletResponse response, Object handler) throws Exception {
 		String uri = request.getServletPath();
 		String UID = request.getParameter(RuntimeConfiguration.Param_UidRequest);
-		if(uriStartWithThenSkip(uri)){
+		if(uriStartWithThenSkip(uri) || isIgnoreUri(uri)){
 			logger.info(String.format("Req uri[%s] URL[%s] uid [%s]",uri, request.getRequestURI(), UID));
 			return true;
 		}
@@ -117,7 +120,10 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
 			return false;
 		}
-		if(isIgnoreUri(uri)) return true;
+		/*if(isIgnoreUri(uri)) {
+			
+			return true;
+		}*/
 		
 		String accessToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
 		if(StringUtils.isEmpty(accessToken)){

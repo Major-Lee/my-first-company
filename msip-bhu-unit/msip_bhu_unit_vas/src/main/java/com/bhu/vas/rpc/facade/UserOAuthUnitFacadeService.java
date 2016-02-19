@@ -106,8 +106,10 @@ public class UserOAuthUnitFacadeService {
 					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

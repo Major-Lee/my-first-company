@@ -27,7 +27,7 @@ esac
 #echo "starting"
 
 
-echo "starting deploy2=>"$Deploy2Server0
+echo "starting deploy2=>"$Deploy2ServerWeb
 sleep 5
 
 #回到msip-bhu-deploy目录进入deploy目录，并且创建每日的预发布文件存储目录

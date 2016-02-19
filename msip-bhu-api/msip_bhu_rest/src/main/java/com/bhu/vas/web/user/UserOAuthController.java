@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -75,7 +74,9 @@ public class UserOAuthController extends BaseController{
 	
 	@ResponseBody()
 	@RequestMapping(value="/create", method={RequestMethod.GET,RequestMethod.POST})
-	public void create(ModelAndView mv, HttpServletRequest request, HttpServletResponse response, 
+	public void create(
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			@RequestParam(required = false, value="du") String deviceuuid,
 			@RequestParam(required=true) String identify,
 			@RequestParam(required=true) String auid,
@@ -97,6 +98,7 @@ public class UserOAuthController extends BaseController{
 			}else{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
+			//SpringMVCHelper.renderJson(response, ResponseSuccess.embed(Boolean.TRUE));
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}

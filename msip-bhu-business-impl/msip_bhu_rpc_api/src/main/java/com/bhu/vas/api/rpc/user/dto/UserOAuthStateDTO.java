@@ -1,10 +1,11 @@
 package com.bhu.vas.api.rpc.user.dto;
 /**
- * SNS用户数据DTO
+ * OAuth用户数据DTO
  * @author Edmond Lee
  *
  */
-public class UserOAuthStateDTO{
+@SuppressWarnings("serial")
+public class UserOAuthStateDTO implements java.io.Serializable{
 	private String auid;
 	private String nick;
 	private String avatar;
