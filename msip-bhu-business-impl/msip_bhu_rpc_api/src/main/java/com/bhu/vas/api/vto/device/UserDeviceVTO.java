@@ -30,6 +30,9 @@ public class UserDeviceVTO implements Serializable {
 
     private String d_type;
 
+    private String d_power;
+
+    private String d_channel;
 
     public String getD_mac() {
         return d_mac;
@@ -110,4 +113,21 @@ public class UserDeviceVTO implements Serializable {
     public void setD_type(String d_type) {
         this.d_type = d_type;
     }
+
+    public String getD_power() {
+        return d_power;
+    }
+
+    public void setD_power(String d_power) {
+        this.d_power = d_power;
+    }
+
+    public String getD_channel() {
+        return d_channel;
+    }
+
+    public void setD_channel(String d_channel) {
+        this.d_channel = d_channel;
+    }
+
 }
