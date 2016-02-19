@@ -82,7 +82,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 			    } catch (Exception e) {
 				task.setState(WifiDeviceBackendTask.State_Failed);	
 			    }
-
+			    task.setCompleted_at(new Date());
 			    wifiDeviceBackendTaskService.update(task);
 			    System.out.println("-------------------------over");
 			}
