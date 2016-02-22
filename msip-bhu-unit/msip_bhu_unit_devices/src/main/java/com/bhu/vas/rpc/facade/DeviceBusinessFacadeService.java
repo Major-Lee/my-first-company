@@ -330,6 +330,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void wifiDeviceForceBind(String ctx, String payload, ParserHeader parserHeader){
 		String mac = parserHeader.getMac().toLowerCase();
+		String keynum = StringHelper.EMPTY_STRING_GAP;
 		String keystatus = WifiDeviceForceBindDTO.KEY_STATUS_VALIDATE_FAILED;
 		WifiDeviceForceBindDTO dto = null;
 		try{
@@ -345,9 +346,21 @@ public class DeviceBusinessFacadeService {
 			    		Integer uid = user.getId();
 			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 			    		if(wifiDevice != null){
-					    	UserDevice userDevice = null;
 					    	Integer old_uid = userDeviceService.fetchBindUid(mac);
-					    	if(uid != old_uid){
+					    	if(old_uid != null){
+					    		User oldUser = userService.getById(old_uid);
+					    		if(oldUser != null){
+					    			keynum = oldUser.getMobileno();
+					    		}
+					    	}else{
+					    		UserDevice userDevice = new UserDevice();
+						        userDevice.setId(new UserDevicePK(mac, uid));
+						        userDevice.setCreated_at(new Date());
+						        userDeviceService.insert(userDevice);
+						        
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
+					    	}
+/*					    	if(uid != old_uid){
 					    		if(old_uid != null){
 					    			userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
 					    		}
@@ -362,7 +375,7 @@ public class DeviceBusinessFacadeService {
 						        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
 						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 						        
-					    	}
+					    	}*/
 					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
 			    		}
 			    	}
@@ -373,6 +386,7 @@ public class DeviceBusinessFacadeService {
 			keystatus = WifiDeviceForceBindDTO.KEY_STATUS_FAILED;
 		}finally{
 			if(dto != null){
+				dto.setKeynum(keynum);
 				dto.setKeystatus(keystatus);
 				String cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
 						DeviceHelper.builderDSKeyStatusOuter(dto));
