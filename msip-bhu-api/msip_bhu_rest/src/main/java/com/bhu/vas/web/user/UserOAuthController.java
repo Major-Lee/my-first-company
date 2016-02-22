@@ -27,7 +27,7 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping(value = "/oauth")
+@RequestMapping(value = "/account/oauth")
 public class UserOAuthController extends BaseController{
 	
 	@Resource
