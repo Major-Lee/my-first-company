@@ -1464,7 +1464,8 @@ public class DeviceBusinessFacadeService {
 				}
 			}
 			//如果任务是成功完成的 进行新配置数据合并
-			if(task_with_paylaod != null && WifiDeviceDownTask.State_Done.equals(status)){
+			if(task_with_paylaod != null && 
+					(WifiDeviceDownTask.State_Done.equals(status)||WifiDeviceDownTask.State_Ok.equals(status))){
 				WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 				if(entity != null){
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
@@ -1490,6 +1491,9 @@ public class DeviceBusinessFacadeService {
 						}
 					}
 				}
+				//通过任务的opt和subopt可以判定出什么类型的指令，进行具体操作
+				//TODO:增加访客网络设备响应处理
+				//TODO:增加信道切换设备响应处理
 			}
 		}else{//特殊处理，自动下发的增值指令中会修改配置
 			if(WifiDeviceDownTask.State_Done.equals(status)){
