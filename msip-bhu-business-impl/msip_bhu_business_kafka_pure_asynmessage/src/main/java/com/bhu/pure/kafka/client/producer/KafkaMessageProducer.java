@@ -18,6 +18,7 @@ package com.bhu.pure.kafka.client.producer;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -26,30 +27,47 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.pure.kafka.client.KafkaMessageClient;
+import com.bhu.pure.kafka.client.config.ClientConfig;
 
 public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClient implements IKafkaMessageProducer<KEY, VALUE>{
 	private static final Logger logger = LoggerFactory.getLogger(KafkaMessageProducer.class);
 	
 	private KafkaProducer<KEY, VALUE> producer;
+	private String producerId;
+	private Properties producerProperties;
 	//properties set
 	//private TopicPartition producerTopicPartition;
 	
 	public KafkaMessageProducer() {
+		this(null);
+	}
+	
+	public KafkaMessageProducer(String producerId) {
+		this.producerId = producerId;
 		initialize();
 	}
 	
 	public void initialize(){
 		logger.info("KafkaMessageProducer start initialize");
 		
-		Properties clientProperties = loadProperties();
-		if(clientProperties == null){
+		producerProperties = loadProperties();
+		if(producerProperties == null){
 			throw new RuntimeException("KafkaMessageProducer initialize failed require properties object");
 		}
-		producer = new KafkaProducer<KEY, VALUE>(clientProperties);
+		loadProducerIdProperties();
+		
+		producer = new KafkaProducer<KEY, VALUE>(producerProperties);
 		
 		//parseProducerClientConfig(clientProperties);
 	}
 	
+	public void loadProducerIdProperties(){
+		//load consumer bootstrap.servers
+		String consumerBootstrapServers = producerProperties.getProperty(ClientConfig.builderBootstrapServersWithId(producerId));
+		if(StringUtils.isNotEmpty(consumerBootstrapServers)){
+			producerProperties.setProperty(ClientConfig.BOOTSTRAP_SERVERS, consumerBootstrapServers);
+		}
+	}
 /*	public void parseProducerClientConfig(Properties clientProperties){
 		try{
 			String producer_topic = clientProperties.getProperty(ClientConfig.PRODUCER_TOPIC);
@@ -106,6 +124,15 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 	public void sendAsync(String topic, Integer partition, KEY key, VALUE value, Callback callback){
 		producer.send(new ProducerRecord<KEY, VALUE>(topic, partition, key, value), callback);
 	}
+
+	public String getProducerId() {
+		return producerId;
+	}
+
+	public void setProducerId(String producerId) {
+		this.producerId = producerId;
+		initialize();
+	}
 	
 /*	@Override
 	public RecordMetadata send(ProducerRecord<KEY, VALUE> record){
@@ -121,4 +148,6 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 	public void sendAsync(ProducerRecord<KEY, VALUE> record, Callback callback){
 		producer.send(record, callback);
 	}*/
+	
+	
 }

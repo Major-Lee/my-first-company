@@ -15,11 +15,17 @@ public class ClientConfig {
 		public static final int ALLPARTITION = -1;
 	}*/
 	
+	public static final String BOOTSTRAP_SERVERS = "bootstrap.servers";
 	//配置生产者的具体一个或多个subscribe topic
 	public static final String CONSUMER_SUBSCRIBE_TOPICS = "consumer.subscribe.topics";
 	
-	public static String builderConsumerSubscribeTopicsWithId(String consumerId){
+	public static String builderSubscribeTopicsWithId(String consumerId){
 		if(StringUtils.isEmpty(consumerId)) return CONSUMER_SUBSCRIBE_TOPICS;
 		return consumerId.concat(StringHelper.POINT_STRING_GAP).concat(CONSUMER_SUBSCRIBE_TOPICS);
+	}
+	
+	public static String builderBootstrapServersWithId(String id){
+		if(StringUtils.isEmpty(id)) return BOOTSTRAP_SERVERS;
+		return id.concat(StringHelper.POINT_STRING_GAP).concat(BOOTSTRAP_SERVERS);
 	}
 }
