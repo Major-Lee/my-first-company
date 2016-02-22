@@ -651,7 +651,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_VapWorkModeChangeItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" auth_key_rsa=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
-	public static final String DeviceSetting_KeyStatusItem = "<ITEM keystatus=\"%s\" />";
+	public static final String DeviceSetting_KeyStatusItem = "<ITEM keynum=\"%s\" keystatus=\"%s\" />";
 	
 	
 	public static final String DeviceSetting_Start_HttpAdItem 	= "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
