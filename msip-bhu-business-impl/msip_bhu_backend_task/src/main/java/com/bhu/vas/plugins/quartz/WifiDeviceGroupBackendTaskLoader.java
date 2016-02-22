@@ -63,7 +63,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 
 	int activeCount = ((ThreadPoolExecutor) task_exec).getActiveCount();
 	if (activeCount < 3) {
-	    List<WifiDeviceBackendTask> pendingTask = wifiDeviceGroupFacadeService.fetchRecentPendingBackendTask(3 - activeCount);
+	    final List<WifiDeviceBackendTask> pendingTask = wifiDeviceGroupFacadeService.fetchRecentPendingBackendTask(3 - activeCount);
 
 	    if (pendingTask != null && !pendingTask.isEmpty()) {
 		for (final WifiDeviceBackendTask task : pendingTask) {
@@ -122,7 +122,12 @@ public class WifiDeviceGroupBackendTaskLoader {
 				   }
 				}
 			    }
-			    Long total = task.getTotal();
+			    
+			    Long total;
+			    if (pendingTask != null && !pendingTask.isEmpty())
+				total = task.getTotal();
+			    else
+				total = 0L;
 			    logger.info(String.format("WifiDeviceGroupBackendTaskLoader ended total[%s]", total));
 			}
 		    }));
