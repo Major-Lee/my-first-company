@@ -208,7 +208,7 @@ public class KafkaMessageTest {
 		
 		Thread.sleep(2000l);
 		//producer
-//		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
 		while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
@@ -217,7 +217,7 @@ public class KafkaMessageTest {
 				System.out.println("successed");
 			}*/
 			
-			RecordMetadata ret = StringKafkaMessageProducer.getInstance().send(TOPIC1, null, String.valueOf(key), "msg"+key);
+			RecordMetadata ret = producer.send(TOPIC1, null, String.valueOf(key), "msg"+key);
 			Thread.sleep(2000l);
 			key++;
 		}
