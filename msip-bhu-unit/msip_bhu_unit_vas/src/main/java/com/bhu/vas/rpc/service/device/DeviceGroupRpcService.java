@@ -56,10 +56,10 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		return deviceGroupUnitFacadeRpcService.fetch_backendtask(uid,state,pageNo,pageSize);
 	}
 	@Override
-	public RpcResponseDTO<Boolean> generateBackendTask(int uid, long gid, String opt,
+	public RpcResponseDTO<Boolean> generateBackendTask(int uid, String message, String opt,
 			String subopt, String extparams) {
-		logger.info(String.format("generateBackendTask uid:%s gid:%s opt:%s subopt:%s extparams:%s",uid,gid,opt,subopt,extparams));
-		return deviceGroupUnitFacadeRpcService.generateBackendTask(uid,gid,opt,subopt,extparams);
+		logger.info(String.format("generateBackendTask uid:%s message:%s opt:%s subopt:%s extparams:%s",uid,message,opt,subopt,extparams));
+		return deviceGroupUnitFacadeRpcService.generateBackendTask(uid,message,opt,subopt,extparams);
 	}
 	/*@Override
 	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
@@ -71,5 +71,4 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService{
 		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
 		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids);
 	}*/
-
 }

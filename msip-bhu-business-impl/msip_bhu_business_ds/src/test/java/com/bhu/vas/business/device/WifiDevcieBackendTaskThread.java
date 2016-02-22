@@ -16,11 +16,10 @@ public class WifiDevcieBackendTaskThread implements Runnable{
 			this.wifiDeviceBackendTaskService = wifiDeviceBackendTaskService;
 		}
 		
-		public Long createTask(Long gid,Long total) throws Exception{
+		public Long createTask(String message,Long total) throws Exception{
 			WifiDeviceBackendTask bean = new WifiDeviceBackendTask();
 			System.out.println(wifiDeviceBackendTaskService);
-			System.out.println(total+","+gid);
-			bean.setGid(gid);
+			bean.setMessage(message);
 			bean.setTotal(total);
 			bean.setStarted_at(new Date());
 			bean = wifiDeviceBackendTaskService.insert(bean);

@@ -484,7 +484,7 @@ public class WifiDeviceGroupFacadeService {
     private BackendTaskVTO fromBackendTask(WifiDeviceBackendTask dgroup) {
 	BackendTaskVTO vto = new BackendTaskVTO();
 	vto.setId(dgroup.getId());
-	vto.setGid(dgroup.getGid());
+	vto.setMessage(dgroup.getMessage());;
 	vto.setTotal(dgroup.getTotal());
 	vto.setState(dgroup.getState());
 	vto.setCurrent(dgroup.getCurrent());
@@ -494,11 +494,11 @@ public class WifiDeviceGroupFacadeService {
 	return vto;
     }
 
-    public void generateBackendTask(int uid, long gid, String opt,
+    public void generateBackendTask(int uid, String message, String opt,
 	    String subopt, String extparams) {
 	WifiDeviceBackendTask entity = new WifiDeviceBackendTask();
 	entity.setUid(uid);
-	entity.setGid(gid);
+	entity.setMessage(message);
 	entity.setOpt(opt);
 	entity.setSubopt(subopt);
 	entity.setContext_var(extparams);

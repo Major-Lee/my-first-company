@@ -181,12 +181,12 @@ public class ConsoleDeviceGroupController extends BaseController {
 	@RequestMapping(value = "/generate_backendtask", method = { RequestMethod.POST })
 	public void generate_backendtask(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(required = true) int uid, 
-			@RequestParam(required = true) long gid,
+			@RequestParam(required = true) String message,
 			@RequestParam(required = true) String opt,
 			@RequestParam(required = false, defaultValue = "00") String subopt,
 			@RequestParam(required = false) String extparams){
 
-		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.generateBackendTask(uid, gid, opt,subopt, extparams);
+		RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.generateBackendTask(uid, message, opt,subopt, extparams);
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
