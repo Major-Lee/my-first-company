@@ -71,6 +71,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 			@Override
 			public void run() {
 			    task.setState(WifiDeviceBackendTask.State_Reading);
+			    task.setStarted_at(new Date());
 			    wifiDeviceBackendTaskService.update(task);
 			    final List<String> macList = new ArrayList<String>();
 			    //获取搜索条件下的设备mac
@@ -89,9 +90,10 @@ public class WifiDeviceGroupBackendTaskLoader {
 				    task.setTotal(pages.getTotalElements());
 				}
 			    });
-			    
 
 			    List<DownCmds> downCmds = new ArrayList<DownCmds>();
+			    task.setState(WifiDeviceBackendTask.State_Doing);
+			    wifiDeviceBackendTaskService.update(task);
 			    //下发指令
 			    for (int i = 0; i < macList.size(); i++) {
 				String payload = autoGenerateCmds(task,macList.get(i));
