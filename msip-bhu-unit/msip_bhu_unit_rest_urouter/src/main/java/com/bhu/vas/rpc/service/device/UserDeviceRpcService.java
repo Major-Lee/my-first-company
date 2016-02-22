@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
@@ -187,4 +188,17 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 		logger.info(String.format("forceDeviceUpdate with uid[%s] mac[%s]", uid,mac));
 		return userDeviceUnitFacadeService.forceDeviceUpdate(uid, mac);
 	}
+	
+	
+	@Override
+	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac){
+		logger.info(String.format("deviceDetail uid[%s] mac[%s]",uid,mac));
+		return userDeviceUnitFacadeService.deviceDetail(uid, mac);
+	}
+	
+    @Override
+    public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid) {
+        logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
+        return userDeviceUnitFacadeService.userDetail(uid,countrycode,acc,tid);
+    }
 }

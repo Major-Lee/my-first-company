@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
+import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 
 /**
@@ -49,4 +50,8 @@ public interface IUserDeviceRpcService {
 
     RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate( int uid,String mac,String appver);
     RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac);
+    
+	RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
+	
+    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
 }
