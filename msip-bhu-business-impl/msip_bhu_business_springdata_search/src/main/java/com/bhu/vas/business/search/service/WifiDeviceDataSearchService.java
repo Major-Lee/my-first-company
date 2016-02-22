@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.search.BusinessIndexDefine;
@@ -17,6 +18,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionPatte
 import com.bhu.vas.business.search.core.field.FieldDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
 public class WifiDeviceDataSearchService extends AbstractDataSearchConditionService<WifiDeviceDocument>{
@@ -63,5 +65,15 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		return super.searchByConditionMessage(scm);
+	}
+	
+	/**
+	 * 根据message动态条件进行scan的iterator
+	 * @param message
+	 * @param notify
+	 */
+	public void iteratorAll(String message, IteratorNotify<Page<WifiDeviceDocument>> notify){
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
+				message, notify);
 	}
 }
