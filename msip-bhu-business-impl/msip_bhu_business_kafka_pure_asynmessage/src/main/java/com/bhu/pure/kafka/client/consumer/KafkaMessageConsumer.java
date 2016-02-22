@@ -259,7 +259,8 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 							subscribeTopicsChangedNotify();
 						}
 						System.out.println("start consumer poll");
-						ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
+						ConsumerRecords<KEY, VALUE> records = consumer.poll(100);
+						System.out.println("end consumer poll");
 						notify.notifyComming(consumerId, records);
 					}
 				}catch (WakeupException e) {
@@ -318,10 +319,10 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		}));
 	}
 	
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
+//	@Override
+//	public long pollSize() {
+//		return DEFAULT_POLLSIZE;
+//	}
 	
 	public String getConsumerId() {
 		return consumerId;

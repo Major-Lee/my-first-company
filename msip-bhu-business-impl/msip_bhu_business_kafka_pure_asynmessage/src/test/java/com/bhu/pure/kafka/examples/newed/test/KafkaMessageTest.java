@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import com.bhu.pure.kafka.assigner.Assigner;
@@ -23,7 +24,7 @@ public class KafkaMessageTest {
 	public static final int PARTITION1 = 1;
 	
 	public static void main(String[] args) throws Exception{
-//		TestConsumerSubscriber();
+		//TestConsumerSubscriber();
 //		TestConsumerAssgin();
 //		TestProducerAsync();
 //		TestDTO();
@@ -83,12 +84,12 @@ public class KafkaMessageTest {
 	 */
 	public static void TestConsumerSubscriber() throws Exception{
 		//consumer
-		SimpleKafkaMessageConsumer consumer = new SimpleKafkaMessageConsumer();
+		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
 		TopicSubscriber subscriber = new TopicSubscriber(Collections.singletonList(TOPIC1));
-		consumer.doSubscribe(subscriber, new PollIteratorNotify<ConsumerRecords<Integer, String>>(){
+		consumer.doSubscribe(subscriber, new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
-			public void notifyComming(String consumerId, ConsumerRecords<Integer, String> records) {
-				for(ConsumerRecord<Integer, String> record : records){
+			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
+				for(ConsumerRecord<String, String> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
 									record.topic(), record.partition(),
@@ -102,7 +103,7 @@ public class KafkaMessageTest {
 		
 		Thread.sleep(2000l);
 		//producer
-		SimpleKafkaMessageProducer producer = new SimpleKafkaMessageProducer();
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
 		while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
@@ -110,7 +111,8 @@ public class KafkaMessageTest {
 			if(ret != null){
 				System.out.println("successed");
 			}*/
-			RecordMetadata ret = producer.send(TOPIC1, null, key, "msg"+key);
+			System.out.println("send message " + key);
+			RecordMetadata ret = producer.send(TOPIC1, null, key+"", "msg"+key);
 			Thread.sleep(2000l);
 			key++;
 		}
@@ -244,26 +246,41 @@ public class KafkaMessageTest {
 		});
 		
 		Thread.sleep(2000l);
+		
 		//producer
-//		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+/*		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
-		int topic_index = 1;
 		while(true){
-/*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
 			RecordMetadata ret = producer.send(record);
 			if(ret != null){
 				System.out.println("successed");
-			}*/
+			}
+			System.out.println("send message " + key);
+			RecordMetadata ret = producer.send("t11", null, key+"", "msg"+key);
+			Thread.sleep(2000l);
+			key++;
+		}*/
+		//producer
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		int key = 0;
+		int topic_index = 1;
+		while(true){
+//			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+//			RecordMetadata ret = producer.send(record);
+//			if(ret != null){
+//				System.out.println("successed");
+//			}
 			System.out.println("send message " + key);
 			for(int i = 0;i<topic_index;i++){
-				StringKafkaMessageProducer.getInstance().send("topic"+i, null, String.valueOf(key), "msg"+key+"-"+System.currentTimeMillis());
+				RecordMetadata ret = producer.send("tt"+i, null, String.valueOf(key), "msg"+key+"-"+System.currentTimeMillis());
 			}
 			
 			Thread.sleep(2000l);
 			key++;
 			
 			System.out.println("addSubscribeTopic");
-			consumer1.addSubscribeTopic("topic"+topic_index);
+			consumer1.addSubscribeTopic("tt"+topic_index);
 			topic_index++;
 //			
 //				Thread.sleep(2000l);
