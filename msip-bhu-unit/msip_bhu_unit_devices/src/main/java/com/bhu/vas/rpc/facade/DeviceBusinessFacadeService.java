@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
-import com.bhu.vas.api.dto.WifiDeviceForceBindDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
@@ -39,6 +38,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -331,10 +331,10 @@ public class DeviceBusinessFacadeService {
 	public void wifiDeviceForceBind(String ctx, String payload, ParserHeader parserHeader){
 		String mac = parserHeader.getMac().toLowerCase();
 		String keynum = StringHelper.EMPTY_STRING_GAP;
-		String keystatus = WifiDeviceForceBindDTO.KEY_STATUS_VALIDATE_FAILED;
-		WifiDeviceForceBindDTO dto = null;
+		String keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_VALIDATE_FAILED;
+		WifiDeviceSettingSyskeyDTO dto = null;
 		try{
-			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceForceBindDTO.class);
+			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceSettingSyskeyDTO.class);
 			if(dto != null){
 				//mobileno
 				String mobileno = dto.getKeynum();
@@ -376,14 +376,14 @@ public class DeviceBusinessFacadeService {
 						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 						        
 					    	}*/
-					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
+					        keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 			    		}
 			    	}
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			keystatus = WifiDeviceForceBindDTO.KEY_STATUS_FAILED;
+			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_FAILED;
 		}finally{
 			if(dto != null){
 				dto.setKeynum(keynum);
@@ -1172,12 +1172,38 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
+		
+		
 		//如果不符合urouter的配置约定 则下发指定修改配置
 /*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
 		}*/
 		//deliverMessageService.sendDeviceSettingChangedActionMessage(mac, init_default_acl);
 		return state;
+	}
+	
+	public void checkSyskey(String mac, WifiDeviceSettingDTO dto){
+		String cmdPayload = null;
+		WifiDeviceSettingSyskeyDTO syskey_dto = dto.getSyskey();
+		if(syskey_dto != null){
+			String keynum = syskey_dto.getKeynum();
+			String keystatus = syskey_dto.getKeystatus();
+			
+			Integer uid = userDeviceService.fetchBindUid(mac);
+			if(uid == null){
+				if(StringUtils.isNotEmpty(keynum)){
+					cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
+							DeviceHelper.builderDSKeyStatusOuter(new WifiDeviceSettingSyskeyDTO(
+									StringHelper.EMPTY_STRING_GAP, WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED)));
+					
+				}
+			}else{
+				
+			}
+			
+			if(StringUtils.isNotEmpty(cmdPayload))
+				deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
+		}
 	}
 	
 	/**

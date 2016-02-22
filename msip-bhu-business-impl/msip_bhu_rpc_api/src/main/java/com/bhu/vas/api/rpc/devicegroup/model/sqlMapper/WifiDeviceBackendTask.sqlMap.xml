@@ -5,7 +5,7 @@
 <mapper namespace="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask">
 	<resultMap id="modelResult" type="wifiDeviceBackendTask">
 		<id property="id" column="id" />
-		<result property="gid" column="gid" />
+		<result property="message" column="message" />
 		<result property="uid" column="uid" />
 		<result property="total" column="total" />
 		<result property="current" column="current" />
@@ -28,7 +28,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-			gid,
+			message,
 			uid,
 			total,
 			current,
@@ -45,7 +45,7 @@
 
 	<sql id="modelInsertValues">
 		#{id},
-		#{gid},
+		#{message},
 		#{uid},
 		#{total},
 		#{current},
@@ -61,7 +61,7 @@
 
 	<sql id="modelUpdateValues">
 		id = #{id},
-		gid = #{gid},
+		message = #{message},
 		uid = #{uid},
 		total =#{total},
 		current = #{current},

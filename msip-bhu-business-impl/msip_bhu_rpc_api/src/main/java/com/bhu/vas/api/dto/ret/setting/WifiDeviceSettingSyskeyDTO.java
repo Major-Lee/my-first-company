@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto;
+package com.bhu.vas.api.dto.ret.setting;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
  *
  */
 @SuppressWarnings("serial")
-public class WifiDeviceForceBindDTO implements Serializable, DeviceSettingBuilderDTO{
+public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBuilderDTO{
 	/**
 	 *  1.	key值存在，并且绑定成功。返回status = 3；
 		2.	key值存在，绑定不成功。返回status=2；
@@ -23,6 +23,15 @@ public class WifiDeviceForceBindDTO implements Serializable, DeviceSettingBuilde
 	private String keynum;
 	//status
 	private String keystatus;
+	
+	public WifiDeviceSettingSyskeyDTO(){
+		
+	}
+	
+	public WifiDeviceSettingSyskeyDTO(String keynum, String keystatus){
+		this.keynum = keynum;
+		this.keystatus = keystatus;
+	}
 	
 	public String getKeynum() {
 		return keynum;
