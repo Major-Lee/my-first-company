@@ -214,13 +214,13 @@ public class AsyncMsgHandleService {
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
 				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 					//如果是指定的版本出厂版本 并且 第一次注册创建时间超过指定定义的天数,立刻升级
-					if(BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(upgrade.getCurrentDVB()) 
+					/*if(BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(upgrade.getCurrentDVB()) 
 							&& !DateTimeHelper.isTimeDaysRecent(wifiDevice.getCreated_at().getTime(), BusinessRuntimeConfiguration.Device_Firmware_ForceUpdateImmediately_AfterDays)){
 						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
 					}else{
 						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
-					}
-					
+					}*/
+					payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
 				//added by Edmond Lee @20160106 for mark workmode changed of device
 				if(!dto.isNewWifi()){
