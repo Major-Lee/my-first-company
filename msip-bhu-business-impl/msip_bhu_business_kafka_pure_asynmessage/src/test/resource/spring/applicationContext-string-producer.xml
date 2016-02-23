@@ -12,6 +12,7 @@
        default-lazy-init="true">
 
 	<!-- SpringContext Holder-->
-	<bean id="stringKafkaMessageProducer" class="com.bhu.pure.kafka.examples.newed.client.producer.StringKafkaMessageProducer" lazy-init="false" />
-	
+	<bean id="deliverMessageTopicProducer" class="com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer" lazy-init="false" >
+		<property name="producerId" value="deliver"/>
+	</bean>
 </beans>

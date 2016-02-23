@@ -12,6 +12,8 @@
        default-lazy-init="true">
 
 	<!-- SpringContext Holder-->
-	<bean id="stringKafkaMessageConsumer" class="com.bhu.pure.kafka.examples.newed.client.consumer.StringKafkaMessageConsumer" lazy-init="false" />
+	<bean id="deliverMessageTopicConsumer" class="com.bhu.pure.kafka.business.consumer.DeliverMessageTopicConsumer" lazy-init="false" init-method="init">
+		<property name="consumerId" value="deliver"/>
+	</bean>
 	
 </beans>
