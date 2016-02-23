@@ -88,7 +88,6 @@ public class WifiDeviceGroupBackendTaskLoader {
 			    try {
 				// 获取搜索条件下的设备mac
 				wifiDeviceDataSearchService.iteratorAll(task.getMessage(),new IteratorNotify<Page<WifiDeviceDocument>>() {
-				BufferedWriter bw = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (logFile), "UTF-8")); 
 				@Override
 				 public void notifyComming(Page<WifiDeviceDocument> pages) {
 				     for (WifiDeviceDocument doc : pages) {
@@ -98,8 +97,10 @@ public class WifiDeviceGroupBackendTaskLoader {
 					 }
 					    //每个设备信息都写入txt日志	
 					    try {
-						bw.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
-						bw.flush();
+						BufferedWriter bw2 = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (logFile), "UTF-8")); 
+						bw2.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
+						bw2.flush();
+						bw2.close();
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }

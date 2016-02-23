@@ -136,8 +136,7 @@ public class DeviceGroupUnitFacadeRpcService{
 		try{
 		    
 		    OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
-		    OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
-		    if(opt_cmd == null || (opt_cmd.getNo().equals("151")&&ods_cmd ==null)){
+		    if(opt_cmd == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		    }
 		    wifiDeviceGroupFacadeService.generateBackendTask(uid,message,opt,subopt,extparams);
