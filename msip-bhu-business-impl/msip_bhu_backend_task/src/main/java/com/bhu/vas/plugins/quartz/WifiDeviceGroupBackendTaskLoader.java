@@ -101,10 +101,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 					 }
 					    //每个设备信息都写入txt日志	
 					    try {
-						bw3.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
+						bw3.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s] \n", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
 						bw3.flush();
-						System.out
-							.println(":::::::::::::::::::::::::::::::::::::::::::::::::");
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }
@@ -118,7 +116,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 				logger.info("WifiDeviceGroupBackendTaskLoader  create txt error ");
 			    }finally {
 				try {
-				    BufferedWriter bw = new BufferedWriter(new FileWriter(logFile));
+				    BufferedWriter bw = new BufferedWriter(new FileWriter(logFile,true));
 				    bw.write(String.format("WifiDeviceGroupBackendTaskLoader total:[%s]  on_line device:[%s]",task.getTotal(),macList.size()));
 				    bw.flush();
 				    bw.close();
