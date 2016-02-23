@@ -113,6 +113,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 				bw.close();
 			    } catch (Exception e) {
 				e.printStackTrace();
+				task.setState(WifiDeviceBackendTask.State_Failed);
+				wifiDeviceBackendTaskService.update(task);
 				logger.info("WifiDeviceGroupBackendTaskLoader  create txt error ");
 			    }finally {
 				try {
