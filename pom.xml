@@ -163,6 +163,11 @@
             </dependency>
             <dependency>
                 <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_kafka_pure_asynmessage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_springdata_search</artifactId>
                 <version>${project.version}</version>
             </dependency>            
