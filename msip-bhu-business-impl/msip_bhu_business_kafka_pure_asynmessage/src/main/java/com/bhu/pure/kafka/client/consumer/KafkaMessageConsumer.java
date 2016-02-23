@@ -183,7 +183,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	
 	@Override
 	public boolean doSubscribeTopics(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
-		if(subscribe_topics.isEmpty()) return false;
+		//if(subscribe_topics.isEmpty()) return false;
 		return doSubscribe(new TopicSubscriber(subscribe_topics), notify);
 	}
 	
@@ -255,6 +255,9 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 			public void run() {
 				try{
 					while(!closed.get()){
+						if(subscribe_topics.isEmpty()){
+							Thread.sleep(1000);
+						}
 						if(subscribe_topics_changed.get()){
 							subscribeTopicsChangedNotify();
 						}
