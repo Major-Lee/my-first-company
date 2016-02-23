@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -74,6 +75,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 	    if (pendingTask != null && !pendingTask.isEmpty()) {
 		for (final WifiDeviceBackendTask task : pendingTask) {
 		    task_exec.submit((new Runnable() {
+			@SuppressWarnings("resource")
 			@Override
 			public void run() {
 			    //io写入txt类型日志
@@ -86,10 +88,12 @@ public class WifiDeviceGroupBackendTaskLoader {
 			    final List<String> macList = new ArrayList<String>();
 
 			    try {
+				final BufferedWriter bw3 = new BufferedWriter(new FileWriter(logFile));
 				// 获取搜索条件下的设备mac
 				wifiDeviceDataSearchService.iteratorAll(task.getMessage(),new IteratorNotify<Page<WifiDeviceDocument>>() {
-				@Override
+				 @Override
 				 public void notifyComming(Page<WifiDeviceDocument> pages) {
+				    
 				     for (WifiDeviceDocument doc : pages) {
 					 // 判断是否在线
 					 if (doc.getD_online().equals("1")) {
@@ -97,10 +101,10 @@ public class WifiDeviceGroupBackendTaskLoader {
 					 }
 					    //每个设备信息都写入txt日志	
 					    try {
-						BufferedWriter bw2 = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (logFile), "UTF-8")); 
-						bw2.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
-						bw2.flush();
-						bw2.close();
+						bw3.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
+						bw3.flush();
+						System.out
+							.println(":::::::::::::::::::::::::::::::::::::::::::::::::");
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }
@@ -108,12 +112,13 @@ public class WifiDeviceGroupBackendTaskLoader {
 					task.setTotal(pages.getTotalElements());
 				    }
 				});
+				bw3.close();
 			    } catch (Exception e) {
 				e.printStackTrace();
 				logger.info("WifiDeviceGroupBackendTaskLoader  create txt error ");
 			    }finally {
 				try {
-				    BufferedWriter bw = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (logFile), "UTF-8"));
+				    BufferedWriter bw = new BufferedWriter(new FileWriter(logFile));
 				    bw.write(String.format("WifiDeviceGroupBackendTaskLoader total:[%s]  on_line device:[%s]",task.getTotal(),macList.size()));
 				    bw.flush();
 				    bw.close();
