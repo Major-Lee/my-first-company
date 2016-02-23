@@ -216,8 +216,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 	    @RequestParam(required = false, defaultValue = "00") String subopt,
 	    @RequestParam(required = false) String extparams) {
 
-	RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService
-		.generateBackendTask(uid, message, opt, subopt, extparams);
+	RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.generateBackendTask(uid, message, opt, subopt, extparams);
 	if (!rpcResult.hasError())
 	    SpringMVCHelper.renderJson(response,
 		    ResponseSuccess.embed(rpcResult.getPayload()));
