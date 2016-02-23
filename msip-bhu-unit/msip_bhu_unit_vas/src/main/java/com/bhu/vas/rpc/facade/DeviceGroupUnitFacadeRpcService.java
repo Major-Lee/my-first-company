@@ -135,10 +135,10 @@ public class DeviceGroupUnitFacadeRpcService{
 	public RpcResponseDTO<Boolean> generateBackendTask(int uid, String message, String opt, String subopt, String extparams) {
 		try{
 		    
-//		    OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
-//		    if(opt_cmd == null){
-//			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-//		    }
+		    OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
+		    if(opt_cmd == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		    }
 		    wifiDeviceGroupFacadeService.generateBackendTask(uid,message,opt,subopt,extparams);
 		    return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException i18nex){
