@@ -21,8 +21,8 @@ public class WifiDeviceBackendTask extends BaseLongModel implements Comparable<W
 	public static final String State_Failed = "failed";//任务失败
 	public static final String State_Completed = "completed";//任务已经完成
 	
-	//此后台对于的群组id
-	private long gid;
+	//此后台搜索群组设备的字符串
+	private String message;
 	//此任务创建人
 	private int uid;
 	//符合条件的记录，任务创建的时候和开始执行的时候会进行更新
@@ -57,15 +57,13 @@ public class WifiDeviceBackendTask extends BaseLongModel implements Comparable<W
 	public void setUid(int uid) {
 		this.uid = uid;
 	}
-	
-	public long getGid() {
-		return gid;
-	}
 
-	public void setGid(long gid) {
-		this.gid = gid;
+	public String getMessage() {
+	    return message;
 	}
-
+	public void setMessage(String message) {
+	    this.message = message;
+	}
 	public String getDescription() {
 		return description;
 	}

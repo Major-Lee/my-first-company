@@ -49,6 +49,8 @@ public class WifiDeviceSettingDTO {
 	
 	private WifiDeviceSettingModeDTO mode;
 	
+	private WifiDeviceSettingSyskeyDTO syskey;
+	
 //	public String getPower() {
 //		return power;
 //	}
@@ -174,5 +176,13 @@ public class WifiDeviceSettingDTO {
 			if(pluginName.equals(plugin.getName())) return true;
 		}
 		return false;
+	}
+
+	public WifiDeviceSettingSyskeyDTO getSyskey() {
+		return syskey;
+	}
+
+	public void setSyskey(WifiDeviceSettingSyskeyDTO syskey) {
+		this.syskey = syskey;
 	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
@@ -13,34 +12,18 @@ import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
-import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
-import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
-import com.bhu.vas.api.vto.device.DeviceBaseVTO;
-import com.bhu.vas.api.vto.device.DeviceDetailVTO;
-import com.bhu.vas.api.vto.device.DeviceOperationVTO;
-import com.bhu.vas.api.vto.device.DevicePresentVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
-import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -58,9 +41,6 @@ public class DeviceUnitFacadeRpcService{
 	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
-	private WifiDeviceModuleService wifiDeviceModuleService;
-	
-	@Resource
 	private UserDeviceService userDeviceService;
 	
 	@Resource
@@ -68,10 +48,6 @@ public class DeviceUnitFacadeRpcService{
 	
 	@Resource
 	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
-	
-	@Resource
-	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
-
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -235,99 +211,4 @@ public class DeviceUnitFacadeRpcService{
 		return null;
 	}*/
 	
-	public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int operationUid,int countrycode,String acc,int tid){
-		if(tid <=0 && StringUtils.isEmpty(acc))
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
-		if(tid <=0){
-			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-			if(ret_uid == null || ret_uid.intValue() == 0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-			}
-			tid = ret_uid.intValue();
-		}
-		List<UserDevice> userDevices = userDeviceService.fetchBindDevicesWithLimit(tid, UserDeviceFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM);
-		
-		List<DeviceDetailVTO> resultVTOs = new ArrayList<>();
-		for(UserDevice udevice:userDevices){
-			RpcResponseDTO<DeviceDetailVTO> vto = this.deviceDetail(operationUid, udevice.getMac());
-			if(!vto.hasError())
-				resultVTOs.add(vto.getPayload());
-		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(resultVTOs);
-	}
-	
-	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int operationUid,String mac){
-		try{
-			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-			if(wifiDevice == null){
-				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
-			}
-			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
-			User user = null;
-			Integer bindUid = userDeviceService.fetchBindUid(mac);
-			if(bindUid != null){
-				user = userService.getById(bindUid);
-			}
-			//基础信息
-			DeviceBaseVTO dbv = new DeviceBaseVTO();
-			dbv.setMac(wifiDevice.getId());
-			dbv.setSn(wifiDevice.getSn());
-			dbv.setOrig_swver(wifiDevice.getOrig_swver());
-			dbv.setVap_module(wifiDeviceModule != null?wifiDeviceModule.getOrig_vap_module():StringUtils.EMPTY);
-			dbv.setOrig_model(wifiDevice.getOrig_model());
-			dbv.setOrig_hdver(wifiDevice.getOrig_hdver());
-			dbv.setWork_mode(wifiDevice.getWork_mode());
-			dbv.setHdtype(wifiDevice.getHdtype());
-			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
-			//String dut = parser.toDeviceUnitTypeIndex();
-			dbv.setDut(parser.getDut());
-			DeviceUnitType unitType = DeviceUnitType.fromIndex(parser.getDut());
-			dbv.setDutn(unitType != null ?unitType.getName():StringHelper.MINUS_STRING_GAP);
-			//状态信息
-			DevicePresentVTO dpv = new DevicePresentVTO();
-			dpv.setMac(wifiDevice.getId());
-			dpv.setUid(user != null?user.getId():0);
-			dpv.setMobileno(user != null ? user.getMobileno():StringUtils.EMPTY);
-			if(user != null){
-				dpv.setHandsettype(user.getLastlogindevice());
-				dpv.setHandsetn(DeviceEnum.getBySName(user.getLastlogindevice()).getName());
-			}else{
-				dpv.setHandsettype(StringHelper.MINUS_STRING_GAP);
-				dpv.setHandsetn(StringHelper.MINUS_STRING_GAP);
-			}
-			
-			dpv.setAddress(wifiDevice.getFormatted_address());
-			dpv.setOnline(wifiDevice.isOnline());
-			dpv.setMonline(wifiDeviceModule != null?wifiDeviceModule.isModule_online():false);
-			dpv.setFirst_reg_at(DateTimeHelper.formatDate(wifiDevice.getCreated_at(), DateTimeHelper.FormatPattern0));
-			if(wifiDevice.getLast_reged_at() != null)
-				dpv.setLast_reg_at(DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
-			if(wifiDevice.getLast_logout_at() != null)
-				dpv.setLast_logout_at(DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
-			dpv.setDod(wifiDevice.getUptime());
-			
-			//运营状态信息 灰度、模板
-			DeviceOperationVTO dov = new DeviceOperationVTO();
-			WifiDeviceGrayVersionPK deviceGray = wifiDeviceGrayFacadeService.determineDeviceGray(wifiDevice.getId(), wifiDevice.getOrig_swver());
-			dov.setDut(deviceGray.getDut());
-			dov.setGl(deviceGray.getGl());
-			dov.setGln(VapEnumType.GrayLevel.fromIndex(deviceGray.getGl()).getName());
-			String mstyle = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(wifiDevice.getId());
-			if(StringUtils.isNotEmpty(mstyle))
-				dov.setMstyle(mstyle);
-			else
-				dov.setMstyle(StringHelper.MINUS_STRING_GAP);
-			DeviceDetailVTO dvto = new DeviceDetailVTO();
-			dvto.setDbv(dbv);
-			dvto.setDpv(dpv);
-			dvto.setDov(dov);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dvto);
-		}catch(BusinessI18nCodeException i18nex){
-			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
 }

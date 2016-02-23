@@ -16,7 +16,7 @@ public class UserDeviceDTO implements Serializable {
     private long ohd_count;
 
     private String work_mode;
-
+    private String orig_model;
     
 	//设备的固件版本号
     private String ver;
@@ -76,4 +76,14 @@ public class UserDeviceDTO implements Serializable {
     public void setWork_mode(String work_mode) {
         this.work_mode = work_mode;
     }
+
+	public String getOrig_model() {
+		return orig_model;
+	}
+
+	public void setOrig_model(String orig_model) {
+		this.orig_model = orig_model;
+	}
+    
+    
 }

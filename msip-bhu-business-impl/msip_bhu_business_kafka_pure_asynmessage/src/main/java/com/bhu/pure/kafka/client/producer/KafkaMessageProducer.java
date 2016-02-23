@@ -78,6 +78,10 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 		}
 		return send(producerTopicPartition.topic(), producerTopicPartition.partition(), key, value);
 	}*/
+	@Override
+	public RecordMetadata send(String topic, KEY key, VALUE value){
+		return send(topic, null, key, value);
+	}
 	
 	@Override
 	public RecordMetadata send(String topic, Integer partition, KEY key, VALUE value){

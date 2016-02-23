@@ -125,6 +125,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             	}
             }
             
+            Device_Firmware_ForceUpdateImmediately_AfterDays = PropertiesHelper.getInt("device.firmware.forceupdateimmediately.afterdays", paramProperties, Device_Firmware_ForceUpdateImmediately_AfterDays);
             
         	logger.info("loading business runtime configuration successfully!");  
         }  
@@ -212,6 +213,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	
 	public static Set<String> Device_Firmware_Initial_Versions = new HashSet<String>();
+	public static int Device_Firmware_ForceUpdateImmediately_AfterDays = 2;
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){
 		return SystemNoneedCaptchaValidAccs.contains(acc);
 	}

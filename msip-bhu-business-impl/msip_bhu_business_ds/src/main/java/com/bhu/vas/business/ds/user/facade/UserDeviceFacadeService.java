@@ -128,6 +128,7 @@ public class UserDeviceFacadeService {
 					}
 					userDeviceDTO.setVer(wifiDevice.getOrig_swver());
 					userDeviceDTO.setWork_mode(wifiDevice.getWork_mode());
+					userDeviceDTO.setOrig_model(wifiDevice.getOrig_model());
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}

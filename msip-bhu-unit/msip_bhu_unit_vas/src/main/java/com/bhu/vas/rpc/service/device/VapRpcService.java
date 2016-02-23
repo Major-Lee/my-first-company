@@ -12,7 +12,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
-import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
@@ -106,17 +105,6 @@ public class VapRpcService  implements IVapRpcService{
 		return deviceUnitFacadeRpcService.pagesVapStyles(uid, pn, ps);
 	}
 	
-	@Override
-	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac){
-		logger.info(String.format("deviceDetail uid[%s] mac[%s]",uid,mac));
-		return deviceUnitFacadeRpcService.deviceDetail(uid, mac);
-	}
-	
-    @Override
-    public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid) {
-        logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
-        return deviceUnitFacadeRpcService.userDetail(uid,countrycode,acc,tid);
-    }
 
 	@Override
 	public RpcResponseDTO<List<ModuleDefinedVTO>> fetchDayStat(int uid) {

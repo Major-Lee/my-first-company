@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
@@ -32,6 +33,8 @@ public class ConsoleDeviceController extends BaseController {
     @Resource
     private IVapRpcService vapRpcService;
 
+    @Resource
+    private IUserDeviceRpcService userDeviceRpcService;
     /**
      * 设备详细信息
      * @param request
@@ -47,7 +50,7 @@ public class ConsoleDeviceController extends BaseController {
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String mac
     		) {
-		RpcResponseDTO<DeviceDetailVTO> rpcResult = vapRpcService.deviceDetail(uid, mac.toLowerCase());
+		RpcResponseDTO<DeviceDetailVTO> rpcResult = userDeviceRpcService.deviceDetail(uid, mac.toLowerCase());
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
@@ -69,7 +72,7 @@ public class ConsoleDeviceController extends BaseController {
 								@RequestParam(required = false) String acc,
 								@RequestParam(required = false,defaultValue="0") int tid,
                                 @RequestParam(required = true) int uid) {
-    	RpcResponseDTO<List<DeviceDetailVTO>> rpcResult = vapRpcService.userDetail(uid, countrycode, acc, tid);
+    	RpcResponseDTO<List<DeviceDetailVTO>> rpcResult = userDeviceRpcService.userDetail(uid, countrycode, acc, tid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

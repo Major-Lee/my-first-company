@@ -5,7 +5,6 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.vap.dto.VapModeUrlViewCountDTO;
 import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
-import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
@@ -33,8 +32,8 @@ public interface IVapRpcService {
     RpcResponseDTO<List<String>> saveMacs2Gray(int uid, String dut, int gl,List<String> macs);
     RpcResponseDTO<Boolean> forceDeviceUpgrade(int uid, boolean fw, String versionid,List<String> macs,String beginTime,String endTime);
     RpcResponseDTO<TailPage<ModuleStyleVTO>> pagesVapStyles(int uid,int pn,int ps);
-    RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
-    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
+    /*RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
+    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);*/
 
 
 

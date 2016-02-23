@@ -9,7 +9,7 @@ public class BackendTaskVTO implements java.io.Serializable {
 
 	private int uid;
 
-	private long gid;
+	private String Message;
 
 	private long total;
 
@@ -37,12 +37,12 @@ public class BackendTaskVTO implements java.io.Serializable {
 		this.uid = uid;
 	}
 
-	public long getGid() {
-		return gid;
+	public String getMessage() {
+	    return Message;
 	}
 
-	public void setGid(long gid) {
-		this.gid = gid;
+	public void setMessage(String message) {
+	    Message = message;
 	}
 
 	public long getTotal() {
@@ -84,4 +84,5 @@ public class BackendTaskVTO implements java.io.Serializable {
 	public void setCompleted_at(Date completed_at) {
 		this.completed_at = completed_at;
 	}
+
 }

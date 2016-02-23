@@ -22,7 +22,7 @@ public class WifiDeviceBackendTaskTest extends BaseTest {
 	//@Test
 	public void test001() throws Exception {
 		WifiDeviceBackendTask bean = new WifiDeviceBackendTask();
-		bean.setGid(999L);
+		bean.setMessage("{\\\"search_t\\\":1,\\\"search_cs\\\":[{\\\"cs\\\":[{\\\"key\\\":\\\"d_address\\\",\\\"pattern\\\":\\\"seq\\\",\\\"payload\\\":\\\"上海\\\"}]}]}");
 		bean.setCurrent(1);
 		bean.setStarted_at(new Date());
 		bean = wifiDeviceBackendTaskService.insert(bean);
@@ -34,7 +34,7 @@ public class WifiDeviceBackendTaskTest extends BaseTest {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("id", 10000);
 		List<WifiDeviceBackendTask> result = wifiDeviceBackendTaskService.findModelByModelCriteria(mc);
-		System.out.println(result.get(0).getGid());
+		System.out.println(result.get(0).getMessage());
 	}
 
 	//@Test

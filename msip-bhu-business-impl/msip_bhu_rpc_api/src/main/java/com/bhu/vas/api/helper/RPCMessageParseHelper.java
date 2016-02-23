@@ -32,6 +32,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -636,7 +637,14 @@ public class RPCMessageParseHelper {
 				}
 				dto.setPlugins(plugin_dtos);
 			}
-			
+			//解析设备绑定数据
+			Element syskey_element = Dom4jHelper.select(doc, "dev/sys/syskey/ITEM");
+			if(syskey_element != null){
+				WifiDeviceSettingSyskeyDTO syskey_dto = new WifiDeviceSettingSyskeyDTO();
+				syskey_dto.setKeynum(syskey_element.attributeValue("keynum"));
+				syskey_dto.setKeystatus(syskey_element.attributeValue("keystatus"));
+				dto.setSyskey(syskey_dto);
+			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);

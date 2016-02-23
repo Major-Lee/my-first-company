@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
-import com.bhu.vas.api.dto.WifiDeviceForceBindDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
@@ -39,6 +38,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -330,10 +330,11 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void wifiDeviceForceBind(String ctx, String payload, ParserHeader parserHeader){
 		String mac = parserHeader.getMac().toLowerCase();
-		String keystatus = WifiDeviceForceBindDTO.KEY_STATUS_VALIDATE_FAILED;
-		WifiDeviceForceBindDTO dto = null;
+		String keynum = StringHelper.EMPTY_STRING_GAP;
+		String keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_VALIDATE_FAILED;
+		WifiDeviceSettingSyskeyDTO dto = null;
 		try{
-			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceForceBindDTO.class);
+			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceSettingSyskeyDTO.class);
 			if(dto != null){
 				//mobileno
 				String mobileno = dto.getKeynum();
@@ -345,9 +346,21 @@ public class DeviceBusinessFacadeService {
 			    		Integer uid = user.getId();
 			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 			    		if(wifiDevice != null){
-					    	UserDevice userDevice = null;
 					    	Integer old_uid = userDeviceService.fetchBindUid(mac);
-					    	if(uid != old_uid){
+					    	if(old_uid != null){
+					    		User oldUser = userService.getById(old_uid);
+					    		if(oldUser != null){
+					    			keynum = oldUser.getMobileno();
+					    		}
+					    	}else{
+					    		UserDevice userDevice = new UserDevice();
+						        userDevice.setId(new UserDevicePK(mac, uid));
+						        userDevice.setCreated_at(new Date());
+						        userDeviceService.insert(userDevice);
+						        
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
+					    	}
+/*					    	if(uid != old_uid){
 					    		if(old_uid != null){
 					    			userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
 					    		}
@@ -362,17 +375,18 @@ public class DeviceBusinessFacadeService {
 						        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
 						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 						        
-					    	}
-					        keystatus = WifiDeviceForceBindDTO.KEY_STATUS_SUCCESSED;
+					    	}*/
+					        keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 			    		}
 			    	}
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			keystatus = WifiDeviceForceBindDTO.KEY_STATUS_FAILED;
+			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_FAILED;
 		}finally{
 			if(dto != null){
+				dto.setKeynum(keynum);
 				dto.setKeystatus(keystatus);
 				String cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
 						DeviceHelper.builderDSKeyStatusOuter(dto));
@@ -1192,12 +1206,52 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
+		//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
+		checkSyskey(mac, dto);
 		//如果不符合urouter的配置约定 则下发指定修改配置
 /*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
 		}*/
 		//deliverMessageService.sendDeviceSettingChangedActionMessage(mac, init_default_acl);
 		return state;
+	}
+	
+	/**
+	 * 检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
+	 * @param mac
+	 * @param dto
+	 */
+	public void checkSyskey(String mac, WifiDeviceSettingDTO dto){
+		String cmdPayload = null;
+		WifiDeviceSettingSyskeyDTO syskey_dto = dto.getSyskey();
+		if(syskey_dto != null){
+			String keynum = syskey_dto.getKeynum();
+			//String keystatus = syskey_dto.getKeystatus();
+			
+			Integer uid = userDeviceService.fetchBindUid(mac);
+			if(uid == null){
+				if(StringUtils.isNotEmpty(keynum)){
+					cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
+							DeviceHelper.builderDSKeyStatusOuter(new WifiDeviceSettingSyskeyDTO(
+									StringHelper.EMPTY_STRING_GAP, WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED)));
+					
+				}
+			}else{
+				User user = userService.getById(uid);
+				if(user != null){
+					if(StringUtils.isNotEmpty(user.getMobileno())){
+						if(!user.getMobileno().equals(keynum)){
+							cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
+									DeviceHelper.builderDSKeyStatusOuter(new WifiDeviceSettingSyskeyDTO(
+											user.getMobileno(), WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED)));
+						}
+					}
+				}
+			}
+			
+			if(StringUtils.isNotEmpty(cmdPayload))
+				deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
+		}
 	}
 	
 	/**
@@ -1498,7 +1552,8 @@ public class DeviceBusinessFacadeService {
 				}
 			}
 			//如果任务是成功完成的 进行新配置数据合并
-			if(task_with_paylaod != null && WifiDeviceDownTask.State_Done.equals(status)){
+			if(task_with_paylaod != null && 
+					(WifiDeviceDownTask.State_Done.equals(status)||WifiDeviceDownTask.State_Ok.equals(status))){
 				WifiDeviceSetting entity = wifiDeviceSettingService.getById(wifiId);
 				if(entity != null){
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
@@ -1524,6 +1579,9 @@ public class DeviceBusinessFacadeService {
 						}
 					}
 				}
+				//通过任务的opt和subopt可以判定出什么类型的指令，进行具体操作
+				//TODO:增加访客网络设备响应处理
+				//TODO:增加信道切换设备响应处理
 			}
 		}else{//特殊处理，自动下发的增值指令中会修改配置
 			if(WifiDeviceDownTask.State_Done.equals(status)){
