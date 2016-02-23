@@ -1172,8 +1172,8 @@ public class DeviceBusinessFacadeService {
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.update(entity);
 		}
-		
-		
+		//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
+		checkSyskey(mac, dto);
 		//如果不符合urouter的配置约定 则下发指定修改配置
 /*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
@@ -1182,12 +1182,17 @@ public class DeviceBusinessFacadeService {
 		return state;
 	}
 	
+	/**
+	 * 检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
+	 * @param mac
+	 * @param dto
+	 */
 	public void checkSyskey(String mac, WifiDeviceSettingDTO dto){
 		String cmdPayload = null;
 		WifiDeviceSettingSyskeyDTO syskey_dto = dto.getSyskey();
 		if(syskey_dto != null){
 			String keynum = syskey_dto.getKeynum();
-			String keystatus = syskey_dto.getKeystatus();
+			//String keystatus = syskey_dto.getKeystatus();
 			
 			Integer uid = userDeviceService.fetchBindUid(mac);
 			if(uid == null){
@@ -1198,7 +1203,16 @@ public class DeviceBusinessFacadeService {
 					
 				}
 			}else{
-				
+				User user = userService.getById(uid);
+				if(user != null){
+					if(StringUtils.isNotEmpty(user.getMobileno())){
+						if(!user.getMobileno().equals(keynum)){
+							cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
+									DeviceHelper.builderDSKeyStatusOuter(new WifiDeviceSettingSyskeyDTO(
+											user.getMobileno(), WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED)));
+						}
+					}
+				}
 			}
 			
 			if(StringUtils.isNotEmpty(cmdPayload))
