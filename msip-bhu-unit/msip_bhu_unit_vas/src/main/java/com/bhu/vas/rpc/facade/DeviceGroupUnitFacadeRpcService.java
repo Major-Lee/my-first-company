@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
@@ -132,8 +134,14 @@ public class DeviceGroupUnitFacadeRpcService{
 	 */
 	public RpcResponseDTO<Boolean> generateBackendTask(int uid, String message, String opt, String subopt, String extparams) {
 		try{
-			wifiDeviceGroupFacadeService.generateBackendTask(uid,message,opt,subopt,extparams);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		    
+		    OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
+		    OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
+		    if(opt_cmd == null || (opt_cmd.getNo().equals("151")&&ods_cmd ==null)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		    }
+		    wifiDeviceGroupFacadeService.generateBackendTask(uid,message,opt,subopt,extparams);
+		    return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException i18nex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
 		}catch(Exception ex){
