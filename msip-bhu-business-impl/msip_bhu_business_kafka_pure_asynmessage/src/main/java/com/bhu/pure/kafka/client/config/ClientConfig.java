@@ -14,6 +14,7 @@ public class ClientConfig {
 		//表示所有分区的值
 		public static final int ALLPARTITION = -1;
 	}*/
+	public static final String GROUP_ID = "group.id";
 	
 	public static final String BOOTSTRAP_SERVERS = "bootstrap.servers";
 	//配置生产者的具体一个或多个subscribe topic
@@ -27,5 +28,10 @@ public class ClientConfig {
 	public static String builderBootstrapServersWithId(String id){
 		if(StringUtils.isEmpty(id)) return BOOTSTRAP_SERVERS;
 		return id.concat(StringHelper.POINT_STRING_GAP).concat(BOOTSTRAP_SERVERS);
+	}
+	
+	public static String builderGroupIdWithId(String consumerId){
+		if(StringUtils.isEmpty(consumerId)) return GROUP_ID;
+		return consumerId.concat(StringHelper.POINT_STRING_GAP).concat(GROUP_ID);
 	}
 }

@@ -99,6 +99,12 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		if(StringUtils.isNotEmpty(consumerBootstrapServers)){
 			consumerProperties.setProperty(ClientConfig.BOOTSTRAP_SERVERS, consumerBootstrapServers);
 		}
+		
+		//load consumer group id
+		String consumerGroupId = consumerProperties.getProperty(ClientConfig.builderGroupIdWithId(consumerId));
+		if(StringUtils.isNotEmpty(consumerGroupId)){
+			consumerProperties.setProperty(ClientConfig.GROUP_ID, consumerGroupId);
+		}
 	}
 	
 /*	private void parseConsumerClientConfig(Properties clientProperties){
@@ -261,9 +267,9 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 						if(subscribe_topics_changed.get()){
 							subscribeTopicsChangedNotify();
 						}
-						System.out.println("start consumer poll");
+						//System.out.println("start consumer poll");
 						ConsumerRecords<KEY, VALUE> records = consumer.poll(100);
-						System.out.println("end consumer poll");
+						//System.out.println("end consumer poll");
 						notify.notifyComming(consumerId, records);
 					}
 				}catch (WakeupException e) {
