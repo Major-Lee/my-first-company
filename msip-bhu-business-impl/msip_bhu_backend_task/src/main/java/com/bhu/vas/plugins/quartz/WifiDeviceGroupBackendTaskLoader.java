@@ -40,168 +40,180 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  * 此任务暂定5分钟执行一次 根据配置的同时运行的任务数量决定是否需要重新把新的任务加入到任务池中
  * 
  * @author Edmond Lee
- *
+ * 
  */
 public class WifiDeviceGroupBackendTaskLoader {
-    private static Logger logger = LoggerFactory
-	    .getLogger(WifiDeviceGroupBackendTaskLoader.class);
-    // 可以放进执行队列的数量
-    // private int poolMax
-    // 可以同时执行的任务的数量
-    // 同时只有三个任务可以执行
-    private ExecutorService task_exec = Executors.newFixedThreadPool(3);
+	private static Logger logger = LoggerFactory
+			.getLogger(WifiDeviceGroupBackendTaskLoader.class);
+	// 可以放进执行队列的数量
+	// private int poolMax
+	// 可以同时执行的任务的数量
+	// 同时只有三个任务可以执行
+	private ExecutorService task_exec = Executors.newFixedThreadPool(3);
 
-    @Resource
-    private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
-    @Resource
-    private IDaemonRpcService daemonRpcService;
+	@Resource
+	private IDaemonRpcService daemonRpcService;
 
-    @Resource
-    private IGenerateDeviceSetting generateDeviceSetting;
+	@Resource
+	private IGenerateDeviceSetting generateDeviceSetting;
 
-    @Resource
-    private WifiDeviceBackendTaskService wifiDeviceBackendTaskService;
+	@Resource
+	private WifiDeviceBackendTaskService wifiDeviceBackendTaskService;
 
-    @Resource
-    private WifiDeviceGroupFacadeService wifiDeviceGroupFacadeService;
+	@Resource
+	private WifiDeviceGroupFacadeService wifiDeviceGroupFacadeService;
 
-    public void execute() throws InterruptedException {
-	logger.info("WifiDeviceGroupBackendTaskLoader starting...");
+	public void execute() throws InterruptedException {
+		logger.info("WifiDeviceGroupBackendTaskLoader starting...");
 
-	int activeCount = ((ThreadPoolExecutor) task_exec).getActiveCount();
-	if (activeCount < 3) {
-	    final List<WifiDeviceBackendTask> pendingTask = wifiDeviceGroupFacadeService.fetchRecentPendingBackendTask(3 - activeCount);
-	    if (pendingTask != null && !pendingTask.isEmpty()) {
-		for (final WifiDeviceBackendTask task : pendingTask) {
-		    task_exec.submit((new Runnable() {
-			@Override
-			public void run() {
-			    //io写入txt类型日志
-			    String path = "/BHUData/logs/backendtask/BackendTaskLoader/";
-			    final File logFile = new File(path + task.getId());
-			    	
-			    task.setState(WifiDeviceBackendTask.State_Reading);
-			    task.setStarted_at(new Date());
-			    wifiDeviceBackendTaskService.update(task);
-			    final List<String> macList = new ArrayList<String>();
+		int activeCount = ((ThreadPoolExecutor) task_exec).getActiveCount();
+		if (activeCount < 3) {
+			final List<WifiDeviceBackendTask> pendingTask = wifiDeviceGroupFacadeService
+					.fetchRecentPendingBackendTask(3 - activeCount);
+			if (pendingTask != null && !pendingTask.isEmpty()) {
+				for (final WifiDeviceBackendTask task : pendingTask) {
+					task_exec.submit((new Runnable() {
+						@Override
+						public void run() {
+							// io写入txt类型日志
+							String path = "/BHUData/logs/backendtask/BackendTaskLoader/%s.log";
+							final File logFile = new File(String.format(path, task.getId()));
 
-			    try {
-				final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter (new FileOutputStream (logFile), "UTF-8"));
-				// 获取搜索条件下的设备mac
-				wifiDeviceDataSearchService.iteratorAll(task.getMessage(),new IteratorNotify<Page<WifiDeviceDocument>>() {
-				 @Override
-				 public void notifyComming(Page<WifiDeviceDocument> pages) {
-				    
-				     for (WifiDeviceDocument doc : pages) {
-					 // 判断是否在线
-					 if (doc.getD_online().equals("1")) {
-					     macList.add(doc.getD_mac());
-					 }
-					    //每个设备信息都写入txt日志	
-					    try {
-						bw.write(String.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s] \n", doc.getD_mac(),doc.getD_online(),doc.getD_sn()));
-					    } catch (IOException e) {
-						e.printStackTrace();
-					    }
-					}
-					task.setTotal(pages.getTotalElements());
-				    }
-				});
-				bw.flush();
-				bw.close();
-			    } catch (Exception e) {
-				e.printStackTrace();
-				task.setState(WifiDeviceBackendTask.State_Failed);
-				wifiDeviceBackendTaskService.update(task);
-				logger.info("WifiDeviceGroupBackendTaskLoader  create txt error ");
-			    }finally {
-				try {
-				    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter (new FileOutputStream (logFile,true), "UTF-8"));
-				    bw.write(String.format("WifiDeviceGroupBackendTaskLoader total:[%s]  on_line device:[%s]",task.getTotal(),macList.size()));
-				    bw.flush();
-				    bw.close();
-				} catch (Exception e) {
-				    e.printStackTrace();
+							task.setState(WifiDeviceBackendTask.State_Reading);
+							task.setStarted_at(new Date());
+							wifiDeviceBackendTaskService.update(task);
+							final List<String> macList = new ArrayList<String>();
+							BufferedWriter bw = null;
+							try {
+								bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logFile),"UTF-8"));
+								final StringBuilder sb= new StringBuilder();
+								// 获取搜索条件下的设备mac
+								wifiDeviceDataSearchService.iteratorAll(
+										task.getMessage(),
+										new IteratorNotify<Page<WifiDeviceDocument>>() {
+											@Override
+											public void notifyComming(
+													Page<WifiDeviceDocument> pages) {
+
+												for (WifiDeviceDocument doc : pages) {
+													// 判断是否在线
+													if (doc.getD_online().equals("1")) {
+														macList.add(doc.getD_mac());
+													}
+													// 每个设备信息都写入txt日志
+													sb.append(String
+															.format("WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]",
+																	doc.getD_mac(),
+																	doc.getD_online(),
+																	doc.getD_sn())).append("\n");
+												}
+												task.setTotal(pages
+														.getTotalElements());
+											}
+										});
+								bw.write(sb.toString());
+								sb.delete(0, sb.length());
+							} catch (Exception e) {
+								e.printStackTrace();
+								task.setState(WifiDeviceBackendTask.State_Failed);
+								wifiDeviceBackendTaskService.update(task);
+								logger.info("WifiDeviceGroupBackendTaskLoader  create txt error ");
+							} finally {
+								if(bw != null){
+									try {
+										bw.write(String
+												.format("WifiDeviceGroupBackendTaskLoader total:[%s]  on_line device:[%s]",
+														task.getTotal(),
+														macList.size()));
+										bw.flush();
+										bw.close();
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							}
+							downCmds(task, macList);
+						}
+					}));
 				}
-			    }
-				downCmds(task, macList);
-			    } 
-		    }));
+			}
+			if (pendingTask == null || pendingTask.isEmpty()) {
+				logger.info("WifiDeviceGroupBackendTaskLoader ended total[0]");
+			}
 		}
-	    }
-	    if (pendingTask == null || pendingTask.isEmpty()) {
-		logger.info("WifiDeviceGroupBackendTaskLoader ended total[0]");
-	    }
 	}
-    }
 
-    /**
-     * 根据task生成cmd指令
-     * 
-     * @param BackendTask
-     * @throws Throwable
-     */
-    public String autoGenerateCmds(WifiDeviceBackendTask backendTask,
-	    String wifi_mac) {
+	/**
+	 * 根据task生成cmd指令
+	 * 
+	 * @param BackendTask
+	 * @throws Throwable
+	 */
+	public String autoGenerateCmds(WifiDeviceBackendTask backendTask,
+			String wifi_mac) {
 
-	backendTask.setState(WifiDeviceBackendTask.State_Reading);
+		backendTask.setState(WifiDeviceBackendTask.State_Reading);
 
-	OperationCMD opt = OperationCMD
-		.getOperationCMDFromNo(backendTask.getOpt());
-	OperationDS ods = OperationDS
-		.getOperationDSFromNo(backendTask.getSubopt());
-	String extparams = backendTask.getContext_var();
+		OperationCMD opt = OperationCMD.getOperationCMDFromNo(backendTask
+				.getOpt());
+		OperationDS ods = OperationDS.getOperationDSFromNo(backendTask
+				.getSubopt());
+		String extparams = backendTask.getContext_var();
 
-	String payload = CMDBuilder.autoBuilderCMD4Opt(opt, ods, wifi_mac,
-		backendTask.getId(), extparams, generateDeviceSetting);
+		String payload = CMDBuilder.autoBuilderCMD4Opt(opt, ods, wifi_mac,
+				backendTask.getId(), extparams, generateDeviceSetting);
 
-	wifiDeviceBackendTaskService.update(backendTask);
+		wifiDeviceBackendTaskService.update(backendTask);
 
-	return payload;
-    }
-
-    /**
-     * 下发指令
-     * 
-     * @param task
-     * @param macList
-     */
-    public void downCmds(WifiDeviceBackendTask task, List<String> macList) {
-	List<DownCmds> downCmds = new ArrayList<DownCmds>();
-	task.setState(WifiDeviceBackendTask.State_Doing);
-	wifiDeviceBackendTaskService.update(task);
-	// 下发指令
-	for (int i = 0; i < macList.size(); i++) {
-	    String payload = autoGenerateCmds(task, macList.get(i));
-	    downCmds.add(DownCmds.builderDownCmds(macList.get(i), payload));
-	    if ((i % 100 == 0 && i != 0) || i == macList.size() - 1) {
-		try {
-		    daemonRpcService.wifiMultiDevicesCmdsDown(
-			    downCmds.toArray(new DownCmds[0]));
-		} catch (Exception e) {
-		    task.setState(WifiDeviceBackendTask.State_Failed);
-		    wifiDeviceBackendTaskService.update(task);
-		    logger.info(String.format("WifiDeviceGroupBackendTaskLoader error mac : [%s]",macList.get(i)));
-		    e.printStackTrace(System.out);
-		    
-		} finally {
-		    downCmds.clear();
-		}
-		// 每1000条更新一次数据库
-		if (i % 1000 == 0) {
-		    task.setCurrent(i + 1);
-		    task.setUpdated_at(new Date());
-		    wifiDeviceBackendTaskService.update(task);
-		}
-		// 最后一条下发完毕
-		if (i == macList.size() - 1) {
-		    task.setCurrent(i + 1);
-		    task.setState(WifiDeviceBackendTask.State_Completed);
-		    task.setCompleted_at(new Date());
-		    wifiDeviceBackendTaskService.update(task);
-		}
-	    }
+		return payload;
 	}
-    }
+
+	/**
+	 * 下发指令
+	 * 
+	 * @param task
+	 * @param macList
+	 */
+	public void downCmds(WifiDeviceBackendTask task, List<String> macList) {
+		List<DownCmds> downCmds = new ArrayList<DownCmds>();
+		task.setState(WifiDeviceBackendTask.State_Doing);
+		wifiDeviceBackendTaskService.update(task);
+		// 下发指令
+		for (int i = 0; i < macList.size(); i++) {
+			String payload = autoGenerateCmds(task, macList.get(i));
+			downCmds.add(DownCmds.builderDownCmds(macList.get(i), payload));
+			if ((i % 100 == 0 && i != 0) || i == macList.size() - 1) {
+				try {
+					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds
+							.toArray(new DownCmds[0]));
+				} catch (Exception e) {
+					task.setState(WifiDeviceBackendTask.State_Failed);
+					wifiDeviceBackendTaskService.update(task);
+					logger.info(String
+							.format("WifiDeviceGroupBackendTaskLoader error mac : [%s]",
+									macList.get(i)));
+					e.printStackTrace(System.out);
+
+				} finally {
+					downCmds.clear();
+				}
+				// 每1000条更新一次数据库
+				if (i % 1000 == 0) {
+					task.setCurrent(i + 1);
+					task.setUpdated_at(new Date());
+					wifiDeviceBackendTaskService.update(task);
+				}
+				// 最后一条下发完毕
+				if (i == macList.size() - 1) {
+					task.setCurrent(i + 1);
+					task.setState(WifiDeviceBackendTask.State_Completed);
+					task.setCompleted_at(new Date());
+					wifiDeviceBackendTaskService.update(task);
+				}
+			}
+		}
+	}
 }
