@@ -496,7 +496,7 @@ public class TaskFacadeService {
 		downTask.setSubopt(subopt);
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
-		apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice.getWork_mode());
+		downTask.setPayload(apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice.getWork_mode()));
 		this.taskComming(downTask);
 		return downTask;
 	}
