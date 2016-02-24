@@ -117,10 +117,9 @@ public class TaskUnitFacadeService {
 	 */
 	public RpcResponseDTO<TaskResDTO> taskGenerate(Integer uid, String mac, String opt, String subopt, String extparams,
 			String channel, String channel_taskid){
-		logger.info("uid==" + uid + ",mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
+		//logger.info("uid==" + uid + ",mac==" + mac + ",ds_opt==" + opt + ",extparams==" + extparams);
 		try{
 			WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(uid, mac, opt, subopt, extparams, channel, channel_taskid);
-			logger.info("taskComming ==end==");
 			TaskResDTO dto = new TaskResDTO();
 			dto.setChannel(channel);
 			dto.setChannel_taskid(channel_taskid);
