@@ -262,7 +262,8 @@ public class DeviceURouterRestBusinessFacadeService {
 						hd_entity = handsets.get(cursor);
 						alia = handsetAlias.get(cursor);
 						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, hd_entity, setting_dto,alia);
+						double rx_rate = WifiDeviceHandsetPresentSortedSetService.getInstance().get_rx_rate(tuple.getScore());
+						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, rx_rate, hd_entity, setting_dto,alia);
 						vtos.add(vto);
 						cursor++;
 					}
@@ -969,7 +970,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						int cursor = 0;
 						for(String block_hd_mac : block_hd_macs){
 							String alia = block_hd_macs.get(cursor);
-							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, block_hd_mac, false, handsets.get(cursor), setting_dto,alia);
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, block_hd_mac, false, 0, handsets.get(cursor), setting_dto,alia);
 							vtos.add(vto);
 							cursor++;
 						}

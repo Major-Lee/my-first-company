@@ -262,8 +262,8 @@ public class BusinessModelBuilder {
 		return vto;
 	}*/
 	
-	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
-			WifiDeviceSettingDTO setting_dto, String alia){
+	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, double rx_rate, 
+			HandsetDeviceDTO hd_entity, WifiDeviceSettingDTO setting_dto, String alia){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
@@ -287,9 +287,9 @@ public class BusinessModelBuilder {
 			}
 			vto.setIp(hd_entity.getIp());
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
-			vto.setTx_rate(hd_entity.getData_rx_rate());
+			//vto.setTx_rate(hd_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
-			vto.setRx_rate(hd_entity.getData_tx_rate());
+			//vto.setRx_rate(hd_entity.getData_tx_rate());
 			if(!StringUtils.isEmpty(hd_entity.getVapname()))
 				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
 
@@ -297,6 +297,7 @@ public class BusinessModelBuilder {
 			vto.setTx_bytes(hd_entity.getRx_bytes());
 			vto.setEthernet(StringHelper.TRUE.equals(hd_entity.getEthernet()));
 		}
+		vto.setRx_rate(String.valueOf(rx_rate));
 		return vto;
 	}
 
