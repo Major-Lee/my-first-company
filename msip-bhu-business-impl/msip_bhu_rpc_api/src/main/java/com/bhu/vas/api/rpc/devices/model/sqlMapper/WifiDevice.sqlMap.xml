@@ -45,6 +45,7 @@
     <result property="ipgen" column="ipgen"/>
     <result property="uptime" column="uptime"/>
     <result property="tfcard_usage" column="tfcard_usage"/>
+    <result property="industry" column="industry"/>
 	<result property="last_start_at" column="last_start_at"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="last_logout_at" column="last_logout_at"/>
@@ -96,6 +97,7 @@
 	    	ipgen,
 	    	uptime,
 	    	tfcard_usage,
+	    	industry,
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
@@ -141,6 +143,7 @@
 	    	ipgen,
 	    	uptime,
 	    	tfcard_usage,
+	    	industry,
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
@@ -187,6 +190,7 @@
 	    	#{ipgen},
 	    	#{uptime},
 	    	#{tfcard_usage},
+	    	#{industry},
 	    	#{last_start_at},
 	    	#{last_reged_at},
 	    	#{last_logout_at},
@@ -231,6 +235,7 @@
 	    	ipgen = #{ipgen},
 	    	uptime = #{uptime},
 	    	tfcard_usage = #{tfcard_usage},
+	    	industry = #{industry},
 	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},

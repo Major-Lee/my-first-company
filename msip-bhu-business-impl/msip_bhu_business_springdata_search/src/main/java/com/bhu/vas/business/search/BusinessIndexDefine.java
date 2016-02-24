@@ -60,6 +60,7 @@ public interface BusinessIndexDefine {
 			D_DEVICEUNITTYPE("d_dut", null),//设备的业务线定义
 			D_UPTIME("d_uptime", null),//设备在线总时长 单位秒
 			D_WANIP("d_wanip", null),//设备wanip
+			D_INDUSTRY("d_industry", null),//设备行业信息
 			/**** 运营信息 operate ****/
 			O_TEMPLATE("o_template",null),//运营模板编号
 			O_GRAYLEVEL("o_graylevel", null),//设备的灰度定义
