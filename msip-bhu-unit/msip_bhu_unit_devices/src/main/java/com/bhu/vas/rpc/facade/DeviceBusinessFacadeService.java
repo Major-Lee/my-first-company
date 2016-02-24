@@ -364,6 +364,8 @@ public class DeviceBusinessFacadeService {
 						        wifiDeviceService.update(wifiDevice);
 						        
 						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, dto.getIndustry());
+						        
+						        keynum = mobileno;
 					    	}
 /*					    	if(uid != old_uid){
 					    		if(old_uid != null){
