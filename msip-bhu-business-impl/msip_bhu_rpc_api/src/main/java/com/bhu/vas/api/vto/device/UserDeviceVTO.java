@@ -34,6 +34,8 @@ public class UserDeviceVTO implements Serializable {
 
     private String d_channel;
 
+    private String d_address;
+
     public String getD_mac() {
         return d_mac;
     }
@@ -130,4 +132,11 @@ public class UserDeviceVTO implements Serializable {
         this.d_channel = d_channel;
     }
 
+    public String getD_address() {
+        return d_address;
+    }
+
+    public void setD_address(String d_address) {
+        this.d_address = d_address;
+    }
 }
