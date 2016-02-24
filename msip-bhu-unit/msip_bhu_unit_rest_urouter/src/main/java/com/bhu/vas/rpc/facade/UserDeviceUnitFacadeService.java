@@ -328,6 +328,84 @@ public class UserDeviceUnitFacadeService {
 	}
 
 
+
+	private List<UserDeviceVTO> builderUserDeviceVTOs(Page<WifiDeviceDocument> search_result) {
+		List<UserDeviceVTO> vtos = null;
+		List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+		if(searchDocuments.isEmpty()) {
+			vtos = Collections.emptyList();
+		}else {
+			vtos = new ArrayList<UserDeviceVTO>();
+			//WifiDeviceVTO1 vto = null;
+			//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
+
+			List<String> macs = new ArrayList<String>();
+
+			for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
+				UserDeviceVTO userDeviceVTO = new UserDeviceVTO();
+				userDeviceVTO.setD_mac(wifiDeviceDocument.getD_mac());
+				userDeviceVTO.setD_online(wifiDeviceDocument.getD_online());
+				userDeviceVTO.setD_origmodel(wifiDeviceDocument.getD_origmodel());
+				userDeviceVTO.setD_origswver(wifiDeviceDocument.getD_origswver());
+				userDeviceVTO.setD_wanip(wifiDeviceDocument.getD_wanip());
+				userDeviceVTO.setU_dnick(wifiDeviceDocument.getU_dnick());
+				userDeviceVTO.setU_id(wifiDeviceDocument.getU_id());
+				userDeviceVTO.setD_workmodel(wifiDeviceDocument.getD_workmodel());
+				userDeviceVTO.setD_dut(wifiDeviceDocument.getD_dut());
+				userDeviceVTO.setD_type(wifiDeviceDocument.getD_type());
+				userDeviceVTO.setD_address(wifiDeviceDocument.getD_address());
+				vtos.add(userDeviceVTO);
+
+				macs.add(wifiDeviceDocument.getD_mac());
+			}
+
+			List<WifiDeviceSetting> wifiDeviceSettings = wifiDeviceSettingService.findByIds(macs, true, true);
+
+			int index = 0;
+			if (wifiDeviceSettings != null) {
+				for (int i = 0; i < macs.size(); i++) {
+					WifiDeviceSetting wifiDeviceSetting = wifiDeviceSettings.get(i);
+					if (wifiDeviceSetting != null) {
+						WifiDeviceSettingDTO setting_dto = wifiDeviceSetting.getInnerModel();
+						//信号强度和当前信道
+						String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
+						UserDeviceVTO userDeviceVTO = vtos.get(index);
+						userDeviceVTO.setD_power(powerAndRealChannel[0]);
+						userDeviceVTO.setD_channel(powerAndRealChannel[1]);
+					}
+					index++;
+				}
+			}
+		}
+		return vtos;
+	}
+
+
+	public List<UserDeviceVTO> fetchBindDevicesFromIndex(Integer uid, Integer u_id,
+												   String d_online, String s_content, int pageNo, int pageSize){
+
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		SearchConditionMessage sm = WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, d_online, s_content);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(sm,searchPageNo,pageSize);
+		//System.out.println("fetchBindDevicesFromIndex === " +  search_result);
+
+		List<UserDeviceVTO> vtos = null;
+		int total = 0;
+		if(search_result != null){
+			total = (int)search_result.getTotalElements();//.getTotal();
+			if(total == 0){
+				vtos = Collections.emptyList();
+			}else {
+				List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+				vtos = builderUserDeviceVTOs(search_result);
+			}
+		}
+
+		return vtos;
+
+	}
+
+
 	/**
 	 * 通过搜索引擎获取用户绑定的设备
 	 * @param uid
@@ -335,7 +413,7 @@ public class UserDeviceUnitFacadeService {
 	 * @param pageSize
 	 * @return
      */
-	public UserDeviceTCPageVTO fetchBindDevicesFromIndex(Integer uid, Integer u_id, 
+	public UserDeviceTCPageVTO fetchBindDevicesFromIndexCustom(Integer uid, Integer u_id,
 			String d_online, String s_content, int pageNo, int pageSize) {
 
 		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
@@ -349,53 +427,9 @@ public class UserDeviceUnitFacadeService {
 			total = (int)search_result.getTotalElements();//.getTotal();
 			if(total == 0){
 				vtos = Collections.emptyList();
-			}else{
+			}else {
 				List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-				if(searchDocuments.isEmpty()) {
-					vtos = Collections.emptyList();
-				}else{
-					vtos = new ArrayList<UserDeviceVTO>();
-					//WifiDeviceVTO1 vto = null;
-					//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
-
-					List<String> macs = new ArrayList<String>();
-
-					for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
-						UserDeviceVTO userDeviceVTO = new UserDeviceVTO();
-						userDeviceVTO.setD_mac(wifiDeviceDocument.getD_mac());
-						userDeviceVTO.setD_online(wifiDeviceDocument.getD_online());
-						userDeviceVTO.setD_origmodel(wifiDeviceDocument.getD_origmodel());
-						userDeviceVTO.setD_origswver(wifiDeviceDocument.getD_origswver());
-						userDeviceVTO.setD_wanip(wifiDeviceDocument.getD_wanip());
-						userDeviceVTO.setU_dnick(wifiDeviceDocument.getU_dnick());
-						userDeviceVTO.setU_id(wifiDeviceDocument.getU_id());
-						userDeviceVTO.setD_workmodel(wifiDeviceDocument.getD_workmodel());
-						userDeviceVTO.setD_dut(wifiDeviceDocument.getD_dut());
-						userDeviceVTO.setD_type(wifiDeviceDocument.getD_type());
-						vtos.add(userDeviceVTO);
-
-						macs.add(wifiDeviceDocument.getD_mac());
-					}
-
-					List<WifiDeviceSetting> wifiDeviceSettings = wifiDeviceSettingService.findByIds(macs, true, true);
-
-					int index = 0;
-					if (wifiDeviceSettings != null) {
-						for (int i= 0; i < macs.size(); i++) {
-							WifiDeviceSetting wifiDeviceSetting = wifiDeviceSettings.get(i);
-							if (wifiDeviceSetting != null) {
-								WifiDeviceSettingDTO setting_dto = wifiDeviceSetting.getInnerModel();
-								//信号强度和当前信道
-								String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
-								UserDeviceVTO userDeviceVTO = vtos.get(index);
-								userDeviceVTO.setD_power(powerAndRealChannel[0]);
-								userDeviceVTO.setD_channel(powerAndRealChannel[1]);
-							}
-							index ++;
-						}
-					}
-
-				}
+ 				vtos = builderUserDeviceVTOs(search_result);
 			}
 		}
 		TailPage<UserDeviceVTO> pages = new CommonPage<UserDeviceVTO>(pageNo, pageSize, total, vtos);

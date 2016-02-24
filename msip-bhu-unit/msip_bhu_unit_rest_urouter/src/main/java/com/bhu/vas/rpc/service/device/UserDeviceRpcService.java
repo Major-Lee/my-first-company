@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -118,12 +119,21 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
 
     @Override
-    public UserDeviceTCPageVTO pageBindDevices(Integer uid, Integer u_id, 
+    public UserDeviceTCPageVTO pageBindDevicesCustom(Integer uid, Integer u_id,
 			String d_online, String s_content, int pageNo, int pageSize) {
-        logger.info(String.format("pageBindDevices with uid[%s] u_id[%s] d_online[%s] s_content[%s] pageNo[%s] pageSize[%s]", 
+        logger.info(String.format("pageBindDevicesCustom with uid[%s] u_id[%s] d_online[%s] s_content[%s] pageNo[%s] pageSize[%s]",
         		uid, u_id, d_online, s_content, pageNo, pageSize));
+        return userDeviceUnitFacadeService.fetchBindDevicesFromIndexCustom(uid, u_id, d_online, s_content, pageNo, pageSize);
+    }
+
+    @Override
+    public List<UserDeviceVTO> pageBindDevices(Integer uid, Integer u_id, String d_online, String s_content, int pageNo, int pageSize) {
+        logger.info(String.format("pageBindDevices with uid[%s] u_id[%s] d_online[%s] s_content[%s] pageNo[%s] pageSize[%s]",
+                uid, u_id, d_online, s_content, pageNo, pageSize));
         return userDeviceUnitFacadeService.fetchBindDevicesFromIndex(uid, u_id, d_online, s_content, pageNo, pageSize);
     }
+
+
 
 /*@Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {

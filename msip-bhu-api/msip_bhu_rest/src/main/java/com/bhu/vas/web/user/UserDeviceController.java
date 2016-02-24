@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -168,7 +169,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
                                  ) {
-        UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
+        UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevicesCustom(uid, u_id, d_online,
         		s_content, pageNo, pageSize);
 //        System.out.println("ret===" + rpcResult.isEmpty());
         if (rpcResult != null) {
@@ -180,7 +181,7 @@ public class UserDeviceController extends BaseController {
 
 
     /**
-     * 新增云平台接口
+     * 通用获取设备列表接口
      * @param response
      * @param uid
      * @param u_id
@@ -200,7 +201,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
     ) {
-        UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
+        List<UserDeviceVTO>rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
                 s_content, pageNo, pageSize);
 //        System.out.println("ret===" + rpcResult.isEmpty());
         if (rpcResult != null) {
