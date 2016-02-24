@@ -504,89 +504,82 @@ public class TaskFacadeService {
 	public String apiCmdGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,long taskid,String work_mode){
 		String cmd = null;
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
-			if(ods_cmd.hasRef()){
-				switch(ods_cmd){
-					case DS_Http_VapModuleCMD_Start:
-						ParamVasModuleDTO param_dto = JsonHelper.getDTO(extparams, ParamVasModuleDTO.class);
-						if(param_dto == null || StringUtils.isEmpty(param_dto.getStyle()))
-							throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
-						VasModuleCmdDefined cmdDefined = vasModuleCmdDefinedService.getById(new VasModuleCmdPK(ods_cmd.getRef(),param_dto.getStyle()));
-						if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
-							throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED,new String[]{ods_cmd.getRef(),param_dto.getStyle()});
-						}
-						cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid,cmdDefined.getTemplate()));
-						break;
-					case DS_Http_VapModuleCMD_Stop:
-						String stopTemplate = vasModuleCmdDefinedService.fetchCommonStopTemplate();
-						cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
-						break;	
-					default:
-						break;	
-				}
-			}else{
-				switch(ods_cmd){
-					case DS_VistorWifi_Limit:
-						//需要判定访客网络是否开启
-						UserSettingState user_setting_entity = userSettingStateService.getById(mac);
-						if(user_setting_entity != null){
-							UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
-									Setting_Key, UserVistorWifiSettingDTO.class);
-							//如果开启则把limit的限速值写入到访客网络plugin配置里
-							if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getVw() != null){//访客网络是开启
-								ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
-								ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
-								uvw_dto.getVw().setUsers_rx_rate(ad_dto.getUsers_rx_rate());
-								uvw_dto.getVw().setUsers_tx_rate(ad_dto.getUsers_tx_rate());
-								userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(uvw_dto));
-								cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
-								break;
-							}
-						}
-						//如果未开启，则重新构建访客网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
-						ods_cmd = OperationDS.DS_VistorWifi_Start;
-					case DS_VistorWifi_Start:
-						{
-							ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-							vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
-							cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
-							UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
-							vistorwifi.setOn(true);
-							vistorwifi.setDs(false);
-							//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
-							vistor_dto.setBlock_mode(null);
-							vistor_dto.setComplete_isolate_ports(null);
-							vistorwifi.setVw(vistor_dto);
-							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-							
-						}
-						break;
-					case DS_VistorWifi_Stop:
-						{
-							UserSettingState settingState = userSettingStateService.getById(mac);
-							if(settingState != null){
-								UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
-								if(vistorwifi != null && vistorwifi.isOn()){
-									vistorwifi.setOn(false);
-									vistorwifi.setDs(false);
-									vistorwifi.setVw(null);
-									userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-								}
-							}
+			switch(ods_cmd){
+				case DS_Http_VapModuleCMD_Start:
+					ParamVasModuleDTO param_dto = JsonHelper.getDTO(extparams, ParamVasModuleDTO.class);
+					if(param_dto == null || StringUtils.isEmpty(param_dto.getStyle()))
+						throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+					VasModuleCmdDefined cmdDefined = vasModuleCmdDefinedService.getById(new VasModuleCmdPK(ods_cmd.getRef(),param_dto.getStyle()));
+					if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
+						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED,new String[]{ods_cmd.getRef(),param_dto.getStyle()});
+					}
+					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid,cmdDefined.getTemplate()));
+					break;
+				case DS_Http_VapModuleCMD_Stop:
+					String stopTemplate = vasModuleCmdDefinedService.fetchCommonStopTemplate();
+					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
+					break;	
+				case DS_VistorWifi_Limit:
+					//需要判定访客网络是否开启
+					UserSettingState user_setting_entity = userSettingStateService.getById(mac);
+					if(user_setting_entity != null){
+						UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
+								Setting_Key, UserVistorWifiSettingDTO.class);
+						//如果开启则把limit的限速值写入到访客网络plugin配置里
+						if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getVw() != null){//访客网络是开启
+							ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+							ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+							uvw_dto.getVw().setUsers_rx_rate(ad_dto.getUsers_rx_rate());
+							uvw_dto.getVw().setUsers_tx_rate(ad_dto.getUsers_tx_rate());
+							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(uvw_dto));
 							cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
+							break;
 						}
-						break;
-					case DS_Switch_WorkMode:
-						WifiDeviceSettingDTO setting_dto = deviceFacadeService.validateDeviceSettingReturnDTO(mac);
-						//需要判定是否可以进行切换
-						ParamVasSwitchWorkmodeDTO param_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
-						WifiDeviceHelper.deviceWorkModeNeedChanged(work_mode,param_dto.getWmode(), 
-								DeviceHelper.getLinkModeValue(setting_dto));
+					}
+					//如果未开启，则重新构建访客网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
+					ods_cmd = OperationDS.DS_VistorWifi_Start;
+				case DS_VistorWifi_Start:
+					{
+						ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
+						vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
+						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
+						UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
+						vistorwifi.setOn(true);
+						vistorwifi.setDs(false);
+						//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
+						vistor_dto.setBlock_mode(null);
+						vistor_dto.setComplete_isolate_ports(null);
+						vistorwifi.setVw(vistor_dto);
+						userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
+						
+					}
+					break;
+				case DS_VistorWifi_Stop:
+					{
+						UserSettingState settingState = userSettingStateService.getById(mac);
+						if(settingState != null){
+							UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+							if(vistorwifi != null && vistorwifi.isOn()){
+								vistorwifi.setOn(false);
+								vistorwifi.setDs(false);
+								vistorwifi.setVw(null);
+								userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
+							}
+						}
 						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
-						break;
-					default:
-						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
-						break;
-				}
+					}
+					break;
+				case DS_Switch_WorkMode:
+					WifiDeviceSettingDTO setting_dto = deviceFacadeService.validateDeviceSettingReturnDTO(mac);
+					//需要判定是否可以进行切换
+					ParamVasSwitchWorkmodeDTO param_switch_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
+					WifiDeviceHelper.deviceWorkModeNeedChanged(work_mode,param_switch_dto.getWmode(), 
+							DeviceHelper.getLinkModeValue(setting_dto));
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
+					break;
+				default:
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
+					break;
 			}
 		}else{
 			switch (opt_cmd) {
