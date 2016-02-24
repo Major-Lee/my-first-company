@@ -55,11 +55,10 @@ cp ../../msip-bhu-unit/msip_bhu_unit_daemon_processor/target/msip_bhu_unit_daemo
 echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zip ./$CuDateDir
 
-echo '拷贝文件 msip_bhu_unit_rest_urouter-bin.zip到'$CuDateDir
-cp ../../msip-bhu-unit/msip_bhu_unit_rest_urouter/target/msip_bhu_unit_rest_urouter-bin.zip ./$CuDateDir
-
 echo '拷贝文件 msip_bhu_unit_vas-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_vas/target/msip_bhu_unit_vas-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_unit_rest_urouter-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_rest_urouter/target/msip_bhu_unit_rest_urouter-bin.zip ./$CuDateDir
 
 echo '拷贝文件 msip_bhu_unit_captchacode-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_captchacode/target/msip_bhu_unit_captchacode-bin.zip ./$CuDateDir
@@ -97,14 +96,14 @@ unzip -qo msip_bhu_unit_daemon_processor/bin/msip_bhu_unit_daemon_processor.jar 
 unzip -q msip_bhu_unit_devices-bin.zip
 unzip -qo msip_bhu_unit_devices/bin/msip_bhu_unit_devices.jar -d msip_bhu_unit_devices/classes/
 
-
-unzip -q msip_bhu_unit_rest_urouter-bin.zip
-unzip -qo msip_bhu_unit_rest_urouter/bin/msip_bhu_unit_rest_urouter.jar -d msip_bhu_unit_rest_urouter/classes/
-
 unzip -q msip_bhu_unit_vas-bin.zip
 unzip -qo msip_bhu_unit_vas/bin/msip_bhu_unit_vas.jar -d msip_bhu_unit_vas/classes/
 unzip -q msip_bhu_unit_captchacode-bin.zip
 unzip -qo msip_bhu_unit_captchacode/bin/msip_bhu_unit_captchacode.jar -d msip_bhu_unit_captchacode/classes/
+
+unzip -q msip_bhu_unit_rest_urouter-bin.zip
+unzip -qo msip_bhu_unit_rest_urouter/bin/msip_bhu_unit_rest_urouter.jar -d msip_bhu_unit_rest_urouter/classes/
+
 
 unzip -q msip_bhu_unit_agent-bin.zip
 unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent/classes/
