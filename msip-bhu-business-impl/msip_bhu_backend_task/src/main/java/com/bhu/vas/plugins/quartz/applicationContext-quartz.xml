@@ -262,7 +262,7 @@
 	<bean id="wifiDeviceGroupBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="wifiDeviceGroupBackendTaskLoaderCronJobDetail" />
 		<!-- 每隔5分钟执行一次   0 0/5 * * * ?  -->
-		<property name="cronExpression" value="0 0/2 * * * ?" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
 	</bean>
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
 	<bean id="wifiDeviceGroupBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">

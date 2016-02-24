@@ -138,6 +138,13 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return false;
 	}
 	
+	public double get_rx_rate(double score){
+		if(isOnline(score)){
+			return score - OnlineBaseScore;
+		}
+		return 0;
+	}
+	
 	/**
 	 * 把设备的在线终端变成离线状态
 	 * @param wifiId

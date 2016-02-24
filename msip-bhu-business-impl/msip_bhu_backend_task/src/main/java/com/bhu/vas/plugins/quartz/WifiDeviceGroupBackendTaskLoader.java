@@ -75,7 +75,6 @@ public class WifiDeviceGroupBackendTaskLoader {
 	    if (pendingTask != null && !pendingTask.isEmpty()) {
 		for (final WifiDeviceBackendTask task : pendingTask) {
 		    task_exec.submit((new Runnable() {
-			@SuppressWarnings("resource")
 			@Override
 			public void run() {
 			    //io写入txt类型日志
@@ -113,6 +112,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 				bw.close();
 			    } catch (Exception e) {
 				e.printStackTrace();
+				task.setState(WifiDeviceBackendTask.State_Failed);
+				wifiDeviceBackendTaskService.update(task);
 				logger.info("WifiDeviceGroupBackendTaskLoader  create txt error ");
 			    }finally {
 				try {
@@ -179,10 +180,11 @@ public class WifiDeviceGroupBackendTaskLoader {
 		    daemonRpcService.wifiMultiDevicesCmdsDown(
 			    downCmds.toArray(new DownCmds[0]));
 		} catch (Exception e) {
-		    logger.info(String.format(
-			    "WifiDeviceGroupBackendTaskLoader error mac : [%s]",
-			    macList.get(i)));
+		    task.setState(WifiDeviceBackendTask.State_Failed);
+		    wifiDeviceBackendTaskService.update(task);
+		    logger.info(String.format("WifiDeviceGroupBackendTaskLoader error mac : [%s]",macList.get(i)));
 		    e.printStackTrace(System.out);
+		    
 		} finally {
 		    downCmds.clear();
 		}
