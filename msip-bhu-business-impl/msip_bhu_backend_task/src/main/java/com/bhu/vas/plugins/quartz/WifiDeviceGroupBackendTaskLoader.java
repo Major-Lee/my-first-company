@@ -138,6 +138,9 @@ public class WifiDeviceGroupBackendTaskLoader {
 						downCmdsList.size()));
 					bw.flush();
 					bw.close();
+					task.setCompleted_at(new Date());
+					task.setState(WifiDeviceBackendTask.State_Completed);
+					wifiDeviceBackendTaskService.update(task);
 				    } catch (Exception e) {
 					e.printStackTrace();
 				    }
