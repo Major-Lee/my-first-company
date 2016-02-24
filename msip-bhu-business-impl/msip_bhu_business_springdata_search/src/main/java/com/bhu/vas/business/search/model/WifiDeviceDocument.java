@@ -214,6 +214,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String d_industry;//设备行业信息
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String updatedat;//索引记录的更新时间
 	
 	/*@Field(
@@ -491,6 +498,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_wanip(String d_wanip) {
 		this.d_wanip = d_wanip;
+	}
+
+	public String getD_industry() {
+		return d_industry;
+	}
+
+	public void setD_industry(String d_industry) {
+		this.d_industry = d_industry;
 	}
 
 	public String getUpdatedat() {

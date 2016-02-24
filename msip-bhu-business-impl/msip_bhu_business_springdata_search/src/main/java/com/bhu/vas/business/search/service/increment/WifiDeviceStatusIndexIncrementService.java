@@ -145,12 +145,14 @@ public class WifiDeviceStatusIndexIncrementService{
 	 * 5) u_type
 	 * 6) u_binded
 	 * 7) u_dnick
+	 * 8) d_industry 
 	 * @param id 设备mac
 	 * @param bindUser 如果为null表示解绑设备
 	 * @param bindUserDNick 用户绑定的设备的昵称
+	 * @param d_industry 设备的行业信息
 	 */
-	public void bindUserUpdIncrement(String id, User bindUser, String bindUserDNick){
-		logger.info(String.format("BindUserUpdIncrement Request id [%s] bindUser [%s] bindUserDNick [%s]", id, bindUser, bindUserDNick));
+	public void bindUserUpdIncrement(String id, User bindUser, String bindUserDNick, String d_industry){
+		logger.info(String.format("BindUserUpdIncrement Request id [%s] bindUser [%s] bindUserDNick [%s] d_industry [%s]", id, bindUser, bindUserDNick, d_industry));
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
@@ -162,6 +164,7 @@ public class WifiDeviceStatusIndexIncrementService{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), bindUser.getUtype());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), bindUserDNick);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_INDUSTRY.getName(), d_industry);
 		}else{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), null);
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), null);
