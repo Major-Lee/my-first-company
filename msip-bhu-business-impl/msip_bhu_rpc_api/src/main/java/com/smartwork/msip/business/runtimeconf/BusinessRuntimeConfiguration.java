@@ -32,7 +32,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		//子超
 		SystemNoneedCaptchaValidAccs.add("86 13810048517");//T3
 		//SystemTestUsers.add(7);
-		SystemNoneedCaptchaValidAccs.add("86 15910908280");//T3
+//		SystemNoneedCaptchaValidAccs.add("86 15910908280");//T3
 		//SystemTestUsers.add(100021);
 		SystemNoneedCaptchaValidAccs.add("86 13910382542");//T3
 		SystemTestUsers.add(100024);
@@ -45,8 +45,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		SystemTestUsers.add(100282);
 		SystemNoneedCaptchaValidAccs.add("86 18519595789");//T3
 		SystemTestUsers.add(100335);
-		SystemNoneedCaptchaValidAccs.add("86 15910526881");//T3
-		SystemTestUsers.add(101767);
+//		SystemNoneedCaptchaValidAccs.add("86 15910526881");//T3
+//		SystemTestUsers.add(101767);
 	}
 	
 	public static void appendProperties(Properties paramProperties) {  
