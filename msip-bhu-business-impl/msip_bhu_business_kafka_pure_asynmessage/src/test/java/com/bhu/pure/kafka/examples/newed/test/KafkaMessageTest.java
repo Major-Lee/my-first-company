@@ -328,18 +328,28 @@ public class KafkaMessageTest {
 		//producer
 		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
-		while(true){
+		//while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
 			RecordMetadata ret = producer.send(record);
 			if(ret != null){
 				System.out.println("successed");
 			}*/
 			System.out.println("send message " + key);
-			RecordMetadata ret1 = producer.send("tdeliver", null, key+"", "msg"+key);
-			RecordMetadata ret2 = producer.send("tcm1", null, key+"", "msg"+key);
+			producer.send("down_ursids1_0", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids3_0", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
+			producer.send("down_ursidsdebugB_0", null, key+"", "msg"+key+"-happy yetao");
+//			RecordMetadata ret1 = producer.send("tdeliver", null, key+"", "msg"+key);
+//			RecordMetadata ret2 = producer.send("tcm1", null, key+"", "msg"+key);
 			Thread.sleep(2000l);
+			System.out.println("send message end " + key);
 			key++;
-		}
+		//}
 	}
 	
 }
