@@ -15,7 +15,7 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
 public class WifiDeviceBackendTask extends BaseLongModel implements Comparable<WifiDeviceBackendTask>{
 	
 	public static final String State_Pending = "pending";//待处理状态
-	public static final String State_Reading = "reading";//已进入线程，准备处理状态
+	public static final String State_Reading = "ready";//已进入线程，准备处理状态
 	public static final String State_Doing = "doing";//正在做
 	public static final String State_Timeout = "timeout";//任务超时
 	public static final String State_Failed = "failed";//任务失败
