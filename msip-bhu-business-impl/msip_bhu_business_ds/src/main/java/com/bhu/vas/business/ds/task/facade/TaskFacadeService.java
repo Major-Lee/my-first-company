@@ -496,12 +496,12 @@ public class TaskFacadeService {
 		downTask.setSubopt(subopt);
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
-		apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice);
+		apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice.getWork_mode());
 		this.taskComming(downTask);
 		return downTask;
 	}
 	
-	public String apiCmdGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,long taskid,WifiDevice wifiDevice){
+	public String apiCmdGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,long taskid,String work_mode){
 		String cmd = null;
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 			if(ods_cmd.hasRef()){
@@ -547,7 +547,7 @@ public class TaskFacadeService {
 					case DS_VistorWifi_Start:
 						{
 							ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-							vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+							vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
 							cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
 							UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
 							vistorwifi.setOn(true);
@@ -579,7 +579,7 @@ public class TaskFacadeService {
 						WifiDeviceSettingDTO setting_dto = deviceFacadeService.validateDeviceSettingReturnDTO(mac);
 						//需要判定是否可以进行切换
 						ParamVasSwitchWorkmodeDTO param_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
-						WifiDeviceHelper.deviceWorkModeNeedChanged(wifiDevice.getWork_mode(),param_dto.getWmode(), 
+						WifiDeviceHelper.deviceWorkModeNeedChanged(work_mode,param_dto.getWmode(), 
 								DeviceHelper.getLinkModeValue(setting_dto));
 						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
 						break;
