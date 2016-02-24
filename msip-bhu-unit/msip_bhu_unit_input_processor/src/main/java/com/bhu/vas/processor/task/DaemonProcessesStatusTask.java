@@ -4,13 +4,13 @@ import java.util.TimerTask;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.processor.BusinessDynaMsgProcessor;
+import com.bhu.vas.processor.BusinessDynaMsgProcessorActiveMQ;
 
 public class DaemonProcessesStatusTask extends TimerTask{
 	private final Logger logger = LoggerFactory.getLogger(DaemonProcessesStatusTask.class);
-	private BusinessDynaMsgProcessor processor;
+	private BusinessDynaMsgProcessorActiveMQ processor;
 	
-	public DaemonProcessesStatusTask(BusinessDynaMsgProcessor processor){
+	public DaemonProcessesStatusTask(BusinessDynaMsgProcessorActiveMQ processor){
 		this.processor = processor;
 	}
 	@Override

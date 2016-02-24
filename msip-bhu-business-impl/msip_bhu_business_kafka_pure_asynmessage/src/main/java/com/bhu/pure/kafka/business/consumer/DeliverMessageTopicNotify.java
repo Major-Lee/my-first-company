@@ -3,6 +3,7 @@ package com.bhu.pure.kafka.business.consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
+import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.client.consumer.callback.PollIteratorNotify;
 
 public class DeliverMessageTopicNotify implements PollIteratorNotify<ConsumerRecords<String, String>>{
@@ -16,6 +17,8 @@ public class DeliverMessageTopicNotify implements PollIteratorNotify<ConsumerRec
 							record.topic(), record.partition(),
 							record.key(), record.value(),
 							record.offset(), consumerId));
+			
+			KafkaMsgObserverManager.DynaMsgCommingObserver.notifyMsgComming(record.topic(), record.partition(), record.key(), record.value(), record.offset(), consumerId);
 		}
 	}
 
