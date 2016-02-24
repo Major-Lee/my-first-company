@@ -124,7 +124,7 @@ public class UserDeviceUnitFacadeService {
             userDevice.setCreated_at(new Date());
             userDevice.setDevice_name(deviceName);
             userDeviceService.insert(userDevice);
-            wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName);
+            wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
             
             deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
             UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
@@ -147,7 +147,7 @@ public class UserDeviceUnitFacadeService {
 
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
         if (userDeviceService.deleteById(userDevicePK) > 0)  {
-        	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null);
+        	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
         	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {

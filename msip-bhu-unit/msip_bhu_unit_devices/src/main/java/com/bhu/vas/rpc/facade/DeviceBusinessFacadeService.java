@@ -323,8 +323,10 @@ public class DeviceBusinessFacadeService {
 	}
 	/**
 	 * 通过连接设备进行的绑定设备操作
-	 * 1：如果该设备已经被该用户绑定，不做任何操作
-	 * 2：如果该设备已经被其他用户绑定，则重新绑定当前用户
+			a、如果绑定的key值不存在提示错误信息
+			b、设备未在服务器被绑定的情况下，收到设备的绑定消息后，进行绑定操作，并反馈给设备当前设备绑定的手机号并提示相关信息
+			c、设备已经在服务器被绑定的情况下，收到设备的绑定消息后，不进行绑定操作，但需要告诉设备当前设备绑定的手机号（可能通过app绑定过），
+			并提示相关信息
 	 * @param ctx
 	 * @param payload
 	 */
@@ -358,7 +360,10 @@ public class DeviceBusinessFacadeService {
 						        userDevice.setCreated_at(new Date());
 						        userDeviceService.insert(userDevice);
 						        
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
+						        wifiDevice.setIndustry(dto.getIndustry());
+						        wifiDeviceService.update(wifiDevice);
+						        
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, dto.getIndustry());
 					    	}
 /*					    	if(uid != old_uid){
 					    		if(old_uid != null){

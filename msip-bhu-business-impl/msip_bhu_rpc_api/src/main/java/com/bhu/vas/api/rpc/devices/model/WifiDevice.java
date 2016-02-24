@@ -81,6 +81,8 @@ public class WifiDevice extends BaseStringModel{
 	private String tfcard_usage;
 	// 设备认领的代理商 userid，如果为0 未进行认领 -1则代表认领失败，可能是由于认领库中不存在相关设备
 	private int agentuser;
+	//设备行业编号
+	private String industry;
 	//最后一次设备启动时间戳
 	private String last_start_at;
 	//最后一次登录时间
@@ -432,6 +434,14 @@ public class WifiDevice extends BaseStringModel{
 		this.agentuser = agentuser;
 	}
 	
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
 	public boolean needClaim(){
 		return this.agentuser == 0;
 	}
