@@ -472,6 +472,9 @@ public class CMDBuilder {
 	}*/
 	
 	public static String autoBuilderVapFullCMD4Opt(String wifi_mac,long taskid,String template){
+		if(taskid <= 0){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
 		StringBuilder resultCmd = new StringBuilder(
 				String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_VapSetting_REQ_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid)));
 		resultCmd.append(template);

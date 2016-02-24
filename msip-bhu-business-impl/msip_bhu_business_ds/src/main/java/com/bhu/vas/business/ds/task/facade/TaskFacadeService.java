@@ -496,6 +496,13 @@ public class TaskFacadeService {
 		downTask.setSubopt(subopt);
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
+		apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice);
+		this.taskComming(downTask);
+		return downTask;
+	}
+	
+	public String apiCmdGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,long taskid,WifiDevice wifiDevice){
+		String cmd = null;
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 			if(ods_cmd.hasRef()){
 				switch(ods_cmd){
@@ -507,11 +514,11 @@ public class TaskFacadeService {
 						if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
 							throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED,new String[]{ods_cmd.getRef(),param_dto.getStyle()});
 						}
-						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(),cmdDefined.getTemplate()));
+						cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid,cmdDefined.getTemplate()));
 						break;
 					case DS_Http_VapModuleCMD_Stop:
 						String stopTemplate = vasModuleCmdDefinedService.fetchCommonStopTemplate();
-						downTask.setPayload(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, downTask.getId(), stopTemplate));
+						cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
 						break;	
 					default:
 						break;	
@@ -531,7 +538,7 @@ public class TaskFacadeService {
 								uvw_dto.getVw().setUsers_rx_rate(ad_dto.getUsers_rx_rate());
 								uvw_dto.getVw().setUsers_tx_rate(ad_dto.getUsers_tx_rate());
 								userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(uvw_dto));
-								downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+								cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
 								break;
 							}
 						}
@@ -541,7 +548,7 @@ public class TaskFacadeService {
 						{
 							ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
 							vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
-							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
+							cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
 							UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
 							vistorwifi.setOn(true);
 							vistorwifi.setDs(false);
@@ -565,7 +572,7 @@ public class TaskFacadeService {
 									userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
 								}
 							}
-							downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+							cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
 						}
 						break;
 					case DS_Switch_WorkMode:
@@ -574,10 +581,10 @@ public class TaskFacadeService {
 						ParamVasSwitchWorkmodeDTO param_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
 						WifiDeviceHelper.deviceWorkModeNeedChanged(wifiDevice.getWork_mode(),param_dto.getWmode(), 
 								DeviceHelper.getLinkModeValue(setting_dto));
-						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams,deviceFacadeService));
+						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
 						break;
 					default:
-						downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
+						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
 						break;
 				}
 			}
@@ -591,7 +598,7 @@ public class TaskFacadeService {
 					innerDTO.setTimeslot(param_dto.getTimeslot());
 					innerDTO.setDays(param_dto.getDays());
 					userSettingStateService.updateUserSetting(mac, UserWifiTimerSettingDTO.Setting_Key, JsonHelper.getJSONString(innerDTO));
-					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, taskid, extparams));
 					break;
 				case KickOffVisitorDeviceWifiHandset:
 					WifiDeviceVisitorKickoffDTO dto = JsonHelper.getDTO(extparams, WifiDeviceVisitorKickoffDTO.class);
@@ -602,17 +609,17 @@ public class TaskFacadeService {
 					}
 					WifiDeviceVisitorService.getInstance().removePresents(mac, handsetIds);
 
-					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, taskid, extparams));
 					break;
 				default:
-					downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, downTask.getId(), extparams));
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd, mac, taskid, extparams));
 					break;
 
 			}
 		}
-		this.taskComming(downTask);
-		return downTask;
+		return cmd;
 	}
+	
 	
 	public WifiDeviceDownTask systemTaskGenerate(int uid, String mac, String opt, String subopt, String extparams) throws Exception{
 		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
