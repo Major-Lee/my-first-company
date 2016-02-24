@@ -1256,6 +1256,7 @@ public class DeviceHelper {
 			if(!isExistRadioName(radio_dto.getName(), ds_dto)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
+			//在radio名称不为空的情况下，必须指定real_channel
 			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
