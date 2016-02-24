@@ -1251,10 +1251,12 @@ public class DeviceHelper {
 		if(radio_dto == null /*|| StringUtils.isEmpty(radio_dto.getReal_channel()) || 
 				Integer.parseInt(radio_dto.getReal_channel()) < 0*/)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
-		if(!StringUtils.isEmpty(radio_dto.getName())){
-			//如果radio名称不存在 则返回null
+		if(StringUtils.isNotEmpty(radio_dto.getName())){
+			//如果radio名称不存在 则抛出异常
 			if(!isExistRadioName(radio_dto.getName(), ds_dto)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 		}else{
