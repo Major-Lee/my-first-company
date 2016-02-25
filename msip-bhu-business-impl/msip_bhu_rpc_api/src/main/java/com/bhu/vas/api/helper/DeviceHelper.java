@@ -373,6 +373,17 @@ public class DeviceHelper {
 		return dto.getSyskey();
 	}
 	
+	public static WifiDeviceSettingSyskeyDTO builderDeviceSettingSyskeyDTO(String keynum, String industry){
+		WifiDeviceSettingSyskeyDTO syskeyDTO = new WifiDeviceSettingSyskeyDTO();
+		syskeyDTO.setKeynum(keynum == null ? StringHelper.EMPTY_STRING_GAP : keynum);
+		syskeyDTO.setIndustry(industry == null ? StringHelper.EMPTY_STRING_GAP : industry);
+		if(StringUtils.isNotEmpty(keynum)){
+			syskeyDTO.setKeystatus(WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED);
+		}else{
+			syskeyDTO.setKeystatus(WifiDeviceSettingSyskeyDTO.KEY_STATUS_NOBIND);
+		}
+		return syskeyDTO;
+	}
 	
 	/**
 	 * 获取设备的总运行时长

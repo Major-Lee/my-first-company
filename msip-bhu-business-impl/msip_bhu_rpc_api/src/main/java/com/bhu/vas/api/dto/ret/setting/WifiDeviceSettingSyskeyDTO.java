@@ -18,7 +18,7 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 	public static final String KEY_STATUS_SUCCESSED = "3";
 	public static final String KEY_STATUS_FAILED = "2";
 	public static final String KEY_STATUS_VALIDATE_FAILED = "1";
-	
+	public static final String KEY_STATUS_NOBIND = "-1";
 	//uid
 	private String keynum;
 	//status
@@ -70,6 +70,22 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 	public Object[] builderProperties(int type) {
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o==null)return false;
+		if(o instanceof WifiDeviceSettingSyskeyDTO){
+			WifiDeviceSettingSyskeyDTO oo = (WifiDeviceSettingSyskeyDTO)o;
+			return this.getKeynum().equals(oo.getKeynum()) && this.getIndustry().equals(oo.getIndustry());
+		}
+		return false;
+	}
+
+//	@Override
+//	public int hashCode() {
+//		tr
+//		return this.getMac().toString().hashCode();
+//	}
 	
 	@Override
 	public boolean beRemoved() {

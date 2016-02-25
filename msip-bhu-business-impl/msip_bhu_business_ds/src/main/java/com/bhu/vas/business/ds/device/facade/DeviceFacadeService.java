@@ -155,7 +155,19 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}*/
 		return null;
 	}
-
+	
+	/**
+	 * 更新设备的行业信息
+	 * @param mac
+	 * @param industry
+	 */
+	public void updateDeviceIndustry(String mac, String industry){
+        WifiDevice entity = wifiDeviceService.getById(mac);
+        if(entity != null){
+        	entity.setIndustry(industry);
+        	wifiDeviceService.update(entity);
+        }
+	}
 
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充

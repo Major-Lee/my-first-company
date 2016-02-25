@@ -77,6 +77,8 @@ import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -140,6 +142,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -345,7 +350,33 @@ public class DeviceBusinessFacadeService {
 				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(keynum)){
 					/*int uid = Integer.parseInt(keynum);
 			    	User user = userService.getById(uid);*/
-					User user = userFacadeService.getUserByMobileno(keynum);
+					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
+					if(wifiDeviceDoc != null){
+						String exist_uid = wifiDeviceDoc.getU_id();
+						if(StringUtils.isNotEmpty(exist_uid)){
+			    			keynum = wifiDeviceDoc.getU_mno();
+			    			industry = wifiDeviceDoc.getD_industry();
+			    			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+						}else{
+							User user = userFacadeService.getUserByMobileno(keynum);
+							if(user != null){
+					    		UserDevice userDevice = new UserDevice();
+						        userDevice.setId(new UserDevicePK(mac, user.getId()));
+						        userDevice.setCreated_at(new Date());
+						        userDeviceService.insert(userDevice);
+						        
+					    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+					    		if(wifiDevice != null){
+							        wifiDevice.setIndustry(industry);
+							        wifiDeviceService.update(wifiDevice);
+					    		}
+						        
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, industry);
+								keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+							}
+						}
+					}
+/*					User user = userFacadeService.getUserByMobileno(keynum);
 			    	if(user != null){
 			    		Integer uid = user.getId();
 			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
@@ -368,7 +399,7 @@ public class DeviceBusinessFacadeService {
 						        
 						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, industry);
 					    	}
-/*					    	if(uid != old_uid){
+					    	if(uid != old_uid){
 					    		if(old_uid != null){
 					    			userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
 					    		}
@@ -383,10 +414,10 @@ public class DeviceBusinessFacadeService {
 						        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
 						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 						        
-					    	}*/
+					    	}
 					        keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 			    		}
-			    	}
+			    	}*/
 				}
 			}
 		}catch(Exception ex){

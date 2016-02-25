@@ -86,6 +86,8 @@ import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -131,6 +133,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
 
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	@Resource
 	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
@@ -1024,18 +1028,23 @@ public class AsyncMsgHandleService {
 		//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 		if(entity != null){
-			WifiDeviceSettingSyskeyDTO syskey_dto = DeviceHelper.getSyskey(entity.getInnerModel());
+			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+			WifiDeviceSettingSyskeyDTO syskey_dto = setting_dto.getSyskey();
 			if(syskey_dto != null){
-				//检查设备配置中的设备绑定数据是否与服务器一致
-				Integer uid = userDeviceService.fetchBindUid(mac);
-				if(uid == null){
-					//mac mobileno uid
+				WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
+				if(wifiDeviceDoc != null){
+					WifiDeviceSettingSyskeyDTO syskey_current_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(
+							wifiDeviceDoc.getU_id(), wifiDeviceDoc.getD_industry());
+					//如果设备上报的绑定数据和服务器不一致
+					if(!syskey_dto.equals(syskey_current_dto)){
+						cmdPayloads.add(CMDBuilder.builderDeviceSettingModify(mac, 0, 
+								DeviceHelper.builderDSKeyStatusOuter(syskey_current_dto)));
+						//直接进行数据库配置修改
+						setting_dto.setSyskey(syskey_current_dto);
+						wifiDeviceSettingService.update(entity);
+					}
 				}
 			}
-		}
-		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-		if(wifiDevice != null){
-			
 		}
 		//分发指令
 		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
@@ -1459,6 +1468,7 @@ public class AsyncMsgHandleService {
 		
 		afterUserSignedonThenCmdDown(dto.getMac());
 
+		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
 /*		User user = userService.getById(dto.getUid());
 		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), user);*/
 		
@@ -1477,7 +1487,7 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		//用户解绑设备后其开启的插件不需要清除 20160113 by EdmondLee
 		//userSettingStateService.deleteById(dto.getMac());
-
+		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
 		/*//如果没有绑定其他设备，删除别名
 		int count = userDeviceService.countBindDevices(dto.getUid());
 		if(count == 0 ){
@@ -1491,6 +1501,28 @@ public class AsyncMsgHandleService {
 //		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
+	}
+	
+	/**
+	 * 用户通过其他方式解绑设备或绑定设备以后
+	 * 需要对设备的绑定配置数据进行同步
+	 */
+	public void userDeviceBindOperateSyskeySync(String mac, Integer uid){
+		if(uid == null || StringUtils.isEmpty(mac)) return;
+		
+		User user = userService.getById(uid);
+		if(user == null) return;
+		
+		WifiDeviceSettingSyskeyDTO syskey_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(user.getMobileno(), null);
+		String cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, DeviceHelper.builderDSKeyStatusOuter(syskey_dto));
+		
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity != null){
+			entity.getInnerModel().setSyskey(syskey_dto);
+			wifiDeviceSettingService.update(entity);
+		}
+		
+		daemonRpcService.wifiDeviceCmdDown(null, mac, cmdPayload);
 	}
 	
 	/**
