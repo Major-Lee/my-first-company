@@ -21,6 +21,8 @@ public class UserDeviceDTO implements Serializable {
 	//设备的固件版本号
     private String ver;
 
+    private String add;
+
     public String getMac() {
         return mac;
     }
@@ -84,6 +86,12 @@ public class UserDeviceDTO implements Serializable {
 	public void setOrig_model(String orig_model) {
 		this.orig_model = orig_model;
 	}
-    
-    
+
+    public String getAdd() {
+        return add;
+    }
+
+    public void setAdd(String add) {
+        this.add = add;
+    }
 }
