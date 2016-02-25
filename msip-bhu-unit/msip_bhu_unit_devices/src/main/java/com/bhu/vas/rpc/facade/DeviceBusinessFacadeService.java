@@ -426,7 +426,7 @@ public class DeviceBusinessFacadeService {
 			handsetDeviceOnline(ctx, fristDto, parserHeader.getMac());
 		}
 		else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-			System.out.println("acition offline ====");
+			//System.out.println("acition offline ====");
 			handsetDeviceOffline(ctx, fristDto, parserHeader.getMac());
 		}
 		else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
@@ -890,6 +890,40 @@ public class DeviceBusinessFacadeService {
 					handset.setData_tx_rate(terminal.getData_tx_rate());
 					handset.setData_rx_rate(terminal.getData_rx_rate());
 				}
+<<<<<<< HEAD
+				//1:更新被管理的终端的上下行速率和ssid bssid
+				int cursor = 0;
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hdIds);
+				for(HandsetDeviceDTO handset : handsets){
+					WifiDeviceTerminalDTO terminal = terminals.get(cursor);
+					//判断是否在黑名单中
+					if(DeviceHelper.isAclMac(terminal.getMac(), setting_entity_dto)) 
+						continue;
+					if(handset == null){
+						handset = new HandsetDeviceDTO();
+						handset.setMac(terminal.getMac());
+						handset.setAction(HandsetDeviceDTO.Action_Online);
+						handset.setTs(this_login_at);
+						handset.setLast_wifi_id(wifiId);
+					}else{
+						handset.setAction(HandsetDeviceDTO.Action_Online); // 清除的时候设置成 offline了
+						handset.setData_tx_rate(terminal.getData_tx_rate());
+						handset.setData_rx_rate(terminal.getData_rx_rate());
+					}
+					//修改终端的流量
+					logger.info("terminal" + terminal.getMac() + terminal.getRx_bytes() + terminal.getTx_bytes());
+					handset.setRx_bytes(terminal.getRx_bytes());
+					handset.setTx_bytes(terminal.getTx_bytes());
+					logger.info("handset" + handset.getMac() + handset.getRx_bytes() + handset.getTx_bytes());
+					if(isVisitorWifi(terminal)) {
+						handsetDeviceVisitorOnline(ctx, terminal, wifiId);
+					} else {
+						WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId,
+								terminal.getMac(), StringUtils.isEmpty(terminal.getData_tx_rate()) ? 0d : Double.parseDouble(terminal.getData_tx_rate()));
+					}
+					//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
+					HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
+					cursor++;
 				handset.setRx_bytes(terminal.getRx_bytes());
 				handset.setTx_bytes(terminal.getTx_bytes());
 				logger.info("handset" + handset.getMac() + handset.getRx_bytes() + handset.getTx_bytes());*/
