@@ -343,11 +343,12 @@ public class TaskFacadeService {
 		if(BusinessRuntimeConfiguration.isConsoleUser(uid)){
 			wifiDevice = deviceFacadeService.validateDeviceIgoneOffline(mac);
 		}else{
-			if(WifiDeviceDownTask.Task_LOCAL_CHANNEL.equals(channel))
+			wifiDevice = deviceFacadeService.validateDevice4CMDDown(uid, mac);
+			/*if(WifiDeviceDownTask.Task_LOCAL_CHANNEL.equals(channel))
 				wifiDevice = deviceFacadeService.validateUserDevice(uid, mac);
 			else{
 				wifiDevice = deviceFacadeService.validateUserCWifiDevice(uid,mac);
-			}
+			}*/
 		}
 		
 		/*if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务

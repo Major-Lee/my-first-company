@@ -476,7 +476,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		return WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver());
 	}
 	
-	public WifiDevice validateUserCWifiDevice(Integer uid, String mac){
+	public WifiDevice validateDevice4CMDDown(Integer uid, String mac){
 		//验证设备
 		//验证设备是否存在
 		WifiDevice device_entity = wifiDeviceService.getById(mac);
@@ -486,10 +486,6 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证设备是否在线
 		if(!device_entity.isOnline()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
-		}
-		//验证是否是urouter
-		if(!WifiDeviceHelper.isCWifiDevice(device_entity.getOrig_swver())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
 		}
 		//验证用户是否管理设备
 		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
