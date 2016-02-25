@@ -328,7 +328,7 @@ public class KafkaMessageTest {
 		//producer
 		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
-		while(true){
+		//while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
 			RecordMetadata ret = producer.send(record);
 			if(ret != null){
@@ -366,7 +366,7 @@ public class KafkaMessageTest {
 			Thread.sleep(2000l);
 			System.out.println("send message end " + key);
 			key++;
-		}
+		//}
 	}
 	
 }
