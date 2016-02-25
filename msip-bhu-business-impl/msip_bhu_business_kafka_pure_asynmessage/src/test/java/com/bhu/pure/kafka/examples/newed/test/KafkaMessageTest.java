@@ -326,7 +326,8 @@ public class KafkaMessageTest {
 		
 		Thread.sleep(2000l);
 		//producer
-		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		StringKafkaMessageProducer producer1 = new StringKafkaMessageProducer("biz");
+		StringKafkaMessageProducer producer2 = new StringKafkaMessageProducer("mng");
 		int key = 0;
 		//while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
@@ -345,14 +346,15 @@ public class KafkaMessageTest {
 //			producer.send("down_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("down_ursidsdebugB_0", null, key+"", "msg"+key+"-happy yetao");
 			
-			producer.send("up_ursids1_0", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids3_0", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
-			producer.send("up_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids1_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
+			producer1.send("up_ursids3_0", key+"", "msg"+key+"-happy yetao");
+			producer2.send("mng_queue", key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursidsdebugB_0", null, key+"", "msg"+key+"-happy yetao");
 			
 //			producer.send("mng_queue", null, key+"", "msg"+key+"-happy yetao");
