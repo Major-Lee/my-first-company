@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
@@ -465,11 +464,11 @@ public class TaskFacadeService {
 			
 		}
 		//判定是定义出的特殊指令 广告注入、增值指令、访客网络
-		if(WifiDeviceHelper.isDeviceSpecialCmd(opt_cmd, ods_cmd)){
+		/*if(WifiDeviceHelper.isDeviceSpecialCmd(opt_cmd, ods_cmd)){
 			if(!VapModeDefined.supported(wifiDevice.getWork_mode())){//验证设备的工作模式是否支持增值指令
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_WORKMODE_NOT_SUPPORTED);
 			}
-		}
+		}*/
 		
 		//如果是增值指令 404或redirect，则还需要判定是否module是否在线
 		if(WifiDeviceHelper.isVapCmdModuleSupported(opt_cmd,ods_cmd) ){
