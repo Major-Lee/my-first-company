@@ -295,7 +295,7 @@ public class KafkaMessageTest {
 	 */
 	public static void TestConsumerSubscriberGroup() throws Exception{
 		//consumer c1
-/*		StringKafkaMessageConsumer consumer_c1 = new StringKafkaMessageConsumer("c1");
+		StringKafkaMessageConsumer consumer_c1 = new StringKafkaMessageConsumer("c1");
 		consumer_c1.doSubscribeTopics(new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
 			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
@@ -322,7 +322,7 @@ public class KafkaMessageTest {
 									record.offset()));
 				}
 			}
-		});*/
+		});
 		
 		Thread.sleep(2000l);
 		//producer
@@ -346,6 +346,9 @@ public class KafkaMessageTest {
 			producer.send("down_ursidsdebugB_0", null, key+"", "msg"+key+"-happy yetao");
 //			RecordMetadata ret1 = producer.send("tdeliver", null, key+"", "msg"+key);
 //			RecordMetadata ret2 = producer.send("tcm1", null, key+"", "msg"+key);
+			
+//			producer.send("down_ursids9_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids9_1", null, key+"", "msg"+key+"-happy yetao");
 			Thread.sleep(2000l);
 			System.out.println("send message end " + key);
 			key++;
