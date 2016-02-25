@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -367,6 +368,11 @@ public class DeviceHelper {
 		return linkmode_dto.getModel();
 	}
 	
+	public static WifiDeviceSettingSyskeyDTO getSyskey(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		return dto.getSyskey();
+	}
+	
 	
 	/**
 	 * 获取设备的总运行时长
@@ -561,6 +567,11 @@ public class DeviceHelper {
 				if(source.getMode() != null){
 					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
 				}
+				
+				//合并syskey
+				if(source.getSyskey() != null){
+					ReflectionHelper.copyProperties(source.getSyskey(), target.getSyskey());
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -651,7 +662,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
 	public static final String DeviceSetting_VapWorkModeChangeItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" auth_key_rsa=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
-	public static final String DeviceSetting_KeyStatusItem = "<ITEM keynum=\"%s\" keystatus=\"%s\" />";
+	public static final String DeviceSetting_KeyStatusItem = "<ITEM keynum=\"%s\" keystatus=\"%s\" industry=\"%s\" />";
 	
 	
 	public static final String DeviceSetting_Start_HttpAdItem 	= "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";

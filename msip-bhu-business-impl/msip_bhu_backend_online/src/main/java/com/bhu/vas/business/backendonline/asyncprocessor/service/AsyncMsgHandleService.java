@@ -27,6 +27,7 @@ import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -988,6 +989,8 @@ public class AsyncMsgHandleService {
 		WifiDeviceSettingQueryDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingQueryDTO.class);
 		List<String> cmdPayloads = dto.getPayloads();
 		if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
+		
+		String mac = dto.getMac();
 		//只有urouter设备才会执行
 		//配置状态如果为恢复出厂 则清空设备的相关业务数据,只限于家用 TU uRouter
 		if(dto.isDeviceURouter()){//deviceFacadeService.isURouterDevice(dto.getMac())){
@@ -1017,6 +1020,22 @@ public class AsyncMsgHandleService {
 				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 				logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
 			}
+		}
+		//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		if(entity != null){
+			WifiDeviceSettingSyskeyDTO syskey_dto = DeviceHelper.getSyskey(entity.getInnerModel());
+			if(syskey_dto != null){
+				//检查设备配置中的设备绑定数据是否与服务器一致
+				Integer uid = userDeviceService.fetchBindUid(mac);
+				if(uid == null){
+					//mac mobileno uid
+				}
+			}
+		}
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		if(wifiDevice != null){
+			
 		}
 		//分发指令
 		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);

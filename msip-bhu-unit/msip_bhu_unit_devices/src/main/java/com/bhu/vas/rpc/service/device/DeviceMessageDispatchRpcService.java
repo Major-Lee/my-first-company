@@ -139,7 +139,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					//taskNotifyResponse(ctx, payload, parserHeader);
 					break;
 				case 13:
-					deviceBusinessFacadeService.wifiDeviceForceBind(ctx, payload, parserHeader);
+					deviceBusinessFacadeService.wifiDeviceDirectBind(ctx, payload, parserHeader);
 					break;
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);

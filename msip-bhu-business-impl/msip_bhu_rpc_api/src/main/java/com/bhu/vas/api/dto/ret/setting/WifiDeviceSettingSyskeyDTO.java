@@ -30,9 +30,10 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 		
 	}
 	
-	public WifiDeviceSettingSyskeyDTO(String keynum, String keystatus){
+	public WifiDeviceSettingSyskeyDTO(String keynum, String keystatus, String industry){
 		this.keynum = keynum;
 		this.keystatus = keystatus;
+		this.industry = industry;
 	}
 	
 	public String getKeynum() {
@@ -58,9 +59,10 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[2];
+		Object[] properties = new Object[3];
 		properties[0] = keynum;
 		properties[1] = keystatus;
+		properties[2] = industry;
 		return properties;
 	}
 	
