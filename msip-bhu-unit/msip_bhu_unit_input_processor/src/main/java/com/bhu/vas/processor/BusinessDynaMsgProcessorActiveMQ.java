@@ -22,11 +22,9 @@ import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessa
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.bhu.vas.processor.bulogs.DynamicLogWriter;
-import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 /*import org.slf4j.Logger;
@@ -67,7 +65,7 @@ public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListene
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
 		hits = new int[hash_prime];
-		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
+		//TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
 		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();

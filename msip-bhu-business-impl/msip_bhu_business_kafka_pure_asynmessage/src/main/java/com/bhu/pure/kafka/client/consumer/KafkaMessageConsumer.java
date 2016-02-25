@@ -267,7 +267,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 						if(subscribe_topics_changed.get()){
 							subscribeTopicsChangedNotify();
 						}
-						System.out.println("start consumer poll");
+						//System.out.println("start consumer poll");
 						ConsumerRecords<KEY, VALUE> records = consumer.poll(100);
 						//System.out.println("end consumer poll");
 						notify.notifyComming(consumerId, records);

@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+
 
 
 /*import org.slf4j.Logger;
@@ -19,6 +21,19 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
+import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.charging.ActionBuilder;
+import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
+import com.bhu.vas.processor.bulogs.DynamicLogWriter;
+import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -43,11 +58,11 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	//@Resource
 	//private IDaemonRpcService daemonRpcService;
 
-	//@Resource
-	//private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
+	@Resource
+	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
 
-	//@Resource
-	//private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
+	@Resource
+	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
 
 	@PostConstruct
 	public void initialize(){
@@ -57,7 +72,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 			exec_processes.add(Executors.newFixedThreadPool(per_threads));
 		}
 		hits = new int[hash_prime];
-		//TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
+		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
 		KafkaMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
@@ -65,21 +80,22 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 
 	@Override
 	//public void onMessage(final String ctx,final String message) {
-	public void onMessage(final String topic,int partition,String key,String payload,long offset,String consumerId) {
-		System.out.println(String
-				.format("BusinessDynaMsgProcessor Received message: topic[%s] partition[%s] key[%s] value[%s] "
-						+ "offset[%s] consumerId[%s]",
+	public void onMessage(final String topic,final int partition,final String key,final String message,final long offset,final String consumerId) {
+/*		logger.info(String.format("BusinessDynaMsgProcessor Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
 						topic, partition,
-						key, payload,
-						offset, consumerId));
-		//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
-/*		validateStep1(message);
+						key, message,
+						offset, consumerId));*/
+		validateStep1(message);
 		exec_dispatcher.submit((new Runnable() {
 			@Override
 			public void run() {
-				logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+				//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 				try{
 					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+					System.out.println(String.format("Dyna Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
+							topic, partition,
+							key, message,
+							offset, consumerId));					
 					int type = Integer.parseInt(message.substring(0, 8));
 					ParserHeader headers = null;
 					String payload = null;
@@ -108,11 +124,11 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 							break;
 						default:
 							throw new UnsupportedOperationException(
-									String.format( "MessageType[%s] not yet implement handler process!full ctx[%s] message[%s]",
-											type,ctx,message));
+									String.format( "MessageType[%s] not yet implement handler process!full topic[%s] message[%s]",
+											type,topic,message));
 					}
 					if(headers != null){
-						onProcessor(ctx,payload,type,headers);
+						onProcessor(topic,payload,type,headers);
 						//deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 					}
 					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
@@ -121,10 +137,10 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 					logger.error("BusinessDynaMsgProcessor", ex);
 				}
 			}
-		}));*/
+		}));
 	}
 	
-	/*public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
+	public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
 		switch(type){
 			case ParserHeader.DeviceOffline_Prefix:
 				DynamicLogWriter.doLogger(headers.getMac(), 
@@ -183,9 +199,9 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 					}
 				break;
 		}
-	}*/
+	}
 	
-	/*public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
+	public void onProcessor(final String topic,final String payload,final int type,final ParserHeader headers) {
 		String mac = headers.getMac();
 		if(mac.startsWith(BusinessRuntimeConfiguration.DeviceTesting_Mac_Prefix)) return;
 		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
@@ -193,11 +209,12 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 		exec_processes.get(hash).submit((new Runnable() {
 			@Override
 			public void run() {
+				String ctx = CmCtxInfo.parserCtxName(topic);
 				doSpecialProcessor(ctx,payload,type,headers);
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
-	}*/
+	}
 	
 	public static void validateStep1(String msg){
 		if(StringUtils.isEmpty(msg) || msg.length()<=8) 
