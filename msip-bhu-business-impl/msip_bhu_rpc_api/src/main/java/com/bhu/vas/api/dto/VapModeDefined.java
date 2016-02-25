@@ -12,14 +12,14 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 public class VapModeDefined {
 	
-	private static final String Vap_Supported_Work_Mode1 = "router-ap";
+	/*private static final String Vap_Supported_Work_Mode1 = "router-ap";
 	private static final String Vap_Supported_Work_Mode2 = "wwan_router-ap";
 	private static final String Vap_Supported_Work_Mode3 = "bridge-ap";
 	
 	public static boolean supported(String device_workmode){
 		return Vap_Supported_Work_Mode1.equals(device_workmode) 
 				|| Vap_Supported_Work_Mode2.equals(device_workmode) || Vap_Supported_Work_Mode3.equals(device_workmode);
-	}
+	}*/
 
 	public enum VapModeType {
 		Http404(1, "http404", "http404增值模块"),

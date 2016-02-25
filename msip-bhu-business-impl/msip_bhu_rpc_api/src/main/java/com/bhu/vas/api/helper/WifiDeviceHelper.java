@@ -188,13 +188,10 @@ public class WifiDeviceHelper {
 		return (online && vapmoduleonline);
 	}
 	
-	public static boolean isDeviceSpecialCmd(OperationCMD opt, OperationDS subopt){
+	/*public static boolean isDeviceSpecialCmd(OperationCMD opt, OperationDS subopt){
 		if(OperationCMD.ModifyDeviceSetting == opt){
 			if(subopt == null) return false;
-			return (/*OperationDS.DS_Http_404_Start == subopt || OperationDS.DS_Http_404_Stop == subopt
-					|| 	OperationDS.DS_Http_Ad_Start == subopt || OperationDS.DS_Http_Ad_Stop == subopt
-					|| OperationDS.DS_Http_Redirect_Start == subopt || OperationDS.DS_Http_Redirect_Stop == subopt*/
-					//|| OperationDS.DS_Http_Portal_Start == subopt || OperationDS.DS_Http_Portal_Stop == subopt
+			return (
 					OperationDS.DS_Http_Ad_Start == subopt || OperationDS.DS_Http_Ad_Stop == subopt
 					|| OperationDS.DS_VistorWifi_Start == subopt || OperationDS.DS_VistorWifi_Stop == subopt
 					|| OperationDS.DS_Http_VapModuleCMD_Start == subopt || OperationDS.DS_Http_VapModuleCMD_Stop == subopt
@@ -202,7 +199,7 @@ public class WifiDeviceHelper {
 		}else{
 			return false;
 		}
-	}
+	}*/
 	
 	//增值模块组件支持的增值指令
 	public static boolean isVapCmdModuleSupported(OperationCMD opt, OperationDS subopt){
