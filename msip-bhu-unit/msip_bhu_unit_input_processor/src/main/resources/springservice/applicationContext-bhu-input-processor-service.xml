@@ -21,8 +21,8 @@
 	
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/>
-	
+	-->
 	<import resource="classpath*:springmq/applicationContext-activemq-topic-server.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-topic-producer.xml"/>
-	 -->
+	 
 </beans>
