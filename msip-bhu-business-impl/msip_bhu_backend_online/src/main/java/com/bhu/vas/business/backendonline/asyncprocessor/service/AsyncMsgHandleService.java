@@ -1510,12 +1510,18 @@ public class AsyncMsgHandleService {
 	 * 需要对设备的绑定配置数据进行同步
 	 */
 	public void userDeviceBindOperateSyskeySync(String mac, Integer uid){
-		if(uid == null || StringUtils.isEmpty(mac)) return;
+		if(StringUtils.isEmpty(mac)) return;
 		
-		User user = userService.getById(uid);
-		if(user == null) return;
+		String keynum = StringHelper.EMPTY_STRING_GAP;
 		
-		WifiDeviceSettingSyskeyDTO syskey_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(user.getMobileno(), null);
+		if(uid != null){
+			User user = userService.getById(uid);
+			if(user != null){
+				keynum = user.getMobileno();
+			}
+		}
+		
+		WifiDeviceSettingSyskeyDTO syskey_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(keynum, null);
 		String cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, DeviceHelper.builderDSKeyStatusOuter(syskey_dto));
 		
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
