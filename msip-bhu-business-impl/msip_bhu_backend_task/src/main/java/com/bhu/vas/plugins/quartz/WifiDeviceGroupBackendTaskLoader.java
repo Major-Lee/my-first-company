@@ -164,12 +164,13 @@ public class WifiDeviceGroupBackendTaskLoader {
 						bw.flush();
 						bw.close();
 						task.setCompleted_at(new Date());
-						if(!task.getState().equals(WifiDeviceBackendTask.State_Interrupt)) {
+						if(!(wifiDeviceBackendTaskService.getById(task.getId()).getState()).equals(WifiDeviceBackendTask.State_Interrupt)) {
 							task.setState(
 								WifiDeviceBackendTask.State_Completed);
 							wifiDeviceBackendTaskService
 								.update(task); 
 						}
+						logger.info("WifiDeviceGroupBackendTaskLoader ended total[%s]",task.getTotal());
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }
@@ -178,9 +179,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 				}
 			    }));
 		    } catch (BusinessI18nCodeException e) {
+			logger.info("WifiDeviceGroupBackendTaskLoader task force interrupt... ");
 			e.printStackTrace();
-			logger.info(
-				"WifiDeviceGroupBackendTaskLoader task force interrupt... ");
 		    }
 		}
 	}
