@@ -39,6 +39,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	public int retryOnConflict(){
 		return BusinessIndexDefine.WifiDevice.RetryOnConflict;
 	}
+	
+	public WifiDeviceDocument searchById(String id){
+		return this.getRepository().findOne(id);
+	}
+	
 	/**
 	 * 根据条件搜索数据
 	 * 绑定设备的用户id

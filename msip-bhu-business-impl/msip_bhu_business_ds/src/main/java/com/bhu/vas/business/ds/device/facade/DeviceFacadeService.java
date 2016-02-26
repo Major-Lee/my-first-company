@@ -116,6 +116,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private UserService userService;
+	
+//	@Resource
+//	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
 	
 	/**
@@ -155,7 +158,19 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}*/
 		return null;
 	}
-
+	
+	/**
+	 * 更新设备的行业信息
+	 * @param mac
+	 * @param industry
+	 */
+	public void updateDeviceIndustry(String mac, String industry){
+        WifiDevice entity = wifiDeviceService.getById(mac);
+        if(entity != null){
+        	entity.setIndustry(industry);
+        	wifiDeviceService.update(entity);
+        }
+	}
 
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充
@@ -873,6 +888,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			if(count == 0 ){
 				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
 			}*/
+        }
+        //清除设备的行业信息
+        WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+        if(wifiDevice != null){
+        	wifiDevice.setIndustry(null);
+        	wifiDeviceService.update(wifiDevice);
         }
         System.out.println("~~~~~~~~~~3:deviceResetDestory ok!");
 	}
