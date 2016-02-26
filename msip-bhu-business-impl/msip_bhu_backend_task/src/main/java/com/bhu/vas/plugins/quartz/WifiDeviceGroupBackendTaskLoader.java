@@ -3,6 +3,7 @@ package com.bhu.vas.plugins.quartz;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,10 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * 此任务暂定5分钟执行一次 根据配置的同时运行的任务数量决定是否需要重新把新的任务加入到任务池中
@@ -79,88 +84,106 @@ public class WifiDeviceGroupBackendTaskLoader {
 		    .fetchRecentPendingBackendTask(3 - activeCount);
 	    if (pendingTask != null && !pendingTask.isEmpty()) {
 		for (final WifiDeviceBackendTask task : pendingTask) {
-		    task_exec.submit((new Runnable() {
-			@Override
-			public void run() {
-			    // io写入txt类型日志
-			    String path = "/BHUData/logs/backendtask/BackendTaskLoader/%s.log";
-			    final File logFile = new File(
-				    String.format(path, task.getId()));
+		    try {
+			    task_exec.submit((new Runnable() {
+				@Override
+				public void run() {
+				    // io写入txt类型日志
+				    String path = "/BHUData/logs/backendtask/BackendTaskLoader/%s.log";
+				    final File logFile = new File(
+					    String.format(path, task.getId()));
 
-			    task.setState(WifiDeviceBackendTask.State_Reading);
-			    task.setStarted_at(new Date());
-			    wifiDeviceBackendTaskService.update(task);
-			    final List<DownCmds> downCmdsList = new ArrayList<DownCmds>();
-			    final List<String> macList = new ArrayList<String>();
-			    BufferedWriter bw = null;
-			    try {
-				bw = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(logFile),
-					"UTF-8"));
-				final StringBuilder sb = new StringBuilder();
-				// 获取搜索条件下的设备mac
-				wifiDeviceDataSearchService.iteratorAll(
-					task.getMessage(),
-					new IteratorNotify<Page<WifiDeviceDocument>>() {
-				    @Override
-				    public void notifyComming(
-					    Page<WifiDeviceDocument> pages) {
-
-					for (WifiDeviceDocument doc : pages) {
-					    // 判断是否在线
-					    if (doc.getD_online().equals("1")) {
-						String payload = autoGenerateCmds(
-							task, doc.getD_mac(),
-							doc.getD_workmodel());
-						downCmdsList.add(
-							DownCmds.builderDownCmds(
-								doc.getD_mac(),
-								payload));
-						macList.add(doc.getD_mac());
-					    }
-					    // 每个设备信息都写入txt日志
-					    sb.append(String.format(
-						    "WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]",
-						    doc.getD_mac(),
-						    doc.getD_online(),
-						    doc.getD_sn()))
-						    .append("\n");
-					}
-					task.setTotal(pages.getTotalElements());
-					downCmds(task, downCmdsList);
-					syncDate(task,macList);
-
-				    }
-				});
-				bw.write(sb.toString());
-				sb.delete(0, sb.length());
-			    } catch (Exception e) {
-				e.printStackTrace();
-				logger.info(
-					"WifiDeviceGroupBackendTaskLoader  create txt error ");
-			    } finally {
-				if (bw != null) {
+				    task.setState(WifiDeviceBackendTask.State_Reading);
+				    task.setStarted_at(new Date());
+				    wifiDeviceBackendTaskService.update(task);
+				    final List<DownCmds> downCmdsList = new ArrayList<DownCmds>();
+				    final List<String> macList = new ArrayList<String>();
+				    BufferedWriter bw = null;
 				    try {
-					bw.write(String.format(
-						"WifiDeviceGroupBackendTaskLoader total:[%s]  on_line device:[%s]",
-						task.getTotal(),
-						downCmdsList.size()));
-					bw.flush();
-					bw.close();
-					task.setCompleted_at(new Date());
-					task.setState(
-						WifiDeviceBackendTask.State_Completed);
-					wifiDeviceBackendTaskService
-						.update(task);
-				    } catch (Exception e) {
+					bw = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream(logFile),
+						"UTF-8"));
+					final StringBuilder sb = new StringBuilder();
+					// 获取搜索条件下的设备mac
+					wifiDeviceDataSearchService.iteratorAll(
+						task.getMessage(),
+						new IteratorNotify<Page<WifiDeviceDocument>>() {
+					    @Override
+					    public void notifyComming(
+						    Page<WifiDeviceDocument> pages) {
+						//测试用线程sleep
+						try {
+						    Thread.sleep(30*1000);
+						} catch (InterruptedException e) {
+						    e.printStackTrace();
+						}
+						//判断是否需要强行中断线程
+						if(taskForceInterrupt(task.getId())) {
+						    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_FORCE_INTERRUPT);
+						}
+						
+						for (WifiDeviceDocument doc : pages) {
+						    // 判断是否在线
+						    if (doc.getD_online().equals("1")) {
+							String payload = autoGenerateCmds(
+								task, doc.getD_mac(),
+								doc.getD_workmodel());
+							downCmdsList.add(
+								DownCmds.builderDownCmds(
+									doc.getD_mac(),
+									payload));
+							macList.add(doc.getD_mac());
+						    }
+						    // 每个设备信息都写入txt日志
+						    sb.append(String.format(
+							    "WifiDeviceGroupBackendTaskLoader mac:[%s] online:[%s] sn:[%s]",
+							    doc.getD_mac(),
+							    doc.getD_online(),
+							    doc.getD_sn()))
+							    .append("\n");
+						}
+
+						task.setTotal(pages.getTotalElements());
+						downCmds(task, downCmdsList);
+						syncData(task,macList);
+					    }
+					});
+					bw.write(sb.toString());
+					sb.delete(0, sb.length());
+				    }  catch (IOException e) {
 					e.printStackTrace();
+					logger.info(
+						"WifiDeviceGroupBackendTaskLoader create log error ");
+				    }finally {
+					if (bw != null) {
+					    try {
+						bw.write(String.format(
+							"WifiDeviceGroupBackendTaskLoader total:[%s] on_line device:[%s]",
+							task.getTotal(),
+							downCmdsList.size()));
+						bw.flush();
+						bw.close();
+						task.setCompleted_at(new Date());
+						if(!task.getState().equals(WifiDeviceBackendTask.State_Interrupt)) {
+							task.setState(
+								WifiDeviceBackendTask.State_Completed);
+							wifiDeviceBackendTaskService
+								.update(task); 
+						}
+					    } catch (IOException e) {
+						e.printStackTrace();
+					    }
+					}
 				    }
 				}
-			    }
-			}
-		    }));
+			    }));
+		    } catch (BusinessI18nCodeException e) {
+			e.printStackTrace();
+			logger.info(
+				"WifiDeviceGroupBackendTaskLoader task force interrupt... ");
+		    }
 		}
-	    }
+	}
 	    if (pendingTask == null || pendingTask.isEmpty()) {
 		logger.info("WifiDeviceGroupBackendTaskLoader ended total[0]");
 	    }
@@ -221,7 +244,7 @@ public class WifiDeviceGroupBackendTaskLoader {
      * @param task
      * @param ids
      */
-    public void syncDate(WifiDeviceBackendTask task,List<String> ids){
+    public void syncData(WifiDeviceBackendTask task,List<String> ids){
 	if (OperationDS.DS_Http_VapModuleCMD_Start == OperationDS
 		.getOperationDSFromNo(
 			task.getSubopt())
@@ -237,6 +260,21 @@ public class WifiDeviceGroupBackendTaskLoader {
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
+	}
+    }
+    
+    /**
+     * 判断是否需要强制中断
+     * @param taskId 任务ID
+     * @return 
+     */
+    public boolean taskForceInterrupt(Long taskId) {
+
+	WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(taskId);
+	if(task.getState().equals(WifiDeviceBackendTask.State_Interrupt)) {
+	    return true;
+	}else {
+	    return false;
 	}
     }
 }

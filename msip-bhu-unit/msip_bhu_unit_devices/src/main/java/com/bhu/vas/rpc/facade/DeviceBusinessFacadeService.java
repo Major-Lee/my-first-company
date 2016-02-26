@@ -77,6 +77,8 @@ import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -140,6 +142,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -330,20 +335,48 @@ public class DeviceBusinessFacadeService {
 	 * @param ctx
 	 * @param payload
 	 */
-	public void wifiDeviceForceBind(String ctx, String payload, ParserHeader parserHeader){
+	public void wifiDeviceDirectBind(String ctx, String payload, ParserHeader parserHeader){
 		String mac = parserHeader.getMac().toLowerCase();
 		String keynum = StringHelper.EMPTY_STRING_GAP;
 		String keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_VALIDATE_FAILED;
+		String industry = StringHelper.EMPTY_STRING_GAP;
 		WifiDeviceSettingSyskeyDTO dto = null;
 		try{
 			dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceSettingSyskeyDTO.class);
 			if(dto != null){
 				//mobileno
-				String mobileno = dto.getKeynum();
-				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(mobileno)){
+				keynum = dto.getKeynum();
+				industry = dto.getIndustry();
+				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(keynum)){
 					/*int uid = Integer.parseInt(keynum);
 			    	User user = userService.getById(uid);*/
-					User user = userFacadeService.getUserByMobileno(mobileno);
+					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
+					if(wifiDeviceDoc != null){
+						String exist_uid = wifiDeviceDoc.getU_id();
+						if(StringUtils.isNotEmpty(exist_uid)){
+			    			keynum = wifiDeviceDoc.getU_mno();
+			    			industry = wifiDeviceDoc.getD_industry();
+			    			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+						}else{
+							User user = userFacadeService.getUserByMobileno(keynum);
+							if(user != null){
+					    		UserDevice userDevice = new UserDevice();
+						        userDevice.setId(new UserDevicePK(mac, user.getId()));
+						        userDevice.setCreated_at(new Date());
+						        userDeviceService.insert(userDevice);
+						        
+					    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+					    		if(wifiDevice != null){
+							        wifiDevice.setIndustry(industry);
+							        wifiDeviceService.update(wifiDevice);
+					    		}
+						        
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, industry);
+								keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+							}
+						}
+					}
+/*					User user = userFacadeService.getUserByMobileno(keynum);
 			    	if(user != null){
 			    		Integer uid = user.getId();
 			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
@@ -353,6 +386,7 @@ public class DeviceBusinessFacadeService {
 					    		User oldUser = userService.getById(old_uid);
 					    		if(oldUser != null){
 					    			keynum = oldUser.getMobileno();
+					    			industry = wifiDevice.getIndustry();
 					    		}
 					    	}else{
 					    		UserDevice userDevice = new UserDevice();
@@ -363,11 +397,9 @@ public class DeviceBusinessFacadeService {
 						        wifiDevice.setIndustry(dto.getIndustry());
 						        wifiDeviceService.update(wifiDevice);
 						        
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, dto.getIndustry());
-						        
-						        keynum = mobileno;
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, industry);
 					    	}
-/*					    	if(uid != old_uid){
+					    	if(uid != old_uid){
 					    		if(old_uid != null){
 					    			userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
 					    		}
@@ -382,10 +414,10 @@ public class DeviceBusinessFacadeService {
 						        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
 						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
 						        
-					    	}*/
+					    	}
 					        keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 			    		}
-			    	}
+			    	}*/
 				}
 			}
 		}catch(Exception ex){
@@ -395,6 +427,7 @@ public class DeviceBusinessFacadeService {
 			if(dto != null){
 				dto.setKeynum(keynum);
 				dto.setKeystatus(keystatus);
+				dto.setIndustry(industry);
 				String cmdPayload = CMDBuilder.builderDeviceSettingModify(mac, 0, 
 						DeviceHelper.builderDSKeyStatusOuter(dto));
 				deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
@@ -1214,7 +1247,7 @@ public class DeviceBusinessFacadeService {
 			wifiDeviceSettingService.update(entity);
 		}
 		//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
-		checkSyskey(mac, dto);
+		//checkSyskey(mac, dto);
 		//如果不符合urouter的配置约定 则下发指定修改配置
 /*		if(!StringUtils.isEmpty(modify_urouter_acl)){
 			deliverMessageService.sendActiveDeviceSettingModifyActionMessage(mac, modify_urouter_acl);
@@ -1228,7 +1261,7 @@ public class DeviceBusinessFacadeService {
 	 * @param mac
 	 * @param dto
 	 */
-	public void checkSyskey(String mac, WifiDeviceSettingDTO dto){
+/*	public void checkSyskey(String mac, WifiDeviceSettingDTO dto){
 		String cmdPayload = null;
 		WifiDeviceSettingSyskeyDTO syskey_dto = dto.getSyskey();
 		if(syskey_dto != null){
@@ -1259,7 +1292,7 @@ public class DeviceBusinessFacadeService {
 			if(StringUtils.isNotEmpty(cmdPayload))
 				deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
 		}
-	}
+	}*/
 	
 	/**
 	 * 获取配置信息进行设备是否切换工作模式的判断

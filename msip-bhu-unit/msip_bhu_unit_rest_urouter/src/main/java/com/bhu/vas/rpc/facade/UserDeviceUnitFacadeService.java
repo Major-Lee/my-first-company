@@ -7,26 +7,22 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
-import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.helper.VapEnumType;
-import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
-import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
-import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
@@ -46,9 +42,13 @@ import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -80,6 +80,9 @@ public class UserDeviceUnitFacadeService {
     
     @Resource
     private UserDeviceFacadeService userDeviceFacadeService;
+    
+    @Resource
+    private DeviceFacadeService deviceFacadeService;
 
     @Resource
 	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
@@ -124,6 +127,9 @@ public class UserDeviceUnitFacadeService {
             userDevice.setCreated_at(new Date());
             userDevice.setDevice_name(deviceName);
             userDeviceService.insert(userDevice);
+            
+            deviceFacadeService.updateDeviceIndustry(mac, null);
+            
             wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
             
             deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
@@ -147,6 +153,9 @@ public class UserDeviceUnitFacadeService {
 
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
         if (userDeviceService.deleteById(userDevicePK) > 0)  {
+        	
+        	deviceFacadeService.updateDeviceIndustry(mac, null);
+            
         	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
         	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -314,6 +323,8 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
 				userDeviceDTO.setWork_mode(wifiDeviceDocument.getD_workmodel());
 				userDeviceDTO.setOrig_model(wifiDeviceDocument.getD_origmodel());
+				userDeviceDTO.setAdd(wifiDeviceDocument.getD_address());
+				userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
 					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()

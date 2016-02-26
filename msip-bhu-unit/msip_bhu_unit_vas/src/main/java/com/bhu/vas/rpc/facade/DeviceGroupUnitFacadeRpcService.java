@@ -168,6 +168,20 @@ public class DeviceGroupUnitFacadeRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+
+
+	public RpcResponseDTO<Boolean> modifyBackendTask(int uid, long taskId,
+		String extparams) {
+		try{
+		    wifiDeviceGroupFacadeService.modifyBackendTask(uid,taskId,extparams);
+		    return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	/*public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
 		if(StringUtils.isEmpty(wifi_ids)) {

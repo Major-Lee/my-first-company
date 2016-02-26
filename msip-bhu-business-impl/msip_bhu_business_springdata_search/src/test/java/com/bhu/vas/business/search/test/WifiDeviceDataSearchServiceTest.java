@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionLogicEnumType;
@@ -32,6 +33,7 @@ import com.bhu.vas.business.search.core.condition.component.payload.SearchCondit
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionRangePayload;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
@@ -42,6 +44,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
+	@Resource
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 	@BeforeClass
     public static void setUp() throws Exception {
@@ -56,7 +60,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	Thread.sleep(1000);
     }
     
-    @Test
+    //@Test
 	public void test001BatchCreateDocument(){
     	//wifiDeviceDataSearchService.refresh(false);
 		List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
@@ -792,7 +796,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
 	}
 	//商业wifi功能测试
-	@Test
+	//@Test
 	public void test0016SearchTest(){
 		//判断为商业wifi
 		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
@@ -846,7 +850,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
 	}
 	
-	@Test
+	//@Test
 	public void test0017SearchAllTest(){
 		SearchCondition sc_all = SearchCondition.builderSearchConditionWithAll();
 		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_all);
@@ -860,7 +864,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
 	}
 	
-	@Test
+	//@Test
 	public void test0018SearchIllegalTest(){
 		String illegal_message1 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"as\":1}]}]}";
 		String illegal_message2 = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"d_dut\",\"pattern\":\"test\",\"payload\":\"TU \"}]}]}";
@@ -877,4 +881,48 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	    System.out.println("test0018SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
     	}
 	}
+	
+	/**
+	 * 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILENO.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
+	 */
+	@Test
+	public void test001IncrementSearchTest(){
+		String mac = "84:82:f4:28:8f:ac";
+		for(int i = 1;i<101;i++){
+			User bindUser = new User();
+			bindUser.setId(i);
+			bindUser.setNick("nick"+i);
+			bindUser.setMobileno("mobileno"+i);
+			bindUser.setCountrycode(i);
+			bindUser.setUtype(i);
+			
+			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, bindUser, "lawliet"+i, "industry"+i);
+			
+			WifiDeviceDocument doc = wifiDeviceDataSearchService.searchById(mac);
+			boolean same = true;
+			//validate bind 
+			if(!WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType().equals(doc.getU_binded())){
+				same = false;
+			}
+			if(!doc.getU_id().equals(String.valueOf(bindUser.getId()))){
+				same = false;
+			}
+			if(!doc.getU_nick().equals(bindUser.getNick())){
+				same = false;
+			}
+			if(!doc.getU_mno().equals(bindUser.getMobileno())){
+				same = false;
+			}
+			
+			System.out.println(same + "-"+i);
+		}
+		
+	}
+	
 }

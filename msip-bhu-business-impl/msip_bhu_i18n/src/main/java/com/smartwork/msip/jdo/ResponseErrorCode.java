@@ -62,6 +62,7 @@ public enum ResponseErrorCode {
 	TASK_ALREADY_COMPLETED("693","task.already.completed"),
 	TASK_ALREADY_EXIST("692","task.already.exist"),
 	TASK_NOT_EXIST("691","task.not.exist"),
+	TASK_FORCE_INTERRUPT("690","task.force.interrupt"),
 	
 	FUNC_UNLOCK("650","func.unlock"),
 	
@@ -110,18 +111,18 @@ public enum ResponseErrorCode {
 //	USER_FRD_COUNT_LIMIT("723","user.frd.count.max"),
 //	USER_ARTIFICIAL_FRDADD_LIMIT("725","user.artificial.add.limit"),
 	
-    LOGIN_UNAME_OR_PWD_INVALID("201","login.usernameOrpwd.invalid"),
-    LOGIN_PWD_INVALID("202","login.pwd.invalid"),
-    //LOGIN_COOKIE_TOKEN_EXPIRED("203","login.cookie.token.expired"),
-    //LOGIN_COOKIE_VALIDATE_ACTION_EXCEPTION("204","login.cookie.token.validate.exception"),
-    LOGIN_USER_DATA_NOTEXIST("205","login.user.data.notexist"),
+	LOGIN_UNAME_OR_PWD_INVALID("201","login.usernameOrpwd.invalid"),
+	LOGIN_PWD_INVALID("202","login.pwd.invalid"),
+	//LOGIN_COOKIE_TOKEN_EXPIRED("203","login.cookie.token.expired"),
+	//LOGIN_COOKIE_VALIDATE_ACTION_EXCEPTION("204","login.cookie.token.validate.exception"),
+	LOGIN_USER_DATA_NOTEXIST("205","login.user.data.notexist"),
     
     
-    AUTH_CRON_EXPRESSION_INVALID("245","auth.cron.expression.invalid"),
-    AUTH_CRON_EXPRESSION_EMPTY("246","auth.cron.expression.empty"),
+    	AUTH_CRON_EXPRESSION_INVALID("245","auth.cron.expression.invalid"),
+    	AUTH_CRON_EXPRESSION_EMPTY("246","auth.cron.expression.empty"),
     
-    AUTH_TOKEN_INVALID("250","auth.token.invalid"),
-    AUTH_TOKEN_REMOTEUID_NOTMATCH("251","auth.token.remoteuid.notmatch"),
+    	AUTH_TOKEN_INVALID("250","auth.token.invalid"),
+    	AUTH_TOKEN_REMOTEUID_NOTMATCH("251","auth.token.remoteuid.notmatch"),
 	AUTH_TOKEN_TIMEOUT("252","auth.token.timeout"),
 	AUTH_TOKEN_EMPTY("253","auth.token.empty"),
 	AUTH_TOKEN_VALIDATE_EXCEPTION("254","auth.token.validate.exception"),
@@ -129,9 +130,9 @@ public enum ResponseErrorCode {
 	
 	
 	AUTH_PASSWORD_EMPTY("259","auth.password.empty"),
-    AUTH_EMAIL_INVALID_FORMAT("261","auth.email.format.invalid"),
-    AUTH_EMAIL_DATA_EXIST("262","auth.email.data.exist"),
-    AUTH_EMAIL_EMPTY("263","auth.email.empty"),
+	AUTH_EMAIL_INVALID_FORMAT("261","auth.email.format.invalid"),
+	AUTH_EMAIL_DATA_EXIST("262","auth.email.data.exist"),
+	AUTH_EMAIL_EMPTY("263","auth.email.empty"),
 	AUTH_ORG_DATA_EXIST("264","auth.org.data.exist"),
 	AUTH_UUID_INVALID_FORMAT("265","auth.uuid.format.invalid"),
 	AUTH_UUID_DATA_EXIST("266","auth.uuid.data.exist"),
@@ -148,7 +149,7 @@ public enum ResponseErrorCode {
 	AUTH_CAPTCHA_TIMES_NOENOUGH("278","auth.captcha.times.noenough"),
 	AUTH_CAPTCHA_PATIENT_WAITING("279","auth.captcha.patient.waiting"),
 	
-    AUTH_NICKNAME_INVALID_FORMAT("281","auth.nickname.format.invalid"),
+	AUTH_NICKNAME_INVALID_FORMAT("281","auth.nickname.format.invalid"),
 	AUTH_NICKNAME_DATA_EXIST("282","auth.nickname.data.exist"),
 	AUTH_NICKNAME_INVALID_LENGTH("283","auth.nickname.length.invalid"),
 	
