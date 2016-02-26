@@ -22,6 +22,7 @@ import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceBackendTaskService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupSearchConditionService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceGroupService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -483,6 +484,7 @@ public class WifiDeviceGroupFacadeService {
     private BackendTaskVTO fromBackendTask(WifiDeviceBackendTask dgroup) {
 	BackendTaskVTO vto = new BackendTaskVTO();
 	vto.setId(dgroup.getId());
+	vto.setUid(dgroup.getUid());
 	vto.setMessage(dgroup.getMessage());;
 	vto.setTotal(dgroup.getTotal());
 	vto.setState(dgroup.getState());
@@ -504,9 +506,24 @@ public class WifiDeviceGroupFacadeService {
 	wifiDeviceBackendTaskService.insert(entity);
     }
 
+    public void modifyBackendTask(int uid, long taskId, String extparams) throws Exception {
+	
+	WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(taskId);
+	if(JsonHelper.getString(extparams, "style").equals(WifiDeviceBackendTask.State_Interrupt)) {
+	    task.setState(WifiDeviceBackendTask.State_Interrupt);
+	    task.setDescription(WifiDeviceBackendTask.State_Interrupt);
+	    wifiDeviceBackendTaskService.update(task);
+	}
+	if(JsonHelper.getString(extparams, "style").equals("delete")) {
+	    wifiDeviceBackendTaskService.deleteById(taskId);
+	}
+	else {
+	    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+	}
+    }
+    
     public static void main(String[] argv) {
 	System.out.println(WifiDeviceGroupFacadeService
 		.countSubString("afa/1sfsfd/gdgsdfasd/fa/1/s/fd", "/"));
     }
-
 }

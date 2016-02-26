@@ -61,7 +61,7 @@ public class WifiDeviceBackendTaskTest extends BaseTest {
 		System.out.println("更新成功");
 	}
 
-	@Test
+	//@Test
 	public void test005() {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("state", "completed");
@@ -85,5 +85,26 @@ public class WifiDeviceBackendTaskTest extends BaseTest {
 		List<WifiDeviceBackendTask> result = wifiDeviceBackendTaskService.findModelByModelCriteria(mc);
 		System.out.println(result.size());
 	}
+	
+	//@Test
+	public void test008() {
+	    WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(64L);
+	    System.out.println(task.getContext_var());
+	}
+	//@Test
+	public void test009() {
+	    WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(64L);
+	    if(task.getState().equals(WifiDeviceBackendTask.State_Completed) ) {
+		System.out.println("true");
+	    }else {
+		System.out.println("false");
+	    }
+	}
+	//@Test
+	public void test010() {
+	    int a = wifiDeviceBackendTaskService.deleteById(67L);
+	    System.out.println(a);
+	}
+	
 	
 }

@@ -23,7 +23,8 @@ public interface IDeviceGroupRpcService {
 
 	RpcResponseDTO<Boolean> generateBackendTask(int uid, String message, String opt, String subopt, String extparams);
 
-	
+	RpcResponseDTO<Boolean> modifyBackendTask(int uid, long taskId,String extparams);
+
 	/*RpcResponseDTO<Boolean> grant(Integer uid, long gid,String wifi_ids);
 	
 	RpcResponseDTO<Boolean> ungrant(Integer uid, long gid,String wifi_ids);*/
