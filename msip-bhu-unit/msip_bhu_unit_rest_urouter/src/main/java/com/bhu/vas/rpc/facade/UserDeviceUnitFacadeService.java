@@ -324,6 +324,7 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setWork_mode(wifiDeviceDocument.getD_workmodel());
 				userDeviceDTO.setOrig_model(wifiDeviceDocument.getD_origmodel());
 				userDeviceDTO.setAdd(wifiDeviceDocument.getD_address());
+				userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
 					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()

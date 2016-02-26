@@ -224,6 +224,34 @@ public class ConsoleDeviceGroupController extends BaseController {
 	    SpringMVCHelper.renderJson(response,
 		    ResponseError.embed(rpcResult));
     }
+    
+    /**
+     * 修改群组任务
+     * @param request
+     * @param response
+     * @param uid
+     * @param taskId  任务id
+     * @param extparams json格式{"style":"delete"} or {"style" : "interrupt"}
+     */
+    @ResponseBody()
+    @RequestMapping(value = "modify_backendtask",method = {
+	    RequestMethod.POST})
+    public void modify_backendtask(HttpServletRequest request,
+	    HttpServletResponse response,
+	    @RequestParam(required = true) int uid,
+	    @RequestParam(required = true) long taskId,
+	    @RequestParam(required = true) String extparams) {
+	
+	RpcResponseDTO<Boolean> rpcResult = deviceGroupRpcService.modifyBackendTask(uid,taskId, extparams);
+	if (!rpcResult.hasError())
+	    SpringMVCHelper.renderJson(response,
+		    ResponseSuccess.embed(rpcResult.getPayload()));
+	else
+	    SpringMVCHelper.renderJson(response,
+		    ResponseError.embed(rpcResult));
+	
+    }
+    
 
     /**
      * 给指定的群组分配wifi设备

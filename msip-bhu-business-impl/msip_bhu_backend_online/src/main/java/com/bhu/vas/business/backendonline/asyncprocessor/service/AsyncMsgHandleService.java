@@ -1024,28 +1024,30 @@ public class AsyncMsgHandleService {
 				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 				logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
 			}
-		}
-		//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
-		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
-		if(entity != null){
-			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
-			WifiDeviceSettingSyskeyDTO syskey_dto = setting_dto.getSyskey();
-			if(syskey_dto != null){
-				WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
-				if(wifiDeviceDoc != null){
-					WifiDeviceSettingSyskeyDTO syskey_current_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(
-							wifiDeviceDoc.getU_id(), wifiDeviceDoc.getD_industry());
-					//如果设备上报的绑定数据和服务器不一致
-					if(!syskey_dto.equals(syskey_current_dto)){
-						cmdPayloads.add(CMDBuilder.builderDeviceSettingModify(mac, 0, 
-								DeviceHelper.builderDSKeyStatusOuter(syskey_current_dto)));
-						//直接进行数据库配置修改
-						setting_dto.setSyskey(syskey_current_dto);
-						wifiDeviceSettingService.update(entity);
+		}else{
+			//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
+			WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+			if(entity != null){
+				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+				WifiDeviceSettingSyskeyDTO syskey_dto = setting_dto.getSyskey();
+				if(syskey_dto != null){
+					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
+					if(wifiDeviceDoc != null){
+						WifiDeviceSettingSyskeyDTO syskey_current_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(
+								wifiDeviceDoc.getU_mno(), wifiDeviceDoc.getD_industry());
+						//如果设备上报的绑定数据和服务器不一致
+						if(!syskey_dto.equals(syskey_current_dto)){
+							cmdPayloads.add(CMDBuilder.builderDeviceSettingModify(mac, 0, 
+									DeviceHelper.builderDSKeyStatusOuter(syskey_current_dto)));
+							//直接进行数据库配置修改
+							setting_dto.setSyskey(syskey_current_dto);
+							wifiDeviceSettingService.update(entity);
+						}
 					}
 				}
 			}
 		}
+
 		//分发指令
 		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
 		logger.info(String.format("AsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));

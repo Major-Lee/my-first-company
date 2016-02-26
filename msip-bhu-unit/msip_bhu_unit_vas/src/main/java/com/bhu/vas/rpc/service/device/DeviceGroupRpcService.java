@@ -97,4 +97,13 @@ public class DeviceGroupRpcService implements IDeviceGroupRpcService {
      * "ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids)); return
      * deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids); }
      */
+
+    @Override
+    public RpcResponseDTO<Boolean> modifyBackendTask(int uid, long taskId,
+	    String extparams) {
+	logger.info(String.format(
+		"modifyBackendTask uid:%s taskId:%s extparams:%s",
+		uid, taskId, extparams));
+	return deviceGroupUnitFacadeRpcService.modifyBackendTask(uid, taskId, extparams);
+    }
 }
