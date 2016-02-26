@@ -34,8 +34,6 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -119,6 +117,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 						}
 						//判断是否需要强行中断线程
 						if(taskForceInterrupt(task.getId())) {
+						    logger.info(":::::::::::::::::::::::::::::::::::::");
 						    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_FORCE_INTERRUPT);
 						}
 						
@@ -170,7 +169,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 							wifiDeviceBackendTaskService
 								.update(task); 
 						}
-						logger.info("WifiDeviceGroupBackendTaskLoader ended total[%s]",task.getTotal());
+						logger.info(String.format("WifiDeviceGroupBackendTaskLoader ended total[%s]",task.getTotal()));
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }
