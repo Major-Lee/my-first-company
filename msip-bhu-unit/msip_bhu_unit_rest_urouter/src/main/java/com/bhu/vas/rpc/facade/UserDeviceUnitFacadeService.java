@@ -158,11 +158,12 @@ public class UserDeviceUnitFacadeService {
             
         	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
         	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
-            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-        } else {
+            
+        } /*else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(
                     ResponseErrorCode.RPC_MESSAGE_UNSUPPORT, Boolean.FALSE);
-        }
+        }*/
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
     public boolean isBinded(String mac) {
