@@ -196,4 +196,28 @@ public class WifiDeviceStatusIndexIncrementService{
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
+	
+	/**
+	 * 清除设备的搜索引擎记录的相关数据
+	 * 1：绑定数据关系
+	 * 2：设备业务信息
+	 * @param id
+	 */
+	public void resetUpdIncrement(String id){
+		logger.info(String.format("ResetUpdIncrement Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILENO.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_INDUSTRY.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
 }

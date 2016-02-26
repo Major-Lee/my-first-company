@@ -116,6 +116,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private UserService userService;
+	
+//	@Resource
+//	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
 	
 	/**
@@ -889,6 +892,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			if(count == 0 ){
 				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
 			}*/
+        }
+        //清除设备的行业信息
+        WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+        if(wifiDevice != null){
+        	wifiDevice.setIndustry(null);
+        	wifiDeviceService.update(wifiDevice);
         }
         System.out.println("~~~~~~~~~~3:deviceResetDestory ok!");
 	}

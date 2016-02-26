@@ -14,6 +14,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDev
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 
 /**
  * backend专属业务service
@@ -26,8 +27,8 @@ public class BackendBusinessService {
 	//@Resource
 	//private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 	
-	//@Resource
-	//private UserSettingStateService userSettingStateService;
+	@Resource
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -60,6 +61,8 @@ public class BackendBusinessService {
 		clearDeviceHandsetData(mac);
 		//9清除设备和用户的绑定关系
 		clearDeviceBindedRelation(mac);
+		//清除设备的搜索引擎相关数据
+		clearWifiDeviceSearchData(mac);
 	}
 	
 	
@@ -183,6 +186,16 @@ public class BackendBusinessService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
+	}
+	
+	/**
+	 * 清除设备的搜索引擎记录的相关数据
+	 * 1：绑定数据关系
+	 * 2：设备业务信息
+	 * @param mac
+	 */
+	public void clearWifiDeviceSearchData(String mac){
+		wifiDeviceStatusIndexIncrementService.resetUpdIncrement(mac);
 	}
 	
 	/**********************************     清除设备数据业务 end   *****************************************/
