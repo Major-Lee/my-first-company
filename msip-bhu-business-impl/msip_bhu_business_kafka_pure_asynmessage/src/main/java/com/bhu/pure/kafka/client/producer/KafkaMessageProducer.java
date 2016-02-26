@@ -52,6 +52,7 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 		
 		producerProperties = loadProperties();
 		if(producerProperties == null){
+			logger.error("KafkaMessageProducer initialize failed require properties object");
 			throw new RuntimeException("KafkaMessageProducer initialize failed require properties object");
 		}
 		loadProducerIdProperties();
@@ -104,9 +105,15 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 	@Override
 	public RecordMetadata send(String topic, Integer partition, KEY key, VALUE value){
 		try {
+			logger.info(String.format("send message: topic[%s] partition[%s] key[%s] value[%s]",
+					topic, partition,
+					key, value));	
 			return producer.send(new ProducerRecord<KEY, VALUE>(topic, partition, key, value)).get();
 		}catch(Exception ex){
-			ex.printStackTrace();
+			logger.error(String.format("error send: topic[%s] partition[%s] key[%s] value[%s]",
+					topic, partition,
+					key, value));
+			ex.printStackTrace(System.out);
 		}
 		return null;
 	}

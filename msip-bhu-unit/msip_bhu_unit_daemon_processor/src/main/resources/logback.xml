@@ -50,7 +50,7 @@
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="unitrequestfile" />
 	</logger>
-	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
+	<logger name="com.bhu.pure.kafka.client.producer" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
 	</logger>
 	<logger name="com.bhu.vas.daemon.processor" additivity="false" level="INFO">
