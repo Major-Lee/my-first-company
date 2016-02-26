@@ -6,6 +6,7 @@ public class MessageDaemonProvider {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUDaemonSP");
 		System.setProperty("provider.port", "20882");
+		System.setProperty("zookeeper", "192.168.66.191:2181");
 		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_daemon_processor/conf/");
 		
 		//Class<?> classz = Class.forName("com.alibaba.dubbo.container.Main");
