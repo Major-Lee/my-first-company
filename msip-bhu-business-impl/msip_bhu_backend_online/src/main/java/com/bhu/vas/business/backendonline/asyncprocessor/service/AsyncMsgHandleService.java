@@ -1489,7 +1489,7 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		//用户解绑设备后其开启的插件不需要清除 20160113 by EdmondLee
 		//userSettingStateService.deleteById(dto.getMac());
-		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
+		userDeviceBindOperateSyskeySync(dto.getMac(), null);
 		/*//如果没有绑定其他设备，删除别名
 		int count = userDeviceService.countBindDevices(dto.getUid());
 		if(count == 0 ){
@@ -1508,6 +1508,8 @@ public class AsyncMsgHandleService {
 	/**
 	 * 用户通过其他方式解绑设备或绑定设备以后
 	 * 需要对设备的绑定配置数据进行同步
+	 * @param mac 设备mac
+	 * @param uid 目前绑定的uid 传null为没有
 	 */
 	public void userDeviceBindOperateSyskeySync(String mac, Integer uid){
 		if(StringUtils.isEmpty(mac)) return;
