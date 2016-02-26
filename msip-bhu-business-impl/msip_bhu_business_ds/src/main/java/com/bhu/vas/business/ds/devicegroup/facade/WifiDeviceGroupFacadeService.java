@@ -511,7 +511,7 @@ public class WifiDeviceGroupFacadeService {
 	WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(taskId);
 	if(JsonHelper.getString(extparams, "style").equals(WifiDeviceBackendTask.State_Interrupt)) {
 	    task.setState(WifiDeviceBackendTask.State_Interrupt);
-	    task.setDescription(WifiDeviceBackendTask.State_Interrupt);
+	    task.setDescription(String.format("modifyBackendTask uid:%s extparams:%s", uid,extparams));
 	    wifiDeviceBackendTaskService.update(task);
 	}
 	if(JsonHelper.getString(extparams, "style").equals("delete")) {

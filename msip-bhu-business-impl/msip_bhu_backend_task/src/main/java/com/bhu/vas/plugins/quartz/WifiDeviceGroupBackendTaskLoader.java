@@ -111,6 +111,12 @@ public class WifiDeviceGroupBackendTaskLoader {
 					    @Override
 					    public void notifyComming(
 						    Page<WifiDeviceDocument> pages) {
+						//测试用线程sleep
+						try {
+						    Thread.sleep(30*1000);
+						} catch (InterruptedException e) {
+						    e.printStackTrace();
+						}
 						//判断是否需要强行中断线程
 						if(taskForceInterrupt(task.getId())) {
 						    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_FORCE_INTERRUPT);
