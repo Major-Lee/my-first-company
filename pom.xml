@@ -40,7 +40,7 @@
         -->
         <module>msip-bhu-unit/msip_bhu_unit_input_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
-        <module>msip-bhu-unit/msip_bhu_unit_captchacode</module>
+        <module>msip-bhu-unit/msip_bhu_unit_uass</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>
 
         <module>msip-bhu-unit/msip_bhu_unit_rest_urouter</module>

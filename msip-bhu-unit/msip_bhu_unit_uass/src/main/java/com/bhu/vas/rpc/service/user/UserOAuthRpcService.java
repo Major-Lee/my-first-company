@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.service.device;
+package com.bhu.vas.rpc.service.user;
 
 import java.util.List;
 import java.util.Map;
