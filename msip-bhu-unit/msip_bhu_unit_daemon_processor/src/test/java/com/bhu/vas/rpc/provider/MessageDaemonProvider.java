@@ -13,7 +13,6 @@ public class MessageDaemonProvider {
 		System.out.println("~~~~~~~~~~~~~:"+System.getProperty("provider.port"));
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"classpath*:/springunit/appCtxUnit.xml" });
 		context.start();
-		
 		//Thread.sleep(10000000000l);
 		Thread.currentThread().join();
 		//System.out.println("Press any key to exit.");

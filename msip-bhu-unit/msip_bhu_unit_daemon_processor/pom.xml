@@ -39,6 +39,10 @@
         </dependency>
         <dependency>
             <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_kafka_pure_asynmessage</artifactId>
+        </dependency>          
+        <dependency>
+            <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_redis_impl</artifactId>
         </dependency>        		
        <dependency>

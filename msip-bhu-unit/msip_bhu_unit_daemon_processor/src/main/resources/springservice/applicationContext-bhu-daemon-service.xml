@@ -14,9 +14,13 @@
 	<!-- 
 	<context:component-scan base-package="com.bhu.vas.business.processor"/>
 	<context:component-scan base-package="com.bhu.vas.processor"/> -->
+	<!-- 
 	<import resource="classpath*:springmq/applicationContext-activemq-dynamics-server.xml"/> 
 	<import resource="classpath*:springmq/applicationContext-activemq-dynamics-producer.xml"/> 
-	
+	 -->
+	 
 	<import resource="classpath*:springmq/applicationContext-activemq-topic-server.xml"/>
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-topic-consumer.xml"/>
+	
+	<import resource="classpath*:springkafka/applicationContext-kafka-daemon-producer.xml"/>
 </beans>

@@ -18,8 +18,8 @@ package com.bhu.pure.kafka.examples.zero8;
 
 
 import java.util.Properties;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
+
+import org.apache.kafka.clients.producer.ProducerConfig;
 
 public class Producer extends Thread
 {

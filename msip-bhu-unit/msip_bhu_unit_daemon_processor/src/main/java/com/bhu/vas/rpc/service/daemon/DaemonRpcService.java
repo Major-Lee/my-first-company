@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import org.slf4j.LoggerFactory;*/
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.business.asyn.normal.activemq.multi.ActiveMQDynamicsProducer;
 import com.bhu.vas.daemon.DaemonCheckTask;
 import com.bhu.vas.daemon.DaemonSimulateCmdTask;
 import com.bhu.vas.daemon.SessionInfo;
@@ -31,9 +31,11 @@ import com.smartwork.msip.cores.helper.task.TaskEngine;
 @Service("daemonRpcService")
 public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 	private final Logger logger = LoggerFactory.getLogger(DaemonRpcService.class);
-
+	//@Resource
+	//private ActiveMQDynamicsProducer activeMQDynamicsProducer;
+	
 	@Resource
-	private ActiveMQDynamicsProducer activeMQDynamicsProducer;
+	private StringKafkaMessageProducer daemonMessageTopicProducer;
 	
 	@PostConstruct
 	public void initialize(){
@@ -89,7 +91,8 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		}else{
 			logger.info(String.format("wifiDeviceCmdDown with ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		}
-		activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+		//activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+		daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), mac, cmd);
 		return true;
 	}
 
@@ -109,7 +112,8 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			logger.info(String.format("wifiDeviceCmdsDown with ctx[%s] mac[%s] cmds[%s]",ctx,mac,cmds));
 		}
 		for(String cmd:cmds){
-			activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+			//activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+			daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), mac, cmd);
 		}
 		return true;
 	}
@@ -133,7 +137,8 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 					}
 					for(String cmd:downCmd.getCmds()){
 						logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmd));
-						activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+						//activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
+						daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), downCmd.getMac(), cmd);
 					}
 				}
 				
