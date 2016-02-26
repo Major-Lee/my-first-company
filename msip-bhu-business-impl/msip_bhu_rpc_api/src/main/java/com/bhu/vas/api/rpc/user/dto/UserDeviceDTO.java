@@ -23,6 +23,8 @@ public class UserDeviceDTO implements Serializable {
 
     private String add;
 
+    private String ip;
+
     public String getMac() {
         return mac;
     }
@@ -93,5 +95,13 @@ public class UserDeviceDTO implements Serializable {
 
     public void setAdd(String add) {
         this.add = add;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }
