@@ -509,15 +509,13 @@ public class WifiDeviceGroupFacadeService {
     public void modifyBackendTask(int uid, long taskId, String extparams) throws Exception {
 	
 	WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(taskId);
-	if(JsonHelper.getString(extparams, "style").equals(WifiDeviceBackendTask.State_Interrupt)) {
+	if(JsonHelper.getString(extparams, "style").equals("interrupt")) {
 	    task.setState(WifiDeviceBackendTask.State_Interrupt);
 	    task.setDescription(String.format("modifyBackendTask uid:%s extparams:%s", uid,extparams));
 	    wifiDeviceBackendTaskService.update(task);
-	}
-	if(JsonHelper.getString(extparams, "style").equals("delete")) {
+	}else if(JsonHelper.getString(extparams, "style").equals("delete")) {
 	    wifiDeviceBackendTaskService.deleteById(taskId);
-	}
-	else {
+	}else{
 	    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 	}
     }

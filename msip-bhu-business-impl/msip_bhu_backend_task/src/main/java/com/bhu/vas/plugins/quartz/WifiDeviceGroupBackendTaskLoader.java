@@ -158,16 +158,18 @@ public class WifiDeviceGroupBackendTaskLoader {
 					if (bw != null) {
 					    try {
 						bw.write(String.format(
-							"WifiDeviceGroupBackendTaskLoader total:[%s]  on_line device:[%s]",
+							"WifiDeviceGroupBackendTaskLoader total:[%s] on_line device:[%s]",
 							task.getTotal(),
 							downCmdsList.size()));
 						bw.flush();
 						bw.close();
 						task.setCompleted_at(new Date());
-						task.setState(
-							WifiDeviceBackendTask.State_Completed);
-						wifiDeviceBackendTaskService
-							.update(task);
+						if(!task.getState().equals(WifiDeviceBackendTask.State_Interrupt)) {
+							task.setState(
+								WifiDeviceBackendTask.State_Completed);
+							wifiDeviceBackendTaskService
+								.update(task); 
+						}
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }
