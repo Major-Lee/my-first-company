@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
+import com.bhu.vas.business.yun.YunConstant;
 import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.BucketManager;
@@ -22,20 +23,6 @@ import com.qiniu.util.Auth;
 
 @Service
 public class YunOperateService implements IYunUploadService {
-
-	// 七牛云参数
-	static final String QN_ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
-	static final String QN_SECRET_KEY = "edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
-	static final String QN_BUCKET_URL_FW = "http://7xq32u.com2.z0.glb.qiniucdn.com/@";
-	static final String QN_BUCKET_URL_OM = "http://7xq3nw.com2.z0.glb.qiniucdn.com/@";
-	static final String QN_BUCKET_NAME_FW = "devicefw";
-	static final String QN_BUCKET_NAME_OM = "deviceom";
-	// 阿里云参数
-	static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
-	static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
-	static final String AL_BUCKET_NAME_FW = "devicefw";
-	static final String AL_BUCKET_NAME_OM = "deviceom";
-	static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
 
 	/**
 	 * 七牛云上传
@@ -49,17 +36,17 @@ public class YunOperateService implements IYunUploadService {
 	 */
 	public void uploadFile2QN(byte[] bs, String dut, String versionId, boolean fw, String JsFilePath) throws Exception {
 
-		Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
+		Auth auth = Auth.create(YunConstant.QN_ACCESS_KEY, YunConstant.QN_SECRET_KEY);
 		UploadManager uploadManager = new UploadManager();
 		if (fw) {
 			uploadManager.put(bs, String.format("/%s/%s/%s", dut, "build", versionId),
-					auth.uploadToken(QN_BUCKET_NAME_FW));
+					auth.uploadToken(YunConstant.QN_BUCKET_NAME_FW));
 		}
 		if (!fw) {
 			uploadManager.put(bs,String.format("/%s/%s", getRemoteName(versionId),versionId) ,
-					auth.uploadToken(QN_BUCKET_NAME_OM));
+					auth.uploadToken(YunConstant.QN_BUCKET_NAME_OM));
 			uploadManager.put(JsFilePath, String.format("/%s/%s", getRemoteName(versionId),"version.js"),
-					auth.uploadToken(QN_BUCKET_NAME_OM));
+					auth.uploadToken(YunConstant.QN_BUCKET_NAME_OM));
 
 		}
 		System.out.println("七牛云上传成功。");
@@ -76,19 +63,19 @@ public class YunOperateService implements IYunUploadService {
 	public void uploadFile2AL(byte[] bs, String dut, String versionId, boolean fw, String JsFilePath) throws Exception {
 
 		ByteArrayInputStream in = new ByteArrayInputStream(bs);
-		OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
+		OSSClient ossClient = new OSSClient(YunConstant.AL_END_POINT, YunConstant.AL_ACCESS_KEY, YunConstant.AL_SECRET_KEY);
 		// 创建上传Object的Metadata
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		// 上传文件
 		if (fw) {
-			ossClient.putObject(AL_BUCKET_NAME_FW, String.format("%s/%s/%s", dut, "build", versionId), in,
+			ossClient.putObject(YunConstant.AL_BUCKET_NAME_FW, String.format("%s/%s/%s", dut, "build", versionId), in,
 					objectMetadata);
 		}
 		if (!fw) {
 			String remateName = getRemoteName(versionId);
-			ossClient.putObject(AL_BUCKET_NAME_OM, remateName + "/" + versionId, in, objectMetadata);
+			ossClient.putObject(YunConstant.AL_BUCKET_NAME_OM, remateName + "/" + versionId, in, objectMetadata);
 			File file = new File(JsFilePath);
-			ossClient.putObject(AL_BUCKET_NAME_OM, remateName + "/" + "version.js", file, objectMetadata);
+			ossClient.putObject(YunConstant.AL_BUCKET_NAME_OM, remateName + "/" + "version.js", file, objectMetadata);
 			// 删除临时缓存文件夹
 			deleteCatchBucket(JsFilePath);
 		}
@@ -108,24 +95,24 @@ public class YunOperateService implements IYunUploadService {
 	public void deleteFile(String versionId, String dut, boolean fw) {
 		try {
 
-			OSSClient ossClient = new OSSClient(AL_END_POINT, AL_ACCESS_KEY, AL_SECRET_KEY);
-			Auth auth = Auth.create(QN_ACCESS_KEY, QN_SECRET_KEY);
+			OSSClient ossClient = new OSSClient(YunConstant.AL_END_POINT, YunConstant.AL_ACCESS_KEY, YunConstant.AL_SECRET_KEY);
+			Auth auth = Auth.create(YunConstant.QN_ACCESS_KEY, YunConstant.QN_SECRET_KEY);
 			BucketManager bucketManager = new BucketManager(auth);
 			if (fw) {
 				// 阿里云删除
-				ossClient.deleteObject(AL_BUCKET_NAME_FW, dut + "/build/" + versionId);
+				ossClient.deleteObject(YunConstant.AL_BUCKET_NAME_FW, dut + "/build/" + versionId);
 				System.out.println("阿里云删除成功");
 				// 七牛云删除
-				bucketManager.delete(QN_BUCKET_NAME_FW, "/" + dut + "/build/" + versionId);
+				bucketManager.delete(YunConstant.QN_BUCKET_NAME_FW, "/" + dut + "/build/" + versionId);
 				System.out.println("七牛云删除成功");
 			} else {
 				String remoteName = getRemoteName(versionId);
 				// 阿里云删除
-				ossClient.deleteObject(AL_BUCKET_NAME_OM, remoteName + "/" + versionId);
-				ossClient.deleteObject(AL_BUCKET_NAME_OM, remoteName + "/" + "version.js");
+				ossClient.deleteObject(YunConstant.AL_BUCKET_NAME_OM, remoteName + "/" + versionId);
+				ossClient.deleteObject(YunConstant.AL_BUCKET_NAME_OM, remoteName + "/" + "version.js");
 				// 七牛云删除
-				bucketManager.delete(QN_BUCKET_NAME_OM, "/" + remoteName + "/" + versionId);
-				bucketManager.delete(QN_BUCKET_NAME_OM, "/" + remoteName + "/" + "version.js");
+				bucketManager.delete(YunConstant.QN_BUCKET_NAME_OM, "/" + remoteName + "/" + versionId);
+				bucketManager.delete(YunConstant.QN_BUCKET_NAME_OM, "/" + remoteName + "/" + "version.js");
 			}
 			System.out.println("删除成功。");
 		} catch (Exception e) {
@@ -200,13 +187,13 @@ public class YunOperateService implements IYunUploadService {
 		String url[] = new String[2];
 		if (fw) {
 
-			QNurl = String.format("%s/%s/%s/%s", YunOperateService.QN_BUCKET_URL_FW, dut, "build", versionId);
-			ALurl = String.format("%s://%s.%s/%s/%s/%s","http",YunOperateService.AL_BUCKET_NAME_FW, YunOperateService.AL_END_POINT,
+			QNurl = String.format("%s/%s/%s/%s", YunConstant.QN_BUCKET_URL_FW, dut, "build", versionId);
+			ALurl = String.format("%s://%s.%s/%s/%s/%s","http",YunConstant.AL_BUCKET_NAME_FW, YunConstant.AL_END_POINT,
 					dut, "build", versionId);
 		}
 		if (!fw) {
-			QNurl = YunOperateService.QN_BUCKET_URL_OM+"/"+versionId.substring(10,16);
-			ALurl = String.format("%s://%s.%s/%s","http", YunOperateService.AL_BUCKET_NAME_OM, YunOperateService.AL_END_POINT,versionId.substring(10,16));
+			QNurl = YunConstant.QN_BUCKET_URL_OM+"/"+versionId.substring(10,16);
+			ALurl = String.format("%s://%s.%s/%s","http", YunConstant.AL_BUCKET_NAME_OM, YunConstant.AL_END_POINT,versionId.substring(10,16));
 		}
 		url[0] = QNurl;
 		url[1] = ALurl;

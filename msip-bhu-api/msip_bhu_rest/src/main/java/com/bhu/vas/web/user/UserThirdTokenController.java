@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.qiniu.CurrentKey;
+import com.bhu.vas.business.yun.YunConstant;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.qiniu.api.auth.AuthException;
@@ -43,8 +44,8 @@ public class UserThirdTokenController extends BaseController{
 	private static final String log_suffix_name = ".log";
 	
 	static{
-		Config.ACCESS_KEY = "p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
-		Config.SECRET_KEY = "edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
+		Config.ACCESS_KEY = YunConstant.QN_ACCESS_KEY;//"p6XNq4joNqiFtqJ9EFWdyvnZ6ZBnuwISxvVGdHZg";
+		Config.SECRET_KEY = YunConstant.QN_SECRET_KEY;//"edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
 	    mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
 	    bucketNameSupported.add(bucketName_Avatar);
 	    bucketNameSupported.add(bucketName_Log);

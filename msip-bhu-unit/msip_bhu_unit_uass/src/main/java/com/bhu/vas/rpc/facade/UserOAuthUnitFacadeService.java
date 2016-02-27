@@ -5,7 +5,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.common.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+//import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
