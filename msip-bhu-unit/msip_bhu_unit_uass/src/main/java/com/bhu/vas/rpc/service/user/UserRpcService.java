@@ -49,7 +49,7 @@ public class UserRpcService implements IUserRpcService{
 	public RpcResponseDTO<Map<String, Object>> userConsoleLogin(int countrycode, String acc,String pwd,String device,String remoteIp) {
 		logger.info(String.format("userLogin with countrycode[%s] acc[%s] device[%s] pwd[%s]",
 				countrycode,acc,device,pwd));
-		return userUnitFacadeService.userConsoleLogin(countrycode, acc,pwd, device, remoteIp);
+		return userUnitFacadeService.userLogin(countrycode, acc,pwd, device, remoteIp);
 	}
 
 	@Override

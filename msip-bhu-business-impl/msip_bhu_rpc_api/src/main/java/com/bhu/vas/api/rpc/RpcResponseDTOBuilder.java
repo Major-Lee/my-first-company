@@ -98,7 +98,20 @@ public class RpcResponseDTOBuilder {
 		return ret;
 	}
 
-	
+	public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO){
+		return builderUserRpcPayload(exchangeDTO, null);
+		/*Map<String,Object> ret = new HashMap<String,Object>();
+		ret.put(Key_User, exchangeDTO.getUser());
+		if(exchangeDTO.getToken() != null)
+			ret.put(Key_UserToken,exchangeDTO.getToken());
+		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(exchangeDTO.getUser().getMobileno()));
+		ret.put(Key_Cm, "60");
+		if(exchangeDTO.getOauths() != null && !exchangeDTO.getOauths().isEmpty())
+			ret.put(Key_UserOAuth, exchangeDTO.getOauths());
+		if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
+			ret.put(Key_Devices, userDeviceDTOList);
+		return ret;*/
+	}
 	public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO,List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, exchangeDTO.getUser());

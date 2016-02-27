@@ -12,9 +12,9 @@ public enum ResponseErrorCode {
 	RPC_PARAMS_VALIDATE_EMPTY("10001", "rpc.params.validate.empty"),
 	RPC_MESSAGE_UNSUPPORT("10002", "rpc.message.unsupport"),
 	
-	STORE_ITEM_NOTEXIST("10001", "store.item.notexist"),
+	/*STORE_ITEM_NOTEXIST("10001", "store.item.notexist"),
 	STORE_ITEM_NOTPUBLISHED("10002", "store.item.notpublished"),
-	STORE_ITEM_ALREADY_PUCHASED("10003", "store.item.already.purchased"),
+	STORE_ITEM_ALREADY_PUCHASED("10003", "store.item.already.purchased"),*/
 	
 	
 	VALIDATE_CODE_NOTEQUALS("1001","validate.code.notequals"),
