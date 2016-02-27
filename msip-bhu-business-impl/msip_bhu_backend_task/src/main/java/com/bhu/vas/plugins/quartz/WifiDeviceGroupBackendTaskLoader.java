@@ -82,7 +82,6 @@ public class WifiDeviceGroupBackendTaskLoader {
 		    .fetchRecentPendingBackendTask(3 - activeCount);
 	    if (pendingTask != null && !pendingTask.isEmpty()) {
 		for (final WifiDeviceBackendTask task : pendingTask) {
-		    try {
 			    task_exec.submit((new Runnable() {
 				@Override
 				public void run() {
@@ -117,7 +116,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 						}
 						//判断是否需要强行中断线程
 						if(taskForceInterrupt(task.getId())) {
-						    logger.info(":::::::::::::::::::::::::::::::::::::");
+						    logger.info(String.format("WifiDeviceGroupBackendTaskLoader force interrupt..."));
 						    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_FORCE_INTERRUPT);
 						}
 						
@@ -169,7 +168,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 							wifiDeviceBackendTaskService
 								.update(task); 
 						}
-						logger.info(String.format("WifiDeviceGroupBackendTaskLoader ended total[%s]",task.getTotal()));
+						logger.info(String.format("WifiDeviceGroupBackendTaskLoader ended total:[%s]",task.getTotal()));
 					    } catch (IOException e) {
 						e.printStackTrace();
 					    }
@@ -177,12 +176,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 				    }
 				}
 			    }));
-		    } catch (BusinessI18nCodeException e) {
-			logger.info("WifiDeviceGroupBackendTaskLoader task force interrupt... ");
-			e.printStackTrace();
 		    }
 		}
-	}
 	    if (pendingTask == null || pendingTask.isEmpty()) {
 		logger.info("WifiDeviceGroupBackendTaskLoader ended total[0]");
 	    }
@@ -275,5 +270,20 @@ public class WifiDeviceGroupBackendTaskLoader {
 	}else {
 	    return false;
 	}
+    }
+    
+    public static void main(String[] args) {
+	ExecutorService task_exec = Executors.newFixedThreadPool(1);
+	task_exec.submit((new Runnable() {
+		@Override
+		public void run() {
+		    for (int i = 0; i < 10; i++) {
+			if (i==5) {
+			    Thread.currentThread().interrupt();
+			}
+			
+			System.out.println(i);
+		    }
+		}}));
     }
 }
