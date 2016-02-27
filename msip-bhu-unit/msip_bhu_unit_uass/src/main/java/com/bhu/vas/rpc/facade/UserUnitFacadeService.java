@@ -146,15 +146,8 @@ public class UserUnitFacadeService {
 		if(user == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
-		/*if(StringUtils.isEmpty(user.getRegip())){
-			user.setRegip(remoteIp);
-		}
-		if(!user.getLastlogindevice().equals(device)){
-			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
-		}
-		this.userService.update(user);*/
 		
-		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
+		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);

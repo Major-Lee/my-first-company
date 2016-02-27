@@ -69,6 +69,22 @@ public class UserSignInOrOnFacadeService {
 		}
 		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), uToken);
 	}
+	
+	public UserInnerExchangeDTO commonUserValidate(User user,UserTokenDTO uToken,String device,String regIp,String deviceuuid){
+		//User user = this.userService.getById(uid);
+		if(user == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		}
+		if(StringUtils.isEmpty(user.getRegip())){
+			user.setRegip(regIp);
+		}
+		if(!user.getLastlogindevice().equals(device)){
+			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
+		}
+		this.userService.update(user);
+		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), uToken);
+	}
+	
 	/**
 	 * 通用创建用户接口
 	 * @param countrycode
