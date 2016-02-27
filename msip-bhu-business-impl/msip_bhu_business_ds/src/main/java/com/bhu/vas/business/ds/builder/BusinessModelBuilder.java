@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.smartwork.msip.cores.helper.StringHelper;
+
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Tuple;
@@ -30,6 +31,7 @@ import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
@@ -267,6 +269,7 @@ public class BusinessModelBuilder {
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
+		vto.setTt(MacDictParserFilterHelper.prefixMactch(hd_mac,true,false));
 		
 //		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
 		vto.setN(alia);
@@ -286,6 +289,7 @@ public class BusinessModelBuilder {
 				vto.setN(hd_entity.getDhcp_name());
 			}
 			vto.setIp(hd_entity.getIp());
+			vto.setUptime(hd_entity.getUptime());
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
 			//vto.setTx_rate(hd_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
@@ -296,6 +300,7 @@ public class BusinessModelBuilder {
 			vto.setRx_bytes(hd_entity.getTx_bytes());
 			vto.setTx_bytes(hd_entity.getRx_bytes());
 			vto.setEthernet(StringHelper.TRUE.equals(hd_entity.getEthernet()));
+			vto.setTs(hd_entity.getTs());
 		}
 		vto.setRx_rate(String.valueOf(rx_rate));
 		return vto;

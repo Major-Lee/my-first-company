@@ -30,6 +30,12 @@ public class URouterHdVTO implements Serializable{
 	private String tx_bytes;
 	//是否在线
 	private boolean online;
+	//时长
+	private String uptime;
+	//终端类型
+	private String tt;
+	//最后时间（在线 登录时间 离线为离线时间）
+	private long ts;
 	
 	/**
 	 * 终端是否来自于有线口
@@ -116,6 +122,24 @@ public class URouterHdVTO implements Serializable{
 	}
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	public String getUptime() {
+		return uptime;
+	}
+	public void setUptime(String uptime) {
+		this.uptime = uptime;
+	}
+	public String getTt() {
+		return tt;
+	}
+	public void setTt(String tt) {
+		this.tt = tt;
+	}
+	public long getTs() {
+		return ts;
+	}
+	public void setTs(long ts) {
+		this.ts = ts;
 	}
 	
 }
