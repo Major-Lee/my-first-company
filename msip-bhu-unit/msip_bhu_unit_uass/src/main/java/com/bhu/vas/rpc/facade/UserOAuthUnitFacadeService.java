@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -31,6 +32,8 @@ public class UserOAuthUnitFacadeService {
 	private UserService userService;
 	//@Resource
 	//private UserTokenService userTokenService;
+	@Resource
+	private UserSignInOrOnFacadeService userSignInOrOnFacadeService;
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
@@ -38,8 +41,8 @@ public class UserOAuthUnitFacadeService {
 	@Resource
 	private UserOAuthFacadeService userOAuthFacadeService;
 	
-	@Resource
-	private UserUnitFacadeService userUnitFacadeService;
+	//@Resource
+	//private UserUnitFacadeService userUnitFacadeService;
 	
 	/**
 	 * 通过用户id获取其绑定或注册的第三方类型和帐号
@@ -102,7 +105,7 @@ public class UserOAuthUnitFacadeService {
 				if(user == null){
 					throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST,new String[]{uid.toString()});
 				}
-				userExchange = userUnitFacadeService.commonOAuthUserLogin(user.getId(),device,regIp,deviceuuid, UserType.getBySName(ut));
+				userExchange = userSignInOrOnFacadeService.commonUserLogin(user,device,regIp,deviceuuid, UserType.getBySName(ut));
 			}else{
 				/*ModelCriteria mc = new ModelCriteria();
 				mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
@@ -111,13 +114,14 @@ public class UserOAuthUnitFacadeService {
 					String userNick = null;
 					if(nick != null && StringUtils.isNotEmpty(nick))
 						userNick = nick.concat(StringHelper.AT_STRING_GAP).concat(identify);
-					userExchange = userUnitFacadeService.commonOAuthUserCreate(userNick, device, regIp, deviceuuid, UserType.getBySName(ut));
+					userExchange = userSignInOrOnFacadeService.commonOAuthUserCreate(userNick, device, regIp, deviceuuid, UserType.getBySName(ut));
 					//exchangeDTO.setOauths(oauths);
 					//不进行异步消息发送通知
 					//deliverMessageService.sendUserRegisteredActionMessage(exchangeDTO.getUser().getId(),acc, null, device,regIp);
 				}else{
 					UserOAuthState userOAuthState = models.get(0);
-					userExchange = userUnitFacadeService.commonOAuthUserLogin(userOAuthState.getUid(),device,regIp,deviceuuid, UserType.getBySName(ut));
+					User user = userService.getById(userOAuthState.getUid());
+					userExchange = userSignInOrOnFacadeService.commonUserLogin(user,device,regIp,deviceuuid, UserType.getBySName(ut));
 					//exchangeDTO.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(exchangeDTO.getUser().getId()));
 				}
 				//UserOAuthStateDTO oauthStateDTO = 
