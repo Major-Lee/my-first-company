@@ -14,7 +14,7 @@
 		</repository>
 	</repositories>
 
-	<artifactId>msip_bhu_unit_captchacode</artifactId>
+	<artifactId>msip_bhu_unit_uass</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -35,7 +35,10 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_asynmessage</artifactId>
+        </dependency>        
        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
@@ -64,7 +67,7 @@
         </dependency>        
 	</dependencies>
 	<build>
-		<finalName>msip_bhu_unit_captchacode</finalName>
+		<finalName>msip_bhu_unit_uass</finalName>
 		<plugins>
 			<!-- mina打包为了bundle格式，为此，需要添加插件
 				在maven的pom.xml中plugins段中加入plugin即可 -->
