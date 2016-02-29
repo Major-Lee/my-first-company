@@ -129,6 +129,18 @@ public class TaskUnitFacadeService {
 			
 			//发送异步消息到Queue
 			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac,/*downTask.getId(),opt,*/downTask.getPayload());
+			return new RpcResponseDTO<TaskResDTO>(null,dto);
+		}catch(BusinessI18nCodeException bex){
+			//logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}finally{
+			//在设如果是需要持久化增值指令则需要进行,x需要更新索引
 			{
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
 				if(OperationDS.DS_Http_VapModuleCMD_Start == ods_cmd){//开启增值
@@ -140,17 +152,6 @@ public class TaskUnitFacadeService {
 					deliverMessageService.sendDevicesModuleStyleChangedNotifyMessage(uid,StringUtils.EMPTY,mac);
 				}
 			}
-			
-			return new RpcResponseDTO<TaskResDTO>(null,dto);
-		}catch(BusinessI18nCodeException bex){
-			//logger.error("TaskGenerate invoke exception : " + bex.getMessage(), bex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
-		}catch(Exception ex){
-			ex.printStackTrace();
-			logger.error("TaskGenerate invoke exception : " + ex.getMessage(), ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 	}
 	
