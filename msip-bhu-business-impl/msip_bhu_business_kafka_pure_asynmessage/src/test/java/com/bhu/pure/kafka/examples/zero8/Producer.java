@@ -19,11 +19,11 @@ package com.bhu.pure.kafka.examples.zero8;
 
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.ProducerConfig;
+import kafka.producer.KeyedMessage;
 
 public class Producer extends Thread
 {
-  private final kafka.javaapi.producer.Producer<Integer, String> producer;
+  private kafka.javaapi.producer.Producer<Integer, String> producer;
   private final String topic;
   private final Properties props = new Properties();
 
@@ -33,7 +33,7 @@ public class Producer extends Thread
     props.put("metadata.broker.list", "192.168.66.188:9092");
     // Use random partitioner. Don't need the key type. Just set it to Integer.
     // The message is of type String.
-    producer = new kafka.javaapi.producer.Producer<Integer, String>(new ProducerConfig(props));
+    //producer = new kafka.javaapi.producer.Producer<Integer, String>(new ProducerConfig(props));
     this.topic = topic;
   }
   
