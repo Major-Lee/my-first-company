@@ -142,7 +142,6 @@ public class WifiDeviceGroupBackendTaskLoader {
 						}
 
 						task.setTotal(pages.getTotalElements());
-						task.setCurrent(downCmdsList.size());
 						downCmds(task, downCmdsList);
 						syncData(task,macList);
 					    }
@@ -216,21 +215,21 @@ public class WifiDeviceGroupBackendTaskLoader {
      */
     public void downCmds(WifiDeviceBackendTask task,
 	    List<DownCmds> downCmdsList) {
-	task.setState(WifiDeviceBackendTask.State_Doing);
-	wifiDeviceBackendTaskService.update(task);
 	// 下发指令
-
+	task.setState(WifiDeviceBackendTask.State_Doing);
 	try {
 	    daemonRpcService.wifiMultiDevicesCmdsDown(
 		    downCmdsList.toArray(new DownCmds[0]));
+	    task.setCurrent(task.getCurrent()+downCmdsList.size());
 	} catch (Exception e) {
 //	    task.setState(WifiDeviceBackendTask.State_Failed);
 //	    wifiDeviceBackendTaskService.update(task);
-//	    logger.info(String
-//		    .format("WifiDeviceGroupBackendTaskLoader downCmds error"));
+	    logger.info(String
+		    .format("WifiDeviceGroupBackendTaskLoader downCmds error"));
 	    e.printStackTrace(System.out);
 
 	} finally {
+	    wifiDeviceBackendTaskService.update(task);
 	    downCmdsList.clear();
 	}
     }
