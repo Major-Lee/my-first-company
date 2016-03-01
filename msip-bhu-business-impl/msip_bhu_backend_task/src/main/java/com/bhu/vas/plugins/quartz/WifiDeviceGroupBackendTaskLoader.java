@@ -158,7 +158,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 						bw.write(String.format(
 							"WifiDeviceGroupBackendTaskLoader total:[%s] on_line device:[%s]",
 							task.getTotal(),
-							downCmdsList.size()));
+							task.getCurrent()));
 						bw.flush();
 						bw.close();
 						task.setCompleted_at(new Date());
