@@ -52,56 +52,6 @@ public class BusinessEnumType {
 		}
 	}
 	
-	/*
-	public enum UserType{
-		NormalUser("普通用户", 0),
-		SystemRobotUser("系统机器人用户", 1),
-		SystemNotifyUser("系统消息用户", 2),
-		SystemArtificialUser("系统人工用户", 3),
-		StarUser("明星用户", 8),
-		;
-		static Map<Integer, UserType> allUserTypes;
-		private String name;
-		private int type;
-		private UserType(String name, int type){
-			this.name = name;
-			this.type = type;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public int getType() {
-			return type;
-		}
-		public void setType(int type) {
-			this.type = type;
-		}
-		
-		public static UserType fromType(int type){
-			UserType userType = allUserTypes.get(type); 
-			if(userType == null){
-				userType = NormalUser;
-			}
-			return userType;
-		}
-		
-		public static boolean isSystemArtificialUser(int type) {
-			if(SystemArtificialUser.getType() == type) return true;
-			return false;
-		}
-		
-		static {
-			allUserTypes = new HashMap<Integer,UserType>();
-			UserType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (UserType type : types){
-				allUserTypes.put(type.getType(), type);
-			}
-		}
-	}*/
-	
 	public enum UserSex{
 		Male("男"),
 		Female("女"),
@@ -139,6 +89,52 @@ public class BusinessEnumType {
 			UserSex[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (UserSex type : types){
 				allUserSexs.put(type.getName(), type);
+			}
+		}
+	}
+	
+	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
+	public enum UWalletTransType{
+		Recharge2V("R2V","充值购买虎钻"),
+		Recharge2C("R2C","充值现金"),
+		Giveaway2V("G2V","系统/活动赠送虎钻"),
+		Consume4V("C4V","消费虎钻"),
+		Withdraw("WDR","提现(withdraw)"),
+		;
+		private String key;
+		private String name;
+		static Map<String, UWalletTransType> allWalletTransTypes;
+		
+		private UWalletTransType(String key,String name){
+			this.key = key;
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public static UWalletTransType fromKey(String key){
+			return allWalletTransTypes.get(key);
+		}
+		
+		public static boolean supported(String key){
+			return allWalletTransTypes.containsKey(key);
+		}
+		
+		static {
+			allWalletTransTypes = new HashMap<String, UWalletTransType>();
+			UWalletTransType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (UWalletTransType type : types){
+				allWalletTransTypes.put(type.getKey(), type);
 			}
 		}
 	}
