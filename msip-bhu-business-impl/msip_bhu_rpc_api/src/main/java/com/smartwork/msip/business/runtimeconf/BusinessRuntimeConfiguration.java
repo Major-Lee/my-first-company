@@ -127,6 +127,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             
             Device_Firmware_ForceUpdateImmediately_AfterDays = PropertiesHelper.getInt("device.firmware.forceupdateimmediately.afterdays", paramProperties, Device_Firmware_ForceUpdateImmediately_AfterDays);
             
+            User_WalletWithdraw_Default_MaxLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.maxLimit", paramProperties, User_WalletWithdraw_Default_MaxLimit);
+            
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -305,14 +307,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static long CheckArtificialFrdsKeepMs = 24 * 60 * 60 * 1000;//24小时的毫秒数 超过时间删除客服好友关系
 	public static int CheckArtificialFrdsAddLimitCount = 5;//5个好友数量, 超过数量不在分配客服
-	//public static String StaticsTrackIndexHtmlPublishPath 		 = "/VCData/html/trackindex2/";
-	//public static String StaticsTrackFavUserIndexHtmlPublishPath = "/VCData/html/trackuserfavindex/";
-	//public static String DefaultStaticsTrackIndexHtmlPublishPath = "/VCData/html/trackindex2/";
+
 	
-	/*public static String ChartPublishPath = "/VCData/data/chart/";
-	public static String ChartRootPathFile = "/VCData/data/chart/root.txt";
-	public static String ChartPublishPathFileSuffix = ".txt";*/
-//	public static String GexinPushXmPackage = "com.vc.blink";
+	public static double User_WalletWithdraw_Default_MaxLimit = 100.00d;//5个好友数量, 超过数量不在分配客服
+	
 	/**
 	 * 判断是否是console用户
 	 * @param uid
