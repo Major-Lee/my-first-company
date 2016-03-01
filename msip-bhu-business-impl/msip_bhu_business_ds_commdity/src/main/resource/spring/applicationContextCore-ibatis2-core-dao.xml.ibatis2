@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourceCoreMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${core.jdbc.master.driverClassName}"/>
+		<property name="url" value="${core.jdbc.master.url}"/>
+		<property name="username" value="${core.jdbc.master.username}"/>
+		<property name="password" value="${core.jdbc.master.password}"/>
+		<property name="maxActive" value="5"/>
+		<property name="maxIdle" value="20"/>
+		<property name="maxWait" value="10000"/>
+		<property name="testWhileIdle" value="true"/>
+		<property name="validationQuery" value="Select 1"/>
+	</bean>
+	
+	<bean id="dataSourceCoreSlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${core.jdbc.slaver.driverClassName}"/>
+		<property name="url" value="${core.jdbc.slaver.url}"/>
+		<property name="username" value="${core.jdbc.slaver.username}"/>
+		<property name="password" value="${core.jdbc.slaver.password}"/>
+		<property name="maxActive" value="5"/>
+		<property name="maxIdle" value="30"/>
+		<property name="maxWait" value="10000"/>
+		<property name="testWhileIdle" value="true"/>
+		<property name="validationQuery" value="Select 1"/>
+	</bean>	
+
+    <!-- ibatis Core Master sqlMapClient config -->
+    <bean id="sqlMapClientCoreMaster" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:ibatis2/core-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceCoreMaster"/>
+        </property>    
+    </bean>
+	
+	<!--根据sqlMapClientA创建一个SqlMapClientTemplate的模版类实例sqlMapClientTemplateA--> 
+    <bean id="sqlMapClientTemplateCoreMaster" class="org.springframework.orm.ibatis.SqlMapClientTemplate"> 
+        <property name="sqlMapClient" ref="sqlMapClientCoreMaster"/> 
+    </bean> 
+
+    <!-- ibatis Core Slaver sqlMapClient config -->
+    <bean id="sqlMapClientCoreSlaver" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:ibatis2/core-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceCoreSlaver"/>
+        </property>    
+    </bean>
+	
+	<!--根据sqlMapClientA创建一个SqlMapClientTemplate的模版类实例sqlMapClientTemplateA--> 
+    <bean id="sqlMapClientTemplateCoreSlaver" class="org.springframework.orm.ibatis.SqlMapClientTemplate"> 
+        <property name="sqlMapClient" ref="sqlMapClientCoreSlaver"/> 
+    </bean> 
+	<bean id="coreTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourceCoreMaster"/>
+	</bean>
+	<!-- transactionInterceptor配置
+	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+	  <property name="transactionManager" ref="transactionManager" />
+	  <property name="transactionAttributes">
+	   <props>
+	    <prop key="save*">PROPAGATION_REQUIRED</prop>
+	    <prop key="update*">PROPAGATION_REQUIRED</prop>
+	    <prop key="delete*">PROPAGATION_REQUIRED</prop>
+	    <prop key="set*">PROPAGATION_REQUIRED</prop> 
+	    <prop key="change*">PROPAGATION_REQUIRED</prop>   
+	    <prop key="get*">readOnly</prop>
+	    <prop key="*">readOnly</prop>
+	   </props>
+	  </property>
+ 	</bean>
+	-->
+	<!-- transactionInterceptor配置
+	<bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">  
+  		<property name="transactionInterceptor" ref="transactionInterceptor"/>  
+	</bean>  
+   
+	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">  
+	  <property name="transactionManager" ref="coreTransactionManager"/>  
+	  <property name="transactionAttributeSource">  
+	    <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>  
+	  </property>  
+	</bean> 
+	 -->
+	
+</beans>

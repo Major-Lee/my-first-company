@@ -20,6 +20,8 @@
         <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_i18n</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
+        <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
+        
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
@@ -144,7 +146,11 @@
                 <artifactId>msip_bhu_business_ds</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_commdity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_redis_impl</artifactId>
