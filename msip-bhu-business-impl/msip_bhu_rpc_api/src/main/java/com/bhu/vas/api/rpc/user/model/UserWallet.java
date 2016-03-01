@@ -22,7 +22,7 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	private Double vcurrency;
 	//虚拟币virtual_currency 充值生成 绑定（系统或活动赠送的）
 	private Double vcurrency_bing;
-	//现金
+	//现金零钱
 	private Double cash;
 	private Date created_at;
 	public UserWallet() {
