@@ -17,6 +17,7 @@
 package com.bhu.pure.kafka.client.producer;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.Callback;
@@ -98,24 +99,24 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 		return send(producerTopicPartition.topic(), producerTopicPartition.partition(), key, value);
 	}*/
 	@Override
-	public RecordMetadata send(String topic, KEY key, VALUE value){
+	public RecordMetadata send(String topic, KEY key, VALUE value) throws InterruptedException, ExecutionException{
 		return send(topic, null, key, value);
 	}
 	
 	@Override
-	public RecordMetadata send(String topic, Integer partition, KEY key, VALUE value){
-		try {
+	public RecordMetadata send(String topic, Integer partition, KEY key, VALUE value) throws InterruptedException, ExecutionException{
+		//try {
 			logger.info(String.format("send message: topic[%s] partition[%s] key[%s] value[%s]",
 					topic, partition,
 					key, value));	
 			return producer.send(new ProducerRecord<KEY, VALUE>(topic, partition, key, value)).get();
-		}catch(Exception ex){
+/*		}catch(Exception ex){
 			logger.error(String.format("error send: topic[%s] partition[%s] key[%s] value[%s]",
 					topic, partition,
 					key, value));
 			ex.printStackTrace(System.out);
 		}
-		return null;
+		return null;*/
 	}
 	
 /*	@Override
