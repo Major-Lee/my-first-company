@@ -36,7 +36,7 @@ public class Producer extends Thread
   {
     Properties props = new Properties();
     //props.put("bootstrap.servers", "192.168.66.123:9092");
-    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka.vivi.bhunetworks.com:9092,kafka.vivi.bhunetworks.com:9093,kafka.sanji.bhunetworks.com:9092,kafka.sanji.bhunetworks.com:9093");
+    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka.sanji.bhunetworks.com:9092,kafka.sanji.bhunetworks.com:9093,kafka.franky.bhunetworks.com:9092,kafka.franky.bhunetworks.com:9093");
     props.put("client.id", "DemoProducer");
     props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");

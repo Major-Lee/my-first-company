@@ -92,7 +92,12 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 			logger.info(String.format("wifiDeviceCmdDown with ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		}
 		//activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
-		daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), mac, cmd);
+		try{
+			daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), mac, cmd);
+		}catch(Exception ex){
+			logger.error("daemonMessageTopicProducer send failed ", ex);
+			//ex.printStackTrace();
+		}
 		return true;
 	}
 
@@ -113,7 +118,12 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 		}
 		for(String cmd:cmds){
 			//activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
-			daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), mac, cmd);
+			try{
+				daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), mac, cmd);
+			}catch(Exception ex){
+				logger.error("daemonMessageTopicProducer send failed ", ex);
+				//ex.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -138,7 +148,12 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 					for(String cmd:downCmd.getCmds()){
 						logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmd));
 						//activeMQDynamicsProducer.deliverMessage(CmCtxInfo.builderDownQueueName(ctx), cmd);
-						daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), downCmd.getMac(), cmd);
+						try{
+							daemonMessageTopicProducer.send(CmCtxInfo.builderDownQueueName(ctx), downCmd.getMac(), cmd);
+						}catch(Exception ex){
+							logger.error("daemonMessageTopicProducer send failed ", ex);
+							//ex.printStackTrace();
+						}
 					}
 				}
 				
