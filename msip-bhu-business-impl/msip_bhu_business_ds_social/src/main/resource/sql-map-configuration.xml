@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false"/>
+		<setting name="multipleResultSetsEnabled" value="true"/>
+		<setting name="useColumnLabel" value="true"/>
+		<setting name="useGeneratedKeys" value="false"/>
+		<setting name="autoMappingBehavior" value="NONE"/>
+		<setting name="defaultExecutorType" value="SIMPLE"/>
+		<setting name="defaultStatementTimeout" value="25000"/>
+	</settings>
+	<typeAliases>
+		<typeAlias type="com.et.business.user.model.User" alias="user"/>
+	</typeAliases>
+	<!--
+	<plugins>
+		指定数据库分页方言Dialect, 其它方言:OracleDialect,SQLServerDialect,SybaseDialect,DB2Dialect,PostgreSQLDialect,MySQLDialect,DerbyDialect,HSQLDialect
+		<plugin interceptor="com.teacherclub.cores.orm.jpa.ibatis3.plugins.OffsetLimitInterceptor">
+			<property name="dialectClass" value="com.teacherclub.cores.orm.jdbc.dialect.MySQLDialect"/>
+		</plugin>
+	</plugins>
+-->
+	<!-- 数据源通过spring注入 -->
+	<!-- 
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8" />
+				<property name="username" value="root" />
+				<property name="password" value="123456" />
+			</dataSource>
+		</environment>
+	</environments>
+	 -->
+	<!-- mapper文件的装载通过spring的mapperLocations指定 --> 
+	<mappers>
+		<!--<mapper resource="com/et/business/user/model/sqlMapper/UserMapper.xml" />-->
+	</mappers>
+</configuration>
