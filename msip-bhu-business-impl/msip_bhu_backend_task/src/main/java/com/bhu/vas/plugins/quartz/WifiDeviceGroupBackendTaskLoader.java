@@ -157,8 +157,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 					    try {
 						bw.write(String.format(
 							"WifiDeviceGroupBackendTaskLoader total:[%s] on_line device:[%s]",
-							task.getTotal(),
-							downCmdsList.size()));
+							task.getTotal(),(wifiDeviceBackendTaskService.getById(task.getId())).getCurrent()
+							));
 						bw.flush();
 						bw.close();
 						task.setCompleted_at(new Date());
@@ -215,21 +215,21 @@ public class WifiDeviceGroupBackendTaskLoader {
      */
     public void downCmds(WifiDeviceBackendTask task,
 	    List<DownCmds> downCmdsList) {
-	task.setState(WifiDeviceBackendTask.State_Doing);
-	wifiDeviceBackendTaskService.update(task);
 	// 下发指令
-
+	task.setState(WifiDeviceBackendTask.State_Doing);
 	try {
 	    daemonRpcService.wifiMultiDevicesCmdsDown(
 		    downCmdsList.toArray(new DownCmds[0]));
+	    task.setCurrent(task.getCurrent()+downCmdsList.size());
 	} catch (Exception e) {
-	    task.setState(WifiDeviceBackendTask.State_Failed);
-	    wifiDeviceBackendTaskService.update(task);
+//	    task.setState(WifiDeviceBackendTask.State_Failed);
+//	    wifiDeviceBackendTaskService.update(task);
 	    logger.info(String
 		    .format("WifiDeviceGroupBackendTaskLoader downCmds error"));
 	    e.printStackTrace(System.out);
 
 	} finally {
+	    wifiDeviceBackendTaskService.update(task);
 	    downCmdsList.clear();
 	}
     }
@@ -270,20 +270,5 @@ public class WifiDeviceGroupBackendTaskLoader {
 	}else {
 	    return false;
 	}
-    }
-    
-    public static void main(String[] args) {
-	ExecutorService task_exec = Executors.newFixedThreadPool(1);
-	task_exec.submit((new Runnable() {
-		@Override
-		public void run() {
-		    for (int i = 0; i < 10; i++) {
-			if (i==5) {
-			    Thread.currentThread().interrupt();
-			}
-			
-			System.out.println(i);
-		    }
-		}}));
     }
 }

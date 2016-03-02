@@ -134,8 +134,8 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
 
 
-
 /*@Override
+
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
         logger.info(String.format("fetchBindDevicesByAccOrUid with uid[%s]", uid));
         return userUnitFacadeService.fetchBindDevicesByAccOrUid(countrycode,acc,uid);

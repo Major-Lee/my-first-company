@@ -56,6 +56,11 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 	public void setIndustry(String industry) {
 		this.industry = industry;
 	}
+	
+	public boolean isSuccessedStatus(){
+		if(KEY_STATUS_SUCCESSED.equals(keystatus)) return true;
+		return false;
+	}
 
 	@Override
 	public Object[] builderProperties() {
