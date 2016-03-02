@@ -195,7 +195,13 @@ public class BusinessEnumType {
 		}
 	}
 	
-	//订单流程状态
+	/**
+	 * 订单流程状态
+	 * 用于详细标识内部通信步骤的流程状态
+	 * 1）订单出现问题时，定位内部流程到达节点
+	 * 2）实现重要流程通讯重试，系统通过判断状态为支付成功状态，则重试进行通知应用发货
+	 * @author tangzichao
+	 */
 	public enum OrderProcessStatusType{
 		Pending(0,"待处理状态","生成订单最原始的状态"),
 		NotPay(1,"未支付状态","其他应用获取此订单的支付url时更新为此状态"),
