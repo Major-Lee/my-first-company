@@ -204,6 +204,18 @@ public enum ResponseErrorCode {
 	UPLOAD_FILE_CERTAIN_MEDIA_CATEGORY_NOTSUPPORTED("371","upload.file.certain.media.category.notsupported"),
 	UPLOAD_FILE_CERTAIN_MEDIA_SEQUENCETYPE_NOTSUPPORTED("372","upload.file.certain.media.sequencetype.notsupported"),
 	SMS_COUNTRYCODE_NOTSUPPORTED("373", "sms.countrycode.notsupported"),
+	
+	
+	/******************    Commdity    ******************/
+	VALIDATE_ORDER_UMAC_UID_ILLEGAL("410","validate.order.umac.uid.illegal"),
+	VALIDATE_ORDER_DATA_NOTEXIST("411","validate.order.data.notexist"),
+	
+	VALIDATE_COMMDITY_DATA_NOTEXIST("450","validate.commdity.data.notexist"),
+	VALIDATE_COMMDITY_NOT_ONSALE("450","validate.commdity.not.onsale"),
+	VALIDATE_COMMDITY_PRICE_RANDOM_INVALID("451","validate.commdity.price.random.invalid"),
+	
+	INTERNAL_COMMUNICATION_PAYMENTURL_FAILED("490","internal.communication.paymenturl.failed"),
+	
 	REQUEST_404_ERROR("404","404.pagerequest.error"),
 	REQUEST_403_ERROR("403","403.pagerequest.error"),
 	REQUEST_401_ERROR("401","401.unauthorized.error"),

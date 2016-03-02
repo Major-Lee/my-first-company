@@ -33,10 +33,9 @@
 	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<!--  accesslog="/Users/tangzichao/access.log"-->
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="150" loadbalance="random"  
-		interface="com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService" ref="userCaptchaCodeRpcService"/>
+		interface="com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService" ref="orderRpcService"/>
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="150" loadbalance="random"  
-		interface="com.bhu.vas.api.rpc.user.iservice.IUserRpcService" ref="userRpcService"/>
-	<dubbo:service delay="5000" timeout="2000" retries="0" actives="150" loadbalance="random"  
-		interface="com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService" ref="userOAuthRpcService"/>
+		interface="com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService" ref="commdityRpcService"/>
+
 		
 </beans>

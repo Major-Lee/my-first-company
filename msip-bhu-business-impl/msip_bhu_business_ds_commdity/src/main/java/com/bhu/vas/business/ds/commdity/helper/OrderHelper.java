@@ -2,6 +2,7 @@ package com.bhu.vas.business.ds.commdity.helper;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -49,5 +50,15 @@ public class OrderHelper {
 	
 	public static String generateOrderId(Integer appid){
 		return generateOrderId(appid, null);
+	}
+	/**
+	 * 判断订单状态是否为未支付
+	 * @param status
+	 * @return
+	 */
+	public static boolean notpay(Integer status){
+		if(status == null) return false;
+		if(OrderStatus.NotPay.getKey().equals(status)) return true;
+		return false;
 	}
 }

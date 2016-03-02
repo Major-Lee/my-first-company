@@ -12,7 +12,7 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 public class Commdity extends BaseIntModel{
 	//商品类别
 	private Integer category;
-	//商品价格(两种方式 10.25 和 [5.25,10.25])
+	//商品价格(两种方式 10.25 和 5.25-10.25)
 	private String price;
 	//商品状态（上架）
 	private Integer status;
@@ -61,7 +61,7 @@ public class Commdity extends BaseIntModel{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-
+	
 	public String getStock_quantity() {
 		return stock_quantity;
 	}
