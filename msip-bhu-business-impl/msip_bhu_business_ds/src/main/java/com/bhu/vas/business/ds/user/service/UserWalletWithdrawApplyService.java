@@ -10,14 +10,9 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.user.dao.UserWalletWithdrawApplyDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
-//EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
 public class UserWalletWithdrawApplyService extends AbstractCoreService<Long,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
-	
-	//@Resource
-	//private SequenceService sequenceService;
-	
 	@Resource
 	@Override
 	public void setEntityDao(UserWalletWithdrawApplyDao userWalletWithdrawApplyDao) {

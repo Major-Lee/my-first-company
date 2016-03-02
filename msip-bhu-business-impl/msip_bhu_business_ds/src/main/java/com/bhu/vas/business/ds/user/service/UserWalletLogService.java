@@ -10,7 +10,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.user.dao.UserWalletLogDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
-//EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
 public class UserWalletLogService extends AbstractCoreService<Long,UserWalletLog, UserWalletLogDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService

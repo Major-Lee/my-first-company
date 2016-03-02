@@ -9,7 +9,6 @@ import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.business.ds.user.dao.UserWalletDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
-//EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
 public class UserWalletService extends AbstractCoreService<Integer,UserWallet, UserWalletDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService

@@ -9,13 +9,16 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
+import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -36,13 +39,16 @@ public class UserWalletFacadeService {
 	
 	@Resource
 	private UserWalletService userWalletService;
+
+	@Resource
+	private UserWalletConfigsService userWalletConfigsService;
+
 	
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
 	@Resource
 	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
-	
 	
 	private User validateUser(int uid){
 		if(uid <=0){
@@ -56,7 +62,7 @@ public class UserWalletFacadeService {
 	}
 	
 	/**
-	 * 现金入账
+	 * 现金入账 充值现金
 	 * 入账成功需要写入UserWalletLog
 	 */
 	public void cashToUserWallet(int uid,double cash,
@@ -72,7 +78,7 @@ public class UserWalletFacadeService {
 	/**
 	 * 分成现金入账
 	 * @param uid
-	 * @param cash
+	 * @param cash 总收益现金
 	 * @param orderid
 	 * @param desc
 	 */
@@ -80,15 +86,18 @@ public class UserWalletFacadeService {
 			String orderid,String desc
 			){
 		validateUser(uid);
+		UserWalletConfigs configs = userWalletConfigsService.getById(uid);
+		double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid, UWalletTransType.Sharedeal2C, 0d, cash, desc);
+		this.doWalletLog(uid, orderid, UWalletTransType.Sharedeal2C, 0d, cash, String.format("Total:%s Incomming:%s", cash,realIncommingCash));
 	}
 	
 	/**
 	 * 虚拟币入账
 	 * 入账成功需要写入UserWalletLog
+	 * TODO:待实现TBD
 	 */
 	public void vcurrencyToUserWallet(int uid,double vcurrency,double cash,String desc){
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Recharge2V, vcurrency, cash, desc);
@@ -101,7 +110,7 @@ public class UserWalletFacadeService {
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	public void cashFromUserWallet(int uid, String pwd,double cash){
+	private void cashFromUserWallet(int uid, String pwd,double cash){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -130,7 +139,7 @@ public class UserWalletFacadeService {
 	 * @param uid
 	 * @param cash
 	 */
-	public void cashRollback2UserWallet(int uid, double cash){
+	private void cashRollback2UserWallet(int uid, double cash){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -142,7 +151,11 @@ public class UserWalletFacadeService {
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);
 	}
 	
-	public void unlockWalletWithdrawStatus(int uid){
+	/**
+	 * 提现成功后解锁钱包状态
+	 * @param uid
+	 */
+	private void unlockWalletWithdrawStatusWhenSuccessed(int uid){
 		validateUser(uid);
 		UserWallet uwallet = userWalletService.getById(uid);
 		uwallet.setWithdraw(false);
@@ -216,7 +229,7 @@ public class UserWalletFacadeService {
 		if(successed){
 			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawSucceed.getKey());
 			//解锁钱包提现状态
-			unlockWalletWithdrawStatus(apply.getUid());
+			unlockWalletWithdrawStatusWhenSuccessed(apply.getUid());
 		}else{
 			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
 			//返回金额并解锁钱包提现状态
