@@ -12,7 +12,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class Order extends BaseStringModel implements ISequenceGenable{
 	//商品id
-	private Integer itemid;
+	private Integer commdityid;
 	//应用id
 	private Integer appid;
 	//设备mac
@@ -45,12 +45,12 @@ public class Order extends BaseStringModel implements ISequenceGenable{
 		super.preInsert();
 	}
 
-	public Integer getItemid() {
-		return itemid;
+	public Integer getCommdityid() {
+		return commdityid;
 	}
 
-	public void setItemid(Integer itemid) {
-		this.itemid = itemid;
+	public void setCommdityid(Integer commdityid) {
+		this.commdityid = commdityid;
 	}
 
 	public Integer getAppid() {

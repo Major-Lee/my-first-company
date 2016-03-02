@@ -9,23 +9,25 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  * @author tangzichao
  */
 @SuppressWarnings("serial")
-public class Item extends BaseIntModel{
+public class Commdity extends BaseIntModel{
 	//商品类别
-	private String category;
-	//商品价格
+	private Integer category;
+	//商品价格(两种方式 10.25 和 [5.25,10.25])
 	private String price;
 	//商品状态（上架）
 	private Integer status;
+	//商品标签
+	private String tags;
 	//库存量
 	private String stock_quantity;
-	//用于存储应用端针对不同商品的发货处理细节 json
+	//用于存储应用端针对不同商品的发货处理细节 (对于限时上网服务 存储的是限时时间)
 	private String app_deliver_detail;
 	//用于存储系统针对不同商品的订单处理细节 json
-	private String item_order_detail;
+	//private String item_order_detail;
 	//商品创建时间
 	private Date created_at;
 	
-	public Item() {
+	public Commdity() {
 		super();
 	}
 
@@ -36,11 +38,11 @@ public class Item extends BaseIntModel{
 		super.preInsert();
 	}
 
-	public String getCategory() {
+	public Integer getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(Integer category) {
 		this.category = category;
 	}
 
@@ -76,12 +78,12 @@ public class Item extends BaseIntModel{
 		this.app_deliver_detail = app_deliver_detail;
 	}
 
-	public String getItem_order_detail() {
-		return item_order_detail;
+	public String getTags() {
+		return tags;
 	}
 
-	public void setItem_order_detail(String item_order_detail) {
-		this.item_order_detail = item_order_detail;
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 
 	public Date getCreated_at() {

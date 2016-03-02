@@ -2,58 +2,46 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.commdity.model.Order">
+<mapper namespace="com.bhu.vas.api.rpc.commdity.model.Commdity">
 
-  <resultMap id="modelResult" type="order">
+  <resultMap id="modelResult" type="commdity">
     <id property="id" column="id"/>
-    <result property="commdityid" column="commdityid"/>
-    <result property="appid" column="appid"/>
-    <result property="mac" column="mac"/>
-    <result property="umac" column="umac"/>
-    <result property="uid" column="uid"/>
-    <result property="pay_orderid" column="pay_orderid"/> 
-    <result property="amount" column="amount"/>
-    <result property="context" column="context"/>
+    <result property="category" column="category"/>
+    <result property="price" column="price"/>
     <result property="status" column="status"/>
-    <result property="process_status" column="process_status"/>
+    <result property="tags" column="tags"/>
+    <result property="stock_quantity" column="stock_quantity"/>
+    <result property="app_deliver_detail" column="app_deliver_detail"/> 
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_commdity_orders
+	    	t_commdity_commditys
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	commdityid,
-	    	appid,
-	    	mac,
-	    	umac,
-	    	uid,
-	    	pay_orderid,
-	    	amount,
-	    	context,
+	    	category,
+	    	price,
 	    	status,
-	    	process_status,
+	    	tags,
+	    	stock_quantity,
+	    	app_deliver_detail,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	commdityid,
-	    	appid,
-	    	mac,
-	    	umac,
-	    	uid,
-	    	pay_orderid,
-	    	amount,
-	    	context,
+	    	category,
+	    	price,
 	    	status,
-	    	process_status,
+	    	tags,
+	    	stock_quantity,
+	    	app_deliver_detail,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -61,31 +49,23 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{commdityid},
-	    	#{appid},
-	    	#{mac},
-	    	#{umac},
-	    	#{uid},
-	    	#{pay_orderid},
-	    	#{amount},
-	    	#{context},
+	    	#{category},
+	    	#{price},
 	    	#{status},
-	    	#{process_status},
+	    	#{tags},
+	    	#{stock_quantity},
+	    	#{app_deliver_detail},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	commdityid = #{commdityid},
-	    	appid = #{appid},
-	    	mac = #{mac},
-	    	umac = #{umac},
-	    	uid = #{uid},
-	    	pay_orderid = #{pay_orderid},
-	    	amount = #{amount},
-	    	context = #{context},
+	    	category = #{category},
+	    	price = #{price},
 	    	status = #{status},
-	    	process_status = #{process_status},
+	    	tags = #{tags},
+	    	stock_quantity = #{stock_quantity},
+	    	app_deliver_detail = #{app_deliver_detail},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -137,11 +117,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="order">
+	<delete id="delete" parameterType="commdity">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -149,11 +129,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="order">
+	<insert id="insert" parameterType="commdity" useGeneratedKeys="true" keyProperty="id">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="order">
+	<update id="update" parameterType="commdity">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -177,7 +157,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="String">
+	<select id="pkSelectByModelCriteria" resultType="int">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />

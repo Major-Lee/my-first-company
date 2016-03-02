@@ -1,6 +1,6 @@
 package com.bhu.vas.api.rpc.commdity.iservice;
 
 
-public interface IOrderRpcService {
+public interface ICommdityRpcService {
 
 }
