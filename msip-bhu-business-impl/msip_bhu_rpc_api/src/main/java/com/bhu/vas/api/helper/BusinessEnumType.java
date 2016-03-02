@@ -147,7 +147,8 @@ public class BusinessEnumType {
 		Sharedeal2C("S2C","分成现金"),
 		Giveaway2V("G2V","系统/活动赠送虎钻"),
 		Consume4V("C4V","消费虎钻"),
-		Withdraw("WDR","提现(withdraw)"),
+		Withdraw("WDA","提现(withdraw)"),
+		WithdrawRollback("WDR","提现(withdraw rollback)"),
 		;
 		private String key;
 		private String name;

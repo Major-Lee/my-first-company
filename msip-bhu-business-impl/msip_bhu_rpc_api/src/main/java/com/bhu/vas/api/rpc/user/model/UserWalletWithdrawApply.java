@@ -12,15 +12,15 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserWithdrawApply extends BaseLongModel implements IRedisSequenceGenable {
+public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequenceGenable {
 	private int uid;
 	//申请提现的现金
 	private double cash;
 	//提现操作状态BusinessEnumType.UWithdrawStatus
 	private String withdraw_oper;
+	//最后一次的审核员
+	private int last_reckoner;
 	private Date created_at;
-	public UserWithdrawApply() {
-	}
 
 	@Override
 	public void preInsert() {
@@ -54,6 +54,14 @@ public class UserWithdrawApply extends BaseLongModel implements IRedisSequenceGe
 
 	public void setUid(int uid) {
 		this.uid = uid;
+	}
+
+	public int getLast_reckoner() {
+		return last_reckoner;
+	}
+
+	public void setLast_reckoner(int last_reckoner) {
+		this.last_reckoner = last_reckoner;
 	}
 
 	@Override
