@@ -5,28 +5,27 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.user.model.UserWalletLog;
-import com.bhu.vas.api.rpc.user.model.UserWithdrawApply;
+import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
-import com.bhu.vas.business.ds.user.dao.UserWithdrawApplyDao;
+import com.bhu.vas.business.ds.user.dao.UserWalletWithdrawApplyDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 //EntityCacheableSpliterService
 @Service
 @Transactional("coreTransactionManager")
-public class UserWithdrawApplyService extends AbstractCoreService<Long,UserWithdrawApply, UserWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class UserWalletWithdrawApplyService extends AbstractCoreService<Long,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	
 	//@Resource
 	//private SequenceService sequenceService;
 	
 	@Resource
 	@Override
-	public void setEntityDao(UserWithdrawApplyDao userWithdrawApplyDao) {
-		super.setEntityDao(userWithdrawApplyDao);
+	public void setEntityDao(UserWalletWithdrawApplyDao userWalletWithdrawApplyDao) {
+		super.setEntityDao(userWalletWithdrawApplyDao);
 	}
 	
 	@Override
-    public UserWithdrawApply insert(UserWithdrawApply entity) {
+    public UserWalletWithdrawApply insert(UserWalletWithdrawApply entity) {
         if(entity.getId() == null)
             SequenceService.getInstance().onCreateSequenceKey(entity, false);
         return super.insert(entity);

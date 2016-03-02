@@ -21,7 +21,6 @@ public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequ
 	//最后一次的审核员
 	private int last_reckoner;
 	private Date created_at;
-
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)

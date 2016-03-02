@@ -27,7 +27,7 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	//现金零钱
 	private double cash = 0.00d;;
 	//提现状态 目前处于的提现状态 申请提现后，此状态为true 提现成功后此状态置为初始false
-	private boolean withdraw_status = false;
+	private boolean withdraw = false;
 	
 	//约定的收益分成比例 最多小数点保留后两位
 	private double percent = 0.00d;
@@ -74,12 +74,6 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 		this.created_at = created_at;
 	}
 	
-	public boolean isWithdraw_status() {
-		return withdraw_status;
-	}
-	public void setWithdraw_status(boolean withdraw_status) {
-		this.withdraw_status = withdraw_status;
-	}
 	public double getPercent() {
 		return percent;
 	}
@@ -103,6 +97,12 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	}
 	public void setCash(double cash) {
 		this.cash = cash;
+	}
+	public boolean isWithdraw() {
+		return withdraw;
+	}
+	public void setWithdraw(boolean withdraw) {
+		this.withdraw = withdraw;
 	}
 	
 }
