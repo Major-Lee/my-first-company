@@ -2,20 +2,19 @@ package com.bhu.vas.api.rpc.commdity.model;
 
 import java.util.Date;
 
+import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 /**
  * 订单模型
  * @author tangzichao
- *订单id(第三方生成id) 商品id(用listdto存储？商品id和数量) 应用id（涉及到支付完成后的发货请求服务定向）
- * 设备mac 用户mac 用户uid(打赏商品uid为空) 支付订单id 订单price 业务上下文内容 订单状态 订单流程状态 订单时间 
  */
 @SuppressWarnings("serial")
-public class Order extends BaseStringModel{
+public class Order extends BaseStringModel implements ISequenceGenable{
 	//商品id
 	private Integer itemid;
 	//应用id
-	private String appid;
+	private Integer appid;
 	//设备mac
 	private String mac;
 	//用户mac
@@ -54,11 +53,11 @@ public class Order extends BaseStringModel{
 		this.itemid = itemid;
 	}
 
-	public String getAppid() {
+	public Integer getAppid() {
 		return appid;
 	}
 
-	public void setAppid(String appid) {
+	public void setAppid(Integer appid) {
 		this.appid = appid;
 	}
 
@@ -132,6 +131,11 @@ public class Order extends BaseStringModel{
 
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
+	}
+
+	@Override
+	public void setSequenceKey(Integer key) {
+		//this.setId(key);
 	}
 
 }
