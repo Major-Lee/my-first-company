@@ -2,68 +2,52 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWallet">
+<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWalletConfigs">
 
-  <resultMap id="modelResult" type="userWallet">
+  <resultMap id="modelResult" type="userWalletConfigs">
     <id property="id" column="id"/>
-    <result property="password" column="password"/>
+    <result property="sharedeal_percent" column="sharedeal_percent"/>
     
-    <result property="vcurrency" column="vcurrency"/>
-    <result property="vcurrency_bing" column="vcurrency_bing"/>
-    <result property="cash" column="cash"/>
-    <result property="percent" column="percent"/>
-    
-    <result property="withdraw" column="withdraw"/>
+    <result property="withdraw_tax_percent" column="withdraw_tax_percent"/>
+    <result property="withdraw_trancost_percent" column="withdraw_trancost_percent"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet
+	    	t_vas_users_wallet_configs
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	password,
-	    	vcurrency,
-	    	vcurrency_bing,
-	    	cash,
-	    	percent,
-	    	withdraw,
+	    	sharedeal_percent,
+	    	withdraw_tax_percent,
+	    	withdraw_trancost_percent,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	password,
-	    	vcurrency,
-	    	vcurrency_bing,
-	    	cash,
-	    	percent,
-	    	withdraw,
+	    	sharedeal_percent,
+	    	withdraw_tax_percent,
+	    	withdraw_trancost_percent,
 	    	updated_at
 	    ]]>
 	</sql>   
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{password},
-	    	#{vcurrency},
-	    	#{vcurrency_bing},
-	    	#{cash},
-	    	#{percent},
-	    	#{withdraw},
+	    	#{sharedeal_percent},
+	    	#{withdraw_tax_percent},
+	    	#{withdraw_trancost_percent},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	password = #{password},
-	    	vcurrency = #{vcurrency},
-	    	vcurrency_bing = #{vcurrency_bing},
-	    	cash = #{cash},
-	    	percent = #{percent},
-	    	withdraw = #{withdraw},
+	    	sharedeal_percent = #{sharedeal_percent},
+	    	withdraw_tax_percent = #{withdraw_tax_percent},
+	    	withdraw_trancost_percent = #{withdraw_trancost_percent},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -118,7 +102,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userWallet">
+	<delete id="delete" parameterType="userWalletConfigs">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -126,11 +110,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userWallet">
+	<insert id="insert" parameterType="userWalletConfigs">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userWallet">
+	<update id="update" parameterType="userWalletConfigs">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

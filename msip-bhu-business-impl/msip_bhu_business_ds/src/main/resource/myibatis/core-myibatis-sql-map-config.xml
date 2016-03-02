@@ -26,6 +26,7 @@
 		<typeAlias alias="userToken" 	type="com.bhu.vas.api.rpc.user.model.UserToken" />
 		
 		<typeAlias alias="userWallet" 			type="com.bhu.vas.api.rpc.user.model.UserWallet" />
+		<typeAlias alias="userWalletConfigs" 			type="com.bhu.vas.api.rpc.user.model.UserWalletConfigs" />
 		<typeAlias alias="userWalletLog" 		type="com.bhu.vas.api.rpc.user.model.UserWalletLog" />
 		<typeAlias alias="userWalletWithdrawApply" 	type="com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply" />
 		
@@ -133,6 +134,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserOAuthState.sqlMap.xml" />
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWallet.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletConfigs.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletLog.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletWithdrawApply.sqlMap.xml" />
 		

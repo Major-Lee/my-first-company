@@ -9,13 +9,16 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
+import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
-import com.bhu.vas.api.rpc.user.model.UserWithdrawApply;
+import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
-import com.bhu.vas.business.ds.user.service.UserWithdrawApplyService;
+import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -36,13 +39,16 @@ public class UserWalletFacadeService {
 	
 	@Resource
 	private UserWalletService userWalletService;
+
+	@Resource
+	private UserWalletConfigsService userWalletConfigsService;
+
 	
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
 	@Resource
-	private UserWithdrawApplyService userWithdrawApplyService;
-	
+	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
 	
 	private User validateUser(int uid){
 		if(uid <=0){
@@ -56,7 +62,7 @@ public class UserWalletFacadeService {
 	}
 	
 	/**
-	 * 现金入账
+	 * 现金入账 充值现金
 	 * 入账成功需要写入UserWalletLog
 	 */
 	public void cashToUserWallet(int uid,double cash,
@@ -72,7 +78,7 @@ public class UserWalletFacadeService {
 	/**
 	 * 分成现金入账
 	 * @param uid
-	 * @param cash
+	 * @param cash 总收益现金
 	 * @param orderid
 	 * @param desc
 	 */
@@ -80,15 +86,18 @@ public class UserWalletFacadeService {
 			String orderid,String desc
 			){
 		validateUser(uid);
+		UserWalletConfigs configs = userWalletConfigsService.getById(uid);
+		double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid, UWalletTransType.Sharedeal2C, 0d, cash, desc);
+		this.doWalletLog(uid, orderid, UWalletTransType.Sharedeal2C, 0d, cash, String.format("Total:%s Incomming:%s", cash,realIncommingCash));
 	}
 	
 	/**
 	 * 虚拟币入账
 	 * 入账成功需要写入UserWalletLog
+	 * TODO:待实现TBD
 	 */
 	public void vcurrencyToUserWallet(int uid,double vcurrency,double cash,String desc){
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Recharge2V, vcurrency, cash, desc);
@@ -101,13 +110,13 @@ public class UserWalletFacadeService {
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	public void cashFromUserWallet(int uid, String pwd,double cash){
+	private void cashFromUserWallet(int uid, String pwd,double cash){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		validateUser(uid);
 		UserWallet uwallet = userWalletService.getById(uid);
-		if(uwallet == null || uwallet.isWithdraw_status()){
+		if(uwallet == null || uwallet.isWithdraw()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK);
 		}
 		if(uwallet.getCash() < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MaxLimit){
@@ -120,21 +129,37 @@ public class UserWalletFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_VALIDATEPWD_FAILED);
 		}
 		uwallet.setCash(uwallet.getCash()-cash);
-		uwallet.setWithdraw_status(true);
+		uwallet.setWithdraw(true);
 		userWalletService.update(uwallet);
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Withdraw, 0d, cash, null);
 	}
 	
-	public void cashRollback2UserWallet(int uid, double cash){
+	/**
+	 * 提现审核失败或者远程upay支付失败
+	 * @param uid
+	 * @param cash
+	 */
+	private void cashRollback2UserWallet(int uid, double cash){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		validateUser(uid);
 		UserWallet uwallet = userWalletService.getById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
-		uwallet.setWithdraw_status(false);
+		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);
+	}
+	
+	/**
+	 * 提现成功后解锁钱包状态
+	 * @param uid
+	 */
+	private void unlockWalletWithdrawStatusWhenSuccessed(int uid){
+		validateUser(uid);
+		UserWallet uwallet = userWalletService.getById(uid);
+		uwallet.setWithdraw(false);
+		userWalletService.update(uwallet);
 	}
 	
 	/**
@@ -146,14 +171,14 @@ public class UserWalletFacadeService {
 	 */
 	public void doWithdrawApply(int uid, String pwd,double cash){
 		this.cashFromUserWallet(uid, pwd, cash);
-		UserWithdrawApply apply = new UserWithdrawApply();
+		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 		apply.setCash(cash);
 		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
-		userWithdrawApplyService.update(apply);
+		userWalletWithdrawApplyService.update(apply);
 	}
 	
 	
-	public TailPage<UserWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,int pageNo,int pageSize){
+	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,int pageNo,int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		if(uid != null && uid.intValue()>0){
@@ -165,7 +190,7 @@ public class UserWalletFacadeService {
     	mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);
     	mc.setOrderByClause(" created_at desc ");
-		TailPage<UserWithdrawApply> pages = userWithdrawApplyService.findModelTailPageByModelCriteria(mc);
+		TailPage<UserWalletWithdrawApply> pages = userWalletWithdrawApplyService.findModelTailPageByModelCriteria(mc);
 		return pages;
 	}
 	/**
@@ -176,9 +201,9 @@ public class UserWalletFacadeService {
 	 */
 	public void doWithdrawVerify(int reckoner,long applyid,boolean passed){
 		validateUser(reckoner);
-		UserWithdrawApply apply = userWithdrawApplyService.getById(applyid);
+		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请",String.valueOf(applyid)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请审核",String.valueOf(applyid)});
 		}
 		apply.setLast_reckoner(reckoner);
 		if(passed){
@@ -188,22 +213,44 @@ public class UserWalletFacadeService {
 			//返还金额到用户钱包
 			this.cashRollback2UserWallet(apply.getUid(), apply.getCash());
 		}
-		userWithdrawApplyService.update(apply);
+		userWalletWithdrawApplyService.update(apply);
 	}
 
+	
 	/**
 	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
-	public void doWithdrawRemoteNotify(){
-		
+	public void doWithdrawRemoteNotify(long applyid,boolean successed){
+		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
+		if(apply == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});
+		}
+		if(successed){
+			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawSucceed.getKey());
+			//解锁钱包提现状态
+			unlockWalletWithdrawStatusWhenSuccessed(apply.getUid());
+		}else{
+			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
+			//返回金额并解锁钱包提现状态
+			cashRollback2UserWallet(apply.getUid(),apply.getCash());
+		}
 	}
 	
 	/**
 	 * 设置提现密码
+	 * @param uid 审核用户id
+	 * @param pwd 新的密码
 	 */
-	public void doUpdWithdrawPwd(){
-		
+	public void doUpdWithdrawPwd(int uid,String pwd){
+		validateUser(uid);
+		UserWallet uwallet = userWalletService.getById(uid);
+		if(uwallet == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK);
+		}
+		uwallet.setPlainpwd(pwd);
+		uwallet.setPassword(null);
+		userWalletService.update(uwallet);
 	}
 	
 	private void doWalletLog(int uid,String orderid,
