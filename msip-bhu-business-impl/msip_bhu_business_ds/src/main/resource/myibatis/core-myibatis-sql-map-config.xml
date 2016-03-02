@@ -21,9 +21,13 @@
 		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="sequence" type="com.bhu.vas.api.rpc.sequence.model.Sequence" />
-		<typeAlias alias="user" type="com.bhu.vas.api.rpc.user.model.User" />
-		<typeAlias alias="userToken" type="com.bhu.vas.api.rpc.user.model.UserToken" />
+		<typeAlias alias="sequence" 	type="com.bhu.vas.api.rpc.sequence.model.Sequence" />
+		<typeAlias alias="user" 		type="com.bhu.vas.api.rpc.user.model.User" />
+		<typeAlias alias="userToken" 	type="com.bhu.vas.api.rpc.user.model.UserToken" />
+		
+		<typeAlias alias="userWallet" 			type="com.bhu.vas.api.rpc.user.model.UserWallet" />
+		<typeAlias alias="userWalletLog" 		type="com.bhu.vas.api.rpc.user.model.UserWalletLog" />
+		<typeAlias alias="userWithdrawApply" 	type="com.bhu.vas.api.rpc.user.model.UserWithdrawApply" />
 		
 		<typeAlias alias="userOAuthState" 	type="com.bhu.vas.api.rpc.user.model.UserOAuthState" />
 		<typeAlias alias="userOAuthStatePK" type="com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK" />
@@ -97,8 +101,6 @@
 		<typeAlias alias="wifiDeviceGroupSearchCondition"
 			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition" />
 
-
-
 		<typeAlias alias="dictMacPrefix"
 			type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix" />
 
@@ -127,8 +129,13 @@
 
 		<mapper resource="com/bhu/vas/api/rpc/sequence/model/sqlMapper/Sequence.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/User.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserOAuthState.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserToken.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserOAuthState.sqlMap.xml" />
+		
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWallet.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletLog.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWithdrawApply.sqlMap.xml" />
+		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserLoginState.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserCaptchaCode.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserDevice.sqlMap.xml" />

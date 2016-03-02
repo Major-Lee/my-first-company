@@ -309,7 +309,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int CheckArtificialFrdsAddLimitCount = 5;//5个好友数量, 超过数量不在分配客服
 
 	
-	public static double User_WalletWithdraw_Default_MaxLimit = 100.00d;//5个好友数量, 超过数量不在分配客服
+	public static double User_WalletWithdraw_Default_MaxLimit = 10.00d;//5个好友数量, 超过数量不在分配客服
 	
 	/**
 	 * 判断是否是console用户
