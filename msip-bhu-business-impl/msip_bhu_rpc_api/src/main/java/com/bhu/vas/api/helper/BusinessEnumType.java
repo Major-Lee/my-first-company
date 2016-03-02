@@ -140,7 +140,7 @@ public class BusinessEnumType {
 	}
 	
 	//订单基本状态
-	public enum OrderStatusType{
+	public enum OrderStatus{
 		Original(0,"订单原始状态","生成订单最原始的状态"),
 		NotPay(1,"未支付状态","其他应用获取此订单的支付url时更新为此状态"),
 		PaySuccessed(9,"订单支付成功状态","支付平台支付完成并通知此订单支付成功时更新为此状态"),
@@ -150,9 +150,9 @@ public class BusinessEnumType {
 		private String name;
 		private String desc;
 		
-		static Map<Integer, OrderStatusType> allOrderStatusTypes;
+		static Map<Integer, OrderStatus> allOrderStatusTypes;
 		
-		private OrderStatusType(Integer key,String name,String desc){
+		private OrderStatus(Integer key,String name,String desc){
 			this.key = key;
 			this.name = name;
 			this.desc = desc;
@@ -177,7 +177,7 @@ public class BusinessEnumType {
 			this.desc = desc;
 		}
 		
-		public static OrderStatusType fromKey(Integer key){
+		public static OrderStatus fromKey(Integer key){
 			if(key == null) return null;
 			return allOrderStatusTypes.get(key);
 		}
@@ -187,9 +187,9 @@ public class BusinessEnumType {
 		}
 		
 		static {
-			allOrderStatusTypes = new HashMap<Integer, OrderStatusType>();
-			OrderStatusType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (OrderStatusType type : types){
+			allOrderStatusTypes = new HashMap<Integer, OrderStatus>();
+			OrderStatus[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (OrderStatus type : types){
 				allOrderStatusTypes.put(type.getKey(), type);
 			}
 		}
@@ -202,7 +202,7 @@ public class BusinessEnumType {
 	 * 2）实现重要流程通讯重试，系统通过判断状态为支付成功状态，则重试进行通知应用发货
 	 * @author tangzichao
 	 */
-	public enum OrderProcessStatusType{
+	public enum OrderProcessStatus{
 		Pending(0,"待处理状态","生成订单最原始的状态"),
 		NotPay(1,"未支付状态","其他应用获取此订单的支付url时更新为此状态"),
 		Paying(2,"支付中状态","从支付平台获取到此订单的支付url并且通知到用户客户端时更新为此状态"),
@@ -216,9 +216,9 @@ public class BusinessEnumType {
 		private String name;
 		private String desc;
 		
-		static Map<Integer, OrderProcessStatusType> allOrderProcessStatusTypes;
+		static Map<Integer, OrderProcessStatus> allOrderProcessStatusTypes;
 		
-		private OrderProcessStatusType(Integer key,String name,String desc){
+		private OrderProcessStatus(Integer key,String name,String desc){
 			this.key = key;
 			this.name = name;
 			this.desc = desc;
@@ -243,7 +243,7 @@ public class BusinessEnumType {
 			this.desc = desc;
 		}
 		
-		public static OrderProcessStatusType fromKey(Integer key){
+		public static OrderProcessStatus fromKey(Integer key){
 			if(key == null) return null;
 			return allOrderProcessStatusTypes.get(key);
 		}
@@ -253,10 +253,123 @@ public class BusinessEnumType {
 		}
 		
 		static {
-			allOrderProcessStatusTypes = new HashMap<Integer, OrderProcessStatusType>();
-			OrderProcessStatusType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (OrderProcessStatusType type : types){
+			allOrderProcessStatusTypes = new HashMap<Integer, OrderProcessStatus>();
+			OrderProcessStatus[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (OrderProcessStatus type : types){
 				allOrderProcessStatusTypes.put(type.getKey(), type);
+			}
+		}
+	}
+	
+	/**
+	 * 商品分类
+	 * @author tangzichao
+	 */
+	public enum CommdityCategory{
+		InternetLimit(99,"限时上网分类","限时上网分类"),
+		;
+		private Integer category;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, CommdityCategory> allCommdityCategoryTypes;
+		
+		private CommdityCategory(Integer category,String name,String desc){
+			this.category = category;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getCategory() {
+			return category;
+		}
+		public void setCategory(Integer category) {
+			this.category = category;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static CommdityCategory fromKey(Integer category){
+			if(category == null) return null;
+			return allCommdityCategoryTypes.get(category);
+		}
+		
+		public static boolean supported(Integer category){
+			return allCommdityCategoryTypes.containsKey(category);
+		}
+		
+		static {
+			allCommdityCategoryTypes = new HashMap<Integer, CommdityCategory>();
+			CommdityCategory[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (CommdityCategory type : types){
+				allCommdityCategoryTypes.put(type.getCategory(), type);
+			}
+		}
+	}
+	
+	/**
+	 * 商品状态
+	 * @author tangzichao
+	 */
+	public enum CommdityStatus{
+		OffSale(0,"下架状态","下架状态"),
+		OnSale(1,"正常售卖状态","正常售卖状态"),
+		;
+		private Integer key;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, CommdityStatus> allCommdityStatusTypes;
+		
+		private CommdityStatus(Integer key,String name,String desc){
+			this.key = key;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getKey() {
+			return key;
+		}
+		public void setKey(Integer key) {
+			this.key = key;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static CommdityStatus fromKey(Integer key){
+			if(key == null) return null;
+			return allCommdityStatusTypes.get(key);
+		}
+		
+		public static boolean supported(Integer key){
+			return allCommdityStatusTypes.containsKey(key);
+		}
+		
+		static {
+			allCommdityStatusTypes = new HashMap<Integer, CommdityStatus>();
+			CommdityStatus[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (CommdityStatus type : types){
+				allCommdityStatusTypes.put(type.getKey(), type);
 			}
 		}
 	}

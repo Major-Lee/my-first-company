@@ -28,5 +28,6 @@
     <dubbo:registry address="multicast://224.5.6.7:1234" />
  	<dubbo:registry protocol="zookeeper" address="127.0.0.1:2181" />
  	<import resource="classpath*:spring/zookeeper/dubbo-jing-zookeeper.xml"/>-->
-	<dubbo:reference id="orderRpcService" interface="com.bhu.vas.api.rpc.user.iservice.IUserRpcService" retries="0" loadbalance="roundrobin"/>
+	<dubbo:reference id="orderRpcService" interface="com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService" retries="0" loadbalance="roundrobin"/>
+	<dubbo:reference id="commdityRpcService" interface="com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService" retries="0" loadbalance="roundrobin"/>
 </beans>
