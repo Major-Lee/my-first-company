@@ -11,6 +11,7 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  * 用户钱包
  * 包含 虚拟货币和现金两部分
  * 每次提现额度最大值限制 可配置，在BusinessRuntimeConfiguration配置
+ * withdraw_status 如果为true的情况下，不允许进行任何交易，包括再次提现操作
  * @author Edmond
  *
  */
@@ -20,14 +21,16 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	private String password;
 	private String plainpwd;
 	//虚拟币virtual_currency 充值生成（货币购买的）
-	private Double vcurrency;
+	private double vcurrency = 0.00d;
 	//虚拟币virtual_currency 充值生成 绑定（系统或活动赠送的）
-	private Double vcurrency_bing;
+	private double vcurrency_bing = 0.00d;;
 	//现金零钱
-	private Double cash;
-	//提现状态 目前处于的提现状态 申请提现后，此状态为true 提现成功后此状态为false
-	private boolean withdraw_status;
+	private double cash = 0.00d;;
+	//提现状态 目前处于的提现状态 申请提现后，此状态为true 提现成功后此状态置为初始false
+	private boolean withdraw_status = false;
 	
+	//约定的收益分成比例 最多小数点保留后两位
+	private double percent = 0.00d;
 	private Date created_at;
 	public UserWallet() {
 		super();
@@ -64,29 +67,11 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public void setPlainpwd(String plainpwd) {
 		this.plainpwd = plainpwd;
 	}
-	public Double getCash() {
-		return cash;
-	}
-	public void setCash(Double cash) {
-		this.cash = cash;
-	}
 	public Date getCreated_at() {
 		return created_at;
 	}
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
-	}
-	public Double getVcurrency() {
-		return vcurrency;
-	}
-	public void setVcurrency(Double vcurrency) {
-		this.vcurrency = vcurrency;
-	}
-	public Double getVcurrency_bing() {
-		return vcurrency_bing;
-	}
-	public void setVcurrency_bing(Double vcurrency_bing) {
-		this.vcurrency_bing = vcurrency_bing;
 	}
 	
 	public boolean isWithdraw_status() {
@@ -95,11 +80,29 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public void setWithdraw_status(boolean withdraw_status) {
 		this.withdraw_status = withdraw_status;
 	}
-	/*public boolean canWithdrawOpt(){
-		if(withdraw_status){
-			return false;
-		}else{
-			if()
-		}
-	}*/
+	public double getPercent() {
+		return percent;
+	}
+	public void setPercent(double percent) {
+		this.percent = percent;
+	}
+	public double getVcurrency() {
+		return vcurrency;
+	}
+	public void setVcurrency(double vcurrency) {
+		this.vcurrency = vcurrency;
+	}
+	public double getVcurrency_bing() {
+		return vcurrency_bing;
+	}
+	public void setVcurrency_bing(double vcurrency_bing) {
+		this.vcurrency_bing = vcurrency_bing;
+	}
+	public double getCash() {
+		return cash;
+	}
+	public void setCash(double cash) {
+		this.cash = cash;
+	}
+	
 }

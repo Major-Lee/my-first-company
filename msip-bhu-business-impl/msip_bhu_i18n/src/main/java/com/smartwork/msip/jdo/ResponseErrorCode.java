@@ -117,12 +117,11 @@ public enum ResponseErrorCode {
 	//LOGIN_COOKIE_VALIDATE_ACTION_EXCEPTION("204","login.cookie.token.validate.exception"),
 	LOGIN_USER_DATA_NOTEXIST("205","login.user.data.notexist"),
     
-    
-    	AUTH_CRON_EXPRESSION_INVALID("245","auth.cron.expression.invalid"),
-    	AUTH_CRON_EXPRESSION_EMPTY("246","auth.cron.expression.empty"),
-    
-    	AUTH_TOKEN_INVALID("250","auth.token.invalid"),
-    	AUTH_TOKEN_REMOTEUID_NOTMATCH("251","auth.token.remoteuid.notmatch"),
+	AUTH_CRON_EXPRESSION_INVALID("245","auth.cron.expression.invalid"),
+	AUTH_CRON_EXPRESSION_EMPTY("246","auth.cron.expression.empty"),
+
+	AUTH_TOKEN_INVALID("250","auth.token.invalid"),
+	AUTH_TOKEN_REMOTEUID_NOTMATCH("251","auth.token.remoteuid.notmatch"),
 	AUTH_TOKEN_TIMEOUT("252","auth.token.timeout"),
 	AUTH_TOKEN_EMPTY("253","auth.token.empty"),
 	AUTH_TOKEN_VALIDATE_EXCEPTION("254","auth.token.validate.exception"),
@@ -163,23 +162,26 @@ public enum ResponseErrorCode {
 	
 	
 	USER_DATA_NOT_EXIST("301","user.data.notexist"),
-	USER_OAUTH_DATA_ALREADY_EXIST("301","user.oauth.data.already.exist"),
+	USER_OAUTH_DATA_ALREADY_EXIST("302","user.oauth.data.already.exist"),
 	USER_TOKENS_GEN_ALREADY_FULL("310","user.tokens.gen.already.full"),
 	USER_TOKENS_INVALID("311","user.tokens.invalid"),
 	USER_AVATAR_UPLOAD_IMAGE_FILEFORMAT_INVALID("312","user.avatar.upload.image.fileformat.invalid"),
 	USER_OPERATION_UPDPWD_NOTMATCH("313","user.operation.updpwd.notmatch"),
 	USER_NICK_ALREADY_BEUSED("314","user.nick.already.beused"),
 	USER_MOBILE_TOKEN_NOT_EXIST("315", "user.mobile.token.notexist"),
-
 	USER_TYPE_WASNOT_AGENT("316", "user.type.wasnot.agent"),
 	USER_TYPE_WASNOT_CONSOLE("317", "user.type.wasnot.console"),
 	USER_TYPE_WASNOT_CONSOLEORAGENT("318", "user.type.wasnot.consoleoragent"),
-	
 	USER_TYPE_PARAM_VALIDATE_EMPTY("319", "user.type.param.empty"),
 	USER_TYPE_NOTMATCHED("320","user.type.notmatched"),
 	USER_TYPE_WASNOT_NORMAL("321", "user.type.wasnot.normal"),
 	
-	SMS_COUNTRYCODE_NOTSUPPORTED("330", "sms.countrycode.notsupported"),
+	USER_WALLET_WITHDRAW_OPER_BREAK("325", "user.wallet.withdraw.break"),
+	USER_WALLET_CASH_NOTREACHED_MAXLIMIT("326", "user.wallet.cash.notreached.maxlimit"),
+	USER_WALLET_CASH_NOT_SUFFICIENT("327", "user.wallet.cash.not.sufficient"),
+	
+	USER_WALLET_VALIDATEPWD_FAILED("201","user.wallet.validatepwd.failed"),
+	
 	
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
@@ -190,8 +192,7 @@ public enum ResponseErrorCode {
 	DEVICE_NOT_BINDED("345","device.not.binded"),
 	DEVICE_NOT_MATCHED("346", "device.not.matched"),
 	DEVICE_NOT_YOURBINDED("347","device.not.yourbinded"),
-	
-	
+	DEVICE_TYPE_NOT_SUPPORTED("350","device.type.notsupported"),
 	
 	UPLOAD_FILE_FORMAT_INVALID("360","upload.file.format.invalid"),
 	UPLOAD_FILE_FID_GEN_ERROR("361","upload.file.fid.gen.error"),
@@ -202,9 +203,7 @@ public enum ResponseErrorCode {
 	UPLOAD_FILE_CERTAIN_CID_NOTEXIST("366","upload.file.certain.cid.notexist"),
 	UPLOAD_FILE_CERTAIN_MEDIA_CATEGORY_NOTSUPPORTED("371","upload.file.certain.media.category.notsupported"),
 	UPLOAD_FILE_CERTAIN_MEDIA_SEQUENCETYPE_NOTSUPPORTED("372","upload.file.certain.media.sequencetype.notsupported"),
-	
-	DEVICE_TYPE_NOT_SUPPORTED("350","device.type.notsupported"),
-	
+	SMS_COUNTRYCODE_NOTSUPPORTED("373", "sms.countrycode.notsupported"),
 	REQUEST_404_ERROR("404","404.pagerequest.error"),
 	REQUEST_403_ERROR("403","403.pagerequest.error"),
 	REQUEST_401_ERROR("401","401.unauthorized.error"),
