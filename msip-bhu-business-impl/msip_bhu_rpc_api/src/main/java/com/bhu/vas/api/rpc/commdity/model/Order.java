@@ -2,21 +2,42 @@ package com.bhu.vas.api.rpc.commdity.model;
 
 import java.util.Date;
 
-import com.smartwork.msip.cores.orm.model.BaseIntModel;
+import com.smartwork.msip.cores.orm.model.BaseStringModel;
+
+/**
+ * 订单模型
+ * @author tangzichao
+ *订单id(第三方生成id) 商品id(用listdto存储？商品id和数量) 应用id（涉及到支付完成后的发货请求服务定向）
+ * 设备mac 用户mac 用户uid(打赏商品uid为空) 支付订单id 订单price 业务上下文内容 订单状态 订单流程状态 订单时间 
+ */
 @SuppressWarnings("serial")
-public class Order extends BaseIntModel{
-	
+public class Order extends BaseStringModel{
+	//商品id
 	private Integer itemid;
-	
+	//应用id
+	private String appid;
+	//设备mac
+	private String mac;
+	//用户mac
+	private String umac;
+	//用户uid
+	private Integer uid;
+	//支付订单id
+	private String pay_orderid;
+	//订单金额
+	private String amount;
+	//业务上下文
+	private String context;
+	//订单状态
+	private Integer status;
+	//订单流程状态
+	private Integer process_status;
+	//订单创建时间
 	private Date created_at;
+	
 	public Order() {
 		super();
 	}
-	/*public User(String email, String plainpwd) {
-		super();
-		this.email = email;
-		this.plainpwd = plainpwd;
-	}*/	
 
 	@Override
 	public void preInsert() {
@@ -31,6 +52,78 @@ public class Order extends BaseIntModel{
 
 	public void setItemid(Integer itemid) {
 		this.itemid = itemid;
+	}
+
+	public String getAppid() {
+		return appid;
+	}
+
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+
+	public String getUmac() {
+		return umac;
+	}
+
+	public void setUmac(String umac) {
+		this.umac = umac;
+	}
+
+	public Integer getUid() {
+		return uid;
+	}
+
+	public void setUid(Integer uid) {
+		this.uid = uid;
+	}
+
+	public String getPay_orderid() {
+		return pay_orderid;
+	}
+
+	public void setPay_orderid(String pay_orderid) {
+		this.pay_orderid = pay_orderid;
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
+	public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Integer getProcess_status() {
+		return process_status;
+	}
+
+	public void setProcess_status(Integer process_status) {
+		this.process_status = process_status;
 	}
 
 	public Date getCreated_at() {

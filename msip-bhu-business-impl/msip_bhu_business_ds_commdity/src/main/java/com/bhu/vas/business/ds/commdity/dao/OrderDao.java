@@ -6,6 +6,6 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCommdityDao;
 
 @Repository
-public class OrderDao extends AbstractCommdityDao<Integer,Order>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
+public class OrderDao extends AbstractCommdityDao<String, Order>{//ReadWriteSpliterEntityDao<StorePurchasedItemPK,StorePurchasedItem,Integer>{
 	
 }
