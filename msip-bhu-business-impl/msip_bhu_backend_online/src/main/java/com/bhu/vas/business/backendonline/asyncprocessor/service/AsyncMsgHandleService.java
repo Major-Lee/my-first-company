@@ -1030,7 +1030,8 @@ public class AsyncMsgHandleService {
 			if(entity != null){
 				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 				WifiDeviceSettingSyskeyDTO syskey_dto = setting_dto.getSyskey();
-				if(syskey_dto != null){
+				//只有绑定配置是成功状态的才检测数据同步，如果不是成功状态，设备会主动上报来检测，避免重复
+				if(syskey_dto != null && syskey_dto.isSuccessedStatus()){
 					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
 					if(wifiDeviceDoc != null){
 						WifiDeviceSettingSyskeyDTO syskey_current_dto = DeviceHelper.builderDeviceSettingSyskeyDTO(
