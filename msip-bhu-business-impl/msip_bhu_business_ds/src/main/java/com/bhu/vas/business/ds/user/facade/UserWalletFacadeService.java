@@ -125,6 +125,11 @@ public class UserWalletFacadeService {
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Withdraw, 0d, cash, null);
 	}
 	
+	/**
+	 * 提现审核失败或者远程upay支付失败
+	 * @param uid
+	 * @param cash
+	 */
 	public void cashRollback2UserWallet(int uid, double cash){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
@@ -135,6 +140,13 @@ public class UserWalletFacadeService {
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);
+	}
+	
+	public void unlockWalletWithdrawStatus(int uid){
+		validateUser(uid);
+		UserWallet uwallet = userWalletService.getById(uid);
+		uwallet.setWithdraw(false);
+		userWalletService.update(uwallet);
 	}
 	
 	/**
@@ -178,7 +190,7 @@ public class UserWalletFacadeService {
 		validateUser(reckoner);
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请",String.valueOf(applyid)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请审核",String.valueOf(applyid)});
 		}
 		apply.setLast_reckoner(reckoner);
 		if(passed){
@@ -191,19 +203,41 @@ public class UserWalletFacadeService {
 		userWalletWithdrawApplyService.update(apply);
 	}
 
+	
 	/**
 	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
-	public void doWithdrawRemoteNotify(){
-		
+	public void doWithdrawRemoteNotify(long applyid,boolean successed){
+		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
+		if(apply == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});
+		}
+		if(successed){
+			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawSucceed.getKey());
+			//解锁钱包提现状态
+			unlockWalletWithdrawStatus(apply.getUid());
+		}else{
+			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
+			//返回金额并解锁钱包提现状态
+			cashRollback2UserWallet(apply.getUid(),apply.getCash());
+		}
 	}
 	
 	/**
 	 * 设置提现密码
+	 * @param uid 审核用户id
+	 * @param pwd 新的密码
 	 */
-	public void doUpdWithdrawPwd(){
-		
+	public void doUpdWithdrawPwd(int uid,String pwd){
+		validateUser(uid);
+		UserWallet uwallet = userWalletService.getById(uid);
+		if(uwallet == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK);
+		}
+		uwallet.setPlainpwd(pwd);
+		uwallet.setPassword(null);
+		userWalletService.update(uwallet);
 	}
 	
 	private void doWalletLog(int uid,String orderid,
