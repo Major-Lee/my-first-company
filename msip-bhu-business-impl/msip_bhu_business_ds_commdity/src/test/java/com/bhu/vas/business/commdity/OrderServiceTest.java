@@ -103,6 +103,5 @@ public class OrderServiceTest extends BaseTest{
     			System.out.println(order.getId() + " - " + order.getAmount());
     		}
     	}
-    	
     }
 }
