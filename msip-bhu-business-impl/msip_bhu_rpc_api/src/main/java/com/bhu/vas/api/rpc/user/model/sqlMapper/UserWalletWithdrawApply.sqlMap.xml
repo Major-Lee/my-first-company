@@ -10,6 +10,8 @@
     <result property="cash" column="cash"/>
     <result property="withdraw_oper" column="withdraw_oper"/>
     <result property="last_reckoner" column="last_reckoner"/>
+    <result property="remoteip" column="remoteip"/>
+    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -26,6 +28,7 @@
 	    	cash,
 	    	withdraw_oper,
 	    	last_reckoner,
+	    	remoteip,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -37,6 +40,7 @@
 	    	cash,
 	    	withdraw_oper,
 	    	last_reckoner,
+	    	remoteip,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -47,6 +51,7 @@
 	    	#{cash},
 	    	#{withdraw_oper},
 	    	#{last_reckoner},
+	    	#{remoteip},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql>
@@ -55,6 +60,7 @@
 	    	cash = #{cash},
 	    	withdraw_oper = #{withdraw_oper},
 	    	last_reckoner = #{last_reckoner},
+	    	remoteip = #{remoteip},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

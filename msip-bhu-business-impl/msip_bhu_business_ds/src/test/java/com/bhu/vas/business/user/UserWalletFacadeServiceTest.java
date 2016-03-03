@@ -56,6 +56,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     private double testSharedealCash = 127.44d;
     private double testWithdrawCash = 33.33d;
     private String testWithdrawPwd = "withdarw";
+    private String testWithdrawIP = "192.168.66.7";
     private String testOrderId = "08882016030200000000000000000029";
     
     
@@ -73,7 +74,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	}
     @Test
     public void test003DoWithdrawApply(){
-    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testUserId, testWithdrawPwd, testWithdrawCash);
+    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
     	System.out.println(apply);
     }
 
