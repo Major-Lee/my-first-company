@@ -214,12 +214,13 @@ public class UserWalletFacadeService {
 	 * @param pwd
 	 * @param cash 
 	 */
-	public UserWalletWithdrawApply doWithdrawApply(int uid, String pwd,double cash){
-		logger.info(String.format("生成提现申请 uid[%s] cash[%s]", uid,cash));
+	public UserWalletWithdrawApply doWithdrawApply(int uid, String pwd,double cash,String remoteip){
+		logger.info(String.format("生成提现申请 uid[%s] cash[%s] remoteIp[%s]", uid,cash,remoteip));
 		this.cashFromUserWallet(uid, pwd, cash);
 		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 		apply.setUid(uid);
 		apply.setCash(cash);
+		apply.setRemoteip(remoteip);
 		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
 		apply = userWalletWithdrawApplyService.insert(apply);
 		return apply;
