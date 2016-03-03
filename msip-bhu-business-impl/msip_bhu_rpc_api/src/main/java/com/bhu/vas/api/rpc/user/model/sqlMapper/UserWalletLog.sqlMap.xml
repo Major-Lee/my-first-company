@@ -12,7 +12,7 @@
     <result property="transaction_desc" column="transaction_desc"/>
     <result property="sum" column="sum"/>
     <result property="cash" column="cash"/>
-    <result property="desc" column="desc"/>
+    <result property="memo" column="memo"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
@@ -30,7 +30,7 @@
 	    	transaction_desc,
 	    	sum,
 	    	cash,
-	    	desc,
+	    	memo,
 	    	updated_at
 	    ]]>
 	</sql>  
@@ -43,7 +43,7 @@
 	    	#{transaction_desc},
 	    	#{sum},
 	    	#{cash},
-	    	#{desc},
+	    	#{memo},
 	    	#{updated_at}
 	</sql>
 		
@@ -55,7 +55,7 @@
 	    	transaction_desc,
 	    	sum,
 	    	cash,
-	    	desc,
+	    	memo,
 	    	updated_at
 	    ]]>
 	</sql>   
@@ -67,7 +67,7 @@
 	    	transaction_desc = #{transaction_desc},
 	    	sum = #{sum},
 	    	cash = #{cash},
-	    	desc = #{desc},
+	    	memo = #{memo},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

@@ -67,4 +67,8 @@ public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequ
 	public void setSequenceKey(Long key) {
 		this.id = key;
 	}
+	
+	public String toString(){
+		return String.format("WalletWithdrawApply id[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,uid,cash,withdraw_oper,last_reckoner);
+	}
 }
