@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.commdity.business.ds.commdity.facade.OrderFacadeService;
+import com.bhu.commdity.business.ds.commdity.helper.CommdityHelper;
+import com.bhu.commdity.business.ds.commdity.helper.OrderHelper;
+import com.bhu.commdity.business.ds.commdity.service.CommdityService;
+import com.bhu.commdity.business.ds.commdity.service.OrderService;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
@@ -15,11 +20,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
-import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.commdity.helper.CommdityHelper;
-import com.bhu.vas.business.ds.commdity.helper.OrderHelper;
-import com.bhu.vas.business.ds.commdity.service.CommdityService;
-import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -125,12 +125,16 @@ public class OrderUnitFacadeService {
 			 */
 			
 			//如果调用支付系统成功
+			String payurl = "http://www.bhu.com/";
+			String pay_orderid = "123";
 			{
+
+				order.setPay_orderid(pay_orderid);
 				//pay_orderid 赋值
 				changed_process_status = OrderProcessStatus.Paying.getKey();
 			}
 			
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse("");
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payurl);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

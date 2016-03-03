@@ -21,7 +21,7 @@ public class CommdityRpcService implements ICommdityRpcService{
 
 	@Override
 	public RpcResponseDTO<TailPage<CommdityDTO>> commdityPages(Integer status, int pageNo, int pageSize) {
-		logger.info(String.format("commdityPages with status[%s] pageNo[%s] status[%s] pageSize[%s]", status, pageNo, pageSize));
+		logger.info(String.format("commdityPages with status[%s] pageNo[%s] pageSize[%s]", status, pageNo, pageSize));
 		return commdityUnitFacadeService.commdityPages(status, pageNo, pageSize);
 	}
 }

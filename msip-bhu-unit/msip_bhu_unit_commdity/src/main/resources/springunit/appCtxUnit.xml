@@ -20,6 +20,7 @@
 	<import resource="classpath*:springservice/applicationContext-bhu-commdity-service.xml"/>	
 	<!-- -->
 	<import resource="classpath*:springunit/applicationContextRpcUnitProvider.xml"/> 
+	<import resource="classpath*:com/bhu/commdity/business/ds/warmup/applicationContext-bhu-warmup-service.xml"/>
 	
 	<!-- 
 	<import resource="classpath*:com/bhu/vas/business/ds/warmup/applicationContext-bhu-warmup-service.xml"/> 

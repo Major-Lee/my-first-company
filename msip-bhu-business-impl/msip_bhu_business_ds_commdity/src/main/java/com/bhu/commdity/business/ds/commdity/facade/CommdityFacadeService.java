@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.commdity.facade;
+package com.bhu.commdity.business.ds.commdity.facade;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.commdity.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
-import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service

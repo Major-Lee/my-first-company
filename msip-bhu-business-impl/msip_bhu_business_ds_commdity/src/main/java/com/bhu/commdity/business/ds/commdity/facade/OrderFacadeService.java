@@ -1,11 +1,11 @@
-package com.bhu.vas.business.ds.commdity.facade;
+package com.bhu.commdity.business.ds.commdity.facade;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.commdity.business.ds.commdity.service.OrderService;
 import com.bhu.vas.api.rpc.commdity.model.Order;
-import com.bhu.vas.business.ds.commdity.service.OrderService;
 
 @Service
 public class OrderFacadeService {
