@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.social.model.HandsetUser;
+import com.bhu.vas.api.rpc.social.vto.UserHandsetVTO;
+import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
+import com.bhu.vas.business.ds.social.service.HandsetUserService;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
@@ -40,6 +44,9 @@ public class SocialFacadeRpcService {
 
     @Resource
     private UserHandsetService userHandsetService;
+
+    @Resource
+    private HandsetUserService handsetUserService;
     
    @Resource 
    private UserService userService;
@@ -77,6 +84,8 @@ public class SocialFacadeRpcService {
 	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
+
+
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
 
         if (uid != null || uid >0) {
@@ -101,6 +110,42 @@ public class SocialFacadeRpcService {
             }
         }
         return false;
+    }
+
+
+    public WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs) {
+        WifiUserHandsetVTO vto = new WifiUserHandsetVTO();
+
+        List<UserHandsetVTO> hdVTOs = new ArrayList<UserHandsetVTO>();
+        List<String> hds = new ArrayList<String>();
+        String[] list = hd_macs.split(",");
+        if (list != null && list.length >0) {
+            for (String hd_mac : list) {
+                UserHandsetVTO handsetVTO = new UserHandsetVTO();
+                handsetVTO.setHd_mac(hd_mac);
+                hds.add(hd_mac);
+                hdVTOs.add(handsetVTO);
+            }
+        }
+
+        List<HandsetUser> handsetUsers = handsetUserService.findByIds(hds, true, true);
+
+        int index = 0;
+        if (handsetUsers != null) {
+            for (HandsetUser handsetUser : handsetUsers) {
+                if (handsetUser != null) {
+                    UserHandsetVTO hdVTO = hdVTOs.get(index);
+                    hdVTO.setUid(handsetUser.getUid());
+                    hdVTO.setNick(handsetUser.getNick());
+                    //Todo(bluesand): 用户的头像
+                    //hdVTO.setAvatar();
+                }
+            }
+        }
+
+
+
+        return vto;
     }
 
     

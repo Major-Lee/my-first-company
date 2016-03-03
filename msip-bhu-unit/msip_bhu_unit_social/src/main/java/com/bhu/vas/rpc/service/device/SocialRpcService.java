@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.service.device;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
+import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import org.springframework.stereotype.Service;
@@ -46,11 +47,9 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public void fetchHandsetList(String bssid, String hd_macs, int pageNo,
-	    int pageSize) {
-	logger.info(String.format(
-		"fetchHandsetList bssid[%s] hd_macs[%s] pageNo[%s] pageSize[%s]",
-		bssid, hd_macs, pageNo, pageSize));
+    public WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs) {
+	    logger.info(String.format("fetchHandsetList bssid[%s] hd_macs[%s] ", bssid, hd_macs));
+        return socialFacadeRpcService.fetchHandsetList(bssid, hd_macs);
     }
 
     @Override

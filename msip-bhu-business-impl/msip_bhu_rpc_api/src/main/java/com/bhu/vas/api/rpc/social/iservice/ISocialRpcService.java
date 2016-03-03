@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.social.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
-import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -30,7 +30,7 @@ public interface ISocialRpcService {
      * @param bssid
      * @param hd_macs
      */
-    void fetchHandsetList(String bssid, String hd_macs, int pageNo, int pageSize);
+    WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs);
 
 
     /**
@@ -79,7 +79,6 @@ public interface ISocialRpcService {
      * 关注
      * @param uid
      * @param hd_mac
-     * @param nick
      */
     public RpcResponseDTO<Boolean> follow (long uid,String hd_mac);
     	
