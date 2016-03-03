@@ -22,7 +22,7 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 	//现金（正负数字 充值购买虎钻 充值现金 提现(withdraw)） 
 	private double cash;
 	//交易内容描述
-	private String desc;
+	private String memo;
 	public UserWalletLog() {
 		super();
 	}
@@ -46,11 +46,13 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 	public void setTransaction_desc(String transaction_desc) {
 		this.transaction_desc = transaction_desc;
 	}
-	public String getDesc() {
-		return desc;
+
+	public String getMemo() {
+		return memo;
 	}
-	public void setDesc(String desc) {
-		this.desc = desc;
+
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 
 	public double getSum() {

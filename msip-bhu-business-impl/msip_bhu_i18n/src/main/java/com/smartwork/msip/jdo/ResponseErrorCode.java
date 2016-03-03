@@ -179,9 +179,9 @@ public enum ResponseErrorCode {
 	USER_WALLET_WITHDRAW_OPER_BREAK("325", "user.wallet.withdraw.break"),
 	USER_WALLET_CASH_NOTREACHED_MAXLIMIT("326", "user.wallet.cash.notreached.maxlimit"),
 	USER_WALLET_CASH_NOT_SUFFICIENT("327", "user.wallet.cash.not.sufficient"),
-	
-	USER_WALLET_VALIDATEPWD_FAILED("201","user.wallet.validatepwd.failed"),
-	
+	USER_WALLET_WITHDRAWPWD_SETOPER_NEEDED("328", "user.wallet.withdraw.pwd.setoper.needed"),
+	USER_WALLET_VALIDATEPWD_FAILED("329","user.wallet.validatepwd.failed"),
+	USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED("330","user.wallet.withdraw.apply.status.notmatched"),
 	
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),

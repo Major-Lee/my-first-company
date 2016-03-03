@@ -11,9 +11,8 @@
     <result property="vcurrency" column="vcurrency"/>
     <result property="vcurrency_bing" column="vcurrency_bing"/>
     <result property="cash" column="cash"/>
-    <result property="percent" column="percent"/>
-    
     <result property="withdraw" column="withdraw"/>
+    <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
@@ -29,8 +28,8 @@
 	    	vcurrency,
 	    	vcurrency_bing,
 	    	cash,
-	    	percent,
 	    	withdraw,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
@@ -40,8 +39,8 @@
 	    	vcurrency,
 	    	vcurrency_bing,
 	    	cash,
-	    	percent,
 	    	withdraw,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>   
@@ -52,8 +51,8 @@
 	    	#{vcurrency},
 	    	#{vcurrency_bing},
 	    	#{cash},
-	    	#{percent},
 	    	#{withdraw},
+	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
@@ -62,8 +61,8 @@
 	    	vcurrency = #{vcurrency},
 	    	vcurrency_bing = #{vcurrency_bing},
 	    	cash = #{cash},
-	    	percent = #{percent},
 	    	withdraw = #{withdraw},
+	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

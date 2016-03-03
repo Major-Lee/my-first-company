@@ -30,7 +30,7 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	private boolean withdraw = false;
 	
 	//约定的收益分成比例 最多小数点保留后两位
-	private double percent = 0.00d;
+	//private double percent = 0.00d;
 	private Date created_at;
 	public UserWallet() {
 		super();
@@ -74,12 +74,12 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 		this.created_at = created_at;
 	}
 	
-	public double getPercent() {
+	/*public double getPercent() {
 		return percent;
 	}
 	public void setPercent(double percent) {
 		this.percent = percent;
-	}
+	}*/
 	public double getVcurrency() {
 		return vcurrency;
 	}
@@ -105,4 +105,7 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 		this.withdraw = withdraw;
 	}
 	
+	public String toString(){
+		return String.format("Wallet uid[%s] cash[%s] vcurrency[%s %s] withdraw[%s]", id,cash,vcurrency,vcurrency_bing,withdraw);
+	}
 }

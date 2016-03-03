@@ -10,7 +10,7 @@
     <result property="cash" column="cash"/>
     <result property="withdraw_oper" column="withdraw_oper"/>
     <result property="last_reckoner" column="last_reckoner"/>
-    
+    <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
@@ -26,6 +26,7 @@
 	    	cash,
 	    	withdraw_oper,
 	    	last_reckoner,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
@@ -36,6 +37,7 @@
 	    	cash,
 	    	withdraw_oper,
 	    	last_reckoner,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>	
@@ -45,6 +47,7 @@
 	    	#{cash},
 	    	#{withdraw_oper},
 	    	#{last_reckoner},
+	    	#{created_at},
 	    	#{updated_at}
 	</sql>
 	<sql id="modelUpdateValues">
@@ -52,6 +55,7 @@
 	    	cash = #{cash},
 	    	withdraw_oper = #{withdraw_oper},
 	    	last_reckoner = #{last_reckoner},
+	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
