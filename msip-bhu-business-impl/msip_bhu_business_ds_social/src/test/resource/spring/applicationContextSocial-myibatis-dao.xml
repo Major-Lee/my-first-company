@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourceSocialMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${social.jdbc.master.driverClassName}"/>
+		<property name="url" 				value="${social.jdbc.master.url}"/>
+		<property name="username" 			value="${social.jdbc.master.username}"/>
+		<property name="password" 			value="${social.jdbc.master.password}"/>
+		<property name="initialSize" 		value="${social.jdbc.master.pool.initialsize}"/>
+		<property name="maxActive" 			value="${social.jdbc.master.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${social.jdbc.master.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>
+	
+	<bean id="dataSourceSocialSlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${social.jdbc.slaver.driverClassName}"/>
+		<property name="url" 				value="${social.jdbc.slaver.url}"/>
+		<property name="username" 			value="${social.jdbc.slaver.username}"/>
+		<property name="password" 			value="${social.jdbc.slaver.password}"/>
+		<property name="initialSize" 		value="${social.jdbc.slaver.pool.initialsize}"/>
+		<property name="maxActive" 			value="${social.jdbc.slaver.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${social.jdbc.slaver.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>	
+
+    <bean id="sqlSessionSocialMaster" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/social-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceSocialMaster"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateSocialMaster"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionSocialMaster" />
+    </bean> 
+
+    <bean id="sqlSessionSocialSlaver" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value>
+				classpath:myibatis/social-myibatis-sql-map-config.xml
+			</value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceSocialSlaver"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateSocialSlaver"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionSocialSlaver" />
+    </bean> 
+ 
+	<bean id="socialTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourceSocialMaster"/>
+	</bean>
+	
+</beans>
