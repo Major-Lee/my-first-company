@@ -26,5 +26,4 @@ public class GroupShardStrategyImpl implements ShardStrategy{
 		}
 		return targetTableName;
 	}
-	
 }

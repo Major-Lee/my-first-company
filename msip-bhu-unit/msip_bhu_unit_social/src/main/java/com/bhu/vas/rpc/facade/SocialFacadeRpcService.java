@@ -28,4 +28,9 @@ public class SocialFacadeRpcService {
 
         return wifiCommentService.insert(wifiComment);
     }
+    
+    public void clickPraise(long uid,String bssid, String type) {
+	
+    }
+    
 }

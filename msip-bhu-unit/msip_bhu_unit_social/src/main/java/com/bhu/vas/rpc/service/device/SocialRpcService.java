@@ -45,4 +45,9 @@ public class SocialRpcService implements ISocialRpcService {
     public void fetchWifiDetail(Long uid, String bssid) {
 
     }
+
+    @Override
+    public void clickPraise(Long uid, String bssid, String type) {
+	
+    }
 }

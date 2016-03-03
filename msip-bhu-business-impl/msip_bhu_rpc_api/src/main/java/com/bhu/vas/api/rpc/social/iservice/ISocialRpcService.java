@@ -5,7 +5,6 @@ package com.bhu.vas.api.rpc.social.iservice;
  * Created by bluesand on 3/2/16.
  */
 public interface ISocialRpcService {
-
     /**
      * 终端扫描后相遇
      * @param uid
@@ -54,4 +53,13 @@ public interface ISocialRpcService {
      * @return
      */
     boolean comment(long uid, String bssid, String message);
+    
+    /**
+     * 点赞/踩/举报
+     * @param uid
+     * @param bssid
+     * @param type up
+     * @return
+     */
+    void clickPraise(Long uid, String bssid,String type);
 }
