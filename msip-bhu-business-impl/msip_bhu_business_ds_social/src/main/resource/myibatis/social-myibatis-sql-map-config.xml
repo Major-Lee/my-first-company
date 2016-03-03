@@ -21,7 +21,7 @@
 		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="userHandsetPK" type="com.bhu.vas.api.rpc.social.model.pk.userHandsetPK" />
+		<typeAlias alias="userHandsetPK" type="com.bhu.vas.api.rpc.social.model.pk.UserHandsetPK" />
 
 		<typeAlias alias="wifiComment" type="com.bhu.vas.api.rpc.social.model.WifiComment" />
 		<typeAlias alias="userHandset" type="com.bhu.vas.api.rpc.social.model.UserHandset" />

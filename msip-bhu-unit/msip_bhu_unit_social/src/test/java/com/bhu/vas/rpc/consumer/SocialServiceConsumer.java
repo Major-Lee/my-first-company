@@ -5,9 +5,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SocialServiceConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUUserRpcConsumerApp");
+		System.setProperty("appname", "BHUSocial");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
-		System.setProperty("provider.port", "");
+		System.setProperty("provider.port", "21880");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"classpath*:spring/applicationContextCore-resource.xml",
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml"});
