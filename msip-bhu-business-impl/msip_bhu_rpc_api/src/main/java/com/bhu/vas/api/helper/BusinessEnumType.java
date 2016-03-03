@@ -414,6 +414,12 @@ public class BusinessEnumType {
 			return allCommdityStatusTypes.containsKey(key);
 		}
 		
+		public static boolean onsale(Integer key){
+			if(key == null) return false;
+			if(OnSale.getKey().equals(key)) return true;
+			return false;
+		}
+		
 		static {
 			allCommdityStatusTypes = new HashMap<Integer, CommdityStatus>();
 			CommdityStatus[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};

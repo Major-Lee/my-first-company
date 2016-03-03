@@ -1,12 +1,5 @@
 package com.bhu.vas.rpc.provider;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ProtocolConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
-import com.alibaba.dubbo.config.ServiceConfig;
-import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
-import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
-import com.bhu.vas.rpc.service.captcha.UserCaptchaCodeRpcService;
 
 public class VasServiceProviderNoSpring {
 	public static void main(String[] args) throws Exception {
@@ -15,7 +8,7 @@ public class VasServiceProviderNoSpring {
 		System.setProperty("deploy.conf.dir", "/Users/Edmond/Msip.smartwork.codespace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_captchacode/conf/");
 		
 		// 服务实现
-		IUserCaptchaCodeRpcService taskRpcService = new UserCaptchaCodeRpcService();
+/*		IUserCaptchaCodeRpcService taskRpcService = new UserCaptchaCodeRpcService();
 		 
 		// 当前应用配置
 		ApplicationConfig application = new ApplicationConfig();
@@ -47,7 +40,7 @@ public class VasServiceProviderNoSpring {
 		 
 		// 暴露及注册服务
 		service.export();
-		
+		*/
 		Thread.sleep(1000000000l);
 	}
 }
