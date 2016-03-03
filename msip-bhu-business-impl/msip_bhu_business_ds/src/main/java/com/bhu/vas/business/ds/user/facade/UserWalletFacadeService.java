@@ -48,7 +48,6 @@ public class UserWalletFacadeService {
 	@Resource
 	private UserWalletConfigsService userWalletConfigsService;
 
-	
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
