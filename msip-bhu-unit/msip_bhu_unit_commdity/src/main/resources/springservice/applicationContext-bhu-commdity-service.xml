@@ -10,8 +10,7 @@
 	<context:component-scan base-package="com.teacherclub.business.**.service" />
 	-->
 	<context:component-scan base-package="com.bhu.commdity.rpc"/>
-	<!--
+	
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/> 
-	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> 
-	 -->
+	<import resource="classpath*:springmq/applicationContext-activemq-commdity-producer.xml"/> 
 </beans>

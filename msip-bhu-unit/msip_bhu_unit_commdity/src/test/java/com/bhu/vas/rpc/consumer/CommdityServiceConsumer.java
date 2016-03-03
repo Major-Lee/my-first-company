@@ -1,16 +1,17 @@
 package com.bhu.vas.rpc.consumer;
 
-import java.util.Map;
-import java.util.UUID;
-
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.dto.commdity.CommdityDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
+import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
-public class UserServiceConsumer {
+public class CommdityServiceConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUUserRpcConsumerApp");
+		System.setProperty("appname", "BHUCommdityConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
 		System.setProperty("provider.port", "");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
@@ -81,19 +82,12 @@ public class UserServiceConsumer {
 			System.out.println(rpcResult.getErrorCode());
 		}*/
 		//validate登录
-		IUserRpcService userRpcService = (IUserRpcService)context.getBean("userRpcService");
+		ICommdityRpcService commdityRpcService = (ICommdityRpcService)context.getBean("commdityRpcService");
+		IOrderRpcService orderRpcService = (IOrderRpcService)context.getBean("orderRpcService");
 		
-		RpcResponseDTO<Map<String, Object>> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=",UUID.randomUUID().toString(), "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
-		if(createNewUser.getErrorCode() == null){
-			/*UserDTO retdto = createNewUser.getPayload();
-			System.out.println(retdto.getId());
-			System.out.println(retdto.getAtoken());
-			System.out.println(retdto.getRtoken());
-			System.out.println(retdto.getMobileno());
-			System.out.println(retdto.getCountrycode());
-			System.out.println(retdto.getNick());*/
-		}
-		
+		RpcResponseDTO<TailPage<CommdityDTO>> ret = commdityRpcService.commdityPages(CommdityStatus.OnSale.getKey(), 1, 5);
+		TailPage<CommdityDTO> page = ret.getPayload();
+		System.out.println(page.getTotalItemsCount());
 		Thread.currentThread().join();
 	}
 }

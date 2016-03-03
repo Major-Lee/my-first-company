@@ -18,8 +18,8 @@
 	</bean>
 	<!-- POJO which send Message uses  Spring JmsTemplate -->
 	<bean id="commdityMessageQueueProducer" class="com.bhu.vas.business.asyn.spring.activemq.queue.producer.CommdityMessageQueueProducer">
-		<property name="template" ref="jmsDeliverMessageTemplate" />
-		<property name="destination" ref="destinationDeliverMessageQueue" />
+		<property name="template" ref="jmsCommdityMessageTemplate" />
+		<property name="destination" ref="destinationCommdityMessageQueue" />
 	</bean>
 	
 	<bean id="commdityMessageService" class="com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService">
