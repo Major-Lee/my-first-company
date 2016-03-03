@@ -1,6 +1,5 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;

@@ -7,8 +7,6 @@ import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -67,8 +65,10 @@ public class SocialRpcService implements ISocialRpcService {
 
     @Override
     public WifiActionVTO clickPraise(long uid, String bssid, String type) {
+        logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",uid, bssid,type));
 	return socialFacadeRpcService.clickPraise(bssid, type);
     }
+<<<<<<< Updated upstream
     
 	@Override
 	public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,String bssid, int pageNo, int pageSize) {
@@ -77,4 +77,17 @@ public class SocialRpcService implements ISocialRpcService {
 		
 	}
 
+=======
+
+    @Override
+    public boolean follow(long uid, String hd_mac, String nick) {
+	logger.info(String.format("follow uid[%s] hd_mac[%s] type[%s]", uid,hd_mac,nick));
+	return socialFacadeRpcService.follow(uid, hd_mac, nick);
+    }
+
+    @Override
+    public void unFollow(long uid, String hd_mac) {
+	logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid,hd_mac));
+    }
+>>>>>>> Stashed changes
 }

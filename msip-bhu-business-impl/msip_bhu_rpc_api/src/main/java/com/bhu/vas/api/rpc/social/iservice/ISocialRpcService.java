@@ -73,5 +73,19 @@ public interface ISocialRpcService {
      * @return
      */
     WifiActionVTO clickPraise(long uid, String bssid,String type);
-
+    
+    /**
+     * 关注
+     * @param uid
+     * @param hd_mac
+     * @param nick
+     */
+    boolean follow (long uid,String hd_mac,String nick);
+    	
+    /**
+     * 取消关注
+     * @param uid
+     * @param hd_mac
+     */
+    void unFollow (long uid,String hd_mac);
 }

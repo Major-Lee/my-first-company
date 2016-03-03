@@ -2,9 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -18,7 +16,7 @@ import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionHashService;
 import com.bhu.vas.business.ds.social.service.UserHandsetService;
 import com.bhu.vas.business.ds.social.service.WifiCommentService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -55,17 +53,17 @@ public class SocialFacadeRpcService {
 
     public WifiActionVTO clickPraise(String bssid, String type) {
 
-	if (WifiActionService.getInstance().isNoExist(bssid)) {
-	    Map<String,String> map = new HashMap<String,String>();
-	    map.put("up", "0");
-	    map.put("down", "0");
-	    map.put("report", "0");
-	    WifiActionService.getInstance().hadd(bssid, map);
+	if (WifiActionHashService.getInstance().isNoExist(bssid)) {
+	    WifiActionHashService.getInstance().hadd(bssid);
 	}
-	WifiActionService.getInstance().hincrease(bssid, type);
-	return WifiActionService.getInstance().counts(bssid);
+	
+	WifiActionHashService.getInstance().hincrease(bssid, type);
+	return WifiActionHashService.getInstance().counts(bssid);
     }
 
+    public boolean follow(long uid, String hd_mac, String nick) {
+	return false;
+    }
 
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
 
