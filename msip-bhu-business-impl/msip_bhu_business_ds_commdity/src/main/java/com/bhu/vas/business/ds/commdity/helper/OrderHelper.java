@@ -61,4 +61,14 @@ public class OrderHelper {
 		if(OrderStatus.NotPay.getKey().equals(status)) return true;
 		return false;
 	}
+	/**
+	 * 判断订单状态是否为支付成功
+	 * @param status
+	 * @return
+	 */
+	public static boolean paysuccessed(Integer status){
+		if(status == null) return false;
+		if(OrderStatus.PaySuccessed.getKey().equals(status)) return true;
+		return false;
+	}
 }

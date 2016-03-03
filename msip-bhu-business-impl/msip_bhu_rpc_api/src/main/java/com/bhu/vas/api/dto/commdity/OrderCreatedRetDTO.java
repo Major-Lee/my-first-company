@@ -2,22 +2,22 @@ package com.bhu.vas.api.dto.commdity;
 
 
 /**
- * 订单dto
+ * 针对应用请求生成订单的处理返回DTO
  * @author tangzichao
  *
  */
 @SuppressWarnings("serial")
-public class OrderDTO implements java.io.Serializable{
+public class OrderCreatedRetDTO implements java.io.Serializable{
 	//订单id
-	private String orderid;
+	private String id;
 	//订单金额
 	private String amount;
 	
-	public String getOrderid() {
-		return orderid;
+	public String getId() {
+		return id;
 	}
-	public void setOrderid(String orderid) {
-		this.orderid = orderid;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getAmount() {
 		return amount;
