@@ -1,9 +1,9 @@
 package com.bhu.vas.api.rpc.social.model;
 
+import java.util.Date;
+
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
-
-import java.util.Date;
 
 /**
  * Created by bluesand on 3/2/16.
@@ -21,8 +21,7 @@ public class WifiComment  extends BaseLongModel implements IRedisSequenceGenable
 
     private Date created_at;
 
-
-    public long getUid() {
+	public long getUid() {
         return uid;
     }
 

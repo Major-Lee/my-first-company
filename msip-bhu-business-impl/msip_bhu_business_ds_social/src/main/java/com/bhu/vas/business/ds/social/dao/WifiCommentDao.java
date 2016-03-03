@@ -1,9 +1,9 @@
 package com.bhu.vas.business.ds.social.dao;
 
-import com.bhu.vas.api.rpc.social.model.WifiComment;
-import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
-import com.smartwork.msip.business.abstractmsd.dao.AbstractSocialDao;
 import org.springframework.stereotype.Repository;
+
+import com.bhu.vas.api.rpc.social.model.WifiComment;
+import com.smartwork.msip.business.abstractmsd.dao.AbstractSocialDao;
 
 /**
  * Created by bluesand on 3/2/16.

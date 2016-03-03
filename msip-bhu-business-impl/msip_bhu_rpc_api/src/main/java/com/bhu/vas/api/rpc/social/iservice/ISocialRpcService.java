@@ -1,8 +1,11 @@
 package com.bhu.vas.api.rpc.social.iservice;
 
-import java.util.Map;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+
 
 /**
  * Created by bluesand on 3/2/16.
@@ -56,7 +59,11 @@ public interface ISocialRpcService {
      * @param message
      * @return
      */
-    boolean comment(long uid, String bssid, String message);
+
+    public boolean comment(long uid, String bssid, String message);
+    
+    public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,String bssid, int pageNo, int pageSize);
+
     
     /**
      * 点赞/踩/举报
@@ -66,4 +73,5 @@ public interface ISocialRpcService {
      * @return
      */
     WifiActionVTO clickPraise(long uid, String bssid,String type);
+
 }
