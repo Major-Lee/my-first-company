@@ -20,6 +20,7 @@ public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequ
 	private String withdraw_oper;
 	//最后一次的审核员
 	private int last_reckoner;
+	private String remoteip;
 	private Date created_at;
 	@Override
 	public void preInsert() {
@@ -61,6 +62,14 @@ public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequ
 
 	public void setLast_reckoner(int last_reckoner) {
 		this.last_reckoner = last_reckoner;
+	}
+
+	public String getRemoteip() {
+		return remoteip;
+	}
+
+	public void setRemoteip(String remoteip) {
+		this.remoteip = remoteip;
 	}
 
 	@Override
