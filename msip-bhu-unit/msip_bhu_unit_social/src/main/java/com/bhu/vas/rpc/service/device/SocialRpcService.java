@@ -71,7 +71,7 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public WifiActionVTO clickPraise(long uid, String bssid, String type) {
+    public RpcResponseDTO<WifiActionVTO> clickPraise(long uid, String bssid, String type) {
 	logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
 		uid, bssid, type));
 	return socialFacadeRpcService.clickPraise(bssid, type);
@@ -89,14 +89,15 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public boolean follow(long uid, String hd_mac, String nick) {
-	logger.info(String.format("follow uid[%s] hd_mac[%s] type[%s]", uid,
-		hd_mac, nick));
-	return socialFacadeRpcService.follow(uid, hd_mac, nick);
+    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
+	logger.info(String.format("follow uid[%s] hd_mac[%s]", uid,
+		hd_mac));
+	return socialFacadeRpcService.follow(uid, hd_mac);
     }
 
     @Override
-    public void unFollow(long uid, String hd_mac) {
+    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
 	logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
+	return socialFacadeRpcService.unFollow(uid, hd_mac);
     }
 }

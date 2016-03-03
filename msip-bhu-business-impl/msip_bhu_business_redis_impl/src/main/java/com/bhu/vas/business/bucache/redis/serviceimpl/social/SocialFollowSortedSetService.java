@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
@@ -25,6 +26,12 @@ public class SocialFollowSortedSetService
     public SocialFollowSortedSetService() {
     }
 
+    private String generateKey(long uid){
+	StringBuilder sb = new StringBuilder();
+	sb.append(BusinessKeyDefine.Social.RELATION).append(uid);
+	return sb.toString();
+    }
+    
     @Override
     public String getName() {
 	return SocialFollowSortedSetService.class.getName();
@@ -38,5 +45,13 @@ public class SocialFollowSortedSetService
     @Override
     public JedisPool getRedisPool() {
 	return RedisPoolManager.getInstance().getPool(RedisKeyEnum.DEFAULT);
+    }
+    
+    public void follow(long uid,String hd_mac) {
+	this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
+    }
+    
+    public void unFollow(long uid,String hd_mac) {
+	this.zrem(generateKey(uid), hd_mac);
     }
 }

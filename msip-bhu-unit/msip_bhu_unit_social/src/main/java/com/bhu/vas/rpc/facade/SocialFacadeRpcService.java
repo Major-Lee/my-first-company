@@ -9,12 +9,15 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.model.UserHandset;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
 import com.bhu.vas.api.rpc.social.model.pk.UserHandsetPK;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.WifiActionVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialFollowSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionHashService;
 import com.bhu.vas.business.ds.social.service.UserHandsetService;
@@ -51,18 +54,27 @@ public class SocialFacadeRpcService {
         return wifiCommentService.insert(wifiComment);
     }
 
-    public WifiActionVTO clickPraise(String bssid, String type) {
+    public RpcResponseDTO<WifiActionVTO> clickPraise(String bssid, String type) {
 
 	if (WifiActionHashService.getInstance().isNoExist(bssid)) {
 	    WifiActionHashService.getInstance().hadd(bssid);
 	}
 	
 	WifiActionHashService.getInstance().hincrease(bssid, type);
-	return WifiActionHashService.getInstance().counts(bssid);
+	WifiActionVTO result =  WifiActionHashService.getInstance().counts(bssid);
+	return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
     }
 
-    public boolean follow(long uid, String hd_mac, String nick) {
-	return false;
+    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
+
+	SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
+	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+    }
+    
+    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
+	
+	SocialFollowSortedSetService.getInstance().unFollow(uid, hd_mac);
+	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
@@ -142,5 +154,7 @@ public class SocialFacadeRpcService {
          }
          return new CommonPage<WifiCommentVTO>(pageNo, pageSize, total, vtos);
     }
+
+
 }
 
