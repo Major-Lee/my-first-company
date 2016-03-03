@@ -96,7 +96,7 @@ public class BusinessEnumType {
 	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
 	public enum UWithdrawStatus{
 		Apply("AP","提现申请"),
-		VerifySucceed("VS","提现申请审核通过"),
+		VerifyPassed("VP","提现申请审核通过"),
 		VerifyFailed("VF","提现申请审核失败"),
 		WithdrawDoing("WD","uPay正在提现处理中"),
 		WithdrawSucceed("WS","uPay提现成功"),
