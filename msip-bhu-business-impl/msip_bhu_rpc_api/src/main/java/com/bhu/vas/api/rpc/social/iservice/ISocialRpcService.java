@@ -1,5 +1,8 @@
 package com.bhu.vas.api.rpc.social.iservice;
 
+import java.util.Map;
+
+import com.bhu.vas.api.vto.WifiActionVTO;
 
 /**
  * Created by bluesand on 3/2/16.
@@ -58,8 +61,8 @@ public interface ISocialRpcService {
      * 点赞/踩/举报
      * @param uid
      * @param bssid
-     * @param type up
+     * @param type up/down/type
      * @return
      */
-    void clickPraise(Long uid, String bssid,String type);
+    WifiActionVTO clickPraise(long uid, String bssid,String type);
 }

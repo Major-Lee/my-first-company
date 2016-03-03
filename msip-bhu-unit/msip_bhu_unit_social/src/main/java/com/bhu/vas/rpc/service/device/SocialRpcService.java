@@ -1,8 +1,11 @@
 package com.bhu.vas.rpc.service.device;
 
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
+import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -47,7 +50,7 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public void clickPraise(Long uid, String bssid, String type) {
-	
+    public WifiActionVTO clickPraise(long uid, String bssid, String type) {
+	return socialFacadeRpcService.clickPraise(bssid, type);
     }
 }

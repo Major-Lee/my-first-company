@@ -2,6 +2,7 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
 import java.util.Map;
 
+import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -31,14 +32,29 @@ public class WifiActionService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
-	public Map<String, String> Counts(String bssid){
-	    	return this.hgetall(generateKey(bssid));
+	public boolean isNoExist(String bssid) {
+	    if ((this.hgetall(generateKey(bssid)).isEmpty())) {
+		return true;
+	    }
+	    return false;
 	}
 	
-//	public void hadd(String bssid, Map<String,String> map) {
-//	    this.hhmset(bssid, map);
-//	}
+	public WifiActionVTO counts(String bssid){
+	    Map<String,String> map = this.hgetall(generateKey(bssid));
+	    WifiActionVTO entity = new WifiActionVTO();
+	    entity.setUp(map.get("up"));
+	    entity.setDown(map.get("down"));
+	    entity.setReport(map.get("report"));
+	    return entity;
+	}
 	
+	public void hadd(String bssid, Map<String,String> map) {
+	    this.hmset(generateKey(bssid), map);
+	}
+	
+	public void hincrease(String bssid,String field) {
+	    this.hincrby(generateKey(bssid), field, 1);
+	}
 	
 	@Override
 	public String getRedisKey() {
@@ -55,13 +71,4 @@ public class WifiActionService extends AbstractRelationHashCache{
 	    return RedisPoolManager.getInstance().getPool(RedisKeyEnum.DEFAULT);
 	}
 	
-	
-	public static void main(String[] args) {
-//		Map<String,String> map = WifiActionService.getInstance().actions("84:82:f4:28:7a:ec");
-		
-//		if (map.isEmpty()) {
-//		    System.out.println("true");
-//		}
-	}
-
 }
