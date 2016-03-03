@@ -2,7 +2,7 @@ package com.bhu.vas.rpc.provider;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SocialServiceProvider_xw {
+public class SocialCommentServiceProvider {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUSocial");
 		System.setProperty("provider.port", "20991");

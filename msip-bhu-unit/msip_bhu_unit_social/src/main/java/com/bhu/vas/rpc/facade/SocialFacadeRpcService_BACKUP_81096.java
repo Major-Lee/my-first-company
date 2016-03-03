@@ -1,32 +1,47 @@
 package com.bhu.vas.rpc.facade;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
-import com.bhu.vas.api.rpc.social.model.UserHandset;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
-import com.bhu.vas.api.rpc.social.model.pk.UserHandsetPK;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.WifiActionVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionService;
-import com.bhu.vas.business.ds.social.service.UserHandsetService;
 import com.bhu.vas.business.ds.social.service.WifiCommentService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+=======
+import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
+import com.bhu.vas.api.rpc.social.model.UserHandset;
+import com.bhu.vas.api.rpc.social.model.WifiComment;
+
+import com.bhu.vas.api.vto.WifiActionVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionService;
+
+import com.bhu.vas.api.rpc.social.model.pk.UserHandsetPK;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
+import com.bhu.vas.business.ds.social.service.UserHandsetService;
+
+import com.bhu.vas.business.ds.social.service.WifiCommentService;
+import com.smartwork.msip.cores.helper.JsonHelper;
+
+
+import org.springframework.stereotype.Service;
+
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+>>>>>>> 514a288c09b559b10e1690acb26e6def4753a8e5
 
 /**
  * Created by bluesand on 3/2/16.
@@ -36,12 +51,15 @@ public class SocialFacadeRpcService {
 
     @Resource
     private WifiCommentService wifiCommentService;
-
-    @Resource
-    private UserHandsetService userHandsetService;
+<<<<<<< HEAD
     
    @Resource 
    private UserService userService;
+=======
+
+    @Resource
+    private UserHandsetService userHandsetService;
+>>>>>>> 514a288c09b559b10e1690acb26e6def4753a8e5
 
     public WifiComment comment(long uid, String bssid, String message) {
 
@@ -52,47 +70,7 @@ public class SocialFacadeRpcService {
         wifiComment.setCreated_at(new Date());
         return wifiCommentService.insert(wifiComment);
     }
-
-    public WifiActionVTO clickPraise(String bssid, String type) {
-
-	if (WifiActionService.getInstance().isNoExist(bssid)) {
-	    Map<String,String> map = new HashMap<String,String>();
-	    map.put("up", "0");
-	    map.put("down", "0");
-	    map.put("report", "0");
-	    WifiActionService.getInstance().hadd(bssid, map);
-	}
-	WifiActionService.getInstance().hincrease(bssid, type);
-	return WifiActionService.getInstance().counts(bssid);
-    }
-
-
-    public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
-
-        if (uid != null || uid >0) {
-            UserHandset userHandset = new UserHandset();
-            userHandset.setId(new UserHandsetPK(uid, hd_mac));
-            userHandset.setCreated_at(new Date());
-            userHandsetService.insert(userHandset);
-        }
-
-        SocialHandsetMeetDTO dto = new SocialHandsetMeetDTO();
-        dto.setBssid(bssid);
-        dto.setSsid(ssid);
-        dto.setTs(System.currentTimeMillis());
-        dto.setLat(lat);
-        dto.setLon(lon);
-
-        String[] list = hd_macs.split(",");
-        if (list != null && list.length >0) {
-            for (String mac : list) {
-                //TODO:(bluesand): backend操作
-                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
-            }
-        }
-        return false;
-    }
-
+<<<<<<< HEAD
     
     
     /**
@@ -144,5 +122,47 @@ public class SocialFacadeRpcService {
          }
          return new CommonPage<WifiCommentVTO>(pageNo, pageSize, total, vtos);
     }
-}
+=======
 
+    public WifiActionVTO clickPraise(String bssid, String type) {
+
+	if (WifiActionService.getInstance().isNoExist(bssid)) {
+	    Map<String,String> map = new HashMap<String,String>();
+	    map.put("up", "0");
+	    map.put("down", "0");
+	    map.put("report", "0");
+	    WifiActionService.getInstance().hadd(bssid, map);
+	}
+	WifiActionService.getInstance().hincrease(bssid, type);
+	return WifiActionService.getInstance().counts(bssid);
+    }
+
+
+    public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
+
+        if (uid != null || uid >0) {
+            UserHandset userHandset = new UserHandset();
+            userHandset.setId(new UserHandsetPK(uid, hd_mac));
+            userHandset.setCreated_at(new Date());
+            userHandsetService.insert(userHandset);
+        }
+
+        SocialHandsetMeetDTO dto = new SocialHandsetMeetDTO();
+        dto.setBssid(bssid);
+        dto.setSsid(ssid);
+        dto.setTs(System.currentTimeMillis());
+        dto.setLat(lat);
+        dto.setLon(lon);
+
+        String[] list = hd_macs.split(",");
+        if (list != null && list.length >0) {
+            for (String mac : list) {
+                //TODO:(bluesand): backend操作
+                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
+            }
+        }
+        return false;
+    }
+
+>>>>>>> 514a288c09b559b10e1690acb26e6def4753a8e5
+}

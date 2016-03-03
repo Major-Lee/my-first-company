@@ -3,8 +3,6 @@ package com.bhu.vas.api.vto;
 import java.io.Serializable;
 
 public class WifiActionVTO implements Serializable {
-
-    
     private String up;
     private String down;
     private String report;
@@ -27,7 +25,5 @@ public class WifiActionVTO implements Serializable {
     public void setReport(String report) {
         this.report = report;
     }
-    
-
     
 }

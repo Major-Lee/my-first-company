@@ -1,9 +1,13 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SocialServiceConsumer_xw {
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
+import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+
+public class SocialCommentServiceConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUUserRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
@@ -16,9 +20,8 @@ public class SocialServiceConsumer_xw {
 		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
 
 		System.out.println("123123123");
-
-		socialRpcService.clickPraise(1016, "1234","down");
-		
+		socialRpcService.comment(100312,"1234", "123123123");
+		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"1234", 1, 3);
 		System.out.println("end");
 		
 		Thread.currentThread().join();
