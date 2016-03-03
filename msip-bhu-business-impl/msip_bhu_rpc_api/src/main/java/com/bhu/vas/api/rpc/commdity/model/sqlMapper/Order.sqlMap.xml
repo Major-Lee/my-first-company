@@ -203,4 +203,8 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	
+	<select id="executeSql" parameterType="String" resultType="int">  
+    	${value} 
+	</select> 
 </mapper>

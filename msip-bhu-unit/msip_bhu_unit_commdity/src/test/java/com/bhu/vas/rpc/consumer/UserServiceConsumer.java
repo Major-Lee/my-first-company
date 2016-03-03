@@ -1,20 +1,16 @@
 package com.bhu.vas.rpc.consumer;
 
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.dto.commdity.CommdityDTO;
-import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
-import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
-import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 
-public class CommdityServiceConsumer {
+public class UserServiceConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUCommdityConsumerApp");
+		System.setProperty("appname", "BHUUserRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
 		System.setProperty("provider.port", "");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
@@ -85,42 +81,17 @@ public class CommdityServiceConsumer {
 			System.out.println(rpcResult.getErrorCode());
 		}*/
 		//validate登录
-		ICommdityRpcService commdityRpcService = (ICommdityRpcService)context.getBean("commdityRpcService");
-		IOrderRpcService orderRpcService = (IOrderRpcService)context.getBean("orderRpcService");
+		IUserRpcService userRpcService = (IUserRpcService)context.getBean("userRpcService");
 		
-		RpcResponseDTO<TailPage<CommdityDTO>> ret = commdityRpcService.commdityPages(CommdityStatus.OnSale.getKey(), 1, 5);
-		TailPage<CommdityDTO> page = ret.getPayload();
-		System.out.println(page.getTotalItemsCount());
-		List<CommdityDTO> items = page.getItems();
-		Integer commdityid = 0;
-		for(CommdityDTO item : items){
-			System.out.println(item.getId() + "=" + item.getCategory());
-			commdityid = item.getId();
-		}
-		
-		Integer appid = 100;
-		String mac = "28:e0:2c:bc:2a:16";
-		String umac = "28:e0:2c:bc:2a:17";
-		if(commdityid > 0){
-			String orderid = null;
-			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid, 
-					mac, umac, null, "context");
-			if(ret1.getErrorCode() == null){
-				OrderCreatedRetDTO dto = ret1.getPayload();
-				System.out.println("createOrder " + dto.getId() + "=" + dto.getAmount());
-				orderid = dto.getId();
-			}
-			
-			RpcResponseDTO<String> ret2 = orderRpcService.createOrderPaymentUrl(orderid);
-			if(ret2.getErrorCode() == null){
-				String payurl = ret2.getPayload();
-				System.out.println("createOrderPaymentUrl " + payurl);
-			}
-			
-			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
-			if(ret3.getErrorCode() == null){
-				System.out.println("notifyOrderPaymentSuccessed " + ret3.getPayload());
-			}
+		RpcResponseDTO<Map<String, Object>> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=",UUID.randomUUID().toString(), "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
+		if(createNewUser.getErrorCode() == null){
+			/*UserDTO retdto = createNewUser.getPayload();
+			System.out.println(retdto.getId());
+			System.out.println(retdto.getAtoken());
+			System.out.println(retdto.getRtoken());
+			System.out.println(retdto.getMobileno());
+			System.out.println(retdto.getCountrycode());
+			System.out.println(retdto.getNick());*/
 		}
 		
 		Thread.currentThread().join();

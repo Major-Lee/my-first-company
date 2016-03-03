@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.warmup;
+package com.bhu.commdity.business.ds.warmup;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.commdity.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 /**
  * warmup 主要是防止访问中初始化时间开销相对大的操作而且进行的预热程序

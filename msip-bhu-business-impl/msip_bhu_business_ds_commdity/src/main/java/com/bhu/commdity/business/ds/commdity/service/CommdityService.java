@@ -1,12 +1,12 @@
-package com.bhu.vas.business.ds.commdity.service;
+package com.bhu.commdity.business.ds.commdity.service;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.commdity.business.ds.commdity.dao.CommdityDao;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
-import com.bhu.vas.business.ds.commdity.dao.CommdityDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCommdityService;
 @Service
 @Transactional("commdityTransactionManager")

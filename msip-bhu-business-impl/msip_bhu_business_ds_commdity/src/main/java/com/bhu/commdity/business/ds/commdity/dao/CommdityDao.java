@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.commdity.dao;
+package com.bhu.commdity.business.ds.commdity.dao;
 
 import org.springframework.stereotype.Repository;
 
