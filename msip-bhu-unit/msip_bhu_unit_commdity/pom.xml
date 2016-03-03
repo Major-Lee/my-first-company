@@ -37,10 +37,6 @@
         </dependency>
         <dependency>
             <groupId>com.bhu</groupId>
-            <artifactId>msip_bhu_business_ds</artifactId>
-        </dependency>        
-        <dependency>
-            <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds_commdity</artifactId>
         </dependency>
         
