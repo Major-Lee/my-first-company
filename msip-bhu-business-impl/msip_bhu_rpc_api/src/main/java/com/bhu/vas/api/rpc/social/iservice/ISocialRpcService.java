@@ -1,11 +1,50 @@
 package com.bhu.vas.api.rpc.social.iservice;
 
-import com.bhu.vas.api.rpc.social.model.WifiComment;
 
 /**
  * Created by bluesand on 3/2/16.
  */
 public interface ISocialRpcService {
+
+    /**
+     * 终端扫描后相遇
+     * @param uid
+     * @param hd_mac
+     * @param hd_macs
+     * @param bssid
+     * @param ssid
+     * @param lat_lon
+     */
+    void handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat_lon);
+
+
+    /**
+     * 获取终端列表
+     * @param bssid
+     * @param hd_macs
+     */
+    void fetchHandsetList(String bssid, String hd_macs, int pageNo, int pageSize);
+
+
+    /**
+     * 获取终端详情
+     * @param hd_mac
+     */
+    void fetchHandsetDetail(String hd_mac);
+
+    /**
+     * 修改终端备注
+     * @param hd_mac
+     * @param nick
+     */
+    void modifyHandset(Long uid, String hd_mac, String nick);
+
+    /**
+     * 获取wifi详情
+     * @param uid
+     * @param bssid
+     */
+    void fetchWifiDetail(Long uid, String bssid);
 
     /**
      * 评论
