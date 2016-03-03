@@ -20,4 +20,29 @@ public class SocialRpcService implements ISocialRpcService {
         socialFacadeRpcService.comment(uid, bssid, message);
         return false;
     }
+
+    @Override
+    public void handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat_lon) {
+        
+    }
+
+    @Override
+    public void fetchHandsetList(String bssid, String hd_macs, int pageNo, int pageSize) {
+
+    }
+
+    @Override
+    public void fetchHandsetDetail(String hd_mac) {
+
+    }
+
+    @Override
+    public void modifyHandset(Long uid, String hd_mac, String nick) {
+
+    }
+
+    @Override
+    public void fetchWifiDetail(Long uid, String bssid) {
+
+    }
 }
