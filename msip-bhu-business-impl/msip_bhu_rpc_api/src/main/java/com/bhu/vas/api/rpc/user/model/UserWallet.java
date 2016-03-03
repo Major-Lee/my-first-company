@@ -17,6 +17,8 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  */
 @SuppressWarnings("serial")
 public class UserWallet extends BaseIntModel{// implements ISequenceGenable,TableSplitable<Integer>{
+	
+	public static final int Default_WalletUID_WhenUIDNotExist = 1;
 	//提现密码
 	private String password;
 	private String plainpwd;

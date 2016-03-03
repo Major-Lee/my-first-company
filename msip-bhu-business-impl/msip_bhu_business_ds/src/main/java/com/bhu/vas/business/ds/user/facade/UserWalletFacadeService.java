@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
@@ -45,13 +48,17 @@ public class UserWalletFacadeService {
 	@Resource
 	private UserWalletConfigsService userWalletConfigsService;
 
-	
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
 	@Resource
 	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
 	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private UserDeviceService userDeviceService;
 	
 	
 	private User validateUser(int uid){
@@ -83,7 +90,33 @@ public class UserWalletFacadeService {
 	
 	/**
 	 * 分成现金入账
-	 * @param uid
+	 * 如果mac地址没有被绑定或者设备本身不存在则 入账到指定的帐号中
+	 * @param dmac 设备mac地址 通过mac查找其被哪个用户绑定
+	 * @param cash 总收益现金
+	 * @param orderid
+	 * @param desc
+	 */
+	public UserWallet sharedealCashToUserWallet(String dmac,double cash,String orderid){
+		int uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
+		if(StringUtils.isNotEmpty(dmac)){
+			WifiDevice wifiDevice = wifiDeviceService.getById(dmac);
+			if(wifiDevice != null){
+				User user = null;
+				Integer bindUid = userDeviceService.fetchBindUid(dmac);
+				if(bindUid != null){
+					user = userService.getById(bindUid);
+					if(user != null){
+						uid = user.getId();
+					}
+				}
+			}
+		}
+		return sharedealCashToUserWallet(uid,cash,orderid);
+	}
+	
+	/**
+	 * 分成现金入账
+	 * @param uid  具体的入账用户
 	 * @param cash 总收益现金
 	 * @param orderid
 	 * @param desc
@@ -222,7 +255,7 @@ public class UserWalletFacadeService {
 		}
 		apply.setLast_reckoner(reckoner);
 		if(passed){
-			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.VerifySucceed.getKey());
+			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey());
 		}else{
 			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.VerifyFailed.getKey());
 			//返还金额到用户钱包
@@ -243,8 +276,8 @@ public class UserWalletFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});
 		}
 		//状态必须是审核通过的状态
-		if(!BusinessEnumType.UWithdrawStatus.VerifySucceed.getKey().equals(apply.getWithdraw_oper())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.VerifySucceed.getKey())});
+		if(!BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey().equals(apply.getWithdraw_oper())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey())});
 		}
 		
 		if(successed){

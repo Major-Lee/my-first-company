@@ -96,7 +96,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
     public void test005PageWithdrawApplies(){
-    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifySucceed, 1, 10);
+    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyPassed, 1, 10);
     	System.out.println(pages.getItems().size());
 		System.out.println(pages.isFirstPage());
 		System.out.println(pages.isLastPage());
@@ -111,7 +111,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		createCriteria.andColumnEqualTo("uid", testUserId);
-		createCriteria.andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.VerifySucceed.getKey());
+		createCriteria.andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey());
 		createCriteria.andSimpleCaulse(" 1=1 ");
     	mc.setPageNumber(1);
     	mc.setPageSize(10);
@@ -142,7 +142,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		createCriteria.andColumnEqualTo("uid", testUserId);
-		createCriteria.andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.VerifySucceed.getKey());
+		createCriteria.andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey());
 		createCriteria.andSimpleCaulse(" 1=1 ");
     	mc.setPageNumber(1);
     	mc.setPageSize(10);
