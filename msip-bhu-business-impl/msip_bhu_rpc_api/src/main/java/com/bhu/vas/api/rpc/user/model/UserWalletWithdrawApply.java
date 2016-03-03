@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.user.model;
 import java.util.Date;
 
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
 
 /**
@@ -79,5 +80,16 @@ public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequ
 	
 	public String toString(){
 		return String.format("WalletWithdrawApply id[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,uid,cash,withdraw_oper,last_reckoner);
+	}
+	
+	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick){
+		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
+		vto.setApplyid(id);
+		vto.setUid(uid);
+		vto.setNick(nick);
+		vto.setMobileno(mobileno);
+		vto.setCash(cash);
+		vto.setWithdraw_oper(withdraw_oper);
+		return vto;
 	}
 }

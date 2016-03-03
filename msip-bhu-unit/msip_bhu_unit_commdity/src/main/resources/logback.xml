@@ -53,7 +53,7 @@
 		<appender-ref ref="unitfacadefile" />
 	</logger>
 	
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="stdout" />
 	</root> 
 </configuration>

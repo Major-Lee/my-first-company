@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
@@ -34,14 +35,6 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	//约定的收益分成比例 最多小数点保留后两位
 	//private double percent = 0.00d;
 	private Date created_at;
-	public UserWallet() {
-		super();
-	}
-	public UserWallet(Integer userid){//,String email){
-		super();
-		this.id = userid;
-	}
-
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
@@ -109,5 +102,15 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	
 	public String toString(){
 		return String.format("Wallet uid[%s] cash[%s] vcurrency[%s %s] withdraw[%s]", id,cash,vcurrency,vcurrency_bing,withdraw);
+	}
+	
+	public UserWalletDetailVTO toUserWalletDetailVTO(){
+		UserWalletDetailVTO detail = new UserWalletDetailVTO();
+		detail.setUid(id);
+		detail.setCash(cash);
+		detail.setVcurrency(vcurrency);
+		detail.setVcurrency_bing(vcurrency_bing);
+		detail.setWithdraw(withdraw);
+		return detail;
 	}
 }

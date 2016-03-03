@@ -61,7 +61,7 @@ public class UserWalletFacadeService {
 	private UserDeviceService userDeviceService;
 	
 	
-	private User validateUser(int uid){
+	public User validateUser(int uid){
 		if(uid <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
 		}
@@ -72,6 +72,11 @@ public class UserWalletFacadeService {
 		return user;
 	}
 	
+	public UserWallet userWallet(int uid){
+		validateUser(uid);
+		UserWallet uwallet = userWalletService.getOrCreateById(uid);
+		return uwallet;
+	}
 	
 	/**
 	 * 现金入账 充值现金
@@ -250,6 +255,9 @@ public class UserWalletFacadeService {
 	 */
 	public UserWalletWithdrawApply doWithdrawVerify(int reckoner,long applyid,boolean passed){
 		validateUser(reckoner);
+		if(applyid <=0){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"applyid:".concat(String.valueOf(applyid))});
+		}
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请审核",String.valueOf(applyid)});
