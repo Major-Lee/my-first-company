@@ -38,9 +38,9 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs,
 	    String bssid, String ssid, String lat, String lon) {
-	logger.info(String.format(
-		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s], ssid[%s] lat[%] lon[%s]",
-		uid, hd_mac, hd_macs, bssid, ssid, lat, lon));
+//	logger.info(String.format(
+//		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s], ssid[%s] lat[%] lon[%s]",
+//		uid, hd_mac, hd_macs, bssid, ssid, lat, lon));
 	return socialFacadeRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid,
 		ssid, lat, lon);
     }
