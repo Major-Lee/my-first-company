@@ -1,5 +1,6 @@
 package com.bhu.vas.web.console;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,12 +10,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/console/withdraw")
 public class ConsoleWithdrawController extends BaseController {
-
+	@Resource
+	private IUserWalletRpcService userWalletRpcService;
 	/**
 	 * 分页提取提现申请记录
 	 * @param request
@@ -27,7 +36,7 @@ public class ConsoleWithdrawController extends BaseController {
 	 */
     @ResponseBody()
     @RequestMapping(value = "/fetch_applies", method = {RequestMethod.POST})
-    public void fetch_styles(
+    public void fetch_applies(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
@@ -36,11 +45,11 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-		/*RpcResponseDTO<TailPage<ModuleStyleVTO>> rpcResult = vapRpcService.pagesVapStyles(uid,pageNo, pageSize);
+		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pagesWithdrawApplies(uid, tuid, withdraw_status, pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));*/
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
     
@@ -57,13 +66,13 @@ public class ConsoleWithdrawController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String applies,
+            @RequestParam(required = true) long applyid,
             @RequestParam(required = true) boolean passed
     		) {
-		/*RpcResponseDTO<TailPage<ModuleStyleVTO>> rpcResult = vapRpcService.pagesVapStyles(uid,pageNo, pageSize);
+		RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.verifyApplies(uid, applyid, passed);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));*/
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
 }
