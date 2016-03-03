@@ -15,9 +15,10 @@ public interface ISocialRpcService {
      * @param hd_macs
      * @param bssid
      * @param ssid
-     * @param lat_lon
+     * @param lat
+     * @param lon
      */
-    void handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat_lon);
+    boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon);
 
 
     /**

@@ -17,6 +17,7 @@ public class SocialServiceConsumer {
 
 		System.out.println("123123123");
 		socialRpcService.comment(1016,"1234", "123123123");
+		socialRpcService.handsetMeet(1016L, "123123123", "34234234", "13333", "baidu", "10.18", "10.1");
 
 		System.out.println("end");
 		
