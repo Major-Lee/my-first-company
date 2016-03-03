@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.commdity.rpc.facade.OrderUnitFacadeService;
-import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 
@@ -19,7 +19,7 @@ public class OrderRpcService implements IOrderRpcService{
 	private OrderUnitFacadeService orderUnitFacadeService;
 	
 	@Override
-	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
 			Integer uid, String context) {
 		logger.info(String.format("createNewOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] uid[%s] context[%s]",
 				commdityid, appid, mac, mac, uid, context));
@@ -33,10 +33,9 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<Boolean> notifyOrderPaymentCompleted(String orderid) {
-		logger.info(String.format("notifyOrderPaymentCompleted with orderid[%s]", orderid));
-		//return orderUnitFacadeService.notifyOrderPaymentCompleted(orderid);
-		return null;
+	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
+		logger.info(String.format("notifyOrderPaymentSuccessed with orderid[%s]", orderid));
+		return orderUnitFacadeService.notifyOrderPaymentSuccessed(orderid);
 	}
 
 }

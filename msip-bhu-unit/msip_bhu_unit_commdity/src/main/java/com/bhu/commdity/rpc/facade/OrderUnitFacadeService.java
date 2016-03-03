@@ -7,13 +7,15 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
+import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.helper.CommdityHelper;
 import com.bhu.vas.business.ds.commdity.helper.OrderHelper;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
@@ -29,6 +31,10 @@ public class OrderUnitFacadeService {
 	private OrderService orderService;
 	@Resource
 	private CommdityService commdityService;
+	@Resource
+	private OrderFacadeService orderFacadeService;
+	@Resource
+	private CommdityMessageService commdityMessageService;
 	
 	/**
 	 * 生成订单
@@ -40,7 +46,7 @@ public class OrderUnitFacadeService {
 	 * @param context
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
 			Integer uid, String context){
 		try{
 			//验证用户mac和uid同时为空
@@ -87,10 +93,10 @@ public class OrderUnitFacadeService {
 			order.setAmount(amount);
 			orderService.insert(order);
 			
-			OrderDTO orderDto = new OrderDTO();
-			orderDto.setOrderid(order.getId());
-			orderDto.setAmount(order.getAmount());
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+			OrderCreatedRetDTO orderCreatedRetDto = new OrderCreatedRetDTO();
+			orderCreatedRetDto.setId(order.getId());
+			orderCreatedRetDto.setAmount(order.getAmount());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderCreatedRetDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -104,15 +110,15 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid) {
-		Integer step_status = OrderStatus.NotPay.getKey();
-		Integer step_process_status = OrderProcessStatus.NotPay.getKey();
-		String pay_orderid = null;
+		Integer changed_status = OrderStatus.NotPay.getKey();
+		Integer changed_process_status = OrderProcessStatus.NotPay.getKey();
 		Order order = null;
 		try{
 			order = orderService.getById(orderid);
 			if(order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
+			
 			/**
 			 * TODO:调用支付系统获取支付url
 			 * INTERNAL_COMMUNICATION_PAYMENTURL_FAILED
@@ -121,33 +127,27 @@ public class OrderUnitFacadeService {
 			//如果调用支付系统成功
 			{
 				//pay_orderid 赋值
-				step_process_status = OrderProcessStatus.Paying.getKey();
+				changed_process_status = OrderProcessStatus.Paying.getKey();
 			}
 			
-			return null;
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse("");
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}finally{
-			if(order != null){
-				order.setStatus(step_status);
-				order.setProcess_status(step_process_status);
-				order.setPay_orderid(pay_orderid);
-				orderService.update(order);
-			}
+			orderFacadeService.orderStatusChanged(order, changed_status, changed_process_status);
 		}
 	}
 	
 	/**
-	 * 支付系统通知订单支付完成
+	 * 支付系统通知订单支付成功
 	 * @param orderid
-	 * @param successed 支付是否成功
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> notifyOrderPaymentCompleted(String orderid, boolean successed) {
-		Integer step_status = OrderStatus.PaySuccessed.getKey();
-		Integer step_process_status = OrderProcessStatus.PaySuccessed.getKey();
+	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
+		Integer changed_status = OrderStatus.PaySuccessed.getKey();
+		Integer changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 		Order order = null;
 		try{
 			order = orderService.getById(orderid);
@@ -156,13 +156,18 @@ public class OrderUnitFacadeService {
 			}
 			//如果订单状态为未支付,才继续进行
 			if(OrderHelper.notpay(order.getStatus())){
-				
+				orderFacadeService.orderStatusChanged(order, changed_status, changed_process_status);
+				//订单支付成功异步处理
+				commdityMessageService.sendOrderPaySuccessedMessage(orderid);
+/*				if(successed){
+					commdityMessageService.sendOrderPaySuccessedMessage(orderid);
+				}else{
+					changed_status = OrderStatus.PayFailured.getKey();
+					changed_process_status = OrderProcessStatus.PayFailured.getKey();
+				}*/
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}
-			
-			if(successed){
-				
-			}
-			return null;
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

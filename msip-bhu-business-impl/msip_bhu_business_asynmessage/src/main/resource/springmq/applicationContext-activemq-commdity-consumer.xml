@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+    <!--  ActiveMQ destinations  -->
+    <!--  使用Queue方式-->
+	<bean id="destinationCommdityMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">  
+        <constructor-arg index="0" value="${activemq.queue.commdity.name}" />  
+        <!-- 同时监听多个queue,同时对queue1进行预取处理
+        <constructor-arg index="0" value="queue1?consumer.prefetchSize=100,queue2" />
+         -->
+    </bean> 
+	<!--  Spring JmsTemplate config -->
+	<bean id="jmsCommdityMessageTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsFactory" />  
+		<!-- custom MessageConverter
+		<property name="messageConverter" ref="defaultFeedMessageConverter" />
+		 -->
+	</bean>
+	<!--  Message Driven POJO (MDP) -->
+    <!-- consumer for queue-->
+    <bean id="commdityMessageQueueConsumer" class="com.bhu.vas.business.asyn.spring.activemq.queue.consumer.CommdityMessageQueueConsumer" />
+    <!-- Message Listener for  -->
+    <bean id="commdityMessageQueueListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<constructor-arg ref="commdityMessageQueueConsumer" />
+		<!--  may be other method -->
+		<property name="defaultListenerMethod" value="receive" />
+		<!-- custom MessageConverter define
+		<property name="messageConverter" ref="defaultFeedMessageConverter" />
+		 -->
+	</bean>
+    <!--  listener container，MDP无需实现接口 -->
+    <bean id="commdityMessageQueueListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="jmsFactory" />
+		<property name="destination" ref="destinationCommdityMessageQueue" />
+		<!-- 
+		<property name="messageSelector" value="${jms.messageSelector}" />
+		 -->
+		<property name="messageListener" ref="commdityMessageQueueListener" />
+		<!-- 多线程消费数量
+		<property name="concurrentConsumers" value="2" />  -->
+	</bean>
+	<!-- 
+	<bean id="userRegisteredActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserRegisteredActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="userSubjectClickActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectClickActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="userSubjectAbstractClickActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectAbstractClickActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="userSubjectEstimateActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectEstimateActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="userSubjectTaggingActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectTaggingActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="userSubjectShareActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserSubjectShareActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="userBlackDomainActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.UserBlackDomainActHandler" factory-method="getInstance" lazy-init="false"/>
+	<bean id="subjectWeixinShareActHandler" 	class="com.wecite.toplines.business.asyn.web.handler.SubjectWeixinShareActHandler" factory-method="getInstance" lazy-init="false"/>
+	 -->
+</beans>
