@@ -10,8 +10,7 @@
     <result property="appid" column="appid"/>
     <result property="mac" column="mac"/>
     <result property="umac" column="umac"/>
-    <result property="uid" column="uid"/>
-    <result property="pay_orderid" column="pay_orderid"/> 
+    <result property="uid" column="uid"/> 
     <result property="amount" column="amount"/>
     <result property="context" column="context"/>
     <result property="status" column="status"/>
@@ -33,7 +32,6 @@
 	    	mac,
 	    	umac,
 	    	uid,
-	    	pay_orderid,
 	    	amount,
 	    	context,
 	    	status,
@@ -49,7 +47,6 @@
 	    	mac,
 	    	umac,
 	    	uid,
-	    	pay_orderid,
 	    	amount,
 	    	context,
 	    	status,
@@ -66,7 +63,6 @@
 	    	#{mac},
 	    	#{umac},
 	    	#{uid},
-	    	#{pay_orderid},
 	    	#{amount},
 	    	#{context},
 	    	#{status},
@@ -81,7 +77,6 @@
 	    	mac = #{mac},
 	    	umac = #{umac},
 	    	uid = #{uid},
-	    	pay_orderid = #{pay_orderid},
 	    	amount = #{amount},
 	    	context = #{context},
 	    	status = #{status},

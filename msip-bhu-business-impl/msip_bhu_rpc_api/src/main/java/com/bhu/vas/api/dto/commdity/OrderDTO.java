@@ -1,16 +1,13 @@
-package com.bhu.vas.api.rpc.commdity.model;
-
-import java.util.Date;
-
-import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
-import com.smartwork.msip.cores.orm.model.BaseStringModel;
-
+package com.bhu.vas.api.dto.commdity;
 /**
- * 订单模型
+ * 订单dto
  * @author tangzichao
+ *
  */
 @SuppressWarnings("serial")
-public class Order extends BaseStringModel implements ISequenceGenable{
+public class OrderDTO implements java.io.Serializable{
+	//订单id
+	private String id;
 	//商品id
 	private Integer commdityid;
 	//应用id
@@ -29,113 +26,59 @@ public class Order extends BaseStringModel implements ISequenceGenable{
 	private String context;
 	//订单状态
 	private Integer status;
-	//订单流程状态
-	private Integer process_status;
-	//订单创建时间
-	private Date created_at;
 	
-	public Order() {
-		super();
+	public String getId() {
+		return id;
 	}
-
-	@Override
-	public void preInsert() {
-		if (this.created_at == null)
-			this.created_at = new Date();
-		super.preInsert();
+	public void setId(String id) {
+		this.id = id;
 	}
-
 	public Integer getCommdityid() {
 		return commdityid;
 	}
-
 	public void setCommdityid(Integer commdityid) {
 		this.commdityid = commdityid;
 	}
-
 	public Integer getAppid() {
 		return appid;
 	}
-
 	public void setAppid(Integer appid) {
 		this.appid = appid;
 	}
-
 	public String getMac() {
 		return mac;
 	}
-
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-
 	public String getUmac() {
 		return umac;
 	}
-
 	public void setUmac(String umac) {
 		this.umac = umac;
 	}
-
 	public Integer getUid() {
 		return uid;
 	}
-
 	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
-
-/*	public String getPay_orderid() {
-		return pay_orderid;
-	}
-
-	public void setPay_orderid(String pay_orderid) {
-		this.pay_orderid = pay_orderid;
-	}*/
-
 	public String getAmount() {
 		return amount;
 	}
-
 	public void setAmount(String amount) {
 		this.amount = amount;
 	}
-
 	public String getContext() {
 		return context;
 	}
-
 	public void setContext(String context) {
 		this.context = context;
 	}
-
 	public Integer getStatus() {
 		return status;
 	}
-
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-
-	public Integer getProcess_status() {
-		return process_status;
-	}
-
-	public void setProcess_status(Integer process_status) {
-		this.process_status = process_status;
-	}
-
-	public Date getCreated_at() {
-		return created_at;
-	}
-
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
-	}
-
-	@Override
-	public void setSequenceKey(Integer key) {
-		//this.setId(key);
-	}
-
 }

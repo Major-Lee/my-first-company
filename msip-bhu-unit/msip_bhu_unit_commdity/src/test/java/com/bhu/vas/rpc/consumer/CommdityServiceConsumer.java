@@ -6,10 +6,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
+import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public class CommdityServiceConsumer {
@@ -111,16 +114,30 @@ public class CommdityServiceConsumer {
 				orderid = dto.getId();
 			}
 			
-			RpcResponseDTO<String> ret2 = orderRpcService.createOrderPaymentUrl(orderid);
+			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid);
 			if(ret2.getErrorCode() == null){
-				String payurl = ret2.getPayload();
-				System.out.println("createOrderPaymentUrl " + payurl);
+				OrderDTO orderDto = ret2.getPayload();
+				System.out.println("validateOrderPaymentUrl " + orderDto.getId() + "=" + orderDto.getStatus());
+			}else{
+				System.out.println(ret2.getErrorCode().code());
+			}
+			ResponseCreatePaymentUrlDTO rcp_dto = new ResponseCreatePaymentUrlDTO();
+			rcp_dto.setSuccess(true);
+			rcp_dto.setParams("params");
+			String create_payment_url_response = JsonHelper.getJSONString(rcp_dto);
+			
+			RpcResponseDTO<String> ret3 = orderRpcService.createOrderPaymentUrl(orderid, create_payment_url_response);
+			if(ret3.getErrorCode() == null){
+				String payurl_info = ret3.getPayload();
+				System.out.println("createOrderPaymentUrl " + payurl_info);
+			}else{
+				System.out.println(ret3.getErrorCode().code());
 			}
 			
-			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
-			if(ret3.getErrorCode() == null){
-				System.out.println("notifyOrderPaymentSuccessed " + ret3.getPayload());
-			}
+			//			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
+//			if(ret3.getErrorCode() == null){
+//				System.out.println("notifyOrderPaymentSuccessed " + ret3.getPayload());
+//			}
 		}
 		
 		Thread.currentThread().join();

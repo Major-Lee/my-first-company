@@ -3,11 +3,14 @@ package com.bhu.vas.rpc.facade;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
+import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -20,6 +23,7 @@ import com.bhu.vas.business.ds.commdity.helper.CommdityHelper;
 import com.bhu.vas.business.ds.commdity.helper.OrderHelper;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -105,11 +109,38 @@ public class OrderUnitFacadeService {
 	}
 	
 	/**
-	 * 生成订单支付url
+	 * 生成订单支付url之前的订单验证
 	 * @param orderid
 	 * @return
 	 */
-	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid) {
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid) {
+		try{
+			Order order = orderService.getById(orderid);
+			if(order == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+			}
+			//验证订单状态是否小于等于未支付
+			if(!OrderHelper.lte_notpay(order.getStatus())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
+			}
+			
+			OrderDTO orderDto = new OrderDTO();
+			BeanUtils.copyProperties(order, orderDto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 调用支付系统获取订单支付url之后
+	 * @param orderid 订单id
+	 * @param response_create_payment_url 支付系统返回的数据
+	 * @return
+	 */
+	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid, String create_payment_url_response) {
 		Integer changed_status = OrderStatus.NotPay.getKey();
 		Integer changed_process_status = OrderProcessStatus.NotPay.getKey();
 		Order order = null;
@@ -119,22 +150,16 @@ public class OrderUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
 			
-			/**
-			 * TODO:调用支付系统获取支付url
-			 * INTERNAL_COMMUNICATION_PAYMENTURL_FAILED
-			 */
-			
-			//如果调用支付系统成功
-			String payurl = "http://www.bhu.com/";
-			String pay_orderid = "123";
-			{
-
-				order.setPay_orderid(pay_orderid);
-				//pay_orderid 赋值
-				changed_process_status = OrderProcessStatus.Paying.getKey();
+			if(StringUtils.isNotEmpty(create_payment_url_response)){
+				ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, 
+						ResponseCreatePaymentUrlDTO.class);
+				//支付系统正确返回数据
+				if(rcp_dto.isSuccess()){
+					changed_process_status = OrderProcessStatus.Paying.getKey();
+					return RpcResponseDTOBuilder.builderSuccessRpcResponse(rcp_dto.getParams());
+				}
 			}
-			
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payurl);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_FAILED);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -149,7 +174,7 @@ public class OrderUnitFacadeService {
 	 * @param orderid
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
+/*	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
 		Integer changed_status = OrderStatus.PaySuccessed.getKey();
 		Integer changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 		Order order = null;
@@ -163,12 +188,12 @@ public class OrderUnitFacadeService {
 				orderFacadeService.orderStatusChanged(order, changed_status, changed_process_status);
 				//订单支付成功异步处理
 				commdityMessageService.sendOrderPaySuccessedMessage(orderid);
-/*				if(successed){
+				if(successed){
 					commdityMessageService.sendOrderPaySuccessedMessage(orderid);
 				}else{
 					changed_status = OrderStatus.PayFailured.getKey();
 					changed_process_status = OrderProcessStatus.PayFailured.getKey();
-				}*/
+				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
@@ -177,5 +202,5 @@ public class OrderUnitFacadeService {
 		}catch(Exception ex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 }

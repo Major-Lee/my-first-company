@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
+import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
@@ -27,15 +28,21 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid) {
-		logger.info(String.format("createOrderPaymentUrl with orderid[%s]", orderid));
-		return orderUnitFacadeService.createOrderPaymentUrl(orderid);
+	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid, String create_payment_url_response) {
+		logger.info(String.format("createOrderPaymentUrl with orderid[%s] cpu_r[%s]", orderid, create_payment_url_response));
+		return orderUnitFacadeService.createOrderPaymentUrl(orderid, create_payment_url_response);
 	}
 	
-	@Override
+/*	@Override
 	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
 		logger.info(String.format("notifyOrderPaymentSuccessed with orderid[%s]", orderid));
 		return orderUnitFacadeService.notifyOrderPaymentSuccessed(orderid);
+	}*/
+	
+	@Override
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid) {
+		logger.info(String.format("validateOrderPaymentUrl with orderid[%s]", orderid));
+		return orderUnitFacadeService.validateOrderPaymentUrl(orderid);
 	}
 
 }

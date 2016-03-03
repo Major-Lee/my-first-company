@@ -79,7 +79,7 @@ public class OrderServiceTest extends BaseTest{
 			order.setMac("28:e0:2c:bc:2a:16");
 			order.setUmac("28:e0:2c:bc:2a:17");
 			order.setUid(7);
-			order.setPay_orderid("pay_orderid"+i);
+			//order.setPay_orderid("pay_orderid"+i);
 			order.setAmount(String.valueOf(ArithHelper.round(RandomData.floatNumber(10), 2)));
 			order.setContext("context"+i);
 			order.setStatus(1);
