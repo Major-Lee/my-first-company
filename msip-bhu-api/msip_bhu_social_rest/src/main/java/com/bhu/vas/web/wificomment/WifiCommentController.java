@@ -1,19 +1,31 @@
 package com.bhu.vas.web.wificomment;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.jdo.ResponseError;
 
 public class WifiCommentController extends BaseController {
 	
-/*	@Resource
+	@Resource
 	private ISocialRpcService socialRpcService;
 	
 	
-	*//**
+	/**
 	 * 评论wifi
 	 * @param response
+	 * @param bssid
 	 * @param uid
-	 * @param tid
-	 *//*
+	 * @param message
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/app/wifi/comment",method={RequestMethod.POST})
 	public void detail(
@@ -27,6 +39,6 @@ public class WifiCommentController extends BaseController {
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-*/
 
+	}
 }
