@@ -59,6 +59,7 @@ public class OrderPaymentNotifyListService extends AbstractRelationListCache {
         //System.out.println(OrderPaymentNotifyListService.getInstance().pipelineHSet_sameKeyWithDiffFieldValue("TTTT", new String[]{"TT1,TT2"}, new String[]{"1", "2"}));
 
         //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
+    	OrderPaymentNotifyListService.getInstance().rpushNofity("01002016030300000000000000000048");
     }
 
 

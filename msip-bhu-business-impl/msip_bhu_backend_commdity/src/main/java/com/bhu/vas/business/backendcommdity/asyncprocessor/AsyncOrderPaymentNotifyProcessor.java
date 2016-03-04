@@ -47,8 +47,8 @@ public class AsyncOrderPaymentNotifyProcessor{
 					try{
 						if(ProcessesThreadCount > exec_processes.getActiveCount()){
 							String message = OrderPaymentNotifyListService.getInstance().lpopNotify();
-							if(StringUtils.isNotEmpty(message))
-								logger.info(String.format("AsyncOrderPaymentNotifyProcessor receive: message[%s]", message));
+							/*if(StringUtils.isNotEmpty(message))
+								logger.info(String.format("AsyncOrderPaymentNotifyProcessor receive: message[%s]", message));*/
 							
 							onProcessor(message);
 						}else{
@@ -74,7 +74,7 @@ public class AsyncOrderPaymentNotifyProcessor{
 			@Override
 			public void run() {
 				try{
-					asyncOrderPaymentNotifyService.notifyOrderPayment(message);
+					asyncOrderPaymentNotifyService.notifyOrderPaymentHandle(message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("AsyncOrderPaymentNotifyProcessor onProcessor", ex);
