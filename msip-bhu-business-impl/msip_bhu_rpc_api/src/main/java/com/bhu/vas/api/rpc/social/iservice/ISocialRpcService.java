@@ -63,7 +63,7 @@ public interface ISocialRpcService {
      * @return
      */
 
-    public boolean comment(long uid, String bssid, String message);
+    public boolean comment(long uid, String bssid,String hd_mac, String message);
     
     /**
      * 查看wifi评论列表

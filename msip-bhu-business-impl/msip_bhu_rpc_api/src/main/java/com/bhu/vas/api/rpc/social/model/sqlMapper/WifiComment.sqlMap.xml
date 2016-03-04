@@ -8,6 +8,7 @@
     <id property="id" column="id"/>
 	  <id property="uid" column="uid"/>
     <id property="bssid" column="bssid"/>
+    <id property="hd_mac" column="hd_mac"/>
 	  <id property="message" column="message"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -23,6 +24,7 @@
 	    	id,
 	    	uid,
 	    	bssid,
+	    	hd_mac,
 	    	message,
 	    	created_at,
 	    	updated_at
@@ -32,6 +34,7 @@
 	    <![CDATA[
 	    	uid,
 	    	bssid,
+	    	hd_mac,
 	    	message,
 	    	created_at,
 	    	updated_at
@@ -42,6 +45,7 @@
 			#{id},
 	    	#{uid},
 	    	#{bssid},
+	    	#{hd_mac},
 	    	#{message},
 	    	#{created_at},
 	    	#{updated_at}
@@ -51,6 +55,7 @@
 
 	    	uid = #{uid},
 			bssid = #{bssid},
+			hd_mac = #{hd_mac},
 			message = #{message},
 		  	created_at = #{created_at}
 	    	updated_at = #{updated_at}

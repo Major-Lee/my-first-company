@@ -47,12 +47,13 @@ public class SocialFacadeRpcService {
    @Resource 
    private UserService userService;
 
-    public WifiComment comment(long uid, String bssid, String message) {
+    public WifiComment comment(long uid, String bssid,String hd_mac, String message) {
 
         WifiComment wifiComment = new WifiComment();
         wifiComment.setUid(uid);
         wifiComment.setMessage(message);
         wifiComment.setBssid(bssid);
+        wifiComment.setHd_mac(hd_mac);
         Date currentDate=new Date();
         double currentTime=currentDate.getTime();
         wifiComment.setCreated_at(currentDate);

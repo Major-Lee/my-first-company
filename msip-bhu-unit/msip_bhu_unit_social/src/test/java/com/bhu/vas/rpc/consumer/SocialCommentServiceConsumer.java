@@ -22,7 +22,7 @@ public class SocialCommentServiceConsumer {
 		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
 
 		System.out.println("123123123");
-		socialRpcService.comment(100312,"1234", "123123123");
+		socialRpcService.comment(100312,"1234","ussss", "123123123");
 		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"1234", 1, 3);
 		System.out.println("end");
 		RpcResponseDTO<Set<String>>rpcset=socialRpcService.fetchUserCommentWifiList("100312");

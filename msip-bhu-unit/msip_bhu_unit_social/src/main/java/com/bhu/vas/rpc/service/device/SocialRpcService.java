@@ -30,9 +30,9 @@ public class SocialRpcService implements ISocialRpcService {
     private SocialFacadeRpcService socialFacadeRpcService;
 
     @Override
-    public boolean comment(long uid, String bssid, String message) {
+    public boolean comment(long uid,String bssid,String hd_mac, String message) {
 	try {
-	    socialFacadeRpcService.comment(uid, bssid, message);
+	    socialFacadeRpcService.comment(uid, bssid,hd_mac, message);
 	    return true;
 	} catch (Exception ex) {
 	    return false;

@@ -14,8 +14,16 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
 public class WifiComment  extends BaseLongModel implements IRedisSequenceGenable {
 
     private long uid;
+    private String hd_mac;
+    public String getHd_mac() {
+		return hd_mac;
+	}
 
-    private String bssid;
+	public void setHd_mac(String hd_mac) {
+		this.hd_mac = hd_mac;
+	}
+
+	private String bssid;
 
     private String message;
 

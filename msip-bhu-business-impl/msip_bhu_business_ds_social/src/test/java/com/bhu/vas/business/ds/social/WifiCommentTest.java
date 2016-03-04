@@ -26,6 +26,7 @@ public class WifiCommentTest extends BaseTest {
         wifiComment.setMessage("woooooo");
         wifiComment.setUid(1234567);
         wifiComment.setUpdated_at(new Date());
+       wifiComment.setHd_mac("sssss");
 
         wifiCommentService.insert(wifiComment);
 
