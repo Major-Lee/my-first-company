@@ -175,6 +175,8 @@ public enum ResponseErrorCode {
 	USER_TYPE_PARAM_VALIDATE_EMPTY("319", "user.type.param.empty"),
 	USER_TYPE_NOTMATCHED("320","user.type.notmatched"),
 	USER_TYPE_WASNOT_NORMAL("321", "user.type.wasnot.normal"),
+	USER_MOBILE_ALREADY_BEUSED("322","user.mobile.already.beused"),
+	
 	
 	USER_WALLET_WITHDRAW_OPER_BREAK("325", "user.wallet.withdraw.break"),
 	USER_WALLET_CASH_NOTREACHED_MAXLIMIT("326", "user.wallet.cash.notreached.maxlimit"),

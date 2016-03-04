@@ -103,4 +103,9 @@ public class UserRpcService implements IUserRpcService{
 		return userUnitFacadeService.userResetPwd(countrycode, acc, pwd, device, resetIp, captcha);
 	}
 
+	@Override
+	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha) {
+		logger.info(String.format("authentication with countrycode[%s] acc[%s] captcha[%s]",countrycode,acc,captcha));
+		return userUnitFacadeService.authentication(uid,countrycode, acc, captcha);
+	}
 }
