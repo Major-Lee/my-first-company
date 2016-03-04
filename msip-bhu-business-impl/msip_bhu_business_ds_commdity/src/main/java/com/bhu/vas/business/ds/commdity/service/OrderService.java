@@ -27,4 +27,5 @@ public class OrderService extends AbstractCommdityService<String, Order, OrderDa
 		}
 		return super.insert(entity);
 	}
+
 }

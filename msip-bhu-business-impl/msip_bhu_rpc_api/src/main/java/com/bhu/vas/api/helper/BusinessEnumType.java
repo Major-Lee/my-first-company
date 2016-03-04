@@ -190,7 +190,7 @@ public class BusinessEnumType {
 	
 	//订单基本状态
 	public enum OrderStatus{
-		Original(0,"订单原始状态","生成订单最原始的状态"),
+		Pending(0,"订单原始状态","生成订单最原始的状态"),
 		NotPay(1,"未支付状态","其他应用获取此订单的支付url时更新为此状态"),
 		PaySuccessed(9,"订单支付成功状态","支付平台支付完成并通知此订单支付成功时更新为此状态"),
 		//PayFailured(10,"订单支付失败状态","支付平台支付完成并通知此订单支付失败时更新为此状态"),
@@ -427,6 +427,62 @@ public class BusinessEnumType {
 			CommdityStatus[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (CommdityStatus type : types){
 				allCommdityStatusTypes.put(type.getKey(), type);
+			}
+		}
+	}
+	
+	/**
+	 * 应用定义
+	 * @author tangzichao
+	 */
+	public enum CommdityApplication{
+		Default(1000,"默认应用id","默认应用id"),
+		;
+		private Integer key;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, CommdityApplication> allCommdityApplicationTypes;
+		
+		private CommdityApplication(Integer key,String name,String desc){
+			this.key = key;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getKey() {
+			return key;
+		}
+		public void setKey(Integer key) {
+			this.key = key;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static CommdityApplication fromKey(Integer key){
+			if(key == null) return null;
+			return allCommdityApplicationTypes.get(key);
+		}
+		
+		public static boolean supported(Integer key){
+			return allCommdityApplicationTypes.containsKey(key);
+		}
+		
+		static {
+			allCommdityApplicationTypes = new HashMap<Integer, CommdityApplication>();
+			CommdityApplication[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (CommdityApplication type : types){
+				allCommdityApplicationTypes.put(type.getKey(), type);
 			}
 		}
 	}

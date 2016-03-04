@@ -57,4 +57,24 @@ public class CommdityHelper {
 		}
 		return null;
 	}
+	
+	/**
+	 * 商品金额生成
+	 * 处理普通价格商品和区间价格商品
+	 * @param commdity_price 商品价格
+	 * @return
+	 */
+	public static String generateCommdityAmount(String commdity_price){
+		//商品金额处理
+		String amount = null;
+		if(CommdityHelper.priceInterval(commdity_price)){
+			Double randomPrice = CommdityHelper.randomPriceInterval(commdity_price);
+			if(randomPrice != null){
+				amount = String.valueOf(randomPrice);
+			}
+		}else{
+			amount = commdity_price;
+		}
+		return amount;
+	}
 }

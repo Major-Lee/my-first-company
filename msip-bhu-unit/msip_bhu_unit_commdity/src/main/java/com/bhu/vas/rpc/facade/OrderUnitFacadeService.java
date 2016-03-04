@@ -11,15 +11,14 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.commdity.helper.CommdityHelper;
 import com.bhu.vas.business.ds.commdity.helper.OrderHelper;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -57,46 +56,12 @@ public class OrderUnitFacadeService {
 			if(uid == null && StringUtils.isEmpty(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_UID_ILLEGAL);
 			}
-			
-			/**
-			 * TODO:验证appid的有效性
-			 * RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
-			 */
-			
-			//商品信息验证
-			Commdity commdity = commdityService.getById(commdityid);
-			if(commdity == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
+			//验证appid
+			if(!CommdityApplication.supported(appid)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);
 			}
-			if(!CommdityHelper.onsale(commdity.getStatus())){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
-			}
-			
-			//订单金额处理
-			String commdity_price = commdity.getPrice();
-			String amount = null;
-			if(CommdityHelper.priceInterval(commdity_price)){
-				Double randomPrice = CommdityHelper.randomPriceInterval(commdity_price);
-				if(randomPrice == null){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PRICE_RANDOM_INVALID);
-				}
-				amount = String.valueOf(randomPrice);
-			}else{
-				amount = commdity_price;
-			}
-			//订单生成
-			Order order = new Order();
-			order.setCommdityid(commdityid);
-			order.setAppid(appid);
-			order.setMac(mac);
-			order.setUmac(umac);
-			order.setUid(uid);
-			order.setContext(context);
-			order.setStatus(OrderStatus.Original.getKey());
-			order.setProcess_status(OrderProcessStatus.Pending.getKey());
-			order.setAmount(amount);
-			orderService.insert(order);
-			
+			//生成订单
+			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
 			OrderCreatedRetDTO orderCreatedRetDto = new OrderCreatedRetDTO();
 			orderCreatedRetDto.setId(order.getId());
 			orderCreatedRetDto.setAmount(order.getAmount());

@@ -101,7 +101,7 @@ public class CommdityServiceConsumer {
 			commdityid = item.getId();
 		}
 		
-		Integer appid = 100;
+		Integer appid = 1000;
 		String mac = "28:e0:2c:bc:2a:16";
 		String umac = "28:e0:2c:bc:2a:17";
 		if(commdityid > 0){
