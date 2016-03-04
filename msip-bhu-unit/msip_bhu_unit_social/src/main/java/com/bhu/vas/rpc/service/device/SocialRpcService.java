@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.service.device;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
+import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiCommentSortedSetService;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
@@ -41,19 +42,17 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs,
 	    String bssid, String ssid, String lat, String lon) {
-	logger.info(String.format(
-		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s], ssid[%s] lat[%] lon[%s]",
-		uid, hd_mac, hd_macs, bssid, ssid, lat, lon));
+//	logger.info(String.format(
+//		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s], ssid[%s] lat[%] lon[%s]",
+//		uid, hd_mac, hd_macs, bssid, ssid, lat, lon));
 	return socialFacadeRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid,
 		ssid, lat, lon);
     }
 
     @Override
-    public void fetchHandsetList(String bssid, String hd_macs, int pageNo,
-	    int pageSize) {
-	logger.info(String.format(
-		"fetchHandsetList bssid[%s] hd_macs[%s] pageNo[%s] pageSize[%s]",
-		bssid, hd_macs, pageNo, pageSize));
+    public WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs) {
+	    logger.info(String.format("fetchHandsetList bssid[%s] hd_macs[%s] ", bssid, hd_macs));
+        return socialFacadeRpcService.fetchHandsetList(bssid, hd_macs);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public WifiActionVTO clickPraise(long uid, String bssid, String type) {
+    public RpcResponseDTO<WifiActionVTO> clickPraise(long uid, String bssid, String type) {
 	logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
 		uid, bssid, type));
 	return socialFacadeRpcService.clickPraise(bssid, type);
@@ -92,15 +91,16 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public boolean follow(long uid, String hd_mac, String nick) {
-	logger.info(String.format("follow uid[%s] hd_mac[%s] type[%s]", uid,
-		hd_mac, nick));
-	return socialFacadeRpcService.follow(uid, hd_mac, nick);
+    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
+	logger.info(String.format("follow uid[%s] hd_mac[%s]", uid,
+		hd_mac));
+	return socialFacadeRpcService.follow(uid, hd_mac);
     }
 
     @Override
-    public void unFollow(long uid, String hd_mac) {
+    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
 	logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
+	return socialFacadeRpcService.unFollow(uid, hd_mac);
     }
     
 	public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid) {
