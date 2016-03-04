@@ -25,6 +25,7 @@
 		
 		<typeAlias alias="wifiComment" type="com.bhu.vas.api.rpc.social.model.WifiComment" />
 		<typeAlias alias="userHandset" type="com.bhu.vas.api.rpc.social.model.UserHandset" />
+		<typeAlias alias="handsetUser" type="com.bhu.vas.api.rpc.social.model.HandsetUser" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -34,6 +35,7 @@
 	<mappers>
 		<mapper resource="com/bhu/vas/api/rpc/social/model/sqlMapper/WifiComment.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/social/model/sqlMapper/UserHandset.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/social/model/sqlMapper/HandsetUser.sqlMap.xml" />
 	</mappers>
 
 </configuration>

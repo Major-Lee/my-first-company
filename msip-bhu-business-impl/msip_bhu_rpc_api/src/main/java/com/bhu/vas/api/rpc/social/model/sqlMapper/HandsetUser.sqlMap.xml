@@ -2,28 +2,26 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.social.model.WifiComment">
+<mapper namespace="com.bhu.vas.api.rpc.social.model.HandsetUser">
 
-  <resultMap id="modelResult" type="wifiComment">
+  <resultMap id="modelResult" type="handsetUser">
     <id property="id" column="id"/>
 	  <id property="uid" column="uid"/>
-    <id property="bssid" column="bssid"/>
-	  <id property="message" column="message"/>
+	  <id property="nick" column="nick"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_social_wifi_comment
+	    	t_social_handset_user
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
 	    	uid,
-	    	bssid,
-	    	message,
+	    	nick,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -31,8 +29,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
-	    	bssid,
-	    	message,
+	    	nick,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -41,8 +38,7 @@
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{uid},
-	    	#{bssid},
-	    	#{message},
+	    	#{nick},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -50,8 +46,7 @@
 	<sql id="modelUpdateValues">
 
 	    	uid = #{uid},
-			bssid = #{bssid},
-			message = #{message},
+			nick = #{nick},
 		  	created_at = #{created_at}
 	    	updated_at = #{updated_at}
 	</sql>
@@ -103,11 +98,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiComment">
+	<delete id="delete" parameterType="handsetUser">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -116,11 +111,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="wifiComment">
+	<insert id="insert" parameterType="handsetUser">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="wifiComment">
+	<update id="update" parameterType="handsetUser">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -144,7 +139,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="java.lang.Long">
+	<select id="pkSelectByModelCriteria" resultType="java.lang.String">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
