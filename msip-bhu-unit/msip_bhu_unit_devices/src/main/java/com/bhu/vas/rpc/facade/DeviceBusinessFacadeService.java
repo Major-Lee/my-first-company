@@ -362,6 +362,7 @@ public class DeviceBusinessFacadeService {
 							if(user != null){
 					    		UserDevice userDevice = new UserDevice();
 						        userDevice.setId(new UserDevicePK(mac, user.getId()));
+						        userDevice.setDevice_name(mac);
 						        userDevice.setCreated_at(new Date());
 						        userDeviceService.insert(userDevice);
 						        
