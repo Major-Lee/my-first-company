@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.commdity.facade;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.commdity.internal.pay.OrderPaymentNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
@@ -113,6 +115,26 @@ public class OrderFacadeService {
 			order.setStatus(status);
 			order.setProcess_status(process_status);
 			orderService.update(order);
+		}
+	}
+	
+	/**
+	 * 支付系统支付成功的订单处理逻辑
+	 * @param order
+	 * @param opn_dto
+	 */
+	public void orderPaymentNotify(Order order, OrderPaymentNotifyDTO opn_dto){
+		if(opn_dto == null || order == null) return;
+		
+		Integer changed_status = OrderStatus.PaySuccessed.getKey();
+		Integer changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
+		try{
+			//TODO:通知应用发货 如果通知成功 更新status为PaySuccessed 更新支付时间
+			order.setPaymented_at(new Date(opn_dto.getPayment_ts()));
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
 		}
 	}
 }
