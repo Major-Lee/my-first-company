@@ -102,6 +102,7 @@ public class UserWalletFacadeService {
 	 * @param desc
 	 */
 	public UserWallet sharedealCashToUserWallet(String dmac,double cash,String orderid){
+		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		int uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
 		if(StringUtils.isNotEmpty(dmac)){
 			WifiDevice wifiDevice = wifiDeviceService.getById(dmac);

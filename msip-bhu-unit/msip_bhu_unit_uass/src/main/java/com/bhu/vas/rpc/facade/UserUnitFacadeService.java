@@ -14,11 +14,14 @@ import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
+import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
@@ -42,14 +45,15 @@ public class UserUnitFacadeService {
 	private UserTokenService userTokenService;
 	@Resource
 	private UserSignInOrOnFacadeService userSignInOrOnFacadeService;
-	
+	@Resource
+	private UserOAuthFacadeService userOAuthFacadeService;
+
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
 	
 	@Resource
 	private UserDeviceService userDeviceService;
-	//@Resource
-	//private WifiDeviceService wifiDeviceService;
+
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
 	@Resource
@@ -438,24 +442,31 @@ public class UserUnitFacadeService {
 		if(isNickUpdated){
 			UniqueFacadeService.uniqueNickChanged(user.getId(), nick,oldNick);
 		}
-		/*Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				user,
-				null, false,null);*/
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
+	@Resource
+	private UserWalletFacadeService userWalletFacadeService;
 	
-	
+	/**
+	 * 此接口返回
+	 * 	用户信息
+	 *  wallet
+	 *  oauth列表
+	 *  
+	 * @param uid
+	 * @return
+	 */
 	public RpcResponseDTO<Map<String, Object>> profile(int uid) {
 		User user = this.userService.getById(uid);
 		if(user == null){//存在不干净的数据，需要清理数据
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
-		/*Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				user,
-				null, false,null);*/
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
+		UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
+		userExchange.setWallet(uwallet.toUserWalletDetailVTO());
+		userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}

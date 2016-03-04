@@ -27,7 +27,6 @@ public class UserSignInOrOnFacadeService {
 	@Resource
 	private UserTokenService userTokenService;
 	
-	
 	/*	
 	@Resource
 	private UserDeviceService userDeviceService;
@@ -149,12 +148,11 @@ public class UserSignInOrOnFacadeService {
 		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, true), uToken);
 	}
 	
-	
 	public UserInnerExchangeDTO commonUserProfile(User user){
-		//User user = this.userService.getById(uid);
 		if(user == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
 		}
+		
 		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), null);
 	}
 	
