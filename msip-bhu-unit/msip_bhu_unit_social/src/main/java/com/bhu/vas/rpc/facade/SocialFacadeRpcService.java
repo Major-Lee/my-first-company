@@ -7,24 +7,23 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.rpc.social.model.HandsetUser;
-import com.bhu.vas.api.rpc.social.vto.UserHandsetVTO;
-import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
-import com.bhu.vas.business.ds.social.service.HandsetUserService;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.social.model.HandsetUser;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
+import com.bhu.vas.api.rpc.social.vto.UserHandsetVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
+import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialFollowSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiCommentSortedSetService;
-import com.bhu.vas.business.ds.social.service.UserHandsetService;
+import com.bhu.vas.business.ds.social.service.HandsetUserService;
 import com.bhu.vas.business.ds.social.service.WifiCommentService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
