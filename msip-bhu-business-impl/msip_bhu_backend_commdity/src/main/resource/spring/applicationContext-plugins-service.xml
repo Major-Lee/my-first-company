@@ -10,7 +10,7 @@
 	<import resource="classpath*:com/et/plugins/quartz/applicationContext-quartz.xml"/>
 	 -->								  
 	<import resource="classpath*:springbrc/applicationContext-brc.xml"/>
-	<context:component-scan base-package="com.bhu.commdity.business.backendcommdity.asyncprocessor"/>
+	<context:component-scan base-package="com.bhu.vas.business.backendcommdity.asyncprocessor"/>
 	
 	<!-- load activemq ticker business conf "classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-producer.xml" -->
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>

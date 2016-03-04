@@ -1,4 +1,4 @@
-package com.bhu.commdity.business.backendcommdity.plugins.hook;
+package com.bhu.vas.business.backendcommdity.plugins.hook;
 
 import org.springframework.context.ApplicationContext;
 

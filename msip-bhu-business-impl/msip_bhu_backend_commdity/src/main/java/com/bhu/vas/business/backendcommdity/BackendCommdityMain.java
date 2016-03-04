@@ -1,9 +1,9 @@
-package com.bhu.commdity.business.backendcommdity;
+package com.bhu.vas.business.backendcommdity;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.commdity.business.backendcommdity.plugins.hook.ShutdownHookThread;
+import com.bhu.vas.business.backendcommdity.plugins.hook.ShutdownHookThread;
 
 public class BackendCommdityMain {
 	public static void main(String[] args) throws InterruptedException {

@@ -1,4 +1,4 @@
-package com.bhu.commdity.business.backendcommdity.asyncprocessor.service;
+package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
 import javax.annotation.Resource;
 

@@ -101,4 +101,8 @@ public class BusinessKeyDefine {
 		public static final String StylePrefix = "MSSP";
 		public static final String ModulePrefix = "MSMP";
 	}
+	
+	public static class Commdity{
+		public static final String OrderPaymentNotifyKey = "OPN_KEY";
+	}
 }

@@ -1,4 +1,4 @@
-package com.bhu.commdity.business.backendcommdity.asyncprocessor;
+package com.bhu.vas.business.backendcommdity.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.commdity.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleCommdityService;
 import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageType;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
+import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleCommdityService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 
