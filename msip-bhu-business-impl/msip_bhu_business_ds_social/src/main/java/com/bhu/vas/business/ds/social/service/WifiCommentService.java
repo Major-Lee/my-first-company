@@ -31,5 +31,4 @@ public class WifiCommentService  extends AbstractSocialService<Long, WifiComment
         return super.insert(entity);
     }
     
- 
 }

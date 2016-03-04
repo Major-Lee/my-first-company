@@ -204,8 +204,7 @@ public class SocialFacadeRpcService {
     	
     	return WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
     	
-    	
     }
-
+    
 }
 
