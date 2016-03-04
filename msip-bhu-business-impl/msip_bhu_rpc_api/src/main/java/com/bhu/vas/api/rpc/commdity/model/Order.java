@@ -23,6 +23,8 @@ public class Order extends BaseStringModel implements ISequenceGenable{
 	private Integer uid;
 	//支付订单id
 	//private String pay_orderid;
+	//订单支付成功时间
+	private Date paymented_at;
 	//订单金额
 	private String amount;
 	//业务上下文
@@ -93,6 +95,14 @@ public class Order extends BaseStringModel implements ISequenceGenable{
 		this.pay_orderid = pay_orderid;
 	}*/
 
+	public Date getPaymented_at() {
+		return paymented_at;
+	}
+
+	public void setPaymented_at(Date paymented_at) {
+		this.paymented_at = paymented_at;
+	}
+	
 	public String getAmount() {
 		return amount;
 	}

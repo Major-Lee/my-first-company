@@ -36,7 +36,7 @@ public class AsyncOrderPaymentNotifyService {
 			if(order == null)
 				throw new RuntimeException(String.format("NotifyOrderPaymentHandle Order NotExist [%s]", message));
 			
-			//TODO:通知应用发货 如果通知成功 更新status为PaySuccessed
+			//TODO:通知应用发货 如果通知成功 更新status为PaySuccessed 更新支付时间
 			
 			logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyOrderPaymentHandle: message[%s] successful", message));
 		}catch(Exception ex){

@@ -11,6 +11,7 @@
     <result property="mac" column="mac"/>
     <result property="umac" column="umac"/>
     <result property="uid" column="uid"/> 
+    <result property="paymented_at" column="paymented_at"/>
     <result property="amount" column="amount"/>
     <result property="context" column="context"/>
     <result property="status" column="status"/>
@@ -32,6 +33,7 @@
 	    	mac,
 	    	umac,
 	    	uid,
+	    	paymented_at,
 	    	amount,
 	    	context,
 	    	status,
@@ -47,6 +49,7 @@
 	    	mac,
 	    	umac,
 	    	uid,
+	    	paymented_at,
 	    	amount,
 	    	context,
 	    	status,
@@ -63,6 +66,7 @@
 	    	#{mac},
 	    	#{umac},
 	    	#{uid},
+	    	#{paymented_at},
 	    	#{amount},
 	    	#{context},
 	    	#{status},
@@ -77,6 +81,7 @@
 	    	mac = #{mac},
 	    	umac = #{umac},
 	    	uid = #{uid},
+	    	paymented_at = #{paymented_at},
 	    	amount = #{amount},
 	    	context = #{context},
 	    	status = #{status},
