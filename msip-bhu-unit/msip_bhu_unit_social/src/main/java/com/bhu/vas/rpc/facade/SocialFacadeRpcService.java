@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiCommentSortedSetService;
 import com.bhu.vas.business.ds.social.service.UserHandsetService;
 import com.bhu.vas.business.ds.social.service.WifiCommentService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -47,7 +49,10 @@ public class SocialFacadeRpcService {
         wifiComment.setUid(uid);
         wifiComment.setMessage(message);
         wifiComment.setBssid(bssid);
-        wifiComment.setCreated_at(new Date());
+        Date currentDate=new Date();
+        double currentTime=currentDate.getTime();
+        wifiComment.setCreated_at(currentDate);
+        WifiCommentSortedSetService.getInstance().addUserWifi(Long.toString(uid), currentTime, bssid);
         return wifiCommentService.insert(wifiComment);
     }
 
@@ -141,6 +146,14 @@ public class SocialFacadeRpcService {
              }
          }
          return new CommonPage<WifiCommentVTO>(pageNo, pageSize, total, vtos);
+    }
+    
+    
+    public Set<String> fetchUserCommentWifiList(String uid){
+    	
+    	return WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
+    	
+    	
     }
 }
 

@@ -5,7 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SocialCommentServiceProvider {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUSocial");
-		System.setProperty("provider.port", "20991");
+		System.setProperty("provider.port", "20992");
 		System.setProperty("deploy.conf.dir", "/Users/bluesand/Documents/bhu/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_social/conf/");
 		//Class<?> classz = Class.forName("com.alibaba.dubbo.container.Main");
 		//ReflectionHelper.invokeStaticMethod("com.alibaba.dubbo.container.Main", "main", args);

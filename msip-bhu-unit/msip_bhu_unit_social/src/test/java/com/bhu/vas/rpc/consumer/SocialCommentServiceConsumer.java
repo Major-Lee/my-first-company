@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.consumer;
 
+import java.util.Set;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -23,7 +25,7 @@ public class SocialCommentServiceConsumer {
 		socialRpcService.comment(100312,"1234", "123123123");
 		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"1234", 1, 3);
 		System.out.println("end");
-		
+		RpcResponseDTO<Set<String>>rpcset=socialRpcService.fetchUserCommentWifiList("100312");
 		Thread.currentThread().join();
 		context.close();
 	}

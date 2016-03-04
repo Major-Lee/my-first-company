@@ -4,8 +4,11 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import com.bhu.vas.api.vto.WifiActionVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiCommentSortedSetService;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 import javax.annotation.Resource;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -99,4 +102,11 @@ public class SocialRpcService implements ISocialRpcService {
     public void unFollow(long uid, String hd_mac) {
 	logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
     }
+    
+	public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid) {
+
+		return RpcResponseDTOBuilder
+				.builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid));
+
+	}
 }

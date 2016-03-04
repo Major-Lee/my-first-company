@@ -1,6 +1,8 @@
 package com.bhu.vas.api.rpc.social.iservice;
 
 
+import java.util.Set;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
@@ -62,6 +64,14 @@ public interface ISocialRpcService {
 
     public boolean comment(long uid, String bssid, String message);
     
+    /**
+     * 查看wifi评论列表
+     * @param uid
+     * @param bssid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
     public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,String bssid, int pageNo, int pageSize);
 
     
@@ -88,4 +98,11 @@ public interface ISocialRpcService {
      * @param hd_mac
      */
     void unFollow (long uid,String hd_mac);
+    
+    /**
+     * 获取用户评论的wifi
+     * @param uid
+     * @return
+     */
+    public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid);
 }

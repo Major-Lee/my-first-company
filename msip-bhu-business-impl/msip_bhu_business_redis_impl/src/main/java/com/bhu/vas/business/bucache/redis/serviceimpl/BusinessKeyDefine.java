@@ -106,6 +106,7 @@ public class BusinessKeyDefine {
 
 		public static final String ACTION = "SA";
 		public static final String Meet = "SM";
+		public static final String COMMENT = "CM";
 
 	}
 }
