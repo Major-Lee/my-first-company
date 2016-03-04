@@ -404,9 +404,9 @@ public class UserUnitFacadeService {
 	 */
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org) {
 		User user = this.userService.getById(uid);
-		System.out.println("2. user:"+user);
+		//System.out.println("2. user:"+user);
 		if(user == null){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 		}
 		if(StringUtils.isNotEmpty(avatar)){
 			user.setAvatar(avatar);
@@ -474,7 +474,54 @@ public class UserUnitFacadeService {
 		System.out.println(String.format("acc[%s] 记录从redis被移除！", mobileno));
 	}
 
-
+	/**
+	 * 对于oauth注册的用户提供手机号码认证绑定的过程
+	 * 1、如果手机号码已经存在则提示错误码
+	 * 2、需要验证码验证
+	 * 3、如果此账户已经有绑定手机号，则移除前手机号的唯一存储，替换成新的手机号
+	 * 4、成功后，此手机号可以进行登录
+	 * @param countrycode
+	 * @param acc
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha) {
+		if(uid <= 0){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+		}
+		Integer userid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+		if(userid != null){
+			if(userid.intValue() == uid){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			}else{
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_ALREADY_BEUSED,new String[]{acc});
+			}
+		}
+		//未被使用的手机号
+		User user = this.userService.getById(uid);
+		if(user == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+		}
+		if(acc.equals(user.getMobileno())){
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}
+		if(!RuntimeConfiguration.SecretInnerTest){
+			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+				if(errorCode != null){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+				}
+			}
+		}
+		//int oldcc = user.getCountrycode();
+		String oldModileno = user.getMobileno();
+		user.setCountrycode(countrycode);
+		user.setMobileno(acc);
+		user = this.userService.update(user);
+		UniqueFacadeService.uniqueMobilenoChanged(user.getId(), user.getCountrycode(), user.getMobileno(),oldModileno);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+	}
 	/**
 	 * 用户bbs登录 通过发送push消息通知app
 	 * 安卓设备推送静默发送
