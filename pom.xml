@@ -57,6 +57,7 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
+        <module>msip-bhu-api/msip_bhu_commdity_rest</module>
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
     </modules>
