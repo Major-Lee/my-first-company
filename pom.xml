@@ -16,9 +16,9 @@
     <version>1.0</version>
     <packaging>pom</packaging>
     <modules>
-
-        <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_i18n</module>
+        <module>msip-bhu-business-impl/msip_bhu_web</module>
+        <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
         
@@ -131,6 +131,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.bhu</groupId>
