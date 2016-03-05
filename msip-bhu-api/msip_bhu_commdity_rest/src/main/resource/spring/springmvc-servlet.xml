@@ -28,8 +28,10 @@
     <mvc:default-servlet-handler/>
 	
 	<!-- 自动搜索@Controller标注的类 -->
-	<context:component-scan base-package="com.bhu.vas"/>
-
+	
+	<context:component-scan base-package="com.smartwork.msip.cores.web.controller"/>
+	<context:component-scan base-package="com.bhu.vas.web"/>
+	
 	<mvc:interceptors>
 		<bean class="com.bhu.vas.msip.web.interceptor.TokenValidateControllerInterceptor"/>  
 	</mvc:interceptors>

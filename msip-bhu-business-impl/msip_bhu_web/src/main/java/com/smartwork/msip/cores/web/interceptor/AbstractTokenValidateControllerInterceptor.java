@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -30,20 +28,16 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  *
  */
 public abstract class AbstractTokenValidateControllerInterceptor extends HandlerInterceptorAdapter {
-	private final Logger logger = LoggerFactory.getLogger(AbstractTokenValidateControllerInterceptor.class);
-	
-	//@Resource
-	//private IAgentUserRpcService agentUserRpcService;
-
-	private static final String ConsolePrefixUrl = "/console";
-	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
-	static{
+	private final Logger logger = LoggerFactory.getLogger(super.getClass());
+	//private static final String ConsolePrefixUrl = "/console";
+	public static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
+	/*	static{
 		ignoreTokensValidateUrlSet.add("/sessions/create");
 		ignoreTokensValidateUrlSet.add("/sessions/validates");
 		ignoreTokensValidateUrlSet.add("/account/create");
 		//检测名称唯一性
 		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
-	}
+	}*/
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request,
@@ -66,41 +60,15 @@ public abstract class AbstractTokenValidateControllerInterceptor extends Handler
 		if(isIgnoreURL(uri)){
 			return true;
 		}
-		
-		String accessToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
-		if(StringUtils.isEmpty(accessToken)){
-			accessToken = request.getParameter(RuntimeConfiguration.Param_ATokenRequest);
-			if(StringUtils.isEmpty(accessToken)){
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
-				return false;
-			}
-		}
-		RpcResponseDTO<Boolean> tokenValidate = remoteValidate(UID, accessToken);
-		//RpcResponseDTO<Boolean> tokenValidate = agentUserRpcService.tokenValidate(UID, accessToken);
-		if(tokenValidate.getErrorCode() == null){
-			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
-				return false;
-			}else{//验证通过的情况下，如果uri是以/console开头的,则需要进行uid<=100000区间才能访问
-				if(uri.startsWith(ConsolePrefixUrl)){
-					//if(StringUtils.isNotEmpty(UID) && Integer.parseInt(UID) <=100000){
-					if(BusinessRuntimeConfiguration.isConsoleUser(new Integer(UID))){
-						System.out.println(UID+"~~~~~~~~~~~~~~能访问管理页面啦！！！！！！！！");
-						return true; 
-					}else{
-						System.out.println(UID+"~~~~~~~~~~~~~~不能访问管理页面啦！！！！！！！！");
-						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
-						return false;
-					}
-				}
-			}
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(tokenValidate.getErrorCode()));
+		ResponseErrorCode errorCode = this.validate(request, response);
+		if(errorCode != null){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(errorCode));
 			return false;
 		}
 		return true;
 	}
-	public abstract RpcResponseDTO<Boolean> remoteValidate(String UID, String accessToken);
+	public abstract ResponseErrorCode validate(HttpServletRequest request,
+			HttpServletResponse response);
 	
 	private static boolean isIgnoreURL(String requestUrl){
 		for(String igurl:ignoreTokensValidateUrlSet){
@@ -121,4 +89,9 @@ public abstract class AbstractTokenValidateControllerInterceptor extends Handler
         Matcher matcher = pattern.matcher(uri);
         return matcher.find();
 	}
+	public Logger getLogger() {
+		return logger;
+	}
+	
+	
 }
