@@ -56,7 +56,7 @@ public class OrderUnitFacadeService {
 			}
 			//验证appid
 			if(!CommdityApplication.supported(appid)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_APPID_INVALID,new String[]{String.valueOf(appid)});
 			}
 			//生成订单
 			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);

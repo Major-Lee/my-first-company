@@ -33,12 +33,13 @@ public class UserWithdrawController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required = true) int uid,
+			@RequestParam(required = true) int appid,
 			@RequestParam(required = false) String pwd,
 			@RequestParam(required = true) double cash
 			){
 		try{
 			String remoteIp = WebHelper.getRemoteAddr(request);
-			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(uid, pwd, cash, remoteIp);
+			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(appid,uid, pwd, cash, remoteIp);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

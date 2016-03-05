@@ -2,9 +2,10 @@ package com.bhu.vas.api.rpc.user.model;
 
 import java.util.Date;
 
+import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
-import com.smartwork.msip.cores.orm.model.BaseLongModel;
+import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 /**
  * 用户提现申请
@@ -13,8 +14,9 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequenceGenable {
+public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSequenceGenable {
 	private int uid;
+	private int appid;
 	//申请提现的现金
 	private double cash;
 	//提现操作状态BusinessEnumType.UWithdrawStatus
@@ -73,19 +75,28 @@ public class UserWalletWithdrawApply extends BaseLongModel implements IRedisSequ
 		this.remoteip = remoteip;
 	}
 
+	public int getAppid() {
+		return appid;
+	}
+
+	public void setAppid(int appid) {
+		this.appid = appid;
+	}
+
 	@Override
 	public void setSequenceKey(Long key) {
-		this.id = key;
+		this.id = OrderHelper.generateOrderId(appid, key);
 	}
 	
 	public String toString(){
-		return String.format("WalletWithdrawApply id[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,uid,cash,withdraw_oper,last_reckoner);
+		return String.format("WalletWithdrawApply id[%s] appid[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
 	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
+		vto.setAppid(appid);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
 		vto.setCash(cash);

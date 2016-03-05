@@ -66,7 +66,7 @@ public class ConsoleWithdrawController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) long applyid,
+            @RequestParam(required = true) String applyid,
             @RequestParam(required = true) boolean passed
     		) {
 		RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.verifyApplies(uid, applyid, passed);

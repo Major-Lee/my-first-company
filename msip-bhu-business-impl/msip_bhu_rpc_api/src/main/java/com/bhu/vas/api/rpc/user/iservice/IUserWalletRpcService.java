@@ -22,7 +22,7 @@ public interface IUserWalletRpcService {
      * @param reckoner
      * @param applies applyids 逗号分割
      */
-	public RpcResponseDTO<Boolean> verifyApplies(int reckoner,long applyid,boolean passed);
+	public RpcResponseDTO<Boolean> verifyApplies(int reckoner,String applyid,boolean passed);
 	
 	/**
 	 * 提现操作api
@@ -31,7 +31,7 @@ public interface IUserWalletRpcService {
 	 * @param passed
 	 * @return
 	 */
-	public RpcResponseDTO<UserWithdrawApplyVTO>	withdrawOper(int uid,String pwd,double cash,String remoteip);
+	public RpcResponseDTO<UserWithdrawApplyVTO>	withdrawOper(int appid,int uid,String pwd,double cash,String remoteip);
 	
 	/**
 	 * 钱包详情

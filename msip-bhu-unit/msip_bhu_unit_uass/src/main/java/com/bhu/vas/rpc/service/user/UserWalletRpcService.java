@@ -49,7 +49,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, long applyid,
+	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,
 			boolean passed) {
 		logger.info(String.format("verifyApplies with reckoner[%s] applyid [%s] passed[%s]",
 				reckoner,applyid,passed));
@@ -57,10 +57,10 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int uid,String pwd, double cash,String remoteip) {
-		logger.info(String.format("withdrawOper with uid[%s] cash[%s]",
-				uid,cash));
-		return userWalletUnitFacadeService.withdrawOper(uid, pwd, cash,remoteip);
+	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,int uid,String pwd, double cash,String remoteip) {
+		logger.info(String.format("withdrawOper with appid[%s] uid[%s] cash[%s]",
+				appid,uid,cash));
+		return userWalletUnitFacadeService.withdrawOper(appid,uid, pwd, cash,remoteip);
 	}
 
 	@Override

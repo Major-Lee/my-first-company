@@ -220,11 +220,12 @@ public class UserWalletFacadeService {
 	 * @param pwd
 	 * @param cash 
 	 */
-	public UserWalletWithdrawApply doWithdrawApply(int uid, String pwd,double cash,String remoteip){
-		logger.info(String.format("生成提现申请 uid[%s] cash[%s] remoteIp[%s]", uid,cash,remoteip));
+	public UserWalletWithdrawApply doWithdrawApply(int appid,int uid, String pwd,double cash,String remoteip){
+		logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 		this.cashFromUserWallet(uid, pwd, cash);
 		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 		apply.setUid(uid);
+		apply.setAppid(appid);
 		apply.setCash(cash);
 		apply.setRemoteip(remoteip);
 		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
@@ -254,9 +255,9 @@ public class UserWalletFacadeService {
 	 * @param uid 审核用户id
 	 * @param applyid 申请流水号
 	 */
-	public UserWalletWithdrawApply doWithdrawVerify(int reckoner,long applyid,boolean passed){
+	public UserWalletWithdrawApply doWithdrawVerify(int reckoner,String applyid,boolean passed){
 		validateUser(reckoner);
-		if(applyid <=0){
+		if(StringUtils.isEmpty(applyid)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"applyid:".concat(String.valueOf(applyid))});
 		}
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
@@ -280,7 +281,7 @@ public class UserWalletFacadeService {
 	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
-	public UserWalletWithdrawApply doWithdrawRemoteNotify(long applyid,boolean successed){
+	public UserWalletWithdrawApply doWithdrawRemoteNotify(String applyid,boolean successed){
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});
