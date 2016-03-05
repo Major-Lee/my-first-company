@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.user.model;
 import java.util.Date;
 
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
+import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
@@ -84,8 +85,8 @@ public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSe
 	}
 
 	@Override
-	public void setSequenceKey(Long key) {
-		this.id = OrderHelper.generateOrderId(appid, key);
+	public void setSequenceKey(Long autoid) {
+		this.id = StructuredIdHelper.generateStructuredIdString(appid, autoid);
 	}
 	
 	public String toString(){
