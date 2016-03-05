@@ -9,7 +9,7 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
 			Integer uid, String context);
 	
-	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid, String create_payment_url_response);
+	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, String create_payment_url_response);
 	
 //	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid);
 	

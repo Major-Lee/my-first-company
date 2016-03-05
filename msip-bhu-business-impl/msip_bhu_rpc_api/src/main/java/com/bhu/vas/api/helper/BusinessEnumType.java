@@ -436,6 +436,7 @@ public class BusinessEnumType {
 	 * @author tangzichao
 	 */
 	public enum CommdityApplication{
+		UPORTAL(1001,"uportal id","uportal id"),
 		Default(1000,"默认应用id","默认应用id"),
 		;
 		private Integer key;

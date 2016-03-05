@@ -12,32 +12,40 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
  * @author tangzichao
  *
  */
-public class OrderPaymentNotifyListService extends AbstractRelationListCache {
+public class CommdityInternalNotifyListService extends AbstractRelationListCache {
     private static class ServiceHolder{
-        private static OrderPaymentNotifyListService instance =new OrderPaymentNotifyListService();
+        private static CommdityInternalNotifyListService instance =new CommdityInternalNotifyListService();
     }
     /**
      * 获取工厂单例
      * @return
      */
-    public static OrderPaymentNotifyListService getInstance() {
+    public static CommdityInternalNotifyListService getInstance() {
         return ServiceHolder.instance;
     }
 
-    private OrderPaymentNotifyListService(){
+    private CommdityInternalNotifyListService(){
     	
     }
 
-    private String generateKey() {
+    private String generateOrderPaymentNotifyKey() {
     	return BusinessKeyDefine.Commdity.OrderPaymentNotifyKey;
     }
+    
+    private String generateOrderDeliverNotifyKey() {
+    	return BusinessKeyDefine.Commdity.OrderDeliverNotifyKey;
+    }
 
-    public String lpopNotify(){
-    	return super.lpop(generateKey());
+    public String lpopOrderPaymentNotify(){
+    	return super.lpop(generateOrderPaymentNotifyKey());
     }
     
-    public void rpushNofity(String notify_message){
-    	super.rpush(generateKey(), notify_message);
+    public void rpushOrderPaymentNofity(String notify_message){
+    	super.rpush(generateOrderPaymentNotifyKey(), notify_message);
+    }
+    
+    public void rpushOrderDeliverNofity(String notify_message){
+    	super.rpush(generateOrderDeliverNotifyKey(), notify_message);
     }
     
     @Override
@@ -47,7 +55,7 @@ public class OrderPaymentNotifyListService extends AbstractRelationListCache {
 
     @Override
     public String getName() {
-        return OrderPaymentNotifyListService.class.getName();
+        return CommdityInternalNotifyListService.class.getName();
     }
     @Override
     public JedisPool getRedisPool() {
@@ -59,7 +67,7 @@ public class OrderPaymentNotifyListService extends AbstractRelationListCache {
         //System.out.println(OrderPaymentNotifyListService.getInstance().pipelineHSet_sameKeyWithDiffFieldValue("TTTT", new String[]{"TT1,TT2"}, new String[]{"1", "2"}));
 
         //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
-    	OrderPaymentNotifyListService.getInstance().rpushNofity("01002016030300000000000000000048");
+    	//CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(OrderPaymentNotifyDTO);
     }
 
 

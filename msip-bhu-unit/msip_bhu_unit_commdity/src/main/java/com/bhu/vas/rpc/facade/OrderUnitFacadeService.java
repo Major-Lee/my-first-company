@@ -82,11 +82,12 @@ public class OrderUnitFacadeService {
 		try{
 			Order order = orderService.getById(orderid);
 			if(order == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST, new String[]{orderid});
 			}
 			//验证订单状态是否小于等于未支付
-			if(!OrderHelper.lte_notpay(order.getStatus())){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
+			Integer order_status = order.getStatus();
+			if(!OrderHelper.lte_notpay(order_status)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{String.valueOf(order_status)});
 			}
 			
 			OrderDTO orderDto = new OrderDTO();
@@ -105,32 +106,15 @@ public class OrderUnitFacadeService {
 	 * @param response_create_payment_url 支付系统返回的数据
 	 * @return
 	 */
-	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid, String create_payment_url_response) {
-		Integer changed_status = OrderStatus.NotPay.getKey();
-		Integer changed_process_status = OrderProcessStatus.NotPay.getKey();
-		Order order = null;
+	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, String create_payment_url_response) {
 		try{
-			order = orderService.getById(orderid);
-			if(order == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
-			}
-			
-			if(StringUtils.isNotEmpty(create_payment_url_response)){
-				ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, 
-						ResponseCreatePaymentUrlDTO.class);
-				//支付系统正确返回数据
-				if(rcp_dto.isSuccess()){
-					changed_process_status = OrderProcessStatus.Paying.getKey();
-					return RpcResponseDTOBuilder.builderSuccessRpcResponse(rcp_dto.getParams());
-				}
-			}
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_FAILED);
+			ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, ResponseCreatePaymentUrlDTO.class);
+			String paymentUrlInfo = orderFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(paymentUrlInfo);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}finally{
-			orderFacadeService.orderStatusChanged(order, changed_status, changed_process_status);
 		}
 	}
 	

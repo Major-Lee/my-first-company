@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageType;
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleCommdityService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -49,9 +48,9 @@ public class AsyncMsgBackendCommdityProcessor implements SpringQueueMessageListe
 						throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
 					switch(type){
-						case OrderPaySuccessed:
+/*						case OrderPaySuccessed:
 							asyncMsgHandleCommdityService.orderPaySuccessedHandle(message);
-							break;
+							break;*/
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

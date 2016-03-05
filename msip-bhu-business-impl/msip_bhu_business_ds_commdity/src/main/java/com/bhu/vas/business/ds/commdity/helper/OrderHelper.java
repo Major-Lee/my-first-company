@@ -3,20 +3,18 @@ package com.bhu.vas.business.ds.commdity.helper;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
-import com.bhu.vas.api.rpc.commdity.model.Order;
-import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class OrderHelper {
 	/**
 	 * 生成订单id
 	 * 订单id规则 
-	 * 4位应用id+8位日期+8位扩展占位+
+	 * 4位应用id+8位日期+8位扩展占位+autoid
 	 * @param appid 应用id
 	 * @param ext_segment 8位扩展占位
 	 * @return
 	 */
-	public static String generateOrderId(Integer appid, String ext_segment){
+	public static String generateOrderId(Integer appid, String ext_segment, Long autoId){
 		//应用id验证
 		if(appid == null || appid < 0 || appid > 9999){
 			throw new RuntimeException(String.format("Generate Order Id Appid [%s] Illegal ", appid));
@@ -30,7 +28,7 @@ public class OrderHelper {
 			throw new RuntimeException(String.format("Generate Order Id Ext_segment [%s] Illegal ", ext_segment));
 		}
 		//流水id验证
-		Long autoId = SequenceService.getInstance().getNextId(Order.class.getName());
+		//Long autoId = SequenceService.getInstance().getNextId(Order.class.getName());
 		if(autoId == null || String.valueOf(autoId).length() > 12){
 			throw new RuntimeException(String.format("Generate Order Id AutoId [%s] Illegal ", autoId));
 		}
@@ -48,8 +46,8 @@ public class OrderHelper {
 		return orderId.toString();
 	}
 	
-	public static String generateOrderId(Integer appid){
-		return generateOrderId(appid, null);
+	public static String generateOrderId(Integer appid, Long autoId){
+		return generateOrderId(appid, null, autoId);
 	}
 	/**
 	 * 判断订单状态是否为未支付

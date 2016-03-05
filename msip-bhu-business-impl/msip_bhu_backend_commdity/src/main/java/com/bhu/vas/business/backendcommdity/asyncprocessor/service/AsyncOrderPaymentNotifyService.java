@@ -29,24 +29,27 @@ public class AsyncOrderPaymentNotifyService {
 	private UserWalletFacadeService userWalletFacadeService;
 	/**
 	 * 支付系统支付成功的通知处理
+	 * 1:订单处理逻辑
+	 * 2:分成处理逻辑
 	 * @param message
 	 */
 	public void orderPaymentNotifyHandle(String message){
-		logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyOrderPaymentHandle: message[%s]", message));
+		logger.info(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle: message[%s]", message));
 		try{
 			OrderPaymentNotifyDTO opn_dto = JsonHelper.getDTO(message, OrderPaymentNotifyDTO.class);
 			if(opn_dto != null){
-				Order order = orderService.getById(opn_dto.getOrderid());
-				if(order == null)
-					throw new RuntimeException(String.format("orderPaymentNotifyHandle Order NotExist orderid[%s]", opn_dto.getOrderid()));
-				
-				orderFacadeService.orderPaymentNotify(order, opn_dto);
-				//TODO:userWalletFacadeService.sharedealCashToUserWallet(String dmac,double cash,String orderid)
+				//订单处理逻辑
+				Order order = orderFacadeService.orderPaymentNotify(opn_dto);
+				//分成处理逻辑
+				String orderid = order.getId();
+				String dmac = order.getMac();
+				double amount = Double.parseDouble(order.getAmount());
+				userWalletFacadeService.sharedealCashToUserWallet(dmac, amount, orderid);
 			}
 			logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyOrderPaymentHandle: message[%s] successful", message));
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error("AsyncOrderPaymentNotifyProcessor notifyOrderPaymentHandle Exception", ex);
+			logger.error("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle Exception", ex);
 		}
 	}
 }

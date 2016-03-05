@@ -28,9 +28,9 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<String> createOrderPaymentUrl(String orderid, String create_payment_url_response) {
-		logger.info(String.format("createOrderPaymentUrl with orderid[%s] cpu_r[%s]", orderid, create_payment_url_response));
-		return orderUnitFacadeService.createOrderPaymentUrl(orderid, create_payment_url_response);
+	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, String create_payment_url_response) {
+		logger.info(String.format("orderPaymentUrlCreated with orderid[%s] cpu_r[%s]", orderid, create_payment_url_response));
+		return orderUnitFacadeService.orderPaymentUrlCreated(orderid, create_payment_url_response);
 	}
 	
 /*	@Override

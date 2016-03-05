@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncOrderPaymentNotifyService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.OrderPaymentNotifyListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -46,7 +46,7 @@ public class AsyncOrderPaymentNotifyProcessor{
 				while(true){
 					try{
 						if(ProcessesThreadCount > exec_processes.getActiveCount()){
-							String message = OrderPaymentNotifyListService.getInstance().lpopNotify();
+							String message = CommdityInternalNotifyListService.getInstance().lpopOrderPaymentNotify();
 							/*if(StringUtils.isNotEmpty(message))
 								logger.info(String.format("AsyncOrderPaymentNotifyProcessor receive: message[%s]", message));*/
 							

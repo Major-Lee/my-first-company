@@ -104,5 +104,6 @@ public class BusinessKeyDefine {
 	
 	public static class Commdity{
 		public static final String OrderPaymentNotifyKey = "OPN_KEY";
+		public static final String OrderDeliverNotifyKey = "ODN_KEY";
 	}
 }

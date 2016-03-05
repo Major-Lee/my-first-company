@@ -7,11 +7,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.OrderPaymentNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -126,14 +128,18 @@ public class CommdityServiceConsumer {
 			rcp_dto.setParams("params");
 			String create_payment_url_response = JsonHelper.getJSONString(rcp_dto);
 			
-			RpcResponseDTO<String> ret3 = orderRpcService.createOrderPaymentUrl(orderid, create_payment_url_response);
+			RpcResponseDTO<String> ret3 = orderRpcService.orderPaymentUrlCreated(orderid, create_payment_url_response);
 			if(ret3.getErrorCode() == null){
 				String payurl_info = ret3.getPayload();
 				System.out.println("createOrderPaymentUrl " + payurl_info);
 			}else{
 				System.out.println(ret3.getErrorCode().code());
 			}
+			OrderPaymentNotifyDTO opn_dto = new OrderPaymentNotifyDTO();
+			opn_dto.setOrderid(orderid);
+			opn_dto.setPayment_ts(System.currentTimeMillis());
 			
+	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(JsonHelper.getJSONString(opn_dto));
 			//			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
 //			if(ret3.getErrorCode() == null){
 //				System.out.println("notifyOrderPaymentSuccessed " + ret3.getPayload());
