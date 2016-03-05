@@ -372,7 +372,7 @@ public class DeviceBusinessFacadeService {
 							        wifiDeviceService.update(wifiDevice);
 					    		}
 						        
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, industry);
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, userDevice.getDevice_name(), industry);
 								keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 							}
 						}
