@@ -80,8 +80,10 @@ public class UserWalletUnitFacadeService {
 						walletConfigs.getWithdraw_tax_percent(), 
 						walletConfigs.getWithdraw_trancost_percent());
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO, System.currentTimeMillis());
-				System.out.println("TODO:to Redis:"+JsonHelper.getJSONString(withdrawNotify));
-				CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(JsonHelper.getJSONString(withdrawNotify));
+				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
+				System.out.println("to Redis prepare:"+jsonNotify);
+				CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
+				System.out.println("to Redis ok:"+jsonNotify);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
