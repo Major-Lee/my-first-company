@@ -182,9 +182,14 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	 * @param url
 	 * @return
 	 */
-	private static boolean uriStartWithThenSkip(String uri){
+	public static boolean uriStartWithThenSkip(String uri){
 		Pattern pattern = Pattern.compile(patternRegx);
         Matcher matcher = pattern.matcher(uri);
         return matcher.find();
+	}
+	
+	public static void main(String[] argv){
+		System.out.println(uriStartWithThenSkip("/ping/abc/noauth"));
+		System.out.println(uriStartWithThenSkip("/noauth"));
 	}
 }
