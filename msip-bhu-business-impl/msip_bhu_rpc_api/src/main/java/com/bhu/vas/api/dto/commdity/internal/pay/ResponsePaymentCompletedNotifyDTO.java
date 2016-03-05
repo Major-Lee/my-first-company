@@ -8,7 +8,6 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
  */
 @SuppressWarnings("serial")
 public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
-	
 	//订单id
 	private String orderid;
 	//订单支付成功时间
