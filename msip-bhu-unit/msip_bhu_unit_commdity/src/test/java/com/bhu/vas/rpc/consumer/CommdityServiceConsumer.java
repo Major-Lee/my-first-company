@@ -139,7 +139,7 @@ public class CommdityServiceConsumer {
 			opn_dto.setOrderid(orderid);
 			opn_dto.setPayment_ts(System.currentTimeMillis());
 			
-	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(JsonHelper.getJSONString(opn_dto));
+	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(JsonHelper.getJSONString(opn_dto));
 			//			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
 //			if(ret3.getErrorCode() == null){
 //				System.out.println("notifyOrderPaymentSuccessed " + ret3.getPayload());

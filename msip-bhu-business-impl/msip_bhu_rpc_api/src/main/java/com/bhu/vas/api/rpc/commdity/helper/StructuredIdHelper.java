@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class StructuredIdHelper {
@@ -113,5 +114,26 @@ public class StructuredIdHelper {
 			}
 		}
 		return extSegment;
+	}
+	
+	/**
+	 * 判断订单扩展业务paymode是否为收入
+	 * @param structuredExtSegment
+	 * @return
+	 */
+	public static boolean isPaymodeReceipt(StructuredExtSegment structuredExtSegment){
+		if(structuredExtSegment == null) return false;
+		if(OrderExtSegmentPayMode.isReceipt(structuredExtSegment.getPaymode())) return true;
+		return false;
+	}
+	/**
+	 * 判断订单扩展业务paymode是否为支出
+	 * @param structuredExtSegment
+	 * @return
+	 */
+	public static boolean isPaymodeExpend(StructuredExtSegment structuredExtSegment){
+		if(structuredExtSegment == null) return false;
+		if(OrderExtSegmentPayMode.isExpend(structuredExtSegment.getPaymode())) return true;
+		return false;
 	}
 }
