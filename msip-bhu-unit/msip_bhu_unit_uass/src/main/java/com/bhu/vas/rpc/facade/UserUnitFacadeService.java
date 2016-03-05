@@ -488,10 +488,10 @@ public class UserUnitFacadeService {
 	/**
 	 * 对于oauth注册的用户提供手机号码认证绑定的过程
 	 * 1、如果手机号码已经存在则提示错误码
-	 * 2、需要验证码验证
-	 * 3、如果此账户已经有绑定手机号，则移除前手机号的唯一存储，替换成新的手机号
-	 * 4、成功后，此手机号可以进行登录，旧手机号移除
-	 * 个人觉得应该新旧手机号同时发送两个验证码，都进行验证可能能安全点
+	 * 2、如果此账户已经有绑定手机号，则抛出错误码
+	 * 3、需要验证码验证
+	 * 4、成功后，此手机号可以进行登录
+	 * 
 	 * @param countrycode
 	 * @param acc
 	 * @param captcha
@@ -516,6 +516,9 @@ public class UserUnitFacadeService {
 		}
 		if(acc.equals(user.getMobileno())){
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}
+		if(StringUtils.isNotEmpty(user.getMobileno())){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}
 		if(!RuntimeConfiguration.SecretInnerTest){
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
