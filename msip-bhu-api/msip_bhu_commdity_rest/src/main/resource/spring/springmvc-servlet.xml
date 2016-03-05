@@ -33,7 +33,7 @@
 	<context:component-scan base-package="com.bhu.vas.web"/>
 	
 	<mvc:interceptors>
-		<bean class="com.bhu.vas.msip.web.interceptor.TokenValidateControllerInterceptor"/>  
+		<bean class="com.bhu.vas.business.interceptor.TokenValidateControllerInterceptor"/>  
 	</mvc:interceptors>
 
 	<!-- 
