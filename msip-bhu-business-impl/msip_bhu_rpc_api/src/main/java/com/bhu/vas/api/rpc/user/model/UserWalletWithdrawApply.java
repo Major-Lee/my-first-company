@@ -2,7 +2,6 @@ package com.bhu.vas.api.rpc.user.model;
 
 import java.util.Date;
 
-import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -93,7 +92,7 @@ public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSe
 		return String.format("WalletWithdrawApply id[%s] appid[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
-	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick){
+	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,double withdraw_tax_percent, double withdraw_trancost_percent){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
@@ -102,6 +101,7 @@ public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSe
 		vto.setMobileno(mobileno);
 		vto.setCash(cash);
 		vto.setWithdraw_oper(withdraw_oper);
+		vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
 		return vto;
 	}
 }

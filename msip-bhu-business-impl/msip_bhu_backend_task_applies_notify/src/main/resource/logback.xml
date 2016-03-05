@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
+	<property name="log.base" 		value="/BHUData/logs/backendtask_appliesnotify/ban" />
+	<property name="notify.base" 	value="/BHUData/bulogs/backendtask_appliesnotify/notify" />
+	<jmxConfigurator />
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<Encoding>UTF-8</Encoding>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="notifylogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${notify.base}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${notify.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date - %msg%n</pattern>
+		</layout>
+	</appender>
+	
+	<logger name="com.bhu.vas.plugins.quartz" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="notifylogfile" />
+	</logger>
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="logfile" />
+	</root> 
+</configuration>
+

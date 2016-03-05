@@ -36,6 +36,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     	return BusinessKeyDefine.Commdity.OrderDeliverNotifyKey;
     }
 
+    private String generateWithdrawAppliesRequestNotifyKey() {
+    	return BusinessKeyDefine.Commdity.WithdrawAppliesRequestNotifyKey;
+    }
+    
     public String lpopOrderPaymentNotify(){
     	return super.lpop(generateOrderPaymentNotifyKey());
     }
@@ -46,6 +50,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public Long rpushOrderDeliverNofity(String notify_message){
     	return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
+    }
+    
+    public void rpushWithdrawAppliesRequestNotify(String notify_message){
+    	super.rpush(generateWithdrawAppliesRequestNotifyKey(), notify_message);
     }
     
     @Override

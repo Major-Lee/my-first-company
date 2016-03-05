@@ -1,12 +1,9 @@
-package com.bhu.vas.api.dto;
+package com.bhu.vas.api.helper;
 
-import java.io.Serializable;
-
-import com.smartwork.msip.cores.helper.ArithHelper;
 
 @SuppressWarnings("serial")
-public class WithdrawCashDetail implements Serializable{
-	private double cash;
+public class WithdrawCashHelper{
+	/*private double cash;
 	//交易手续费
 	private double transcost;
 	//交易税费
@@ -37,9 +34,9 @@ public class WithdrawCashDetail implements Serializable{
 	
 	public String toString(){
 		return String.format("withdraw detail:Cash[%s] RealCash[%s] TaxCost[%s] TransCost[%s]", cash,this.getRealCash(),taxcost,transcost);
-	}
+	}*/
 	
-	public static WithdrawCashDetail build(double cash,double withdraw_tax_percent,double withdraw_trancost_percent){
+	/*public static WithdrawCashDetail build(double cash,double withdraw_tax_percent,double withdraw_trancost_percent){
 		WithdrawCashDetail detail = new WithdrawCashDetail();
 		detail.setCash(cash);
 		if(cash > 0){
@@ -47,6 +44,6 @@ public class WithdrawCashDetail implements Serializable{
 			detail.setTranscost(ArithHelper.round(ArithHelper.mul(cash, withdraw_trancost_percent),2));
 		}
 		return detail;
-	}
+	}*/
 	
 }
