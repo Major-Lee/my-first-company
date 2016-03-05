@@ -1,5 +1,7 @@
 package com.bhu.vas.api.vto.wallet;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
+
 /**
  * 
  * @author Edmond
@@ -8,7 +10,6 @@ package com.bhu.vas.api.vto.wallet;
 @SuppressWarnings("serial")
 public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private String applyid;
-	
 	private int uid;
 	private int appid;
 	private String mobileno;
@@ -16,6 +17,10 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private double cash = 0.00d;
 	//当前提现申请的状态
 	private String withdraw_oper;
+	//交易手续费
+	private double transcost;
+	//交易税费
+	private double taxcost;
 	
 	public int getUid() {
 		return uid;
@@ -60,4 +65,27 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 		this.appid = appid;
 	}
 	
+	public double getTranscost() {
+		return transcost;
+	}
+	public void setTranscost(double transcost) {
+		this.transcost = transcost;
+	}
+	public double getTaxcost() {
+		return taxcost;
+	}
+	public void setTaxcost(double taxcost) {
+		this.taxcost = taxcost;
+	}
+
+	public double getRealCash(){
+		return ArithHelper.sub(cash,ArithHelper.add(transcost, taxcost));
+	}
+	
+	public void calculate(double withdraw_tax_percent,double withdraw_trancost_percent){
+		if(cash > 0){
+			this.setTaxcost(ArithHelper.round(ArithHelper.mul(cash, withdraw_tax_percent),2));
+			this.setTranscost(ArithHelper.round(ArithHelper.mul(cash, withdraw_trancost_percent),2));
+		}
+	}
 }

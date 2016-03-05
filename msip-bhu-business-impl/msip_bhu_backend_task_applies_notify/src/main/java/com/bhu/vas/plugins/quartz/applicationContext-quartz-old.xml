@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-lazy-init="true">
+	<description>Quartz的本地Cron式执行任务配置</description>
+	<!-- Quartz本地Schduler -->
+	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<!-- Triggers集成 -->
+		<property name="triggers">
+			<list>
+				<!-- 每天凌晨00:15启动任务   0 15 00 ? * *  
+				<ref bean="remoteRedistInitCheckerCronTrigger" />-->
+				<!-- 每天下午2点半  0 0/30 14 * * ?  
+				<ref bean="actionMessageLogCheckerCronTrigger" />-->
+				<!-- 朝1晚23工作时间内每10分钟 
+				<ref bean="relodConfCheckerCronTrigger" />-->
+				<!-- 朝2晚11工作时间内每半小时执行一次 
+				<ref bean="emailInviteCheckerCronTrigger" />-->
+				<!-- 朝九晚11工作时间内每1小时执行一次 
+				<ref bean="trackMaxHeardUpdateCheckerCronTrigger" />-->
+				<!--0 15 22 * * ? 每日晚上10点15分触发
+				<ref bean="dataRebuildCheckerCronTrigger" />-->
+				<!-- 每半小时任务  0 0/30 * * * ?  
+				<ref bean="activityCheckerCronTrigger" />-->
+				
+				<!-- 每天凌晨03:15启动任务 
+				<ref bean="userStaticsCheckerCronTrigger" />-->
+				
+				<!-- 每天凌晨01:15启动任务 
+				<ref bean="userPreferMusicDailyDataRebuildCheckerCronTrigger" />-->
+			</list>
+		</property>
+		<!-- Quartz配置 -->
+		<property name="quartzProperties">
+			<props><prop key="org.quartz.threadPool.threadCount">5</prop></props>
+		</property>
+		<!-- 启动时延期3秒开始任务 -->
+		<property name="startupDelay" value="3" />
+	</bean>
+
+	<!-- Cron式Trigger定义 -->
+	<bean id="remoteRedistInitCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="remoteRedistInitCheckerCronJobDetail" />
+		<!-- 每天凌晨00:15启动任务   0 15 00 ? * *  -->
+		<property name="cronExpression" value=" 0 15 00 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="remoteRedistInitCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="remoteRedistInitCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="remoteRedistInitCheckerJob" class="com.et.plugins.quartz.RemoteRedistInitChecker" />
+	
+	
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="actionMessageLogCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="actionMessageLogCheckerCronJobDetail" />
+		<!-- 每天下午2点半  0 0/30 14 * * ?  -->
+		<property name="cronExpression" value="0 0/30 14 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="actionMessageLogCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="actionMessageLogCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="actionMessageLogCheckerJob" class="com.et.plugins.quartz.ActionMessageLogChecker" />
+	
+		<!-- Cron式Trigger定义 -->
+	<bean id="relodConfCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="reloadConfCheckerCronJobDetail" />
+		<!-- 朝1晚23工作时间内每10分钟 -->
+		<property name="cronExpression" value="0 0/10 1-23 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="reloadConfCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="reloadConfCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="reloadConfCheckerJob" class="com.et.business.reloadconf.quartztask.ReloadConfChecker" />	
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="trackMaxHeardUpdateCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="trackMaxHeardUpdateCheckerCronJobDetail" />
+		<!-- 朝九晚11工作时间内每半小时执行一次 -->
+		<property name="cronExpression" value="0 0/60 9-23 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="trackMaxHeardUpdateCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="trackMaxHeardUpdateCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="trackMaxHeardUpdateCheckerJob" class="com.et.plugins.quartz.TrackMaxHeardUpdateChecker" />
+	
+	
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="dataRebuildCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="dataRebuildCheckerCronJobDetail" />
+		<!--0 15 22 * * ? 每日晚上10点15分触发-->
+		<property name="cronExpression" value="0 15 22 * * ?" /> 
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="dataRebuildCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="dataRebuildCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="dataRebuildCheckerJob" class="com.et.plugins.quartz.DataRebuildChecker" />
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="emailInviteCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="emailInviteCheckerCronJobDetail" />
+		<!-- 朝2晚11工作时间内每半小时执行一次 -->
+		<property name="cronExpression" value="0 0/30 2-23 * * ?" />
+		<!--
+		<property name="cronExpression" value="0 0/10 1-23 * * ?" />
+		-->
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="emailInviteCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="emailInviteCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="emailInviteCheckerJob" class="com.et.plugins.quartz.EmailInviteChecker" />
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="activityCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="activityCheckerCronJobDetail" />
+		<!-- 朝九晚11工作时间内每半小时执行一次 -->
+		<property name="cronExpression" value="0 0/30 * * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="activityCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="activityCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="activityCheckerJob" class="com.et.plugins.quartz.ActivityChecker" />
+	
+	
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="userStaticsCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="userStaticsCheckerCronJobDetail" />
+		<!-- 每天凌晨03:15启动任务 -->
+		<property name="cronExpression" value=" 0 15 03 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="userStaticsCheckerCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="userStaticsCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="userStaticsCheckerJob" class="com.et.plugins.quartz.UserStaticsChecker" />
+	
+	
+	
+	<!-- Cron式Trigger定义 -->
+	<bean id="userPreferMusicDailyDataRebuildCheckerCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="userPreferMusicDailyDataRebuildCheckerJobDetail" />
+		<!-- 每天凌晨03:15启动任务 -->
+		<property name="cronExpression" value=" 0 15 01 * * ?" />
+	</bean>
+
+	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="userPreferMusicDailyDataRebuildCheckerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="userPreferMusicDailyDataRebuildCheckerJob" />
+		<property name="targetMethod" value="execute" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 被Cron执行的普通Spring Bean -->
+	<bean id="userPreferMusicDailyDataRebuildCheckerJob" class="com.et.plugins.quartz.UserPreferMusicDailyDataRebuildChecker" />
+</beans>
