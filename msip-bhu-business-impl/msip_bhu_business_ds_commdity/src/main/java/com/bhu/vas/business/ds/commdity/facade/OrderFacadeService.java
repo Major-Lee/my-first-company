@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.commdity.internal.pay.OrderPaymentNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
@@ -163,15 +163,15 @@ public class OrderFacadeService {
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param opn_dto 支付成功通知dto
 	 */
-	public Order orderPaymentNotify(OrderPaymentNotifyDTO opn_dto){
+	public Order orderPaymentNotify(ResponsePaymentCompletedNotifyDTO rpcn_dto){
 		Integer changed_status = OrderStatus.PaySuccessed.getKey();
 		Integer changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 		Order order = null;
 		try{
-			if(opn_dto == null) {
-				throw new RuntimeException(String.format("orderPaymentNotify param illegal opn_dto[%s]", opn_dto));
+			if(rpcn_dto == null) {
+				throw new RuntimeException(String.format("orderPaymentNotify param illegal opn_dto[%s]", rpcn_dto));
 			}
-			String orderid = opn_dto.getOrderid();
+			String orderid = rpcn_dto.getOrderid();
 			if(StringUtils.isEmpty(orderid)){
 				throw new RuntimeException(String.format("orderPaymentNotify param illegal orderid[%s]", orderid));
 			}
@@ -180,7 +180,7 @@ public class OrderFacadeService {
 			if(order == null)
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST, new String[]{orderid});
 
-			order.setPaymented_at(new Date(opn_dto.getPayment_ts()));
+			order.setPaymented_at(new Date(rpcn_dto.getPayment_ts()));
 			//通知应用发货
 			CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNofity("test");
 			

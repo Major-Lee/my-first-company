@@ -436,7 +436,7 @@ public class BusinessEnumType {
 	 * @author tangzichao
 	 */
 	public enum CommdityApplication{
-		UPORTAL(1001,"uportal id","uportal id"),
+		Portal(1001,"portal id","uportal id"),
 		Default(1000,"默认应用id","默认应用id"),
 		;
 		private Integer key;
@@ -484,6 +484,64 @@ public class BusinessEnumType {
 			CommdityApplication[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (CommdityApplication type : types){
 				allCommdityApplicationTypes.put(type.getKey(), type);
+			}
+		}
+	}
+	
+	/**
+	 * 生成订单id的扩展的第8位
+	 * 订单支付模式
+	 * @author tangzichao
+	 */
+	public enum OrderExtSegmentPayMode{
+		Receipt(0,"收入","支付模式为进账"),
+		Expend(1,"支出","支付模式为出账"),
+		;
+		private Integer key;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, OrderExtSegmentPayMode> allExtSegmentPayModeTypes;
+		
+		private OrderExtSegmentPayMode(Integer key,String name,String desc){
+			this.key = key;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getKey() {
+			return key;
+		}
+		public void setKey(Integer key) {
+			this.key = key;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static OrderExtSegmentPayMode fromKey(Integer key){
+			if(key == null) return null;
+			return allExtSegmentPayModeTypes.get(key);
+		}
+		
+		public static boolean supported(Integer key){
+			return allExtSegmentPayModeTypes.containsKey(key);
+		}
+		
+		static {
+			allExtSegmentPayModeTypes = new HashMap<Integer, OrderExtSegmentPayMode>();
+			OrderExtSegmentPayMode[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (OrderExtSegmentPayMode type : types){
+				allExtSegmentPayModeTypes.put(type.getKey(), type);
 			}
 		}
 	}

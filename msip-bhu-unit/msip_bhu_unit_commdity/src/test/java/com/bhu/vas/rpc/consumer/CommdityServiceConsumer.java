@@ -7,8 +7,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.OrderPaymentNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
@@ -135,7 +135,7 @@ public class CommdityServiceConsumer {
 			}else{
 				System.out.println(ret3.getErrorCode().code());
 			}
-			OrderPaymentNotifyDTO opn_dto = new OrderPaymentNotifyDTO();
+			ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
 			opn_dto.setOrderid(orderid);
 			opn_dto.setPayment_ts(System.currentTimeMillis());
 			

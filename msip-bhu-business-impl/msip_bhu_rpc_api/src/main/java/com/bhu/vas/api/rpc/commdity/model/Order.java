@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.commdity.model;
 
 import java.util.Date;
 
+import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
@@ -146,7 +147,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 
 	@Override
 	public void setSequenceKey(Long autoId) {
-		this.setId(OrderHelper.generateOrderId(getAppid(), autoId));
+		String ext_segment = OrderHelper.generateOrderExtSegment(OrderExtSegmentPayMode.Receipt.getKey());
+		this.setId(OrderHelper.generateOrderId(getAppid(), ext_segment, autoId));
 	}
 
 }

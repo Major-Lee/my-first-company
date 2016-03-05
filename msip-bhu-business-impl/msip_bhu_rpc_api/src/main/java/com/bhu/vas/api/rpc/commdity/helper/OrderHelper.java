@@ -49,6 +49,23 @@ public class OrderHelper {
 	public static String generateOrderId(Integer appid, Long autoId){
 		return generateOrderId(appid, null, autoId);
 	}
+	
+	/**
+	 * 生成订单id的扩展业务占位
+	 * @param ext_items 按占位顺序传入扩展占位 (没有传入的补零占位)
+	 * @return
+	 */
+	public static String generateOrderExtSegment(int... ext_items){
+		if(ext_items == null || ext_items.length == 0 || ext_items.length > 8){
+			return String.format("%08d", 0);
+		}
+		StringBuffer ext_segment = new StringBuffer();
+		for(int ext_item : ext_items){
+			ext_segment.append(ext_item);
+		}
+		int ext_segment_int = Integer.parseInt(ext_segment.toString());
+		return String.format("%08d", ext_segment_int);
+	}
 	/**
 	 * 判断订单状态是否为未支付
 	 * @param status
