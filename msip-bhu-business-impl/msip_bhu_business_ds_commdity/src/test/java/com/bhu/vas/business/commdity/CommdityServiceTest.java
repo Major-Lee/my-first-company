@@ -11,9 +11,8 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
+import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
-import com.bhu.vas.api.rpc.commdity.model.Order;
-import com.bhu.vas.business.ds.commdity.helper.CommdityHelper;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;

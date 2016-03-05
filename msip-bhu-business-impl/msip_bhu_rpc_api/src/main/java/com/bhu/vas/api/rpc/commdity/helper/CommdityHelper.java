@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.commdity.helper;
+package com.bhu.vas.api.rpc.commdity.helper;
 
 import org.springframework.util.StringUtils;
 

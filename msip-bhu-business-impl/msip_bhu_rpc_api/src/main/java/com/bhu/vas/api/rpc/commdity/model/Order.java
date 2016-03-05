@@ -2,7 +2,8 @@ package com.bhu.vas.api.rpc.commdity.model;
 
 import java.util.Date;
 
-import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
+import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
+import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 /**
@@ -10,7 +11,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
  * @author tangzichao
  */
 @SuppressWarnings("serial")
-public class Order extends BaseStringModel implements ISequenceGenable{
+public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	//商品id
 	private Integer commdityid;
 	//应用id
@@ -144,8 +145,8 @@ public class Order extends BaseStringModel implements ISequenceGenable{
 	}
 
 	@Override
-	public void setSequenceKey(Integer key) {
-		//this.setId(key);
+	public void setSequenceKey(Long autoId) {
+		this.setId(OrderHelper.generateOrderId(getAppid(), autoId));
 	}
 
 }
