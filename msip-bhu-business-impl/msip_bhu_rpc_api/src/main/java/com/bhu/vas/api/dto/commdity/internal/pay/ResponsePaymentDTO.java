@@ -8,6 +8,7 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
  */
 @SuppressWarnings("serial")
 public class ResponsePaymentDTO implements java.io.Serializable{
+	//支付是否成功
 	private boolean success;
 	//失败原因
 	private String msg;

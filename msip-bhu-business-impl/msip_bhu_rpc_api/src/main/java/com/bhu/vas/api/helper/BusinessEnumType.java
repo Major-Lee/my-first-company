@@ -192,8 +192,8 @@ public class BusinessEnumType {
 	public enum OrderStatus{
 		Pending(0,"订单原始状态","生成订单最原始的状态"),
 		NotPay(1,"未支付状态","其他应用获取此订单的支付url时更新为此状态"),
+		PayFailured(8,"订单支付失败状态","支付平台支付完成并通知此订单支付失败时更新为此状态"),
 		PaySuccessed(9,"订单支付成功状态","支付平台支付完成并通知此订单支付成功时更新为此状态"),
-		//PayFailured(10,"订单支付失败状态","支付平台支付完成并通知此订单支付失败时更新为此状态"),
 		DeliverCompleted(10,"发货完成状态","系统通知应用发货成功时更新为此状态"),
 		;
 		private Integer key;
@@ -236,6 +236,24 @@ public class BusinessEnumType {
 			return allOrderStatusTypes.containsKey(key);
 		}
 		
+		public static boolean isPaySuccessed(Integer key){
+			if(key == null) return false;
+			if(OrderStatus.PaySuccessed.getKey().equals(key)) return true;
+			return false;
+		}
+		
+		public static boolean isDeliverCompleted(Integer key){
+			if(key == null) return false;
+			if(OrderStatus.DeliverCompleted.getKey().equals(key)) return true;
+			return false;
+		}
+		
+		public static boolean isNotPay(Integer key){
+			if(key == null) return false;
+			if(OrderStatus.NotPay.getKey().equals(key)) return true;
+			return false;
+		}
+		
 		static {
 			allOrderStatusTypes = new HashMap<Integer, OrderStatus>();
 			OrderStatus[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
@@ -257,8 +275,8 @@ public class BusinessEnumType {
 		NotPay(1,"未支付状态","其他应用获取此订单的支付url时更新为此状态"),
 		Paying(2,"支付中状态","从支付平台获取到此订单的支付url并且通知到用户客户端时更新为此状态"),
 		//PayCompleted(3,"支付完成状态","支付平台支付完成并通知此订单支付完成, 无论支付成功还是失败都更新为此状态"),
+		PayFailured(8,"支付失败状态","支付平台支付完成并通知此订单支付失败时更新为此状态"),
 		PaySuccessed(9,"支付成功状态","支付平台支付完成并通知此订单支付成功时更新为此状态"),
-		//PayFailured(5,"支付失败状态","支付平台支付完成并通知此订单支付失败时更新为此状态"),
 		//DeliverPrepared(6,"准备发货状态","系统通知应用发货失败时更新为此状态"),
 		//Delivering(9,"发货中状态",""),
 		DeliverCompleted(10,"发货完成状态","系统通知应用发货成功时更新为此状态"),
@@ -357,6 +375,12 @@ public class BusinessEnumType {
 		
 		public static boolean supported(Integer category){
 			return allCommdityCategoryTypes.containsKey(category);
+		}
+		
+		public static boolean isInternetLimit(Integer category){
+			if(category == null) return false;
+			if(InternetLimit.getCategory().equals(category)) return true;
+			return false;
 		}
 		
 		static {
@@ -535,6 +559,18 @@ public class BusinessEnumType {
 		
 		public static boolean supported(Integer key){
 			return allExtSegmentPayModeTypes.containsKey(key);
+		}
+		
+		public static boolean isReceipt(Integer key){
+			if(key == null) return false;
+			if(Receipt.getKey().equals(key)) return true;
+			return false;
+		}
+		
+		public static boolean isExpend(Integer key){
+			if(key == null) return false;
+			if(Expend.getKey().equals(key)) return true;
+			return false;
 		}
 		
 		static {

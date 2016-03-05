@@ -44,8 +44,8 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     	super.rpush(generateOrderPaymentNotifyKey(), notify_message);
     }
     
-    public void rpushOrderDeliverNofity(String notify_message){
-    	super.rpush(generateOrderDeliverNotifyKey(), notify_message);
+    public Long rpushOrderDeliverNofity(String notify_message){
+    	return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
     }
     
     @Override

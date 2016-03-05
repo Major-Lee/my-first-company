@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
@@ -158,34 +157,38 @@ public class OrderFacadeService {
 	}
 	
 	/**
-	 * 支付系统支付成功的订单处理逻辑
+	 * 支付系统支付完成的订单处理逻辑
 	 * 更新订单状态为支付成功
 	 * 通知应用发货成功以后 更新支付状态为发货完成
-	 * @param opn_dto 支付成功通知dto
+	 * @param success 支付是否成功
+	 * @param orderid 订单id
+	 * @param payment_ts 支付时间
 	 */
-	public Order orderPaymentNotify(ResponsePaymentCompletedNotifyDTO rpcn_dto){
-		Integer changed_status = OrderStatus.PaySuccessed.getKey();
-		Integer changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, long payment_ts){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
 		Order order = null;
 		try{
-			if(rpcn_dto == null) {
-				throw new RuntimeException(String.format("orderPaymentNotify param illegal opn_dto[%s]", rpcn_dto));
-			}
-			String orderid = rpcn_dto.getOrderid();
-			if(StringUtils.isEmpty(orderid)){
-				throw new RuntimeException(String.format("orderPaymentNotify param illegal orderid[%s]", orderid));
-			}
-			
 			order = orderService.getById(orderid);
 			if(order == null)
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST, new String[]{orderid});
-
-			order.setPaymented_at(new Date(rpcn_dto.getPayment_ts()));
-			//通知应用发货
-			CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNofity("test");
 			
-			changed_status = OrderStatus.DeliverCompleted.getKey();
-			changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+			order.setPaymented_at(new Date(payment_ts));
+			//支付成功
+			if(success){
+				changed_status = OrderStatus.PaySuccessed.getKey();
+				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
+				//TODO:通知应用发货
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNofity("test");
+				//判断通知发货成功 更新订单状态
+				if(notify_ret != null && notify_ret > 0){
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+				}
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
 		}catch(Exception ex){
 			throw ex; 
 		}finally{
