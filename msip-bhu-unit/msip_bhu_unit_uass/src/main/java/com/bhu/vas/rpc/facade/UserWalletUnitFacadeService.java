@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -61,7 +62,7 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, long applyid,boolean passed) {
+	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,boolean passed) {
 		try{
 			userWalletFacadeService.doWithdrawVerify(reckoner, applyid, passed);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -72,12 +73,16 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int uid,
+	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,int uid,
 			String pwd, double cash,String remoteip) {
 		try{
+			//验证appid
+			if(!CommdityApplication.supported(appid)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_APPID_INVALID,new String[]{String.valueOf(appid)});
+			}
 			User user = userWalletFacadeService.getUserService().getById(uid);
 			userWalletFacadeService.validateUser(uid);
-			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(uid, pwd, cash, remoteip);
+			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,uid, pwd, cash, remoteip);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(apply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick()));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

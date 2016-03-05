@@ -12,14 +12,13 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserWalletWithdrawApplyService extends AbstractCoreService<Long,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class UserWalletWithdrawApplyService extends AbstractCoreService<String,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	@Resource
 	@Override
 	public void setEntityDao(UserWalletWithdrawApplyDao userWalletWithdrawApplyDao) {
 		super.setEntityDao(userWalletWithdrawApplyDao);
 	}
 	
-	@Override
     public UserWalletWithdrawApply insert(UserWalletWithdrawApply entity) {
         if(entity.getId() == null)
             SequenceService.getInstance().onCreateSequenceKey(entity, false);

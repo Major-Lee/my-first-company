@@ -51,6 +51,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		userWalletFacadeService.getUserWalletLogService().deleteByModelCriteria(mc);
 		userWalletFacadeService.getUserWalletWithdrawApplyService().deleteByModelCriteria(mc);
 	}
+    private int testAppid = BusinessEnumType.CommdityApplication.Default.getKey();
     private int testVerfyUserId = 1;
     private int testUserId = 3;
     private double testSharedealCash = 127.44d;
@@ -74,7 +75,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	}
     @Test
     public void test003DoWithdrawApply(){
-    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
+    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testAppid,testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
     	System.out.println(apply);
     }
 

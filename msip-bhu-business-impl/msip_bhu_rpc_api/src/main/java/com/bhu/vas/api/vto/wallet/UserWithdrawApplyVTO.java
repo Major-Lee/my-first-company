@@ -7,8 +7,10 @@ package com.bhu.vas.api.vto.wallet;
  */
 @SuppressWarnings("serial")
 public class UserWithdrawApplyVTO implements java.io.Serializable {
-	private long applyid;
+	private String applyid;
+	
 	private int uid;
+	private int appid;
 	private String mobileno;
 	private String nick;
 	private double cash = 0.00d;
@@ -45,11 +47,17 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	public void setWithdraw_oper(String withdraw_oper) {
 		this.withdraw_oper = withdraw_oper;
 	}
-	public long getApplyid() {
+	public String getApplyid() {
 		return applyid;
 	}
-	public void setApplyid(long applyid) {
+	public void setApplyid(String applyid) {
 		this.applyid = applyid;
+	}
+	public int getAppid() {
+		return appid;
+	}
+	public void setAppid(int appid) {
+		this.appid = appid;
 	}
 	
 }

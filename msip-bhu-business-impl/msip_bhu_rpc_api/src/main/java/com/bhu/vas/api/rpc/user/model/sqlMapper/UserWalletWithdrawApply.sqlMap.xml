@@ -6,7 +6,9 @@
 
   <resultMap id="modelResult" type="userWalletWithdrawApply">
     <id property="id" column="id"/>
+    <result property="appid" column="appid"/>
     <result property="uid" column="uid"/>
+    
     <result property="cash" column="cash"/>
     <result property="withdraw_oper" column="withdraw_oper"/>
     <result property="last_reckoner" column="last_reckoner"/>
@@ -24,6 +26,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	appid,
 	    	uid,
 	    	cash,
 	    	withdraw_oper,
@@ -36,6 +39,7 @@
 		
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	appid,
 	    	uid,
 	    	cash,
 	    	withdraw_oper,
@@ -47,6 +51,7 @@
 	</sql>	
 	<sql id="modelInsertValues">
 			#{id},
+			#{appid},
 	    	#{uid},
 	    	#{cash},
 	    	#{withdraw_oper},
@@ -56,6 +61,7 @@
 	    	#{updated_at}
 	</sql>
 	<sql id="modelUpdateValues">
+			appid = #{appid},
 	    	uid = #{uid},
 	    	cash = #{cash},
 	    	withdraw_oper = #{withdraw_oper},
@@ -112,7 +118,7 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
@@ -152,7 +158,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="long">
+	<select id="pkSelectByModelCriteria" resultType="string">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
