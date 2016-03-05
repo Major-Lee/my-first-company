@@ -2,12 +2,13 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
 
 
 /**
- * 支付系统支付成功的消息DTO
+ * 支付系统支付完成的消息DTO
  * @author tangzichao
  *
  */
 @SuppressWarnings("serial")
-public class OrderPaymentNotifyDTO implements java.io.Serializable{
+public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
+	
 	//订单id
 	private String orderid;
 	//订单支付成功时间

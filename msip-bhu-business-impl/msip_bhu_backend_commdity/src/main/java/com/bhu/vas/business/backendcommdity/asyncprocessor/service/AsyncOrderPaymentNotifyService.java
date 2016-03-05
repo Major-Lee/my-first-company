@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
-
-import com.bhu.vas.api.dto.commdity.internal.pay.OrderPaymentNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -36,10 +35,10 @@ public class AsyncOrderPaymentNotifyService {
 	public void orderPaymentNotifyHandle(String message){
 		logger.info(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle: message[%s]", message));
 		try{
-			OrderPaymentNotifyDTO opn_dto = JsonHelper.getDTO(message, OrderPaymentNotifyDTO.class);
-			if(opn_dto != null){
+			ResponsePaymentCompletedNotifyDTO rpcn_dto = JsonHelper.getDTO(message, ResponsePaymentCompletedNotifyDTO.class);
+			if(rpcn_dto != null){
 				//订单处理逻辑
-				Order order = orderFacadeService.orderPaymentNotify(opn_dto);
+				Order order = orderFacadeService.orderPaymentNotify(rpcn_dto);
 				//分成处理逻辑
 				String orderid = order.getId();
 				String dmac = order.getMac();
