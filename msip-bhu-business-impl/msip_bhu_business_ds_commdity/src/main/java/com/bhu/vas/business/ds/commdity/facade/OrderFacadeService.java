@@ -6,6 +6,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
@@ -24,6 +26,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class OrderFacadeService {
+	private final Logger logger = LoggerFactory.getLogger(OrderFacadeService.class);
 	
 	@Resource
 	private OrderService orderService;
@@ -179,11 +182,16 @@ public class OrderFacadeService {
 				changed_status = OrderStatus.PaySuccessed.getKey();
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 				//TODO:通知应用发货
-				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNofity("test");
+				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify("test");
 				//判断通知发货成功 更新订单状态
 				if(notify_ret != null && notify_ret > 0){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
 					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+					logger.info(String.format("OrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				}else{
+					logger.info(String.format("OrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
 				}
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();

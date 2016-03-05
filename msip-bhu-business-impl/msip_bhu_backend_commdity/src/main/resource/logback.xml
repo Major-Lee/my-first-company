@@ -83,7 +83,7 @@
 		<appender-ref ref="logfile" />
 	</logger>
 	
-	<logger name="com.bhu.vas.push.business" additivity="false">
+	<logger name="com.bhu.vas.business.ds.commdity.facade" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="logfile" />
 	</logger>
