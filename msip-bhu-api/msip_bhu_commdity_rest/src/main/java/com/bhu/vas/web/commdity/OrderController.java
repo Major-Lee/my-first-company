@@ -49,15 +49,15 @@ public class OrderController extends BaseController{
 	public void create(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) Integer commdityId,
-			@RequestParam(required = true) Integer appId,
-			@RequestParam(required = true) String appSerect,
+			@RequestParam(required = true) Integer commdityid,
+			@RequestParam(required = true) Integer appid,
+			@RequestParam(required = true) String appsecret,
 			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false) Integer uid,
 			@RequestParam(required = false) String context) {
 
-		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityId, appId, appSerect, 
+		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, appsecret, 
 				mac, umac, uid, context);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -81,13 +81,13 @@ public class OrderController extends BaseController{
 	public void query_paymenturl(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) String orderId,
-			@RequestParam(required = true) Integer appId,
-			@RequestParam(required = true) String appSerect,
+			@RequestParam(required = true) String orderid,
+			@RequestParam(required = true) Integer appid,
+			@RequestParam(required = true) String appsecret,
 			@RequestParam(required = true) String payment_type
 			) {
 		//1:验证rpc请求 验证订单并返回订单信息
-		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderId, appId, appSerect);
+		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderid, appid, appsecret);
 		if(validateResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(validateResult));
 			return;
@@ -97,14 +97,17 @@ public class OrderController extends BaseController{
 		String order_amount = order_dto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(payment_type, 
-				order_amount, requestIp, orderId);
+				order_amount, requestIp, orderid);
+//		ResponseCreatePaymentUrlDTO rcp_dto = new ResponseCreatePaymentUrlDTO();
+//		rcp_dto.setSuccess(true);
+//		rcp_dto.setParams("params");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
 			return;
 		}
 		//3:根据返回数据进行验证和订单状态更新
-		RpcResponseDTO<String> rpcResult = orderRpcService.orderPaymentUrlCreated(orderId, rcp_dto);
+		RpcResponseDTO<String> rpcResult = orderRpcService.orderPaymentUrlCreated(orderid, rcp_dto);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -126,12 +129,12 @@ public class OrderController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) String umac,
-			@RequestParam(required = true) String orderId,
-			@RequestParam(required = true) Integer appId,
-			@RequestParam(required = true) String appSerect
+			@RequestParam(required = true) String orderid,
+			@RequestParam(required = true) Integer appid,
+			@RequestParam(required = true) String appsecret
 			) {
 
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderId, appId, appSerect);
+		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderid, appid, appsecret);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

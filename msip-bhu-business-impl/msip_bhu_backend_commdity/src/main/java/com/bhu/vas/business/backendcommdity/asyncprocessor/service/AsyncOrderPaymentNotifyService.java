@@ -46,13 +46,13 @@ public class AsyncOrderPaymentNotifyService {
 		try{
 			ResponsePaymentCompletedNotifyDTO rpcn_dto = JsonHelper.getDTO(message, ResponsePaymentCompletedNotifyDTO.class);
 			if(rpcn_dto != null){
-				String orderId = rpcn_dto.getOrderId();
+				String orderid = rpcn_dto.getOrderid();
 
-				if(StringUtils.isEmpty(orderId)){
+				if(StringUtils.isEmpty(orderid)){
 					throw new RuntimeException(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle "
-							+ "param illegal orderId[%s]", orderId));
+							+ "param illegal orderid[%s]", orderid));
 				}
-				StructuredId structuredId = StructuredIdHelper.generateStructuredId(orderId);
+				StructuredId structuredId = StructuredIdHelper.generateStructuredId(orderid);
 				StructuredExtSegment structuredExtSegment = structuredId.getExtSegment();
 				//判断支付模式为收入模式(商品订单支付 如出现其他情况可扩展下一位业务占位)
 				if(StructuredIdHelper.isPaymodeReceipt(structuredExtSegment)){
@@ -75,7 +75,7 @@ public class AsyncOrderPaymentNotifyService {
 	 * @param rpcn_dto
 	 */
 	public void orderPaymentNotifyPaymodeReceiptHandle(ResponsePaymentCompletedNotifyDTO rpcn_dto){
-		String orderId = rpcn_dto.getOrderId();
+		String orderId = rpcn_dto.getOrderid();
 		boolean success = rpcn_dto.isSuccess();
 		long paymented_ts = rpcn_dto.getPaymented_ts();
 		//订单处理逻辑

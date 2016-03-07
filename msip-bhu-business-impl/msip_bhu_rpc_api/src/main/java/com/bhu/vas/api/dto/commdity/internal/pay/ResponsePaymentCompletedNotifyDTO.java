@@ -9,15 +9,15 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
 @SuppressWarnings("serial")
 public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
 	//订单id
-	private String orderId;
+	private String orderid;
 	//订单支付成功时间
 	private long paymented_ts;
 	
-	public String getOrderId() {
-		return orderId;
+	public String getOrderid() {
+		return orderid;
 	}
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
 	}
 	public long getPaymented_ts() {
 		return paymented_ts;

@@ -31,11 +31,11 @@
 	
 	<context:component-scan base-package="com.smartwork.msip.cores.web.controller"/>
 	<context:component-scan base-package="com.bhu.vas.web"/>
-	
+	<!--  
 	<mvc:interceptors>
 		<bean class="com.bhu.vas.business.interceptor.TokenValidateControllerInterceptor"/>  
 	</mvc:interceptors>
-
+	-->
 	<!-- 
 	<mvc:interceptors>
 	    <mvc:interceptor>

@@ -105,12 +105,12 @@ public class CommdityServiceConsumer {
 		}
 		
 		Integer appid = CommdityApplication.Portal.getKey();
-		String appserect = CommdityApplication.Portal.getSercet();
+		String appsecret = CommdityApplication.Portal.getSecret();
 		String mac = "28:e0:2c:bc:2a:16";
 		String umac = "28:e0:2c:bc:2a:17";
 		if(commdityid > 0){
 			String orderid = null;
-			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid, appserect,
+			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid, appsecret,
 					mac, umac, null, "context");
 			if(ret1.getErrorCode() == null){
 				OrderCreatedRetDTO dto = ret1.getPayload();
@@ -118,7 +118,7 @@ public class CommdityServiceConsumer {
 				orderid = dto.getId();
 			}
 			
-			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid, appserect);
+			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid, appsecret);
 			if(ret2.getErrorCode() == null){
 				OrderDTO orderDto = ret2.getPayload();
 				System.out.println("validateOrderPaymentUrl " + orderDto.getId() + "=" + orderDto.getStatus());
@@ -139,7 +139,7 @@ public class CommdityServiceConsumer {
 			}
 			ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
 			opn_dto.setSuccess(true);
-			opn_dto.setOrderId(orderid);
+			opn_dto.setOrderid(orderid);
 			opn_dto.setPaymented_ts(System.currentTimeMillis());
 			System.out.println(JsonHelper.getJSONString(opn_dto));
 			

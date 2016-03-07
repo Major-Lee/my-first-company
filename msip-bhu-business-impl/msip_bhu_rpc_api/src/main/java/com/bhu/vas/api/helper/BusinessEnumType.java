@@ -464,15 +464,15 @@ public class BusinessEnumType {
 		Default(1000,"1F915A8DA370422582CBAC1DB6A806DD","默认应用id","默认应用id"),
 		;
 		private Integer key;
-		private String sercet;
+		private String secret;
 		private String name;
 		private String desc;
 		
 		static Map<Integer, CommdityApplication> allCommdityApplicationTypes;
 		
-		private CommdityApplication(Integer key, String sercet, String name,String desc){
+		private CommdityApplication(Integer key, String secret, String name,String desc){
 			this.key = key;
-			this.sercet = sercet;
+			this.secret = secret;
 			this.name = name;
 			this.desc = desc;
 		}
@@ -483,11 +483,11 @@ public class BusinessEnumType {
 		public void setKey(Integer key) {
 			this.key = key;
 		}
-		public String getSercet() {
-			return sercet;
+		public String getSecret() {
+			return secret;
 		}
-		public void setSercet(String sercet) {
-			this.sercet = sercet;
+		public void setSecret(String secret) {
+			this.secret = secret;
 		}
 		public String getName() {
 			return name;
@@ -511,10 +511,10 @@ public class BusinessEnumType {
 			return allCommdityApplicationTypes.containsKey(key);
 		}
 		
-		public static boolean verifyed(Integer key, String sercet){
+		public static boolean verifyed(Integer key, String secret){
 			CommdityApplication app = allCommdityApplicationTypes.get(key);
 			if(app == null) return false;
-			if(app.getSercet().equals(sercet)) return true;
+			if(app.getSecret().equals(secret)) return true;
 			return false;
 		}
 		
