@@ -9,7 +9,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.dto.WithdrawCashDetail;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
@@ -156,8 +155,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	}
     	
     	
-    	System.out.println(WithdrawCashDetail.build(100.00d, 0.20d, 0.03d));
+    	/*System.out.println(WithdrawCashDetail.build(100.00d, 0.20d, 0.03d));
     	System.out.println(WithdrawCashDetail.build(1000.00d, 0.20d, 0.03d));
-    	System.out.println(WithdrawCashDetail.build(485.33d, 0.20d, 0.03d));
+    	System.out.println(WithdrawCashDetail.build(485.33d, 0.20d, 0.03d));*/
    	}
 }

@@ -306,7 +306,7 @@ public class UserWalletFacadeService {
 	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
-	public UserWalletWithdrawApply doWithdrawRemoteNotify(String applyid,boolean successed){
+	public UserWalletWithdrawApply doWithdrawRemoteNotify(String applyid,boolean successed){//,String customer_desc
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});

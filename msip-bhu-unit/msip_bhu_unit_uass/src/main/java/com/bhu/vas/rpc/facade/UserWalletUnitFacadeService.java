@@ -14,6 +14,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
@@ -84,8 +85,10 @@ public class UserWalletUnitFacadeService {
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println("to Redis prepare:"+jsonNotify);
 				{	//保证写入redis后，提现申请设置成为转账中...状态
+					BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
 					CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
-					withdrawApply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey());
+					withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+					withdrawApply.setWithdraw_oper(current.getKey());
 					userWalletFacadeService.getUserWalletWithdrawApplyService().update(withdrawApply);
 				}
 				System.out.println("to Redis ok:"+jsonNotify);
