@@ -82,7 +82,7 @@ public interface ISocialRpcService {
      * @param type up/down/type
      * @return
      */
-    public RpcResponseDTO<WifiActionVTO> clickPraise(long uid, String bssid,String type);
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid,String type);
     
     /**
      * 关注

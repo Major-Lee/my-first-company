@@ -66,15 +66,15 @@ public class SocialFacadeRpcService {
      * @param type
      * @return
      */
-    public RpcResponseDTO<WifiActionVTO> clickPraise(String bssid, String type) {
+    public RpcResponseDTO<Boolean> clickPraise(String bssid, String type) {
 
         if (WifiActionHashService.getInstance().isNoExist(bssid)) {
             WifiActionHashService.getInstance().hadd(bssid);
         }
 
         WifiActionHashService.getInstance().hincrease(bssid, type);
-        WifiActionVTO result = WifiActionHashService.getInstance().counts(bssid);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+        WifiActionHashService.getInstance().counts(bssid);
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
     /**

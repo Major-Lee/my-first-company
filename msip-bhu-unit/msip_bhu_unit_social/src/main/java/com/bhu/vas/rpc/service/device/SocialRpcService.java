@@ -72,7 +72,7 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public RpcResponseDTO<WifiActionVTO> clickPraise(long uid, String bssid, String type) {
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type) {
 	logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
 		uid, bssid, type));
 	return socialFacadeRpcService.clickPraise(bssid, type);
