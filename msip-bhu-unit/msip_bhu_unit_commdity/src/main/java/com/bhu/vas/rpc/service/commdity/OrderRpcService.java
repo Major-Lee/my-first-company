@@ -12,6 +12,7 @@ import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @Service("orderRpcService")
 public class OrderRpcService implements IOrderRpcService{
@@ -50,6 +51,14 @@ public class OrderRpcService implements IOrderRpcService{
 	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId) {
 		logger.info(String.format("orderStatusByUmac with umac[%s] orderId[%s] appId[%s]", umac, orderId, appId));
 		return orderUnitFacadeService.orderStatusByUmac(umac, orderId, appId);
+	}
+	
+	@Override
+	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid, String mac, Integer status, 
+			int pageNo, int pageSize) {
+		logger.info(String.format("orderPagesByMac with uid[%s] mac[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
+				mac, status, pageNo, pageSize));
+		return orderUnitFacadeService.orderPagesByMac(uid, mac, status, pageNo, pageSize);
 	}
 
 }

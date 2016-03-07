@@ -4,6 +4,7 @@ import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
 public interface IOrderRpcService {
@@ -17,4 +18,7 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId);
 	
 	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId);
+	
+	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid, String mac, Integer status, 
+			int pageNo, int pageSize);
 }

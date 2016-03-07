@@ -36,7 +36,7 @@ public class CommdityController extends BaseController{
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/query/pages",method={RequestMethod.GET,RequestMethod.POST})
-	public void create(
+	public void query_pages(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false, defaultValue = "1") Integer status,

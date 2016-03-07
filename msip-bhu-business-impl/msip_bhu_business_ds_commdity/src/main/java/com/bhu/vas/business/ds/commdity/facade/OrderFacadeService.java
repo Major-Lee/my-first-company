@@ -64,6 +64,37 @@ public class OrderFacadeService {
 	}
 	
 	/**
+	 * 根据设备mac和订单状态进行查询订单数量
+	 * @param mac 设备mac
+	 * @param status 订单状态
+	 */
+	public int countOrderByMacAndStatus(String mac, Integer status){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria()
+			.andColumnEqualTo("mac", mac)
+			.andColumnEqualTo("status", status);
+		return orderService.countByModelCriteria(mc);
+	}
+	
+	/**
+	 * 根据设备mac和订单状态进行查询订单列表
+	 * @param mac 设备mac
+	 * @param status 订单状态
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public List<Order> findOrdersByMacAndStatus(String mac, Integer status, int pageNo, int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria()
+			.andColumnEqualTo("mac", mac)
+			.andColumnEqualTo("status", status);
+		mc.setPageNumber(pageNo);
+		mc.setSize(pageSize);
+		return orderService.findModelByModelCriteria(mc);
+	}
+	
+	/**
 	 * 更新订单的状态和流程状态
 	 * @param order 订单实体
 	 * @param status 订单状态

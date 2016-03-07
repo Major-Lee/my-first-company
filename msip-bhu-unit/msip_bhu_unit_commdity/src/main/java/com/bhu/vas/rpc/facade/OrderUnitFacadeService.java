@@ -1,5 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +22,9 @@ import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -37,7 +44,8 @@ public class OrderUnitFacadeService {
 	@Resource
 	private CommdityMessageService commdityMessageService;
 	
-	
+	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;
 	/**
 	 * 生成订单
 	 * @param commdityid
@@ -136,6 +144,42 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 根据设备mac查询订单分页列表
+	 * @param uid 用户id
+	 * @param mac 用户绑定的设备mac
+	 * @param status 订单状态
+	 * @param pageNo 页码
+	 * @param pageSize 分页数量
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid,  String mac, Integer status, int pageNo, int pageSize) {
+		try{
+			userDeviceFacadeService.validateUserDeviceBind(uid, mac);
+			
+			List<OrderDTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByMacAndStatus(mac, status);
+			if(order_count > 0){
+				List<Order> orderList = orderFacadeService.findOrdersByMacAndStatus(mac, status, pageNo, pageSize);
+				if(orderList != null && !orderList.isEmpty()){
+					retDtos = new ArrayList<OrderDTO>();
+					OrderDTO orderDto = null;
+					for(Order order : orderList){
+						orderDto = OrderHelper.buildOrderDTO(order);
+						retDtos.add(orderDto);
+					}
+				}
+			}
+			TailPage<OrderDTO> returnRet = new CommonPage<OrderDTO>(pageNo, pageSize, order_count, retDtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderPagesByMac Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

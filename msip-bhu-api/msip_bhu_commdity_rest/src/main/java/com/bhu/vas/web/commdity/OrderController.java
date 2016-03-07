@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.WebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -127,6 +128,36 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderId, appId);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 根据设备mac查询订单分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/mac/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_mac_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<OrderDTO>> rpcResult = orderRpcService.orderPagesByMac(uid, mac, status, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
