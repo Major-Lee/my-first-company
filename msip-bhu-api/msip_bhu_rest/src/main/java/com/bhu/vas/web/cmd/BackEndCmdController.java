@@ -1,4 +1,4 @@
-package com.bhu.vas.web.cmd;
+/*package com.bhu.vas.web.cmd;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ public class BackEndCmdController extends BaseController{
 		}
 		return null;
 	}
-	/**
+	*//**
 	 * 创建任务接口
 	 * @param request
 	 * @param response
@@ -42,14 +42,13 @@ public class BackEndCmdController extends BaseController{
 	 * @param opt
 	 * @param channel
 	 * @param channel_taskid
-	 */
+	 *//*
 	@ResponseBody()
 	@RequestMapping(value="/generate",method={RequestMethod.POST})
 	public void cmdGenerate(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true,value="sk") String secretKey,
-			//@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String opt,
 			@RequestParam(required = false, defaultValue="00") String subopt,
@@ -61,20 +60,20 @@ public class BackEndCmdController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TaskResDTO> rpcResult = taskRpcService.createNewTask(-1, mac.toLowerCase(), opt, subopt, extparams,/*payload,*/ channel, channel_taskid);
+		RpcResponseDTO<TaskResDTO> rpcResult = taskRpcService.createNewTask(-1, mac.toLowerCase(), opt, subopt, extparams,payload, channel, channel_taskid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
-	/**
+	*//**
 	 * 查询任务状态接口
 	 * @param request
 	 * @param response
 	 * @param uid
 	 * @param channel
 	 * @param channel_taskid
-	 */
+	 *//*
 	@ResponseBody()
 	@RequestMapping(value="/status",method={RequestMethod.POST})
 	public void cmdStatus(
@@ -99,7 +98,7 @@ public class BackEndCmdController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
-	/**
+	*//**
 	 * 
 	 * @param request
 	 * @param response
@@ -107,14 +106,13 @@ public class BackEndCmdController extends BaseController{
 	 * @param channel
 	 * @param channel_taskid
 	 * @param taskid
-	 */
+	 *//*
 	@ResponseBody()
 	@RequestMapping(value="/detail",method={RequestMethod.POST})
 	public void cmdDetail(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true,value="sk") String secretKey,
-			//@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid,
 			@RequestParam(required = false) Long taskid) {
@@ -130,3 +128,4 @@ public class BackEndCmdController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 }
+*/

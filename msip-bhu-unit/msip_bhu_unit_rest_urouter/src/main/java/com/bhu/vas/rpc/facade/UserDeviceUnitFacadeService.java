@@ -28,14 +28,17 @@ import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceOperationVTO;
 import com.bhu.vas.api.vto.device.DevicePresentVTO;
+import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
@@ -52,6 +55,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.builder.WifiDeviceTCSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -84,6 +88,9 @@ public class UserDeviceUnitFacadeService {
     @Resource
     private DeviceFacadeService deviceFacadeService;
 
+    @Resource
+	private UserSettingStateService userSettingStateService;
+    
     @Resource
 	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
 	
@@ -624,6 +631,52 @@ public class UserDeviceUnitFacadeService {
 			dvto.setDpv(dpv);
 			dvto.setDov(dov);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dvto);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 通过dmac获取绑定用户id、nick、mobileno、avatar、设备访客相关限速
+	 * @param mac
+	 * @return
+	 */
+	public RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac){
+		try{
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+			if(wifiDevice == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
+			}
+			User user = null;
+			Integer bindUid = userDeviceService.fetchBindUid(mac);
+			if(bindUid != null){
+				user = userService.getById(bindUid);
+			}
+			DeviceProfileVTO vto = new DeviceProfileVTO();
+			vto.setMac(mac);
+			if(user != null){
+				vto.setId(user.getId());
+				vto.setNick(user.getNick());
+				vto.setMobileno(user.getMobileno());
+				vto.setAvatar(user.getAvatar());
+			}else{
+				vto.setId(-1);
+				vto.setNick(StringHelper.MINUS_STRING_GAP);
+				vto.setMobileno(StringHelper.MINUS_STRING_GAP);
+				vto.setAvatar(StringHelper.MINUS_STRING_GAP);
+			}
+			UserSettingState settingState = userSettingStateService.getById(mac);
+			if(settingState != null){
+				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+				if(vistorWifi != null && vistorWifi.isOn() && vistorWifi.getVw() != null){//访客网络是开启
+					vto.setUsers_rate(vistorWifi.getVw().getUsers_tx_rate());
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());

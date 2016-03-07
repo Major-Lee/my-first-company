@@ -170,4 +170,5 @@ public class CmdController extends BaseController{
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
+	
 }

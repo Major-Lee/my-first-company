@@ -1,7 +1,6 @@
 package com.bhu.vas.web.user;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,15 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
-import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.business.helper.BusinessWebHelper;
-import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
