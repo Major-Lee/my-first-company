@@ -16,6 +16,7 @@
     
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
+    <result property="extension_content" column="extension_content"/>
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -32,6 +33,7 @@
 	    	withdraw_oper,
 	    	last_reckoner,
 	    	remoteip,
+	    	extension_content,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -45,6 +47,7 @@
 	    	withdraw_oper,
 	    	last_reckoner,
 	    	remoteip,
+	    	extension_content,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -57,6 +60,7 @@
 	    	#{withdraw_oper},
 	    	#{last_reckoner},
 	    	#{remoteip},
+	    	#{extension_content},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql>
@@ -67,6 +71,7 @@
 	    	withdraw_oper = #{withdraw_oper},
 	    	last_reckoner = #{last_reckoner},
 	    	remoteip = #{remoteip},
+	    	extension_content = #{extension_content},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

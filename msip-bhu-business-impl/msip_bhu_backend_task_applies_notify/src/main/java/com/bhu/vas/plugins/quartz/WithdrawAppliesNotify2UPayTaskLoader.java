@@ -28,11 +28,10 @@ public class WithdrawAppliesNotify2UPayTaskLoader {
     private ExecutorService task_exec = Executors.newFixedThreadPool(3);
 
     public void execute() throws InterruptedException {
-		logger.info("WifiDeviceGroupBackendTaskLoader starting...");
-	
+		logger.info("WithdrawAppliesNotify2UPayTaskLoader starting...");
 		int activeCount = ((ThreadPoolExecutor) task_exec).getActiveCount();
 		if (activeCount < 3) {
-			logger.info("WifiDeviceGroupBackendTaskLoader ended total[0]");
+			logger.info("WithdrawAppliesNotify2UPayTaskLoader ended total[0]");
 		}
     }
 }
