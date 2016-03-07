@@ -7,32 +7,32 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.social.WifiActionDTO;
+import com.bhu.vas.api.rpc.social.model.Wifi;
+import com.bhu.vas.api.rpc.social.vto.*;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
+import com.bhu.vas.business.ds.social.service.WifiService;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.model.HandsetUser;
-import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
 import com.bhu.vas.api.rpc.social.vto.UserHandsetVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialFollowSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiCommentSortedSetService;
 import com.bhu.vas.business.ds.social.service.HandsetUserService;
 import com.bhu.vas.business.ds.social.service.WifiCommentService;
-import com.bhu.vas.business.ds.social.service.WifiService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by bluesand on 3/2/16.
@@ -49,8 +49,8 @@ public class SocialFacadeRpcService {
 	@Resource
 	private UserService userService;
 
-	@Resource
-	private WifiService wifiService;
+    @Resource
+    private WifiService wifiService;
 
 
     public WifiComment comment(long uid, String bssid, String hd_mac, String message) {
@@ -124,6 +124,8 @@ public class SocialFacadeRpcService {
             handsetUser.setUid(uid);
             handsetUser.setCreated_at(new Date());
             handsetUserService.insert(handsetUser);
+
+            WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
         }
 
         SocialHandsetMeetDTO dto = new SocialHandsetMeetDTO();
@@ -144,6 +146,48 @@ public class SocialFacadeRpcService {
     }
 
 
+    public WifiVTO fetchWifiDetail(Long uid, String bssid) {
+
+        Wifi wifi = wifiService.getById(bssid);
+
+        WifiVTO wifiVTO = new WifiVTO();
+
+        wifiVTO.setBssid(bssid);
+        wifiVTO.setMax_rate(wifi.getMax_rate());
+        wifiVTO.setM(wifi.getManufacturer());
+        wifiVTO.setSsid(wifi.getSsid());
+        wifiVTO.setLat(wifi.getLat());
+        wifiVTO.setLon(wifi.getLon());
+
+        WifiActionDTO action = WifiActionHashService.getInstance().counts(bssid);
+        wifiVTO.setAction(action);
+
+        Set<String> visitors = WifiSortedSetService.getInstance().getWifiVistors(bssid);
+
+        List<WifiVisitorVTO> vtos = new ArrayList<WifiVisitorVTO>();
+
+        List<Integer> ids = new ArrayList<>();
+        for (String visitor : visitors) {
+            ids.add(Integer.parseInt(visitor));
+        }
+
+        List<User> users = userService.findByIds(ids);
+
+        for (User user : users) {
+            WifiVisitorVTO vto = new WifiVisitorVTO();
+            vto.setUid(user.getId());
+            vto.setAvatar(user.getAvatar());
+            vto.setN(user.getNick());
+            vtos.add(vto);
+        }
+
+        wifiVTO.setVisitors(vtos);
+
+        return wifiVTO;
+
+    }
+
+
     public WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs) {
         WifiUserHandsetVTO vto = new WifiUserHandsetVTO();
 
@@ -160,6 +204,7 @@ public class SocialFacadeRpcService {
         }
 
         List<HandsetUser> handsetUsers = handsetUserService.findByIds(hds, true, true);
+        List<Integer> ids = new ArrayList<Integer>();
 
         int index = 0;
         if (handsetUsers != null) {
@@ -174,6 +219,21 @@ public class SocialFacadeRpcService {
                 index++;
             }
         }
+
+        List<User> users = userService.findByIds(ids, true, true);
+
+        index = 0;
+        for (User user: users) {
+            if (user != null) {
+                UserHandsetVTO hdVTO = hdVTOs.get(index);
+                hdVTO.setAvatar(user.getAvatar());
+                if (StringUtils.isEmpty(user.getNick())) {
+                    hdVTO.setNick(user.getNick());
+                }
+            }
+        }
+
+
 
         return vto;
     }

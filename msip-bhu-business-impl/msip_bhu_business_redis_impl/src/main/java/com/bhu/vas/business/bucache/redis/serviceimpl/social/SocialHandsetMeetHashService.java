@@ -48,7 +48,7 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
 
 
     private static String generateKey(String hd_mac_self, String hd_mac){
-        StringBuilder sb = new StringBuilder(BusinessKeyDefine.Social.Meet);
+        StringBuilder sb = new StringBuilder(BusinessKeyDefine.Social.MEET);
         String key = null;
         if (hd_mac_self.hashCode() >= hd_mac.hashCode()) {
             key = hd_mac_self  + "_" + hd_mac;

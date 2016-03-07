@@ -45,7 +45,7 @@ public class WifiCommentSortedSetService  extends AbstractRelationSortedSetCache
 	
 	public Set<String> fetchUserWifiList(String uid){
 		if(StringUtils.isEmpty(uid)) return Collections.emptySet();
-		 
+
 		return super.zrangeByScore(generateKey(uid), 0, Double.MAX_VALUE);
 				
 	}

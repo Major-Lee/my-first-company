@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.rpc.social.vto.WifiVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -68,9 +69,10 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public void fetchWifiDetail(Long uid, String bssid) {
+    public WifiVTO fetchWifiDetail(Long uid, String bssid) {
 	logger.info(
 		String.format("handsetMeet uid[%s]  bssid[%s] ", uid, bssid));
+        return socialFacadeRpcService.fetchWifiDetail(uid, bssid);
     }
 
     @Override

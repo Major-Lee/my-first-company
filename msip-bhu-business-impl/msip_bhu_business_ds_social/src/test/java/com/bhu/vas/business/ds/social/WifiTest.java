@@ -20,13 +20,15 @@ public class WifiTest extends BaseTest {
     public void insesrt(){
 
         Wifi wifi = new Wifi();
-        wifi.setId("123123");
+        wifi.setId("123");
         wifi.setLat(123.123);
         wifi.setLon(232.1);
         wifi.setManufacturer("baidu");
         wifi.setMax_rate("123123");
         wifi.setSsid("google");
         wifi.setCreated_at(new Date());
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!");
 
         wifiService.insert(wifi);
     }

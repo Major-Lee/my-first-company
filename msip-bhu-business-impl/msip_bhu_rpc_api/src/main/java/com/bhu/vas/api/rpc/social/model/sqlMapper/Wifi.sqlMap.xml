@@ -11,7 +11,7 @@
 	  <result property="lon" column="lon"/>
 	  <result property="lon" column="lon"/>
 	  <result property="max_rate" column="max_rate"/>
-	  <result property="manufactor" column="manufacturer"/>
+	  <result property="manufacturer" column="manufacturer"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  

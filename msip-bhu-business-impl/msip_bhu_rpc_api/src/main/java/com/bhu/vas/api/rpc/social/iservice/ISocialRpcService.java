@@ -8,6 +8,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
+import com.bhu.vas.api.rpc.social.vto.WifiVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -54,7 +55,7 @@ public interface ISocialRpcService {
      * @param uid
      * @param bssid
      */
-    void fetchWifiDetail(Long uid, String bssid);
+    WifiVTO fetchWifiDetail(Long uid, String bssid);
 
     /**
      * 评论
