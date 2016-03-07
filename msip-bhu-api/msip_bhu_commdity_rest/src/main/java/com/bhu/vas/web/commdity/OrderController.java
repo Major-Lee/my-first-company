@@ -37,7 +37,8 @@ public class OrderController extends BaseController{
 	 * @param request
 	 * @param response
 	 * @param commdityid 商品id
-	 * @param appid 应用id
+	 * @param appId 应用id
+	 * @param appSerect 应用密钥
 	 * @param mac 设备mac
 	 * @param umac 用户mac
 	 * @param uid 用户uid
@@ -50,13 +51,14 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer commdityId,
 			@RequestParam(required = true) Integer appId,
+			@RequestParam(required = true) String appSerect,
 			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false) Integer uid,
 			@RequestParam(required = false) String context) {
 
-		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityId, appId, mac, 
-				umac, uid, context);
+		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityId, appId, appSerect, 
+				mac, umac, uid, context);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -81,10 +83,11 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String orderId,
 			@RequestParam(required = true) Integer appId,
+			@RequestParam(required = true) String appSerect,
 			@RequestParam(required = true) String payment_type
 			) {
 		//1:验证rpc请求 验证订单并返回订单信息
-		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderId, appId);
+		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderId, appId, appSerect);
 		if(validateResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(validateResult));
 			return;
@@ -124,10 +127,11 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = true) String orderId,
-			@RequestParam(required = true) Integer appId
+			@RequestParam(required = true) Integer appId,
+			@RequestParam(required = true) String appSerect
 			) {
 
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderId, appId);
+		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderId, appId, appSerect);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
