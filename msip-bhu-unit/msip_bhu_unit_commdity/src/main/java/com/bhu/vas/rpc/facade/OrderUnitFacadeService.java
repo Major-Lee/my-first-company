@@ -3,7 +3,6 @@ package com.bhu.vas.rpc.facade;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -87,8 +86,7 @@ public class OrderUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{String.valueOf(order_status)});
 			}
 			
-			OrderDTO orderDto = new OrderDTO();
-			BeanUtils.copyProperties(order, orderDto);
+			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -132,8 +130,7 @@ public class OrderUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
 			}
 			
-			OrderDTO orderDto = new OrderDTO();
-			BeanUtils.copyProperties(order, orderDto);
+			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

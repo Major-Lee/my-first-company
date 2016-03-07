@@ -26,6 +26,10 @@ public class OrderDTO implements java.io.Serializable{
 	private String context;
 	//订单状态
 	private Integer status;
+	//订单创建时间
+	private long created_ts;
+	//订单支付时间
+	private long paymented_ts;
 	
 	public String getId() {
 		return id;
@@ -80,5 +84,17 @@ public class OrderDTO implements java.io.Serializable{
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public long getCreated_ts() {
+		return created_ts;
+	}
+	public void setCreated_ts(long created_ts) {
+		this.created_ts = created_ts;
+	}
+	public long getPaymented_ts() {
+		return paymented_ts;
+	}
+	public void setPaymented_ts(long paymented_ts) {
+		this.paymented_ts = paymented_ts;
 	}
 }

@@ -14,7 +14,7 @@ public class CommdityDTO implements java.io.Serializable{
 	private Integer category;
 	//商品价格(两种方式 10.25 和 5.25-10.25)
 	private String price;
-	//商品状态（上架）
+	//商品状态
 	private Integer status;
 	//商品标签
 	private String tags;

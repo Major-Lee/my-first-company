@@ -137,8 +137,8 @@ public class CommdityServiceConsumer {
 			}
 			ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
 			opn_dto.setSuccess(true);
-			opn_dto.setOrderid(orderid);
-			opn_dto.setPayment_ts(System.currentTimeMillis());
+			opn_dto.setOrderId(orderid);
+			opn_dto.setPaymented_ts(System.currentTimeMillis());
 			System.out.println(JsonHelper.getJSONString(opn_dto));
 			
 	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(JsonHelper.getJSONString(opn_dto));
