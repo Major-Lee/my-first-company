@@ -1,9 +1,11 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
+import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import redis.clients.jedis.JedisPool;
 
@@ -14,7 +16,7 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
 
 
     private final static String HANDSET_MEET_TOTAL_COUNT_KEY = "total";
-    private final static String HANDSET_MEET_LAST_COUNT_KEY = "last";
+    private final static String HANDSET_MEET_LAST_KEY = "last";
 
     private static class ServiceHolder{
         private static SocialHandsetMeetHashService instance =new SocialHandsetMeetHashService();
@@ -62,7 +64,11 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
     public void handsetMeet(String hd_mac_self, String hd_mac, String bssid, String dto) {
         this.hset(generateKey(hd_mac_self, hd_mac), bssid, dto);
         this.hincrby(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_TOTAL_COUNT_KEY, 1);
-        this.hset(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_TOTAL_COUNT_KEY, dto);
+        this.hset(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY, dto);
+    }
+
+    public SocialHandsetMeetDTO getLasthandsetMeet(String hd_mac_self, String hd_mac) {
+        return JsonHelper.getDTO(this.hget(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY), SocialHandsetMeetDTO.class);
     }
 
     public static void main(String[] args) {
