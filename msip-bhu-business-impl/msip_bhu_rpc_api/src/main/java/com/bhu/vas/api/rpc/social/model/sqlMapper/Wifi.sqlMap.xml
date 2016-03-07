@@ -2,40 +2,44 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.social.model.WifiComment">
+<mapper namespace="com.bhu.vas.api.rpc.social.model.Wifi">
 
-  <resultMap id="modelResult" type="wifiComment">
+  <resultMap id="modelResult" type="wifi">
 	  <id property="id" column="id"/>
-	  <result property="uid" column="uid"/>
-	  <result property="bssid" column="bssid"/>
-	  <result property="hd_mac" column="hd_mac"/>
-	  <result property="message" column="message"/>
+	  <result property="ssid" column="ssid"/>
+	  <result property="lat" column="lat"/>
+	  <result property="lon" column="lon"/>
+	  <result property="lon" column="lon"/>
+	  <result property="max_rate" column="max_rate"/>
+	  <result property="manufactor" column="manufacturer"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_social_wifi_comment
+	    	t_social_wifi
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	uid,
-	    	bssid,
-	    	hd_mac,
-	    	message,
+	    	ssid,
+	    	lat,
+	    	lon,
+	    	max_rate,
+	    	manufacturer,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	uid,
-	    	bssid,
-	    	hd_mac,
-	    	message,
+	    	ssid,
+	    	lat,
+	    	lon,
+	    	max_rate,
+	    	manufacturer,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -43,21 +47,22 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{uid},
-	    	#{bssid},
-	    	#{hd_mac},
-	    	#{message},
+	    	#{ssid},
+	    	#{lat},
+	    	#{lon},
+	    	#{max_rate},
+	    	#{manufacturer},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-
-	    	uid = #{uid},
-			bssid = #{bssid},
-			hd_mac = #{hd_mac},
-			message = #{message},
-		  	created_at = #{created_at}
+	    	ssid = #{ssid},
+			lat = #{lat},
+			lon = #{lon},
+			max_rate = #{max_rate},
+			manufacturer = #{manufacturer},
+		  	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -108,11 +113,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiComment">
+	<delete id="delete" parameterType="wifi">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -121,11 +126,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="wifiComment">
+	<insert id="insert" parameterType="wifi">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="wifiComment">
+	<update id="update" parameterType="wifi">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -149,7 +154,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="java.lang.Long">
+	<select id="pkSelectByModelCriteria" resultType="java.lang.String">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
