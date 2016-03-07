@@ -13,10 +13,12 @@ import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.model.HandsetUser;
+import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
 import com.bhu.vas.api.rpc.social.vto.UserHandsetVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
+import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialFollowSortedSetService;
@@ -25,6 +27,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiActionHashServi
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.WifiCommentSortedSetService;
 import com.bhu.vas.business.ds.social.service.HandsetUserService;
 import com.bhu.vas.business.ds.social.service.WifiCommentService;
+import com.bhu.vas.business.ds.social.service.WifiService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -46,6 +49,8 @@ public class SocialFacadeRpcService {
     
    @Resource 
    private UserService userService;
+   @Resource
+   private WifiService wifiService;
 
     public WifiComment comment(long uid, String bssid,String hd_mac, String message) {
 
@@ -201,10 +206,25 @@ public class SocialFacadeRpcService {
     }
 
     
-    public Set<String> fetchUserCommentWifiList(String uid){
+    public List<CommentedWifiVTO> fetchUserCommentWifiList(String uid,String hd_mac){
     	
-    	return WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
-    	
+    	Set<String>wifiSet= WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
+    	List<String> bssidList = new ArrayList<String>(wifiSet);
+    	List<Wifi> wifiList=wifiService.findByIds(bssidList);
+    	List<CommentedWifiVTO> vtos = new ArrayList<CommentedWifiVTO>();
+    	if(wifiList != null){
+    		CommentedWifiVTO commentedWifiVTO=null;
+    	for(Wifi wifi:wifiList){
+    		commentedWifiVTO=new CommentedWifiVTO();
+    		commentedWifiVTO.setBssid(wifi.getId());
+    		commentedWifiVTO.setMax_rate(wifi.getMax_rate());
+    		commentedWifiVTO.setLat(Double.toString(wifi.getLat()));
+    		commentedWifiVTO.setLon(Double.toString(wifi.getLon()));
+    		vtos.add(commentedWifiVTO);
+    	}
+    	}
+    	return vtos;
+	
     }
     
 }

@@ -1,9 +1,11 @@
 package com.bhu.vas.api.rpc.social.iservice;
 
 
+import java.util.List;
 import java.util.Set;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
@@ -106,7 +108,7 @@ public interface ISocialRpcService {
      * @param uid
      * @return
      */
-    public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid);
+    public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid,String hd_mac);
 
 
 

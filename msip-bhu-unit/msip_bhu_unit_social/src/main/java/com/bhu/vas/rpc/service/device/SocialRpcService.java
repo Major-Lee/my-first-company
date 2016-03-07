@@ -1,6 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,6 +11,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
+import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.vto.WifiActionVTO;
@@ -103,10 +104,10 @@ public class SocialRpcService implements ISocialRpcService {
 	return socialFacadeRpcService.unFollow(uid, hd_mac);
     }
     
-	public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid) {
+	public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid,String hd_mac) {
 
 		return RpcResponseDTOBuilder
-				.builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid));
+				.builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid,hd_mac));
 
 	}
 }

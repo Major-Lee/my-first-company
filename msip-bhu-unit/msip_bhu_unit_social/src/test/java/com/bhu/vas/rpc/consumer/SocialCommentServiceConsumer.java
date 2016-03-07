@@ -1,11 +1,13 @@
 package com.bhu.vas.rpc.consumer;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
+import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -22,10 +24,10 @@ public class SocialCommentServiceConsumer {
 		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
 
 		System.out.println("123123123");
-		socialRpcService.comment(100312,"1234","ussss", "123123123");
-		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"1234", 1, 3);
+		socialRpcService.comment(100312,"123123","ussss", "123123123");
+		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"123123", 1, 3);
+		RpcResponseDTO<List<CommentedWifiVTO>>rpcset=socialRpcService.fetchUserCommentWifiList("100312","222222");
 		System.out.println("end");
-		RpcResponseDTO<Set<String>>rpcset=socialRpcService.fetchUserCommentWifiList("100312");
 		Thread.currentThread().join();
 		context.close();
 	}

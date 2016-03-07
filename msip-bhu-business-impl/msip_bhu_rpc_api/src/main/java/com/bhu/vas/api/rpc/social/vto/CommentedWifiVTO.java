@@ -3,11 +3,16 @@ package com.bhu.vas.api.rpc.social.vto;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class UWifiCommentVTO implements Serializable{
+public class CommentedWifiVTO implements Serializable{
+	
+	//wifimac 地址
 	private String bssid;
+	//wifi最大速率
 	private String max_rate;
+	//wifi所在坐标
 	private String lat;
 	private String lon;
+	
 	public String getBssid() {
 		return bssid;
 	}
@@ -28,7 +33,7 @@ public class UWifiCommentVTO implements Serializable{
 	}
 	public String getLon() {
 		return lon;
-	}   
+	}
 	public void setLon(String lon) {
 		this.lon = lon;
 	}
