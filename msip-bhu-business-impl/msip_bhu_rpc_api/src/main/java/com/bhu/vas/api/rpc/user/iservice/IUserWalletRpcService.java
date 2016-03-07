@@ -1,6 +1,9 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
+import java.util.List;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -27,11 +30,13 @@ public interface IUserWalletRpcService {
 	/**
 	 * 提现操作api
 	 * @param uid
+	 * @param paymode 如果此值为空，则取出用户曾经定义过的支付方式的第一个，如果没有定义过，则抛异常提示
 	 * @param applies
+	 * 
 	 * @param passed
 	 * @return
 	 */
-	public RpcResponseDTO<UserWithdrawApplyVTO>	withdrawOper(int appid,int uid,String pwd,double cash,String remoteip);
+	public RpcResponseDTO<UserWithdrawApplyVTO>	withdrawOper(int appid,String paymode,int uid,String pwd,double cash,String remoteip);
 	
 	/**
 	 * 钱包详情
@@ -39,4 +44,33 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserWalletDetailVTO> walletDetail(int uid);
+	
+
+	
+	/**
+	 * 通过用户id获取其绑定第三方转账帐号
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(int uid);
+	
+	/**
+	 * 移除相关第三方的转账账号绑定
+	 * @param uid
+	 * @param paymode
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String paymode);
+	
+	/**
+	 * 创建或更新第三方转账账号关联信息
+	 * 生成一个新的帐号
+	 * @param uid 
+	 * @param paymode
+	 * @param id
+	 * @param name
+	 * @return
+	 */
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid,String paymode,String id,String name);
+
 }

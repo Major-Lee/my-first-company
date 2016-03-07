@@ -1,32 +1,9 @@
 package com.bhu.vas.plugins.quartz;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
-
-
-
-
-
-import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
-import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
-import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
-import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * 提现申请UPay响应失败的后续操作处理
@@ -34,17 +11,18 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  * @author Edmond Lee
  * 
  */
+@Deprecated
 public class WithdrawAppliesFailedRollbackLoader {
     private static Logger logger = LoggerFactory.getLogger(WithdrawAppliesFailedRollbackLoader.class);
-	@Resource
+	/*@Resource
 	private UserWalletFacadeService userWalletFacadeService;
 
 	@Resource
-	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
+	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;*/
     
     public void execute(){
 		logger.info("WithdrawAppliesFailedRollbackLoader starting...");
-		int failed_count = 0;
+		/*int failed_count = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
 		mc.setOrderByClause(" updated_at ");
@@ -75,6 +53,6 @@ public class WithdrawAppliesFailedRollbackLoader {
 			}
 			
 		}
-		logger.info("WithdrawAppliesFailedRollbackLoader done, total:"+failed_count);
+		logger.info("WithdrawAppliesFailedRollbackLoader done, total:"+failed_count);*/
     }
 }

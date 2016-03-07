@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.service.user;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -57,15 +60,36 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,int uid,String pwd, double cash,String remoteip) {
-		logger.info(String.format("withdrawOper with appid[%s] uid[%s] cash[%s]",
-				appid,uid,cash));
-		return userWalletUnitFacadeService.withdrawOper(appid,uid, pwd, cash,remoteip);
+	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String paymode,int uid,String pwd, double cash,String remoteip) {
+		logger.info(String.format("withdrawOper with appid[%s] paymode[%s] uid[%s] cash[%s]",
+				appid,paymode,uid,cash));
+		return userWalletUnitFacadeService.withdrawOper(appid, paymode,uid, pwd, cash,remoteip);
 	}
 
 	@Override
 	public RpcResponseDTO<UserWalletDetailVTO> walletDetail(int uid) {
 		logger.info(String.format("walletDetail with uid[%s]",uid));
 		return userWalletUnitFacadeService.walletDetail(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(
+			int uid) {
+		logger.info(String.format("fetchUserThirdpartiesPayments with uid[%s]",uid));
+		return null;
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,
+			String paymode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(
+			int uid, String paymode, String id, String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

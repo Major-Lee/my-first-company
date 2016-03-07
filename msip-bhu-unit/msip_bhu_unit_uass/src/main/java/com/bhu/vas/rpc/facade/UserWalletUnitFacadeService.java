@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
@@ -84,7 +86,8 @@ public class UserWalletUnitFacadeService {
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						walletConfigs.getWithdraw_tax_percent(), 
 						walletConfigs.getWithdraw_trancost_percent());
-				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO, System.currentTimeMillis());
+				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentMode.fromMode(withdrawApply.getPaymode()));
+				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println("to Redis prepare:"+jsonNotify);
 				{	//保证写入redis后，提现申请设置成为转账中...状态
@@ -104,16 +107,28 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,int uid,
+	
+	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String paymode,int uid,
 			String pwd, double cash,String remoteip) {
 		try{
 			//验证appid
 			if(!CommdityApplication.supported(appid)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_APPID_INVALID,new String[]{String.valueOf(appid)});
 			}
+			if(!ThirdpartiesPaymentMode.supported(paymode)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
+			}
+			
+			if(StringUtils.isEmpty(paymode)){
+				//如果没有指定则去除用户定义的第一个
+				ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchFirstThirdpartiesPayment(uid);
+				if(payment != null){
+					paymode = payment.getMode();
+				}
+			}
 			//User user = userWalletFacadeService.getUserService().getById(uid);
 			User user = userWalletFacadeService.validateUser(uid);
-			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,uid, pwd, cash, remoteip);
+			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,ThirdpartiesPaymentMode.fromMode(paymode),uid, pwd, cash, remoteip);
 			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
 					apply.toUserWithdrawApplyVTO(
@@ -132,6 +147,40 @@ public class UserWalletUnitFacadeService {
 		try{
 			UserWallet userWallet = userWalletFacadeService.userWallet(uid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userWallet.toUserWalletDetailVTO());
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(int uid) {
+		try{
+			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.fetchAllThirdpartiesPayment(uid);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payments);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String paymode) {
+		try{
+			userWalletFacadeService.removeThirdpartiesPayment(uid, ThirdpartiesPaymentMode.fromMode(paymode));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid, String paymode, String id, String name) {
+		try{
+			ThirdpartiesPaymentMode paymentmode = ThirdpartiesPaymentMode.fromMode(paymode);
+			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.addThirdpartiesPayment(uid, paymentmode, ThirdpartiesPaymentDTO.build(paymentmode, id, name));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payments);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

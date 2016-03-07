@@ -185,6 +185,9 @@ public enum ResponseErrorCode {
 	USER_WALLET_VALIDATEPWD_FAILED("329","user.wallet.validatepwd.failed"),
 	USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED("330","user.wallet.withdraw.apply.status.notmatched"),
 	
+	USER_WALLET_PAYMENT_PARAM_EMPTY("331", "user.wallet.payment.param.empty"),
+	USER_WALLET_PAYMENT_WASEMPTY("332", "user.wallet.payment.wasempty"),
+	USER_WALLET_PAYMENT_NOTDEFINED("333", "user.wallet.payment.notdefined"),
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),

@@ -2,82 +2,39 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply">
+<mapper namespace="com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment">
 
-  <resultMap id="modelResult" type="userWalletWithdrawApply">
+  <resultMap id="modelResult" type="userThirdpartiesPayment">
     <id property="id" column="id"/>
-    <result property="appid" column="appid"/>
-    <result property="paymode" column="paymode"/>
-    <result property="uid" column="uid"/>
-    
-    <result property="cash" column="cash"/>
-    <result property="withdraw_oper" column="withdraw_oper"/>
-    <result property="last_reckoner" column="last_reckoner"/>
-    <result property="remoteip" column="remoteip"/>
-    
-    <result property="created_at" column="created_at"/>
-    <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet_withdrawapply
+	    	t_vas_users_wallet_thirdpartiespayment
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	appid,
-	    	paymode,
-	    	uid,
-	    	cash,
-	    	withdraw_oper,
-	    	last_reckoner,
-	    	remoteip,
 	    	extension_content,
-	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 		
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	appid,
-	    	paymode,
-	    	uid,
-	    	cash,
-	    	withdraw_oper,
-	    	last_reckoner,
-	    	remoteip,
 	    	extension_content,
-	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>	
 	<sql id="modelInsertValues">
 			#{id},
-			#{appid},
-			#{paymode},
-	    	#{uid},
-	    	#{cash},
-	    	#{withdraw_oper},
-	    	#{last_reckoner},
-	    	#{remoteip},
 	    	#{extension_content},
-	    	#{created_at},
 	    	#{updated_at}
 	</sql>
 	<sql id="modelUpdateValues">
-			appid = #{appid},
-			paymode = #{paymode},
-	    	uid = #{uid},
-	    	cash = #{cash},
-	    	withdraw_oper = #{withdraw_oper},
-	    	last_reckoner = #{last_reckoner},
-	    	remoteip = #{remoteip},
 	    	extension_content = #{extension_content},
-	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -128,11 +85,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userWalletWithdrawApply">
+	<delete id="delete" parameterType="userThirdpartiesPayment">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -140,11 +97,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userWalletWithdrawApply">
+	<insert id="insert" parameterType="userThirdpartiesPayment">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userWalletWithdrawApply">
+	<update id="update" parameterType="userThirdpartiesPayment">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -168,7 +125,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="string">
+	<select id="pkSelectByModelCriteria" resultType="int">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
