@@ -48,11 +48,11 @@ public class OrderFacadeService {
 	 * @param umac 用户终端mac
 	 * @return
 	 */
-	public Order recentNotpayOrderByUmac(Integer commdityId, Integer appId, String mac, String umac){
+	public Order recentNotpayOrderByUmac(Integer commdityid, Integer appid, String mac, String umac){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria()
-			.andColumnEqualTo("commdityid", commdityId)
-			.andColumnEqualTo("appid", appId)
+			.andColumnEqualTo("commdityid", commdityid)
+			.andColumnEqualTo("appid", appid)
 			.andColumnEqualTo("mac", mac)
 			.andColumnEqualTo("umac", umac)
 			.andColumnEqualTo("status", OrderStatus.NotPay.getKey());
@@ -121,9 +121,9 @@ public class OrderFacadeService {
 	 * @param context 业务上下文
 	 * @return
 	 */
-	public Order createOrder(Integer commdityId, Integer appId, String mac, String umac, Integer uid, String context){
+	public Order createOrder(Integer commdityid, Integer appid, String mac, String umac, Integer uid, String context){
 		//商品信息验证
-		Commdity commdity = commdityService.getById(commdityId);
+		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
 		}
@@ -140,14 +140,14 @@ public class OrderFacadeService {
 		//如果商品分类是限时上网 防止商品金额重新随机 检测是否有旧的未支付订单存在
 		Integer commdity_category = commdity.getCategory();
 		if(CommdityCategory.InternetLimit.getCategory().equals(commdity_category)){
-			order = recentNotpayOrderByUmac(commdity.getId(), appId, mac, umac);
+			order = recentNotpayOrderByUmac(commdity.getId(), appid, mac, umac);
 		}
 		
 		if(order == null){
 			//订单生成
 			order = new Order();
 			order.setCommdityid(commdity.getId());
-			order.setAppid(appId);
+			order.setAppid(appid);
 			order.setMac(mac);
 			order.setUmac(umac);
 			order.setUid(uid);
@@ -167,7 +167,7 @@ public class OrderFacadeService {
 	 * @param rcp_dto 支付系统返回的支付url信息DTO
 	 * @return
 	 */
-	public String orderPaymentUrlCreated(String orderId, ResponseCreatePaymentUrlDTO rcp_dto) {
+	public String orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
 		Integer changed_status = OrderStatus.NotPay.getKey();
 		Integer changed_process_status = OrderProcessStatus.NotPay.getKey();
 		Order order = null;
@@ -181,7 +181,7 @@ public class OrderFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE, new String[]{rcp_dto.getMsg()});
 			}
 		
-			order = validateOrderId(orderId);
+			order = validateOrderId(orderid);
 			
 			changed_process_status = OrderProcessStatus.Paying.getKey();
 			return rcp_dto.getParams();
@@ -200,28 +200,28 @@ public class OrderFacadeService {
 	 * @param orderId 订单id
 	 * @param payment_ts 支付时间
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderId, long payment_ts){
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, long payment_ts){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		Order order = null;
 		try{
-			order = validateOrderId(orderId);
+			order = validateOrderId(orderid);
 			order.setPaymented_at(new Date(payment_ts));
 			//支付成功
 			if(success){
 				changed_status = OrderStatus.PaySuccessed.getKey();
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 
-				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderId[%s]", orderId));
+				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
 				boolean deliver_notify_ret = orderDeliverNotify(order);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
 					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
-					logger.info(String.format("OrderPaymentCompletedNotify successed deliver notify: orderId[%s]", orderId));
+					logger.info(String.format("OrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
 				}else{
-					logger.info(String.format("OrderPaymentCompletedNotify failed deliver notify: orderId[%s]", orderId));
+					logger.info(String.format("OrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
 				}
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();
@@ -247,8 +247,8 @@ public class OrderFacadeService {
 				logger.error("orderDeliverNotify order data not exist");
 				return false;
 			}
-			Integer commdityId = order.getCommdityid();
-			Commdity commdity = commdityService.getById(commdityId);
+			Integer commdityid = order.getCommdityid();
+			Commdity commdity = commdityService.getById(commdityid);
 			if(commdity == null){
 				logger.error("orderDeliverNotify order commdity data not exist");
 				return false;
@@ -275,12 +275,12 @@ public class OrderFacadeService {
 	/**
 	 * 认证应用id
 	 * @param appId 应用id
-	 * @param appSerect 应用密钥
+	 * @param appSecret 应用密钥
 	 */
-	public void verifyAppId(Integer appId, String appSerect){
+	public void verifyAppId(Integer appid, String appsecret){
 		//认证appid
-		if(!CommdityApplication.verifyed(appId, appSerect)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appId)});
+		if(!CommdityApplication.verifyed(appid, appsecret)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
 		}
 	}
 	/**
@@ -288,10 +288,10 @@ public class OrderFacadeService {
 	 * @param orderId
 	 * @return
 	 */
-	public Order validateOrderId(String orderId){
-		Order order = orderService.getById(orderId);
+	public Order validateOrderId(String orderid){
+		Order order = orderService.getById(orderid);
 		if(order == null)
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST, new String[]{orderId});
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST, new String[]{orderid});
 		return order;
 	}
 	
@@ -301,10 +301,10 @@ public class OrderFacadeService {
 	 * @param appId
 	 * @return
 	 */
-	public Order validateOrder(String orderId, Integer appId, String appSerect){
-		verifyAppId(appId, appSerect);
-		Order order = validateOrderId(orderId);
-		if(!appId.equals(order.getAppid())){
+	public Order validateOrder(String orderid, Integer appid, String appsecret){
+		verifyAppId(appid, appsecret);
+		Order order = validateOrderId(orderid);
+		if(!appid.equals(order.getAppid())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);
 		}
 		return order;

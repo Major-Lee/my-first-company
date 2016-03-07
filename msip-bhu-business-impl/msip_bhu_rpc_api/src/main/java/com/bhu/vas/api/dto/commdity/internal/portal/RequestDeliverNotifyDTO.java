@@ -14,11 +14,11 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 @SuppressWarnings("serial")
 public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	//订单id
-	private String orderId;
+	private String orderid;
 	//订单金额
 	private String amount;
 	//商品id
-	private Integer commdityId;
+	private Integer commdityid;
 	//应用发货细节(对于限时上网服务 此属性存储的是限时上网的时间 比如4 代表4小时)
 	private String app_deliver_detail;
 	//设备mac
@@ -30,23 +30,23 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	//业务上下文
 	private String context;
 	
-	public String getOrderId() {
-		return orderId;
+	public String getOrderid() {
+		return orderid;
 	}
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
+	}
+	public Integer getCommdityid() {
+		return commdityid;
+	}
+	public void setCommdityid(Integer commdityid) {
+		this.commdityid = commdityid;
 	}
 	public String getAmount() {
 		return amount;
 	}
 	public void setAmount(String amount) {
 		this.amount = amount;
-	}
-	public Integer getCommdityId() {
-		return commdityId;
-	}
-	public void setCommdityId(Integer commdityId) {
-		this.commdityId = commdityId;
 	}
 	public String getApp_deliver_detail() {
 		return app_deliver_detail;
@@ -82,11 +82,11 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	public static RequestDeliverNotifyDTO from(Order order, Commdity commdity){
 		if(order == null || commdity == null) return null;
 		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
-		requestDeliverNotifyDto.setOrderId(order.getId());
+		requestDeliverNotifyDto.setOrderid(order.getId());
 		requestDeliverNotifyDto.setMac(order.getMac());
 		requestDeliverNotifyDto.setUmac(order.getUmac());
 		requestDeliverNotifyDto.setContext(order.getContext());
-		requestDeliverNotifyDto.setCommdityId(order.getCommdityid());
+		requestDeliverNotifyDto.setCommdityid(order.getCommdityid());
 		requestDeliverNotifyDto.setAmount(order.getAmount());
 		Date paymented_at = order.getPaymented_at();
 		if(paymented_at != null){

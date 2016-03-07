@@ -22,17 +22,17 @@ public class OrderRpcService implements IOrderRpcService{
 	private OrderUnitFacadeService orderUnitFacadeService;
 	
 	@Override
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, String appSerect, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String appsecret, 
 			String mac, String umac, Integer uid, String context) {
-		logger.info(String.format("createNewOrder with commdityId[%s] appId[%s] appSerect[%s] mac[%s] umac[%s] uid[%s] context[%s]",
-				commdityId, appId, appSerect, mac, umac, uid, context));
-		return orderUnitFacadeService.createOrder(commdityId, appId, appSerect, mac, umac, uid, context);
+		logger.info(String.format("createNewOrder with commdityid[%s] appid[%s] appsecret[%s] mac[%s] umac[%s] uid[%s] context[%s]",
+				commdityid, appid, appsecret, mac, umac, uid, context));
+		return orderUnitFacadeService.createOrder(commdityid, appid, appsecret, mac, umac, uid, context);
 	}
 	
 	@Override
-	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderId, ResponseCreatePaymentUrlDTO rcp_dto) {
-		logger.info(String.format("orderPaymentUrlCreated with orderId[%s] rcp_dto[%s]", orderId, rcp_dto));
-		return orderUnitFacadeService.orderPaymentUrlCreated(orderId, rcp_dto);
+	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
+		logger.info(String.format("orderPaymentUrlCreated with orderid[%s] rcp_dto[%s]", orderid, rcp_dto));
+		return orderUnitFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
 	}
 	
 /*	@Override
@@ -42,15 +42,15 @@ public class OrderRpcService implements IOrderRpcService{
 	}*/
 	
 	@Override
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId, String appSerect) {
-		logger.info(String.format("validateOrderPaymentUrl with orderId[%s] appId[%s] appSerect[%s]", orderId, appId, appSerect));
-		return orderUnitFacadeService.validateOrderPaymentUrl(orderId, appId, appSerect);
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid, String appsecret) {
+		logger.info(String.format("validateOrderPaymentUrl with orderid[%s] appid[%s] appsecret[%s]", orderid, appid, appsecret));
+		return orderUnitFacadeService.validateOrderPaymentUrl(orderid, appid, appsecret);
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId, String appSerect) {
-		logger.info(String.format("orderStatusByUmac with umac[%s] orderId[%s] appId[%s] appSerect[%s]", umac, orderId, appId, appSerect));
-		return orderUnitFacadeService.orderStatusByUmac(umac, orderId, appId, appSerect);
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid, String appsecret) {
+		logger.info(String.format("orderStatusByUmac with umac[%s] orderid[%s] appid[%s] appSerect[%s]", umac, orderid, appid, appsecret));
+		return orderUnitFacadeService.orderStatusByUmac(umac, orderid, appid, appsecret);
 	}
 	
 	@Override

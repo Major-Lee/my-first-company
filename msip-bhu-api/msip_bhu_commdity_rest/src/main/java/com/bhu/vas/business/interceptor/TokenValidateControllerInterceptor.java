@@ -22,7 +22,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * @author edmond
  *
  */
-public abstract class TokenValidateControllerInterceptor extends AbstractTokenValidateControllerInterceptor {
+public class TokenValidateControllerInterceptor extends AbstractTokenValidateControllerInterceptor {
 	@Resource
 	private IUserRpcService userRpcService;
 	private static final String ConsolePrefixUrl = "/console";

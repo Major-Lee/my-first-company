@@ -29,16 +29,18 @@ account:转账账号
 @SuppressWarnings("serial")
 public class RequestWithdrawNotifyDTO  implements java.io.Serializable{
 	//订单id
-	private String orderId;
+	private String orderid;
 	//订单审核通过时间
 	private long verify_ts;
 	private UserWithdrawApplyVTO withdraw;
+	
 	private ThirdpartiesPaymentDTO account;
-	public String getOrderId() {
-		return orderId;
+
+	public String getOrderid() {
+		return orderid;
 	}
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
 	}
 	public long getVerify_ts() {
 		return verify_ts;
@@ -61,7 +63,7 @@ public class RequestWithdrawNotifyDTO  implements java.io.Serializable{
 	}
 	public static RequestWithdrawNotifyDTO from(UserWithdrawApplyVTO apply,ThirdpartiesPaymentDTO account,long ts){
 		RequestWithdrawNotifyDTO notify = new RequestWithdrawNotifyDTO();
-		notify.setOrderId(apply.getApplyid());
+		notify.setOrderid(apply.getApplyid());
 		notify.setVerify_ts(ts);
 		notify.setWithdraw(apply);
 		notify.setAccount(account);

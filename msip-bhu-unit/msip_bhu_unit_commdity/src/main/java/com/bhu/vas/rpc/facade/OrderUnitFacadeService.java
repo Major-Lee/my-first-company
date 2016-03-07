@@ -50,17 +50,17 @@ public class OrderUnitFacadeService {
 	 * 生成订单
 	 * @param commdityid
 	 * @param appid
-	 * @param appSerect
+	 * @param appSecret
 	 * @param mac
 	 * @param umac
 	 * @param uid
 	 * @param context
 	 * @return
 	 */
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, String appSerect, String mac, String umac, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String appsecret, String mac, String umac, 
 			Integer uid, String context){
 		try{
-			orderFacadeService.verifyAppId(appId, appSerect);
+			orderFacadeService.verifyAppId(appid, appsecret);
 			
 			//验证用户mac和uid同时为空
 			if(uid == null && StringUtils.isEmpty(umac)){
@@ -68,7 +68,7 @@ public class OrderUnitFacadeService {
 			}
 
 			//生成订单
-			Order order = orderFacadeService.createOrder(commdityId, appId, mac, umac, uid, context);
+			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
 			OrderCreatedRetDTO orderCreatedRetDto = new OrderCreatedRetDTO();
 			orderCreatedRetDto.setId(order.getId());
 			orderCreatedRetDto.setAmount(order.getAmount());
@@ -85,12 +85,12 @@ public class OrderUnitFacadeService {
 	 * 生成订单支付url之前的订单验证
 	 * @param orderId
 	 * @param appId
-	 * @param appSerect
+	 * @param appSecret
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId, String appSerect) {
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid, String appsecret) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderId, appId, appSerect);
+			Order order = orderFacadeService.validateOrder(orderid, appid, appsecret);
 			//验证订单状态是否小于等于未支付
 			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
@@ -113,10 +113,10 @@ public class OrderUnitFacadeService {
 	 * @param rcp_dto 支付系统返回的数据dto
 	 * @return
 	 */
-	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderId, ResponseCreatePaymentUrlDTO rcp_dto) {
+	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
 		try{
 			//ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, ResponseCreatePaymentUrlDTO.class);
-			String paymentUrlInfo = orderFacadeService.orderPaymentUrlCreated(orderId, rcp_dto);
+			String paymentUrlInfo = orderFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(paymentUrlInfo);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -133,9 +133,9 @@ public class OrderUnitFacadeService {
 	 * @param appId 应用id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId, String appSerect) {
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid, String appsecret) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderId, appId, appSerect);
+			Order order = orderFacadeService.validateOrder(orderid, appid, appsecret);
 			
 			if(!umac.equals(order.getUmac())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
