@@ -217,8 +217,8 @@ public enum ResponseErrorCode {
 	VALIDATE_ORDER_UMAC_INVALID("415","validate.order.umac.invalid"),
 	
 	VALIDATE_COMMDITY_DATA_NOTEXIST("450","validate.commdity.data.notexist"),
-	VALIDATE_COMMDITY_NOT_ONSALE("450","validate.commdity.not.onsale"),
-	VALIDATE_COMMDITY_AMOUNT_INVALID("451","validate.commdity.amount.invalid"),
+	VALIDATE_COMMDITY_NOT_ONSALE("451","validate.commdity.not.onsale"),
+	VALIDATE_COMMDITY_AMOUNT_INVALID("452","validate.commdity.amount.invalid"),
 	
 	ORDER_PAYMENT_STATUS_PAYSUCCESSED("460","order.payment.status.paysuccessed"),
 	
