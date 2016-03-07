@@ -28,13 +28,13 @@ public class PaymentInternalHelper {
 	 * @param goods_no 订单id
 	 * @return
 	 */
-	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String total_fee, 
-			String exter_invoke_ip, String goods_no){
+	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String amount, 
+			String requestIp, String orderId){
 		Map<String, String> api_params = generatePaymentApiParamMap();
 		api_params.put("payment_type", payment_type);
-		api_params.put("total_fee", total_fee);
-		api_params.put("exter_invoke_ip", exter_invoke_ip);
-		api_params.put("goods_no", goods_no);
+		api_params.put("total_fee", amount);
+		api_params.put("exter_invoke_ip", requestIp);
+		api_params.put("goods_no", orderId);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {

@@ -213,6 +213,8 @@ public enum ResponseErrorCode {
 	VALIDATE_ORDER_DATA_NOTEXIST("411","validate.order.data.notexist"),
 	VALIDATE_ORDER_STATUS_INVALID("412","validate.order.status.invalid"),
 	VALIDATE_APPID_INVALID("413","validate.appid.invalid"),
+	VALIDATE_ORDER_APPID_INVALID("414","validate.order.appid.invalid"),
+	VALIDATE_ORDER_UMAC_INVALID("415","validate.order.umac.invalid"),
 	
 	VALIDATE_COMMDITY_DATA_NOTEXIST("450","validate.commdity.data.notexist"),
 	VALIDATE_COMMDITY_NOT_ONSALE("450","validate.commdity.not.onsale"),

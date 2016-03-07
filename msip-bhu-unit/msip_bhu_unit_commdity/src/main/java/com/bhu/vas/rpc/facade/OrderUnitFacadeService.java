@@ -11,7 +11,6 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
-import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
@@ -20,7 +19,6 @@ import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -30,12 +28,16 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private OrderService orderService;
+	
 	@Resource
 	private CommdityService commdityService;
+	
 	@Resource
 	private OrderFacadeService orderFacadeService;
+	
 	@Resource
 	private CommdityMessageService commdityMessageService;
+	
 	
 	/**
 	 * 生成订单
@@ -47,19 +49,18 @@ public class OrderUnitFacadeService {
 	 * @param context
 	 * @return
 	 */
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, String mac, String umac, 
 			Integer uid, String context){
 		try{
+			orderFacadeService.validateAppId(appId);
+			
 			//验证用户mac和uid同时为空
 			if(uid == null && StringUtils.isEmpty(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_UID_ILLEGAL);
 			}
-			//验证appid
-			if(!CommdityApplication.supported(appid)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_APPID_INVALID,new String[]{String.valueOf(appid)});
-			}
+
 			//生成订单
-			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
+			Order order = orderFacadeService.createOrder(commdityId, appId, mac, umac, uid, context);
 			OrderCreatedRetDTO orderCreatedRetDto = new OrderCreatedRetDTO();
 			orderCreatedRetDto.setId(order.getId());
 			orderCreatedRetDto.setAmount(order.getAmount());
@@ -74,15 +75,12 @@ public class OrderUnitFacadeService {
 	
 	/**
 	 * 生成订单支付url之前的订单验证
-	 * @param orderid
+	 * @param orderId
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid) {
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId) {
 		try{
-			Order order = orderService.getById(orderid);
-			if(order == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST, new String[]{orderid});
-			}
+			Order order = orderFacadeService.validateOrder(orderId, appId);
 			//验证订单状态是否小于等于未支付
 			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
@@ -102,14 +100,14 @@ public class OrderUnitFacadeService {
 	
 	/**
 	 * 调用支付系统获取订单支付url之后
-	 * @param orderid 订单id
-	 * @param response_create_payment_url 支付系统返回的数据
+	 * @param orderId 订单id
+	 * @param rcp_dto 支付系统返回的数据dto
 	 * @return
 	 */
-	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, String create_payment_url_response) {
+	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderId, ResponseCreatePaymentUrlDTO rcp_dto) {
 		try{
-			ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, ResponseCreatePaymentUrlDTO.class);
-			String paymentUrlInfo = orderFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
+			//ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, ResponseCreatePaymentUrlDTO.class);
+			String paymentUrlInfo = orderFacadeService.orderPaymentUrlCreated(orderId, rcp_dto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(paymentUrlInfo);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -120,37 +118,28 @@ public class OrderUnitFacadeService {
 	}
 	
 	/**
-	 * 支付系统通知订单支付成功
-	 * @param orderid
+	 * 根据用户终端mac地址进行订单的状态查询
+	 * @param umac 用户mac
+	 * @param orderId 订单id
+	 * @param appId 应用id
 	 * @return
 	 */
-/*	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
-		Integer changed_status = OrderStatus.PaySuccessed.getKey();
-		Integer changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
-		Order order = null;
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId) {
 		try{
-			order = orderService.getById(orderid);
-			if(order == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+			Order order = orderFacadeService.validateOrder(orderId, appId);
+			
+			if(!umac.equals(order.getUmac())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
 			}
-			//如果订单状态为未支付,才继续进行
-			if(OrderHelper.notpay(order.getStatus())){
-				orderFacadeService.orderStatusChanged(order, changed_status, changed_process_status);
-				//订单支付成功异步处理
-				commdityMessageService.sendOrderPaySuccessedMessage(orderid);
-				if(successed){
-					commdityMessageService.sendOrderPaySuccessedMessage(orderid);
-				}else{
-					changed_status = OrderStatus.PayFailured.getKey();
-					changed_process_status = OrderProcessStatus.PayFailured.getKey();
-				}
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-			}
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
+			
+			OrderDTO orderDto = new OrderDTO();
+			BeanUtils.copyProperties(order, orderDto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			logger.error("OrderStatusByUmac Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}*/
+	}
 }
