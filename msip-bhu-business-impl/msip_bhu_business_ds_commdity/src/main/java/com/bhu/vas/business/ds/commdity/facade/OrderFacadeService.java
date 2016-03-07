@@ -15,6 +15,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
+import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
@@ -142,6 +143,11 @@ public class OrderFacadeService {
 			}
 			
 			if(!rcp_dto.isSuccess()){
+				String errorcode = rcp_dto.getErrorcode();
+				//如果订单已经支付成功 则返回订单已经支付的状态码
+				if(PaymentInternalHelper.ERRORCODE_PAYMENT_STATUS_PAYSUCCESSED.equals(errorcode)){
+					throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_STATUS_PAYSUCCESSED);
+				}
 				throw new BusinessI18nCodeException(ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE, new String[]{rcp_dto.getMsg()});
 			}
 		
