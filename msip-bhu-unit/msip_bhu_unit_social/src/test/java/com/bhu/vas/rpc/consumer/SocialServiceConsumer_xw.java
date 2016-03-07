@@ -3,6 +3,8 @@ package com.bhu.vas.rpc.consumer;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Set;
+
 public class SocialServiceConsumer_xw {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUUserRpcConsumerApp");
@@ -17,8 +19,11 @@ public class SocialServiceConsumer_xw {
 
 		System.out.println("123123123");
 
-		socialRpcService.clickPraise(1016, "1234","down");
-		
+		Set<String> set = socialRpcService.fetchFollowList(100234,"12313");
+		for (String str : set){
+			System.out.println(str);
+		}
+
 		System.out.println("end");
 		
 		Thread.currentThread().join();

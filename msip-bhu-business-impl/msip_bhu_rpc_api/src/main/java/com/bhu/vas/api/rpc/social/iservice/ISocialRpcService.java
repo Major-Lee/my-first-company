@@ -8,7 +8,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
-import com.bhu.vas.api.vto.WifiActionVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -85,7 +84,7 @@ public interface ISocialRpcService {
      * @param type up/down/type
      * @return
      */
-    public RpcResponseDTO<WifiActionVTO> clickPraise(long uid, String bssid,String type);
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid,String type);
     
     /**
      * 关注
@@ -101,8 +100,15 @@ public interface ISocialRpcService {
      * @return 
      */
 
-    public RpcResponseDTO<Boolean> unFollow (long uid,String hd_mac);
-    
+    public RpcResponseDTO<Boolean>  unFollow (long uid,String hd_mac);
+
+    /**
+     * 获取关注列表
+     * @param uid
+     * @param hd_mac
+     */
+    public Set<String> fetchFollowList(long uid,String hd_mac);
+
     /**
      * 获取用户评论的wifi
      * @param uid

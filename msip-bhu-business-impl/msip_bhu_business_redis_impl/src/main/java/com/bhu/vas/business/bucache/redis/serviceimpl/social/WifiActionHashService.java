@@ -3,7 +3,7 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bhu.vas.api.vto.WifiActionVTO;
+import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -45,9 +45,9 @@ public class WifiActionHashService extends AbstractRelationHashCache{
 	    return false;
 	}
 	
-	public WifiActionVTO counts(String bssid){
+	public WifiActionDTO counts(String bssid){
 	    Map<String,String> map = this.hgetall(generateKey(bssid));
-	    WifiActionVTO vto = new WifiActionVTO();
+	    WifiActionDTO vto = new WifiActionDTO();
 	    vto.setUp(map.get(ACTION_TYPE_UP));
 	    vto.setDown(map.get(ACTION_TYPE_DOWN));
 	    vto.setReport(map.get(ACTION_TYPE_REPORT));

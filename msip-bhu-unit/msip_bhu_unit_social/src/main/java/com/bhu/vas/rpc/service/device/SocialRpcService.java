@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -14,7 +15,6 @@ import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
-import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -74,7 +74,7 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public RpcResponseDTO<WifiActionVTO> clickPraise(long uid, String bssid, String type) {
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type) {
 	logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
 		uid, bssid, type));
 	return socialFacadeRpcService.clickPraise(bssid, type);
@@ -83,7 +83,7 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,
 	    String bssid, int pageNo, int pageSize) {
-	logger.info(String.format("pageWifiCommentVTO pageNo[%s] pageSize",
+	    logger.info(String.format("pageWifiCommentVTO pageNo[%s] pageSize",
 		pageNo, pageSize));
 	return RpcResponseDTOBuilder
 		.builderSuccessRpcResponse(socialFacadeRpcService
@@ -103,9 +103,15 @@ public class SocialRpcService implements ISocialRpcService {
 	logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
 	return socialFacadeRpcService.unFollow(uid, hd_mac);
     }
-    
-	public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid,String hd_mac) {
 
+    @Override
+    public Set<String> fetchFollowList(long uid, String hd_mac) {
+        logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s]", uid, hd_mac));
+        return socialFacadeRpcService.fetchFollowList(uid,hd_mac);
+    }
+
+
+    public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid,String hd_mac) {
 		return RpcResponseDTOBuilder
 				.builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid,hd_mac));
 
