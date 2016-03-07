@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
@@ -186,11 +187,11 @@ public class UserWalletFacadeService {
 	}
 	
 	/**
-	 * 提现审核失败或者远程upay支付失败
+	 * 提现审核失败，直接进行返现操作
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashRollback2UserWallet(int uid, double cash){
+	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid, double cash){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -200,6 +201,25 @@ public class UserWalletFacadeService {
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
 		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);
+	}
+	
+	/**
+	 * 远程upay支付失败，对钱包的操作
+	 * 则置提现申请状态为转账失败
+	 * 由别的任务机制把系统中的提现失败的提现申请重新写入redis，并重新置为转账中状态
+	 * @param uid
+	 * @param cash
+	 */
+	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid, double cash){
+		/*if(cash <=0){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
+		validateUser(uid);
+		UserWallet uwallet = userWalletService.getById(uid);
+		uwallet.setCash(uwallet.getCash()+cash);
+		uwallet.setWithdraw(false);
+		userWalletService.update(uwallet);
+		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);*/
 	}
 	
 	/**
@@ -229,6 +249,7 @@ public class UserWalletFacadeService {
 		apply.setCash(cash);
 		apply.setRemoteip(remoteip);
 		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
+		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
 		apply = userWalletWithdrawApplyService.insert(apply);
 		return apply;
 	}
@@ -265,13 +286,17 @@ public class UserWalletFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请审核",String.valueOf(applyid)});
 		}
 		apply.setLast_reckoner(reckoner);
+		BusinessEnumType.UWithdrawStatus current = null;
 		if(passed){
-			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey());
+			current = BusinessEnumType.UWithdrawStatus.VerifyPassed;
+			apply.setWithdraw_oper(current.getKey());
 		}else{
-			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.VerifyFailed.getKey());
+			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
+			apply.setWithdraw_oper(current.getKey());
 			//返还金额到用户钱包
-			this.cashRollback2UserWallet(apply.getUid(), apply.getCash());
+			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(), apply.getCash());
 		}
+		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 		apply = userWalletWithdrawApplyService.update(apply);
 		return apply;
 	}
@@ -290,16 +315,18 @@ public class UserWalletFacadeService {
 		if(!BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey().equals(apply.getWithdraw_oper())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey())});
 		}
-		
+		BusinessEnumType.UWithdrawStatus current = null;
 		if(successed){
-			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawSucceed.getKey());
+			current = BusinessEnumType.UWithdrawStatus.WithdrawSucceed;
+			apply.setWithdraw_oper(current.getKey());
 			//解锁钱包提现状态
 			unlockWalletWithdrawStatusWhenSuccessed(apply.getUid());
 		}else{
-			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
-			//返回金额并解锁钱包提现状态
-			cashRollback2UserWallet(apply.getUid(),apply.getCash());
+			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
+			apply.setWithdraw_oper(current.getKey());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash());
 		}
+		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 		apply = userWalletWithdrawApplyService.update(apply);
 		return apply;
 	}

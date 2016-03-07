@@ -4,8 +4,9 @@ import java.util.Date;
 
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
-import com.smartwork.msip.cores.orm.model.BaseStringModel;
+import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtStringModel;
 
 /**
  * 用户提现申请
@@ -14,7 +15,8 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSequenceGenable {
+//BaseStringModel
+public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemoteResponseDTO> implements IRedisSequenceGenable {
 	private int uid;
 	private int appid;
 	//申请提现的现金
@@ -24,6 +26,7 @@ public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSe
 	//最后一次的审核员
 	private int last_reckoner;
 	private String remoteip;
+	
 	private Date created_at;
 	@Override
 	public void preInsert() {
@@ -103,5 +106,19 @@ public class UserWalletWithdrawApply extends BaseStringModel implements IRedisSe
 		vto.setWithdraw_oper(withdraw_oper);
 		vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
 		return vto;
+	}
+
+	public void addResponseDTO(WithdrawRemoteResponseDTO resDTO){
+		this.putInnerModel(resDTO);
+	}
+	
+	@Override
+	public Class<WithdrawRemoteResponseDTO> getJsonParserModel() {
+		return WithdrawRemoteResponseDTO.class;
+	}
+
+	@Override
+	public int limitSize() {
+		return 20;
 	}
 }

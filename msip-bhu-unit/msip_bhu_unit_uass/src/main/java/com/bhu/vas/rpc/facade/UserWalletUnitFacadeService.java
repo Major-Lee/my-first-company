@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -82,7 +83,11 @@ public class UserWalletUnitFacadeService {
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println("to Redis prepare:"+jsonNotify);
-				CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
+				{	//保证写入redis后，提现申请设置成为转账中...状态
+					CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
+					withdrawApply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey());
+					userWalletFacadeService.getUserWalletWithdrawApplyService().update(withdrawApply);
+				}
 				System.out.println("to Redis ok:"+jsonNotify);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
