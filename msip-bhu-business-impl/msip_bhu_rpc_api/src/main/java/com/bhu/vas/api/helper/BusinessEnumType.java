@@ -460,17 +460,19 @@ public class BusinessEnumType {
 	 * @author tangzichao
 	 */
 	public enum CommdityApplication{
-		Portal(1001,"portal id","uportal id"),
-		Default(1000,"默认应用id","默认应用id"),
+		Portal(1001,"3BD80FEBC9CC48E99EA2ABBE214E5957","portal id","uportal id"),
+		Default(1000,"1F915A8DA370422582CBAC1DB6A806DD","默认应用id","默认应用id"),
 		;
 		private Integer key;
+		private String sercet;
 		private String name;
 		private String desc;
 		
 		static Map<Integer, CommdityApplication> allCommdityApplicationTypes;
 		
-		private CommdityApplication(Integer key,String name,String desc){
+		private CommdityApplication(Integer key, String sercet, String name,String desc){
 			this.key = key;
+			this.sercet = sercet;
 			this.name = name;
 			this.desc = desc;
 		}
@@ -480,6 +482,12 @@ public class BusinessEnumType {
 		}
 		public void setKey(Integer key) {
 			this.key = key;
+		}
+		public String getSercet() {
+			return sercet;
+		}
+		public void setSercet(String sercet) {
+			this.sercet = sercet;
 		}
 		public String getName() {
 			return name;
@@ -501,6 +509,13 @@ public class BusinessEnumType {
 		
 		public static boolean supported(Integer key){
 			return allCommdityApplicationTypes.containsKey(key);
+		}
+		
+		public static boolean verifyed(Integer key, String sercet){
+			CommdityApplication app = allCommdityApplicationTypes.get(key);
+			if(app == null) return false;
+			if(app.getSercet().equals(sercet)) return true;
+			return false;
 		}
 		
 		static {

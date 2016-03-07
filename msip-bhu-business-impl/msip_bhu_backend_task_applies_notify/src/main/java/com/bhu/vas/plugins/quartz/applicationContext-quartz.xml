@@ -10,7 +10,7 @@
 		<property name="triggers">
 			<list>
 				<!-- 每隔5分钟执行一次 -->
-				<ref bean="withdrawAppliesFailedRollbackLoaderCronTrigger" />		
+				<ref bean="internetLimitOrderDeliverFailedRetryLoaderCronTrigger" />		
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -22,20 +22,20 @@
 	</bean>
 
 	<!-- Cron式Trigger定义 -->
-	<bean id="withdrawAppliesFailedRollbackLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="withdrawAppliesFailedRollbackLoaderCronJobDetail" />
+	<bean id="internetLimitOrderDeliverFailedRetryLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="internetLimitOrderDeliverFailedRetryLoaderCronJobDetail" />
 		<!-- 每隔5分钟执行一次   0 0/5 * * * ?  -->
-		<property name="cronExpression" value="0 0/5 * * * ?" />
+		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
-	<bean id="withdrawAppliesFailedRollbackLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="withdrawAppliesFailedRollbackLoaderJob" />
+	<bean id="internetLimitOrderDeliverFailedRetryLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="internetLimitOrderDeliverFailedRetryLoaderJob" />
 		<property name="targetMethod" value="execute" />
 		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
 		<property name="concurrent" value="false" />
 	</bean>
 
 	<!-- 被Cron执行的普通Spring Bean -->
-	<bean id="withdrawAppliesFailedRollbackLoaderJob" class="com.bhu.vas.plugins.quartz.WithdrawAppliesFailedRollbackLoader" />
+	<bean id="internetLimitOrderDeliverFailedRetryLoaderJob" class="com.bhu.vas.plugins.quartz.InternetLimitOrderDeliverFailedRetryLoader" />
 	
 </beans>

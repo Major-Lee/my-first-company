@@ -46,13 +46,13 @@ public class AsyncOrderPaymentNotifyService {
 		try{
 			ResponsePaymentCompletedNotifyDTO rpcn_dto = JsonHelper.getDTO(message, ResponsePaymentCompletedNotifyDTO.class);
 			if(rpcn_dto != null){
-				String orderid = rpcn_dto.getOrderid();
+				String orderId = rpcn_dto.getOrderId();
 
-				if(StringUtils.isEmpty(orderid)){
+				if(StringUtils.isEmpty(orderId)){
 					throw new RuntimeException(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle "
-							+ "param illegal orderid[%s]", orderid));
+							+ "param illegal orderId[%s]", orderId));
 				}
-				StructuredId structuredId = StructuredIdHelper.generateStructuredId(orderid);
+				StructuredId structuredId = StructuredIdHelper.generateStructuredId(orderId);
 				StructuredExtSegment structuredExtSegment = structuredId.getExtSegment();
 				//判断支付模式为收入模式(商品订单支付 如出现其他情况可扩展下一位业务占位)
 				if(StructuredIdHelper.isPaymodeReceipt(structuredExtSegment)){
@@ -75,11 +75,11 @@ public class AsyncOrderPaymentNotifyService {
 	 * @param rpcn_dto
 	 */
 	public void orderPaymentNotifyPaymodeReceiptHandle(ResponsePaymentCompletedNotifyDTO rpcn_dto){
-		String orderid = rpcn_dto.getOrderid();
+		String orderId = rpcn_dto.getOrderId();
 		boolean success = rpcn_dto.isSuccess();
-		long payment_ts = rpcn_dto.getPayment_ts();
+		long paymented_ts = rpcn_dto.getPaymented_ts();
 		//订单处理逻辑
-		Order order = orderFacadeService.orderPaymentCompletedNotify(success, orderid, payment_ts);
+		Order order = orderFacadeService.orderPaymentCompletedNotify(success, orderId, paymented_ts);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
@@ -90,7 +90,7 @@ public class AsyncOrderPaymentNotifyService {
 				//进行订单分成处理逻辑
 				String dmac = order.getMac();
 				double amount = Double.parseDouble(order.getAmount());
-				userWalletFacadeService.sharedealCashToUserWallet(dmac, amount, orderid);
+				userWalletFacadeService.sharedealCashToUserWallet(dmac, amount, orderId);
 			}
 		}
 	}

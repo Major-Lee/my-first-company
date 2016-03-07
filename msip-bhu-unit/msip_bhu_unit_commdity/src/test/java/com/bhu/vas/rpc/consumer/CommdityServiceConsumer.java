@@ -9,6 +9,7 @@ import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
@@ -103,12 +104,13 @@ public class CommdityServiceConsumer {
 			commdityid = item.getId();
 		}
 		
-		Integer appid = 1001;
+		Integer appid = CommdityApplication.Portal.getKey();
+		String appserect = CommdityApplication.Portal.getSercet();
 		String mac = "28:e0:2c:bc:2a:16";
 		String umac = "28:e0:2c:bc:2a:17";
 		if(commdityid > 0){
 			String orderid = null;
-			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid, 
+			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid, appserect,
 					mac, umac, null, "context");
 			if(ret1.getErrorCode() == null){
 				OrderCreatedRetDTO dto = ret1.getPayload();
@@ -116,7 +118,7 @@ public class CommdityServiceConsumer {
 				orderid = dto.getId();
 			}
 			
-			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid);
+			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid, appserect);
 			if(ret2.getErrorCode() == null){
 				OrderDTO orderDto = ret2.getPayload();
 				System.out.println("validateOrderPaymentUrl " + orderDto.getId() + "=" + orderDto.getStatus());
@@ -137,8 +139,8 @@ public class CommdityServiceConsumer {
 			}
 			ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
 			opn_dto.setSuccess(true);
-			opn_dto.setOrderid(orderid);
-			opn_dto.setPayment_ts(System.currentTimeMillis());
+			opn_dto.setOrderId(orderid);
+			opn_dto.setPaymented_ts(System.currentTimeMillis());
 			System.out.println(JsonHelper.getJSONString(opn_dto));
 			
 	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(JsonHelper.getJSONString(opn_dto));

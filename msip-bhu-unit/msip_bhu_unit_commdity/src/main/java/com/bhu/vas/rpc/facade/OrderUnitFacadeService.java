@@ -1,9 +1,12 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -19,6 +22,9 @@ import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -38,21 +44,23 @@ public class OrderUnitFacadeService {
 	@Resource
 	private CommdityMessageService commdityMessageService;
 	
-	
+	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;
 	/**
 	 * 生成订单
 	 * @param commdityid
 	 * @param appid
+	 * @param appSerect
 	 * @param mac
 	 * @param umac
 	 * @param uid
 	 * @param context
 	 * @return
 	 */
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, String mac, String umac, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, String appSerect, String mac, String umac, 
 			Integer uid, String context){
 		try{
-			orderFacadeService.validateAppId(appId);
+			orderFacadeService.verifyAppId(appId, appSerect);
 			
 			//验证用户mac和uid同时为空
 			if(uid == null && StringUtils.isEmpty(umac)){
@@ -76,19 +84,20 @@ public class OrderUnitFacadeService {
 	/**
 	 * 生成订单支付url之前的订单验证
 	 * @param orderId
+	 * @param appId
+	 * @param appSerect
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId) {
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId, String appSerect) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderId, appId);
+			Order order = orderFacadeService.validateOrder(orderId, appId, appSerect);
 			//验证订单状态是否小于等于未支付
 			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{String.valueOf(order_status)});
 			}
 			
-			OrderDTO orderDto = new OrderDTO();
-			BeanUtils.copyProperties(order, orderDto);
+			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -124,21 +133,56 @@ public class OrderUnitFacadeService {
 	 * @param appId 应用id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId) {
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId, String appSerect) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderId, appId);
+			Order order = orderFacadeService.validateOrder(orderId, appId, appSerect);
 			
 			if(!umac.equals(order.getUmac())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
 			}
 			
-			OrderDTO orderDto = new OrderDTO();
-			BeanUtils.copyProperties(order, orderDto);
+			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 根据设备mac查询订单分页列表
+	 * @param uid 用户id
+	 * @param mac 用户绑定的设备mac
+	 * @param status 订单状态
+	 * @param pageNo 页码
+	 * @param pageSize 分页数量
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid,  String mac, Integer status, int pageNo, int pageSize) {
+		try{
+			userDeviceFacadeService.validateUserDeviceBind(uid, mac);
+			
+			List<OrderDTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByMacAndStatus(mac, status);
+			if(order_count > 0){
+				List<Order> orderList = orderFacadeService.findOrdersByMacAndStatus(mac, status, pageNo, pageSize);
+				if(orderList != null && !orderList.isEmpty()){
+					retDtos = new ArrayList<OrderDTO>();
+					OrderDTO orderDto = null;
+					for(Order order : orderList){
+						orderDto = OrderHelper.buildOrderDTO(order);
+						retDtos.add(orderDto);
+					}
+				}
+			}
+			TailPage<OrderDTO> returnRet = new CommonPage<OrderDTO>(pageNo, pageSize, order_count, retDtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderPagesByMac Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

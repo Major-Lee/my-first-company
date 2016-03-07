@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.WebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -36,7 +37,8 @@ public class OrderController extends BaseController{
 	 * @param request
 	 * @param response
 	 * @param commdityid 商品id
-	 * @param appid 应用id
+	 * @param appId 应用id
+	 * @param appSerect 应用密钥
 	 * @param mac 设备mac
 	 * @param umac 用户mac
 	 * @param uid 用户uid
@@ -49,13 +51,14 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer commdityId,
 			@RequestParam(required = true) Integer appId,
+			@RequestParam(required = true) String appSerect,
 			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false) Integer uid,
 			@RequestParam(required = false) String context) {
 
-		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityId, appId, mac, 
-				umac, uid, context);
+		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityId, appId, appSerect, 
+				mac, umac, uid, context);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -80,10 +83,11 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String orderId,
 			@RequestParam(required = true) Integer appId,
+			@RequestParam(required = true) String appSerect,
 			@RequestParam(required = true) String payment_type
 			) {
 		//1:验证rpc请求 验证订单并返回订单信息
-		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderId, appId);
+		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderId, appId, appSerect);
 		if(validateResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(validateResult));
 			return;
@@ -123,10 +127,41 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = true) String orderId,
-			@RequestParam(required = true) Integer appId
+			@RequestParam(required = true) Integer appId,
+			@RequestParam(required = true) String appSerect
 			) {
 
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderId, appId);
+		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderId, appId, appSerect);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 根据设备mac查询订单分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/mac/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_mac_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<OrderDTO>> rpcResult = orderRpcService.orderPagesByMac(uid, mac, status, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

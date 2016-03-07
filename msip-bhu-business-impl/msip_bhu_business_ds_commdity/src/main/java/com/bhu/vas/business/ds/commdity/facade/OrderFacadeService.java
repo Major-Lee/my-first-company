@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
@@ -22,6 +23,7 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -61,6 +63,37 @@ public class OrderFacadeService {
 			return orderList.get(0);
 		}
 		return null;
+	}
+	
+	/**
+	 * 根据设备mac和订单状态进行查询订单数量
+	 * @param mac 设备mac
+	 * @param status 订单状态
+	 */
+	public int countOrderByMacAndStatus(String mac, Integer status){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria()
+			.andColumnEqualTo("mac", mac)
+			.andColumnEqualTo("status", status);
+		return orderService.countByModelCriteria(mc);
+	}
+	
+	/**
+	 * 根据设备mac和订单状态进行查询订单列表
+	 * @param mac 设备mac
+	 * @param status 订单状态
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public List<Order> findOrdersByMacAndStatus(String mac, Integer status, int pageNo, int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria()
+			.andColumnEqualTo("mac", mac)
+			.andColumnEqualTo("status", status);
+		mc.setPageNumber(pageNo);
+		mc.setSize(pageSize);
+		return orderService.findModelByModelCriteria(mc);
 	}
 	
 	/**
@@ -178,12 +211,12 @@ public class OrderFacadeService {
 			if(success){
 				changed_status = OrderStatus.PaySuccessed.getKey();
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
-				//TODO:通知应用发货
+
 				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderId[%s]", orderId));
-				
-				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify("test");
+				//进行发货通知
+				boolean deliver_notify_ret = orderDeliverNotify(order);
 				//判断通知发货成功 更新订单状态
-				if(notify_ret != null && notify_ret > 0){
+				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
 					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
 					logger.info(String.format("OrderPaymentCompletedNotify successed deliver notify: orderId[%s]", orderId));
@@ -203,16 +236,50 @@ public class OrderFacadeService {
 	}
 	
 	
+	/**
+	 * 通知应用发货，按照约定的redis写入
+	 * @param order
+	 * @return
+	 */
+	public boolean orderDeliverNotify(Order order){
+		try{
+			if(order == null) {
+				logger.error("orderDeliverNotify order data not exist");
+				return false;
+			}
+			Integer commdityId = order.getCommdityid();
+			Commdity commdity = commdityService.getById(commdityId);
+			if(commdity == null){
+				logger.error("orderDeliverNotify order commdity data not exist");
+				return false;
+			}
+			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity);
+			if(requestDeliverNotifyDto != null){
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(
+						JsonHelper.getJSONString(requestDeliverNotifyDto));
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("orderDeliverNotify exception", ex);
+		}
+		return false;
+	}
+	
 	
 	/*************            validate             ****************/
 	
 	/**
-	 * 验证应用id
-	 * @param appId
+	 * 认证应用id
+	 * @param appId 应用id
+	 * @param appSerect 应用密钥
 	 */
-	public void validateAppId(Integer appId){
-		//验证appid
-		if(!CommdityApplication.supported(appId)){
+	public void verifyAppId(Integer appId, String appSerect){
+		//认证appid
+		if(!CommdityApplication.verifyed(appId, appSerect)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appId)});
 		}
 	}
@@ -234,8 +301,8 @@ public class OrderFacadeService {
 	 * @param appId
 	 * @return
 	 */
-	public Order validateOrder(String orderId, Integer appId){
-		validateAppId(appId);
+	public Order validateOrder(String orderId, Integer appId, String appSerect){
+		verifyAppId(appId, appSerect);
 		Order order = validateOrderId(orderId);
 		if(!appId.equals(order.getAppid())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);
