@@ -12,6 +12,7 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private String applyid;
 	private int uid;
 	private int appid;
+	private String paymode;
 	private String mobileno;
 	private String nick;
 	private double cash = 0.00d;
@@ -78,6 +79,12 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 		this.taxcost = taxcost;
 	}
 
+	public String getPaymode() {
+		return paymode;
+	}
+	public void setPaymode(String paymode) {
+		this.paymode = paymode;
+	}
 	public double getRealCash(){
 		return ArithHelper.sub(cash,ArithHelper.add(transcost, taxcost));
 	}

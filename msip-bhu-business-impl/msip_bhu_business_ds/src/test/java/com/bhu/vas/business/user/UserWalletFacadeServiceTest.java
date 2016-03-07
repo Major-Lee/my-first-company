@@ -11,6 +11,8 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
+import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
@@ -68,6 +70,34 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     private String testWithdrawIP = "192.168.66.7";
     private String testOrderId = "08882016030200000000000000000029";
     
+    private String weichat_id = "2w22090420";
+    private String alipay_id = "2sf!sdfsdf";
+    private String alipay_name = "Edmond Lee";
+    
+    @Test
+	public void test001PrepareUserPayment(){
+    	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
+    			ThirdpartiesPaymentMode.Weichat, 
+    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentMode.Weichat,weichat_id,null));
+    	
+    	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
+    			ThirdpartiesPaymentMode.Alipay, 
+    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentMode.Alipay,alipay_id,alipay_name));
+    	List<ThirdpartiesPaymentDTO> allPayment = userWalletFacadeService.fetchAllThirdpartiesPayment(testUserId);
+    	for(ThirdpartiesPaymentDTO dto:allPayment){
+    		System.out.println("0"+dto);
+    	}
+    	
+    	userWalletFacadeService.removeThirdpartiesPayment(testUserId, ThirdpartiesPaymentMode.Weichat);
+    	
+    	allPayment = userWalletFacadeService.fetchAllThirdpartiesPayment(testUserId);
+    	for(ThirdpartiesPaymentDTO dto:allPayment){
+    		System.out.println("1"+dto);
+    	}
+    	
+    	ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchThirdpartiesPayment(testUserId, ThirdpartiesPaymentMode.Alipay);
+    	System.out.println("2"+payment);
+	}
     
     @Test
 	public void test001SharedealCashToUserWallet(){
@@ -83,7 +113,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	}
     @Test
     public void test003DoWithdrawApply(){
-    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testAppid,testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
+    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testAppid,ThirdpartiesPaymentMode.Alipay,testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
     	System.out.println(apply);
     }
 
@@ -187,7 +217,9 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						walletConfigs.getWithdraw_tax_percent(), 
 						walletConfigs.getWithdraw_trancost_percent());
-				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO, System.currentTimeMillis());
+				
+				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentMode.fromMode(withdrawApply.getPaymode()));
+				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println(String.format("to Redis prepare[%s]:%s",withdrawApply.getId(), jsonNotify));
 				{	//保证写入redis后，提现申请设置成为转账中...状态

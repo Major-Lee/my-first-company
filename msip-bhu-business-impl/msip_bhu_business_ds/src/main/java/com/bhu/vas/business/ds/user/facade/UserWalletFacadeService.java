@@ -1,5 +1,9 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -8,10 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -19,6 +26,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserThirdpartiesPaymentService;
 import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -54,6 +62,9 @@ public class UserWalletFacadeService {
 	
 	@Resource
 	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
+	
+	@Resource
+	private UserThirdpartiesPaymentService userThirdpartiesPaymentService;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -211,7 +222,7 @@ public class UserWalletFacadeService {
 	 * @param cash
 	 */
 	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid, double cash){
-		/*if(cash <=0){
+		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		validateUser(uid);
@@ -219,7 +230,7 @@ public class UserWalletFacadeService {
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);*/
+		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.WithdrawRollback, 0d, cash, null);
 	}
 	
 	/**
@@ -233,6 +244,25 @@ public class UserWalletFacadeService {
 		userWalletService.update(uwallet);
 	}
 	
+	private ThirdpartiesPaymentDTO validateThirdpartiesPaymentMode(int uid,ThirdpartiesPaymentMode mode){
+		if(uid <=0){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+		}
+		if(mode == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_PARAM_EMPTY);
+		}
+		
+		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
+		if(payment == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
+		}
+		if(payment.containsKey(mode.getMode())){
+			return payment.getInnerModel(mode.getMode());
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
+		}
+		
+	}
 	/**
 	 * 生成提现申请
 	 * 申请提交后需要进行相关现金出账
@@ -240,12 +270,16 @@ public class UserWalletFacadeService {
 	 * @param pwd
 	 * @param cash 
 	 */
-	public UserWalletWithdrawApply doWithdrawApply(int appid,int uid, String pwd,double cash,String remoteip){
+	public UserWalletWithdrawApply doWithdrawApply(int appid,ThirdpartiesPaymentMode mode,int uid, String pwd,double cash,String remoteip){
+		
+		validateThirdpartiesPaymentMode(uid,mode);
 		logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 		this.cashFromUserWallet(uid, pwd, cash);
 		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 		apply.setUid(uid);
 		apply.setAppid(appid);
+		apply.setPaymode(mode.getMode());
+		
 		apply.setCash(cash);
 		apply.setRemoteip(remoteip);
 		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
@@ -360,7 +394,50 @@ public class UserWalletFacadeService {
 		wlog.setMemo(memo);
 		userWalletLogService.insert(wlog);
 	}
-
+	
+	//userThirdpartiesPaymentService
+	public List<ThirdpartiesPaymentDTO> addThirdpartiesPayment(int uid,ThirdpartiesPaymentMode mode,ThirdpartiesPaymentDTO paymentDTO){
+		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getOrCreateById(uid);
+		boolean ret = payment.addOrReplace(mode, paymentDTO);
+		if(ret){
+			payment = userThirdpartiesPaymentService.update(payment);
+		}
+		return new ArrayList<>(payment.values());
+	}
+	public void removeThirdpartiesPayment(int uid,ThirdpartiesPaymentMode mode){
+		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
+		if(payment != null){
+			boolean ret = payment.remove(mode);
+			if(ret){
+				userThirdpartiesPaymentService.update(payment);
+			}
+		}
+	}
+	
+	public ThirdpartiesPaymentDTO fetchFirstThirdpartiesPayment(int uid){
+		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
+		if(payment == null ) return null;
+		ArrayList<ThirdpartiesPaymentDTO> payments = new ArrayList<>(payment.values());
+		if(payments.isEmpty()) return null;
+		return payments.get(0);
+	}
+	
+	public ThirdpartiesPaymentDTO fetchThirdpartiesPayment(int uid,ThirdpartiesPaymentMode mode){
+		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
+		if(payment != null){
+			return payment.getInnerModel(mode.getMode());
+		}
+		return null;
+	}
+	
+	public List<ThirdpartiesPaymentDTO> fetchAllThirdpartiesPayment(int uid){
+		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
+		if(payment != null){
+			return new ArrayList<>(payment.values());
+		}
+		return Collections.emptyList();
+	}
+	
 	public UserService getUserService() {
 		return userService;
 	}
@@ -380,4 +457,9 @@ public class UserWalletFacadeService {
 	public UserWalletWithdrawApplyService getUserWalletWithdrawApplyService() {
 		return userWalletWithdrawApplyService;
 	}
+
+	public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {
+		return userThirdpartiesPaymentService;
+	}
+	
 }

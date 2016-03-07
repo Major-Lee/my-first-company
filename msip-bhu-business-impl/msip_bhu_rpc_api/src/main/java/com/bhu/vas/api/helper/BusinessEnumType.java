@@ -581,4 +581,46 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	
+	public enum ThirdpartiesPaymentMode{
+		Weichat("腾讯微信", "weichat"),
+		Alipay("支付宝", "alipay"),
+		;
+		private String name;
+		private String mode;
+		static Map<String, ThirdpartiesPaymentMode> allModeTypes;
+		
+		private ThirdpartiesPaymentMode(String name, String mode){
+			this.name = name;
+			this.mode = mode;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getMode() {
+			return mode;
+		}
+		public void setMode(String mode) {
+			this.mode = mode;
+		}
+		public static ThirdpartiesPaymentMode fromMode(String mode){
+			return allModeTypes.get(mode);
+		}
+		
+		public static boolean supported(String mode){
+			return allModeTypes.containsKey(mode);
+		}
+		
+		static {
+			allModeTypes = new HashMap<String, ThirdpartiesPaymentMode>();
+			ThirdpartiesPaymentMode[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (ThirdpartiesPaymentMode type : types){
+				allModeTypes.put(type.getMode(), type);
+			}
+		}
+	}
 }
