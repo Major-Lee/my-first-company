@@ -103,7 +103,7 @@ public class CommdityServiceConsumer {
 			commdityid = item.getId();
 		}
 		
-		Integer appid = 1000;
+		Integer appid = 1001;
 		String mac = "28:e0:2c:bc:2a:16";
 		String umac = "28:e0:2c:bc:2a:17";
 		if(commdityid > 0){
@@ -116,7 +116,7 @@ public class CommdityServiceConsumer {
 				orderid = dto.getId();
 			}
 			
-			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid);
+			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid);
 			if(ret2.getErrorCode() == null){
 				OrderDTO orderDto = ret2.getPayload();
 				System.out.println("validateOrderPaymentUrl " + orderDto.getId() + "=" + orderDto.getStatus());
@@ -126,9 +126,9 @@ public class CommdityServiceConsumer {
 			ResponseCreatePaymentUrlDTO rcp_dto = new ResponseCreatePaymentUrlDTO();
 			rcp_dto.setSuccess(true);
 			rcp_dto.setParams("params");
-			String create_payment_url_response = JsonHelper.getJSONString(rcp_dto);
+//			String create_payment_url_response = JsonHelper.getJSONString(rcp_dto);
 			
-			RpcResponseDTO<String> ret3 = orderRpcService.orderPaymentUrlCreated(orderid, create_payment_url_response);
+			RpcResponseDTO<String> ret3 = orderRpcService.orderPaymentUrlCreated(orderid, rcp_dto);
 			if(ret3.getErrorCode() == null){
 				String payurl_info = ret3.getPayload();
 				System.out.println("createOrderPaymentUrl " + payurl_info);
@@ -139,6 +139,7 @@ public class CommdityServiceConsumer {
 			opn_dto.setSuccess(true);
 			opn_dto.setOrderid(orderid);
 			opn_dto.setPayment_ts(System.currentTimeMillis());
+			System.out.println(JsonHelper.getJSONString(opn_dto));
 			
 	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(JsonHelper.getJSONString(opn_dto));
 			//			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
