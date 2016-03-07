@@ -3,7 +3,6 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;

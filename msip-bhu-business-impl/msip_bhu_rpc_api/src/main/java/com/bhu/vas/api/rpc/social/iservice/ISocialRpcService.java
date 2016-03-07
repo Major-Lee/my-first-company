@@ -6,7 +6,6 @@ import java.util.Set;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
-import com.bhu.vas.api.vto.WifiActionVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -99,8 +98,15 @@ public interface ISocialRpcService {
      * @return 
      */
 
-    public RpcResponseDTO<Boolean> unFollow (long uid,String hd_mac);
-    
+    public RpcResponseDTO<Boolean>  unFollow (long uid,String hd_mac);
+
+    /**
+     * 获取关注列表
+     * @param uid
+     * @param hd_mac
+     */
+    public Set<String> fetchFollowList(long uid,String hd_mac);
+
     /**
      * 获取用户评论的wifi
      * @param uid

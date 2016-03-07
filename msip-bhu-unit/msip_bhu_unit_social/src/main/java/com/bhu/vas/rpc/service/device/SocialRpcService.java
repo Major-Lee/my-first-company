@@ -13,7 +13,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
-import com.bhu.vas.api.vto.WifiActionVTO;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -82,7 +81,7 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,
 	    String bssid, int pageNo, int pageSize) {
-	logger.info(String.format("pageWifiCommentVTO pageNo[%s] pageSize",
+	    logger.info(String.format("pageWifiCommentVTO pageNo[%s] pageSize",
 		pageNo, pageSize));
 	return RpcResponseDTOBuilder
 		.builderSuccessRpcResponse(socialFacadeRpcService
@@ -102,8 +101,14 @@ public class SocialRpcService implements ISocialRpcService {
 	logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
 	return socialFacadeRpcService.unFollow(uid, hd_mac);
     }
-    
-	public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid) {
+
+    @Override
+    public Set<String> fetchFollowList(long uid, String hd_mac) {
+        logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s]", uid, hd_mac));
+        return socialFacadeRpcService.fetchFollowList(uid,hd_mac);
+    }
+
+    public RpcResponseDTO<Set<String>> fetchUserCommentWifiList(String uid) {
 
 		return RpcResponseDTOBuilder
 				.builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid));

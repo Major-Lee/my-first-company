@@ -15,7 +15,7 @@ public class SocialRelationTest extends BaseTest {
     @Test
     public void testFollow() {
 	System.out.println("123123123");
-	socialRpcService.follow(100234, "00:11:11:11:11:01");
+	socialRpcService.unFollow(100234, "00:11:11:11:11:01");
 	System.out.println("end______");
     }
 }

@@ -103,12 +103,12 @@ public class BusinessKeyDefine {
 	}
 	
 	public static class Social{
-		public static final String ACTION = "SA";
+		public static final String ACTION = "SA.";
 		public static final String Meet = "SM";
 
 		public static final String COMMENT = "CM";
 
-		public static final String RELATION= "SREL";
+		public static final String RELATION= "SREL.";
 
 	}
 }
