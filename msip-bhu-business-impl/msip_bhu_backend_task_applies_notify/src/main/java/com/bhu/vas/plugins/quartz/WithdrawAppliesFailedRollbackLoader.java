@@ -35,10 +35,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  * 
  */
 public class WithdrawAppliesFailedRollbackLoader {
-    private static Logger logger = LoggerFactory
-	    .getLogger(WithdrawAppliesFailedRollbackLoader.class);
-    
-    
+    private static Logger logger = LoggerFactory.getLogger(WithdrawAppliesFailedRollbackLoader.class);
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
 
@@ -47,6 +44,7 @@ public class WithdrawAppliesFailedRollbackLoader {
     
     public void execute(){
 		logger.info("WithdrawAppliesFailedRollbackLoader starting...");
+		int failed_count = 0;
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
 		mc.setOrderByClause(" updated_at ");
@@ -64,7 +62,7 @@ public class WithdrawAppliesFailedRollbackLoader {
 						walletConfigs.getWithdraw_trancost_percent());
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
-				System.out.println("to Redis prepare:"+jsonNotify);
+				System.out.println(String.format("to Redis prepare[%s]:%s",withdrawApply.getId(), jsonNotify));
 				{	//保证写入redis后，提现申请设置成为转账中...状态
 					BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
 					CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
@@ -72,10 +70,11 @@ public class WithdrawAppliesFailedRollbackLoader {
 					withdrawApply.setWithdraw_oper(current.getKey());
 					userWalletFacadeService.getUserWalletWithdrawApplyService().update(withdrawApply);
 				}
-				System.out.println("to Redis ok:"+jsonNotify);
+				System.out.println(String.format("to Redis prepare[%s] ok",withdrawApply.getId()));
+				failed_count++;
 			}
 			
 		}
-		logger.info("WithdrawAppliesFailedRollbackLoader done");
+		logger.info("WithdrawAppliesFailedRollbackLoader done, total:"+failed_count);
     }
 }

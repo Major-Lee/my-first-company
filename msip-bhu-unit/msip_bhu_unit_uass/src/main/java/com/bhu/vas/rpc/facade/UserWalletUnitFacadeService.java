@@ -75,6 +75,9 @@ public class UserWalletUnitFacadeService {
 		try{
 			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doWithdrawVerify(reckoner, applyid, passed);
 			if(passed){//需要写入uPay数据队列
+				BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
+				withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+				withdrawApply.setWithdraw_oper(current.getKey());
 				//User user = userWalletFacadeService.getUserService().getById(withdrawApply.getUid());
 				User user =userWalletFacadeService.validateUser(withdrawApply.getUid());
 				UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
@@ -85,10 +88,10 @@ public class UserWalletUnitFacadeService {
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println("to Redis prepare:"+jsonNotify);
 				{	//保证写入redis后，提现申请设置成为转账中...状态
-					BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
+					//BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
 					CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
-					withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
-					withdrawApply.setWithdraw_oper(current.getKey());
+					//withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+					//withdrawApply.setWithdraw_oper(current.getKey());
 					userWalletFacadeService.getUserWalletWithdrawApplyService().update(withdrawApply);
 				}
 				System.out.println("to Redis ok:"+jsonNotify);

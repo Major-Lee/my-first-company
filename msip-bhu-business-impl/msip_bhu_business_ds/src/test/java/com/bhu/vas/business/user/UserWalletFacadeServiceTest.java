@@ -9,10 +9,19 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
+import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -139,7 +148,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     
     @Test
-   	public void test008DoWithdrawRemoteNotify(){
+   	public void test008DoWithdrawNotifyFromRemote(){
     	ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		createCriteria.andColumnEqualTo("uid", testUserId);
@@ -150,13 +159,45 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	mc.setOrderByClause(" created_at desc ");
     	List<UserWalletWithdrawApply> applies = userWalletFacadeService.getUserWalletWithdrawApplyService().findModelByModelCriteria(mc);
     	for(UserWalletWithdrawApply apply:applies){
-    		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawRemoteNotify(apply.getId(), false);
+    		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawNotifyFromRemote(apply.getId(), false);
         	System.out.println("RemoteNotifyFailed:"+applynow);
     	}
-    	
-    	
     	/*System.out.println(WithdrawCashDetail.build(100.00d, 0.20d, 0.03d));
     	System.out.println(WithdrawCashDetail.build(1000.00d, 0.20d, 0.03d));
     	System.out.println(WithdrawCashDetail.build(485.33d, 0.20d, 0.03d));*/
    	}
+    
+    @Test
+    public void test009DoWithdrawAppliesFailedRollbackLoader(){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
+		mc.setOrderByClause(" updated_at ");
+    	mc.setPageNumber(1);
+    	mc.setPageSize(500);
+		EntityIterator<String, UserWalletWithdrawApply> it = new KeyBasedEntityBatchIterator<String,UserWalletWithdrawApply>(String.class
+				,UserWalletWithdrawApply.class, userWalletFacadeService.getUserWalletWithdrawApplyService().getEntityDao(), mc);
+		while(it.hasNext()){
+			List<UserWalletWithdrawApply> applies = it.next();
+			for(UserWalletWithdrawApply withdrawApply:applies){
+				BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
+				withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+				withdrawApply.setWithdraw_oper(current.getKey());
+				User user =userWalletFacadeService.validateUser(withdrawApply.getUid());
+				UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
+				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
+						walletConfigs.getWithdraw_tax_percent(), 
+						walletConfigs.getWithdraw_trancost_percent());
+				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO, System.currentTimeMillis());
+				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
+				System.out.println(String.format("to Redis prepare[%s]:%s",withdrawApply.getId(), jsonNotify));
+				{	//保证写入redis后，提现申请设置成为转账中...状态
+					CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
+					//withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+					//withdrawApply.setWithdraw_oper(current.getKey());
+					userWalletFacadeService.getUserWalletWithdrawApplyService().update(withdrawApply);
+				}
+				System.out.println(String.format("to Redis prepare[%s] ok",withdrawApply.getId()));
+			}
+		}
+    }
 }
