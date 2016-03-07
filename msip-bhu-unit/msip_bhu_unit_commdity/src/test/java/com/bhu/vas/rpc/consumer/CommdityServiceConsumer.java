@@ -136,6 +136,7 @@ public class CommdityServiceConsumer {
 				System.out.println(ret3.getErrorCode().code());
 			}
 			ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
+			opn_dto.setSuccess(true);
 			opn_dto.setOrderid(orderid);
 			opn_dto.setPayment_ts(System.currentTimeMillis());
 			

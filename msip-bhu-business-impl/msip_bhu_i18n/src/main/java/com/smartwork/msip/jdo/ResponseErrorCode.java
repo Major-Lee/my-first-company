@@ -218,7 +218,9 @@ public enum ResponseErrorCode {
 	VALIDATE_COMMDITY_NOT_ONSALE("450","validate.commdity.not.onsale"),
 	VALIDATE_COMMDITY_AMOUNT_INVALID("451","validate.commdity.amount.invalid"),
 	
-	INTERNAL_COMMUNICATION_PAYMENTURL_FAILED("490","internal.communication.paymenturl.failed"),
+	ORDER_PAYMENT_STATUS_PAYSUCCESSED("460","order.payment.status.paysuccessed"),
+	
+	//INTERNAL_COMMUNICATION_PAYMENTURL_FAILED("490","internal.communication.paymenturl.failed"),
 	INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID("491","internal.communication.paymenturl.response.invalid"),
 	INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE("492","internal.communication.paymenturl.response.false"),
 	
