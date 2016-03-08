@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
@@ -232,11 +232,11 @@ public class UserWalletFacadeService{
 		userWalletService.update(uwallet);
 	}
 	
-	private ThirdpartiesPaymentDTO validateThirdpartiesPaymentMode(int uid,ThirdpartiesPaymentMode mode){
+	private ThirdpartiesPaymentDTO validateThirdpartiesPaymentType(int uid,ThirdpartiesPaymentType type){
 		if(uid <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
 		}
-		if(mode == null){
+		if(type == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_PARAM_EMPTY);
 		}
 		
@@ -244,8 +244,8 @@ public class UserWalletFacadeService{
 		if(payment == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
 		}
-		if(payment.containsKey(mode.getMode())){
-			return payment.getInnerModel(mode.getMode());
+		if(payment.containsKey(type.getType())){
+			return payment.getInnerModel(type.getType());
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
 		}
@@ -258,15 +258,15 @@ public class UserWalletFacadeService{
 	 * @param pwd
 	 * @param cash 
 	 */
-	public UserWalletWithdrawApply doWithdrawApply(int appid,ThirdpartiesPaymentMode mode,int uid, String pwd,double cash,String remoteip){
+	public UserWalletWithdrawApply doWithdrawApply(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
 		
-		validateThirdpartiesPaymentMode(uid,mode);
+		validateThirdpartiesPaymentType(uid,type);
 		logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 		this.cashFromUserWallet(uid, pwd, cash);
 		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 		apply.setUid(uid);
 		apply.setAppid(appid);
-		apply.setPaymode(mode.getMode());
+		apply.setPayment_type(type.getType());
 		
 		apply.setCash(cash);
 		apply.setRemoteip(remoteip);
@@ -397,18 +397,18 @@ public class UserWalletFacadeService{
 	}
 	
 	//userThirdpartiesPaymentService
-	public List<ThirdpartiesPaymentDTO> addThirdpartiesPayment(int uid,ThirdpartiesPaymentMode mode,ThirdpartiesPaymentDTO paymentDTO){
+	public List<ThirdpartiesPaymentDTO> addThirdpartiesPayment(int uid,ThirdpartiesPaymentType type,ThirdpartiesPaymentDTO paymentDTO){
 		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getOrCreateById(uid);
-		boolean ret = payment.addOrReplace(mode, paymentDTO);
+		boolean ret = payment.addOrReplace(type, paymentDTO);
 		if(ret){
 			payment = userThirdpartiesPaymentService.update(payment);
 		}
 		return new ArrayList<>(payment.values());
 	}
-	public void removeThirdpartiesPayment(int uid,ThirdpartiesPaymentMode mode){
+	public void removeThirdpartiesPayment(int uid,ThirdpartiesPaymentType type){
 		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
 		if(payment != null){
-			boolean ret = payment.remove(mode);
+			boolean ret = payment.remove(type);
 			if(ret){
 				userThirdpartiesPaymentService.update(payment);
 			}
@@ -423,10 +423,10 @@ public class UserWalletFacadeService{
 		return payments.get(0);
 	}
 	
-	public ThirdpartiesPaymentDTO fetchThirdpartiesPayment(int uid,ThirdpartiesPaymentMode mode){
+	public ThirdpartiesPaymentDTO fetchThirdpartiesPayment(int uid,ThirdpartiesPaymentType type){
 		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
 		if(payment != null){
-			return payment.getInnerModel(mode.getMode());
+			return payment.getInnerModel(type.getType());
 		}
 		return null;
 	}

@@ -597,17 +597,17 @@ public class BusinessEnumType {
 		}
 	}
 	
-	public enum ThirdpartiesPaymentMode{
-		Weichat("腾讯微信", "weichat"),
-		Alipay("支付宝", "alipay"),
+	public enum ThirdpartiesPaymentType{
+		Weichat("腾讯微信", "Weixin"),
+		Alipay("支付宝", "Alipay"),
 		;
 		private String name;
-		private String mode;
-		static Map<String, ThirdpartiesPaymentMode> allModeTypes;
+		private String type;
+		static Map<String, ThirdpartiesPaymentType> allPaymentTypes;
 		
-		private ThirdpartiesPaymentMode(String name, String mode){
+		private ThirdpartiesPaymentType(String name, String type){
 			this.name = name;
-			this.mode = mode;
+			this.type = type;
 		}
 		public String getName() {
 			return name;
@@ -616,25 +616,25 @@ public class BusinessEnumType {
 			this.name = name;
 		}
 		
-		public String getMode() {
-			return mode;
+		public String getType() {
+			return type;
 		}
-		public void setMode(String mode) {
-			this.mode = mode;
+		public void setType(String type) {
+			this.type = type;
 		}
-		public static ThirdpartiesPaymentMode fromMode(String mode){
-			return allModeTypes.get(mode);
+		public static ThirdpartiesPaymentType fromMode(String mode){
+			return allPaymentTypes.get(mode);
 		}
 		
 		public static boolean supported(String mode){
-			return allModeTypes.containsKey(mode);
+			return allPaymentTypes.containsKey(mode);
 		}
 		
 		static {
-			allModeTypes = new HashMap<String, ThirdpartiesPaymentMode>();
-			ThirdpartiesPaymentMode[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (ThirdpartiesPaymentMode type : types){
-				allModeTypes.put(type.getMode(), type);
+			allPaymentTypes = new HashMap<String, ThirdpartiesPaymentType>();
+			ThirdpartiesPaymentType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (ThirdpartiesPaymentType type : types){
+				allPaymentTypes.put(type.getType(), type);
 			}
 		}
 	}

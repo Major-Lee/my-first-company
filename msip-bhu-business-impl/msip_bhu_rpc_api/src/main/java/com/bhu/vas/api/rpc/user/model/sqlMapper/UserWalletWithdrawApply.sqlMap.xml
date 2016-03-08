@@ -7,7 +7,7 @@
   <resultMap id="modelResult" type="userWalletWithdrawApply">
     <id property="id" column="id"/>
     <result property="appid" column="appid"/>
-    <result property="paymode" column="paymode"/>
+    <result property="payment_type" column="payment_type"/>
     <result property="uid" column="uid"/>
     
     <result property="cash" column="cash"/>
@@ -29,7 +29,7 @@
 	    <![CDATA[
 	    	id,
 	    	appid,
-	    	paymode,
+	    	payment_type,
 	    	uid,
 	    	cash,
 	    	withdraw_oper,
@@ -44,7 +44,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	appid,
-	    	paymode,
+	    	payment_type,
 	    	uid,
 	    	cash,
 	    	withdraw_oper,
@@ -58,7 +58,7 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{appid},
-			#{paymode},
+			#{payment_type},
 	    	#{uid},
 	    	#{cash},
 	    	#{withdraw_oper},
@@ -70,7 +70,7 @@
 	</sql>
 	<sql id="modelUpdateValues">
 			appid = #{appid},
-			paymode = #{paymode},
+			payment_type = #{payment_type},
 	    	uid = #{uid},
 	    	cash = #{cash},
 	    	withdraw_oper = #{withdraw_oper},

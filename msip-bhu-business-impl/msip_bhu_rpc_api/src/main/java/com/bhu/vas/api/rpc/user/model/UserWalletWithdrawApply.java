@@ -20,7 +20,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 	private int uid;
 	private int appid;
 	//提现入账账户类别
-	private String paymode;
+	private String payment_type;
 	//申请提现的现金
 	private double cash;
 	//提现操作状态BusinessEnumType.UWithdrawStatus
@@ -88,12 +88,13 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		this.appid = appid;
 	}
 
-	public String getPaymode() {
-		return paymode;
+
+	public String getPayment_type() {
+		return payment_type;
 	}
 
-	public void setPaymode(String paymode) {
-		this.paymode = paymode;
+	public void setPayment_type(String payment_type) {
+		this.payment_type = payment_type;
 	}
 
 	@Override
@@ -102,7 +103,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 	}
 	
 	public String toString(){
-		return String.format("WalletWithdrawApply id[%s] appid[%s] paymode[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,paymode,uid,cash,withdraw_oper,last_reckoner);
+		return String.format("WalletWithdrawApply id[%s] appid[%s] payment_type[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,payment_type,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
 	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,double withdraw_tax_percent, double withdraw_trancost_percent){
@@ -110,7 +111,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setApplyid(id);
 		vto.setUid(uid);
 		vto.setAppid(appid);
-		vto.setPaymode(paymode);
+		vto.setPayment_type(payment_type);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
 		vto.setCash(cash);

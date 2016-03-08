@@ -22,7 +22,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping(value = "/account/pay")
-public class UserPaymentController extends BaseController{
+public class UserThirdpartiesPaymentController extends BaseController{
 	
 	@Resource
 	private IUserWalletRpcService userWalletRpcService;
@@ -49,7 +49,7 @@ public class UserPaymentController extends BaseController{
 	public void remove(
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
-			@RequestParam(required=true) String paymode){
+			@RequestParam(required=true) String payment_type){
 		try{
 			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.removeUserThirdpartiesPayment(uid, paymode);
 			if(!rpcResult.hasError()){
@@ -68,7 +68,7 @@ public class UserPaymentController extends BaseController{
 			HttpServletRequest request, 
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
-			@RequestParam(required=true) String paymode,
+			@RequestParam(required=true) String payment_type,
 			@RequestParam(required=true) String id,
 			@RequestParam(required = false) String name
 			){

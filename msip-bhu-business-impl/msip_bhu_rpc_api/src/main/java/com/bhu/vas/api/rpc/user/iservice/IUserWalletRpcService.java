@@ -56,7 +56,7 @@ public interface IUserWalletRpcService {
 	 * @param passed
 	 * @return
 	 */
-	public RpcResponseDTO<UserWithdrawApplyVTO>	withdrawOper(int appid,String paymode,int uid,String pwd,double cash,String remoteip);
+	public RpcResponseDTO<UserWithdrawApplyVTO>	withdrawOper(int appid,String payment_type,int uid,String pwd,double cash,String remoteip);
 	
 	/**
 	 * 钱包详情
@@ -80,7 +80,7 @@ public interface IUserWalletRpcService {
 	 * @param paymode
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String paymode);
+	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String payment_type);
 	
 	/**
 	 * 创建或更新第三方转账账号关联信息

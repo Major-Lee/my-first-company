@@ -2,11 +2,11 @@ package com.bhu.vas.api.rpc.user.dto;
 
 import java.io.Serializable;
 
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 
 @SuppressWarnings("serial")
 public class ThirdpartiesPaymentDTO implements Serializable{
-	private String mode;
+	private String type;
 	private String id;
 	private String name;
 	public String getId() {
@@ -22,21 +22,21 @@ public class ThirdpartiesPaymentDTO implements Serializable{
 		this.name = name;
 	}
 	
-	public String getMode() {
-		return mode;
+	public String getType() {
+		return type;
 	}
-	public void setMode(String mode) {
-		this.mode = mode;
+	public void setType(String type) {
+		this.type = type;
 	}
-	public static ThirdpartiesPaymentDTO build(ThirdpartiesPaymentMode mode,String id,String name){
+	public static ThirdpartiesPaymentDTO build(ThirdpartiesPaymentType mode,String id,String name){
 		ThirdpartiesPaymentDTO dto = new ThirdpartiesPaymentDTO();
-		dto.setMode(mode.getMode());
+		dto.setType(mode.getType());
 		dto.setId(id);
 		dto.setName(name);
 		return dto;
 	}
 	
 	public String toString(){
-		return String.format("ThirdpartiesPayment mode[%s] id[%s] name[%s]", mode,id,name);
+		return String.format("ThirdpartiesPayment type[%s] id[%s] name[%s]", type,id,name);
 	}
 }

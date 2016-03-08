@@ -1,6 +1,6 @@
 package com.bhu.vas.api.rpc.user.model;
 
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtIntModel;
 
@@ -14,16 +14,16 @@ import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtIntModel;
 @SuppressWarnings("serial")
 public class UserThirdpartiesPayment extends KeyDtoMapJsonExtIntModel<ThirdpartiesPaymentDTO>{
 	
-	public boolean addOrReplace(ThirdpartiesPaymentMode mode,ThirdpartiesPaymentDTO payment){
-		if(mode == null || payment == null) return false;
-		this.putInnerModel(mode.getMode(), payment);
+	public boolean addOrReplace(ThirdpartiesPaymentType type,ThirdpartiesPaymentDTO payment){
+		if(type == null || payment == null) return false;
+		this.putInnerModel(type.getType(), payment);
 		return true;
 	}
 	
-	public boolean remove(ThirdpartiesPaymentMode mode){
-		if(mode == null) return false;
-		if(this.containsKey(mode.getMode())){
-			this.removeInnerModel(mode.getMode());
+	public boolean remove(ThirdpartiesPaymentType type){
+		if(type == null) return false;
+		if(this.containsKey(type.getType())){
+			this.removeInnerModel(type.getType());
 			return true;
 		}
 		return false;

@@ -60,9 +60,10 @@
 
 		<typeAlias alias="wifiDevicePersistenceCMDState"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState" />
+		<!-- 	
 		<typeAlias alias="wifiDeviceVersionBuilder"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder" />
-
+ -->
 		<typeAlias alias="wifiDeviceGray"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray" />
 		<typeAlias alias="wifiDeviceGrayVersionPK"
@@ -168,9 +169,10 @@
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml" />
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml" />
+			<!--
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml" />
-
+-->
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGray.sqlMap.xml" />
 		<mapper

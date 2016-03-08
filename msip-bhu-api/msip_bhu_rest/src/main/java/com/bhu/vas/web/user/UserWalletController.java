@@ -22,7 +22,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping(value = "/account")
-public class UserWithdrawController extends BaseController{
+public class UserWalletController extends BaseController{
 	
 	@Resource
 	private IUserWalletRpcService userWalletRpcService;
@@ -34,13 +34,13 @@ public class UserWithdrawController extends BaseController{
 			HttpServletResponse response, 
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) int appid,
-			@RequestParam(required = false) String paymode,
+			@RequestParam(required = false) String payment_type,
 			@RequestParam(required = false) String pwd,
 			@RequestParam(required = true) double cash
 			){
 		try{
 			String remoteIp = WebHelper.getRemoteAddr(request);
-			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(appid,paymode,uid, pwd, cash, remoteIp);
+			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(appid,payment_type,uid, pwd, cash, remoteIp);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
@@ -56,8 +56,7 @@ public class UserWithdrawController extends BaseController{
 	@RequestMapping(value="/wallet/detail", method={RequestMethod.GET,RequestMethod.POST})
 	public void walletDetail(
 			HttpServletResponse response, 
-			@RequestParam(required=true) Integer uid,
-			@RequestParam(required=true) String identify){
+			@RequestParam(required=true) Integer uid){
 		try{
 			RpcResponseDTO<UserWalletDetailVTO> rpcResult = userWalletRpcService.walletDetail(uid);
 			if(!rpcResult.hasError()){

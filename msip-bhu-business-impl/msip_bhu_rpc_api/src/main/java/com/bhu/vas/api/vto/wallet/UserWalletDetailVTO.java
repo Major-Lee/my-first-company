@@ -1,5 +1,7 @@
 package com.bhu.vas.api.vto.wallet;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
+
 /**
  * 
  * @author Edmond
@@ -49,5 +51,7 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	public void setHaspwd(boolean haspwd) {
 		this.haspwd = haspwd;
 	}
-	
+	public double getVcurrency_total(){
+		return ArithHelper.add(vcurrency, vcurrency_bing);
+	}
 }
