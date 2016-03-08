@@ -9,13 +9,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.agent.iservice.IAgentUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -33,9 +33,9 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapter {
 	private final Logger logger = LoggerFactory.getLogger(TokenValidateControllerInterceptor.class);
-	
+
 	@Resource
-	private IAgentUserRpcService agentUserRpcService;
+	private IUserRpcService userRpcService;
 
 	private static final String ConsolePrefixUrl = "/console";
 	private static Set<String> ignoreTokensValidateUrlSet = new HashSet<String>();
@@ -77,8 +77,17 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 				return false;
 			}
 		}
-		
-		RpcResponseDTO<Boolean> tokenValidate = agentUserRpcService.tokenValidate(UID, accessToken);
+
+		String udid = request.getHeader(RuntimeConfiguration.Param_UDIDHeader);
+		if(StringUtils.isEmpty(udid)){
+			udid = request.getParameter(RuntimeConfiguration.Param_UDIDRequest);
+			/*if(StringUtils.isEmpty(udid)){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+				return false;
+			}*/
+		}
+
+		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken, udid);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));

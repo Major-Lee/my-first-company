@@ -31,5 +31,6 @@
  	<dubbo:registry protocol="zookeeper" address="${zookeeper}" />
  	<dubbo:monitor protocol="registry"></dubbo:monitor>
 
-    <import resource="classpath*:com/bhu/vas/api/rpc/agent/spring/dubbo-bhu-agent-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/social/spring/dubbo-bhu-social-reference.xml"/>
 </beans>
