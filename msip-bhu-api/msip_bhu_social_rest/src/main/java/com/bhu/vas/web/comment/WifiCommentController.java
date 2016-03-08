@@ -19,7 +19,9 @@ import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
+import com.smartwork.msip.jdo.ResponseSuccessCode;
 
 @Controller
 @RequestMapping("/wifi")
@@ -46,13 +48,13 @@ public class WifiCommentController extends BaseController {
              @RequestParam(required = true, value = "message") String message) {
 		try {
 			if (socialRpcService.comment(uid, bssid, hd_mac, message)) {
-				SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ResponseSuccessCode.COMMON_BUSINESS_SUCCESS));
 			} else {
-				SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
 			}
 
 		} catch (Exception ex) {
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 		}
 	}
 	
@@ -75,7 +77,7 @@ public class WifiCommentController extends BaseController {
 					pageSize);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		} catch (Exception ex) {
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 		}
 	}
 	
@@ -95,7 +97,7 @@ public class WifiCommentController extends BaseController {
 			RpcResponseDTO<List<CommentedWifiVTO>> rpcResult = socialRpcService.fetchUserCommentWifiList(uid, hd_mac);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		} catch (Exception ex) {
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 		}
 	}
 }
