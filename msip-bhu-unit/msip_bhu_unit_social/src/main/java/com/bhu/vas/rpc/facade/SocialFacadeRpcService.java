@@ -51,9 +51,6 @@ public class SocialFacadeRpcService {
     @Resource
     private WifiService wifiService;
 
-    @Resource
-    private SocialHandsetMeetHashService socialHandsetMeetHashService;
-
     public WifiComment comment(long uid, String bssid, String hd_mac, String message) {
 
         WifiComment wifiComment = new WifiComment();
@@ -131,8 +128,9 @@ public class SocialFacadeRpcService {
                 vto.setUid(user.getId());
                 vto.setAvatar(user.getAvatar());
                 vto.setNick(handsetUser.getNick());
-                vto.setLast_meet(socialHandsetMeetHashService.getLasthandsetMeet(hd_mac_self,hd_mac));
+                vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self,hd_mac));
             }
+            result.add(vto);
         }
         return new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize,
                 set.size(), result);
