@@ -347,7 +347,7 @@ public class DeviceBusinessFacadeService {
 				//mobileno
 				keynum = dto.getKeynum();
 				industry = dto.getIndustry();
-				if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(keynum)){
+				if(StringUtils.isNotEmpty(mac)){
 					/*int uid = Integer.parseInt(keynum);
 			    	User user = userService.getById(uid);*/
 					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
@@ -358,74 +358,34 @@ public class DeviceBusinessFacadeService {
 			    			industry = wifiDeviceDoc.getD_industry();
 			    			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 						}else{
-							User user = userFacadeService.getUserByMobileno(keynum);
-							if(user != null){
-					    		UserDevice userDevice = new UserDevice();
-						        userDevice.setId(new UserDevicePK(mac, user.getId()));
-						        userDevice.setDevice_name(mac);
-						        userDevice.setCreated_at(new Date());
-						        userDeviceService.insert(userDevice);
-						        
-					    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-					    		if(wifiDevice != null){
-							        wifiDevice.setIndustry(industry);
-							        wifiDeviceService.update(wifiDevice);
-					    		}
-						        
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, userDevice.getDevice_name(), industry);
-								keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+							if(StringUtils.isNotEmpty(keynum)){
+								User user = userFacadeService.getUserByMobileno(keynum);
+								if(user != null){
+						    		UserDevice userDevice = new UserDevice();
+							        userDevice.setId(new UserDevicePK(mac, user.getId()));
+							        userDevice.setDevice_name(mac);
+							        userDevice.setCreated_at(new Date());
+							        userDeviceService.insert(userDevice);
+							        
+						    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+						    		if(wifiDevice != null){
+								        wifiDevice.setIndustry(industry);
+								        wifiDeviceService.update(wifiDevice);
+						    		}
+							        
+							        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, userDevice.getDevice_name(), industry);
+									keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+								}
 							}
 						}
 					}
-/*					User user = userFacadeService.getUserByMobileno(keynum);
-			    	if(user != null){
-			    		Integer uid = user.getId();
-			    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-			    		if(wifiDevice != null){
-					    	Integer old_uid = userDeviceService.fetchBindUid(mac);
-					    	if(old_uid != null){
-					    		User oldUser = userService.getById(old_uid);
-					    		if(oldUser != null){
-					    			keynum = oldUser.getMobileno();
-					    			industry = wifiDevice.getIndustry();
-					    		}
-					    	}else{
-					    		UserDevice userDevice = new UserDevice();
-						        userDevice.setId(new UserDevicePK(mac, uid));
-						        userDevice.setCreated_at(new Date());
-						        userDeviceService.insert(userDevice);
-						        
-						        wifiDevice.setIndustry(dto.getIndustry());
-						        wifiDeviceService.update(wifiDevice);
-						        
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null, industry);
-					    	}
-					    	if(uid != old_uid){
-					    		if(old_uid != null){
-					    			userDeviceService.deleteById(new UserDevicePK(mac, old_uid));
-					    		}
-					    		
-								userDevice = new UserDevice();
-						        userDevice.setId(new UserDevicePK(mac, uid));
-						        userDevice.setCreated_at(new Date());
-						        userDeviceService.insert(userDevice);
-						        
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, null);
-						        //业务数据同步
-						        //System.out.println("force " + deliverMessageService + " " + wifiDevice);
-						        deliverMessageService.sendUserDeviceForceBindActionMessage(uid, old_uid, mac, wifiDevice.getOrig_swver());
-						        
-					    	}
-					        keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
-			    		}
-			    	}*/
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
 			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_FAILED;
 		}finally{
-			if(dto != null){
+			if(dto != null && StringUtils.isNotEmpty(keynum)){
 				dto.setKeynum(keynum);
 				dto.setKeystatus(keystatus);
 				dto.setIndustry(industry);
