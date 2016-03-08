@@ -21,9 +21,9 @@ public class HandsetUserTest extends BaseTest {
     public void insert() {
 
         HandsetUser handsetUser = new HandsetUser();
-        handsetUser.setId("!@#!@#123");
-        handsetUser.setUid(123);
-        handsetUser.setNick("123123");
+        handsetUser.setId("2");
+        handsetUser.setUid(3);
+        handsetUser.setNick("456456");
         handsetUser.setCreated_at(new Date());
         handsetUserService.insert(handsetUser);
 

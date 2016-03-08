@@ -6,6 +6,9 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.rpc.social.vto.WifiVTO;
+
+import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
+
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -112,9 +115,10 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public Set<String> fetchFollowList(long uid, String hd_mac) {
+    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac,int pageNo,int pageSize) {
         logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s]", uid, hd_mac));
-        return socialFacadeRpcService.fetchFollowList(uid,hd_mac);
+        return RpcResponseDTOBuilder
+                .builderSuccessRpcResponse(socialFacadeRpcService.fetchFollowList(uid,hd_mac,pageNo,pageSize));
     }
 
 

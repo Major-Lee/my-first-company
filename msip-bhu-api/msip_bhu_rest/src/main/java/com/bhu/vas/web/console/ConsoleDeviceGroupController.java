@@ -200,7 +200,7 @@ public class ConsoleDeviceGroupController extends BaseController {
      * @param request
      * @param response
      * @param uid
-     * @param gid
+     * @param message
      * @param opt
      * @param subopt
      * @param extparams

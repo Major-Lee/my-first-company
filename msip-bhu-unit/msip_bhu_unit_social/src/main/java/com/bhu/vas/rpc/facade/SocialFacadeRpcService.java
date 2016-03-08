@@ -12,6 +12,8 @@ import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
 import com.bhu.vas.business.ds.social.service.WifiService;
+import com.bhu.vas.api.vto.BackendTaskVTO;
+import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
@@ -52,6 +54,8 @@ public class SocialFacadeRpcService {
     @Resource
     private WifiService wifiService;
 
+    @Resource
+    private SocialHandsetMeetHashService socialHandsetMeetHashService;
 
     public WifiComment comment(long uid, String bssid, String hd_mac, String message) {
 
@@ -69,6 +73,7 @@ public class SocialFacadeRpcService {
 
     /**
      * 点赞/踩/举报
+     *
      * @param bssid
      * @param type
      * @return
@@ -86,6 +91,7 @@ public class SocialFacadeRpcService {
 
     /**
      * 关注
+     *
      * @param uid
      * @param hd_mac
      * @return
@@ -97,6 +103,7 @@ public class SocialFacadeRpcService {
 
     /**
      * 取消关注
+     *
      * @param uid
      * @param hd_mac
      * @return
@@ -110,10 +117,28 @@ public class SocialFacadeRpcService {
     /**
      * 获取关注列表
      * @param uid
-     * @param hd_mac
+     * @param hd_mac_self
+     * @param pageNo
+     * @param pageSize
+     * @return
      */
-    public Set<String> fetchFollowList(long uid,String hd_mac){
-        return SocialFollowSortedSetService.getInstance().fetchFollowList(uid);
+    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self,int pageNo, int pageSize) {
+        Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid);
+        List<SocialFetchFollowListVTO> result = new ArrayList<SocialFetchFollowListVTO>();
+        for (String hd_mac : set) {
+            SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
+            vto.setHd_mac(hd_mac);
+            HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+            if (handsetUser != null) {
+                User user = userService.getById((int) handsetUser.getUid());
+                vto.setUid(user.getId());
+                vto.setAvatar(user.getAvatar());
+                vto.setNick(handsetUser.getNick());
+                vto.setLast_meet(socialHandsetMeetHashService.getLasthandsetMeet(hd_mac_self,hd_mac));
+            }
+        }
+        return new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize,
+                set.size(), result);
     }
 
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {

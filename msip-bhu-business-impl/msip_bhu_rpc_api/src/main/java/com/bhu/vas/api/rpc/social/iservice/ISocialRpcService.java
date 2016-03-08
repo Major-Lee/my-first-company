@@ -9,6 +9,7 @@ import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiVTO;
+import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -118,7 +119,7 @@ public interface ISocialRpcService {
      * @param uid
      * @param hd_mac
      */
-    public Set<String> fetchFollowList(long uid,String hd_mac);
+    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac,int pageNo,int PageSize);
 
     /**
      * 获取用户评论的wifi

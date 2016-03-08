@@ -19,10 +19,7 @@ public class SocialServiceConsumer_xw {
 
 		System.out.println("123123123");
 
-		Set<String> set = socialRpcService.fetchFollowList(100234,"12313");
-		for (String str : set){
-			System.out.println(str);
-		}
+		System.out.println(socialRpcService.fetchFollowList(100234,"0",0,5));
 
 		System.out.println("end");
 		

@@ -33,7 +33,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * Created by bluesand on 8/4/15.
- *
+ * <p/>
  * 避免 wifiDeviceGroupService 与 wifiDeviceGroupRelationService 同级service相互调用
  */
 @Service
@@ -62,72 +62,71 @@ public class WifiDeviceGroupFacadeService {
 
     /**
      * 通过pid取得pid=pid的节点
-     * 
-     * @param creator
-     *            可以为空
+     *
+     * @param creator 可以为空
      * @param pid
      * @return
      */
     public TailPage<DeviceGroupVTO> birthTree(Integer creator, long pid,
-	    int pageNo, int pageSize) {
-	// if(pid == null) pid = 0;
-	ModelCriteria mc = new ModelCriteria();
-	Criteria createCriteria = mc.createCriteria();
-	createCriteria.andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
-	/*
+                                              int pageNo, int pageSize) {
+        // if(pid == null) pid = 0;
+        ModelCriteria mc = new ModelCriteria();
+        Criteria createCriteria = mc.createCriteria();
+        createCriteria.andSimpleCaulse(" 1=1 ").andColumnEqualTo("pid", pid);
+    /*
 	 * if(creator != null){ createCriteria.andColumnEqualTo("creator",
 	 * creator); }
 	 */
-	// int total = wifiDeviceGroupService.countByCommonCriteria(mc);
-	mc.setPageNumber(pageNo);
-	mc.setPageSize(pageSize);
-	TailPage<WifiDeviceGroup> tailPages = wifiDeviceGroupService
-		.findModelTailPageByModelCriteria(mc);
-	List<DeviceGroupVTO> result = new ArrayList<DeviceGroupVTO>();
-	for (WifiDeviceGroup group : tailPages) {
-	    result.add(fromWifiDeviceGroupBirthTree(group));
-	}
-	return new CommonPage<DeviceGroupVTO>(pageNo, pageSize,
-		tailPages.getTotalItemsCount(), result);
+        // int total = wifiDeviceGroupService.countByCommonCriteria(mc);
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+        TailPage<WifiDeviceGroup> tailPages = wifiDeviceGroupService
+                .findModelTailPageByModelCriteria(mc);
+        List<DeviceGroupVTO> result = new ArrayList<DeviceGroupVTO>();
+        for (WifiDeviceGroup group : tailPages) {
+            result.add(fromWifiDeviceGroupBirthTree(group));
+        }
+        return new CommonPage<DeviceGroupVTO>(pageNo, pageSize,
+                tailPages.getTotalItemsCount(), result);
     }
 
     private DeviceGroupVTO fromWifiDeviceGroupBirthTree(
-	    WifiDeviceGroup dgroup) {
-	DeviceGroupVTO vto = new DeviceGroupVTO();
-	vto.setGid(dgroup.getId());
-	vto.setName(dgroup.getName());
-	vto.setPid(dgroup.getPid());
-	if (dgroup.getPid() == 0) {
-	    vto.setPname("根节点");
-	} else {
-	    WifiDeviceGroup parent_group = wifiDeviceGroupService
-		    .getById(dgroup.getPid());
-	    vto.setPname(
-		    (parent_group != null) ? parent_group.getName() : null);
-	}
-	// vto.setChildren(dgroup.getChildren());
-	vto.setParent(dgroup.getChildren() > 0);
-	vto.setPath(dgroup.getPath());
-	// ModelCriteria mc = new ModelCriteria();
-	// mc.createCriteria().andColumnEqualTo("gid", dgroup.getId());
-	// int total = wifiDeviceGroupRelationService.countByCommonCriteria(mc);
-	// vto.setDevice_count(total);
-	return vto;
+            WifiDeviceGroup dgroup) {
+        DeviceGroupVTO vto = new DeviceGroupVTO();
+        vto.setGid(dgroup.getId());
+        vto.setName(dgroup.getName());
+        vto.setPid(dgroup.getPid());
+        if (dgroup.getPid() == 0) {
+            vto.setPname("根节点");
+        } else {
+            WifiDeviceGroup parent_group = wifiDeviceGroupService
+                    .getById(dgroup.getPid());
+            vto.setPname(
+                    (parent_group != null) ? parent_group.getName() : null);
+        }
+        // vto.setChildren(dgroup.getChildren());
+        vto.setParent(dgroup.getChildren() > 0);
+        vto.setPath(dgroup.getPath());
+        // ModelCriteria mc = new ModelCriteria();
+        // mc.createCriteria().andColumnEqualTo("gid", dgroup.getId());
+        // int total = wifiDeviceGroupRelationService.countByCommonCriteria(mc);
+        // vto.setDevice_count(total);
+        return vto;
     }
 
     public static int countSubString(String origin, String sub) {
-	Pattern p = Pattern.compile(sub, Pattern.CASE_INSENSITIVE);
-	Matcher m = p.matcher(origin);
-	int count = 0;
-	while (m.find()) {
-	    count++;
-	}
-	return count;
+        Pattern p = Pattern.compile(sub, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(origin);
+        int count = 0;
+        while (m.find()) {
+            count++;
+        }
+        return count;
     }
 
     /**
      * 设备群组新增和更新 需要验证树层级关系，目前不能超过3级
-     * 
+     *
      * @param creator
      * @param gid
      * @param pid
@@ -135,74 +134,74 @@ public class WifiDeviceGroupFacadeService {
      * @return
      */
     public DeviceGroupVTO deviceGroupSave(Integer creator, long gid, long pid,
-	    String name) {
-	if (pid < 0) {
-	    throw new BusinessI18nCodeException(
-		    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST_PARENT,
-		    new String[] { String.valueOf(pid) });
-	}
-	if (pid > 0) {// 如果pid = 0 代表根节点下的一级子节点，无需验证树层级约束
-	    WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
-	    if (pgroup == null) {
-		throw new BusinessI18nCodeException(
-			ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST_PARENT,
-			new String[] { String.valueOf(pid) });
-	    }
-	    int count = countSubString(pgroup.getPath(), "/");
-	    if (count >= 3) {
-		// 节点已上限
-		throw new BusinessI18nCodeException(
-			ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
-	    }
-	}
-	boolean needParentChildrenInr = false;
-	// WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
-	WifiDeviceGroup dgroup = null;
-	if (gid == 0) {// 新建一个组
-	    dgroup = new WifiDeviceGroup();
-	    dgroup.setPid(pid);
-	    dgroup.setName(name);
-	    dgroup.setCreator(creator);
-	    dgroup.setUpdator(creator);
-	    dgroup = wifiDeviceGroupService.insert(dgroup);
-	    needParentChildrenInr = true;
-	} else {
-	    dgroup = wifiDeviceGroupService.getById(gid);
-	    if (dgroup == null) {
-		throw new BusinessI18nCodeException(
-			ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
-			new String[] { String.valueOf(gid) });
-	    }
-	    long oldPid = dgroup.getPid();
-	    String oldPath = dgroup.getPath();
-	    if (oldPid != pid) {// 父节点变更了
-		// pid变化了 所有此gid的子节点全部迁移，并重新生成relationpath
-		// 第一步：获取此节点下的所有子节点，包括子节点的子节点
-		List<WifiDeviceGroup> allByPath = wifiDeviceGroupService
-			.fetchAllByPath(oldPath, false);
-		dgroup.setPid(pid);
-		dgroup.setName(name);
-		dgroup.setPath(
-			wifiDeviceGroupService.generateRelativePath(dgroup));
-		dgroup.setUpdator(creator);
-		for (WifiDeviceGroup child : allByPath) {
-		    // String child_old_path = child.getPath();
-		    child.setPath(StringUtils.replace(child.getPath(), oldPath,
-			    dgroup.getPath()));
-		    // System.out.println(child_old_path+" "+ oldPath+"
-		    // "+dgroup.getPath()+" "+child.getPath());
-		    child.setUpdator(creator);
-		    wifiDeviceGroupService.update(child);
-		}
-		dgroup = wifiDeviceGroupService.update(dgroup);
-		{// oldPid的节点需要判定hanchild是否为true
-		    if (oldPid > 0) {
-			WifiDeviceGroup parent_group = wifiDeviceGroupService
-				.getById(oldPid);
-			if (parent_group != null) {
-			    parent_group.setChildren(
-				    parent_group.getChildren() - 1);
-			    wifiDeviceGroupService.update(parent_group);
+                                          String name) {
+        if (pid < 0) {
+            throw new BusinessI18nCodeException(
+                    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST_PARENT,
+                    new String[]{String.valueOf(pid)});
+        }
+        if (pid > 0) {// 如果pid = 0 代表根节点下的一级子节点，无需验证树层级约束
+            WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
+            if (pgroup == null) {
+                throw new BusinessI18nCodeException(
+                        ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST_PARENT,
+                        new String[]{String.valueOf(pid)});
+            }
+            int count = countSubString(pgroup.getPath(), "/");
+            if (count >= 3) {
+                // 节点已上限
+                throw new BusinessI18nCodeException(
+                        ResponseErrorCode.WIFIDEVICE_GROUP_TOO_LONG);
+            }
+        }
+        boolean needParentChildrenInr = false;
+        // WifiDeviceGroup pgroup = wifiDeviceGroupService.getById(pid);
+        WifiDeviceGroup dgroup = null;
+        if (gid == 0) {// 新建一个组
+            dgroup = new WifiDeviceGroup();
+            dgroup.setPid(pid);
+            dgroup.setName(name);
+            dgroup.setCreator(creator);
+            dgroup.setUpdator(creator);
+            dgroup = wifiDeviceGroupService.insert(dgroup);
+            needParentChildrenInr = true;
+        } else {
+            dgroup = wifiDeviceGroupService.getById(gid);
+            if (dgroup == null) {
+                throw new BusinessI18nCodeException(
+                        ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
+                        new String[]{String.valueOf(gid)});
+            }
+            long oldPid = dgroup.getPid();
+            String oldPath = dgroup.getPath();
+            if (oldPid != pid) {// 父节点变更了
+                // pid变化了 所有此gid的子节点全部迁移，并重新生成relationpath
+                // 第一步：获取此节点下的所有子节点，包括子节点的子节点
+                List<WifiDeviceGroup> allByPath = wifiDeviceGroupService
+                        .fetchAllByPath(oldPath, false);
+                dgroup.setPid(pid);
+                dgroup.setName(name);
+                dgroup.setPath(
+                        wifiDeviceGroupService.generateRelativePath(dgroup));
+                dgroup.setUpdator(creator);
+                for (WifiDeviceGroup child : allByPath) {
+                    // String child_old_path = child.getPath();
+                    child.setPath(StringUtils.replace(child.getPath(), oldPath,
+                            dgroup.getPath()));
+                    // System.out.println(child_old_path+" "+ oldPath+"
+                    // "+dgroup.getPath()+" "+child.getPath());
+                    child.setUpdator(creator);
+                    wifiDeviceGroupService.update(child);
+                }
+                dgroup = wifiDeviceGroupService.update(dgroup);
+                {// oldPid的节点需要判定hanchild是否为true
+                    if (oldPid > 0) {
+                        WifiDeviceGroup parent_group = wifiDeviceGroupService
+                                .getById(oldPid);
+                        if (parent_group != null) {
+                            parent_group.setChildren(
+                                    parent_group.getChildren() - 1);
+                            wifiDeviceGroupService.update(parent_group);
 			    /*
 			     * int count =
 			     * wifiDeviceGroupService.countAllByPath(
@@ -212,54 +211,54 @@ public class WifiDeviceGroupFacadeService {
 			     * parent_group.setUpdator(uid);
 			     * wifiDeviceGroupService.update(parent_group); }
 			     */
-			}
-		    }
-		}
-		needParentChildrenInr = true;
-	    } else {
-		dgroup.setName(name);
-		dgroup.setUpdator(creator);
-		dgroup = wifiDeviceGroupService.update(dgroup);
-	    }
-	}
-	// 其parent节点的haschild = true
-	if (pid > 0 && needParentChildrenInr) {
-	    WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(pid);
-	    if (parent_group != null) {
-		parent_group.setChildren(parent_group.getChildren() + 1);
-		wifiDeviceGroupService.update(parent_group);
-	    }
-	}
-	return fromWifiDeviceGroupBirthTree(dgroup);
+                        }
+                    }
+                }
+                needParentChildrenInr = true;
+            } else {
+                dgroup.setName(name);
+                dgroup.setUpdator(creator);
+                dgroup = wifiDeviceGroupService.update(dgroup);
+            }
+        }
+        // 其parent节点的haschild = true
+        if (pid > 0 && needParentChildrenInr) {
+            WifiDeviceGroup parent_group = wifiDeviceGroupService.getById(pid);
+            if (parent_group != null) {
+                parent_group.setChildren(parent_group.getChildren() + 1);
+                wifiDeviceGroupService.update(parent_group);
+            }
+        }
+        return fromWifiDeviceGroupBirthTree(dgroup);
     }
 
     /**
      * 还需要删除gid及其所有的子节点
-     * 
+     *
      * @param uid
      * @param gids
      */
     public void deviceGroupCleanUpByIds(Integer uid, String gids) {
-	String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
-	for (String residstr : arrayresids) {
-	    Long resid = new Long(residstr);
+        String[] arrayresids = gids.split(StringHelper.COMMA_STRING_GAP);
+        for (String residstr : arrayresids) {
+            Long resid = new Long(residstr);
 
-	    WifiDeviceGroup group = wifiDeviceGroupService.getById(resid);
-	    if (group != null) {
-		// int gid = group.getId().intValue();
-		long pid = group.getPid();
-		wifiDeviceGroupService.removeAllByPath(group.getPath(), true);
-		// removeAllByPathStepByStep(group.getPath(),true);
-		// 判定每个gid的parentid是否为hanchild
-		if (pid != 0) {
+            WifiDeviceGroup group = wifiDeviceGroupService.getById(resid);
+            if (group != null) {
+                // int gid = group.getId().intValue();
+                long pid = group.getPid();
+                wifiDeviceGroupService.removeAllByPath(group.getPath(), true);
+                // removeAllByPathStepByStep(group.getPath(),true);
+                // 判定每个gid的parentid是否为hanchild
+                if (pid != 0) {
 		    /*
 		     * try { Thread.sleep(5000); } catch (InterruptedException
 		     * e) { e.printStackTrace(); }
 		     */
-		    WifiDeviceGroup parent_group = wifiDeviceGroupService
-			    .getById(pid);
-		    parent_group.setChildren(parent_group.getChildren() - 1);
-		    wifiDeviceGroupService.update(parent_group);
+                    WifiDeviceGroup parent_group = wifiDeviceGroupService
+                            .getById(pid);
+                    parent_group.setChildren(parent_group.getChildren() - 1);
+                    wifiDeviceGroupService.update(parent_group);
 		    /*
 		     * if(parent_group.getChildren() > 1){
 		     * 
@@ -272,87 +271,87 @@ public class WifiDeviceGroupFacadeService {
 		     * parent_group.setChildren(0); this.update(parent_group); }
 		     */
 
-		} else {// pid == 0 本身是根节点，被删除后，无需动作
-		    ;
-		}
-		// 删除绑定的设备
+                } else {// pid == 0 本身是根节点，被删除后，无需动作
+                    ;
+                }
+                // 删除绑定的设备
 		/*
 		 * ModelCriteria mc = new ModelCriteria();
 		 * mc.createCriteria().andColumnEqualTo("gid", resid);
 		 * wifiDeviceGroupRelationService.deleteByCommonCriteria(mc);
 		 */
-	    }
-	}
+            }
+        }
     }
 
     public DeviceGroupDetailVTO deviceGroupDetail(int uid, long gid) {
-	WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
-	if (dgroup != null) {
-	    return (toDeviceGroupDetailVTO(dgroup));
-	} else {
-	    throw new BusinessI18nCodeException(
-		    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
-		    new String[] { String.valueOf(gid) });
-	}
+        WifiDeviceGroup dgroup = wifiDeviceGroupService.getById(gid);
+        if (dgroup != null) {
+            return (toDeviceGroupDetailVTO(dgroup));
+        } else {
+            throw new BusinessI18nCodeException(
+                    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
+                    new String[]{String.valueOf(gid)});
+        }
     }
 
     public UserSearchConditionDTO assignUserSearchCondition4DeviceGroup(
-	    int assignor, long gid, String message, String desc) {
-	if (gid <= 0) {
-	    throw new BusinessI18nCodeException(
-		    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
-		    new String[] { String.valueOf(gid) });
-	}
-	WifiDeviceGroupSearchCondition searchCondition = wifiDeviceGroupSearchConditionService
-		.getById(gid);
-	boolean newed = false;
-	if (searchCondition == null) {
-	    searchCondition = new WifiDeviceGroupSearchCondition();
-	    searchCondition.setId(gid);
-	    newed = true;
-	}
-	UserSearchConditionDTO dto = new UserSearchConditionDTO(message, desc);
-	dto.setTs(System.currentTimeMillis());
-	searchCondition.replaceInnerModel(dto);
-	if (newed) {
-	    wifiDeviceGroupSearchConditionService.insert(searchCondition);
-	} else {
-	    wifiDeviceGroupSearchConditionService.update(searchCondition);
-	}
-	return dto;
+            int assignor, long gid, String message, String desc) {
+        if (gid <= 0) {
+            throw new BusinessI18nCodeException(
+                    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
+                    new String[]{String.valueOf(gid)});
+        }
+        WifiDeviceGroupSearchCondition searchCondition = wifiDeviceGroupSearchConditionService
+                .getById(gid);
+        boolean newed = false;
+        if (searchCondition == null) {
+            searchCondition = new WifiDeviceGroupSearchCondition();
+            searchCondition.setId(gid);
+            newed = true;
+        }
+        UserSearchConditionDTO dto = new UserSearchConditionDTO(message, desc);
+        dto.setTs(System.currentTimeMillis());
+        searchCondition.replaceInnerModel(dto);
+        if (newed) {
+            wifiDeviceGroupSearchConditionService.insert(searchCondition);
+        } else {
+            wifiDeviceGroupSearchConditionService.update(searchCondition);
+        }
+        return dto;
     }
 
     public List<WifiDeviceBackendTask> fetchRecentPendingBackendTask(int size) {
 
-	ModelCriteria mc = new ModelCriteria();
-	Criteria createCriteria = mc.createCriteria();
-	createCriteria.andColumnEqualTo("state",
-		WifiDeviceBackendTask.State_Pending);
-	List<WifiDeviceBackendTask> taskList = wifiDeviceBackendTaskService
-		.findModelByModelCriteria(mc);
-	List<WifiDeviceBackendTask> returnList = new ArrayList<WifiDeviceBackendTask>();
+        ModelCriteria mc = new ModelCriteria();
+        Criteria createCriteria = mc.createCriteria();
+        createCriteria.andColumnEqualTo("state",
+                WifiDeviceBackendTask.State_Pending);
+        List<WifiDeviceBackendTask> taskList = wifiDeviceBackendTaskService
+                .findModelByModelCriteria(mc);
+        List<WifiDeviceBackendTask> returnList = new ArrayList<WifiDeviceBackendTask>();
 
-	    if (taskList.size() > 1) {
-		Collections.sort(taskList,
-			new Comparator<WifiDeviceBackendTask>() {
-			    public int compare(WifiDeviceBackendTask task0,
-				    WifiDeviceBackendTask task1) {
-				return task0.compareTo(task1);
-			    }
-			});
-	    }
-	    
-	    if (size > taskList.size()) {
-		for (int i = 0; i < taskList.size(); i++) {
-		    returnList.add(taskList.get(i));
-		}
-	    }else{
-		for (int i = 0; i < size; i++) {
-		    returnList.add(taskList.get(i));
-		}
-	    }
+        if (taskList.size() > 1) {
+            Collections.sort(taskList,
+                    new Comparator<WifiDeviceBackendTask>() {
+                        public int compare(WifiDeviceBackendTask task0,
+                                           WifiDeviceBackendTask task1) {
+                            return task0.compareTo(task1);
+                        }
+                    });
+        }
 
-	return returnList;
+        if (size > taskList.size()) {
+            for (int i = 0; i < taskList.size(); i++) {
+                returnList.add(taskList.get(i));
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                returnList.add(taskList.get(i));
+            }
+        }
+
+        return returnList;
     }
 
     /*
@@ -362,50 +361,50 @@ public class WifiDeviceGroupFacadeService {
      */
 
     public Boolean grant(Integer uid, long gid) {
-	return null;
+        return null;
     }
 
     private DeviceGroupDetailVTO toDeviceGroupDetailVTO(
-	    WifiDeviceGroup dgroup) {
-	DeviceGroupDetailVTO vto = new DeviceGroupDetailVTO();
-	vto.setGid(dgroup.getId());
-	vto.setName(dgroup.getName());
-	vto.setPid(dgroup.getPid());
-	if (dgroup.getPid() == 0) {
-	    vto.setPname("根节点");
-	} else {
-	    WifiDeviceGroup parent_group = wifiDeviceGroupService
-		    .getById(dgroup.getPid());
-	    vto.setPname(
-		    (parent_group != null) ? parent_group.getName() : null);
-	}
-	// vto.setChildren(dgroup.getChildren());
-	vto.setParent(dgroup.getChildren() > 0);
-	vto.setPath(dgroup.getPath());
-	WifiDeviceGroupSearchCondition conditon = wifiDeviceGroupSearchConditionService
-		.getById(dgroup.getId());
-	if (conditon != null) {
-	    vto.setCondition(conditon.getExtension_content());
-	}
-	return vto;
+            WifiDeviceGroup dgroup) {
+        DeviceGroupDetailVTO vto = new DeviceGroupDetailVTO();
+        vto.setGid(dgroup.getId());
+        vto.setName(dgroup.getName());
+        vto.setPid(dgroup.getPid());
+        if (dgroup.getPid() == 0) {
+            vto.setPname("根节点");
+        } else {
+            WifiDeviceGroup parent_group = wifiDeviceGroupService
+                    .getById(dgroup.getPid());
+            vto.setPname(
+                    (parent_group != null) ? parent_group.getName() : null);
+        }
+        // vto.setChildren(dgroup.getChildren());
+        vto.setParent(dgroup.getChildren() > 0);
+        vto.setPath(dgroup.getPath());
+        WifiDeviceGroupSearchCondition conditon = wifiDeviceGroupSearchConditionService
+                .getById(dgroup.getId());
+        if (conditon != null) {
+            vto.setCondition(conditon.getExtension_content());
+        }
+        return vto;
     }
 
     private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup) {
-	DeviceGroupVTO vto = new DeviceGroupVTO();
-	vto.setGid(dgroup.getId());
-	vto.setName(dgroup.getName());
-	vto.setPid(dgroup.getPid());
-	if (dgroup.getPid() == 0) {
-	    vto.setPname("根节点");
-	} else {
-	    WifiDeviceGroup parent_group = wifiDeviceGroupService
-		    .getById(dgroup.getPid());
-	    vto.setPname(
-		    (parent_group != null) ? parent_group.getName() : null);
-	}
-	// vto.setChildren(dgroup.getChildren());
-	vto.setParent(dgroup.getChildren() > 0);
-	vto.setPath(dgroup.getPath());
+        DeviceGroupVTO vto = new DeviceGroupVTO();
+        vto.setGid(dgroup.getId());
+        vto.setName(dgroup.getName());
+        vto.setPid(dgroup.getPid());
+        if (dgroup.getPid() == 0) {
+            vto.setPname("根节点");
+        } else {
+            WifiDeviceGroup parent_group = wifiDeviceGroupService
+                    .getById(dgroup.getPid());
+            vto.setPname(
+                    (parent_group != null) ? parent_group.getName() : null);
+        }
+        // vto.setChildren(dgroup.getChildren());
+        vto.setParent(dgroup.getChildren() > 0);
+        vto.setPath(dgroup.getPath());
 
 	/*
 	 * ModelCriteria mc = new ModelCriteria();
@@ -450,78 +449,79 @@ public class WifiDeviceGroupFacadeService {
 	 * 
 	 * }
 	 */
-	// vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize,
-	// total, vtos));
-	return vto;
+        // vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize,
+        // total, vtos));
+        return vto;
     }
 
     public TailPage<BackendTaskVTO> fetch_backendtask(int uid, String state,
-	    int pageNo, int pageSize) {
-	ModelCriteria mc = new ModelCriteria();
-	Criteria createCriteria = mc.createCriteria();
-	mc.setPageNumber(pageNo);
-	mc.setPageSize(pageSize);
-	TailPage<WifiDeviceBackendTask> tailPages = null;
+                                                      int pageNo, int pageSize) {
+        ModelCriteria mc = new ModelCriteria();
+        Criteria createCriteria = mc.createCriteria();
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
+        TailPage<WifiDeviceBackendTask> tailPages = null;
 
-	if (state.equals("All")) {
-	    createCriteria.andSimpleCaulse(" 1=1");
-	    tailPages = wifiDeviceBackendTaskService
-		    .findModelTailPageByModelCriteria(mc);
-	} else {
-	    createCriteria.andColumnEqualTo("state", state);
-	    tailPages = wifiDeviceBackendTaskService
-		    .findModelTailPageByModelCriteria(mc);
-	}
+        if (state.equals("All")) {
+            createCriteria.andSimpleCaulse(" 1=1");
+            tailPages = wifiDeviceBackendTaskService
+                    .findModelTailPageByModelCriteria(mc);
+        } else {
+            createCriteria.andColumnEqualTo("state", state);
+            tailPages = wifiDeviceBackendTaskService
+                    .findModelTailPageByModelCriteria(mc);
+        }
 
-	List<BackendTaskVTO> result = new ArrayList<BackendTaskVTO>();
-	for (WifiDeviceBackendTask group : tailPages) {
-	    result.add(fromBackendTask(group));
-	}
-	return new CommonPage<BackendTaskVTO>(pageNo, pageSize,
-		tailPages.getTotalItemsCount(), result);
+        List<BackendTaskVTO> result = new ArrayList<BackendTaskVTO>();
+        for (WifiDeviceBackendTask group : tailPages) {
+            result.add(fromBackendTask(group));
+        }
+        return new CommonPage<BackendTaskVTO>(pageNo, pageSize,
+                tailPages.getTotalItemsCount(), result);
     }
 
     private BackendTaskVTO fromBackendTask(WifiDeviceBackendTask dgroup) {
-	BackendTaskVTO vto = new BackendTaskVTO();
-	vto.setId(dgroup.getId());
-	vto.setUid(dgroup.getUid());
-	vto.setMessage(dgroup.getMessage());;
-	vto.setTotal(dgroup.getTotal());
-	vto.setState(dgroup.getState());
-	vto.setCurrent(dgroup.getCurrent());
-	vto.setDescription(dgroup.getDescription());
-	vto.setCompleted_at(dgroup.getCompleted_at());
+        BackendTaskVTO vto = new BackendTaskVTO();
+        vto.setId(dgroup.getId());
+        vto.setUid(dgroup.getUid());
+        vto.setMessage(dgroup.getMessage());
+        ;
+        vto.setTotal(dgroup.getTotal());
+        vto.setState(dgroup.getState());
+        vto.setCurrent(dgroup.getCurrent());
+        vto.setDescription(dgroup.getDescription());
+        vto.setCompleted_at(dgroup.getCompleted_at());
 
-	return vto;
+        return vto;
     }
 
     public void generateBackendTask(int uid, String message, String opt,
-	    String subopt, String extparams) {
-	WifiDeviceBackendTask entity = new WifiDeviceBackendTask();
-	entity.setUid(uid);
-	entity.setMessage(message);
-	entity.setOpt(opt);
-	entity.setSubopt(subopt);
-	entity.setContext_var(extparams);
-	wifiDeviceBackendTaskService.insert(entity);
+                                    String subopt, String extparams) {
+        WifiDeviceBackendTask entity = new WifiDeviceBackendTask();
+        entity.setUid(uid);
+        entity.setMessage(message);
+        entity.setOpt(opt);
+        entity.setSubopt(subopt);
+        entity.setContext_var(extparams);
+        wifiDeviceBackendTaskService.insert(entity);
     }
 
     public void modifyBackendTask(int uid, long taskId, String extparams) throws Exception {
-	
-	WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(taskId);
-	if(JsonHelper.getString(extparams, "style").equals("interrupt")) {
-	    task.setState(WifiDeviceBackendTask.State_Interrupt);
-	    task.setDescription(String.format("modifyBackendTask uid:%s extparams:%s", uid,extparams));
-	    wifiDeviceBackendTaskService.update(task);
-	}else if(JsonHelper.getString(extparams, "style").equals("delete")) {
-	    wifiDeviceBackendTaskService.deleteById(taskId);
-	}else{
-	    throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-	}
+
+        WifiDeviceBackendTask task = wifiDeviceBackendTaskService.getById(taskId);
+        if (JsonHelper.getString(extparams, "style").equals("interrupt")) {
+            task.setState(WifiDeviceBackendTask.State_Interrupt);
+            task.setDescription(String.format("modifyBackendTask uid:%s extparams:%s", uid, extparams));
+            wifiDeviceBackendTaskService.update(task);
+        } else if (JsonHelper.getString(extparams, "style").equals("delete")) {
+            wifiDeviceBackendTaskService.deleteById(taskId);
+        } else {
+            throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+        }
     }
-    
+
     public static void main(String[] argv) {
-	System.out.println(WifiDeviceGroupFacadeService
-		.countSubString("afa/1sfsfd/gdgsdfasd/fa/1/s/fd", "/"));
+        System.out.println(WifiDeviceGroupFacadeService
+                .countSubString("afa/1sfsfd/gdgsdfasd/fa/1/s/fd", "/"));
     }
 }
