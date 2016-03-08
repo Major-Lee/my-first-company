@@ -253,7 +253,7 @@ public class SocialFacadeRpcService {
      * @param hd_macs
      * @return
      */
-    public WifiHandsetUserVTO fetchHandsetList(String bssid, String hd_macs) {
+    public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
         WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
 
         List<HandsetUserVTO> hdVTOs = new ArrayList<HandsetUserVTO>();

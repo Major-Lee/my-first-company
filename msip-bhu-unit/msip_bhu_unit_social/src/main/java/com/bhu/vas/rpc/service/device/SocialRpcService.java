@@ -50,9 +50,9 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public WifiHandsetUserVTO fetchHandsetList(String bssid, String hd_macs) {
-        logger.info(String.format("fetchHandsetList bssid[%s] hd_macs[%s] ", bssid, hd_macs));
-        return socialFacadeRpcService.fetchHandsetList(bssid, hd_macs);
+    public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
+	    logger.info(String.format("fetchHandsetList uid[%s] bssid[%s] hd_macs[%s] ", uid, bssid, hd_macs));
+        return socialFacadeRpcService.fetchHandsetList(uid, bssid, hd_macs);
     }
 
     @Override

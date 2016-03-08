@@ -37,7 +37,7 @@ public interface ISocialRpcService {
      * @param bssid
      * @param hd_macs
      */
-    WifiHandsetUserVTO fetchHandsetList(String bssid, String hd_macs);
+    WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs);
 
 
     /**
