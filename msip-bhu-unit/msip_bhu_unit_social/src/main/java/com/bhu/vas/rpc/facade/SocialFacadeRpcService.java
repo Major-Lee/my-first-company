@@ -39,14 +39,14 @@ import org.springframework.util.StringUtils;
 @Service
 public class SocialFacadeRpcService {
 
-	@Resource
-	private WifiCommentService wifiCommentService;
+    @Resource
+    private WifiCommentService wifiCommentService;
 
-	@Resource
-	private HandsetUserService handsetUserService;
+    @Resource
+    private HandsetUserService handsetUserService;
 
-	@Resource
-	private UserService userService;
+    @Resource
+    private UserService userService;
 
     @Resource
     private WifiService wifiService;
@@ -73,13 +73,13 @@ public class SocialFacadeRpcService {
      * @return
      */
     public RpcResponseDTO<Boolean> clickPraise(String bssid, String type) {
-
-        if (WifiActionHashService.getInstance().isNoExist(bssid)) {
-            WifiActionHashService.getInstance().hadd(bssid);
+        WifiActionHashService wifiActionHashService = WifiActionHashService.getInstance();
+        if (wifiActionHashService.isNoExist(bssid)) {
+            wifiActionHashService.hadd(bssid);
         }
 
-        WifiActionHashService.getInstance().hincrease(bssid, type);
-        WifiActionHashService.getInstance().counts(bssid);
+        wifiActionHashService.hincrease(bssid, type);
+        wifiActionHashService.counts(bssid);
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
@@ -110,34 +110,40 @@ public class SocialFacadeRpcService {
 
     /**
      * 获取关注列表
+     *
      * @param uid
      * @param hd_mac_self
      * @param pageNo
      * @param pageSize
      * @return
      */
-    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self,int pageNo, int pageSize) {
+    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self, int pageNo, int pageSize) {
         Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid);
+        int total = set.size();
         List<SocialFetchFollowListVTO> result = new ArrayList<SocialFetchFollowListVTO>();
         for (String hd_mac : set) {
             SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
             vto.setHd_mac(hd_mac);
             HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-            if (handsetUser != null) {
+            if (handsetUser != null && handsetUser.getUid() >0) {
                 User user = userService.getById((int) handsetUser.getUid());
-                vto.setUid(user.getId());
-                vto.setAvatar(user.getAvatar());
+                if (user != null) {
+                    vto.setUid(user.getId());
+                    vto.setAvatar(user.getAvatar());
+                    vto.setType("urouter");
+                }
                 vto.setNick(handsetUser.getNick());
-                vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self,hd_mac));
             }
+            vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac));
             result.add(vto);
         }
         return new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize,
-                set.size(), result);
+                total, result);
     }
 
     /**
      * 终端遇见
+     *
      * @param uid
      * @param hd_mac
      * @param hd_macs
@@ -179,6 +185,7 @@ public class SocialFacadeRpcService {
 
     /**
      * 获取wifi详情
+     *
      * @param uid
      * @param bssid
      * @return
@@ -226,6 +233,7 @@ public class SocialFacadeRpcService {
 
     /**
      * 修改wifi信息,最高速率
+     *
      * @param uid
      * @param bssid
      * @param rate
@@ -246,9 +254,9 @@ public class SocialFacadeRpcService {
     }
 
 
-
     /**
      * 获取终端列表
+     *
      * @param bssid
      * @param hd_macs
      * @return
@@ -288,7 +296,7 @@ public class SocialFacadeRpcService {
         List<User> users = userService.findByIds(ids, true, true);
 
         index = 0;
-        for (User user: users) {
+        for (User user : users) {
             if (user != null) {
                 HandsetUserVTO hdVTO = hdVTOs.get(index);
                 hdVTO.setAvatar(user.getAvatar());
@@ -306,6 +314,7 @@ public class SocialFacadeRpcService {
 
     /**
      * 修改终端信息
+     *
      * @param uid
      * @param hd_mac
      * @param nick
@@ -328,7 +337,7 @@ public class SocialFacadeRpcService {
         if (uid != null && uid > 0) {
             HandsetUser handsetUser = handsetUserService.getById(hd_mac);
             if (handsetUser != null) {
-                User user = userService.getById((int)handsetUser.getUid());
+                User user = userService.getById((int) handsetUser.getUid());
                 if (user != null) {
                     handsetUserVTO.setNick(user.getNick());
                     handsetUserVTO.setAvatar(user.getAvatar());
@@ -408,28 +417,29 @@ public class SocialFacadeRpcService {
 
     /**
      * 获取用户评论列表
+     *
      * @param uid
      * @param hd_mac
      * @return
      */
-    public List<CommentedWifiVTO> fetchUserCommentWifiList(String uid,String hd_mac){
-    	
-    	Set<String>wifiSet= WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
-    	List<String> bssidList = new ArrayList<String>(wifiSet);
-    	List<Wifi> wifiList=wifiService.findByIds(bssidList);
-    	List<CommentedWifiVTO> vtos = new ArrayList<CommentedWifiVTO>();
-    	if(wifiList != null){
-    		CommentedWifiVTO commentedWifiVTO=null;
-    	for(Wifi wifi:wifiList){
-    		commentedWifiVTO=new CommentedWifiVTO();
-    		commentedWifiVTO.setBssid(wifi.getId());
-    		commentedWifiVTO.setMax_rate(wifi.getMax_rate());
-    		commentedWifiVTO.setLat(Double.toString(wifi.getLat()));
-    		commentedWifiVTO.setLon(Double.toString(wifi.getLon()));
-    		vtos.add(commentedWifiVTO);
-    	}
-    	}
-    	return vtos;
+    public List<CommentedWifiVTO> fetchUserCommentWifiList(String uid, String hd_mac) {
+
+        Set<String> wifiSet = WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
+        List<String> bssidList = new ArrayList<String>(wifiSet);
+        List<Wifi> wifiList = wifiService.findByIds(bssidList);
+        List<CommentedWifiVTO> vtos = new ArrayList<CommentedWifiVTO>();
+        if (wifiList != null) {
+            CommentedWifiVTO commentedWifiVTO = null;
+            for (Wifi wifi : wifiList) {
+                commentedWifiVTO = new CommentedWifiVTO();
+                commentedWifiVTO.setBssid(wifi.getId());
+                commentedWifiVTO.setMax_rate(wifi.getMax_rate());
+                commentedWifiVTO.setLat(Double.toString(wifi.getLat()));
+                commentedWifiVTO.setLon(Double.toString(wifi.getLon()));
+                vtos.add(commentedWifiVTO);
+            }
+        }
+        return vtos;
 
     }
 
