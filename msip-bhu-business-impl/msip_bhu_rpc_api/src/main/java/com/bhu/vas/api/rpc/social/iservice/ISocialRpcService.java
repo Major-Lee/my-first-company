@@ -57,6 +57,16 @@ public interface ISocialRpcService {
      */
     WifiVTO fetchWifiDetail(Long uid, String bssid);
 
+
+    /**
+     * 修改wifi信息
+     * @param uid
+     * @param bssid
+     * @param rate 速率
+     * @return
+     */
+    boolean modifyWifi(Long uid, String bssid, String rate);
+
     /**
      * 评论
      * @param uid

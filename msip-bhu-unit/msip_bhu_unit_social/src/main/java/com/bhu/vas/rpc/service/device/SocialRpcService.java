@@ -25,8 +25,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 @Service("socialRpcService")
 public class SocialRpcService implements ISocialRpcService {
 
-    private final Logger logger = LoggerFactory
-	    .getLogger(SocialRpcService.class);
+    private final Logger logger = LoggerFactory.getLogger(SocialRpcService.class);
 
     @Resource
     private SocialFacadeRpcService socialFacadeRpcService;
@@ -73,6 +72,12 @@ public class SocialRpcService implements ISocialRpcService {
 	logger.info(
 		String.format("handsetMeet uid[%s]  bssid[%s] ", uid, bssid));
         return socialFacadeRpcService.fetchWifiDetail(uid, bssid);
+    }
+
+    @Override
+    public boolean modifyWifi(Long uid, String bssid, String rate) {
+        logger.info(String.format("modifyWifi uid[%s]  bssid[%s] rate[%s]", uid, bssid, rate));
+        return socialFacadeRpcService.modifyWifi(uid, bssid, rate);
     }
 
     @Override

@@ -146,6 +146,12 @@ public class SocialFacadeRpcService {
     }
 
 
+    /**
+     * 获取wifi详情
+     * @param uid
+     * @param bssid
+     * @return
+     */
     public WifiVTO fetchWifiDetail(Long uid, String bssid) {
 
         Wifi wifi = wifiService.getById(bssid);
@@ -187,7 +193,35 @@ public class SocialFacadeRpcService {
 
     }
 
+    /**
+     * 修改wifi信息,最高速率
+     * @param uid
+     * @param bssid
+     * @param rate
+     * @return
+     */
+    public boolean modifyWifi(Long uid, String bssid, String rate) {
+        Wifi wifi = wifiService.getById(bssid);
+        try {
+            String max_rate = wifi.getMax_rate();
+            if (Double.parseDouble(rate) > Double.parseDouble(max_rate)) {
+                wifi.setMax_rate(rate);
+            }
+            wifiService.update(wifi);
+        } catch (Exception e) {
+        }
 
+        return true;
+    }
+
+
+
+    /**
+     * 获取终端列表
+     * @param bssid
+     * @param hd_macs
+     * @return
+     */
     public WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs) {
         WifiUserHandsetVTO vto = new WifiUserHandsetVTO();
 
@@ -232,8 +266,6 @@ public class SocialFacadeRpcService {
                 }
             }
         }
-
-
 
         return vto;
     }
@@ -290,7 +322,13 @@ public class SocialFacadeRpcService {
         return new CommonPage<WifiCommentVTO>(pageNo, pageSize, total, vtos);
     }
 
- 
+
+    /**
+     * 获取用户评论列表
+     * @param uid
+     * @param hd_mac
+     * @return
+     */
     public List<CommentedWifiVTO> fetchUserCommentWifiList(String uid,String hd_mac){
     	
     	Set<String>wifiSet= WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
