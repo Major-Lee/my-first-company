@@ -111,6 +111,7 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 		detail.setVcurrency(vcurrency);
 		detail.setVcurrency_bing(vcurrency_bing);
 		detail.setWithdraw(withdraw);
+		detail.setHaspwd(StringUtils.isNotEmpty(password));
 		return detail;
 	}
 }

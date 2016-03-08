@@ -20,6 +20,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
@@ -108,7 +109,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     @Test
 	public void test002DoUpdWithdrawPwd(){
     	//AssertHelper.isTrue(randon_key.equals(userid));
-    	UserWallet uWallet = userWalletFacadeService.doUpdWithdrawPwd(testUserId, testWithdrawPwd);
+    	UserWallet uWallet = userWalletFacadeService.doFirstSetWithdrawPwd(testUserId, testWithdrawPwd);
+    	userWalletFacadeService.doChangedWithdrawPwd(testUserId, testWithdrawPwd, testWithdrawPwd);
     	System.out.println(uWallet);
 	}
     @Test
@@ -212,7 +214,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
 				withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 				withdrawApply.setWithdraw_oper(current.getKey());
-				User user =userWalletFacadeService.validateUser(withdrawApply.getUid());
+				User user =UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
 				UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						walletConfigs.getWithdraw_tax_percent(), 

@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -81,7 +82,8 @@ public class UserWalletUnitFacadeService {
 				withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 				withdrawApply.setWithdraw_oper(current.getKey());
 				//User user = userWalletFacadeService.getUserService().getById(withdrawApply.getUid());
-				User user =userWalletFacadeService.validateUser(withdrawApply.getUid());
+				//User user = userWalletFacadeService.validateUser(withdrawApply.getUid());
+				User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
 				UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						walletConfigs.getWithdraw_tax_percent(), 
@@ -127,7 +129,8 @@ public class UserWalletUnitFacadeService {
 				}
 			}
 			//User user = userWalletFacadeService.getUserService().getById(uid);
-			User user = userWalletFacadeService.validateUser(uid);
+			//User user = userWalletFacadeService.validateUser(uid);
+			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
 			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,ThirdpartiesPaymentMode.fromMode(paymode),uid, pwd, cash, remoteip);
 			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
@@ -181,6 +184,28 @@ public class UserWalletUnitFacadeService {
 			ThirdpartiesPaymentMode paymentmode = ThirdpartiesPaymentMode.fromMode(paymode);
 			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.addThirdpartiesPayment(uid, paymentmode, ThirdpartiesPaymentDTO.build(paymentmode, id, name));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payments);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid, String pwd) {
+		try{
+			userWalletFacadeService.doFirstSetWithdrawPwd(uid, pwd);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd, String npwd) {
+		try{
+			userWalletFacadeService.doChangedWithdrawPwd(uid, pwd, npwd);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

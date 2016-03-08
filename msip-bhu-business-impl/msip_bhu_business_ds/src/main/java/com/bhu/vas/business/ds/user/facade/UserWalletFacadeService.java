@@ -46,7 +46,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  *
  */
 @Service
-public class UserWalletFacadeService {
+public class UserWalletFacadeService{
 	private static final Logger logger = LoggerFactory.getLogger(UserWalletFacadeService.class);
 	@Resource
 	private UserService userService;
@@ -73,23 +73,11 @@ public class UserWalletFacadeService {
 	private UserDeviceService userDeviceService;
 	
 	
-	public User validateUser(int uid){
-		if(uid <=0){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
-		}
-		User user = userService.getById(uid);
-		if(user == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
-		}
-		return user;
-	}
-	
 	public UserWallet userWallet(int uid){
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		return uwallet;
 	}
-	
 	/**
 	 * 现金入账 充值现金
 	 * 入账成功需要写入UserWalletLog
@@ -98,7 +86,7 @@ public class UserWalletFacadeService {
 			String orderid,String desc
 			){
 		logger.info(String.format("现金入账|充值现金 uid[%s] orderid[%s] cash[%s] desc[%s]", uid,orderid,cash,desc));
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);
@@ -142,7 +130,7 @@ public class UserWalletFacadeService {
 	public UserWallet sharedealCashToUserWallet(int uid,double cash,
 			String orderid){
 		logger.info(String.format("分成现金入账-1 uid[%s] orderid[%s] cash[%s]", uid,orderid,cash));
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
 		double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
 		logger.info(String.format("分成现金入账-2 uid[%s] orderid[%s] cash[%s] incomming[%s]", uid,orderid,cash,realIncommingCash));
@@ -173,7 +161,7 @@ public class UserWalletFacadeService {
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		if(uwallet == null || uwallet.isWithdraw()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK);
@@ -206,7 +194,7 @@ public class UserWalletFacadeService {
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
@@ -225,7 +213,7 @@ public class UserWalletFacadeService {
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
@@ -238,7 +226,7 @@ public class UserWalletFacadeService {
 	 * @param uid
 	 */
 	private void unlockWalletWithdrawStatusWhenSuccessed(int uid){
-		validateUser(uid);
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
@@ -311,7 +299,7 @@ public class UserWalletFacadeService {
 	 * @param applyid 申请流水号
 	 */
 	public UserWalletWithdrawApply doWithdrawVerify(int reckoner,String applyid,boolean passed){
-		validateUser(reckoner);
+		UserValidateServiceHelper.validateUser(reckoner,this.userService);
 		if(StringUtils.isEmpty(applyid)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"applyid:".concat(String.valueOf(applyid))});
 		}
@@ -370,17 +358,30 @@ public class UserWalletFacadeService {
 	 * @param uid 审核用户id
 	 * @param pwd 新的密码
 	 */
-	public UserWallet doUpdWithdrawPwd(int uid,String pwd){
-		validateUser(uid);
+	public UserWallet doFirstSetWithdrawPwd(int uid,String pwd){
+		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
-		/*if(uwallet == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK);
-		}*/
+		if(StringUtils.isNotEmpty(uwallet.getPassword())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST,new String[]{"提现密码"});
+		}
 		uwallet.setPlainpwd(pwd);
 		uwallet.setPassword(null);
 		uwallet = userWalletService.update(uwallet);
 		return uwallet;
 	}
+	
+	public UserWallet doChangedWithdrawPwd(int uid,String pwd,String npwd){
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		UserWallet uwallet = userWalletService.getOrCreateById(uid);
+		if(!BCryptHelper.checkpw(pwd,uwallet.getPassword())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_VALIDATEPWD_FAILED);
+		}
+		uwallet.setPlainpwd(npwd);
+		uwallet.setPassword(null);
+		uwallet = userWalletService.update(uwallet);
+		return uwallet;
+	}
+	
 	
 	private void doWalletLog(int uid,String orderid,
 			BusinessEnumType.UWalletTransType transType,double sum,double cash,String memo){

@@ -76,20 +76,32 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(
 			int uid) {
 		logger.info(String.format("fetchUserThirdpartiesPayments with uid[%s]",uid));
-		return null;
+		return userWalletUnitFacadeService.fetchUserThirdpartiesPayments(uid);
 	}
 
 	@Override
 	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,
 			String paymode) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info(String.format("fetchUserThirdpartiesPayments with uid[%s] paymode[%s]",uid,paymode));
+		return userWalletUnitFacadeService.removeUserThirdpartiesPayment(uid, paymode);
 	}
 
 	@Override
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(
 			int uid, String paymode, String id, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info(String.format("createUserThirdpartiesPayment with uid[%s] paymode[%s] id[%s] name[%s]",uid,paymode,id,name));
+		return userWalletUnitFacadeService.createUserThirdpartiesPayment(uid, paymode, id, name);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid, String pwd) {
+		logger.info(String.format("withdrawPwdSet with uid[%s] pwd[%s]",uid,pwd));
+		return userWalletUnitFacadeService.withdrawPwdSet(uid, pwd);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd,String npwd) {
+		logger.info(String.format("withdrawPwdUpd with uid[%s] pwd[%s] npwd[%s]",uid,pwd,npwd));
+		return userWalletUnitFacadeService.withdrawPwdUpd(uid, pwd, npwd);
 	}
 }

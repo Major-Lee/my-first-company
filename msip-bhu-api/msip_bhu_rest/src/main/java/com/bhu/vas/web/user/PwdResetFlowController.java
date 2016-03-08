@@ -152,6 +152,7 @@ public class PwdResetFlowController extends BaseController{
 	
 	/**
 	 * 密码重置第三步骤
+	 * token会被重置
 	 * @param request
 	 * @param response
 	 * @param acc 手机号码
@@ -181,7 +182,40 @@ public class PwdResetFlowController extends BaseController{
 			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userResetPwd(countrycode, acc, pwd, from_device, remoteIp, captcha);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
-				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));
+				rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	/**
+	 * 修改密码操作
+	 * token会被重置
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param pwd
+	 * @param npwd
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/change_pwd",method={RequestMethod.GET,RequestMethod.POST})
+	public void change_password(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true, value = "uid") int uid,
+			@RequestParam(required = true) String pwd,
+			@RequestParam(required = true) String npwd
+			) {
+		try{
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userChangedPwd(uid, pwd, npwd);
+			if(!rpcResult.hasError()){
+				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
 				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

@@ -69,4 +69,42 @@ public class UserWithdrawController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
+	
+	
+	@ResponseBody()
+	@RequestMapping(value="/wallet/pwdset", method={RequestMethod.GET,RequestMethod.POST})
+	public void withdrawPwdSet(
+			HttpServletResponse response, 
+			@RequestParam(required=true) Integer uid,
+			@RequestParam(required=true) String pwd){
+		try{
+			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.withdrawPwdSet(uid, pwd);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/wallet/pwdupd", method={RequestMethod.GET,RequestMethod.POST})
+	public void withdrawPwdSet(
+			HttpServletResponse response, 
+			@RequestParam(required=true) Integer uid,
+			@RequestParam(required=true) String pwd,
+			@RequestParam(required=true) String npwd){
+		try{
+			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.withdrawPwdUpd(uid, pwd, npwd);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }

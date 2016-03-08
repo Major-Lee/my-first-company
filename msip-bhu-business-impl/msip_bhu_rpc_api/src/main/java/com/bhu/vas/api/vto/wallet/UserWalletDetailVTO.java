@@ -12,6 +12,7 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	private double vcurrency_bing = 0.00d;
 	private double cash = 0.00d;;
 	private boolean withdraw = false;
+	private boolean haspwd = false; 
 	public int getUid() {
 		return uid;
 	}
@@ -41,6 +42,12 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	}
 	public void setWithdraw(boolean withdraw) {
 		this.withdraw = withdraw;
+	}
+	public boolean isHaspwd() {
+		return haspwd;
+	}
+	public void setHaspwd(boolean haspwd) {
+		this.haspwd = haspwd;
 	}
 	
 }

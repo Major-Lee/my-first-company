@@ -127,6 +127,12 @@ public interface IUserRpcService {
 			String resetIp,
 			String captcha
 			);
+	
+	public RpcResponseDTO<Map<String, Object>> userChangedPwd(
+			int uid,
+			String pwd,
+			String npwd
+			);
 	/**
 	 * 对于oauth注册的用户提供手机号码认证绑定的过程
 	 * 1、如果手机号码已经存在则提示错误码

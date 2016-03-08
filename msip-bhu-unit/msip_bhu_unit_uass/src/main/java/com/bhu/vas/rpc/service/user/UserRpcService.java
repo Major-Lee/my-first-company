@@ -102,10 +102,18 @@ public class UserRpcService implements IUserRpcService{
 				countrycode,acc,pwd,device,resetIp,captcha));
 		return userUnitFacadeService.userResetPwd(countrycode, acc, pwd, device, resetIp, captcha);
 	}
+	
+	@Override
+	public RpcResponseDTO<Map<String, Object>> userChangedPwd(int uid,String pwd,String npwd) {
+		logger.info(String.format("userChangedPwd with uid[%s] pwd[%s] npwd[%s]",uid,pwd,npwd));
+		return userUnitFacadeService.userChangedPwd(uid, pwd, npwd);
+	}
 
 	@Override
 	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha) {
 		logger.info(String.format("authentication with countrycode[%s] acc[%s] captcha[%s]",countrycode,acc,captcha));
 		return userUnitFacadeService.authentication(uid,countrycode, acc, captcha);
 	}
+
+	
 }

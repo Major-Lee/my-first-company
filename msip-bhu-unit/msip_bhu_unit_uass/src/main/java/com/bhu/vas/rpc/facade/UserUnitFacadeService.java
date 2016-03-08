@@ -21,6 +21,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacade
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -371,36 +372,21 @@ public class UserUnitFacadeService {
 		}
 		
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserResetPwd(user, pwd,device, resetIp);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+		//,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId())
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
-		/*if(StringUtils.isEmpty(user.getRegip())){
-		
-		/*user.setCountrycode(countrycode);
-		user.setMobileno(acc);
-		if(StringUtils.isNotEmpty(pwd)){
-			user.setPlainpwd(pwd);
-			user.setPassword(null);
-		}
-		user.setRegip(resetIp);
-		//标记用户注册时使用的设备，缺省为DeviceEnum.Android
-		user.setRegdevice(device);
-		//标记用户最后登录设备，缺省为DeviceEnum.PC
-		user.setLastlogindevice(device);
-		user = this.userService.update(user);
-		// token validate code
-		uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
-		{//write header to response header
-			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
-		}
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
-				user,
-				uToken, false);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);*/
 	}
 	
-	
+	public RpcResponseDTO<Map<String, Object>> userChangedPwd(int uid,String pwd,String npwd) {
+		if(StringUtils.isEmpty(pwd) || StringUtils.isEmpty(npwd)){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_PASSWORD_EMPTY);
+		}
+		User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserChangedPwd(user, pwd,npwd);
+		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+		//,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId())
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+	}
 	/**
 	 * 更新用户信息接口
 	 * @param nick 需要进行唯一性验证
