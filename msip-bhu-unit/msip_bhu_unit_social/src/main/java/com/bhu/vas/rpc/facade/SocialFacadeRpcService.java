@@ -387,8 +387,16 @@ public class SocialFacadeRpcService {
                 //vto.setUpdate_at(DateTimeHelper.formatDate(wifiComment.getUpdated_at(),DateTimeHelper.FormatPattern1));
                 // if(users.size()>0){
                 user = users.get(i);
-                vto.setNick(user.getNick());
-                vto.setAvatar(user.getAvatar());
+                if(user.getNick()!=null){
+                     vto.setNick(user.getNick());
+                }else{
+                	 vto.setNick(""); 	
+                }
+                if(user.getAvatar()!=null){
+                     vto.setAvatar(user.getAvatar());
+                }else{
+                	 vto.setAvatar("");
+                }
                 // }
                 vtos.add(vto);
                 i++;
