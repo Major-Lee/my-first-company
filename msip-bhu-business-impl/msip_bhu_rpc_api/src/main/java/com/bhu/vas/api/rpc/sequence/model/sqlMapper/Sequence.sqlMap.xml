@@ -77,9 +77,13 @@
 
     <update id="begin">
     	begin;
+    	<!-- 
+    	SET AUTOCOMMIT=0;
+    	 -->
     </update>
     <update id="commit">
     	commit;
+    	 
     </update>
     
 	<select id="select" resultMap="modelResult">

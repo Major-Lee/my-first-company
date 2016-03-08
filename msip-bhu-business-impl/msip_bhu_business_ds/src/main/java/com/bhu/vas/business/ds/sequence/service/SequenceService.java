@@ -70,7 +70,7 @@ public class SequenceService extends EntityService<String,Sequence,SequenceDao>{
 		logger.info("SequenceService getNextID By {}",name);
     	Sequence o = new Sequence(name, -1);
     	try{
-    		//this.getEntityDao().begin();
+    		this.getEntityDao().begin();
     		o = this.getById(name);
         	if(o == null){
         		Integer start = tableSequenceStart.get(name);
@@ -93,7 +93,7 @@ public class SequenceService extends EntityService<String,Sequence,SequenceDao>{
         		return o.getNextid();
         	}    		
     	}finally{
-    		//this.getEntityDao().commit();
+    		this.getEntityDao().commit();
     	}
     }
 	
