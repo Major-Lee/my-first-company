@@ -36,7 +36,7 @@ public class SocialRelationController {
      * @param type
      */
     @ResponseBody()
-    @RequestMapping(value = "/clickPraise", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/click_praise", method = {RequestMethod.GET, RequestMethod.POST})
     public void clickPraise(
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
@@ -61,7 +61,7 @@ public class SocialRelationController {
      * @param hd_mac
      */
     @ResponseBody()
-    @RequestMapping(value = "follow", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/follow", method = {RequestMethod.GET, RequestMethod.POST})
     public void follow(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -84,6 +84,8 @@ public class SocialRelationController {
      * @param uid
      * @param hd_mac
      */
+    @ResponseBody()
+    @RequestMapping(value = "/unfollow", method = {RequestMethod.GET, RequestMethod.POST})
     public void unFollow(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -105,6 +107,8 @@ public class SocialRelationController {
      * @param pageNo
      * @param pageSize
      */
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_followlist", method = {RequestMethod.GET, RequestMethod.POST})
     public void fetchFollowList(
             HttpServletRequest request,
             HttpServletResponse response,

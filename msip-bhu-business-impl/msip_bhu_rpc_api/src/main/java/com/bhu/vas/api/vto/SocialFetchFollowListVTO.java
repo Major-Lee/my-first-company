@@ -1,6 +1,6 @@
 package com.bhu.vas.api.vto;
 
-import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
+import com.bhu.vas.api.dto.social.HandsetMeetDTO;
 
 /**
  * Created by NeeBie_xw on 2016/3/7.
@@ -11,7 +11,7 @@ public class SocialFetchFollowListVTO {
     private long uid;
     private String avatar;
     private String nick;
-    private SocialHandsetMeetDTO last_meet;
+    private HandsetMeetDTO last_meet;
     private String type;
 
     public String getHd_mac() {
@@ -46,11 +46,11 @@ public class SocialFetchFollowListVTO {
         this.nick = nick;
     }
 
-    public SocialHandsetMeetDTO getLast_meet() {
+    public HandsetMeetDTO getLast_meet() {
         return last_meet;
     }
 
-    public void setLast_meet(SocialHandsetMeetDTO last_meet) {
+    public void setLast_meet(HandsetMeetDTO last_meet) {
         this.last_meet = last_meet;
     }
 
