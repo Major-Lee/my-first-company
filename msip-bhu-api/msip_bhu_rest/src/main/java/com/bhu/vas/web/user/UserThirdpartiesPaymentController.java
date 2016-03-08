@@ -51,7 +51,7 @@ public class UserThirdpartiesPaymentController extends BaseController{
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=true) String payment_type){
 		try{
-			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.removeUserThirdpartiesPayment(uid, paymode);
+			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.removeUserThirdpartiesPayment(uid, payment_type);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
@@ -73,7 +73,7 @@ public class UserThirdpartiesPaymentController extends BaseController{
 			@RequestParam(required = false) String name
 			){
 		try{
-			RpcResponseDTO<List<ThirdpartiesPaymentDTO>> rpcResult = userWalletRpcService.createUserThirdpartiesPayment(uid, paymode, id, name);
+			RpcResponseDTO<List<ThirdpartiesPaymentDTO>> rpcResult = userWalletRpcService.createUserThirdpartiesPayment(uid, payment_type, id, name);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
