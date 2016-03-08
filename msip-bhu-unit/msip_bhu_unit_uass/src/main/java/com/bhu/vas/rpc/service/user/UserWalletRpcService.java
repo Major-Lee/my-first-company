@@ -60,10 +60,10 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String paymode,int uid,String pwd, double cash,String remoteip) {
-		logger.info(String.format("withdrawOper with appid[%s] paymode[%s] uid[%s] cash[%s]",
-				appid,paymode,uid,cash));
-		return userWalletUnitFacadeService.withdrawOper(appid, paymode,uid, pwd, cash,remoteip);
+	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String payment_type,int uid,String pwd, double cash,String remoteip) {
+		logger.info(String.format("withdrawOper with appid[%s] payment_type[%s] uid[%s] cash[%s]",
+				appid,payment_type,uid,cash));
+		return userWalletUnitFacadeService.withdrawOper(appid, payment_type,uid, pwd, cash,remoteip);
 	}
 
 	@Override
@@ -82,15 +82,15 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	@Override
 	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,
 			String paymode) {
-		logger.info(String.format("fetchUserThirdpartiesPayments with uid[%s] paymode[%s]",uid,paymode));
+		logger.info(String.format("removeUserThirdpartiesPayment with uid[%s] paymode[%s]",uid,paymode));
 		return userWalletUnitFacadeService.removeUserThirdpartiesPayment(uid, paymode);
 	}
 
 	@Override
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(
-			int uid, String paymode, String id, String name) {
-		logger.info(String.format("createUserThirdpartiesPayment with uid[%s] paymode[%s] id[%s] name[%s]",uid,paymode,id,name));
-		return userWalletUnitFacadeService.createUserThirdpartiesPayment(uid, paymode, id, name);
+			int uid, String payment_type, String id, String name) {
+		logger.info(String.format("createUserThirdpartiesPayment with uid[%s] payment_type[%s] id[%s] name[%s]",uid,payment_type,id,name));
+		return userWalletUnitFacadeService.createUserThirdpartiesPayment(uid, payment_type, id, name);
 	}
 
 	@Override

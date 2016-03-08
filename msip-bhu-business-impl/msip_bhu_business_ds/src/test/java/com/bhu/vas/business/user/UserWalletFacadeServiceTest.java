@@ -220,7 +220,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 						walletConfigs.getWithdraw_tax_percent(), 
 						walletConfigs.getWithdraw_trancost_percent());
 				
-				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromMode(withdrawApply.getPayment_type()));
+				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println(String.format("to Redis prepare[%s]:%s",withdrawApply.getId(), jsonNotify));

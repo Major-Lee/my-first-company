@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentMode;
+import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -70,6 +70,7 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
@@ -88,7 +89,7 @@ public class UserWalletUnitFacadeService {
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						walletConfigs.getWithdraw_tax_percent(), 
 						walletConfigs.getWithdraw_trancost_percent());
-				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentMode.fromMode(withdrawApply.getPaymode()));
+				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println("to Redis prepare:"+jsonNotify);
@@ -105,33 +106,37 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 	
 	
-	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String paymode,int uid,
+	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String payment_type,int uid,
 			String pwd, double cash,String remoteip) {
 		try{
 			//验证appid
 			if(!CommdityApplication.supported(appid)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_APPID_INVALID,new String[]{String.valueOf(appid)});
 			}
-			if(!ThirdpartiesPaymentMode.supported(paymode)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
-			}
 			
-			if(StringUtils.isEmpty(paymode)){
+			//payment_type为空的情况下直接取用户绑定过的第一个账户
+			if(StringUtils.isEmpty(payment_type)){
 				//如果没有指定则去除用户定义的第一个
 				ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchFirstThirdpartiesPayment(uid);
 				if(payment != null){
-					paymode = payment.getMode();
+					payment_type = payment.getType();
+				}
+			}else{
+				//不为空的情况下需要判定是否支持此参数payment_type
+				if(!ThirdpartiesPaymentType.supported(payment_type)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
 				}
 			}
 			//User user = userWalletFacadeService.getUserService().getById(uid);
 			//User user = userWalletFacadeService.validateUser(uid);
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
-			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,ThirdpartiesPaymentMode.fromMode(paymode),uid, pwd, cash, remoteip);
+			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,ThirdpartiesPaymentType.fromType(payment_type),uid, pwd, cash, remoteip);
 			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
 					apply.toUserWithdrawApplyVTO(
@@ -140,8 +145,10 @@ public class UserWalletUnitFacadeService {
 							walletConfigs.getWithdraw_tax_percent(),
 							walletConfigs.getWithdraw_trancost_percent()));
 		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
@@ -153,6 +160,7 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
@@ -164,29 +172,38 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
-	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String paymode) {
+	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String payment_type) {
 		try{
-			userWalletFacadeService.removeThirdpartiesPayment(uid, ThirdpartiesPaymentMode.fromMode(paymode));
+			if(!ThirdpartiesPaymentType.supported(payment_type)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
+			}
+			userWalletFacadeService.removeThirdpartiesPayment(uid, ThirdpartiesPaymentType.fromType(payment_type));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
-	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid, String paymode, String id, String name) {
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid, String payment_type, String id, String name) {
 		try{
-			ThirdpartiesPaymentMode paymentmode = ThirdpartiesPaymentMode.fromMode(paymode);
-			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.addThirdpartiesPayment(uid, paymentmode, ThirdpartiesPaymentDTO.build(paymentmode, id, name));
+			if(!ThirdpartiesPaymentType.supported(payment_type)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
+			}
+			ThirdpartiesPaymentType paymenttype = ThirdpartiesPaymentType.fromType(payment_type);
+			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.addThirdpartiesPayment(uid, paymenttype, ThirdpartiesPaymentDTO.build(paymenttype, id, name));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payments);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
@@ -198,6 +215,7 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
@@ -209,6 +227,7 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

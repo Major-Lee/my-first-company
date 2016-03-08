@@ -100,7 +100,9 @@ public class AsyncOrderPaymentNotifyService {
 	 * @param rpcn_dto
 	 */
 	public void orderPaymentNotifyPaymodeExpendHandle(ResponsePaymentCompletedNotifyDTO rpcn_dto){
-		
+		String orderId = rpcn_dto.getOrderid();
+		boolean successed = rpcn_dto.isSuccess();
+		userWalletFacadeService.doWithdrawNotifyFromRemote(orderId, successed);
 	}
 	
 }

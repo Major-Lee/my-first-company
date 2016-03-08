@@ -622,12 +622,12 @@ public class BusinessEnumType {
 		public void setType(String type) {
 			this.type = type;
 		}
-		public static ThirdpartiesPaymentType fromMode(String mode){
-			return allPaymentTypes.get(mode);
+		public static ThirdpartiesPaymentType fromType(String type){
+			return allPaymentTypes.get(type);
 		}
 		
-		public static boolean supported(String mode){
-			return allPaymentTypes.containsKey(mode);
+		public static boolean supported(String type){
+			return allPaymentTypes.containsKey(type);
 		}
 		
 		static {
