@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 3/3/16.
  */
-public class UserHandsetVTO implements Serializable{
+public class HandsetUserVTO implements Serializable{
 
     private String hd_mac;
 
@@ -14,6 +14,8 @@ public class UserHandsetVTO implements Serializable{
     private Long uid;
 
     private String avatar;
+
+    private String memo;
 
     public String getHd_mac() {
         return hd_mac;
@@ -45,5 +47,13 @@ public class UserHandsetVTO implements Serializable{
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

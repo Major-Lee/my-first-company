@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
@@ -16,14 +17,14 @@ import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
+import com.bhu.vas.api.dto.social.HandsetMeetDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.model.HandsetUser;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
-import com.bhu.vas.api.rpc.social.vto.UserHandsetVTO;
+import com.bhu.vas.api.rpc.social.vto.HandsetUserVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
-import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
+import com.bhu.vas.api.rpc.social.vto.WifiHandsetUserVTO;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.social.service.HandsetUserService;
@@ -141,6 +142,17 @@ public class SocialFacadeRpcService {
                 set.size(), result);
     }
 
+    /**
+     * 终端遇见
+     * @param uid
+     * @param hd_mac
+     * @param hd_macs
+     * @param bssid
+     * @param ssid
+     * @param lat
+     * @param lon
+     * @return
+     */
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
 
         if (uid != null || uid > 0) {
@@ -153,7 +165,7 @@ public class SocialFacadeRpcService {
             WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
         }
 
-        SocialHandsetMeetDTO dto = new SocialHandsetMeetDTO();
+        HandsetMeetDTO dto = new HandsetMeetDTO();
         dto.setBssid(bssid);
         dto.setSsid(ssid);
         dto.setTs(System.currentTimeMillis());
@@ -247,15 +259,15 @@ public class SocialFacadeRpcService {
      * @param hd_macs
      * @return
      */
-    public WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs) {
-        WifiUserHandsetVTO vto = new WifiUserHandsetVTO();
+    public WifiHandsetUserVTO fetchHandsetList(String bssid, String hd_macs) {
+        WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
 
-        List<UserHandsetVTO> hdVTOs = new ArrayList<UserHandsetVTO>();
+        List<HandsetUserVTO> hdVTOs = new ArrayList<HandsetUserVTO>();
         List<String> hds = new ArrayList<String>();
         String[] list = hd_macs.split(",");
         if (list != null && list.length > 0) {
             for (String hd_mac : list) {
-                UserHandsetVTO handsetVTO = new UserHandsetVTO();
+                HandsetUserVTO handsetVTO = new HandsetUserVTO();
                 handsetVTO.setHd_mac(hd_mac);
                 hds.add(hd_mac);
                 hdVTOs.add(handsetVTO);
@@ -269,7 +281,7 @@ public class SocialFacadeRpcService {
         if (handsetUsers != null) {
             for (HandsetUser handsetUser : handsetUsers) {
                 if (handsetUser != null) {
-                    UserHandsetVTO hdVTO = hdVTOs.get(index);
+                    HandsetUserVTO hdVTO = hdVTOs.get(index);
                     hdVTO.setUid(handsetUser.getUid());
                     hdVTO.setNick(handsetUser.getNick());
                     //Todo(bluesand): 用户的头像
@@ -284,15 +296,61 @@ public class SocialFacadeRpcService {
         index = 0;
         for (User user: users) {
             if (user != null) {
-                UserHandsetVTO hdVTO = hdVTOs.get(index);
+                HandsetUserVTO hdVTO = hdVTOs.get(index);
                 hdVTO.setAvatar(user.getAvatar());
                 if (StringUtils.isEmpty(user.getNick())) {
                     hdVTO.setNick(user.getNick());
                 }
+                hdVTO.setMemo(user.getMemo());
             }
         }
 
+        vto.setHandsetUserVTOList(hdVTOs);
+
         return vto;
+    }
+
+    /**
+     * 修改终端信息
+     * @param uid
+     * @param hd_mac
+     * @param nick
+     * @return
+     */
+    public boolean modifyHandset(long uid, String hd_mac, String nick) {
+        HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+        handsetUser.setNick(nick);
+        return true;
+    }
+
+    public HandsetUserDetailVTO fetchHandsetUserDetai(Long uid, String hd_mac_self, String hd_mac, String bssid) {
+
+        List<HandsetMeetDTO> meets = SocialHandsetMeetHashService.getInstance().
+                getHandsetMeetList(hd_mac_self, hd_mac, bssid);
+
+        HandsetUserVTO handsetUserVTO = new HandsetUserVTO();
+        handsetUserVTO.setHd_mac(hd_mac);
+
+        if (uid != null && uid > 0) {
+            HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+            if (handsetUser != null) {
+                User user = userService.getById((int)handsetUser.getUid());
+                if (user != null) {
+                    handsetUserVTO.setNick(user.getNick());
+                    handsetUserVTO.setAvatar(user.getAvatar());
+                    handsetUserVTO.setMemo(user.getMemo());
+                    handsetUserVTO.setUid(uid);
+                }
+            }
+        }
+
+        HandsetUserDetailVTO vto = new HandsetUserDetailVTO();
+
+        vto.setHandset(handsetUserVTO);
+        vto.setMeets(meets);
+
+        return vto;
+
     }
 
 
@@ -328,8 +386,6 @@ public class SocialFacadeRpcService {
             int i = 0;
             for (WifiComment wifiComment : wifiComments) {
                 vto = new WifiCommentVTO();
-
-
                 vto.setBssid(wifiComment.getBssid());
                 vto.setUid(wifiComment.getUid());
                 vto.setMessage(wifiComment.getMessage());

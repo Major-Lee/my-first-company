@@ -7,9 +7,9 @@ import java.util.Set;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
-import com.bhu.vas.api.rpc.social.vto.WifiUserHandsetVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiVTO;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
+import com.bhu.vas.api.rpc.social.vto.*;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -19,6 +19,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 public interface ISocialRpcService {
     /**
      * 终端扫描后相遇
+     *
      * @param uid
      * @param hd_mac
      * @param hd_macs
@@ -32,27 +33,32 @@ public interface ISocialRpcService {
 
     /**
      * 获取终端列表
+     *
      * @param bssid
      * @param hd_macs
      */
-    WifiUserHandsetVTO fetchHandsetList(String bssid, String hd_macs);
+    WifiHandsetUserVTO fetchHandsetList(String bssid, String hd_macs);
 
 
     /**
      * 获取终端详情
+     *
      * @param hd_mac
      */
-    void fetchHandsetDetail(String hd_mac);
+    HandsetUserDetailVTO fetchHandsetDetail(Long uid, String hd_mac_self, String hd_mac, String bssid);
 
     /**
      * 修改终端备注
+     *
+     * @param uid
      * @param hd_mac
      * @param nick
      */
-    void modifyHandset(Long uid, String hd_mac, String nick);
+    boolean modifyHandset(long uid, String hd_mac, String nick);
 
     /**
      * 获取wifi详情
+     *
      * @param uid
      * @param bssid
      */
@@ -61,73 +67,80 @@ public interface ISocialRpcService {
 
     /**
      * 修改wifi信息
+     *
      * @param uid
      * @param bssid
-     * @param rate 速率
+     * @param rate  速率
      * @return
      */
     boolean modifyWifi(Long uid, String bssid, String rate);
 
     /**
      * 评论
+     *
      * @param uid
      * @param bssid
      * @param message
      * @return
      */
 
-    public boolean comment(long uid, String bssid,String hd_mac, String message);
-    
+    public boolean comment(long uid, String bssid, String hd_mac, String message);
+
     /**
      * 查看wifi评论列表
+     *
      * @param uid
      * @param bssid
      * @param pageNo
      * @param pageSize
      * @return
      */
-    public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,String bssid, int pageNo, int pageSize);
+    public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid, String bssid, int pageNo, int pageSize);
 
-    
+
     /**
      * 点赞/踩/举报
+     *
      * @param uid
      * @param bssid
-     * @param type up/down/type
+     * @param type  up/down/type
      * @return
      */
-    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid,String type);
-    
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type);
+
     /**
      * 关注
+     *
      * @param uid
      * @param hd_mac
      */
-    public RpcResponseDTO<Boolean> follow (long uid,String hd_mac);
-    	
+    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac);
+
     /**
      * 取消关注
+     *
      * @param uid
      * @param hd_mac
-     * @return 
+     * @return
      */
 
-    public RpcResponseDTO<Boolean>  unFollow (long uid,String hd_mac);
+    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac);
 
     /**
      * 获取关注列表
+     *
      * @param uid
      * @param hd_mac
      */
-    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac,int pageNo,int PageSize);
+    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac, int pageNo, int PageSize);
 
     /**
      * 获取用户评论的wifi
+     *
      * @param uid
      * @return
      */
-    public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid,String hd_mac);
-
+    public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid, String hd_mac);
 
 
 }

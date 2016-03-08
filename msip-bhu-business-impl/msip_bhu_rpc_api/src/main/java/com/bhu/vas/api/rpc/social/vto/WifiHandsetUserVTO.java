@@ -1,20 +1,18 @@
 package com.bhu.vas.api.rpc.social.vto;
 
-import com.bhu.vas.api.vto.device.UserDeviceVTO;
-
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by bluesand on 3/3/16.
  */
-public class WifiUserHandsetVTO implements Serializable {
+public class WifiHandsetUserVTO implements Serializable {
 
     private String bssid;
 
     private String ssid;
 
-    private List<UserDeviceVTO> userDeviceVTOList;
+    private List<HandsetUserVTO> handsetUserVTOList;
 
     public String getBssid() {
         return bssid;
@@ -32,11 +30,11 @@ public class WifiUserHandsetVTO implements Serializable {
         this.ssid = ssid;
     }
 
-    public List<UserDeviceVTO> getUserDeviceVTOList() {
-        return userDeviceVTOList;
+    public List<HandsetUserVTO> getHandsetUserVTOList() {
+        return handsetUserVTOList;
     }
 
-    public void setUserDeviceVTOList(List<UserDeviceVTO> userDeviceVTOList) {
-        this.userDeviceVTOList = userDeviceVTOList;
+    public void setHandsetUserVTOList(List<HandsetUserVTO> handsetUserVTOList) {
+        this.handsetUserVTOList = handsetUserVTOList;
     }
 }

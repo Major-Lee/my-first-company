@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 3/3/16.
  */
-public class SocialHandsetMeetDTO implements Serializable {
+public class HandsetMeetDTO implements Serializable {
 
     private String bssid;
 

@@ -1,6 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
-import com.bhu.vas.api.dto.social.SocialHandsetMeetDTO;
+import com.bhu.vas.api.dto.social.HandsetMeetDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -8,6 +8,8 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import redis.clients.jedis.JedisPool;
+
+import java.util.List;
 
 /**
  * Created by bluesand on 3/3/16.
@@ -67,8 +69,13 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
         this.hset(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY, dto);
     }
 
-    public SocialHandsetMeetDTO getLasthandsetMeet(String hd_mac_self, String hd_mac) {
-        return JsonHelper.getDTO(this.hget(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY), SocialHandsetMeetDTO.class);
+    public HandsetMeetDTO getLasthandsetMeet(String hd_mac_self, String hd_mac) {
+        return JsonHelper.getDTO(this.hget(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY), HandsetMeetDTO.class);
+    }
+
+    public List<HandsetMeetDTO> getHandsetMeetList(String hd_mac_self, String hd_mac, String bssid) {
+        String meetList = this.hget(generateKey(hd_mac_self, hd_mac), bssid);
+        return JsonHelper.getDTOList(meetList,HandsetMeetDTO.class);
     }
 
     public static void main(String[] args) {
