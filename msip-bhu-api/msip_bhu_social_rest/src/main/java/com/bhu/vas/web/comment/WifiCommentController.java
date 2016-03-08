@@ -1,10 +1,11 @@
-package com.bhu.vas.web.wificomment;
+package com.bhu.vas.web.comment;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,8 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
+@Controller
+@RequestMapping("/wifi")
 public class WifiCommentController extends BaseController {
 	
 	@Resource
@@ -34,7 +37,7 @@ public class WifiCommentController extends BaseController {
 	 * @param message
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/app/wifi/comment",method={RequestMethod.POST})
+	@RequestMapping(value="/comment",method={RequestMethod.POST})
 	public void comment(
 			HttpServletResponse response,
 			 @RequestParam(required = true, value = "bssid") String bssid,
@@ -61,7 +64,7 @@ public class WifiCommentController extends BaseController {
 	 * @param message
 	 */
 	@ResponseBody()
-	@RequestMapping(value = "/app/wifi/comments", method = { RequestMethod.POST })
+	@RequestMapping(value = "/comments", method = { RequestMethod.POST })
 	public void pageWifiCommentVTO(HttpServletResponse response,
 			@RequestParam(required = true, value = "bssid") String bssid,
 			@RequestParam(required = true, value = "uid") int uid,
@@ -84,7 +87,7 @@ public class WifiCommentController extends BaseController {
 	 * @param message
 	 */
 	@ResponseBody()
-	@RequestMapping(value = "/app/wifi/list", method = { RequestMethod.POST })
+	@RequestMapping(value = "/list", method = { RequestMethod.POST })
 	public void fetchUserCommentWifiList(HttpServletResponse response,
 			@RequestParam(required = true, value = "uid") String uid,
 			@RequestParam(required = false, value = "hd_mac") String hd_mac) {
