@@ -9,9 +9,13 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
+import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
@@ -36,6 +40,9 @@ public class OrderServiceTest extends BaseTest{
 	
 	@Resource
 	private OrderService orderService;
+	@Resource
+	private CommdityService commdityService;
+	
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	//private static Set<Integer> key_gen = new HashSet<Integer>();
 	
@@ -100,6 +107,9 @@ public class OrderServiceTest extends BaseTest{
     		for(String orderid : orderids){
     			System.out.println(orderid);
     			Order order = orderService.getById(orderid);
+    			Commdity commdity = commdityService.getById(order.getCommdityid());
+    			RequestDeliverNotifyDTO dto = RequestDeliverNotifyDTO.from(order, commdity);
+    			System.out.println(JsonHelper.getJSONString(dto));
     			System.out.println(order.getId() + " - " + order.getAmount());
     		}
     	}
