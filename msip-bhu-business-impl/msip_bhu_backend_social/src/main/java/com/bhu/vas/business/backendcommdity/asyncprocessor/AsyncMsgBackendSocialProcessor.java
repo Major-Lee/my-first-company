@@ -8,11 +8,11 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.builder.ActionSocialMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionSocialMessageType;
+import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleSocialService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleCommdityService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 
@@ -27,11 +27,11 @@ public class AsyncMsgBackendSocialProcessor implements SpringQueueMessageListene
 	private ExecutorService exec = Executors.newFixedThreadPool(100);
 	
 	@Resource
-	private AsyncMsgHandleCommdityService asyncMsgHandleCommdityService;
+	private AsyncMsgHandleSocialService asyncMsgHandleSocialService;
 	
 	@PostConstruct
 	public void initialize() {
-		logger.info("AsyncMsgBackendCommdityProcessor initialize...");
+		logger.info("AsyncMsgBackendSocialProcessor initialize...");
 		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
 	
@@ -52,14 +52,14 @@ public class AsyncMsgBackendSocialProcessor implements SpringQueueMessageListene
 							asyncMsgHandleCommdityService.orderPaySuccessedHandle(message);
 							break;*/
 						case HandsetMeet:
-
+							asyncMsgHandleSocialService.handsetMeet(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
-					logger.error("AsyncMsgBackendCommdityProcessor", ex);
+					logger.error("AsyncMsgBackendSocialProcessor", ex);
 				}
 			}
 		}));

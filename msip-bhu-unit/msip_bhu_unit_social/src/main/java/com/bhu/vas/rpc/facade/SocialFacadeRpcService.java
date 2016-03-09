@@ -177,6 +177,7 @@ public class SocialFacadeRpcService {
             for (String mac : list) {
                 //TODO:(bluesand): backend操作
                 SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
+
             }
         }
         return false;
