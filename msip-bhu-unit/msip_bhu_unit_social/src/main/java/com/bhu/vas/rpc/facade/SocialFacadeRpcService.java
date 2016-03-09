@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
+import com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
 import com.bhu.vas.business.ds.social.service.WifiService;
 import com.bhu.vas.api.vto.BackendTaskVTO;
@@ -50,6 +51,9 @@ public class SocialFacadeRpcService {
 
     @Resource
     private WifiService wifiService;
+
+    @Resource
+    private SocialMessageService socialMessageService;
 
     public WifiComment comment(long uid, String bssid, String hd_mac, String message) {
 
@@ -178,6 +182,7 @@ public class SocialFacadeRpcService {
                 //TODO:(bluesand): backend操作
                 SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
 
+                socialMessageService.sendHandsetMeetMessage(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
             }
         }
         return false;
