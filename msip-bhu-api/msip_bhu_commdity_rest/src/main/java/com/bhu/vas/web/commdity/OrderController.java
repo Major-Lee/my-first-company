@@ -51,13 +51,12 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = true) Integer appid,
-			@RequestParam(required = true) String appsecret,
 			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false) Integer uid,
 			@RequestParam(required = false) String context) {
 
-		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, appsecret, 
+		RpcResponseDTO<OrderCreatedRetDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, 
 				mac, umac, uid, context);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -83,11 +82,10 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String orderid,
 			@RequestParam(required = true) Integer appid,
-			@RequestParam(required = true) String appsecret,
 			@RequestParam(required = true) String payment_type
 			) {
 		//1:验证rpc请求 验证订单并返回订单信息
-		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderid, appid, appsecret);
+		RpcResponseDTO<OrderDTO> validateResult = orderRpcService.validateOrderPaymentUrl(orderid, appid);
 		if(validateResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(validateResult));
 			return;
@@ -130,11 +128,10 @@ public class OrderController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = true) String orderid,
-			@RequestParam(required = true) Integer appid,
-			@RequestParam(required = true) String appsecret
+			@RequestParam(required = true) Integer appid
 			) {
 
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderid, appid, appsecret);
+		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderid, appid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

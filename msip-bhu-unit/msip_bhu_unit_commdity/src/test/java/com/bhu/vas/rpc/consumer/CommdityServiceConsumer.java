@@ -105,12 +105,12 @@ public class CommdityServiceConsumer {
 		}
 		
 		Integer appid = CommdityApplication.Portal.getKey();
-		String appsecret = CommdityApplication.Portal.getSecret();
+//		String appsecret = CommdityApplication.Portal.getSecret();
 		String mac = "28:e0:2c:bc:2a:16";
 		String umac = "28:e0:2c:bc:2a:17";
 		if(commdityid > 0){
 			String orderid = null;
-			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid, appsecret,
+			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid,
 					mac, umac, null, "context");
 			if(ret1.getErrorCode() == null){
 				OrderCreatedRetDTO dto = ret1.getPayload();
@@ -118,7 +118,7 @@ public class CommdityServiceConsumer {
 				orderid = dto.getId();
 			}
 			
-			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid, appsecret);
+			RpcResponseDTO<OrderDTO> ret2 = orderRpcService.validateOrderPaymentUrl(orderid, appid);
 			if(ret2.getErrorCode() == null){
 				OrderDTO orderDto = ret2.getPayload();
 				System.out.println("validateOrderPaymentUrl " + orderDto.getId() + "=" + orderDto.getStatus());

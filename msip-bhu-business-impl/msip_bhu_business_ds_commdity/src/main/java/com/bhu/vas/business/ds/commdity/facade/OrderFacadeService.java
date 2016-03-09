@@ -272,6 +272,12 @@ public class OrderFacadeService {
 	
 	/*************            validate             ****************/
 	
+	public void supportedAppId(Integer appid){
+		//认证appid
+		if(!CommdityApplication.supported(appid)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
+		}
+	}
 	/**
 	 * 认证应用id
 	 * @param appId 应用id
@@ -301,8 +307,8 @@ public class OrderFacadeService {
 	 * @param appId
 	 * @return
 	 */
-	public Order validateOrder(String orderid, Integer appid, String appsecret){
-		verifyAppId(appid, appsecret);
+	public Order validateOrder(String orderid, Integer appid){
+		supportedAppId(appid);
 		Order order = validateOrderId(orderid);
 		if(!appid.equals(order.getAppid())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);

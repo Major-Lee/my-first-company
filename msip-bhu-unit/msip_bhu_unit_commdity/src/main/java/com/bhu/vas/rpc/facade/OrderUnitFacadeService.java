@@ -50,17 +50,16 @@ public class OrderUnitFacadeService {
 	 * 生成订单
 	 * @param commdityid
 	 * @param appid
-	 * @param appSecret
 	 * @param mac
 	 * @param umac
 	 * @param uid
 	 * @param context
 	 * @return
 	 */
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String appsecret, String mac, String umac, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
 			Integer uid, String context){
 		try{
-			orderFacadeService.verifyAppId(appid, appsecret);
+			orderFacadeService.supportedAppId(appid);
 			
 			//验证用户mac和uid同时为空
 			if(uid == null && StringUtils.isEmpty(umac)){
@@ -88,9 +87,9 @@ public class OrderUnitFacadeService {
 	 * @param appSecret
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid, String appsecret) {
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderid, appid, appsecret);
+			Order order = orderFacadeService.validateOrder(orderid, appid);
 			//验证订单状态是否小于等于未支付
 			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
@@ -133,9 +132,9 @@ public class OrderUnitFacadeService {
 	 * @param appId 应用id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid, String appsecret) {
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderid, appid, appsecret);
+			Order order = orderFacadeService.validateOrder(orderid, appid);
 			
 			if(!umac.equals(order.getUmac())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);

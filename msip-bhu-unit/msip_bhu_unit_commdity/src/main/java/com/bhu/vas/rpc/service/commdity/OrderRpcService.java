@@ -22,11 +22,11 @@ public class OrderRpcService implements IOrderRpcService{
 	private OrderUnitFacadeService orderUnitFacadeService;
 	
 	@Override
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String appsecret, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, 
 			String mac, String umac, Integer uid, String context) {
-		logger.info(String.format("createNewOrder with commdityid[%s] appid[%s] appsecret[%s] mac[%s] umac[%s] uid[%s] context[%s]",
-				commdityid, appid, appsecret, mac, umac, uid, context));
-		return orderUnitFacadeService.createOrder(commdityid, appid, appsecret, mac, umac, uid, context);
+		logger.info(String.format("createNewOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] uid[%s] context[%s]",
+				commdityid, appid, mac, umac, uid, context));
+		return orderUnitFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
 	}
 	
 	@Override
@@ -42,15 +42,15 @@ public class OrderRpcService implements IOrderRpcService{
 	}*/
 	
 	@Override
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid, String appsecret) {
-		logger.info(String.format("validateOrderPaymentUrl with orderid[%s] appid[%s] appsecret[%s]", orderid, appid, appsecret));
-		return orderUnitFacadeService.validateOrderPaymentUrl(orderid, appid, appsecret);
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid) {
+		logger.info(String.format("validateOrderPaymentUrl with orderid[%s] appid[%s]", orderid, appid));
+		return orderUnitFacadeService.validateOrderPaymentUrl(orderid, appid);
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid, String appsecret) {
-		logger.info(String.format("orderStatusByUmac with umac[%s] orderid[%s] appid[%s] appSerect[%s]", umac, orderid, appid, appsecret));
-		return orderUnitFacadeService.orderStatusByUmac(umac, orderid, appid, appsecret);
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid) {
+		logger.info(String.format("orderStatusByUmac with umac[%s] orderid[%s] appid[%s]", umac, orderid, appid));
+		return orderUnitFacadeService.orderStatusByUmac(umac, orderid, appid);
 	}
 	
 	@Override

@@ -8,16 +8,16 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
 public interface IOrderRpcService {
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, String appSecret, 
+	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityId, Integer appId, 
 			String mac, String umac, Integer uid, String context);
 	
 	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderId, ResponseCreatePaymentUrlDTO rcp_dto);
 	
 //	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid);
 	
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId, String appSecret);
+	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId);
 	
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId, String appSecret);
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId);
 	
 	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid, String mac, Integer status, 
 			int pageNo, int pageSize);
