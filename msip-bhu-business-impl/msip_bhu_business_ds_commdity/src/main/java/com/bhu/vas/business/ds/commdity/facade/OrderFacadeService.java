@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
+import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -206,6 +207,10 @@ public class OrderFacadeService {
 		Order order = null;
 		try{
 			order = validateOrderId(orderid);
+			Integer order_status = order.getStatus();
+			if(!OrderHelper.lte_notpay(order_status)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{String.valueOf(order_status)});
+			}
 			order.setPaymented_at(new Date(payment_ts));
 			//支付成功
 			if(success){
