@@ -178,10 +178,11 @@ public class UserWalletFacadeService{
 		if(!BCryptHelper.checkpw(pwd,uwallet.getPassword())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_VALIDATEPWD_FAILED);
 		}
+		double wallettotal = uwallet.getCash();
 		uwallet.setCash(uwallet.getCash()-cash);
 		uwallet.setWithdraw(true);
 		uwallet = userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Withdraw, 0d, cash, null);
+		this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Withdraw, 0d, cash, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
 		return uwallet;
 	}
 	

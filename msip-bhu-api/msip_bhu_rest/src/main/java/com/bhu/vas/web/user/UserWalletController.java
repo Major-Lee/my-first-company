@@ -42,6 +42,7 @@ public class UserWalletController extends BaseController{
 		try{
 			if(cash <= 0){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR));
+				return;
 			}
 			String remoteIp = WebHelper.getRemoteAddr(request);
 			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(appid,payment_type,uid, pwd, cash, remoteIp);
