@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,14 +19,14 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping(value = "/account/pay")
+//@RequestMapping(value = "/account/pay")
 public class UserThirdpartiesPaymentController extends BaseController{
 	
 	@Resource
 	private IUserWalletRpcService userWalletRpcService;
 
 	@ResponseBody()
-	@RequestMapping(value="/fetch_thirdpartiespayments", method={RequestMethod.GET,RequestMethod.POST})
+	//@RequestMapping(value="/fetch_thirdpartiespayments", method={RequestMethod.GET,RequestMethod.POST})
 	public void fetch_thirdpartiespayments(HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		try{
@@ -45,7 +43,7 @@ public class UserThirdpartiesPaymentController extends BaseController{
 	
 	
 	@ResponseBody()
-	@RequestMapping(value="/remove", method={RequestMethod.GET,RequestMethod.POST})
+	//@RequestMapping(value="/remove", method={RequestMethod.GET,RequestMethod.POST})
 	public void remove(
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
@@ -63,7 +61,7 @@ public class UserThirdpartiesPaymentController extends BaseController{
 	}
 	
 	@ResponseBody()
-	@RequestMapping(value="/create", method={RequestMethod.GET,RequestMethod.POST})
+	//@RequestMapping(value="/create", method={RequestMethod.GET,RequestMethod.POST})
 	public void create(
 			HttpServletRequest request, 
 			HttpServletResponse response, 
