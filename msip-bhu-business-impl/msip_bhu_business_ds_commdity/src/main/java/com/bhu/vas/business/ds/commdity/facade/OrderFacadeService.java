@@ -56,7 +56,8 @@ public class OrderFacadeService {
 			.andColumnEqualTo("appid", appid)
 			.andColumnEqualTo("mac", mac)
 			.andColumnEqualTo("umac", umac)
-			.andColumnEqualTo("status", OrderStatus.NotPay.getKey());
+			.andColumnLessThanOrEqualTo("status", OrderStatus.NotPay.getKey());
+//			.andColumnEqualTo("status", OrderStatus.NotPay.getKey());
 		mc.setOrderByClause("created_at desc");
 		mc.setSize(1);
 		List<Order> orderList = orderService.findModelByModelCriteria(mc);

@@ -5,7 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
@@ -87,10 +86,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
         //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
     	//CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(OrderPaymentNotifyDTO);
     	
-    	String orderid = "10012016030900000000000000000003";
+    	String orderid = "10012016030900000000000000000004";
     	boolean success = true;
-    	simulateResponsePaymentCompletedNotify(orderid, success);
-    	//simulateUpayDrawPaymentCompletedNotify(success);
+    	//simulateResponsePaymentCompletedNotify(orderid, success);
+    	simulateUpayDrawPaymentCompletedNotify(success);
     }
     
     /*************           test           **************/
