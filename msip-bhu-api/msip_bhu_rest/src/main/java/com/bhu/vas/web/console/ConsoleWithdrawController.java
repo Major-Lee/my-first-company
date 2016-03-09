@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,7 +20,7 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-//@RequestMapping("/console/withdraw")
+@RequestMapping("/console/withdraw")
 public class ConsoleWithdrawController extends BaseController {
 	@Resource
 	private IUserWalletRpcService userWalletRpcService;
@@ -33,7 +35,7 @@ public class ConsoleWithdrawController extends BaseController {
 	 * @param pageSize 分页size
 	 */
     @ResponseBody()
-    //@RequestMapping(value = "/fetch_applies", method = {RequestMethod.POST})
+    @RequestMapping(value = "/fetch_applies", method = {RequestMethod.POST})
     public void fetch_applies(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -59,7 +61,7 @@ public class ConsoleWithdrawController extends BaseController {
      * @param applies applyids 逗号分割
      */
     @ResponseBody()
-    //@RequestMapping(value = "/verify_applies", method = {RequestMethod.POST})
+    @RequestMapping(value = "/verify_applies", method = {RequestMethod.POST})
     public void verify_applies(
             HttpServletRequest request,
             HttpServletResponse response,
