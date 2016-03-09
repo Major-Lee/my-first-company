@@ -17,7 +17,11 @@ public class PaymentInternalHelper {
 	public static final String COMMUNICATION_APPID = "appid";
 	public static final String COMMUNICATION_APPSECRET = "appsecret";
 	//支付系统获取订单支付url的api地址
-	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
+	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
+	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://192.168.66.88:8005/api/ucloud/pay";
+	//模拟支付系统支付成功触发api
+	public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = "http://192.168.66.88:8005/api/ucloud/pay-call";
+	
 	//订单已经支付成功
 	public static final String ERRORCODE_PAYMENT_STATUS_PAYSUCCESSED = "101";
 	/**
@@ -29,12 +33,12 @@ public class PaymentInternalHelper {
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String amount, 
-			String requestIp, String orderId){
+			String requestIp, String orderid){
 		Map<String, String> api_params = generatePaymentApiParamMap();
 		api_params.put("payment_type", payment_type);
 		api_params.put("total_fee", amount);
 		api_params.put("exter_invoke_ip", requestIp);
-		api_params.put("goods_no", orderId);
+		api_params.put("goods_no", orderid);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
@@ -53,5 +57,27 @@ public class PaymentInternalHelper {
 		api_params.put("appid", COMMUNICATION_APPID);
 		api_params.put("appsecret", COMMUNICATION_APPSECRET);
 		return api_params;
+	}
+	
+	/**
+	 * 模拟支付系统支付成功触发api
+	 * @param orderid
+	 */
+	public static void simulatePaysuccessCommunication(String orderid){
+		Map<String, String> api_params = generatePaymentApiParamMap();
+		api_params.put("goods_no", orderid);
+		api_params.put("status", "success");
+		
+		try {
+			String response = HttpHelper.postUrlAsString(CREATE_PAYMENTURL_COMMUNICATION_API, api_params);
+			System.out.println(response);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		}
+	}
+	
+	public static void main(String[] args){
+		String orderid = "";
+		simulatePaysuccessCommunication(orderid);
 	}
 }

@@ -86,10 +86,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
         //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
     	//CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(OrderPaymentNotifyDTO);
     	
-    	String orderid = "10012016030900000000000000000004";
+    	String orderid = "10012016030900000000000000000011";
     	boolean success = true;
-    	//simulateResponsePaymentCompletedNotify(orderid, success);
-    	simulateUpayDrawPaymentCompletedNotify(success);
+    	simulateResponsePaymentCompletedNotify(orderid, success);
+    	//simulateUpayDrawPaymentCompletedNotify(success);
     }
     
     /*************           test           **************/
