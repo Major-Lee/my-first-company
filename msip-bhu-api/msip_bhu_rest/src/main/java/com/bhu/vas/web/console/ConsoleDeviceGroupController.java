@@ -103,8 +103,6 @@ public class ConsoleDeviceGroupController extends BaseController {
      * @param response
      * @param uid
      * @param gid
-     * @param pageNo
-     * @param pageSize
      */
     @ResponseBody()
     @RequestMapping(value = "/detail", method = { RequestMethod.POST })

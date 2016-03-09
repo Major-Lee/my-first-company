@@ -57,8 +57,8 @@ public class SocialFollowSortedSetService
         }
     }
 
-    public Set<String> fetchFollowList(long uid){
-        Set<String> set = this.zrange(generateKey(uid),0,20);
+    public Set<String> fetchFollowList(long uid,int pageNo,int pageSize){
+        Set<String> set = this.zrange(generateKey(uid),(pageNo-1)*pageSize,pageSize*pageNo-1);
         return set;
     }
 

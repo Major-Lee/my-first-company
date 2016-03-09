@@ -485,7 +485,6 @@ public class WifiDeviceGroupFacadeService {
         vto.setId(dgroup.getId());
         vto.setUid(dgroup.getUid());
         vto.setMessage(dgroup.getMessage());
-        ;
         vto.setTotal(dgroup.getTotal());
         vto.setState(dgroup.getState());
         vto.setCurrent(dgroup.getCurrent());

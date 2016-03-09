@@ -17,12 +17,6 @@ public class SocialServiceConsumer_xw {
 
 		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
 
-		System.out.println("123123123");
-
-		System.out.println(socialRpcService.fetchFollowList(100234,"0",0,5));
-
-		System.out.println("end");
-		
 		Thread.currentThread().join();
 		context.close();
 	}

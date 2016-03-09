@@ -115,10 +115,11 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac, int pageNo, int pageSize) {
-        logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s] pageNo[%s] pageSize[%s]", uid, hd_mac,pageNo,pageSize));
+    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac,int pageNo,int pageSize) {
+        logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s] pn[%s] ps[%s]", uid, hd_mac,pageNo,pageSize));
         return RpcResponseDTOBuilder
-                .builderSuccessRpcResponse(socialFacadeRpcService.fetchFollowList(uid, hd_mac, pageNo, pageSize));
+                .builderSuccessRpcResponse(socialFacadeRpcService
+                        .fetchFollowList(uid, hd_mac,pageNo,pageSize));
     }
 
 

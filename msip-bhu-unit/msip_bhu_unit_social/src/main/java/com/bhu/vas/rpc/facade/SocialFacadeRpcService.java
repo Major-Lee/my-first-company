@@ -117,12 +117,10 @@ public class SocialFacadeRpcService {
      *
      * @param uid
      * @param hd_mac_self
-     * @param pageNo
-     * @param pageSize
      * @return
      */
-    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self, int pageNo, int pageSize) {
-        Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid);
+    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self,int pageNo,int pageSize) {
+        Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid,pageNo,pageSize);
         int total = set.size();
         List<SocialFetchFollowListVTO> result = new ArrayList<SocialFetchFollowListVTO>();
         for (String hd_mac : set) {
@@ -141,8 +139,7 @@ public class SocialFacadeRpcService {
             vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac));
             result.add(vto);
         }
-        return new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize,
-                total, result);
+        return  new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize, total, result);
     }
 
     /**

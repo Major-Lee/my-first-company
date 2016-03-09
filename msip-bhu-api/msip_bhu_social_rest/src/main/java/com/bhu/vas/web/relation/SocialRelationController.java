@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by NeeBie on 2016/3/8.
@@ -32,7 +33,6 @@ public class SocialRelationController {
      *
      * @param response
      * @param uid
-     * @param bissd
      * @param type
      */
     @ResponseBody()
@@ -100,7 +100,6 @@ public class SocialRelationController {
 
     /**
      * 分页获取关注列表
-     * @param request
      * @param response
      * @param uid
      * @param hd_mac
@@ -108,15 +107,14 @@ public class SocialRelationController {
      * @param pageSize
      */
     @ResponseBody()
-        @RequestMapping(value = "/fetch_followlist", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/fetch_followlist", method = {RequestMethod.POST})
     public void fetchFollowList(
-            HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid, hd_mac, pageNo, pageSize);
+        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid, hd_mac,pageNo,pageSize);
         if (rpcResult != null && !rpcResult.hasError())
             SpringMVCHelper.renderJson(response,
                     ResponseSuccess.embed(rpcResult.getPayload()));

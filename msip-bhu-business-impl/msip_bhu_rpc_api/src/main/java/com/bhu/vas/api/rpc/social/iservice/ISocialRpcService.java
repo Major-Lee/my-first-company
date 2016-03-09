@@ -132,7 +132,7 @@ public interface ISocialRpcService {
      * @param uid
      * @param hd_mac
      */
-    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac, int pageNo, int PageSize);
+    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac,int pageNo,int pageSize);
 
     /**
      * 获取用户评论的wifi
