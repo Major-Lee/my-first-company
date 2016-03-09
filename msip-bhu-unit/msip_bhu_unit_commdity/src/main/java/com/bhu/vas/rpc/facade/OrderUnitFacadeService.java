@@ -93,7 +93,7 @@ public class OrderUnitFacadeService {
 			//验证订单状态是否小于等于未支付
 			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{String.valueOf(order_status)});
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
 			}
 			
 			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
