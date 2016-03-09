@@ -56,6 +56,20 @@ public class WifiDeviceHelper {
 	//private static Set<String> URouter_HdTypes = new HashSet<String>();
 	//private static Set<String> Soc_HdTypes = new HashSet<String>();
 	private static Set<String> vapExceptDevices = new HashSet<String>();
+	
+	
+	
+	
+	
+	public final static String VistorWifi_Default_Redirect_url = "www.bhuwifi.com";
+	public final static String VistorWifi_Default_Open_resource = "bhuwifi.com,bhunetworks.com";
+	public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
+	
+	public final static int VistorWifi_Default_Users_tx_rate= 128;
+	public final static int VistorWifi_Default_Users_rx_rate= 128;
+	public final static int VistorWifi_Default_Signal_limit= -30;
+	public final static int VistorWifi_Default_Idle_timeout= 3*60*60;
+	public final static int VistorWifi_Default_Force_timeout= 12*60*60;
 	static{
 		/*URouter_HdTypes.add("H106");
 		//Mass AP H103 H110

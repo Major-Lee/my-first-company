@@ -144,28 +144,20 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		}
 	}
 
-	private final static String Default_Redirect_url = "www.bhuwifi.com";
-	private final static String Default_Open_resource = "bhuwifi.com,bhunetworks.com";
-	private final static String Default_SSID = "BhuWiFi-访客";
 	
-	private final static int Default_Users_tx_rate= 128;
-	private final static int Default_Users_rx_rate= 128;
-	private final static int Default_Signal_limit= -30;
-	private final static int Default_Idle_timeout= 3*60*60;
-	private final static int Default_Force_timeout= 12*60*60;
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static ParamVapVistorWifiDTO builderDefault(boolean router){
 		ParamVapVistorWifiDTO dto = new ParamVapVistorWifiDTO();
-		dto.setUsers_tx_rate(Default_Users_tx_rate);
-		dto.setUsers_rx_rate(Default_Users_rx_rate);
-		dto.setSignal_limit(Default_Signal_limit);
-		dto.setRedirect_url(Default_Redirect_url);
-		dto.setIdle_timeout(Default_Idle_timeout);//
-		dto.setForce_timeout(Default_Force_timeout);
-		dto.setOpen_resource(Default_Open_resource);
+		dto.setUsers_tx_rate(WifiDeviceHelper.VistorWifi_Default_Users_tx_rate);
+		dto.setUsers_rx_rate(WifiDeviceHelper.VistorWifi_Default_Users_rx_rate);
+		dto.setSignal_limit(WifiDeviceHelper.VistorWifi_Default_Signal_limit);
+		dto.setRedirect_url(WifiDeviceHelper.VistorWifi_Default_Redirect_url);
+		dto.setIdle_timeout(WifiDeviceHelper.VistorWifi_Default_Idle_timeout);//
+		dto.setForce_timeout(WifiDeviceHelper.VistorWifi_Default_Force_timeout);
+		dto.setOpen_resource(WifiDeviceHelper.VistorWifi_Default_Open_resource);
 		dto.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		dto.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
-		dto.setSsid(Default_SSID);
+		dto.setSsid(WifiDeviceHelper.VistorWifi_Default_SSID);
 		return dto;
 	}
 	
@@ -174,16 +166,16 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		//if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(Default_Users_tx_rate);
 		//if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(Default_Users_rx_rate);
 		
-		if(param.getSignal_limit() == 0) param.setSignal_limit(Default_Signal_limit);
-		if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(Default_Redirect_url);
-		if(param.getIdle_timeout() == 0) param.setIdle_timeout(Default_Idle_timeout);
-		if(param.getForce_timeout() == 0) param.setForce_timeout(Default_Force_timeout);
-		if(StringUtils.isEmpty(param.getOpen_resource()) || param.getOpen_resource().indexOf(Default_Open_resource) == -1) {
-			param.setOpen_resource(Default_Open_resource);
+		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.VistorWifi_Default_Signal_limit);
+		if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(WifiDeviceHelper.VistorWifi_Default_Redirect_url);
+		if(param.getIdle_timeout() == 0) param.setIdle_timeout(WifiDeviceHelper.VistorWifi_Default_Idle_timeout);
+		if(param.getForce_timeout() == 0) param.setForce_timeout(WifiDeviceHelper.VistorWifi_Default_Force_timeout);
+		if(StringUtils.isEmpty(param.getOpen_resource()) || param.getOpen_resource().indexOf(WifiDeviceHelper.VistorWifi_Default_Open_resource) == -1) {
+			param.setOpen_resource(WifiDeviceHelper.VistorWifi_Default_Open_resource);
 		}
 		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
-		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(Default_SSID);
+		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(WifiDeviceHelper.VistorWifi_Default_SSID);
 		return param;
 	}
 	

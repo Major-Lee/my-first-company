@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.param;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
+
 
 
 
@@ -44,8 +46,8 @@ public class ParamVapVistorLimitWifiDTO implements java.io.Serializable{
 	*/
 	public static ParamVapVistorLimitWifiDTO builderDefault(){
 		ParamVapVistorLimitWifiDTO dto = new ParamVapVistorLimitWifiDTO();
-		dto.setUsers_tx_rate(128);
-		dto.setUsers_rx_rate(128);
+		dto.setUsers_tx_rate(WifiDeviceHelper.VistorWifi_Default_Users_tx_rate);
+		dto.setUsers_rx_rate(WifiDeviceHelper.VistorWifi_Default_Users_rx_rate);
 		return dto;
 	}
 	
