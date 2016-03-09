@@ -88,7 +88,7 @@ echo '清除目录'$CuDateDir'下所有的文件成功'
 
 
 echo '拷贝文件 msip_bhu_unit_social-bin.zip到'$CuDateDir
-cp ../../msip-bhu-unit/msip_bhu_unit_social/target/msip_bhu_unit_soical-bin.zip ./$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_social/target/msip_bhu_unit_social-bin.zip ./$CuDateDir
 
 echo '拷贝文件 msip_bhu_backend_social-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_social/target/msip_bhu_backend_social-bin.zip ./$CuDateDir
@@ -271,9 +271,9 @@ echo '发布其他服务成功'
 #echo 'deploy msip_bhu_agent_rest successfully @'$Deploy2ServerWeb
 
 echo 'deploy msip_bhu_social_rest to ...@'$Deploy2ServerWeb
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_social_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_social_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_social_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/classes/com/
 echo 'deploy msip_bhu_social_rest successfully @'$Deploy2ServerWeb
 
 echo '发布rest api服务成功'
