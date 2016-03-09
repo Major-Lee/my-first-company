@@ -16,6 +16,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
 import com.bhu.vas.business.ds.social.service.WifiService;
 import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.HandsetMeetDTO;
@@ -95,8 +96,15 @@ public class SocialFacadeRpcService {
      * @return
      */
     public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
-        SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+
+        HandsetUser user = handsetUserService.getById(hd_mac);
+        if (user.getUid() != uid) {
+            SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        } else {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
+        }
+
     }
 
     /**
@@ -119,27 +127,31 @@ public class SocialFacadeRpcService {
      * @param hd_mac_self
      * @return
      */
-    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self,int pageNo,int pageSize) {
-        Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid,pageNo,pageSize);
+    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self, int pageNo, int pageSize) {
+        Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid, pageNo, pageSize);
         int total = set.size();
         List<SocialFetchFollowListVTO> result = new ArrayList<SocialFetchFollowListVTO>();
         for (String hd_mac : set) {
             SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
             vto.setHd_mac(hd_mac);
             HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-            if (handsetUser != null && handsetUser.getUid() >0) {
+            if (handsetUser != null && handsetUser.getUid() > 0) {
+                vto.setNick(handsetUser.getNick());
                 User user = userService.getById((int) handsetUser.getUid());
                 if (user != null) {
                     vto.setUid(user.getId());
                     vto.setAvatar(user.getAvatar());
-                    vto.setType("urouter");
+                    vto.setType(SocialFetchFollowListVTO.TYPE);
+                    if (vto.getNick().isEmpty()) {
+                        vto.setNick(user.getNick());
+                    }
                 }
-                vto.setNick(handsetUser.getNick());
+
             }
             vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac));
             result.add(vto);
         }
-        return  new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize, total, result);
+        return new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize, total, result);
     }
 
     /**
@@ -401,15 +413,15 @@ public class SocialFacadeRpcService {
                 //vto.setUpdate_at(DateTimeHelper.formatDate(wifiComment.getUpdated_at(),DateTimeHelper.FormatPattern1));
                 // if(users.size()>0){
                 user = users.get(i);
-                if(user.getNick()!=null){
-                     vto.setNick(user.getNick());
-                }else{
-                	 vto.setNick(""); 	
+                if (user.getNick() != null) {
+                    vto.setNick(user.getNick());
+                } else {
+                    vto.setNick("");
                 }
-                if(user.getAvatar()!=null){
-                     vto.setAvatar(user.getAvatar());
-                }else{
-                	 vto.setAvatar("");
+                if (user.getAvatar() != null) {
+                    vto.setAvatar(user.getAvatar());
+                } else {
+                    vto.setAvatar("");
                 }
                 // }
                 vtos.add(vto);

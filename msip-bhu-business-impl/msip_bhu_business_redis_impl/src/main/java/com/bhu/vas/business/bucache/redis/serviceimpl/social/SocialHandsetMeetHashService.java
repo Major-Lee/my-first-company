@@ -69,13 +69,13 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
         this.hset(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY, dto);
     }
 
-    public HandsetMeetDTO getLasthandsetMeet(String hd_mac_self, String hd_mac) {
-        return JsonHelper.getDTO(this.hget(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY), HandsetMeetDTO.class);
-    }
-
     public List<HandsetMeetDTO> getHandsetMeetList(String hd_mac_self, String hd_mac, String bssid) {
         String meetList = this.hget(generateKey(hd_mac_self, hd_mac), bssid);
         return JsonHelper.getDTOList(meetList,HandsetMeetDTO.class);
+    }
+
+    public HandsetMeetDTO getLasthandsetMeet(String hd_mac_self, String hd_mac) {
+        return JsonHelper.getDTO(this.hget(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY), HandsetMeetDTO.class);
     }
 
     public static void main(String[] args) {

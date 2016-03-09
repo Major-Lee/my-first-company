@@ -10,6 +10,8 @@ import java.io.Serializable;
  */
 public class SocialFetchFollowListVTO implements Serializable{
 
+    public static final String TYPE = "urooter";
+
     private String hd_mac;
     private long uid;
     private String avatar;
