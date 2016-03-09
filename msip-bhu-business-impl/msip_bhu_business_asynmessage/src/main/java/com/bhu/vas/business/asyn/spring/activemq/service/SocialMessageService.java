@@ -28,10 +28,10 @@ public class SocialMessageService {
 //	}
 
 
-	public void sendHandsetMeetMessage(String hd_mac_self, String hd_mac, String bssid, String meet) {
+	public void sendHandsetMeetMessage(String hd_mac, String hd_macs, String bssid, String meet) {
 		HandsetMeetDTO  dto = new HandsetMeetDTO();
 		dto.setBssid(bssid);
-		dto.setHd_mac_self(hd_mac_self);
+		dto.setHd_macs(hd_macs);
 		dto.setHd_mac(hd_mac);
 		dto.setMeet(meet);
 		socialMessageQueueProducer.sendPureText(ActionSocialMessageFactoryBuilder.toJsonHasPrefix(dto));

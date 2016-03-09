@@ -176,15 +176,17 @@ public class SocialFacadeRpcService {
         dto.setLat(lat);
         dto.setLon(lon);
 
-        String[] list = hd_macs.split(",");
-        if (list != null && list.length > 0) {
-            for (String mac : list) {
-                //TODO:(bluesand): backend操作
-                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
+//        String[] list = hd_macs.split(",");
+//        if (list != null && list.length > 0) {
+//            for (String mac : list) {
+//                //TODO:(bluesand): backend操作
+//                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
+//
+//                socialMessageService.sendHandsetMeetMessage(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
+//            }
+//        }
 
-                socialMessageService.sendHandsetMeetMessage(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
-            }
-        }
+        socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
         return false;
     }
 

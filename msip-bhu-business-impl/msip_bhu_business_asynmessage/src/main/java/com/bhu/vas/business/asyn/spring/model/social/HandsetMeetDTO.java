@@ -8,9 +8,9 @@ import com.bhu.vas.business.asyn.spring.builder.ActionSocialMessageType;
  */
 public class HandsetMeetDTO extends ActionSocialDTO {
 
-    private String hd_mac_self;
-
     private String hd_mac;
+
+    private String hd_macs;
 
     private String bssid;
 
@@ -19,20 +19,20 @@ public class HandsetMeetDTO extends ActionSocialDTO {
      */
     private String meet;
 
-    public String getHd_mac_self() {
-        return hd_mac_self;
-    }
-
-    public void setHd_mac_self(String hd_mac_self) {
-        this.hd_mac_self = hd_mac_self;
-    }
-
     public String getHd_mac() {
         return hd_mac;
     }
 
     public void setHd_mac(String hd_mac) {
         this.hd_mac = hd_mac;
+    }
+
+    public String getHd_macs() {
+        return hd_macs;
+    }
+
+    public void setHd_macs(String hd_macs) {
+        this.hd_macs = hd_macs;
     }
 
     public String getBssid() {
