@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 /**
@@ -14,8 +15,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 public class PaymentInternalHelper {
-	public static final String COMMUNICATION_APPID = "appid";
-	public static final String COMMUNICATION_APPSECRET = "appsecret";
+//	public static final String COMMUNICATION_APPID = "appid";
+//	public static final String COMMUNICATION_APPSECRET = "appsecret";
 	//支付系统获取订单支付url的api地址
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
 	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://192.168.66.88:8005/api/ucloud/pay";
@@ -54,8 +55,8 @@ public class PaymentInternalHelper {
 	
 	public static Map<String, String> generatePaymentApiParamMap(){
 		Map<String, String> api_params = new HashMap<String, String>();
-		api_params.put("appid", COMMUNICATION_APPID);
-		api_params.put("appsecret", COMMUNICATION_APPSECRET);
+		api_params.put("appid", String.valueOf(CommdityApplication.Default.getKey()));
+		api_params.put("secret", CommdityApplication.Default.getSecret());
 		return api_params;
 	}
 	
@@ -77,7 +78,9 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args){
-		String orderid = "";
-		simulatePaysuccessCommunication(orderid);
+		String orderid = "10012016030900000000000000000012";
+		//simulatePaysuccessCommunication(orderid);
+		ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","5.72","192.168.66.162",orderid);
+		String params = rcp_dto.getParams();
 	}
 }
