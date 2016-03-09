@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.model;
 
 import java.util.Date;
 
+import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
@@ -99,7 +100,9 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 
 	@Override
 	public void setSequenceKey(Long autoid) {
-		this.id = StructuredIdHelper.generateStructuredIdString(appid, autoid);
+		this.id = StructuredIdHelper.generateStructuredIdString(appid, 
+				StructuredIdHelper.buildStructuredExtSegmentString(OrderExtSegmentPayMode.Expend.getKey()),
+				autoid);
 	}
 	
 	public String toString(){
