@@ -38,7 +38,7 @@ public class UserInnerExchangeDTO implements java.io.Serializable{
 		this.wallet = wallet;
 	}
 	public static UserInnerExchangeDTO build(UserDTO user,UserTokenDTO token){
-		return build(user,token);
+		return build(user,token,null);
 	}
 	public static UserInnerExchangeDTO build(UserDTO user,UserTokenDTO token,UserWalletDetailVTO wallet){
 		UserInnerExchangeDTO ret = new UserInnerExchangeDTO();
