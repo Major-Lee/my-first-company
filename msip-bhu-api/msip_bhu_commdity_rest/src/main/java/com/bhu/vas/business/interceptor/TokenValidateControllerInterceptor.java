@@ -34,8 +34,8 @@ public class TokenValidateControllerInterceptor extends AbstractTokenValidateCon
 		//检测名称唯一性
 		ignoreTokensValidateUrlSet.add("/account/check_mobileno");
 		
-		ignoreTokensValidateUrlSet.add("/order/create");
-		ignoreTokensValidateUrlSet.add("/query/paymenturl");
+		ignoreTokensValidateUrlSet.add("/commdity/interval/amount");
+		ignoreTokensValidateUrlSet.add("/order/umac/query/paymenturl");
 		ignoreTokensValidateUrlSet.add("/order/query/umac/status");
 	}
 	

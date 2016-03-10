@@ -6,6 +6,7 @@ import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -92,9 +93,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
         //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
     	//CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(OrderPaymentNotifyDTO);
     	
-    	String orderid = "10012016030900000000000000000011";
-    	boolean success = true;
-    	simulateResponsePaymentCompletedNotify(orderid, success);
+    	//String orderid = "10012016030900000000000000000011";
+    	//boolean success = true;
+    	//simulateResponsePaymentCompletedNotify(orderid, success);
+    	simulateDeliverNotify();
     	//simulateUpayDrawPaymentCompletedNotify(success);
     }
     
@@ -120,6 +122,16 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     		RequestWithdrawNotifyDTO dto = JsonHelper.getDTO(lpop_draw_message, RequestWithdrawNotifyDTO.class);
     		simulateResponsePaymentCompletedNotify(dto.getOrderid(), success);
     	}
+    }
+    
+    public static void simulateDeliverNotify(){
+		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		for(int i = 0;i<1000;i++){
+			System.out.println("ok1");
+			CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		}
+		System.out.println("ok");
     }
 
 }

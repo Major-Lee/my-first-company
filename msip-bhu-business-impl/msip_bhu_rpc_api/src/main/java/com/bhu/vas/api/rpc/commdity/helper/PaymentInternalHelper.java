@@ -87,7 +87,7 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args){
-		String orderid = "10012016031000000000000000000021";
+		String orderid = "10012016031000000000000000000050";
 		simulatePaysuccessCommunication(orderid);
 		System.out.println(new String("\u8be5\u5546\u54c1\u8ba2\u5355\u53f7\u4e0d\u5b58\u5728"));
 		//ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","0.8","192.168.66.162",orderid);
