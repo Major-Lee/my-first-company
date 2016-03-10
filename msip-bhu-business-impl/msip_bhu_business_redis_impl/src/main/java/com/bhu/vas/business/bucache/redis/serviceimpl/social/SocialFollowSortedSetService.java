@@ -50,7 +50,7 @@ public class SocialFollowSortedSetService
     }
 
     private boolean isFollowMax(long uid) {
-        if (this.zcard(generateKey(uid)) > 20) {
+        if (this.zcard(generateKey(uid)) > 200) {
             return false;
         } else {
             return true;

@@ -161,7 +161,7 @@ public class SocialFacadeRpcService {
             int index = 0;
             for (User user : users){
                 SocialFetchFollowListVTO vtos = result.get(index);
-                vtos.setAvatar(user.getAvatar());
+//                vtos.setAvatar(user.getAvatar());
                 vtos.setType(SocialFetchFollowListVTO.TYPE);
                 vtos.setUid(user.getId());
                 if (StringUtils.isEmpty(vtos.getNick())){

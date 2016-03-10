@@ -107,7 +107,7 @@ public class SocialRelationController {
      * @param pageSize
      */
     @ResponseBody()
-        @RequestMapping(value = "/fetch_followlist", method = {RequestMethod.POST})
+        @RequestMapping(value = "/list", method = {RequestMethod.POST})
     public void fetchFollowList(
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
