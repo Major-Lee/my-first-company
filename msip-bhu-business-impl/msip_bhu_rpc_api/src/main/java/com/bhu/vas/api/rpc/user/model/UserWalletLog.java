@@ -1,6 +1,8 @@
 package com.bhu.vas.api.rpc.user.model;
 
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
 
 /**
@@ -13,14 +15,20 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
 public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenable {
 	private int uid;
 	private String orderid;
-	//交易类别 充值购买虎钻 充值现金 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
-	private String transaction;
-	//transaction 描述 用于查看方便的冗余字段 
-	private String transaction_desc;
-	//交易数量(正负数字 充值购买虎钻 系统/活动赠送虎钻 消费虎钻 时 值不为0) 
-	private double sum;
-	//现金（正负数字 充值购买虎钻 充值现金 提现(withdraw)） 
-	private double cash;
+	//交易模式 UWalletTransMode
+	private String transmode;
+	//交易类型 UWalletTransType
+	private String transtype;
+	//transmode_desc 描述 用于查看方便的冗余字段 
+	private String transmode_desc;
+	//transtype_desc 描述 用于查看方便的冗余字段 
+	private String transtype_desc;
+	//交易现金相关 
+	private String rmoney;
+	//交易零钱相关（正负数字 充值购买虎钻 充值现金 提现(withdraw)） 
+	private String cash;
+	//交易虚拟币相关
+	private String vcurrency;
 	//交易内容描述
 	private String memo;
 	public UserWalletLog() {
@@ -33,19 +41,6 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 	public void setUid(int uid) {
 		this.uid = uid;
 	}
-	
-	public String getTransaction() {
-		return transaction;
-	}
-	public void setTransaction(String transaction) {
-		this.transaction = transaction;
-	}
-	public String getTransaction_desc() {
-		return transaction_desc;
-	}
-	public void setTransaction_desc(String transaction_desc) {
-		this.transaction_desc = transaction_desc;
-	}
 
 	public String getMemo() {
 		return memo;
@@ -53,22 +48,6 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 
 	public void setMemo(String memo) {
 		this.memo = memo;
-	}
-
-	public double getSum() {
-		return sum;
-	}
-
-	public void setSum(double sum) {
-		this.sum = sum;
-	}
-
-	public double getCash() {
-		return cash;
-	}
-
-	public void setCash(double cash) {
-		this.cash = cash;
 	}
 
 	public String getOrderid() {
@@ -82,5 +61,78 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 	@Override
 	public void setSequenceKey(Long key) {
 		this.id = key;
+	}
+
+	public String getTransmode() {
+		return transmode;
+	}
+
+	public void setTransmode(String transmode) {
+		this.transmode = transmode;
+	}
+
+	public String getTranstype() {
+		return transtype;
+	}
+
+	public void setTranstype(String transtype) {
+		this.transtype = transtype;
+	}
+
+	public String getTransmode_desc() {
+		return transmode_desc;
+	}
+
+	public void setTransmode_desc(String transmode_desc) {
+		this.transmode_desc = transmode_desc;
+	}
+
+	public String getTranstype_desc() {
+		return transtype_desc;
+	}
+
+	public void setTranstype_desc(String transtype_desc) {
+		this.transtype_desc = transtype_desc;
+	}
+
+	public String getRmoney() {
+		return rmoney;
+	}
+
+	public void setRmoney(String rmoney) {
+		this.rmoney = rmoney;
+	}
+
+	public String getCash() {
+		return cash;
+	}
+
+	public void setCash(String cash) {
+		this.cash = cash;
+	}
+
+	public String getVcurrency() {
+		return vcurrency;
+	}
+
+	public void setVcurrency(String vcurrency) {
+		this.vcurrency = vcurrency;
+	}
+	
+	public UserWalletLogVTO toUserWalletLogVTO(String mobileno,String nick){
+		UserWalletLogVTO vto = new UserWalletLogVTO();
+		vto.setId(id);
+		vto.setUid(uid);
+		vto.setOrderid(orderid);
+		vto.setNick(nick);
+		vto.setMobileno(mobileno);
+		vto.setCash(cash);
+		vto.setRmoney(rmoney);
+		vto.setVcurrency(vcurrency);
+		vto.setTransmode_desc(transmode_desc);
+		vto.setTranstype_desc(transtype_desc);
+		vto.setMemo(memo);
+		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
+		return vto;
 	}
 }

@@ -102,7 +102,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
 	public void test001SharedealCashToUserWallet(){
-    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId);
+    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true);
     	System.out.println(uWallet);
 	}	
     
@@ -132,7 +132,28 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	List<UserWalletWithdrawApply> applies = userWalletFacadeService.getUserWalletWithdrawApplyService().findModelByModelCriteria(mc);
     	for(UserWalletWithdrawApply apply:applies){
     		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawVerify(testVerfyUserId, apply.getId(), true);
-        	System.out.println(applynow);
+			BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
+			applynow.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+			applynow.setWithdraw_oper(current.getKey());
+			//User user = userWalletFacadeService.getUserService().getById(withdrawApply.getUid());
+			//User user = userWalletFacadeService.validateUser(withdrawApply.getUid());
+			User user = UserValidateServiceHelper.validateUser(applynow.getUid(),userWalletFacadeService.getUserService());
+			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(applynow.getUid());
+			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
+					walletConfigs.getWithdraw_tax_percent(), 
+					walletConfigs.getWithdraw_trancost_percent());
+			ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
+			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
+			String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
+			System.out.println("to Redis prepare:"+jsonNotify);
+			{	//保证写入redis后，提现申请设置成为转账中...状态
+				//BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
+				CommdityInternalNotifyListService.getInstance().rpushWithdrawAppliesRequestNotify(jsonNotify);
+				//withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+				//withdrawApply.setWithdraw_oper(current.getKey());
+				userWalletFacadeService.getUserWalletWithdrawApplyService().update(applynow);
+			}
+			System.out.println("to Redis ok:"+jsonNotify);
     	}
 	}
     

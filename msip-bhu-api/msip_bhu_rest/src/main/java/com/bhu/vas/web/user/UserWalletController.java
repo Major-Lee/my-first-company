@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -111,4 +113,32 @@ public class UserWalletController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
+	
+	/**
+	 * 分页提取钱包流水日志记录
+	 * @param request
+	 * @param response
+	 * @param uid uid
+	 * @param transmode 交易方式
+	 * @param transtype 交易类别
+	 * @param pageNo 分页no
+	 * @param pageSize 分页size
+	 */
+    @ResponseBody()
+    @RequestMapping(value = "/wallet/fetch_logs", method = {RequestMethod.POST})
+    public void fetch_logs(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false,defaultValue = "") String transmode,
+            @RequestParam(required = false,defaultValue = "") String transtype,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
+    		) {
+		RpcResponseDTO<TailPage<UserWalletLogVTO>> rpcResult = userWalletRpcService.pageUserWalletlogs(uid, transmode, transtype, pageNo, pageSize);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    }
 }

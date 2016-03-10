@@ -140,16 +140,25 @@ public class BusinessEnumType {
 		}
 	}
 	
-	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
+	/**
+	 * 对于虎钻和钱包里的现金进行消费或者充值的类型定义
+	 * 只定义内部虚拟货币之间的结转方式
+	 * @author Edmond
+	 * Recharge 充值
+	 * Realmoney Readymoney现金（真实的）
+	 * Cash 零钱（系统内定义的，可以当现金使用）
+	 * VCurrency 虎钻
+	 */
 	public enum UWalletTransType{
-		Recharge2V("R2V","充值购买虎钻"),
-		Recharge2C("R2C","充值现金"),
-		Sharedeal2C("S2C","分成现金"),
-		Giveaway2V("G2V","系统/活动赠送虎钻"),
-		Consume4V("C4V","消费虎钻"),
-		Withdraw("WDA","提现(withdraw)"),
-		WithdrawRollback("WDR","提现(withdraw rollback)"),
+		Recharge2V("R2V","虎钻充值"),
+		Recharge2C("R2C","零钱充值"),
+		Rollback2C("B2C","零钱返还"),
+		ReadPacketSettle2C("P2C",	 "红包打赏结算"),
+		PurchaseGoodsUsedV("PGV","虚拟币购买道具"),
+		PurchaseGoodsUsedC("PGC","零钱购买道具"),
+		Cash2Realmoney("C2M","零钱提现"),
 		;
+		
 		private String key;
 		private String name;
 		static Map<String, UWalletTransType> allWalletTransTypes;
@@ -184,6 +193,67 @@ public class BusinessEnumType {
 			UWalletTransType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (UWalletTransType type : types){
 				allWalletTransTypes.put(type.getKey(), type);
+			}
+		}
+	}
+	
+	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
+	/**
+	 * 交易类型定义
+	 * 和第三方支付相关的操作
+	 * 支付、充值、提现
+	 * @author Edmond
+	 *
+	 */
+	public enum UWalletTransMode{
+		RealMoneyPayment("RMP","现金支付"),//用于充值
+		CashPayment("CAP","零钱支付"),
+		CashRollbackPayment("CRP","零钱支付（Rollback）"),
+		VCurrencyPayment("VCP","虎钻支付"),
+		SharedealPayment("SDP","收益分成"),
+		/*Recharge2V("R2V","充值购买虎钻"),
+		Recharge2C("R2C","充值现金"),
+		Cash2C("C2C","现金购买虎钻"),
+		Sharedeal2C("S2C","分成现金"),
+		Giveaway2V("G2V","系统/活动赠送虎钻"),
+		Consume4V("C4V","消费虎钻"),
+		Withdraw("WDA","提现(withdraw)"),
+		WithdrawRollback("WDR","提现(withdraw rollback)"),*/
+		;
+		private String key;
+		private String name;
+		static Map<String, UWalletTransMode> allWalletTransModes;
+		
+		private UWalletTransMode(String key,String name){
+			this.key = key;
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public static UWalletTransMode fromKey(String key){
+			return allWalletTransModes.get(key);
+		}
+		
+		public static boolean supported(String key){
+			return allWalletTransModes.containsKey(key);
+		}
+		
+		static {
+			allWalletTransModes = new HashMap<String, UWalletTransMode>();
+			UWalletTransMode[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (UWalletTransMode type : types){
+				allWalletTransModes.put(type.getKey(), type);
 			}
 		}
 	}

@@ -8,10 +8,13 @@
     <id property="id" column="id"/>
     <result property="uid" column="uid"/>
     <result property="orderid" column="orderid"/>
-    <result property="transaction" column="transaction"/>
-    <result property="transaction_desc" column="transaction_desc"/>
-    <result property="sum" column="sum"/>
+    <result property="transmode" column="transmode"/>
+    <result property="transtype" column="transtype"/>
+    <result property="transmode_desc" column="transmode_desc"/>
+    <result property="transtype_desc" column="transtype_desc"/>    
+    <result property="rmoney" column="rmoney"/>
     <result property="cash" column="cash"/>
+    <result property="vcurrency" column="vcurrency"/>
     <result property="memo" column="memo"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -26,47 +29,58 @@
 	    	id,
 	    	uid,
 	    	orderid,
-	    	transaction,
-	    	transaction_desc,
-	    	sum,
+	    	transmode,
+	    	transtype,
+	    	transmode_desc,
+	    	transtype_desc,
+	    	rmoney,
 	    	cash,
+	    	vcurrency,
 	    	memo,
 	    	updated_at
 	    ]]>
 	</sql>  
+	<sql id="modelWithoutPKColumns">
+	    <![CDATA[
+	    	uid,
+	    	orderid,
+	    	transmode,
+	    	transtype,
+	    	transmode_desc,
+	    	transtype_desc,
+	    	rmoney,
+	    	cash,
+	    	vcurrency,
+	    	memo,
+	    	updated_at
+	    ]]>
+	</sql> 	
 	
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{uid},
 	    	#{orderid},
-	    	#{transaction},
-	    	#{transaction_desc},
-	    	#{sum},
+	    	#{transmode},
+	    	#{transtype},
+	    	#{transmode_desc},
+	    	#{transtype_desc},	    	
+	    	#{rmoney},
 	    	#{cash},
+	    	#{vcurrency},
 	    	#{memo},
 	    	#{updated_at}
 	</sql>
 		
-	<sql id="modelWithoutPKColumns">
-	    <![CDATA[
-	    	uid,
-	    	orderid,
-	    	transaction,
-	    	transaction_desc,
-	    	sum,
-	    	cash,
-	    	memo,
-	    	updated_at
-	    ]]>
-	</sql>   
-	
 	<sql id="modelUpdateValues">
 	    	uid = #{uid},
 	    	orderid = #{orderid},
-	    	transaction = #{transaction},
-	    	transaction_desc = #{transaction_desc},
-	    	sum = #{sum},
+	    	transmode = #{transmode},
+	    	transtype = #{transtype},
+	    	transmode_desc = #{transmode_desc},
+	    	transtype_desc = #{transtype_desc},
+	    	rmoney = #{rmoney},
 	    	cash = #{cash},
+	    	vcurrency = #{vcurrency},
 	    	memo = #{memo},
 	    	updated_at = #{updated_at}
 	</sql>

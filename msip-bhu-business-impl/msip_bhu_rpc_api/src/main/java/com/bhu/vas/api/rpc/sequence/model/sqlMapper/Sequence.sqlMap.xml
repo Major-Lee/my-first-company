@@ -76,14 +76,17 @@
 	</sql>
 
     <update id="begin">
-    	begin;
+    	SET AUTOCOMMIT=0;BEGIN WORK;
     	<!-- 
+    	begin;
     	SET AUTOCOMMIT=0;
     	 -->
     </update>
     <update id="commit">
+    	COMMIT WORK;SET AUTOCOMMIT=1;
+    	<!-- 
     	commit;
-    	 
+    	  -->
     </update>
     
 	<select id="select" resultMap="modelResult">
@@ -93,6 +96,7 @@
 				id = #{id}
 			</if>
 		</where>
+		<!-- for update  -->
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -163,4 +167,8 @@
     	</if>  
 	</delete>
 	
+	
+	<update id="executeSql" parameterType="String">  
+    	${value} 
+	</update>
 </mapper>

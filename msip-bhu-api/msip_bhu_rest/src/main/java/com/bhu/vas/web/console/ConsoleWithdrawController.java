@@ -45,7 +45,7 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pagesWithdrawApplies(uid, tuid, withdraw_status, pageNo, pageSize);
+		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid, withdraw_status, pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

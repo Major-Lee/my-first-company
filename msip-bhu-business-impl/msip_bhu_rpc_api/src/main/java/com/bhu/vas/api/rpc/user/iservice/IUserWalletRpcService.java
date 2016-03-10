@@ -5,6 +5,7 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -37,9 +38,18 @@ public interface IUserWalletRpcService {
 	 * @param pageNo 分页no
 	 * @param pageSize 分页size
 	 */
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pagesWithdrawApplies(int reckoner,int tuid,String withdraw_status,int pageNo,int pageSize);
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> 	pageWithdrawApplies(int reckoner,int tuid,String withdraw_status,int pageNo,int pageSize);
 	
-	
+	/**
+	 * 分页提取用户钱包流水
+	 * @param uid
+	 * @param transmode
+	 * @param transtype
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserWalletLogVTO>> 		pageUserWalletlogs(int uid,String transmode,String transtype,int pageNo,int pageSize);
     /**
      * 审核提现申请，只有状态为VP的申请可以被审核，业务实现考虑验证此状态
      * @param reckoner

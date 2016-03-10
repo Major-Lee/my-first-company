@@ -12,16 +12,19 @@ import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
+import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -37,24 +40,66 @@ public class UserWalletUnitFacadeService {
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
 
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pagesWithdrawApplies(
+	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
+			int uid, 
+			String transmode,String transtype, 
+			int pageNo, int pageSize) {
+		try{
+			UWalletTransMode tmode = null;
+			if(StringUtils.isNotEmpty(transmode)){
+				tmode = UWalletTransMode.fromKey(transmode);
+			}
+			
+			UWalletTransType ttype = null;
+			if(StringUtils.isNotEmpty(transtype)){
+				ttype = UWalletTransType.fromKey(transtype);
+			}
+			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, pageNo, pageSize);
+			TailPage<UserWalletLogVTO> result_pages = null;
+			List<UserWalletLogVTO> vtos = new ArrayList<>();
+			if(!pages.isEmpty()){
+				List<Integer> uids = new ArrayList<>();
+				for(UserWalletLog log:pages.getItems()){
+					uids.add(log.getUid());
+				}
+				List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
+				int index = 0;
+				for(UserWalletLog log:pages.getItems()){
+					User user = users.get(index);
+					vtos.add(log.toUserWalletLogVTO(
+							user!=null?user.getMobileno():StringUtils.EMPTY,
+							user!=null?user.getNick():StringUtils.EMPTY));
+					index++;
+				}
+			}
+			result_pages = new CommonPage<UserWalletLogVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
 			int uid, int tuid, String withdraw_status, int pageNo, int pageSize) {
 		try{
 			UWithdrawStatus status = null;
 			if(StringUtils.isNotEmpty(withdraw_status)){
 				status = UWithdrawStatus.fromKey(withdraw_status);
 			}
-			TailPage<UserWalletWithdrawApply> pageApplies = userWalletFacadeService.pageWithdrawApplies(uid, status, pageNo, pageSize);
+			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(uid, status, pageNo, pageSize);
 			TailPage<UserWithdrawApplyVTO> result_pages = null;
 			List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
-			if(!pageApplies.isEmpty()){
+			if(!pages.isEmpty()){
 				List<Integer> uids = new ArrayList<>();
-				for(UserWalletWithdrawApply apply:pageApplies.getItems()){
+				for(UserWalletWithdrawApply apply:pages.getItems()){
 					uids.add(apply.getUid());
 				}
 				List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
 				int index = 0;
-				for(UserWalletWithdrawApply apply:pageApplies.getItems()){
+				for(UserWalletWithdrawApply apply:pages.getItems()){
 					User user = users.get(index);
 					UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(user.getId());
 					vtos.add(apply.toUserWithdrawApplyVTO(
@@ -65,7 +110,7 @@ public class UserWalletUnitFacadeService {
 					index++;
 				}
 			}
-			result_pages = new CommonPage<UserWithdrawApplyVTO>(pageApplies.getPageNumber(), pageApplies.getPageSize(), pageApplies.getTotalItemsCount(), vtos);
+			result_pages = new CommonPage<UserWithdrawApplyVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -155,8 +200,8 @@ public class UserWalletUnitFacadeService {
 	
 	public RpcResponseDTO<UserWalletDetailVTO> walletDetail(int uid) {
 		try{
-			UserWallet userWallet = userWalletFacadeService.userWallet(uid);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userWallet.toUserWalletDetailVTO());
+			//UserWallet userWallet = userWalletFacadeService.userWallet(uid);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userWalletFacadeService.walletDetail(uid));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

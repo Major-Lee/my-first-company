@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.rpc.facade.UserWalletUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -44,11 +45,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}*/
 
 	@Override
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pagesWithdrawApplies(
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
 			int reckoner, int tuid, String withdraw_status, int pageNo, int pageSize) {
-		logger.info(String.format("pagesWithdrawApplies with reckoner[%s] tuid [%s] withdraw_status[%s] pn[%s] ps[%s]",
+		logger.info(String.format("pageWithdrawApplies with reckoner[%s] tuid [%s] withdraw_status[%s] pn[%s] ps[%s]",
 				reckoner,tuid,withdraw_status,pageNo,pageSize));
-		return userWalletUnitFacadeService.pagesWithdrawApplies(reckoner, tuid, withdraw_status, pageNo, pageSize);
+		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status, pageNo, pageSize);
 	}
 
 	@Override
@@ -103,5 +104,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd,String npwd) {
 		logger.info(String.format("withdrawPwdUpd with uid[%s] pwd[%s] npwd[%s]",uid,pwd,npwd));
 		return userWalletUnitFacadeService.withdrawPwdUpd(uid, pwd, npwd);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(int uid, String transmode,String transtype, int pageNo, int pageSize) {
+		logger.info(String.format("pageUserWalletlogs with uid[%s] transmode[%s] transtype[%s] pn[%s] ps[%s]",uid,transmode,transtype,pageNo,pageSize));
+		return userWalletUnitFacadeService.pageUserWalletlogs(uid, transmode, transtype, pageNo, pageSize);
 	}
 }

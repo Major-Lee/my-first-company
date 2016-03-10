@@ -14,7 +14,6 @@ import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -450,8 +449,8 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		}
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
-		UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
-		userExchange.setWallet(uwallet.toUserWalletDetailVTO());
+		//UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
+		userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
 		userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
