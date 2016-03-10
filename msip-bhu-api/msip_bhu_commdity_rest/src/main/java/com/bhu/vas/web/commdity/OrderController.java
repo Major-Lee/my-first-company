@@ -122,7 +122,7 @@ public class OrderController extends BaseController{
 	 * @param payment_type 支付方式
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/umac/query/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/query/umac/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
 	public void query_paymenturl(
 			HttpServletRequest request,
 			HttpServletResponse response,
