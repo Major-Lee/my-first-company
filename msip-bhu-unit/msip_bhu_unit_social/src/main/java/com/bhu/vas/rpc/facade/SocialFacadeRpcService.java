@@ -14,6 +14,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
 import com.bhu.vas.business.ds.social.service.WifiService;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
@@ -97,14 +98,10 @@ public class SocialFacadeRpcService {
 
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
         if (handsetUser != null && handsetUser.getUid() != uid) {
-            long index = SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
-            if (index == 1){
-                return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-            }else{
-                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
-            }
+            SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
+            throw  new BusinessI18nCodeException(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
         }
     }
 

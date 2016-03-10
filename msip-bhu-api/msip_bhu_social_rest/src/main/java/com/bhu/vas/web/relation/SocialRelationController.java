@@ -123,7 +123,6 @@ public class SocialRelationController extends BaseController {
         } catch (Exception e) {
             SpringMVCHelper.renderJson(response,
                     ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
-
         }
     }
 }
