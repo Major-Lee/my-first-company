@@ -99,6 +99,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	Devices_Plugin_Samba_DownloadPath = PropertiesHelper.getString("devices.plugin.samba.downloadpath", paramProperties, Devices_Plugin_Samba_DownloadPath);
         	Devices_Plugin_Samba_Ver = PropertiesHelper.getString("devices.plugin.samba.ver", paramProperties, Devices_Plugin_Samba_Ver);
         	
+        	PaymentApiDomain = PropertiesHelper.getString("payment.api.domain", paramProperties, PaymentApiDomain);
+        	
         	Terminal_Push_Notify_Exprie_Second = PropertiesHelper.getInt("terminal.push.notify.exprie.second", paramProperties, Terminal_Push_Notify_Exprie_Second);
         	logger.info("loading runtime configuration successfully!");  
             InternalCaptchaCodeSMS_Gateway = PropertiesHelper.getString("internal.captchacode.sms.gateway", paramProperties, InternalCaptchaCodeSMS_Gateway);
@@ -163,6 +165,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int UserCaptchaCodeExpired = 180;//3分钟
 	//用户验证码每个用户每天最多 多少次
 	public static final int UserCaptchaCodeLimit = 8;
+	//支付系统api接口的域名
+	public static String PaymentApiDomain = "http://upay.bhuwifi.com";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "尊敬的用户您好，您此次验证码为@请勿将验证码提供给他人，如非本人操作，请忽略。【华信联创】";
 	

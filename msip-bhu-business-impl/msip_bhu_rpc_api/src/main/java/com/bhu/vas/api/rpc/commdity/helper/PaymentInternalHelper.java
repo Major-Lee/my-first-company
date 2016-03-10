@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 /**
@@ -20,9 +21,9 @@ public class PaymentInternalHelper {
 //	public static final String COMMUNICATION_APPSECRET = "appsecret";
 	//支付系统获取订单支付url的api地址
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
-	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://192.168.66.88:8005/api/ucloud/pay";
+	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
 	//模拟支付系统支付成功触发api
-	public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = "http://192.168.66.88:8005/api/ucloud/pay-call";
+	public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
 	
 	//订单已经支付成功
 	public static final String ERRORCODE_PAYMENT_STATUS_PAYSUCCESSED = "101";
