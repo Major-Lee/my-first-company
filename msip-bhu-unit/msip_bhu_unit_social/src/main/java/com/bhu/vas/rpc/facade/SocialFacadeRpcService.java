@@ -189,11 +189,16 @@ public class SocialFacadeRpcService {
 
         try {
             if (uid != null && uid > 0) {
-                HandsetUser handsetUser = new HandsetUser();
-                handsetUser.setId(hd_mac);
-                handsetUser.setUid(uid);
-                handsetUser.setCreated_at(new Date());
-                handsetUserService.insert(handsetUser);
+
+                HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+
+                if (handsetUser == null) {
+                    handsetUser = new HandsetUser();
+                    handsetUser.setId(hd_mac);
+                    handsetUser.setUid(uid);
+                    handsetUser.setCreated_at(new Date());
+                    handsetUserService.insert(handsetUser);
+                }
 
                 WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
             }
