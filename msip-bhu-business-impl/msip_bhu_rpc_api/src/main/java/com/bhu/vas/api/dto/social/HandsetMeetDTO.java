@@ -17,6 +17,8 @@ public class HandsetMeetDTO implements Serializable {
 
     private String lon;
 
+    private String addr;
+
 
     public String getBssid() {
         return bssid;
@@ -56,5 +58,13 @@ public class HandsetMeetDTO implements Serializable {
 
     public void setLon(String lon) {
         this.lon = lon;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 }

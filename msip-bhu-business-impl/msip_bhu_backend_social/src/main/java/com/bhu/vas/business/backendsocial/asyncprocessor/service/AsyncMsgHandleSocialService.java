@@ -27,9 +27,10 @@ public class AsyncMsgHandleSocialService {
         String hd_macs = dto.getHd_macs();
         String hd_mac = dto.getHd_mac();
         String bssid = dto.getBssid();
-       String[] list = hd_macs.split(",");
+        String[] list = hd_macs.split(",");
         if (list != null && list.length > 0) {
             for (String mac : list) {
+                logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
                 SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto.getMeet()));
             }
         }
