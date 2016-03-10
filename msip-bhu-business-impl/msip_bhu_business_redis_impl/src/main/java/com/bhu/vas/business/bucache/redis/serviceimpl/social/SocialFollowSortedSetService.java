@@ -5,6 +5,8 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import redis.clients.jedis.JedisPool;
 
 import java.util.Set;
@@ -62,12 +64,12 @@ public class SocialFollowSortedSetService
         return set;
     }
 
-    public long follow(long uid, String hd_mac) {
-        long index = 0;
+    public void follow(long uid, String hd_mac) {
         if (isFollowMax(uid)) {
-            index = this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
+           this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
+        }else {
+            throw new BusinessI18nCodeException(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
         }
-        return index;
     }
 
     public void unFollow(long uid, String hd_mac) {

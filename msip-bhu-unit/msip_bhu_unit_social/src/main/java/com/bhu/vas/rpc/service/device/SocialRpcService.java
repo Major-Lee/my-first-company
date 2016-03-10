@@ -106,13 +106,12 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
         try {
-            logger.info(String.format("follow uid[%s] hd_mac[%s]", uid,
-                    hd_mac));
-            return socialFacadeRpcService.follow(uid, hd_mac);
+            logger.info(String.format("follow uid[%s] hd_mac[%s]", uid, hd_mac));
+            socialFacadeRpcService.follow(uid, hd_mac);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         }catch (BusinessI18nCodeException i18nex){
             return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
         }catch (Exception ex){
-            ex.printStackTrace(System.out);
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
         }
     }
