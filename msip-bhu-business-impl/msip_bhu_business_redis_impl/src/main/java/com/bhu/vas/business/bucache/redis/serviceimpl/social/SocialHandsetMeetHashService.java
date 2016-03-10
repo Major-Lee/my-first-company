@@ -89,9 +89,7 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
         dto.setSsid("gooogle-wifi");
         dto.setTs(System.currentTimeMillis());
 
-
         SocialHandsetMeetHashService.getInstance().handsetMeet("82:83:90:12:32:34", "82:83:90:12:32:35", "google", JsonHelper.getJSONString(dto));
-
 
         dto = SocialHandsetMeetHashService.getInstance().getLasthandsetMeet("84:82:f4:28:7a:ec", "82:83:90:12:32:34");
 

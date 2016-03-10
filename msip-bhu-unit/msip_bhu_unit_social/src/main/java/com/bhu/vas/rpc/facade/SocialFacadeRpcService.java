@@ -137,7 +137,9 @@ public class SocialFacadeRpcService {
                 SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
                 hds.add(hd_mac);
                 vto.setHd_mac(hd_mac);
-                vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac));
+                HandsetMeetDTO meetDto = SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac);
+                System.out.println(meetDto.getBssid()+"|"+meetDto.getSsid());
+                vto.setLast_meet(meetDto);
                 result.add(vto);
             }
         }
