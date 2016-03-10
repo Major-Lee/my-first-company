@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -136,7 +134,7 @@ public class LoginSessionController extends BaseController{
 	 * @param pwd
 	 * @param device
 	 */
-	@ResponseBody()
+	/*@ResponseBody()
 	@RequestMapping(value="/create_finance",method={RequestMethod.POST})
 	public void create_finance(
 			HttpServletRequest request,
@@ -163,7 +161,7 @@ public class LoginSessionController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 		
-	}
+	}*/
 	
 	/**
 	 * token登录验证
