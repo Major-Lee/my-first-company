@@ -546,7 +546,7 @@ public class UserWalletFacadeService{
 		createCriteria.andSimpleCaulse(" 1=1 ");
     	mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);
-    	mc.setOrderByClause(" created_at desc ");
+    	mc.setOrderByClause(" updated_at desc ");
 		TailPage<UserWalletLog> pages = userWalletLogService.findModelTailPageByModelCriteria(mc);
 		return pages;
 	}
