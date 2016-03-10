@@ -360,31 +360,43 @@ public class UserUnitFacadeService {
 				}
 			}
 		}
-		Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
-		if(uid == null || uid.intValue() == 0){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		try{
+			Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(uid == null || uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			User user = this.userService.getById(uid);
+			if(user == null){//存在不干净的数据，需要清理数据
+				cleanDirtyUserData(uid,countrycode,acc);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserResetPwd(user, pwd,device, resetIp);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		User user = this.userService.getById(uid);
-		if(user == null){//存在不干净的数据，需要清理数据
-			cleanDirtyUserData(uid,countrycode,acc);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-		}
-		
-		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserResetPwd(user, pwd,device, resetIp);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
-		//,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId())
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> userChangedPwd(int uid,String pwd,String npwd) {
 		if(StringUtils.isEmpty(pwd) || StringUtils.isEmpty(npwd)){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_PASSWORD_EMPTY);
 		}
-		User user = UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserChangedPwd(user, pwd,npwd);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
-		//,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId())
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		try{
+			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserChangedPwd(user, pwd,npwd);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 	/**
 	 * 更新用户信息接口
