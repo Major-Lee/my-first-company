@@ -5,17 +5,11 @@ import java.util.List;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
-import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
-import com.bhu.vas.api.dto.commdity.OrderDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public class CommdityServiceConsumer {
@@ -110,7 +104,7 @@ public class CommdityServiceConsumer {
 		String umac = "28:e0:2c:bc:2a:17";
 		if(commdityid > 0){
 			String orderid = null;
-			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid,
+/*			RpcResponseDTO<OrderCreatedRetDTO> ret1 = orderRpcService.createOrder(commdityid, appid,
 					mac, umac, null, "context");
 			if(ret1.getErrorCode() == null){
 				OrderCreatedRetDTO dto = ret1.getPayload();
@@ -144,7 +138,7 @@ public class CommdityServiceConsumer {
 			System.out.println(JsonHelper.getJSONString(opn_dto));
 			
 	    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(JsonHelper.getJSONString(opn_dto));
-			//			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
+*/			//			RpcResponseDTO<Boolean> ret3 = orderRpcService.notifyOrderPaymentSuccessed(orderid);
 //			if(ret3.getErrorCode() == null){
 //				System.out.println("notifyOrderPaymentSuccessed " + ret3.getPayload());
 //			}

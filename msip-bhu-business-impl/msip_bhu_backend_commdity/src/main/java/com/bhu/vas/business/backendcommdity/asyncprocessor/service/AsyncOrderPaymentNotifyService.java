@@ -77,9 +77,9 @@ public class AsyncOrderPaymentNotifyService {
 	public void orderPaymentNotifyPaymodeReceiptHandle(ResponsePaymentCompletedNotifyDTO rpcn_dto){
 		String orderId = rpcn_dto.getOrderid();
 		boolean success = rpcn_dto.isSuccess();
-		long paymented_ts = rpcn_dto.getPaymented_ts();
+		String paymented_ds = rpcn_dto.getPaymented_ds();
 		//订单处理逻辑
-		Order order = orderFacadeService.orderPaymentCompletedNotify(success, orderId, paymented_ts);
+		Order order = orderFacadeService.orderPaymentCompletedNotify(success, orderId, paymented_ds);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){

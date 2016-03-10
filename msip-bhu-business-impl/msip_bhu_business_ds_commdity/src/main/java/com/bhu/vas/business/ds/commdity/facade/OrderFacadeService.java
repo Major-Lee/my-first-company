@@ -1,6 +1,5 @@
 package com.bhu.vas.business.ds.commdity.facade;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,20 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
-import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
-import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -113,7 +111,7 @@ public class OrderFacadeService {
 	}
 	
 	/*************            status             ****************/
-	/**
+/*	*//**
 	 * 生成订单
 	 * @param commdity 商品实体
 	 * @param appid 应用id
@@ -122,7 +120,7 @@ public class OrderFacadeService {
 	 * @param uid 用户id
 	 * @param context 业务上下文
 	 * @return
-	 */
+	 *//*
 	public Order createOrder(Integer commdityid, Integer appid, String mac, String umac, Integer uid, String context){
 		//商品信息验证
 		Commdity commdity = commdityService.getById(commdityid);
@@ -160,15 +158,15 @@ public class OrderFacadeService {
 			orderService.insert(order);
 		}
 		return order;
-	}
+	}*/
 	
-	/**
+/*	*//**
 	 * 调用支付系统获取支付url信息完成后的订单处理逻辑
 	 * 
 	 * @param orderId 订单id
 	 * @param rcp_dto 支付系统返回的支付url信息DTO
 	 * @return
-	 */
+	 *//*
 	public String orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
 		Integer changed_status = OrderStatus.NotPay.getKey();
 		Integer changed_process_status = OrderProcessStatus.NotPay.getKey();
@@ -192,6 +190,45 @@ public class OrderFacadeService {
 		}finally{
 			orderStatusChanged(order, changed_status, changed_process_status);
 		}
+	}*/
+	
+	/**
+	 * 生成订单
+	 * @param commdity 商品实体
+	 * @param appid 应用id
+	 * @param mac 设备mac
+	 * @param umac 用户mac
+	 * @param context 业务上下文
+	 * @return
+	 */
+	public Order createOrder(Integer commdityid, Integer appid, String mac, String umac, String context){
+		//商品信息验证
+		Commdity commdity = commdityService.getById(commdityid);
+		if(commdity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
+		}
+		if(!CommdityHelper.onsale(commdity.getStatus())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
+		}
+		//验证缓存中的商品金额
+		String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
+		if(StringUtils.isEmpty(amount)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);
+		}
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(appid);
+		order.setMac(mac);
+		order.setUmac(umac);
+		//order.setUid(uid);
+		order.setContext(context);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(amount);
+		orderService.insert(order);
+		return order;
 	}
 	
 	/**
@@ -200,9 +237,9 @@ public class OrderFacadeService {
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
 	 * @param orderId 订单id
-	 * @param payment_ts 支付时间
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderid, long payment_ts){
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, String paymented_ds){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		Order order = null;
@@ -212,7 +249,11 @@ public class OrderFacadeService {
 			if(!OrderHelper.lte_notpay(order_status)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
 			}
-			order.setPaymented_at(new Date(payment_ts));
+			
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+			
 			//支付成功
 			if(success){
 				changed_status = OrderStatus.PaySuccessed.getKey();
@@ -229,6 +270,8 @@ public class OrderFacadeService {
 				}else{
 					logger.info(String.format("OrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
 				}
+				//清除缓存中的随机金额
+				CommdityIntervalAmountService.getInstance().removeRAmount(order.getMac(), order.getUmac(), order.getCommdityid());
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();
 				changed_process_status = OrderProcessStatus.PayFailured.getKey();

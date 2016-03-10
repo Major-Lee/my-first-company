@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
@@ -23,5 +24,12 @@ public class CommdityRpcService implements ICommdityRpcService{
 	public RpcResponseDTO<TailPage<CommdityDTO>> commdityPages(Integer status, int pageNo, int pageSize) {
 		logger.info(String.format("commdityPages with status[%s] pageNo[%s] pageSize[%s]", status, pageNo, pageSize));
 		return commdityUnitFacadeService.commdityPages(status, pageNo, pageSize);
+	}
+	
+	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, 
+			String mac, String umac){
+		logger.info(String.format("intervalAMount with commdityid[%s] appid[%s] mac[%s] umac[%s]", commdityid, 
+				appid, mac, umac));
+		return commdityUnitFacadeService.intervalAMount(commdityid, appid, mac, umac);
 	}
 }

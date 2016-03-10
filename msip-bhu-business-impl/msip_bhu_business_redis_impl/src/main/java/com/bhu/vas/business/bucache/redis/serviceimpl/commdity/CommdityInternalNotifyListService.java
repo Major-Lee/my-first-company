@@ -10,6 +10,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
@@ -49,6 +50,11 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     	return super.lpop(generateOrderPaymentNotifyKey());
     }
     
+    public String blpopOrderPaymentNotify(){
+    	//return super.blpop(generateOrderPaymentNotifyKey());
+    	return null;
+    }
+    
     public String lpopWithdrawAppliesRequestNotify(){
     	return super.lpop(generateWithdrawAppliesRequestNotifyKey());
     }
@@ -86,10 +92,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
         //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
     	//CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(OrderPaymentNotifyDTO);
     	
-    	String orderid = "10012016030900000000000000000004";
+    	String orderid = "10012016030900000000000000000011";
     	boolean success = true;
-    	//simulateResponsePaymentCompletedNotify(orderid, success);
-    	simulateUpayDrawPaymentCompletedNotify(success);
+    	simulateResponsePaymentCompletedNotify(orderid, success);
+    	//simulateUpayDrawPaymentCompletedNotify(success);
     }
     
     /*************           test           **************/
@@ -98,7 +104,8 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
         ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
     	opn_dto.setSuccess(success);
     	opn_dto.setOrderid(orderid);
-    	opn_dto.setPaymented_ts(System.currentTimeMillis());
+    	//opn_dto.setPaymented_ts(System.currentTimeMillis());
+    	opn_dto.setPaymented_ds(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
     	if(!success){
     		opn_dto.setErrorcode("001");
     		opn_dto.setMsg("simulate error msg");

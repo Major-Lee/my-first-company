@@ -108,4 +108,9 @@ public class BusinessKeyDefine {
 		
 		public static final String WithdrawAppliesRequestNotifyKey = "WAR_KEY";
 	}
+	
+	public static class CommdityRAmount{
+		public static final String CommdityIntervalAmountPrefixKey = "CIA";
+
+	}
 }

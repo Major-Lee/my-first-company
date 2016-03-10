@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
@@ -21,19 +19,19 @@ public class OrderRpcService implements IOrderRpcService{
 	@Resource
 	private OrderUnitFacadeService orderUnitFacadeService;
 	
-	@Override
+/*	@Override
 	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, 
 			String mac, String umac, Integer uid, String context) {
 		logger.info(String.format("createNewOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] uid[%s] context[%s]",
 				commdityid, appid, mac, umac, uid, context));
 		return orderUnitFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
-	}
+	}*/
 	
-	@Override
+/*	@Override
 	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
 		logger.info(String.format("orderPaymentUrlCreated with orderid[%s] rcp_dto[%s]", orderid, rcp_dto));
 		return orderUnitFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
-	}
+	}*/
 	
 /*	@Override
 	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
@@ -41,10 +39,17 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.notifyOrderPaymentSuccessed(orderid);
 	}*/
 	
-	@Override
+/*	@Override
 	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid) {
 		logger.info(String.format("validateOrderPaymentUrl with orderid[%s] appid[%s]", orderid, appid));
 		return orderUnitFacadeService.validateOrderPaymentUrl(orderid, appid);
+	}*/
+	@Override
+	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
+			String payment_type, String context){
+		logger.info(String.format("createOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] payment_type[%s] context[%s]",
+				commdityid, appid, mac, umac, payment_type, context));
+		return orderUnitFacadeService.createOrder(commdityid, appid, mac, umac, payment_type, context);
 	}
 	
 	@Override
