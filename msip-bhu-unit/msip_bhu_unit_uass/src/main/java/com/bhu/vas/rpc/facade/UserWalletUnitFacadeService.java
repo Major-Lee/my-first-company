@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -81,15 +82,26 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
-			int uid, int tuid, String withdraw_status, int pageNo, int pageSize) {
+	/**
+	 * 需要判定用户是否是财务用户
+	 * @param uid
+	 * @param tuid
+	 * @param withdraw_status
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner, int tuid, String withdraw_status, int pageNo, int pageSize) {
 		try{
+			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
+			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			}
 			UWithdrawStatus status = null;
 			if(StringUtils.isNotEmpty(withdraw_status)){
 				status = UWithdrawStatus.fromKey(withdraw_status);
 			}
-			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(uid, status, pageNo, pageSize);
+			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(tuid, status, pageNo, pageSize);
 			TailPage<UserWithdrawApplyVTO> result_pages = null;
 			List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
 			if(!pages.isEmpty()){
@@ -122,6 +134,10 @@ public class UserWalletUnitFacadeService {
 	
 	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,boolean passed) {
 		try{
+			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
+			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			}
 			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doWithdrawVerify(reckoner, applyid, passed);
 			if(passed){//需要写入uPay数据队列
 				BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
