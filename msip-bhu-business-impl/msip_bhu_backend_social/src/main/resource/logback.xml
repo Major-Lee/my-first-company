@@ -83,13 +83,8 @@
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
 	</logger>
-	
-	<logger name="com.bhu.vas.business.ds.commdity.facade" additivity="false">
-		<level value="INFO"/>
-		<appender-ref ref="stdout" />
-		<appender-ref ref="logfile" />
-	</logger>
-	<!-- 
+
+	<!--
 	<logger name="com.wecite.toplines.business.asyn.web.activemq.queue.consumer" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="stdout" />
