@@ -15,18 +15,14 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserThirdpartiesPaymentService;
 import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
@@ -69,11 +65,12 @@ public class UserWalletFacadeService{
 	@Resource
 	private UserThirdpartiesPaymentService userThirdpartiesPaymentService;
 	
-	@Resource
+/*	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserDeviceService userDeviceService;*/
+	
 	
 	
 	public UserWalletDetailVTO walletDetail(int uid){
@@ -110,7 +107,7 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public UserWallet sharedealCashToUserWallet(String dmac,double cash,String orderid){
+/*	public UserWallet sharedealCashToUserWallet(String dmac,double cash,String orderid){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		int uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
 		boolean owner = false;
@@ -129,8 +126,25 @@ public class UserWalletFacadeService{
 			}
 		}
 		return sharedealCashToUserWallet(uid,cash,orderid,owner);
+	}*/
+
+	/**
+	 * 分成现金入账
+	 * 如果uid为null 设置为指定的分成用户
+	 * @param bindUid  设备绑定的用户uid 可能为null
+	 * @param cash 总收益现金
+	 * @param orderid
+	 * @return
+	 */
+	public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid){
+		int sharedeal_uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
+		boolean owner = false;
+		if(bindUid != null){
+			sharedeal_uid = bindUid;
+			owner = true; 
+		}
+		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner);
 	}
-	
 	/**
 	 * 分成现金入账
 	 * @param uid  具体的入账用户
@@ -138,8 +152,7 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public UserWallet sharedealCashToUserWallet(int uid,double cash,
-			String orderid,boolean owner){
+	public UserWallet sharedealCashToUserWallet(Integer uid, double cash, String orderid, boolean owner){
 		logger.info(String.format("分成现金入账-1 uid[%s] orderid[%s] cash[%s] owner[%s]", uid,orderid,cash,owner));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);

@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -37,6 +38,9 @@ public class AsyncOrderPaymentNotifyService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
+	
+	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;
 	/**
 	 * 支付系统支付完成的通知处理
 	 * @param message
@@ -75,11 +79,16 @@ public class AsyncOrderPaymentNotifyService {
 	 * @param rpcn_dto
 	 */
 	public void orderPaymentNotifyPaymodeReceiptHandle(ResponsePaymentCompletedNotifyDTO rpcn_dto){
-		String orderId = rpcn_dto.getOrderid();
+		String orderid = rpcn_dto.getOrderid();
 		boolean success = rpcn_dto.isSuccess();
 		String paymented_ds = rpcn_dto.getPaymented_ds();
-		//订单处理逻辑
-		Order order = orderFacadeService.orderPaymentCompletedNotify(success, orderId, paymented_ds);
+		//订单处理逻辑 
+		Order order = orderFacadeService.validateOrderId(orderid);
+		//支付完成时进行设备的uid获取并设置订单
+		Integer bindUid = userDeviceFacadeService.getBindUidByMac(order.getMac());
+		order.setUid(bindUid);
+		
+		order = orderFacadeService.orderPaymentCompletedNotify(success, order, paymented_ds);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
@@ -88,9 +97,10 @@ public class AsyncOrderPaymentNotifyService {
 			Commdity commdity = commdityService.getById(commdityid);
 			if(commdity != null && CommdityCategory.isInternetLimit(commdity.getCategory())){
 				//进行订单分成处理逻辑
-				String dmac = order.getMac();
+				//String dmac = order.getMac();
 				double amount = Double.parseDouble(order.getAmount());
-				userWalletFacadeService.sharedealCashToUserWallet(dmac, amount, orderId);
+				//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
+				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -454,5 +455,21 @@ public class UserDeviceFacadeService {
 		if(userdevice_entity == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
 		}
+	}
+	
+	/**
+	 * 根据设备mac地址查询绑定的用户id
+	 * @param mac 设备mac
+	 * @return
+	 */
+	public Integer getBindUidByMac(String mac){
+		if(StringUtils.isNotEmpty(mac)){
+			String mac_lower = mac.toLowerCase();
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice != null){
+				return userDeviceService.fetchBindUid(mac_lower);
+			}
+		}
+		return null;
 	}
 }

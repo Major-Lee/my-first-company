@@ -36,7 +36,6 @@ public class OrderFacadeService {
 	
 	@Resource
 	private CommdityService commdityService;
-
 	
 	/**
 	 * 查询最近的一条满足条件的订单
@@ -236,15 +235,14 @@ public class OrderFacadeService {
 	 * 更新订单状态为支付成功
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
-	 * @param orderId 订单id
+	 * @param order 订单实体
 	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderid, String paymented_ds){
+	public Order orderPaymentCompletedNotify(boolean success, Order order, String paymented_ds){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
-		Order order = null;
 		try{
-			order = validateOrderId(orderid);
+			String orderid = order.getId();
 			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
@@ -284,6 +282,19 @@ public class OrderFacadeService {
 		return order;
 	}
 	
+	/**
+	 * 支付系统支付完成的订单处理逻辑
+	 * 更新订单状态为支付成功
+	 * 通知应用发货成功以后 更新支付状态为发货完成
+	 * @param success 支付是否成功
+	 * @param orderid 订单id
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 * @return
+	 */
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, String paymented_ds){
+		Order order = validateOrderId(orderid);
+		return orderPaymentCompletedNotify(success, order, paymented_ds);
+	}
 	
 	/**
 	 * 通知应用发货，按照约定的redis写入
