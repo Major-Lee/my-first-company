@@ -168,22 +168,23 @@ public class SocialFacadeRpcService {
      */
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
 
-        if (uid != null || uid > 0) {
-            HandsetUser handsetUser = new HandsetUser();
-            handsetUser.setId(hd_mac);
-            handsetUser.setUid(uid);
-            handsetUser.setCreated_at(new Date());
-            handsetUserService.insert(handsetUser);
+        try {
+            if (uid != null || uid > 0) {
+                HandsetUser handsetUser = new HandsetUser();
+                handsetUser.setId(hd_mac);
+                handsetUser.setUid(uid);
+                handsetUser.setCreated_at(new Date());
+                handsetUserService.insert(handsetUser);
 
-            WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
-        }
+                WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
+            }
 
-        HandsetMeetDTO dto = new HandsetMeetDTO();
-        dto.setBssid(bssid);
-        dto.setSsid(ssid);
-        dto.setTs(System.currentTimeMillis());
-        dto.setLat(lat);
-        dto.setLon(lon);
+            HandsetMeetDTO dto = new HandsetMeetDTO();
+            dto.setBssid(bssid);
+            dto.setSsid(ssid);
+            dto.setTs(System.currentTimeMillis());
+            dto.setLat(lat);
+            dto.setLon(lon);
 
 //        String[] list = hd_macs.split(",");
 //        if (list != null && list.length > 0) {
@@ -195,8 +196,11 @@ public class SocialFacadeRpcService {
 //            }
 //        }
 
-        socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
-        return false;
+            socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
+        } catch (Exception e) {
+
+        }
+        return true;
     }
 
 
