@@ -37,7 +37,6 @@ public class DeviceGroupUnitFacadeRpcService{
 
 	/**
 	 * 通过pid取得pid=pid的节点
-	 * @param uid
 	 * @param pid
 	 * @return
 	 */

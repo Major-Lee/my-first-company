@@ -13,6 +13,8 @@ import com.bhu.vas.api.rpc.social.vto.WifiHandsetUserVTO;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
 import com.bhu.vas.rpc.facade.SocialFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -103,9 +105,16 @@ public class SocialRpcService implements ISocialRpcService {
 
     @Override
     public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
-        logger.info(String.format("follow uid[%s] hd_mac[%s]", uid,
-                hd_mac));
-        return socialFacadeRpcService.follow(uid, hd_mac);
+        try {
+            logger.info(String.format("follow uid[%s] hd_mac[%s]", uid,
+                    hd_mac));
+            return socialFacadeRpcService.follow(uid, hd_mac);
+        }catch (BusinessI18nCodeException i18nex){
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+        }catch (Exception ex){
+            ex.printStackTrace(System.out);
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+        }
     }
 
     @Override
