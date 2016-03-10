@@ -193,6 +193,19 @@ public class SocialFacadeRpcService {
                                String lat, String lon, String addr) {
 
         try {
+
+
+            Wifi wifi = wifiService.getById(bssid);
+
+            if (wifi == null) {
+                wifi.setId(bssid);
+                wifi.setSsid(ssid);
+                wifi.setLat(Double.parseDouble(lat));
+                wifi.setLat(Double.parseDouble(lon));
+                wifi.setCreated_at(new Date());
+                wifiService.insert(wifi);
+            }
+
             if (uid != null && uid > 0) {
 
                 HandsetUser handsetUser = handsetUserService.getById(hd_mac);
