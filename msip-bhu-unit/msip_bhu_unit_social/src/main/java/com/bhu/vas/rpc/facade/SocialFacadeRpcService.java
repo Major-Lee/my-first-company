@@ -189,9 +189,11 @@ public class SocialFacadeRpcService {
      * @param ssid
      * @param lat
      * @param lon
+     * @param addr
      * @return
      */
-    public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
+    public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid,
+                               String lat, String lon, String addr) {
 
         try {
             if (uid != null && uid > 0) {
@@ -215,6 +217,7 @@ public class SocialFacadeRpcService {
             dto.setTs(System.currentTimeMillis());
             dto.setLat(lat);
             dto.setLon(lon);
+            dto.setAddr(addr);
 
 
             socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));

@@ -28,7 +28,8 @@ public interface ISocialRpcService {
      * @param lat
      * @param lon
      */
-    boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon);
+    boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid,
+                        String lat, String lon, String addr);
 
 
     /**

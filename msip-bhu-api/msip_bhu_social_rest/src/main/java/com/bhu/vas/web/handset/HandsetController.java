@@ -53,11 +53,12 @@ import javax.servlet.http.HttpServletResponse;
             @RequestParam(required = true, value = "bssid") String bssid,
             @RequestParam(required = true, value = "ssid") String ssid,
             @RequestParam(required = false, value = "lat") String lat,
-            @RequestParam(required = false, value = "lon") String lon
+            @RequestParam(required = false, value = "lon") String lon,
+            @RequestParam(required = false, value = "addr") String addr
     ) {
 
         try {
-            boolean ret = socialRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid, ssid, lat, lon);
+            boolean ret = socialRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid, ssid, lat, lon, addr);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
 
         } catch (Exception e) {

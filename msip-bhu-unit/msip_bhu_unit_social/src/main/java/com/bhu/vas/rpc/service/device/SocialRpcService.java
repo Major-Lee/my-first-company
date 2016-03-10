@@ -41,12 +41,12 @@ public class SocialRpcService implements ISocialRpcService {
 
     @Override
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs,
-                               String bssid, String ssid, String lat, String lon) {
+                               String bssid, String ssid, String lat, String lon, String addr) {
 	logger.info(String.format(
-		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s] ssid[%s] lat[%s] lon[%s]",
-		uid, hd_mac, hd_macs, bssid, ssid, lat, lon));
+		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s] ssid[%s] lat[%s] lon[%s] addr[%s]",
+		uid, hd_mac, hd_macs, bssid, ssid, lat, lon, addr));
         return socialFacadeRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid,
-                ssid, lat, lon);
+                ssid, lat, lon, addr);
     }
 
     @Override
