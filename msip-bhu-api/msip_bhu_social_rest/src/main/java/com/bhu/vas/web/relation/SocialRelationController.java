@@ -68,12 +68,13 @@ public class SocialRelationController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac) {
-        try {
-            RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-        } catch (Exception e) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.SOCIAL_FOLLOW_ERROR));
-        }
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
+        if (!rpcResult.hasError())
+            SpringMVCHelper.renderJson(response,
+                    ResponseSuccess.embed(rpcResult.getPayload()));
+        else
+            SpringMVCHelper.renderJson(response,
+                    ResponseError.embed(rpcResult));
     }
 
     /**
