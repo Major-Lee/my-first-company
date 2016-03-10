@@ -12,7 +12,7 @@ public class WifiHandsetUserVTO implements Serializable {
 
     private String ssid;
 
-    private List<HandsetUserVTO> handsetUserVTOList;
+    private List<HandsetUserVTO> handsets;
 
     public String getBssid() {
         return bssid;
@@ -30,11 +30,11 @@ public class WifiHandsetUserVTO implements Serializable {
         this.ssid = ssid;
     }
 
-    public List<HandsetUserVTO> getHandsetUserVTOList() {
-        return handsetUserVTOList;
+    public List<HandsetUserVTO> getHandsets() {
+        return handsets;
     }
 
-    public void setHandsetUserVTOList(List<HandsetUserVTO> handsetUserVTOList) {
-        this.handsetUserVTOList = handsetUserVTOList;
+    public void setHandsets(List<HandsetUserVTO> handsets) {
+        this.handsets = handsets;
     }
 }

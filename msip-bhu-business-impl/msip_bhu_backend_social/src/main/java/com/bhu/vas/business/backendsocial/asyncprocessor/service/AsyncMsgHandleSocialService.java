@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 public class AsyncMsgHandleSocialService {
     private final Logger logger = LoggerFactory.getLogger(AsyncMsgHandleSocialService.class);
 
-
-
-
     /**
      * 终端相遇
      * @param message

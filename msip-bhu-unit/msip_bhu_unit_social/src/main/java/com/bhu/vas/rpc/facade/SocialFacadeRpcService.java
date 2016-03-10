@@ -7,14 +7,12 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
 import com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
 import com.bhu.vas.business.ds.social.service.WifiService;
-import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
@@ -275,6 +273,11 @@ public class SocialFacadeRpcService {
     public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
         WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
 
+        Wifi wifi = wifiService.getById(bssid);
+
+        vto.setBssid(bssid);
+        vto.setSsid(wifi.getSsid());
+
         List<HandsetUserVTO> hdVTOs = new ArrayList<HandsetUserVTO>();
         List<String> hds = new ArrayList<String>();
         String[] list = hd_macs.split(",");
@@ -318,7 +321,7 @@ public class SocialFacadeRpcService {
             }
         }
 
-        vto.setHandsetUserVTOList(hdVTOs);
+        vto.setHandsets(hdVTOs);
 
         return vto;
     }
