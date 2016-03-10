@@ -304,38 +304,30 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd, String device,String remoteIp) {
-		Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
-		if(uid == null || uid.intValue() == 0){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		try{
+			Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(uid == null || uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			User user = this.userService.getById(uid);
+			if(user == null){//存在不干净的数据，需要清理数据
+				cleanDirtyUserData(uid,countrycode,acc);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			if(!BCryptHelper.checkpw(pwd,user.getPassword())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
+			}
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		User user = this.userService.getById(uid);
-		if(user == null){//存在不干净的数据，需要清理数据
-			cleanDirtyUserData(uid,countrycode,acc);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-		}
-		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
-		}
-		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
-		/*if(StringUtils.isEmpty(user.getRegip())){
-			user.setRegip(remoteIp);
-		}
-		if(!user.getLastlogindevice().equals(device)){
-			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
-		}
-		this.userService.update(user);
-		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
-		{//write header to response header
-			//BusinessWebHelper.setCustomizeHeader(response, uToken);
-			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
-		}
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderSimpleUserRpcPayload(
-				user,
-				uToken, false);*/
-		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	/**
@@ -404,44 +396,47 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org) {
-		User user = this.userService.getById(uid);
-		//System.out.println("2. user:"+user);
-		if(user == null){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
-		}
-		if(StringUtils.isNotEmpty(avatar)){
-			user.setAvatar(avatar);
-		}
-		if(StringUtils.isNotEmpty(sex)){
-			user.setSex(sex);
-		}
-		if(StringUtils.isNotEmpty(birthday)){
-			user.setBirthday(birthday);
-		}	
-		
-		if(StringUtils.isNotEmpty(org)){
-			user.setOrg(org);
-		}	
-		boolean isNickUpdated = false;
-		String oldNick = user.getNick();
-		if(StringUtils.isNotEmpty(nick)){
-			if(!nick.equals(oldNick)){
-				//判定nick是否已经存在
-				if(UniqueFacadeService.checkNickExist(nick)){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
-				}else{
-					user.setNick(nick);
-					isNickUpdated = true;
+		try{
+			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+			if(StringUtils.isNotEmpty(avatar)){
+				user.setAvatar(avatar);
+			}
+			if(StringUtils.isNotEmpty(sex)){
+				user.setSex(sex);
+			}
+			if(StringUtils.isNotEmpty(birthday)){
+				user.setBirthday(birthday);
+			}	
+			
+			if(StringUtils.isNotEmpty(org)){
+				user.setOrg(org);
+			}	
+			boolean isNickUpdated = false;
+			String oldNick = user.getNick();
+			if(StringUtils.isNotEmpty(nick)){
+				if(!nick.equals(oldNick)){
+					//判定nick是否已经存在
+					if(UniqueFacadeService.checkNickExist(nick)){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+					}else{
+						user.setNick(nick);
+						isNickUpdated = true;
+					}
 				}
 			}
+			this.userService.update(user);
+			if(isNickUpdated){
+				UniqueFacadeService.uniqueNickChanged(user.getId(), nick,oldNick);
+			}
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		this.userService.update(user);
-		if(isNickUpdated){
-			UniqueFacadeService.uniqueNickChanged(user.getId(), nick,oldNick);
-		}
-		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
@@ -456,16 +451,20 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> profile(int uid) {
-		User user = this.userService.getById(uid);
-		if(user == null){//存在不干净的数据，需要清理数据
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+		try{
+			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
+			//UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
+			userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
+			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
-		//UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
-		userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
-		userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
-		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
 	/**
@@ -495,44 +494,51 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha) {
-		if(uid <= 0){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
-		}
-		Integer userid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
-		if(userid != null){
-			if(userid.intValue() == uid){
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-			}else{
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_ALREADY_BEUSED,new String[]{acc});
+		try{
+			if(uid <= 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 			}
-		}
-		//未被使用的手机号
-		User user = this.userService.getById(uid);
-		if(user == null){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
-		}
-		if(acc.equals(user.getMobileno())){
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		}
-		if(StringUtils.isNotEmpty(user.getMobileno())){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
-		}
-		if(!RuntimeConfiguration.SecretInnerTest){
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
-				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
-				if(errorCode != null){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+			Integer userid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(userid != null){
+				if(userid.intValue() == uid){
+					return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+				}else{
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_ALREADY_BEUSED,new String[]{acc});
 				}
 			}
+			//未被使用的手机号
+			User user = this.userService.getById(uid);
+			if(user == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
+			if(acc.equals(user.getMobileno())){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			}
+			if(StringUtils.isNotEmpty(user.getMobileno())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
+			}
+			if(!RuntimeConfiguration.SecretInnerTest){
+				String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+					ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+					if(errorCode != null){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+					}
+				}
+			}
+			//int oldcc = user.getCountrycode();
+			String oldModileno = user.getMobileno();
+			user.setCountrycode(countrycode);
+			user.setMobileno(acc);
+			user = this.userService.update(user);
+			UniqueFacadeService.uniqueMobilenoChanged(user.getId(), user.getCountrycode(), user.getMobileno(),oldModileno);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-		//int oldcc = user.getCountrycode();
-		String oldModileno = user.getMobileno();
-		user.setCountrycode(countrycode);
-		user.setMobileno(acc);
-		user = this.userService.update(user);
-		UniqueFacadeService.uniqueMobilenoChanged(user.getId(), user.getCountrycode(), user.getMobileno(),oldModileno);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 	/**
 	 * 用户bbs登录 通过发送push消息通知app
