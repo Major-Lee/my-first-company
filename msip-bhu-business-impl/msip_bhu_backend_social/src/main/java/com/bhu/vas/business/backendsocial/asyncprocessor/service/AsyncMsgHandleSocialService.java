@@ -21,9 +21,7 @@ public class AsyncMsgHandleSocialService {
      */
     public void handsetMeet(String message) {
         logger.info(String.format("AsyncMsgHandleSocialService handsetMeet message[%s]", message));
-
         HandsetMeetDTO dto = JsonHelper.getDTO(message, HandsetMeetDTO.class);
-
         String hd_macs = dto.getHd_macs();
         String hd_mac = dto.getHd_mac();
         String bssid = dto.getBssid();
@@ -31,7 +29,7 @@ public class AsyncMsgHandleSocialService {
         if (list != null && list.length > 0) {
             for (String mac : list) {
                 logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
-                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto.getMeet()));
+                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, dto.getMeet());
             }
         }
 

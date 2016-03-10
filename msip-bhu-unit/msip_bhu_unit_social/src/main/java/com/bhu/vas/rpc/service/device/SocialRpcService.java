@@ -61,7 +61,7 @@ public class SocialRpcService implements ISocialRpcService {
     public HandsetUserDetailVTO fetchHandsetDetail(Long uid, String hd_mac_self, String hd_mac, String bssid) {
         logger.info(String.format("fetchHandsetDetail uid[%s], hd_mac_self[%s], hd_mac[%s] bssid[%s]",
                 uid, hd_mac_self, hd_mac, bssid));
-        return socialFacadeRpcService.fetchHandsetUserDetai(uid, hd_mac_self, hd_mac, bssid);
+        return socialFacadeRpcService.fetchHandsetUserDetail(uid, hd_mac_self, hd_mac, bssid);
     }
 
     @Override

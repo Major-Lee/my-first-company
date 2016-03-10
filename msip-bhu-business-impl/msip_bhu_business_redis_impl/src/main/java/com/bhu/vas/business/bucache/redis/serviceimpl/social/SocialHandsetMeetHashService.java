@@ -91,6 +91,12 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
 
         SocialHandsetMeetHashService.getInstance().handsetMeet("82:83:90:12:32:34", "82:83:90:12:32:35", "google", JsonHelper.getJSONString(dto));
 
+        String dd = SocialHandsetMeetHashService.getInstance().hget(generateKey("84:82:f4:28:7a:ec", "82:83:90:12:32:34"), HANDSET_MEET_LAST_KEY);
+
+        System.out.println("===" + dd);
+
+        System.out.println(JsonHelper.getDTO(dd, HandsetMeetDTO.class));
+
         dto = SocialHandsetMeetHashService.getInstance().getLasthandsetMeet("84:82:f4:28:7a:ec", "82:83:90:12:32:34");
 
         System.out.println();

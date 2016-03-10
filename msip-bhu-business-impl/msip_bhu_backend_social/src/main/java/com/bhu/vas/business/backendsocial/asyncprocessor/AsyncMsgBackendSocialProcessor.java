@@ -43,7 +43,6 @@ public class AsyncMsgBackendSocialProcessor implements SpringQueueMessageListene
 			public void run() {
 				try{
 					String message = ActionSocialMessageFactoryBuilder.determineActionMessage(messagejsonHasPrefix);
-					logger.info("message:" + message);
 					ActionSocialMessageType type = ActionSocialMessageFactoryBuilder.determineActionType(messagejsonHasPrefix);
 					if(type == null){
 						throwUnsupportedOperationException(type, messagejsonHasPrefix);

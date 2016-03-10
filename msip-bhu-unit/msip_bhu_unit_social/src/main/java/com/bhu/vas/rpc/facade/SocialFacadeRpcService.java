@@ -390,7 +390,7 @@ public class SocialFacadeRpcService {
         return true;
     }
 
-    public HandsetUserDetailVTO fetchHandsetUserDetai(Long uid, String hd_mac_self, String hd_mac, String bssid) {
+    public HandsetUserDetailVTO fetchHandsetUserDetail(Long uid, String hd_mac_self, String hd_mac, String bssid) {
 
         List<HandsetMeetDTO> meets = SocialHandsetMeetHashService.getInstance().
                 getHandsetMeetList(hd_mac_self, hd_mac, bssid);
