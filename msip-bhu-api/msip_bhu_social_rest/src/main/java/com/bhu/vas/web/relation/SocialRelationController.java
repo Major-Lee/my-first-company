@@ -7,6 +7,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,13 +44,13 @@ public class SocialRelationController extends BaseController {
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String bssid,
             @RequestParam(required = false, defaultValue = "up") String type) {
-        RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid, type);
-        if (!rpcResult.hasError())
-            SpringMVCHelper.renderJson(response,
-                    ResponseSuccess.embed(rpcResult.getPayload()));
-        else
-            SpringMVCHelper.renderJson(response,
-                    ResponseError.embed(rpcResult));
+
+        try {
+            RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid, type);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } catch (Exception e) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+        }
     }
 
     /**
@@ -67,13 +68,12 @@ public class SocialRelationController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac) {
-        RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
-        if (!rpcResult.hasError())
-            SpringMVCHelper.renderJson(response,
-                    ResponseSuccess.embed(rpcResult.getPayload()));
-        else
-            SpringMVCHelper.renderJson(response,
-                    ResponseError.embed(rpcResult));
+        try {
+            RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } catch (Exception e) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.SOCIAL_FOLLOW_ERROR));
+        }
     }
 
     /**
@@ -91,15 +91,17 @@ public class SocialRelationController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac) {
-        RpcResponseDTO<Boolean> rpcResult = socialRpcService.unFollow(uid, hd_mac);
-        if (!rpcResult.hasError())
+        try {
+            RpcResponseDTO<Boolean> rpcResult = socialRpcService.unFollow(uid, hd_mac);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-        else
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        } catch (Exception e) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+        }
     }
 
     /**
      * 分页获取关注列表
+     *
      * @param response
      * @param uid
      * @param hd_mac
@@ -107,19 +109,21 @@ public class SocialRelationController extends BaseController {
      * @param pageSize
      */
     @ResponseBody()
-        @RequestMapping(value = "/list", method = {RequestMethod.POST})
+    @RequestMapping(value = "/list", method = {RequestMethod.POST})
     public void fetchFollowList(
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid, hd_mac,pageNo,pageSize);
-        if (rpcResult != null && !rpcResult.hasError())
+        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid, hd_mac, pageNo, pageSize);
+        try {
             SpringMVCHelper.renderJson(response,
                     ResponseSuccess.embed(rpcResult.getPayload()));
-        else
+        } catch (Exception e) {
             SpringMVCHelper.renderJson(response,
-                    ResponseError.embed(rpcResult));
+                    ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+
+        }
     }
 }

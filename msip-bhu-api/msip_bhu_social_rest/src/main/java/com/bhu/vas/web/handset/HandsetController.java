@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/hd")
-public class HandsetController extends BaseController {
+    public class HandsetController extends BaseController {
 
     @Resource
     private ISocialRpcService socialRpcService;
