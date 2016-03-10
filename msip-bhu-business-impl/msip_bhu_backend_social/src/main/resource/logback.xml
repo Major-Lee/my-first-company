@@ -3,7 +3,7 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
-	<property name="log.base" 		value="/BHUData/logs/backendonline/backendonline" />
+	<property name="log.base" 		value="/BHUData/logs/backendsocial/backendsocial" />
 	<Property name="datalog.base" 	value="/BHUData/bulogs/actionlogs/business-data-action" />
 	<Property name="flowlog.base" 	value="/BHUData/bulogs/flowlogs/business-data-flow" />
 	<!-- 

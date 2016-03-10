@@ -168,7 +168,7 @@ public class SocialFacadeRpcService {
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid, String lat, String lon) {
 
         try {
-            if (uid != null || uid > 0) {
+            if (uid != null && uid > 0) {
                 HandsetUser handsetUser = new HandsetUser();
                 handsetUser.setId(hd_mac);
                 handsetUser.setUid(uid);
@@ -185,19 +185,10 @@ public class SocialFacadeRpcService {
             dto.setLat(lat);
             dto.setLon(lon);
 
-//        String[] list = hd_macs.split(",");
-//        if (list != null && list.length > 0) {
-//            for (String mac : list) {
-//                //TODO:(bluesand): backend操作
-//                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
-//
-//                socialMessageService.sendHandsetMeetMessage(hd_mac, mac, bssid, JsonHelper.getJSONString(dto));
-//            }
-//        }
 
             socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return true;
     }
