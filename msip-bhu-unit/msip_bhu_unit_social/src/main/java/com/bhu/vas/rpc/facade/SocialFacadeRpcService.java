@@ -98,13 +98,12 @@ public class SocialFacadeRpcService {
     public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
 
         HandsetUser user = handsetUserService.getById(hd_mac);
-        if (user.getUid() != uid) {
+        if (user!=null && user.getUid() != uid) {
             SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
         }
-
     }
 
     /**
@@ -142,7 +141,7 @@ public class SocialFacadeRpcService {
                     vto.setUid(user.getId());
                     vto.setAvatar(user.getAvatar());
                     vto.setType(SocialFetchFollowListVTO.TYPE);
-                    if (vto.getNick().isEmpty()) {
+                    if (StringUtils.isEmpty(vto.getNick())) {
                         vto.setNick(user.getNick());
                     }
                 }
