@@ -95,8 +95,8 @@ public class SocialFacadeRpcService {
      */
     public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
 
-        HandsetUser user = handsetUserService.getById(hd_mac);
-        if (user!=null && user.getUid() != uid) {
+        HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+        if (handsetUser != null && handsetUser.getUid() != uid) {
             SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } else {
@@ -128,25 +128,47 @@ public class SocialFacadeRpcService {
         Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid, pageNo, pageSize);
         int total = set.size();
         List<SocialFetchFollowListVTO> result = new ArrayList<SocialFetchFollowListVTO>();
-        for (String hd_mac : set) {
-            SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
-            vto.setHd_mac(hd_mac);
-            HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-            if (handsetUser != null && handsetUser.getUid() > 0) {
-                vto.setNick(handsetUser.getNick());
-                User user = userService.getById((int) handsetUser.getUid());
-                if (user != null) {
-                    vto.setUid(user.getId());
-                    vto.setAvatar(user.getAvatar());
-                    vto.setType(SocialFetchFollowListVTO.TYPE);
-                    if (StringUtils.isEmpty(vto.getNick())) {
-                        vto.setNick(user.getNick());
-                    }
-                }
+        List<String> hds = new ArrayList<>();
 
+        if (set != null && set.size() > 0) {
+            for (String hd_mac : set) {
+                SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
+                hds.add(hd_mac);
+                vto.setHd_mac(hd_mac);
+                vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac));
+                result.add(vto);
             }
-            vto.setLast_meet(SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac));
-            result.add(vto);
+        }
+        List<HandsetUser> handsetList = handsetUserService.findByIds(hds,true,true);
+        List<Integer> ids = new ArrayList<>();
+
+        if (handsetList != null && handsetList.size() >0) {
+            int index = 0;
+            for (HandsetUser handSerUser : handsetList) {
+                SocialFetchFollowListVTO vtos = result.get(index);
+                if (handSerUser != null) {
+                    vtos.setNick(handSerUser.getNick());
+                    vtos.setUid(handSerUser.getUid());
+                    ids.add((int) handSerUser.getUid());
+                }
+                index++;
+            }
+        }
+
+        List<User> users = userService.findByIds(ids,true,true);
+
+        if (users !=null && users.size() > 0){
+            int index = 0;
+            for (User user : users){
+                SocialFetchFollowListVTO vtos = result.get(index);
+                vtos.setAvatar(user.getAvatar());
+                vtos.setType(SocialFetchFollowListVTO.TYPE);
+                vtos.setUid(user.getId());
+                if (StringUtils.isEmpty(vtos.getNick())){
+                    vtos.setNick(user.getNick());
+                }
+                index++;
+            }
         }
         return new CommonPage<SocialFetchFollowListVTO>(pageNo, pageSize, total, result);
     }
