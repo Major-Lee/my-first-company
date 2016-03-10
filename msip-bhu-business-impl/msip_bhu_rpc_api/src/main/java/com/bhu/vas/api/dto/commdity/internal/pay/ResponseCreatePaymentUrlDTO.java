@@ -18,5 +18,11 @@ public class ResponseCreatePaymentUrlDTO extends ResponsePaymentDTO{
 	public void setParams(String params) {
 		this.params = params;
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("ResponseCreatePaymentUrlDTO: success[%s] errorcode[%s] msg[%s] params[%s]", 
+				super.isSuccess(), super.getErrorcode(), super.getMsg(), params);
+	}
 }
 

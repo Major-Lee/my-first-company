@@ -6,15 +6,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -61,6 +65,42 @@ public class CommdityUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("CommdityPages Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 针对商品的价格区间
+	 * 根据设备mac 用户mac 商品id随机金额
+	 * 缓存在redis中 以保证金额不变
+	 * @param commdityid 商品id
+	 * @param appid 应用id
+	 * @param mac 设备mac
+	 * @param umac 用户mac
+	 * @return
+	 */
+	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, String mac, String umac){
+		try{
+			OrderHelper.supportedAppId(appid);
+			
+			//验证用户mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			//获取此上下文的缓存金额数据
+			String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
+			if(StringUtils.isEmpty(amount)){
+				//处理商品金额
+				amount = commdityFacadeService.commdityAmount(commdityid);
+				CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
+			}
+			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
+			commdityAmountDto.setAmount(amount);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("RandomInternetLimitAMount Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

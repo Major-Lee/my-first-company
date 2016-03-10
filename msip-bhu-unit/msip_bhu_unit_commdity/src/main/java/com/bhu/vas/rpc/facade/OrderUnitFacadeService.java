@@ -7,13 +7,12 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
@@ -46,7 +45,7 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
-	/**
+/*	*//**
 	 * 生成订单
 	 * @param commdityid
 	 * @param appid
@@ -55,7 +54,7 @@ public class OrderUnitFacadeService {
 	 * @param uid
 	 * @param context
 	 * @return
-	 */
+	 *//*
 	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
 			Integer uid, String context){
 		try{
@@ -80,13 +79,13 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	/**
+	*//**
 	 * 生成订单支付url之前的订单验证
 	 * @param orderId
 	 * @param appId
 	 * @param appSecret
 	 * @return
-	 */
+	 *//*
 	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid) {
 		try{
 			Order order = orderFacadeService.validateOrder(orderid, appid);
@@ -106,12 +105,12 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	/**
+	*//**
 	 * 调用支付系统获取订单支付url之后
 	 * @param orderId 订单id
 	 * @param rcp_dto 支付系统返回的数据dto
 	 * @return
-	 */
+	 *//*
 	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
 		try{
 			//ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, ResponseCreatePaymentUrlDTO.class);
@@ -121,6 +120,39 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("OrderPaymentUrlCreated Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	*/
+	
+	/**
+	 * 生成订单
+	 * @param commdityid 商品id
+	 * @param appid 应用id
+	 * @param mac 设备mac
+	 * @param umac 用户mac
+	 * @param payment_type 支付方式
+	 * @param context 业务上下文
+	 * @return
+	 */
+	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
+			String payment_type, String context){
+		try{
+			orderFacadeService.supportedAppId(appid);
+			
+			//验证mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			//生成订单
+			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, context);
+			OrderDTO orderDto = new OrderDTO();
+			BeanUtils.copyProperties(order, orderDto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("CreateOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

@@ -5,8 +5,11 @@ import java.util.Date;
 import org.springframework.beans.BeanUtils;
 
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class OrderHelper {
 	
@@ -40,5 +43,13 @@ public class OrderHelper {
 			orderDto.setPaymented_ts(paymentedAt.getTime());
 		}
 		return orderDto;
+	}
+	
+	
+	public static void supportedAppId(Integer appid){
+		//认证appid
+		if(!CommdityApplication.supported(appid)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
+		}
 	}
 }

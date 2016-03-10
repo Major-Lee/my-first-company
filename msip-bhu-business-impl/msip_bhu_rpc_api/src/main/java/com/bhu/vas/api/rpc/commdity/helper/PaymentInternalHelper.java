@@ -15,6 +15,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 public class PaymentInternalHelper {
+//	private final static Logger logger = LoggerFactory.getLogger(PaymentInternalHelper.class);
 //	public static final String COMMUNICATION_APPID = "appid";
 //	public static final String COMMUNICATION_APPSECRET = "appsecret";
 	//支付系统获取订单支付url的api地址
@@ -34,16 +35,19 @@ public class PaymentInternalHelper {
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String amount, 
-			String requestIp, String orderid){
+			String requestip, String orderid){
 		Map<String, String> api_params = generatePaymentApiParamMap();
 		api_params.put("payment_type", payment_type);
 		api_params.put("total_fee", amount);
-		api_params.put("exter_invoke_ip", requestIp);
+		api_params.put("exter_invoke_ip", requestip);
 		api_params.put("goods_no", orderid);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
 			String response = HttpHelper.postUrlAsString(CREATE_PAYMENTURL_COMMUNICATION_API, api_params);
+			//logger.info(String.format(format, args)"CreatePaymentUrlCommunication Response [%s]");
+			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
@@ -70,7 +74,7 @@ public class PaymentInternalHelper {
 		api_params.put("status", "success");
 		
 		try {
-			String response = HttpHelper.postUrlAsString(CREATE_PAYMENTURL_COMMUNICATION_API, api_params);
+			String response = HttpHelper.getUrlAsString(SIMULATE_PAYSUCCESS_COMMUNICATION_API, api_params);
 			System.out.println(response);
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
@@ -78,9 +82,9 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args){
-		String orderid = "10012016030900000000000000000012";
+		String orderid = "10012016030900000000000000000016";
 		//simulatePaysuccessCommunication(orderid);
 		ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","5.72","192.168.66.162",orderid);
-		String params = rcp_dto.getParams();
+		//String params = rcp_dto.getParams();
 	}
 }

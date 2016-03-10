@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.commdity.OrderCreatedRetDTO;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -32,7 +31,7 @@ public class OrderController extends BaseController{
 	@Resource
 	private IOrderRpcService orderRpcService;
 	
-	/**
+/*	*//**
 	 * 生成订单 如果是限时上网商品的订单 会返回上一个未支付的订单以保证随机金额不变
 	 * @param request
 	 * @param response
@@ -43,7 +42,7 @@ public class OrderController extends BaseController{
 	 * @param umac 用户mac
 	 * @param uid 用户uid
 	 * @param context 业务上下文
-	 */
+	 *//*
 	@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.GET,RequestMethod.POST})
 	public void create(
@@ -65,7 +64,7 @@ public class OrderController extends BaseController{
 		}
 	}
 	
-	/**
+	*//**
 	 * 获取订单的支付url
 	 * 1:验证rpc请求 验证订单并返回订单信息
 	 * 2:请求支付系统返回支付url
@@ -74,7 +73,7 @@ public class OrderController extends BaseController{
 	 * @param response
 	 * @param orderId 订单id
 	 * @param payment_type 支付方式
-	 */
+	 *//*
 	@ResponseBody()
 	@RequestMapping(value="/query/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
 	public void query_paymenturl(
@@ -111,6 +110,55 @@ public class OrderController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+	}*/
+	
+	/**
+	 * 获取订单的支付url
+	 * 1:生成订单
+	 * 2:请求支付系统返回支付url
+	 * @param request
+	 * @param response
+	 * @param orderId 订单id
+	 * @param payment_type 支付方式
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/umac/query/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_paymenturl(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer appid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = true) Integer commdityid,
+			@RequestParam(required = true) String payment_type
+			) {
+		
+		//1:生成订单
+		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, mac, umac, 
+				payment_type, context);
+		if(rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			return;
+		}
+		//2:请求支付系统返回支付url
+		OrderDTO order_dto = rpcResult.getPayload();
+		String orderid = order_dto.getId();
+		String order_amount = order_dto.getAmount();
+		String requestIp = WebHelper.getRemoteAddr(request);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(payment_type, 
+				order_amount, requestIp, orderid);
+		if(rcp_dto == null){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
+			return;
+		}
+		if(!rcp_dto.isSuccess()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE)));
+			return;
+		}
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
 	}
 	
 	/**

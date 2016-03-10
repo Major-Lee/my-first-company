@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
@@ -25,6 +26,33 @@ public class CommdityController extends BaseController{
 	
 	@Resource
 	private ICommdityRpcService commdityRpcService;
+	
+	/**
+	 * 针对商品的区间价格 生成随机金额
+	 * @param commdityid 商品id
+	 * @param appid 应用id
+	 * @param mac 设备mac
+	 * @param umac 用户mac
+	 * @return
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/interval/amount",method={RequestMethod.GET,RequestMethod.POST})
+	public void amount(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer appid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = true) Integer commdityid) {
+
+		RpcResponseDTO<CommdityAmountDTO> rpcResult = commdityRpcService.intervalAMount(commdityid, appid, mac, umac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	
 	/**
 	 * 获取商品列表
