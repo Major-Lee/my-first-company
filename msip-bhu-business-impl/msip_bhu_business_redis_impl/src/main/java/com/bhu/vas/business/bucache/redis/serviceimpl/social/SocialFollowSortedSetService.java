@@ -57,15 +57,17 @@ public class SocialFollowSortedSetService
         }
     }
 
-    public Set<String> fetchFollowList(long uid,int pageNo,int pageSize){
-        Set<String> set = this.zrange(generateKey(uid),(pageNo-1)*pageSize,pageSize*pageNo-1);
+    public Set<String> fetchFollowList(long uid, int pageNo, int pageSize) {
+        Set<String> set = this.zrange(generateKey(uid), (pageNo - 1) * pageSize, pageSize * pageNo - 1);
         return set;
     }
 
-    public void follow(long uid, String hd_mac) {
+    public long follow(long uid, String hd_mac) {
+        long index = 0;
         if (isFollowMax(uid)) {
-            this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
+            index = this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
         }
+        return index;
     }
 
     public void unFollow(long uid, String hd_mac) {

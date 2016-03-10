@@ -97,8 +97,12 @@ public class SocialFacadeRpcService {
 
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
         if (handsetUser != null && handsetUser.getUid() != uid) {
-            SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
-            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+            long index = SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
+            if (index == 1){
+                return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+            }else{
+                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
+            }
         } else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
         }
@@ -151,7 +155,6 @@ public class SocialFacadeRpcService {
                     vtos.setUid(handSerUser.getUid());
                     ids.add((int) handSerUser.getUid());
                 }
-                result.set(index,vtos);
                 index++;
             }
         }
@@ -162,7 +165,7 @@ public class SocialFacadeRpcService {
             int index = 0;
             for (User user : users){
                 SocialFetchFollowListVTO vtos = result.get(index);
-                if (vtos != null){
+                if (vtos != null ){
                     vtos.setAvatar(user.getAvatar());
                     vtos.setType(SocialFetchFollowListVTO.TYPE);
                     vtos.setUid(user.getId());
@@ -170,7 +173,6 @@ public class SocialFacadeRpcService {
                         vtos.setNick(user.getNick());
                     }
                 }
-                result.set(index,vtos);
                 index++;
             }
         }
