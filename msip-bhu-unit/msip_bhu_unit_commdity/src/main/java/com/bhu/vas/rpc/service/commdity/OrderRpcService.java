@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
@@ -59,11 +60,11 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid, String mac, Integer status, 
-			int pageNo, int pageSize) {
-		logger.info(String.format("orderPagesByMac with uid[%s] mac[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
-				mac, status, pageNo, pageSize));
-		return orderUnitFacadeService.orderPagesByMac(uid, mac, status, pageNo, pageSize);
+	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
+			Integer status, int pageNo, int pageSize) {
+		logger.info(String.format("orderPagesByUid with uid[%s] mac[%s] umac[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
+				mac, umac, status, pageNo, pageSize));
+		return orderUnitFacadeService.orderPagesByUid(uid, mac, umac, status, pageNo, pageSize);
 	}
 
 }

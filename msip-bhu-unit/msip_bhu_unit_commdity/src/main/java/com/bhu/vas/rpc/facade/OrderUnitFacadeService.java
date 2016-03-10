@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
@@ -24,6 +25,7 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -186,29 +188,41 @@ public class OrderUnitFacadeService {
 	 * 根据设备mac查询订单分页列表
 	 * @param uid 用户id
 	 * @param mac 用户绑定的设备mac
+	 * @param umac 订单支付用户的终端mac
 	 * @param status 订单状态
 	 * @param pageNo 页码
 	 * @param pageSize 分页数量
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid,  String mac, Integer status, int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
+			Integer status, int pageNo, int pageSize) {
 		try{
-			userDeviceFacadeService.validateUserDeviceBind(uid, mac);
-			
-			List<OrderDTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByMacAndStatus(mac, status);
+			List<UserOrderDTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status);
 			if(order_count > 0){
-				List<Order> orderList = orderFacadeService.findOrdersByMacAndStatus(mac, status, pageNo, pageSize);
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, pageNo, pageSize);
 				if(orderList != null && !orderList.isEmpty()){
-					retDtos = new ArrayList<OrderDTO>();
-					OrderDTO orderDto = null;
+					retDtos = new ArrayList<UserOrderDTO>();
+					UserOrderDTO userOrderDto = null;
 					for(Order order : orderList){
-						orderDto = OrderHelper.buildOrderDTO(order);
-						retDtos.add(orderDto);
+						userOrderDto = new UserOrderDTO();
+						userOrderDto.setId(order.getId());
+						userOrderDto.setMac(order.getMac());
+						userOrderDto.setUmac(order.getUmac());
+						userOrderDto.setUid(order.getUid());
+						userOrderDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+						userOrderDto.setAmount(order.getAmount());
+						if(order.getCreated_at() != null){
+							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
+						}
+						if(order.getPaymented_at() != null){
+							userOrderDto.setPaymented_ts(order.getPaymented_at().getTime());
+						}
+						retDtos.add(userOrderDto);
 					}
 				}
 			}
-			TailPage<OrderDTO> returnRet = new CommonPage<OrderDTO>(pageNo, pageSize, order_count, retDtos);
+			TailPage<UserOrderDTO> returnRet = new CommonPage<UserOrderDTO>(pageNo, pageSize, order_count, retDtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -188,28 +189,31 @@ public class OrderController extends BaseController{
 	}
 	
 	/**
-	 * 根据设备mac查询订单分页列表
+	 * 根据订单参数查询订单分页列表
 	 * @param request
 	 * @param response
 	 * @param uid 用户id
 	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态 默认发货完成
 	 * @param pageNo 页码
 	 * @param pageSize 每页数量
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/query/mac/pages",method={RequestMethod.GET,RequestMethod.POST})
-	public void query_mac_pages(
+	@RequestMapping(value="/query/uid/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_uid_pages(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String mac,
+			@RequestParam(required = false) String mac,
+			@RequestParam(required = false) String umac,
 			@RequestParam(required = false, defaultValue = "10") Integer status,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
-		RpcResponseDTO<TailPage<OrderDTO>> rpcResult = orderRpcService.orderPagesByMac(uid, mac, status, pageNo, pageSize);
+		RpcResponseDTO<TailPage<UserOrderDTO>> rpcResult = orderRpcService.orderPagesByUid(uid, mac, umac, 
+				status, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

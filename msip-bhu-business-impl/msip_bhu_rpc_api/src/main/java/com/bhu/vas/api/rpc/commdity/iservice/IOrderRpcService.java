@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.commdity.iservice;
 
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -18,8 +19,8 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
 			String payment_type, String context);
 	
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderId, Integer appId);
+	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid);
 	
-	public RpcResponseDTO<TailPage<OrderDTO>> orderPagesByMac(Integer uid, String mac, Integer status, 
-			int pageNo, int pageSize);
+	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
+			Integer status, int pageNo, int pageSize);
 }

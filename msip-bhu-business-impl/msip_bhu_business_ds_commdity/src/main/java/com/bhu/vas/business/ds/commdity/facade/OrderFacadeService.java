@@ -24,6 +24,7 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -65,31 +66,49 @@ public class OrderFacadeService {
 	}
 	
 	/**
-	 * 根据设备mac和订单状态进行查询订单数量
+	 * 根据订单参数进行查询订单数量
+	 * @param uid
 	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态
 	 */
-	public int countOrderByMacAndStatus(String mac, Integer status){
+	public int countOrderByParams(Integer uid, String mac, String umac, Integer status){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria()
-			.andColumnEqualTo("mac", mac)
+		Criteria criteria = mc.createCriteria();
+		criteria
+			.andColumnEqualTo("uid", uid)
 			.andColumnEqualTo("status", status);
+		if(StringUtils.isNotEmpty(mac)){
+			criteria.andColumnEqualTo("mac", mac);
+		}
+		if(StringUtils.isNotEmpty(umac)){
+			criteria.andColumnEqualTo("umac", umac);
+		}
 		return orderService.countByModelCriteria(mc);
 	}
 	
 	/**
-	 * 根据设备mac和订单状态进行查询订单列表
+	 * 根据订单参数进行查询订单分页列表
+	 * @param uid
 	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public List<Order> findOrdersByMacAndStatus(String mac, Integer status, int pageNo, int pageSize){
+	public List<Order> findOrdersByParams(Integer uid, String mac, String umac, Integer status, int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria()
-			.andColumnEqualTo("mac", mac)
+		Criteria criteria = mc.createCriteria();
+		criteria
+			.andColumnEqualTo("uid", uid)
 			.andColumnEqualTo("status", status);
+		if(StringUtils.isNotEmpty(mac)){
+			criteria.andColumnEqualTo("mac", mac);
+		}
+		if(StringUtils.isNotEmpty(umac)){
+			criteria.andColumnEqualTo("umac", umac);
+		}
 		mc.setPageNumber(pageNo);
 		mc.setSize(pageSize);
 		return orderService.findModelByModelCriteria(mc);
