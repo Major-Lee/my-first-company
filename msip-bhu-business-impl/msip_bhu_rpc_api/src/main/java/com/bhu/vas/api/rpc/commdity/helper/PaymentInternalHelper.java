@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -16,7 +18,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 public class PaymentInternalHelper {
-//	private final static Logger logger = LoggerFactory.getLogger(PaymentInternalHelper.class);
+	private final static Logger logger = LoggerFactory.getLogger(PaymentInternalHelper.class);
 //	public static final String COMMUNICATION_APPID = "appid";
 //	public static final String COMMUNICATION_APPSECRET = "appsecret";
 	//支付系统获取订单支付url的api地址
@@ -47,7 +49,9 @@ public class PaymentInternalHelper {
 		try {
 			String response = HttpHelper.postUrlAsString(CREATE_PAYMENTURL_COMMUNICATION_API, api_params);
 			//logger.info(String.format(format, args)"CreatePaymentUrlCommunication Response [%s]");
-			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
+/*			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));*/
+			logger.info(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
 					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
