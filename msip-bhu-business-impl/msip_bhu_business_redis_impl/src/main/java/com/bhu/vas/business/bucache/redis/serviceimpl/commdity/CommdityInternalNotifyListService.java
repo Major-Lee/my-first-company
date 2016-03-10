@@ -96,8 +96,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     	//String orderid = "10012016030900000000000000000011";
     	//boolean success = true;
     	//simulateResponsePaymentCompletedNotify(orderid, success);
-    	simulateDeliverNotify();
-    	//simulateUpayDrawPaymentCompletedNotify(success);
+    	//simulateDeliverNotify();
+    	while(true){
+    		simulateUpayDrawPaymentCompletedNotify(true);
+    	}
     }
     
     /*************           test           **************/
