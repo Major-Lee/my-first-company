@@ -198,6 +198,7 @@ public class SocialFacadeRpcService {
             Wifi wifi = wifiService.getById(bssid);
 
             if (wifi == null) {
+                wifi = new Wifi();
                 wifi.setId(bssid);
                 wifi.setSsid(ssid);
                 wifi.setLat(Double.parseDouble(lat));
