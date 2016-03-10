@@ -1,6 +1,5 @@
 package com.bhu.vas.business.ds.commdity.facade;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -22,6 +21,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalN
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -237,9 +237,9 @@ public class OrderFacadeService {
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
 	 * @param orderId 订单id
-	 * @param payment_ts 支付时间
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderid, long payment_ts){
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, String paymented_ds){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		Order order = null;
@@ -249,7 +249,11 @@ public class OrderFacadeService {
 			if(!OrderHelper.lte_notpay(order_status)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
 			}
-			order.setPaymented_at(new Date(payment_ts));
+			
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+			
 			//支付成功
 			if(success){
 				changed_status = OrderStatus.PaySuccessed.getKey();

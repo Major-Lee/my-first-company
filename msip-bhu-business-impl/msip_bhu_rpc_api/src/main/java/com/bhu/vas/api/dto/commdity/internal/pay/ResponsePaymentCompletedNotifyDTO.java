@@ -10,8 +10,8 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
 public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
 	//订单id
 	private String orderid;
-	//订单支付成功时间
-	private long paymented_ts;
+	//订单支付成功时间 yyyy-MM-dd HH:mm:ss
+	private String paymented_ds;
 	
 	public String getOrderid() {
 		return orderid;
@@ -19,11 +19,11 @@ public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
 	public void setOrderid(String orderid) {
 		this.orderid = orderid;
 	}
-	public long getPaymented_ts() {
-		return paymented_ts;
+	public String getPaymented_ds() {
+		return paymented_ds;
 	}
-	public void setPaymented_ts(long paymented_ts) {
-		this.paymented_ts = paymented_ts;
+	public void setPaymented_ds(String paymented_ds) {
+		this.paymented_ds = paymented_ds;
 	}
 }
 

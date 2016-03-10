@@ -25,7 +25,7 @@ public class PaymentInternalHelper {
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
 	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
 	//模拟支付系统支付成功触发api
-	public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
+	//public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
 	
 	//订单已经支付成功
 	public static final String ERRORCODE_PAYMENT_STATUS_PAYSUCCESSED = "101";
@@ -79,7 +79,7 @@ public class PaymentInternalHelper {
 		api_params.put("status", "success");
 		
 		try {
-			String response = HttpHelper.getUrlAsString(SIMULATE_PAYSUCCESS_COMMUNICATION_API, api_params);
+			String response = HttpHelper.getUrlAsString("http://192.168.66.88:8005/api/ucloud/pay-call", api_params);
 			System.out.println(response);
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
@@ -87,8 +87,9 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args){
-		String orderid = "10012016031000000000000000000018";
+		String orderid = "10012016031000000000000000000021";
 		simulatePaysuccessCommunication(orderid);
+		System.out.println(new String("\u8be5\u5546\u54c1\u8ba2\u5355\u53f7\u4e0d\u5b58\u5728"));
 		//ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","0.8","192.168.66.162",orderid);
 		//String params = rcp_dto.getParams();
 	}
