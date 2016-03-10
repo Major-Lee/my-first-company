@@ -343,7 +343,7 @@ public class UserWalletFacadeService{
 	 * @param applyid 申请流水号
 	 */
 	public UserWalletWithdrawApply doWithdrawVerify(int reckoner,String applyid,boolean passed){
-		UserValidateServiceHelper.validateUser(reckoner,this.userService);
+		//UserValidateServiceHelper.validateUser(reckoner,this.userService);
 		if(StringUtils.isEmpty(applyid)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"applyid:".concat(String.valueOf(applyid))});
 		}

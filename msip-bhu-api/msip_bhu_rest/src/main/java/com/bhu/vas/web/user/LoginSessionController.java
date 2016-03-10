@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -118,6 +120,45 @@ public class LoginSessionController extends BaseController{
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+		
+	}
+	
+	/**
+	 * 财务用户登录
+	 * 最后控制财务类型匹配
+	 * @param request
+	 * @param response
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/create_finance",method={RequestMethod.POST})
+	public void create_finance(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String pwd,
+			@RequestParam(required = false, value="d",defaultValue="R") String device) {
+		String remoteIp = WebHelper.getRemoteAddr(request);
+		String from_device = DeviceEnum.getBySName(device).getSname();
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.userLogin(countrycode, acc,pwd, from_device, remoteIp);
+		if(!rpcResult.hasError()){
+			//判定是否是财务用户 usertype = 15 UserType.AgentFinance
+			UserDTO userDto = UserDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_User));
+			if(userDto != null && userDto.getUtype() == UserType.AgentFinance.getIndex()){
+				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+				rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
+				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}));
+			}
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
