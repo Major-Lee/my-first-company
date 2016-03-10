@@ -81,5 +81,20 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
     public static void main(String[] args) {
         System.out.println(generateKey("84:82:f4:19:01:0c", "84:82:f4:19:00:c0"));
         System.out.println(generateKey("84:82:f4:19:00:c0", "84:82:f4:19:01:0c"));
+
+        HandsetMeetDTO dto = new HandsetMeetDTO();
+        dto.setBssid("google");
+        dto.setLat("10.0");
+        dto.setLat("11.1");
+        dto.setSsid("gooogle-wifi");
+        dto.setTs(System.currentTimeMillis());
+
+
+        SocialHandsetMeetHashService.getInstance().handsetMeet("82:83:90:12:32:34", "82:83:90:12:32:35", "google", JsonHelper.getJSONString(dto));
+
+
+        dto = SocialHandsetMeetHashService.getInstance().getLasthandsetMeet("82:83:90:12:32:34", "82:83:90:12:32:35");
+
+        System.out.println();
     }
 }

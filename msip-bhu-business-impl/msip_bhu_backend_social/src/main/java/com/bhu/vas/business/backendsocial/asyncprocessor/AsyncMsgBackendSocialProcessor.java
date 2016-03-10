@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendcommdity.asyncprocessor;
+package com.bhu.vas.business.backendsocial.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.builder.ActionSocialMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionSocialMessageType;
-import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleSocialService;
+import com.bhu.vas.business.backendsocial.asyncprocessor.service.AsyncMsgHandleSocialService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

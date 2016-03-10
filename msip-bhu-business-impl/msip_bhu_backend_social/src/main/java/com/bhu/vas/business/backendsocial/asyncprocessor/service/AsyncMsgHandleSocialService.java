@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
+package com.bhu.vas.business.backendsocial.asyncprocessor.service;
 
 import com.bhu.vas.business.asyn.spring.model.social.HandsetMeetDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
@@ -6,8 +6,6 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * Created by bluesand on 3/9/16.

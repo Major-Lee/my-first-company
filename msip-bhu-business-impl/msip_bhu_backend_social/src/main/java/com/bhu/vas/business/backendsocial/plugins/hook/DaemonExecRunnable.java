@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendcommdity.plugins.hook;
+package com.bhu.vas.business.backendsocial.plugins.hook;
 
 import java.util.concurrent.ExecutorService;
 

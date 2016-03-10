@@ -78,7 +78,7 @@
 		<appender-ref ref="wifideviceflowlogfile" />
 	</logger>
 	
-	<logger name="com.bhu.vas.business.backendcommdity.asyncprocessor" additivity="false">
+	<logger name="com.bhu.vas.business.backendsocial.asyncprocessor" additivity="false">
 		<level value="INFO"/>
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
