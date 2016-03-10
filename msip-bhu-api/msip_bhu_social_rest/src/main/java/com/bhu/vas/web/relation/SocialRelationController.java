@@ -3,6 +3,7 @@ package com.bhu.vas.web.relation;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/relation")
-public class SocialRelationController {
+public class SocialRelationController extends BaseController {
 
     @Resource
     private ISocialRpcService socialRpcService;
@@ -41,8 +42,7 @@ public class SocialRelationController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String bssid,
-            @RequestParam(required = false, defaultValue = "up") String type
-    ) {
+            @RequestParam(required = false, defaultValue = "up") String type) {
         RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid, type);
         if (!rpcResult.hasError())
             SpringMVCHelper.renderJson(response,
