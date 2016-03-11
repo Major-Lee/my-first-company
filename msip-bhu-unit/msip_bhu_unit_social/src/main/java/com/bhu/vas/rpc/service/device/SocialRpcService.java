@@ -35,16 +35,16 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs,
                                String bssid, String ssid, String lat, String lon, String addr) {
-	logger.info(String.format(
-		"handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s] ssid[%s] lat[%s] lon[%s] addr[%s]",
-		uid, hd_mac, hd_macs, bssid, ssid, lat, lon, addr));
+        logger.info(String.format(
+                "handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s] ssid[%s] lat[%s] lon[%s] addr[%s]",
+                uid, hd_mac, hd_macs, bssid, ssid, lat, lon, addr));
         return socialFacadeRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid,
                 ssid, lat, lon, addr);
     }
 
     @Override
     public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
-	    logger.info(String.format("fetchHandsetList uid[%s] bssid[%s] hd_macs[%s] ", uid, bssid, hd_macs));
+        logger.info(String.format("fetchHandsetList uid[%s] bssid[%s] hd_macs[%s] ", uid, bssid, hd_macs));
         return socialFacadeRpcService.fetchHandsetList(uid, bssid, hd_macs);
     }
 
@@ -78,15 +78,21 @@ public class SocialRpcService implements ISocialRpcService {
 
     @Override
     public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type) {
-            logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
-                    uid, bssid, type));
+        logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
+                uid, bssid, type));
+        try {
             return socialFacadeRpcService.clickPraise(bssid, type);
+        } catch (BusinessI18nCodeException i18nex) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+        } catch (Exception ex){
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+        }
     }
 
     @Override
     public boolean comment(long uid, String bssid, String hd_mac, String message) {
-    	logger.info(String.format("comment uid[%s]  bssid[%s] hd_mac[%s] message[%s]",
-                uid, bssid, hd_mac,message));
+        logger.info(String.format("comment uid[%s]  bssid[%s] hd_mac[%s] message[%s]",
+                uid, bssid, hd_mac, message));
         try {
             socialFacadeRpcService.comment(uid, bssid, hd_mac, message);
             return true;
@@ -98,8 +104,8 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,
                                                                        String bssid, int pageNo, int pageSize) {
-    	logger.info(String.format("comment uid[%s]  bssid[%s] pageNo[%s] pageSize[%s]",
-                uid, bssid, pageNo,pageSize));
+        logger.info(String.format("comment uid[%s]  bssid[%s] pageNo[%s] pageSize[%s]",
+                uid, bssid, pageNo, pageSize));
         return RpcResponseDTOBuilder
                 .builderSuccessRpcResponse(socialFacadeRpcService
                         .pageWifiCommentVTO(uid, bssid, pageNo, pageSize));
@@ -112,9 +118,9 @@ public class SocialRpcService implements ISocialRpcService {
             logger.info(String.format("follow uid[%s] hd_mac[%s]", uid, hd_mac));
             socialFacadeRpcService.follow(uid, hd_mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-        }catch (BusinessI18nCodeException i18nex){
-            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
-        }catch (Exception ex){
+        } catch (BusinessI18nCodeException i18nex) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+        } catch (Exception ex) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
         }
     }
@@ -126,16 +132,16 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac,int pageNo,int pageSize) {
-        logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s] pn[%s] ps[%s]", uid, hd_mac,pageNo,pageSize));
+    public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac, int pageNo, int pageSize) {
+        logger.info(String.format("fetchFollowList uid[%s] hd_mac[%s] pn[%s] ps[%s]", uid, hd_mac, pageNo, pageSize));
         return RpcResponseDTOBuilder
                 .builderSuccessRpcResponse(socialFacadeRpcService
-                        .fetchFollowList(uid, hd_mac,pageNo,pageSize));
+                        .fetchFollowList(uid, hd_mac, pageNo, pageSize));
     }
 
 
     public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid, String hd_mac) {
-    	logger.info(String.format("comment uid[%s]  hd_mac[%s] ",uid, hd_mac));
+        logger.info(String.format("comment uid[%s]  hd_mac[%s] ", uid, hd_mac));
         return RpcResponseDTOBuilder
                 .builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid, hd_mac));
 

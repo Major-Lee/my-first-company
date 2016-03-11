@@ -47,14 +47,13 @@ public class SocialRelationController extends BaseController {
             @RequestParam(required = true) String bssid,
             @RequestParam(required = false, defaultValue = "up") String type) {
 
-        try {
-            RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid, type);
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-        } catch (BusinessI18nCodeException i18nex) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
-        } catch (Exception e) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
-        }
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid, type);
+        if (!rpcResult.hasError())
+            SpringMVCHelper.renderJson(response,
+                    ResponseSuccess.embed(rpcResult.getPayload()));
+        else
+            SpringMVCHelper.renderJson(response,
+                    ResponseError.embed(rpcResult));
     }
 
     /**
