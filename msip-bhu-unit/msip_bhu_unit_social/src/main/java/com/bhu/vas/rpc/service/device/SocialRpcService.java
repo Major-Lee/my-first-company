@@ -85,6 +85,8 @@ public class SocialRpcService implements ISocialRpcService {
 
     @Override
     public boolean comment(long uid, String bssid, String hd_mac, String message) {
+    	logger.info(String.format("comment uid[%s]  bssid[%s] hd_mac[%s] message[%s]",
+                uid, bssid, hd_mac,message));
         try {
             socialFacadeRpcService.comment(uid, bssid, hd_mac, message);
             return true;
@@ -96,8 +98,8 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public RpcResponseDTO<TailPage<WifiCommentVTO>> pageWifiCommentVTO(int uid,
                                                                        String bssid, int pageNo, int pageSize) {
-        logger.info(String.format("pageWifiCommentVTO pageNo[%s] pageSize",
-                pageNo, pageSize));
+    	logger.info(String.format("comment uid[%s]  bssid[%s] pageNo[%s] pageSize[%s]",
+                uid, bssid, pageNo,pageSize));
         return RpcResponseDTOBuilder
                 .builderSuccessRpcResponse(socialFacadeRpcService
                         .pageWifiCommentVTO(uid, bssid, pageNo, pageSize));
@@ -133,6 +135,7 @@ public class SocialRpcService implements ISocialRpcService {
 
 
     public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid, String hd_mac) {
+    	logger.info(String.format("comment uid[%s]  hd_mac[%s] ",uid, hd_mac));
         return RpcResponseDTOBuilder
                 .builderSuccessRpcResponse(socialFacadeRpcService.fetchUserCommentWifiList(uid, hd_mac));
 
