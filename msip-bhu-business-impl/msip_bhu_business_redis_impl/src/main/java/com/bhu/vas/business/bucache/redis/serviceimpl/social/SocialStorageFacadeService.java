@@ -21,7 +21,8 @@ public class SocialStorageFacadeService  {
         if (meets != null && meets.size() < MAX_HANDSET_MEET_COUNT) {
             meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
         } else {
-            meets.remove(MAX_HANDSET_MEET_COUNT - 1);
+            meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
+            meets.remove(MAX_HANDSET_MEET_COUNT);
         }
 
         SocialHandsetMeetHashService.getInstance().hsetHadsetMeets(hd_mac_self, hd_mac, bssid, JsonHelper.getJSONString(meets));

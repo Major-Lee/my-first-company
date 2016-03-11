@@ -301,11 +301,12 @@ public class SocialFacadeRpcService {
         Wifi wifi = wifiService.getById(bssid);
         try {
             String max_rate = wifi.getMax_rate();
-            if (Double.parseDouble(rate) > Double.parseDouble(max_rate)) {
+            if (max_rate == null || (Double.parseDouble(rate) > Double.parseDouble(max_rate))) {
                 wifi.setMax_rate(rate);
             }
             wifiService.update(wifi);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return true;
