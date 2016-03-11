@@ -69,7 +69,7 @@ public class SocialFacadeRpcService {
      * @param type
      * @return
      */
-    public RpcResponseDTO<Boolean> clickPraise(String bssid, String type) {
+    public void clickPraise(String bssid, String type) {
 
         if (WifiActionHashService.getInstance().isNoExist(bssid)) {
             WifiActionHashService.getInstance().init(bssid);
@@ -77,7 +77,6 @@ public class SocialFacadeRpcService {
 
         if (SocialActionType.isActionType(type)){
             WifiActionHashService.getInstance().hincrease(bssid, type);
-            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         }else
             throw  new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
     }
@@ -89,13 +88,12 @@ public class SocialFacadeRpcService {
      * @param hd_mac
      * @return
      */
-    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
+    public void follow(long uid, String hd_mac) {
 
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
             if (handsetUser != null && handsetUser.getUid() != uid) {
                 if (SocialFollowSortedSetService.getInstance().isFollowMax(uid)){
                     SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
-                    return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
                 }else {
                     throw new BusinessI18nCodeException(ResponseErrorCode.SOCIAL_FOLLOW_MAX);
                 }
@@ -112,10 +110,8 @@ public class SocialFacadeRpcService {
      * @param hd_mac
      * @return
      */
-    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
-
+    public void unFollow(long uid, String hd_mac) {
         SocialFollowSortedSetService.getInstance().unFollow(uid, hd_mac);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
     /**
