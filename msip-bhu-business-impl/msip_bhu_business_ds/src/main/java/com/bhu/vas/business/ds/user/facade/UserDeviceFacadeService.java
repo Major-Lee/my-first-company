@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -121,6 +123,11 @@ public class UserDeviceFacadeService {
 
 				WifiDevice wifiDevice = wifiDeviceService.getById(userDevice.getMac());
 				if (wifiDevice != null) {
+					if(StringUtils.isEmpty(wifiDevice.getOrig_swver())) continue;
+					if(wifiDevice.getOrig_swver().endsWith(VapEnumType.DUT_soc) || wifiDevice.getOrig_swver().endsWith(VapEnumType.DUT_CWifi) ){
+						continue;
+					}
+					
 					userDeviceDTO.setOnline(wifiDevice.isOnline());
 					if (wifiDevice.isOnline()) { //防止有些设备已经离线了，没有更新到后台
 						userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
