@@ -70,7 +70,8 @@ public class SequenceService extends EntityService<String,Sequence,SequenceDao>{
 		logger.info("SequenceService getNextID By {}",name);
     	Sequence o = new Sequence(name, -1);
     	try{
-    		//this.getEntityDao().begin();
+    		this.getEntityDao().executePureSql("SET AUTOCOMMIT=0;");
+    		this.getEntityDao().executePureSql("BEGIN WORK;");
     		o = this.getById(name);
         	if(o == null){
         		Integer start = tableSequenceStart.get(name);
@@ -94,6 +95,8 @@ public class SequenceService extends EntityService<String,Sequence,SequenceDao>{
         	}    		
     	}finally{
     		//this.getEntityDao().commit();
+    		this.getEntityDao().executePureSql("COMMIT WORK;");
+    		this.getEntityDao().executePureSql("SET AUTOCOMMIT=1;");
     	}
     }
 	

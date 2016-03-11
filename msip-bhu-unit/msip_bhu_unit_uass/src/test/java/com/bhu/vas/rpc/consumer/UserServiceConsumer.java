@@ -85,6 +85,8 @@ public class UserServiceConsumer {
 		
 		RpcResponseDTO<Map<String, Object>> createNewUser = userRpcService.userValidate("JzZfUlNWVEcQFxALCF1WIkw=",UUID.randomUUID().toString(), "R", "192.168.66.8");//(86, "18612272825", "O", "192.168.66.8", dto.getCaptcha());//(86, "18612272825", "edmond", "男", "O", "192.168.66.8", UUID.randomUUID().toString(), dto.getCaptcha());
 		if(createNewUser.getErrorCode() == null){
+			System.out.println(createNewUser.getPayload());
+			
 			/*UserDTO retdto = createNewUser.getPayload();
 			System.out.println(retdto.getId());
 			System.out.println(retdto.getAtoken());
@@ -92,6 +94,8 @@ public class UserServiceConsumer {
 			System.out.println(retdto.getMobileno());
 			System.out.println(retdto.getCountrycode());
 			System.out.println(retdto.getNick());*/
+		}else{
+			System.out.println(createNewUser.getErrorCode().code());
 		}
 		
 		Thread.currentThread().join();

@@ -99,6 +99,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	Devices_Plugin_Samba_DownloadPath = PropertiesHelper.getString("devices.plugin.samba.downloadpath", paramProperties, Devices_Plugin_Samba_DownloadPath);
         	Devices_Plugin_Samba_Ver = PropertiesHelper.getString("devices.plugin.samba.ver", paramProperties, Devices_Plugin_Samba_Ver);
         	
+        	PaymentApiDomain = PropertiesHelper.getString("payment.api.domain", paramProperties, PaymentApiDomain);
+        	
         	Terminal_Push_Notify_Exprie_Second = PropertiesHelper.getInt("terminal.push.notify.exprie.second", paramProperties, Terminal_Push_Notify_Exprie_Second);
         	logger.info("loading runtime configuration successfully!");  
             InternalCaptchaCodeSMS_Gateway = PropertiesHelper.getString("internal.captchacode.sms.gateway", paramProperties, InternalCaptchaCodeSMS_Gateway);
@@ -126,6 +128,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             }
             
             Device_Firmware_ForceUpdateImmediately_AfterDays = PropertiesHelper.getInt("device.firmware.forceupdateimmediately.afterdays", paramProperties, Device_Firmware_ForceUpdateImmediately_AfterDays);
+            
+            User_WalletWithdraw_Default_MaxLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.maxLimit", paramProperties, User_WalletWithdraw_Default_MaxLimit);
             
         	logger.info("loading business runtime configuration successfully!");  
         }  
@@ -161,6 +165,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int UserCaptchaCodeExpired = 180;//3分钟
 	//用户验证码每个用户每天最多 多少次
 	public static final int UserCaptchaCodeLimit = 8;
+	//支付系统api接口的域名
+	public static String PaymentApiDomain = "http://upay.bhuwifi.com";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "尊敬的用户您好，您此次验证码为@请勿将验证码提供给他人，如非本人操作，请忽略。【华信联创】";
 	
@@ -305,14 +311,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static long CheckArtificialFrdsKeepMs = 24 * 60 * 60 * 1000;//24小时的毫秒数 超过时间删除客服好友关系
 	public static int CheckArtificialFrdsAddLimitCount = 5;//5个好友数量, 超过数量不在分配客服
-	//public static String StaticsTrackIndexHtmlPublishPath 		 = "/VCData/html/trackindex2/";
-	//public static String StaticsTrackFavUserIndexHtmlPublishPath = "/VCData/html/trackuserfavindex/";
-	//public static String DefaultStaticsTrackIndexHtmlPublishPath = "/VCData/html/trackindex2/";
+
 	
-	/*public static String ChartPublishPath = "/VCData/data/chart/";
-	public static String ChartRootPathFile = "/VCData/data/chart/root.txt";
-	public static String ChartPublishPathFileSuffix = ".txt";*/
-//	public static String GexinPushXmPackage = "com.vc.blink";
+	public static double User_WalletWithdraw_Default_MaxLimit = 10.00d;//5个好友数量, 超过数量不在分配客服
+	
 	/**
 	 * 判断是否是console用户
 	 * @param uid

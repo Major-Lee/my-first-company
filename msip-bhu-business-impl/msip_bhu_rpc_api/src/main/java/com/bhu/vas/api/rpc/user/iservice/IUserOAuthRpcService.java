@@ -33,4 +33,5 @@ public interface IUserOAuthRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> createIdentifies(Integer uid,String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut);
+
 }
