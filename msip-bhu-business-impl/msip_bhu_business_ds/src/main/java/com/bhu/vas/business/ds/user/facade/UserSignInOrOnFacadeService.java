@@ -16,6 +16,7 @@ import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -26,7 +27,6 @@ public class UserSignInOrOnFacadeService {
 	
 	@Resource
 	private UserTokenService userTokenService;
-	
 	
 	/*	
 	@Resource
@@ -149,12 +149,11 @@ public class UserSignInOrOnFacadeService {
 		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, true), uToken);
 	}
 	
-	
 	public UserInnerExchangeDTO commonUserProfile(User user){
-		//User user = this.userService.getById(uid);
 		if(user == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
 		}
+		
 		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), null);
 	}
 	
@@ -179,4 +178,21 @@ public class UserSignInOrOnFacadeService {
 		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), uToken);
 	}
 	
+	public UserInnerExchangeDTO commonUserChangedPwd(User user,String pwd, String npwd){
+		if(!BCryptHelper.checkpw(pwd,user.getPassword())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
+		}
+		if(StringUtils.isNotEmpty(npwd)){
+			user.setPlainpwd(npwd);
+			user.setPassword(null);
+		}
+		user = this.userService.update(user);
+		// token validate code
+		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+		{//write header to response header
+			//BusinessWebHelper.setCustomizeHeader(response, uToken);
+			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
+		}
+		return UserInnerExchangeDTO.build(RpcResponseDTOBuilder.builderUserDTOFromUser(user, false), uToken);
+	}
 }

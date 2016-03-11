@@ -101,4 +101,16 @@ public class BusinessKeyDefine {
 		public static final String StylePrefix = "MSSP";
 		public static final String ModulePrefix = "MSMP";
 	}
+	
+	public static class Commdity{
+		public static final String OrderPaymentNotifyKey = "OPN_KEY";
+		public static final String OrderDeliverNotifyKey = "ODN_KEY";
+		
+		public static final String WithdrawAppliesRequestNotifyKey = "WAR_KEY";
+	}
+	
+	public static class CommdityRAmount{
+		public static final String CommdityIntervalAmountPrefixKey = "CIA";
+
+	}
 }

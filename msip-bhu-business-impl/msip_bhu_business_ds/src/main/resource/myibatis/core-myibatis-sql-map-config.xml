@@ -21,9 +21,15 @@
 		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="sequence" type="com.bhu.vas.api.rpc.sequence.model.Sequence" />
-		<typeAlias alias="user" type="com.bhu.vas.api.rpc.user.model.User" />
-		<typeAlias alias="userToken" type="com.bhu.vas.api.rpc.user.model.UserToken" />
+		<typeAlias alias="sequence" 	type="com.bhu.vas.api.rpc.sequence.model.Sequence" />
+		<typeAlias alias="user" 		type="com.bhu.vas.api.rpc.user.model.User" />
+		<typeAlias alias="userToken" 	type="com.bhu.vas.api.rpc.user.model.UserToken" />
+		
+		<typeAlias alias="userWallet" 				type="com.bhu.vas.api.rpc.user.model.UserWallet" />
+		<typeAlias alias="userWalletConfigs" 		type="com.bhu.vas.api.rpc.user.model.UserWalletConfigs" />
+		<typeAlias alias="userWalletLog" 			type="com.bhu.vas.api.rpc.user.model.UserWalletLog" />
+		<typeAlias alias="userWalletWithdrawApply" 	type="com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply" />
+		<typeAlias alias="userThirdpartiesPayment" 	type="com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment" />
 		
 		<typeAlias alias="userOAuthState" 	type="com.bhu.vas.api.rpc.user.model.UserOAuthState" />
 		<typeAlias alias="userOAuthStatePK" type="com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK" />
@@ -54,9 +60,10 @@
 
 		<typeAlias alias="wifiDevicePersistenceCMDState"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState" />
+		<!-- 	
 		<typeAlias alias="wifiDeviceVersionBuilder"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceVersionBuilder" />
-
+ -->
 		<typeAlias alias="wifiDeviceGray"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceGray" />
 		<typeAlias alias="wifiDeviceGrayVersionPK"
@@ -97,8 +104,6 @@
 		<typeAlias alias="wifiDeviceGroupSearchCondition"
 			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroupSearchCondition" />
 
-
-
 		<typeAlias alias="dictMacPrefix"
 			type="com.bhu.vas.api.rpc.dict.model.DictMacPrefix" />
 
@@ -127,8 +132,15 @@
 
 		<mapper resource="com/bhu/vas/api/rpc/sequence/model/sqlMapper/Sequence.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/User.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserOAuthState.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserToken.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserOAuthState.sqlMap.xml" />
+		
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWallet.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletConfigs.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletLog.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletWithdrawApply.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserThirdpartiesPayment.sqlMap.xml" />
+		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserLoginState.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserCaptchaCode.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserDevice.sqlMap.xml" />
@@ -157,9 +169,10 @@
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml" />
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml" />
+			<!--
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceVersionBuilder.sqlMap.xml" />
-
+-->
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceGray.sqlMap.xml" />
 		<mapper

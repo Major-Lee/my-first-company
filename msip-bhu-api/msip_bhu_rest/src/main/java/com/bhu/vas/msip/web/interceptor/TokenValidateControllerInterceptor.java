@@ -176,15 +176,20 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 	}
 	//private static final String patternRegx = "^/((noauth)|(statistics)|(device)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	//private static final String patternRegx = "^/((noauth)|(cmd)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
-	private static final String patternRegx = "^/((noauth)|(ping)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
+	private static final String patternRegx = "^/((noauth)|(ping)|(dashboard)|(common)|(api-docs))";//"^/(noauth)|(statistics)|(device)|(ping)|(common)|(api-docs)";
 	/**
 	 * 以定义好的字符串前缀
 	 * @param url
 	 * @return
 	 */
-	private static boolean uriStartWithThenSkip(String uri){
+	public static boolean uriStartWithThenSkip(String uri){
 		Pattern pattern = Pattern.compile(patternRegx);
         Matcher matcher = pattern.matcher(uri);
         return matcher.find();
+	}
+	
+	public static void main(String[] argv){
+		System.out.println(uriStartWithThenSkip("/ping/abc/noauth"));
+		System.out.println(uriStartWithThenSkip("/noauth"));
 	}
 }

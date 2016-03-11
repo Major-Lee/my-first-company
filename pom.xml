@@ -16,10 +16,12 @@
     <version>1.0</version>
     <packaging>pom</packaging>
     <modules>
-
-        <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_i18n</module>
+        <module>msip-bhu-business-impl/msip_bhu_web</module>
+        <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
+        <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
+        
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
@@ -45,6 +47,7 @@
 
         <module>msip-bhu-unit/msip_bhu_unit_rest_urouter</module>
         <module>msip-bhu-unit/msip_bhu_unit_vas</module>
+        <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
@@ -52,7 +55,11 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
+        <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
+        
+        <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
+        <module>msip-bhu-api/msip_bhu_commdity_rest</module>
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
     </modules>
@@ -126,6 +133,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.bhu</groupId>
@@ -144,7 +156,11 @@
                 <artifactId>msip_bhu_business_ds</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_commdity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_redis_impl</artifactId>

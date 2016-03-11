@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
@@ -17,7 +16,9 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
+import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceUnitFacadeService;
@@ -211,4 +212,10 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
         return userDeviceUnitFacadeService.userDetail(uid,countrycode,acc,tid);
     }
+    
+    @Override
+	public RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac){
+		logger.info(String.format("portalDeviceProfile mac[%s]",mac));
+		return userDeviceUnitFacadeService.portalDeviceProfile(mac);
+	}
 }

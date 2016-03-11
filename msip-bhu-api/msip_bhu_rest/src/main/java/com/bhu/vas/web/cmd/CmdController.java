@@ -72,7 +72,7 @@ public class CmdController extends BaseController{
 	 * @param channel
 	 * @param channel_taskid
 	 */
-	@ResponseBody()
+/*	@ResponseBody()
 	@RequestMapping(value="/generate4group",method={RequestMethod.POST})
 	public void cmdGenerate4Group(
 			HttpServletRequest request,
@@ -92,7 +92,7 @@ public class CmdController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-	}
+	}*/
 	
 /*	@ResponseBody()
 	@RequestMapping(value="/wifiSniffer",method={RequestMethod.POST})
@@ -170,4 +170,5 @@ public class CmdController extends BaseController{
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
+	
 }

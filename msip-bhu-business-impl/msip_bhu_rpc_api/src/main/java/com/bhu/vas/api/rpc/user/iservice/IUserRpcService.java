@@ -128,6 +128,22 @@ public interface IUserRpcService {
 			String captcha
 			);
 	
-
-	RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey);
+	public RpcResponseDTO<Map<String, Object>> userChangedPwd(
+			int uid,
+			String pwd,
+			String npwd
+			);
+	/**
+	 * 对于oauth注册的用户提供手机号码认证绑定的过程
+	 * 1、如果手机号码已经存在则提示错误码
+	 * 2、需要验证码验证
+	 * 3、如果此账户已经有绑定手机号，则移除前手机号的唯一存储，替换成新的手机号
+	 * 4、成功后，此手机号可以进行登录
+	 * @param countrycode
+	 * @param acc
+	 * @param captcha
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha);
+	public RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey);
 }

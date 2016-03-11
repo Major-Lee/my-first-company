@@ -120,6 +120,37 @@ public class UserController extends BaseController{
 		}
 	}
 	
+	@ResponseBody()
+	@RequestMapping(value="/authenticate",method={RequestMethod.GET,RequestMethod.POST})
+	public void authenticate(HttpServletRequest request,
+			HttpServletResponse response, 
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String captcha
+			) {
+		//step 1.deviceuuid 验证
+		ResponseError validateError = null;
+		try{
+			//step 2.手机号正则验证
+			validateError = ValidateService.validateMobileno(countrycode,acc);
+			if(validateError != null){
+				SpringMVCHelper.renderJson(response, validateError);
+				return;
+			}
+			RpcResponseDTO<Boolean> rpcResult = userRpcService.authentication(uid, countrycode, acc, captcha);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+	
 	/**
 	 * 用户信息修改
 	 * @param request

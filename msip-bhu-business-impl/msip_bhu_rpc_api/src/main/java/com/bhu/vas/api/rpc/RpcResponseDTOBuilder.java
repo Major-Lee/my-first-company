@@ -117,6 +117,9 @@ public class RpcResponseDTOBuilder {
 		ret.put(Key_User, exchangeDTO.getUser());
 		if(exchangeDTO.getToken() != null)
 			ret.put(Key_UserToken,exchangeDTO.getToken());
+		if(exchangeDTO.getWallet() != null)
+			ret.put(Key_UserWallet,exchangeDTO.getWallet());
+		
 		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(exchangeDTO.getUser().getMobileno()));
 		ret.put(Key_Cm, "60");
 		if(exchangeDTO.getOauths() != null && !exchangeDTO.getOauths().isEmpty())
@@ -158,6 +161,7 @@ public class RpcResponseDTOBuilder {
 	public static String Key_User = "usr";
 	public static String Key_UserOAuth = "uoa";
 	public static String Key_UserToken = "utk";
+	public static String Key_UserWallet = "uwa";
 	public static String Key_UserToken_BBS = "utb";
 	public static String Key_Setting = "setting";
 	public static String Key_Cm = "cm";

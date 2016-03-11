@@ -56,7 +56,9 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90050 18911370000 370000 默认分销商
  * 
  * 
- * ./startupbuilder_bhu_userregister.sh RemoveAndADD 9 18910850759 850759 杨斌
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 9 13611361274 361274 小武
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 10 18655580588 580588 宋顺利
+ * 
  * 
  */
 public class UserRegisterOp {

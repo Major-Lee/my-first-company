@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-lazy-init="true"> 
+    <!-- 
+    <import resource="classpath*:spring/applicationContextCore-resource.xml"/>
+	<import resource="classpath*:spring/applicationContext-i18n.xml"/>
+	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/>
+	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> -->   
+	<import resource="classpath*:spring/applicationContext*.xml"/>
+	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> 
+	<import resource="classpath*:springservice/applicationContext-bhu-commdity-service.xml"/>	
+	<!-- -->
+	<import resource="classpath*:springunit/applicationContextRpcUnitProvider.xml"/> 
+	<import resource="classpath*:com/bhu/vas/business/ds/warmup/applicationContext-bhu-commdity-warmup-service.xml"/>
+	
+	<!-- 
+	<import resource="classpath*:com/bhu/vas/business/ds/warmup/applicationContext-bhu-warmup-service.xml"/> 
+	<import resource="classpath*:com/bhu/vas/business/search/warmup/applicationContext-bhu-warmup-index-service.xml"/>
+	 -->
+</beans>

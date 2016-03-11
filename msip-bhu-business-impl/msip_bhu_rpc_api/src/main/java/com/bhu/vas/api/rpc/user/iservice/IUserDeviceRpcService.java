@@ -8,6 +8,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
+import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 
@@ -58,4 +59,6 @@ public interface IUserDeviceRpcService {
 	RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
 	
     RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
+    
+    RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac);
 }
