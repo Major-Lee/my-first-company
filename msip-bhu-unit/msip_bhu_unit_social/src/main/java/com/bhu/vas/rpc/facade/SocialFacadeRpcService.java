@@ -207,9 +207,7 @@ public class SocialFacadeRpcService {
             }
 
             if (uid != null && uid > 0) {
-
                 HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-
                 if (handsetUser == null) {
                     handsetUser = new HandsetUser();
                     handsetUser.setId(hd_mac);
@@ -217,7 +215,6 @@ public class SocialFacadeRpcService {
                     handsetUser.setCreated_at(new Date());
                     handsetUserService.insert(handsetUser);
                 }
-
                 WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
             }
 
@@ -229,8 +226,8 @@ public class SocialFacadeRpcService {
             dto.setLon(lon);
             dto.setAddr(addr);
 
-
             socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
