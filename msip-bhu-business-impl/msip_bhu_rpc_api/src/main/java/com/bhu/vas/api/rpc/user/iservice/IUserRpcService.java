@@ -90,7 +90,7 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode, String acc,String captcha,String device,String remoteIp,String d_udid);
-	RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org);
+	RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org,String memo);
 	RpcResponseDTO<Map<String, Object>> profile(int uid);
 	/*public RpcResponseDTO<TaskResDTO> createNewTask(
 			String mac,

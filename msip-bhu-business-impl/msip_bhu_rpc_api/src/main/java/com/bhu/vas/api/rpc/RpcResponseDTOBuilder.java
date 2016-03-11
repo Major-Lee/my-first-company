@@ -131,6 +131,7 @@ public class RpcResponseDTOBuilder {
 		ret.setAvatar(user.getAvatar());
 		ret.setSex(user.getSex());
 		ret.setOrg(user.getOrg());
+		ret.setMemo(user.getMemo());
 		return ret;
 	}
 	

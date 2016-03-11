@@ -152,7 +152,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				return;
 			}
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(uid, nick, avatar, sex, birthday,org);
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(uid, nick, avatar, sex, birthday,org,memo);
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
