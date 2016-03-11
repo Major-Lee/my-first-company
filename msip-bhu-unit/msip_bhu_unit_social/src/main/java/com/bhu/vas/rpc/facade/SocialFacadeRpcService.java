@@ -59,12 +59,17 @@ public class SocialFacadeRpcService {
 
     /**
      * 点赞/踩/举报
-     *
+     * todo(xiaowei):
+     * 1. WifiActionHashService单例直接调用就行了.
+     * 2. type定义一个枚举类型,其他的action type不处理
+     * 3. hadd方法换个init的方法名字,见名知义
+     * 4. counts方法如果业务不需要就去掉
      * @param bssid
      * @param type
      * @return
      */
     public RpcResponseDTO<Boolean> clickPraise(String bssid, String type) {
+
         WifiActionHashService wifiActionHashService = WifiActionHashService.getInstance();
         if (wifiActionHashService.isNoExist(bssid)) {
             wifiActionHashService.hadd(bssid);
@@ -126,7 +131,7 @@ public class SocialFacadeRpcService {
                 hds.add(hd_mac);
                 vto.setHd_mac(hd_mac);
                 HandsetMeetDTO meetDto = SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac);
-                System.out.println(meetDto.getBssid()+"|"+meetDto.getSsid());
+                System.out.println(meetDto.getBssid()+"|"+meetDto.getSsid()); //todo(xiaowei): 去掉sysout的日志
                 vto.setLast_meet(meetDto);
                 result.add(vto);
             }
