@@ -78,13 +78,9 @@ public class SocialRpcService implements ISocialRpcService {
 
     @Override
     public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type) {
-        try {
             logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
                     uid, bssid, type));
             return socialFacadeRpcService.clickPraise(bssid, type);
-        }catch (BusinessI18nCodeException i18nex){
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
-        }
     }
 
     @Override
@@ -117,7 +113,7 @@ public class SocialRpcService implements ISocialRpcService {
             socialFacadeRpcService.follow(uid, hd_mac);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         }catch (BusinessI18nCodeException i18nex){
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
         }catch (Exception ex){
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
         }
