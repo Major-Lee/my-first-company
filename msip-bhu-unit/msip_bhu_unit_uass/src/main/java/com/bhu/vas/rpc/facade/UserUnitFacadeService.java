@@ -422,7 +422,7 @@ public class UserUnitFacadeService {
 			user.setOrg(org);
 		}	
 		if(StringUtils.isNotEmpty(memo)){
-			user.setOrg(memo);
+			user.setMemo(memo);
 		}
 		
 		boolean isNickUpdated = false;
