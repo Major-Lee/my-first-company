@@ -364,6 +364,50 @@ public class VapEnumType {
 	}
 	
 	
+	public enum SharedNetworkType{
+		SafeSecure("SafeSecure","壁虎安全共享网络"),
+		Uplink("Uplink","壁虎Uplink网络"),
+		;
+		
+		private String key;
+		private String name;
+		static Map<String, SharedNetworkType> allSharedNetworkTypes;
+		
+		private SharedNetworkType(String key,String name){
+			this.key = key;
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public static SharedNetworkType fromKey(String key){
+			return allSharedNetworkTypes.get(key);
+		}
+		
+		public static boolean supported(String key){
+			return allSharedNetworkTypes.containsKey(key);
+		}
+		
+		static {
+			allSharedNetworkTypes = new HashMap<String, SharedNetworkType>();
+			SharedNetworkType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (SharedNetworkType type : types){
+				allSharedNetworkTypes.put(type.getKey(), type);
+			}
+		}
+	}
+	
+	
 	public static void main(String[] argv){
 		//DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
 		//System.out.print(unitType.name);

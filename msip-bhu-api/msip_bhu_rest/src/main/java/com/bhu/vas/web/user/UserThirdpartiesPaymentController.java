@@ -28,7 +28,7 @@ public class UserThirdpartiesPaymentController extends BaseController{
 	private IUserWalletRpcService userWalletRpcService;
 
 	@ResponseBody()
-	//@RequestMapping(value="/fetch_thirdpartiespayments", method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value="/fetch_thirdpartiespayments", method={RequestMethod.GET,RequestMethod.POST})
 	public void fetch_thirdpartiespayments(HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		try{
