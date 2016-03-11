@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -87,6 +88,10 @@ public class CommdityUnitFacadeService {
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
 			}
+			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			
 			//获取此上下文的缓存金额数据
 			String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
 			if(StringUtils.isEmpty(amount)){

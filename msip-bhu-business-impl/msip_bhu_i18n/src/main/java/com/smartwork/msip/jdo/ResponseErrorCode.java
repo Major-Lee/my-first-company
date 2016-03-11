@@ -159,7 +159,7 @@ public enum ResponseErrorCode {
 	AUTH_PARAM_SYSTEM_WORD_RESERVED("291","auth.param.system.wordreserved"),
 	AUTH_PARAM_SYSTEM_WORD_FORBIDDEN("292","auth.param.system.wordforbidden"),
 	AUTH_COMMON_DATA_PARAM_NOTSUPPORTED("293", "auth.common.data.param.notsupported"),
-	
+	AUTH_MAC_INVALID_FORMAT("294","auth.mac.format.invalid"),
 	
 	USER_DATA_NOT_EXIST("301","user.data.notexist"),
 	USER_OAUTH_DATA_ALREADY_EXIST("302","user.oauth.data.already.exist"),
