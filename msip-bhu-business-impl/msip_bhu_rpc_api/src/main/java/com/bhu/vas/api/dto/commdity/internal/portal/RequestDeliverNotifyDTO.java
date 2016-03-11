@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 
 /**
@@ -26,7 +27,7 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	//用户mac
 	private String umac;
 	//支付时间
-	private long paymented_ts;
+	private String paymented_ds;
 	//业务上下文
 	private String context;
 	
@@ -66,11 +67,11 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	public void setUmac(String umac) {
 		this.umac = umac;
 	}
-	public long getPaymented_ts() {
-		return paymented_ts;
+	public String getPaymented_ds() {
+		return paymented_ds;
 	}
-	public void setPaymented_ts(long paymented_ts) {
-		this.paymented_ts = paymented_ts;
+	public void setPaymented_ds(String paymented_ds) {
+		this.paymented_ds = paymented_ds;
 	}
 	public String getContext() {
 		return context;
@@ -90,7 +91,7 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 		requestDeliverNotifyDto.setAmount(order.getAmount());
 		Date paymented_at = order.getPaymented_at();
 		if(paymented_at != null){
-			requestDeliverNotifyDto.setPaymented_ts(paymented_at.getTime());
+			requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.formatDate(paymented_at, DateTimeHelper.DefalutFormatPattern));
 		}
 		requestDeliverNotifyDto.setApp_deliver_detail(commdity.getApp_deliver_detail());
 		return requestDeliverNotifyDto;
