@@ -373,7 +373,7 @@ public class SocialFacadeRpcService {
     }
 
     /**
-     * 修改终端信息
+     * 修改终端信息,暂时只修改终端用户昵称
      *
      * @param uid
      * @param hd_mac
@@ -383,6 +383,7 @@ public class SocialFacadeRpcService {
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
         handsetUser.setNick(nick);
+        handsetUserService.update(handsetUser);
         return true;
     }
 
