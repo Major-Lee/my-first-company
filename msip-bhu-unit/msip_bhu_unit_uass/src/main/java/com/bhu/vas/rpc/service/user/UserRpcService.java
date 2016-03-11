@@ -82,10 +82,10 @@ public class UserRpcService implements IUserRpcService{
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,
-			String nick, String avatar, String sex, String birthday,String org) {
-		logger.info(String.format("updateProfile with uid[%s] nick[%s] avatar[%s] sex[%s] birthday[%s] org[%s]",
-				uid,nick,avatar,sex,birthday,org));
-		return userUnitFacadeService.updateProfile(uid, nick, avatar, sex, birthday,org);
+			String nick, String avatar, String sex, String birthday,String org,String memo) {
+		logger.info(String.format("updateProfile with uid[%s] nick[%s] avatar[%s] sex[%s] birthday[%s] org[%s] memo[%s]",
+				uid,nick,avatar,sex,birthday,org,memo));
+		return userUnitFacadeService.updateProfile(uid, nick, avatar, sex, birthday,org,memo);
 	}
 
 	@Override

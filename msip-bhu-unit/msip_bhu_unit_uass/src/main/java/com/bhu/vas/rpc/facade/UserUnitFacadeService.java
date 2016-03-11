@@ -402,7 +402,7 @@ public class UserUnitFacadeService {
 	 * @param nick 需要进行唯一性验证
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org) {
+	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,String nick, String avatar, String sex, String birthday,String org,String memo) {
 		User user = this.userService.getById(uid);
 		System.out.println("2. user:"+user);
 		if(user == null){
@@ -421,6 +421,10 @@ public class UserUnitFacadeService {
 		if(StringUtils.isNotEmpty(org)){
 			user.setOrg(org);
 		}	
+		if(StringUtils.isNotEmpty(memo)){
+			user.setOrg(memo);
+		}
+		
 		boolean isNickUpdated = false;
 		String oldNick = user.getNick();
 		if(StringUtils.isNotEmpty(nick)){
