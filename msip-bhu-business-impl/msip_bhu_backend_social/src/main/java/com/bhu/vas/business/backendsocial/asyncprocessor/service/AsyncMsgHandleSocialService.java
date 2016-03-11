@@ -2,6 +2,7 @@ package com.bhu.vas.business.backendsocial.asyncprocessor.service;
 
 import com.bhu.vas.business.asyn.spring.model.social.HandsetMeetDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialStorageFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class AsyncMsgHandleSocialService {
         if (list != null && list.length > 0) {
             for (String mac : list) {
 //                logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
-                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac.trim(), bssid, dto.getMeet());
+                SocialStorageFacadeService.handsetMeet(hd_mac, mac.trim(), bssid, dto.getMeet());
             }
         }
 

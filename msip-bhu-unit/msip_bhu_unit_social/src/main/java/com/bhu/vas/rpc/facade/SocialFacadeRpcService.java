@@ -136,7 +136,7 @@ public class SocialFacadeRpcService {
                 SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
                 hds.add(hd_mac);
                 vto.setHd_mac(hd_mac);
-                HandsetMeetDTO meetDto = SocialHandsetMeetHashService.getInstance().getLasthandsetMeet(hd_mac_self, hd_mac);
+                HandsetMeetDTO meetDto = SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac);
                 System.out.println(meetDto.getBssid()+"|"+meetDto.getSsid()); //todo(xiaowei): 去掉sysout的日志
                 vto.setLast_meet(meetDto);
                 result.add(vto);
@@ -392,8 +392,7 @@ public class SocialFacadeRpcService {
 
     public HandsetUserDetailVTO fetchHandsetUserDetail(Long uid, String hd_mac_self, String hd_mac, String bssid) {
 
-        List<HandsetMeetDTO> meets = SocialHandsetMeetHashService.getInstance().
-                getHandsetMeetList(hd_mac_self, hd_mac, bssid);
+        List<HandsetMeetDTO> meets = SocialStorageFacadeService.getHandsetMeets(hd_mac_self, hd_mac, bssid);
 
         HandsetUserVTO handsetUserVTO = new HandsetUserVTO();
         handsetUserVTO.setHd_mac(hd_mac);
