@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.social.WifiActionDTO;
+import com.bhu.vas.api.helper.SocialActionType;
 import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
 import com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService;
@@ -70,14 +71,15 @@ public class SocialFacadeRpcService {
      */
     public RpcResponseDTO<Boolean> clickPraise(String bssid, String type) {
 
-        WifiActionHashService wifiActionHashService = WifiActionHashService.getInstance();
-        if (wifiActionHashService.isNoExist(bssid)) {
-            wifiActionHashService.hadd(bssid);
+        if (WifiActionHashService.getInstance().isNoExist(bssid)) {
+            WifiActionHashService.getInstance().init(bssid);
         }
 
-        wifiActionHashService.hincrease(bssid, type);
-        wifiActionHashService.counts(bssid);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        if (SocialActionType.isActionType(type)){
+            WifiActionHashService.getInstance().hincrease(bssid, type);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        }else
+            throw  new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
     }
 
     /**
@@ -91,8 +93,12 @@ public class SocialFacadeRpcService {
 
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
             if (handsetUser != null && handsetUser.getUid() != uid) {
-                SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
-                return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+                if (SocialFollowSortedSetService.getInstance().isFollowMax(uid)){
+                    SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
+                    return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+                }else {
+                    throw new BusinessI18nCodeException(ResponseErrorCode.SOCIAL_FOLLOW_MAX);
+                }
             }
             else {
                 throw  new BusinessI18nCodeException(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);

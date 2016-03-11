@@ -14,6 +14,8 @@ import java.util.Set;
 public class SocialFollowSortedSetService
         extends AbstractRelationSortedSetCache {
 
+    private final static Long FOLLOW_SUM_MAX = 200L;
+
     private static class ServiceHolder {
         private static SocialFollowSortedSetService instance = new SocialFollowSortedSetService();
     }
@@ -51,8 +53,8 @@ public class SocialFollowSortedSetService
         return sb.toString();
     }
 
-    private boolean isFollowMax(long uid) {
-        if (this.zcard(generateKey(uid)) > 200) {
+    public boolean isFollowMax(long uid) {
+        if (this.zcard(generateKey(uid)) > FOLLOW_SUM_MAX) {
             return false;
         } else {
             return true;
@@ -71,11 +73,7 @@ public class SocialFollowSortedSetService
      * @param hd_mac
      */
     public void follow(long uid, String hd_mac) {
-        if (isFollowMax(uid)) {
            this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
-        }else {
-            throw new BusinessI18nCodeException(ResponseErrorCode.SOCIAL_FOLLOW_ERROR);
-        }
     }
 
     public void unFollow(long uid, String hd_mac) {

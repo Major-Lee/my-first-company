@@ -12,13 +12,14 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
 import redis.clients.jedis.JedisPool;
 
 public class WifiActionHashService extends AbstractRelationHashCache{
-    
-    private final static String ACTION_TYPE_UP = "up";
-    private final static String ACTION_TYPE_DOWN = "down";
-    private final static String ACTION_TYPE_REPORT = "report";
+
     private final static String COUNT_DEFAULT = "0";
-    	
-	private static class ServiceHolder{ 
+
+	public enum followType {
+		up,down, report;
+	}
+
+	private static class ServiceHolder{
 		private static WifiActionHashService instance =new WifiActionHashService(); 
 	}
 	/**
@@ -37,7 +38,7 @@ public class WifiActionHashService extends AbstractRelationHashCache{
 		sb.append(BusinessKeyDefine.Social.ACTION).append(bssid);
 		return sb.toString();
 	}
-	
+
 	public boolean isNoExist(String bssid) {
 	    if ((this.hgetall(generateKey(bssid)).isEmpty())) {
 		return true;
@@ -48,22 +49,22 @@ public class WifiActionHashService extends AbstractRelationHashCache{
 	public WifiActionDTO counts(String bssid){
 	    Map<String,String> map = this.hgetall(generateKey(bssid));
 	    WifiActionDTO vto = new WifiActionDTO();
-	    vto.setUp(map.get(ACTION_TYPE_UP));
-	    vto.setDown(map.get(ACTION_TYPE_DOWN));
-	    vto.setReport(map.get(ACTION_TYPE_REPORT));
+	    vto.setUp(map.get(followType.up.name()));
+	    vto.setDown(map.get(followType.down.name()));
+	    vto.setReport(map.get(followType.report.name()));
 	    return vto;
 	}
 	
-	public void hadd(String bssid) {
+	public void init(String bssid) {
 	    Map<String,String> map = new HashMap<String,String>();
-	    map.put(ACTION_TYPE_UP, COUNT_DEFAULT);
-	    map.put(ACTION_TYPE_DOWN, COUNT_DEFAULT);
-	    map.put(ACTION_TYPE_REPORT, COUNT_DEFAULT);
+	    map.put(followType.up.name(), COUNT_DEFAULT);
+	    map.put(followType.down.name(), COUNT_DEFAULT);
+	    map.put(followType.report.name(), COUNT_DEFAULT);
 	    this.hmset(generateKey(bssid), map);
 	}
 	
-	public void hincrease(String bssid,String field) {
-	    this.hincrby(generateKey(bssid), field, 1);
+	public void hincrease(String bssid,String type) {
+	    this.hincrby(generateKey(bssid), type, 1);
 	}
 	
 	@Override
@@ -80,5 +81,5 @@ public class WifiActionHashService extends AbstractRelationHashCache{
 	public JedisPool getRedisPool() {
 	    return RedisPoolManager.getInstance().getPool(RedisKeyEnum.DEFAULT);
 	}
-	
+
 }
