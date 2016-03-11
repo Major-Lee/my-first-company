@@ -55,19 +55,7 @@ public class SocialFacadeRpcService {
     @Resource
     private SocialMessageService socialMessageService;
 
-    public WifiComment comment(long uid, String bssid, String hd_mac, String message) {
 
-        WifiComment wifiComment = new WifiComment();
-        wifiComment.setUid(uid);
-        wifiComment.setMessage(message);
-        wifiComment.setBssid(bssid);
-        wifiComment.setHd_mac(hd_mac);
-        Date currentDate = new Date();
-        double currentTime = currentDate.getTime();
-        wifiComment.setCreated_at(currentDate);
-        WifiCommentSortedSetService.getInstance().addUserWifi(Long.toString(uid), currentTime, bssid);
-        return wifiCommentService.insert(wifiComment);
-    }
 
     /**
      * 点赞/踩/举报
@@ -181,6 +169,11 @@ public class SocialFacadeRpcService {
 
     /**
      * 终端遇见
+     * 1. 终端遇见现在只计算,当前扫描的终端和其他终端为一次遇见,其他终端之间不算遇见.
+     * 2. 构建Wifi实体  (Wifi)
+     * 3. 构建终端和用户的关系 (HandsetUser)
+     * 4. 异步队列处理终端遇见
+     *
      *
      * @param uid
      * @param hd_mac
@@ -197,15 +190,13 @@ public class SocialFacadeRpcService {
 
         try {
 
-
             Wifi wifi = wifiService.getById(bssid);
-
             if (wifi == null) {
                 wifi = new Wifi();
                 wifi.setId(bssid);
                 wifi.setSsid(ssid);
-                wifi.setLat(Double.parseDouble(lat));
-                wifi.setLat(Double.parseDouble(lon));
+                wifi.setLat(lat);
+                wifi.setLat(lon);
                 wifi.setCreated_at(new Date());
                 wifiService.insert(wifi);
             }
@@ -421,6 +412,21 @@ public class SocialFacadeRpcService {
     }
 
 
+
+    public WifiComment comment(long uid, String bssid, String hd_mac, String message) {
+
+        WifiComment wifiComment = new WifiComment();
+        wifiComment.setUid(uid);
+        wifiComment.setMessage(message);
+        wifiComment.setBssid(bssid);
+        wifiComment.setHd_mac(hd_mac);
+        Date currentDate = new Date();
+        double currentTime = currentDate.getTime();
+        wifiComment.setCreated_at(currentDate);
+        WifiCommentSortedSetService.getInstance().addUserWifi(Long.toString(uid), currentTime, bssid);
+        return wifiCommentService.insert(wifiComment);
+    }
+
     /**
      * 分页获取评论列表
      *
@@ -498,8 +504,8 @@ public class SocialFacadeRpcService {
                 commentedWifiVTO = new CommentedWifiVTO();
                 commentedWifiVTO.setBssid(wifi.getId());
                 commentedWifiVTO.setMax_rate(wifi.getMax_rate());
-                commentedWifiVTO.setLat(Double.toString(wifi.getLat()));
-                commentedWifiVTO.setLon(Double.toString(wifi.getLon()));
+                commentedWifiVTO.setLat(wifi.getLat());
+                commentedWifiVTO.setLon(wifi.getLon());
                 vtos.add(commentedWifiVTO);
             }
         }

@@ -31,15 +31,6 @@ public class SocialRpcService implements ISocialRpcService {
     @Resource
     private SocialFacadeRpcService socialFacadeRpcService;
 
-    @Override
-    public boolean comment(long uid, String bssid, String hd_mac, String message) {
-        try {
-            socialFacadeRpcService.comment(uid, bssid, hd_mac, message);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
 
     @Override
     public boolean handsetMeet(Long uid, String hd_mac, String hd_macs,
@@ -90,6 +81,16 @@ public class SocialRpcService implements ISocialRpcService {
         logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
                 uid, bssid, type));
         return socialFacadeRpcService.clickPraise(bssid, type);
+    }
+
+    @Override
+    public boolean comment(long uid, String bssid, String hd_mac, String message) {
+        try {
+            socialFacadeRpcService.comment(uid, bssid, hd_mac, message);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override

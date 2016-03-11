@@ -17,12 +17,12 @@ public class Wifi extends BaseStringModel {
     /**
      * 纬度 latitude
      */
-    private double lat;
+    private String lat;
 
     /**
      * 经度 longitude
      */
-    private double lon;
+    private String lon;
 
     /**
      * 制造商
@@ -47,19 +47,19 @@ public class Wifi extends BaseStringModel {
         this.ssid = ssid;
     }
 
-    public double getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(String lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public String getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(String lon) {
         this.lon = lon;
     }
 

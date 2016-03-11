@@ -22,14 +22,14 @@ public class AsyncMsgHandleSocialService {
     public void handsetMeet(String message) {
         logger.info(String.format("AsyncMsgHandleSocialService handsetMeet message[%s]", message));
         HandsetMeetDTO dto = JsonHelper.getDTO(message, HandsetMeetDTO.class);
-        String hd_macs = dto.getHd_macs();
-        String hd_mac = dto.getHd_mac();
-        String bssid = dto.getBssid();
+        String hd_macs = dto.getHd_macs().toLowerCase();
+        String hd_mac = dto.getHd_mac().toLowerCase();
+        String bssid = dto.getBssid().toLowerCase();
         String[] list = hd_macs.split(",");
         if (list != null && list.length > 0) {
             for (String mac : list) {
-                logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
-                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac, bssid, dto.getMeet());
+//                logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
+                SocialHandsetMeetHashService.getInstance().handsetMeet(hd_mac, mac.trim(), bssid, dto.getMeet());
             }
         }
 
