@@ -12,7 +12,6 @@ public enum  SocialActionType{
     ACTIOM_REPORT("report");
 
     private final String value;
-    static Map<String, SocialActionType> allSocialActionTypes;
 
     SocialActionType(String value){
         this.value = value;
