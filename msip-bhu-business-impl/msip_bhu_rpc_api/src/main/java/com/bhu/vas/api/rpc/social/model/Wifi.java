@@ -35,6 +35,11 @@ public class Wifi extends BaseStringModel {
     private String max_rate;
 
     /**
+     * 地址
+     */
+    private String addr ;
+
+    /**
      *
      */
     private Date created_at;
@@ -69,6 +74,14 @@ public class Wifi extends BaseStringModel {
 
     public void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 
     public String getMax_rate() {

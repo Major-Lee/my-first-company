@@ -11,6 +11,7 @@
 	  <result property="lon" column="lon"/>
 	  <result property="max_rate" column="max_rate"/>
 	  <result property="manufacturer" column="manufacturer"/>
+	  <result property="addr" column="addr"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -28,6 +29,7 @@
 	    	lon,
 	    	max_rate,
 	    	manufacturer,
+	    	addr,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -39,6 +41,7 @@
 	    	lon,
 	    	max_rate,
 	    	manufacturer,
+	    	addr,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -51,6 +54,7 @@
 	    	#{lon},
 	    	#{max_rate},
 	    	#{manufacturer},
+	    	#{addr},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -61,6 +65,7 @@
 			lon = #{lon},
 			max_rate = #{max_rate},
 			manufacturer = #{manufacturer},
+			addr = #{addr},
 		  	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

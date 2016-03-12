@@ -204,9 +204,16 @@ public class SocialFacadeRpcService {
                 wifi.setId(bssid);
                 wifi.setSsid(ssid);
                 wifi.setLat(lat);
-                wifi.setLat(lon);
+                wifi.setLon(lon);
+                wifi.setAddr(addr);
                 wifi.setCreated_at(new Date());
                 wifiService.insert(wifi);
+            } else {
+                wifi.setSsid(ssid);
+                wifi.setLat(lat);
+                wifi.setLon(lon);
+                wifi.setAddr(addr);
+                wifiService.update(wifi);
             }
 
             if (uid != null && uid > 0) {
