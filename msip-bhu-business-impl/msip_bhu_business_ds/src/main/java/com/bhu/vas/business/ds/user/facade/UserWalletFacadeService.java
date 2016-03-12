@@ -405,12 +405,15 @@ public class UserWalletFacadeService{
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
 	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc
+		logger.info(String.format("提现操作 applyid[%s] orderid[%s] successed[%s] owner[%s]", applyid,successed));
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
+			logger.error(String.format("提现操作-失败 不存在此提现申请 applyid[%s]", applyid));
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});
 		}
 		//状态必须是uPay正在提现处理中
 		if(!BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey().equals(apply.getWithdraw_oper())){
+			logger.error(String.format("提现操作-失败 此提现申请 applyid[%s] 状态不匹配", applyid));
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey())});
 		}
 		BusinessEnumType.UWithdrawStatus current = null;
@@ -419,10 +422,12 @@ public class UserWalletFacadeService{
 			apply.setWithdraw_oper(current.getKey());
 			//解锁钱包提现状态
 			unlockWalletWithdrawStatusWhenSuccessed(apply.getUid());
+			logger.info(String.format("提现操作-成功 applyid[%s] 并解锁钱包状态", applyid,successed));
 		}else{
 			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
 			apply.setWithdraw_oper(current.getKey());
 			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash());
+			logger.info(String.format("提现操作-失败 applyid[%s] 返现并解锁钱包状态", applyid,successed));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 		apply = userWalletWithdrawApplyService.update(apply);
