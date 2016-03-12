@@ -388,6 +388,9 @@ public class SocialFacadeRpcService {
                     hdVTO.setNick(handsetUser.getNick());
                     //Todo(bluesand): 用户的头像
                     //hdVTO.setAvatar();
+                    ids.add((int)handsetUser.getUid());
+                } else {
+                    ids.add(null);
                 }
                 index++;
             }
