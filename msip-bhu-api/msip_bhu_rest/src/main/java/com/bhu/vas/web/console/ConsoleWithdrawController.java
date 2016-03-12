@@ -103,10 +103,11 @@ public class ConsoleWithdrawController extends BaseController {
 		RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, applyid);
 		if(!rpcResult.hasError()){
 			RequestWithdrawNotifyDTO withdrawNotify = rpcResult.getPayload();
-			if(!withdrawNotify.validate()){
+			/*if(!withdrawNotify.validate()){
 				//TODO:log info
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR));
-			}
+				return;
+			}*/
 			String orderid = withdrawNotify.getOrderid();
 			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getCash());
 			String requestIp = WebHelper.getRemoteAddr(request);
