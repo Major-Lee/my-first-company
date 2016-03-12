@@ -232,6 +232,11 @@ public enum ResponseErrorCode {
 	INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID("491","internal.communication.paymenturl.response.invalid"),
 	INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE("492","internal.communication.paymenturl.response.false"),
 	
+	INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID("496","internal.communication.withdrawurl.response.invalid"),
+	INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE("497","internal.communication.withdrawurl.response.false"),
+	
+	
+	
 	REQUEST_404_ERROR("404","404.pagerequest.error"),
 	REQUEST_403_ERROR("403","403.pagerequest.error"),
 	REQUEST_401_ERROR("401","401.unauthorized.error"),

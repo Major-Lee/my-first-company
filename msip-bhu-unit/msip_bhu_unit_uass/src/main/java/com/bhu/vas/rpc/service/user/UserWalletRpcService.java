@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
@@ -52,13 +53,13 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status, pageNo, pageSize);
 	}
 
-	@Override
+/*	@Override
 	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,
 			boolean passed) {
 		logger.info(String.format("verifyApplies with reckoner[%s] applyid [%s] passed[%s]",
 				reckoner,applyid,passed));
 		return userWalletUnitFacadeService.verifyApplies(reckoner, applyid, passed);
-	}
+	}*/
 
 	@Override
 	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String payment_type,int uid,String pwd, double cash,String remoteip) {
@@ -110,5 +111,17 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(int uid, String transmode,String transtype, int pageNo, int pageSize) {
 		logger.info(String.format("pageUserWalletlogs with uid[%s] transmode[%s] transtype[%s] pn[%s] ps[%s]",uid,transmode,transtype,pageNo,pageSize));
 		return userWalletUnitFacadeService.pageUserWalletlogs(uid, transmode, transtype, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid) {
+		logger.info(String.format("doStartPaymentWithdrawApply with reckoner[%s] applyid[%s]",reckoner,applyid));
+		return userWalletUnitFacadeService.doStartPaymentWithdrawApply(reckoner,applyid);
+	}
+	
+	@Override
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed){
+		logger.info(String.format("doWithdrawNotifyFromLocal with reckoner[%s] applyid[%s] successed[%s]",reckoner,applyid,successed));
+		return userWalletUnitFacadeService.doWithdrawNotifyFromLocal(reckoner,applyid,successed);
 	}
 }

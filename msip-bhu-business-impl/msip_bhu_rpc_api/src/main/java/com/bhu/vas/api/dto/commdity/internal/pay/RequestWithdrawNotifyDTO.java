@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.commdity.internal.pay;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 
@@ -68,6 +70,11 @@ public class RequestWithdrawNotifyDTO  implements java.io.Serializable{
 		notify.setWithdraw(apply);
 		notify.setAccount(account);
 		return notify;
+	}
+	
+	public boolean validate(){
+		return StringUtils.isNotEmpty(orderid) 
+				&& account != null && withdraw != null;
 	}
 }
 
