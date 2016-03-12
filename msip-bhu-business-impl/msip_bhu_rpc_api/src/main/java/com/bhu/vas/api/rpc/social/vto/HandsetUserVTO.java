@@ -11,11 +11,7 @@ public class HandsetUserVTO implements Serializable{
 
     private String nick;
 
-    private Long uid;
-
-    private String avatar;
-
-    private String memo;
+    private SocialUserVTO user;
 
     public String getHd_mac() {
         return hd_mac;
@@ -32,28 +28,12 @@ public class HandsetUserVTO implements Serializable{
     public void setNick(String nick) {
         this.nick = nick;
     }
-
-    public Long getUid() {
-        return uid;
+    
+    public SocialUserVTO getUser() {
+        return user;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setUser(SocialUserVTO user) {
+        this.user = user;
     }
 }

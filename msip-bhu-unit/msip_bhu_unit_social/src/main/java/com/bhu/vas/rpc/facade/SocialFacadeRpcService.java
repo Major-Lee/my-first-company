@@ -400,11 +400,13 @@ public class SocialFacadeRpcService {
         for (User user : users) {
             if (user != null) {
                 HandsetUserVTO hdVTO = hdVTOs.get(index);
-                hdVTO.setAvatar(user.getAvatar());
+                SocialUserVTO userVTO = new SocialUserVTO();
+                userVTO.setAvatar(user.getAvatar());
                 if (StringUtils.isEmpty(user.getNick())) {
-                    hdVTO.setNick(user.getNick());
+                    userVTO.setNick(user.getNick());
                 }
-                hdVTO.setMemo(user.getMemo());
+                userVTO.setMemo(user.getMemo());
+                hdVTO.setUser(userVTO);
             }
         }
 
