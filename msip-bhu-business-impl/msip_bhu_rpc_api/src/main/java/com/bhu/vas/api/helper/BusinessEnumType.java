@@ -668,8 +668,8 @@ public class BusinessEnumType {
 	}
 	
 	public enum ThirdpartiesPaymentType{
-		Weichat("腾讯微信", "Weixin"),
-		Alipay("支付宝", "Alipay"),
+		Weichat("腾讯微信", "PcWeixin"),
+		Alipay("支付宝", "PcAlipay"),
 		;
 		private String name;
 		private String type;
