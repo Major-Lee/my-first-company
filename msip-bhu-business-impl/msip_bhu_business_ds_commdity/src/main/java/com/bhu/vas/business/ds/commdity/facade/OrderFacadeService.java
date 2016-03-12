@@ -334,10 +334,11 @@ public class OrderFacadeService {
 			}
 			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity);
 			if(requestDeliverNotifyDto != null){
-				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(
-						JsonHelper.getJSONString(requestDeliverNotifyDto));
+				String requestDeliverNotifyMessage = JsonHelper.getJSONString(requestDeliverNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);
 				//判断通知发货成功
 				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("OrderDeliverNotify success deliver notify: message[%s]", requestDeliverNotifyMessage));
 					return true;
 				}
 			}
