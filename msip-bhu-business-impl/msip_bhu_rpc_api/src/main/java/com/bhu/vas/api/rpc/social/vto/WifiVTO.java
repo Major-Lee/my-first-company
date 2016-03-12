@@ -23,7 +23,7 @@ public class WifiVTO implements Serializable {
     /**
      * 生场商 manufactor
      */
-    private String m;
+    private String manu;
 
     private WifiActionDTO action;
 
@@ -70,12 +70,12 @@ public class WifiVTO implements Serializable {
         this.max_rate = max_rate;
     }
 
-    public String getM() {
-        return m;
+    public String getManu() {
+        return manu;
     }
 
-    public void setM(String m) {
-        this.m = m;
+    public void setManu(String manu) {
+        this.manu = manu;
     }
 
     public WifiActionDTO getAction() {

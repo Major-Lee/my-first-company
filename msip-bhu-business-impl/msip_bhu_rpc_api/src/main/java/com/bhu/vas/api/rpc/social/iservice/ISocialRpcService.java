@@ -76,6 +76,16 @@ public interface ISocialRpcService {
      */
     boolean modifyWifi(Long uid, String bssid, String rate);
 
+
+    /**
+     * 统计终端厂商分布
+     * @param uid
+     * @param bssid
+     * @param manu
+     * @return
+     */
+    boolean statis(Long uid, String bssid, String manu);
+
     /**
      * 评论
      *
@@ -142,6 +152,8 @@ public interface ISocialRpcService {
      * @return
      */
     public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid, String hd_mac);
+
+
 
 
 }

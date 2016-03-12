@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.api.helper.SocialActionType;
+import com.bhu.vas.api.rpc.social.dto.SocialStatisManufatorDTO;
+import com.bhu.vas.api.rpc.social.dto.SocialStatisManufatorItemDTO;
 import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
 import com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService;
@@ -181,7 +183,6 @@ public class SocialFacadeRpcService {
      * 3. 构建终端和用户的关系 (HandsetUser)
      * 4. 异步队列处理终端遇见
      *
-     *
      * @param uid
      * @param hd_mac
      * @param hd_macs
@@ -252,7 +253,7 @@ public class SocialFacadeRpcService {
 
         wifiVTO.setBssid(bssid);
         wifiVTO.setMax_rate(wifi.getMax_rate());
-        wifiVTO.setM(wifi.getManufacturer());
+        wifiVTO.setManu(wifi.getManufacturer());
         wifiVTO.setSsid(wifi.getSsid());
         wifiVTO.setLat(wifi.getLat());
         wifiVTO.setLon(wifi.getLon());
@@ -305,6 +306,39 @@ public class SocialFacadeRpcService {
             e.printStackTrace();
         }
 
+        return true;
+    }
+
+    public boolean statis(Long uid, String bssid, String manu) {
+
+        SocialStatisManufatorDTO dto = JsonHelper.getDTO(manu, SocialStatisManufatorDTO.class);
+
+        Wifi wifi = wifiService.getById(bssid);
+
+        SocialStatisManufatorDTO old = JsonHelper.getDTO(wifi.getManufacturer(), SocialStatisManufatorDTO.class);
+
+        if (dto != null && !dto.getItems().isEmpty()) {
+            for (SocialStatisManufatorItemDTO item : dto.getItems()) {
+                String name  = item.getName().trim();
+                int count = item.getCount();
+                if (dto != null && !old.getItems().isEmpty()) {
+                    for (SocialStatisManufatorItemDTO olditem : old.getItems()) {
+                        if (name.equals(olditem.getName())) {
+                            olditem.setCount(count + olditem.getCount());
+                        } else {
+                            olditem.setCount(count);
+                        }
+                    }
+
+                    wifi.setManufacturer(JsonHelper.getJSONString(old));
+
+                } else {
+                    wifi.setManufacturer(JsonHelper.getJSONString(dto));
+                }
+
+            }
+        }
+        wifiService.update(wifi);
         return true;
     }
 
