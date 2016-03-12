@@ -28,7 +28,7 @@ public class HandsetUserVTO implements Serializable{
     public void setNick(String nick) {
         this.nick = nick;
     }
-    
+
     public SocialUserVTO getUser() {
         return user;
     }
