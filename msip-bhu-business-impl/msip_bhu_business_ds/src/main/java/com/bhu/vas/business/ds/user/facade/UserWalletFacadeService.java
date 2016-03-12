@@ -405,7 +405,7 @@ public class UserWalletFacadeService{
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
 	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc
-		logger.info(String.format("提现操作 applyid[%s] orderid[%s] successed[%s] owner[%s]", applyid,successed));
+		logger.info(String.format("提现操作 applyid[%s] orderid[%s] successed[%s]", applyid,successed));
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
 			logger.error(String.format("提现操作-失败 不存在此提现申请 applyid[%s]", applyid));
