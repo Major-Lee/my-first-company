@@ -1,4 +1,5 @@
 package com.bhu.vas.business.user;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,25 +10,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
-import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
-import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
-import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
-import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
-import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.localunit.BaseTest;
 
 /**
@@ -54,7 +38,16 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	Thread.sleep(1000);
     }
     
-    @Test
+   /* @Test
+	public void test000AestinData(){
+    	List<String> arrays = new ArrayList<String>();
+    	arrays.add("(select id from t_vas_users_wallet where id ='100153')");
+    	ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse(" 1=1").andColumnIn("id", arrays);
+		userWalletFacadeService.getUserWalletService().findIdsByModelCriteria(mc);
+	}*/
+    
+/*    @Test
 	public void test000EmptyAndPrepareData(){
     	ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1");
@@ -215,9 +208,9 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawNotifyFromRemote(apply.getId(), false);
         	System.out.println("RemoteNotifyFailed:"+applynow);
     	}
-    	/*System.out.println(WithdrawCashDetail.build(100.00d, 0.20d, 0.03d));
+    	System.out.println(WithdrawCashDetail.build(100.00d, 0.20d, 0.03d));
     	System.out.println(WithdrawCashDetail.build(1000.00d, 0.20d, 0.03d));
-    	System.out.println(WithdrawCashDetail.build(485.33d, 0.20d, 0.03d));*/
+    	System.out.println(WithdrawCashDetail.build(485.33d, 0.20d, 0.03d));
    	}
     
     @Test
@@ -254,5 +247,5 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				System.out.println(String.format("to Redis prepare[%s] ok",withdrawApply.getId()));
 			}
 		}
-    }
+    }*/
 }

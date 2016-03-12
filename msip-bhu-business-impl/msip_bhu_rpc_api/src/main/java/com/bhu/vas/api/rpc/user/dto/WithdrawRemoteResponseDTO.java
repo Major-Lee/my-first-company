@@ -1,10 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+@SuppressWarnings("serial")
 public class WithdrawRemoteResponseDTO implements java.io.Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	//remoteCode
 	private String rc;
 	//code 描述

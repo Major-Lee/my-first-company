@@ -368,8 +368,40 @@ public class UserWalletFacadeService{
 	}
 
 	
+	public UserWalletWithdrawApply doStartPaymentWithdrawApply(int reckoner,String applyid){
+		if(StringUtils.isEmpty(applyid)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"applyid:".concat(String.valueOf(applyid))});
+		}
+		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
+		if(apply == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请支付",String.valueOf(applyid)});
+		}
+		//如果状态不是 Apply|WithdrawDoing则抛出错误码
+		if(BusinessEnumType.UWithdrawStatus.Apply.getKey().equals(apply.getWithdraw_oper()) 
+				|| BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey().equals(apply.getWithdraw_oper())){
+			apply.setLast_reckoner(reckoner);
+			BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
+			apply.setWithdraw_oper(current.getKey());
+			apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+			apply = userWalletWithdrawApplyService.update(apply);
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,
+					new String[]{String.valueOf(applyid),
+					"current:".concat(apply.getWithdraw_oper()),
+					String.format("should [%s|%s]", 
+							BusinessEnumType.UWithdrawStatus.Apply.getKey(),
+							BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey())
+					});
+		}
+		return apply;
+	}
+	
+	public UserWalletWithdrawApply doWithdrawNotifyFromLocal(String applyid,boolean successed){
+		return doWithdrawNotifyFromRemote(applyid,successed);
+	}
+	
 	/**
-	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤
+	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤,成功后会callback 消息，执行此函数
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 */
 	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc

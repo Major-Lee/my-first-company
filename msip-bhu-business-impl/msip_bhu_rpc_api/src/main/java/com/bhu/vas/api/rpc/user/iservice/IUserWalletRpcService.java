@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.List;
 
+import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -55,8 +56,17 @@ public interface IUserWalletRpcService {
      * @param reckoner
      * @param applies applyids 逗号分割
      */
-	public RpcResponseDTO<Boolean> verifyApplies(int reckoner,String applyid,boolean passed);
+	//public RpcResponseDTO<Boolean> verifyApplies(int reckoner,String applyid,boolean passed);
 	
+	
+	/**
+	 * 验证提现申请是否有效
+	 * @param reckoner
+	 * @param applyid
+	 * @return
+	 */
+	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid);
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed);
 	/**
 	 * 提现操作api
 	 * @param uid

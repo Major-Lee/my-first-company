@@ -24,6 +24,9 @@ public class PaymentInternalHelper {
 	//支付系统获取订单支付url的api地址
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
 	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
+	
+	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";///api/ucloud/withdrawpay";
+	
 	//模拟支付系统支付成功触发api
 	//public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
 	
@@ -57,6 +60,7 @@ public class PaymentInternalHelper {
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
 		} catch (Exception ex) {
+			logger.error("CreatePaymentUrlCommunication Response Exception", ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
@@ -68,6 +72,39 @@ public class PaymentInternalHelper {
 		api_params.put("secret", CommdityApplication.Default.getSecret());
 		return api_params;
 	}
+	
+	
+	
+	public static ResponseCreatePaymentUrlDTO createWithdrawUrlCommunication(String payment_type, String amount, 
+			String requestip, String orderid){
+		Map<String, String> api_params = generatePaymentApiParamMap();
+		api_params.put("payment_type", payment_type);
+		api_params.put("total_fee", amount);
+		api_params.put("exter_invoke_ip", requestip);
+		api_params.put("goods_no", orderid);
+		
+		ResponseCreatePaymentUrlDTO rcp_dto = null;
+		try {
+			String response = HttpHelper.postUrlAsString(CREATE_WITHDRAWURL_COMMUNICATION_API, api_params);
+			logger.info(String.format("CreateWithdrawUrlCommunication Response orderid[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));
+			if(StringUtils.isNotEmpty(response)){
+				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateWithdrawUrlCommunication Response Exception", ex);
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	public static Map<String, String> generateWithdrawApiParamMap(){
+		Map<String, String> api_params = new HashMap<String, String>();
+		api_params.put("appid", String.valueOf(CommdityApplication.Default.getKey()));
+		api_params.put("secret", CommdityApplication.Default.getSecret());
+		return api_params;
+	}
+	
 	
 	/**
 	 * 模拟支付系统支付成功触发api
