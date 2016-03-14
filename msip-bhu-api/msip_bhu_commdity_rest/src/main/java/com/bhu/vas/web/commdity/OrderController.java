@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
+import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -159,7 +161,10 @@ public class OrderController extends BaseController{
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE)));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
+		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
+		retDto.setId(order_dto.getId());
+		retDto.setThird_payinfo(rcp_dto.getParams());
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
 	
 	/**
@@ -180,7 +185,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) Integer appid
 			) {
 
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderid, appid);
+		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderid, appid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
