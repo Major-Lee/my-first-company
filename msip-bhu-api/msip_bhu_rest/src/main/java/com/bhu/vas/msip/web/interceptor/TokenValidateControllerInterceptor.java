@@ -70,7 +70,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/console/search/fetch_by_condition_message");
 		
 		
-		ignoreTokensValidateUriSet.add("/oauth/create");
+		ignoreTokensValidateUriSet.add("/account/oauth/create");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");
