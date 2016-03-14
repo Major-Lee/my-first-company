@@ -86,7 +86,7 @@ public class OrderFacadeService {
 			criteria.andColumnEqualTo("umac", umac);
 		}
 		if(StringUtils.isNotEmpty(dut)){
-			criteria.andColumnEqualTo("dut", dut);
+			criteria.andColumnEqualTo("mac_dut", dut);
 		}
 		return orderService.countByModelCriteria(mc);
 	}
@@ -116,7 +116,7 @@ public class OrderFacadeService {
 			criteria.andColumnEqualTo("umac", umac);
 		}
 		if(StringUtils.isNotEmpty(dut)){
-			criteria.andColumnEqualTo("dut", dut);
+			criteria.andColumnEqualTo("mac_dut", dut);
 		}
 		mc.setPageNumber(pageNo);
 		mc.setSize(pageSize);
