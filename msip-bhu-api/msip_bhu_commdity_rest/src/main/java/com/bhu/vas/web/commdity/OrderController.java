@@ -208,12 +208,13 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false, defaultValue = "10") Integer status,
+			@RequestParam(required = true) String dut,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
 		RpcResponseDTO<TailPage<UserOrderDTO>> rpcResult = orderRpcService.orderPagesByUid(uid, mac, umac, 
-				status, pageNo, pageSize);
+				status, dut, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

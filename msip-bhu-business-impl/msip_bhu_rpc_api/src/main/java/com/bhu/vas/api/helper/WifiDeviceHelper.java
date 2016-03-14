@@ -80,6 +80,15 @@ public class WifiDeviceHelper {
 		Soc_HdTypes.add("H303");*/
 		//vapExceptDevices.add("84:82:f4:23:06:68");
 	}
+	
+	public static String dutDevice(String orig_swver){
+		DeviceVersion parser = DeviceVersion.parser(orig_swver);
+		if(parser != null){
+			return parser.getDut();
+		}
+		return null;
+	}
+	
 	public static boolean isURouterDevice(String orig_swver) {
 		DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null || !ver.valid()) return false;

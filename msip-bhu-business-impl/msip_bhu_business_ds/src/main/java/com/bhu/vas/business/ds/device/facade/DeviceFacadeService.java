@@ -848,16 +848,6 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	}
 	
 	/**
-	 * 移除设备与用户移动设备信息的关联
-	 * @param uid
-	 * @param mac
-	 */
-	public void removeMobilePresent(Integer uid, String mac){
-		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(mac);
-		this.generateDeviceMobilePresents(uid);
-	}
-	
-	/**
 	 * 设备重置 解绑、清除相关设备和用户之间的数据
 	 * @param mac
 	 */
@@ -898,6 +888,32 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
         System.out.println("~~~~~~~~~~3:deviceResetDestory ok!");
 	}
 	
+	//生成用户绑定设备的push present的业务动作
+	//新增设备
+	public static final Integer DeviceMobilePresentOperationAddAction = 1;
+	//移除设备
+	public static final Integer DeviceMobilePresentOperationRemoveAction = 2;
+	
+	
+	/**
+	 * 移除设备与用户移动设备信息的关联
+	 * @param uid
+	 * @param mac
+	 */
+	public void removeMobilePresent(Integer uid, String mac){
+		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(mac);
+		this.generateDeviceMobilePresentsWithAction(uid, mac, DeviceMobilePresentOperationRemoveAction, null);
+	}
+	
+	
+	/**
+	 * 增加设备与用户移动设备信息的关联
+	 * @param uid
+	 * @param mac
+	 */
+	public void addMobilePresent(Integer uid, String mac){
+		this.generateDeviceMobilePresentsWithAction(uid, mac, DeviceMobilePresentOperationAddAction, null);
+	}
 	
 	/**
 	 * 根据用户所管理的设备 生成mobile和设备的关系信息
@@ -905,35 +921,86 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param presentDto
 	 */
 	public void generateDeviceMobilePresents(Integer uid, DeviceMobilePresentDTO presentDto){
-		if(uid == null || presentDto == null) return;
-		
-		List<UserDevicePK> userDevices = this.getUserDevices(uid);
-		int size = userDevices.size();
-		if(size == 0) return;
-		
-		List<String> macs = new ArrayList<String>();
-		for(UserDevicePK pk : userDevices){
-			macs.add(pk.getMac());
-		}
-		
-		presentDto.setMulti(size > 1 ? true : false);
-		WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
-				JsonHelper.getJSONString(presentDto));
+		if(uid == null) return;
+		generateDeviceMobilePresentsWithAction(uid, null, null, presentDto);
 	}
 	
 	/**
 	 * 根据用户所管理的设备 生成mobile和设备的关系信息
 	 * @param uid
+	 * @param action_mac 业务上下文mac
+	 * @param action 业务动作
+	 * @param presentDto
 	 */
-	public void generateDeviceMobilePresents(Integer uid){
+	public void generateDeviceMobilePresentsWithAction(Integer uid, String action_mac, Integer action, 
+			DeviceMobilePresentDTO presentDto){
+		if(uid == null) return;
+		
+		if(presentDto == null){
+			UserMobileDevice userMobileDevice = userMobileDeviceService.getById(uid);
+			if(userMobileDevice != null){
+				presentDto = new DeviceMobilePresentDTO(uid, userMobileDevice.getD(), userMobileDevice.getDt(), 
+						userMobileDevice.getPt(), userMobileDevice.getDm());
+			}
+		}
+		
+		if(presentDto != null){
+			List<UserDevicePK> userDevices = this.getUserDevices(uid);
+			if(userDevices == null || userDevices.isEmpty()){
+				return;
+			}
+			List<String> macs = new ArrayList<String>();
+			for(UserDevicePK pk : userDevices){
+				macs.add(pk.getMac());
+			}
+			//处理业务action
+			if(StringUtils.isNotEmpty(action_mac) && action != null){
+				//防止主从数据库同步问题的处理
+				if(DeviceMobilePresentOperationAddAction.equals(action)){
+					if(!macs.contains(action_mac)){
+						macs.add(action_mac);
+					}
+				}
+				else if(DeviceMobilePresentOperationRemoveAction.equals(action)){
+					macs.remove(action_mac);
+				}
+			}
+			
+			int bindmac_size = macs.size();
+			presentDto.setMulti(bindmac_size > 1 ? true : false);
+			WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+					JsonHelper.getJSONString(presentDto));
+		}
+	}
+	
+/*	*//**
+	 * 根据用户所管理的设备 生成mobile和设备的关系信息
+	 * @param macs 用户管理的设备macs
+	 * @param presentDto
+	 *//*
+	public void generateDeviceMobilePresents(List<String> macs, DeviceMobilePresentDTO presentDto){
+		if(macs == null || macs.isEmpty() || presentDto == null) return;
+		
+		int bindmac_size = macs.size();
+		presentDto.setMulti(bindmac_size > 1 ? true : false);
+		WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+				JsonHelper.getJSONString(presentDto));
+	}
+	
+	*//**
+	 * 根据用户所管理的设备 生成mobile和设备的关系信息
+	 * @param uid
+	 * @param macs 目前该用户所管理的设备macs
+	 *//*
+	public void generateDeviceMobilePresents(Integer uid, List<String> macs){
 		if(uid == null) return;
 		
 		UserMobileDevice entity = userMobileDeviceService.getById(uid);
 		if(entity != null){
-			this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, entity.getD(), entity.getDt(),
+			this.generateDeviceMobilePresents(macs, new DeviceMobilePresentDTO(uid, entity.getD(), entity.getDt(),
 					entity.getPt(), entity.getDm()));
 		}
-	}
+	}*/
 	
 	/**
 	 * 根据用户所管理的设备 清除mobile和设备的关系信息

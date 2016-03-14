@@ -71,8 +71,9 @@ public class OrderFacadeService {
 	 * @param mac 设备mac
 	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态
+	 * @param dut 业务线
 	 */
-	public int countOrderByParams(Integer uid, String mac, String umac, Integer status){
+	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -83,6 +84,9 @@ public class OrderFacadeService {
 		}
 		if(StringUtils.isNotEmpty(umac)){
 			criteria.andColumnEqualTo("umac", umac);
+		}
+		if(StringUtils.isNotEmpty(dut)){
+			criteria.andColumnEqualTo("dut", dut);
 		}
 		return orderService.countByModelCriteria(mc);
 	}
@@ -93,11 +97,13 @@ public class OrderFacadeService {
 	 * @param mac 设备mac
 	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态
+	 * @param dut 订单业务线
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public List<Order> findOrdersByParams(Integer uid, String mac, String umac, Integer status, int pageNo, int pageSize){
+	public List<Order> findOrdersByParams(Integer uid, String mac, String umac, Integer status, String dut, 
+			int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -108,6 +114,9 @@ public class OrderFacadeService {
 		}
 		if(StringUtils.isNotEmpty(umac)){
 			criteria.andColumnEqualTo("umac", umac);
+		}
+		if(StringUtils.isNotEmpty(dut)){
+			criteria.andColumnEqualTo("dut", dut);
 		}
 		mc.setPageNumber(pageNo);
 		mc.setSize(pageSize);
@@ -215,11 +224,12 @@ public class OrderFacadeService {
 	 * @param commdity 商品实体
 	 * @param appid 应用id
 	 * @param mac 设备mac
+	 * @param mac_dut 设备业务线
 	 * @param umac 用户mac
 	 * @param context 业务上下文
 	 * @return
 	 */
-	public Order createOrder(Integer commdityid, Integer appid, String mac, String umac, String context){
+	public Order createOrder(Integer commdityid, Integer appid, String mac, String mac_dut, String umac, String context){
 		//商品信息验证
 		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){
@@ -239,6 +249,7 @@ public class OrderFacadeService {
 		order.setCommdityid(commdity.getId());
 		order.setAppid(appid);
 		order.setMac(mac);
+		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
 		//order.setUid(uid);
 		order.setContext(context);

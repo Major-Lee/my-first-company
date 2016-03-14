@@ -14,14 +14,17 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -48,6 +51,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 /*	*//**
 	 * 生成订单
 	 * @param commdityid
@@ -151,8 +157,16 @@ public class OrderUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
 			}
 			
+			String mac_lower = mac.toLowerCase();
+			String umac_lower = umac.toLowerCase();
+			//检查设备是否接入过
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			}
 			//生成订单
-			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, context);
+			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
+			Order order = orderFacadeService.createOrder(commdityid, appid, mac_lower, mac_dut, umac_lower, context);
 			OrderDTO orderDto = new OrderDTO();
 			BeanUtils.copyProperties(order, orderDto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
@@ -195,17 +209,19 @@ public class OrderUnitFacadeService {
 	 * @param mac 用户绑定的设备mac
 	 * @param umac 订单支付用户的终端mac
 	 * @param status 订单状态
+	 * @param dut 设备业务线
 	 * @param pageNo 页码
 	 * @param pageSize 分页数量
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
-			Integer status, int pageNo, int pageSize) {
+			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<UserOrderDTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status);
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut);
 			if(order_count > 0){
-				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, pageNo, pageSize);
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut,
+						pageNo, pageSize);
 				if(orderList != null && !orderList.isEmpty()){
 					retDtos = new ArrayList<UserOrderDTO>();
 					UserOrderDTO userOrderDto = null;

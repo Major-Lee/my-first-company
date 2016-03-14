@@ -61,10 +61,10 @@ public class OrderRpcService implements IOrderRpcService{
 	
 	@Override
 	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
-			Integer status, int pageNo, int pageSize) {
-		logger.info(String.format("orderPagesByUid with uid[%s] mac[%s] umac[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
-				mac, umac, status, pageNo, pageSize));
-		return orderUnitFacadeService.orderPagesByUid(uid, mac, umac, status, pageNo, pageSize);
+			Integer status, String dut, int pageNo, int pageSize) {
+		logger.info(String.format("orderPagesByUid with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, 
+				mac, umac, status, dut, pageNo, pageSize));
+		return orderUnitFacadeService.orderPagesByUid(uid, mac, umac, status, dut, pageNo, pageSize);
 	}
 
 }
