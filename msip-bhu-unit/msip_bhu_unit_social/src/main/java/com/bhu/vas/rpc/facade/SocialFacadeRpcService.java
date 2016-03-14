@@ -252,9 +252,10 @@ public class SocialFacadeRpcService {
      * @param hd_macs
      * @return
      */
-    public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
-        WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
+    public WifiHandsetUserVTO fetchHandsetList(Long uid, String hd_mac, String bssid, String hd_macs) {
 
+
+        WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
         Wifi wifi = wifiService.getById(bssid);
 
         vto.setBssid(bssid);
@@ -264,10 +265,10 @@ public class SocialFacadeRpcService {
         List<String> hds = new ArrayList<String>();
         String[] list = hd_macs.split(",");
         if (list != null && list.length > 0) {
-            for (String hd_mac : list) {
+            for (String mac : list) {
                 HandsetUserVTO handsetVTO = new HandsetUserVTO();
-                handsetVTO.setHd_mac(hd_mac);
-                hds.add(hd_mac);
+                handsetVTO.setHd_mac(mac);
+                hds.add(mac);
                 hdVTOs.add(handsetVTO);
             }
         }
@@ -281,6 +282,13 @@ public class SocialFacadeRpcService {
                 if (handsetUser != null) {
                     HandsetUserVTO hdVTO = hdVTOs.get(index);
                     hdVTO.setNick(handsetUser.getNick());
+
+                    hdVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac, handsetUser.getId()));
+
+                    if (uid != null && uid >0) {
+                        hdVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid,handsetUser.getId()));
+                    }
+
                     //Todo(bluesand): 用户的头像
                     //hdVTO.setAvatar();
                     ids.add((int)handsetUser.getUid());

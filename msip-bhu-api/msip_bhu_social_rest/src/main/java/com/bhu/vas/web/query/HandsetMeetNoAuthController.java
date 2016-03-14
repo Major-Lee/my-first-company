@@ -80,11 +80,12 @@ import javax.servlet.http.HttpServletResponse;
     public void fetch(
             HttpServletResponse response,
             @RequestParam(required = false, value = "uid") Long uid,
+            @RequestParam(required = true, value = "hd_mac") String hd_mac,
             @RequestParam(required = true, value = "bssid") String bssid,
             @RequestParam(required = true, value = "hd_macs") String hd_macs) {
 
         try {
-            WifiHandsetUserVTO vto = socialRpcService.fetchHandsetList(uid, bssid, hd_macs);
+            WifiHandsetUserVTO vto = socialRpcService.fetchHandsetList(uid, hd_mac, bssid, hd_macs);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
         } catch (Exception e) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));

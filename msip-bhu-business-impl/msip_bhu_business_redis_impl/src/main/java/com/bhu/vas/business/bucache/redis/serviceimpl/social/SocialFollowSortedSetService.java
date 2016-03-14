@@ -61,6 +61,12 @@ public class SocialFollowSortedSetService
         }
     }
 
+
+    public boolean isFollowed(long uid, String hd_mac) {
+        Long zrank = this.zrank(generateKey(uid), hd_mac);
+        return zrank == null;
+    }
+
     public Set<String> fetchFollowList(long uid, int pageNo, int pageSize) {
         Set<String> set = this.zrange(generateKey(uid), (pageNo - 1) * pageSize, pageSize * pageNo - 1);
         return set;
