@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.BeanUtils;
 
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -43,6 +44,18 @@ public class OrderHelper {
 			orderDto.setPaymented_ts(paymentedAt.getTime());
 		}
 		return orderDto;
+	}
+	/**
+	 * 构建order status dto
+	 * @param order
+	 * @return
+	 */
+	public static OrderStatusDTO buildOrderStatusDTO(Order order){
+		if(order == null) return null;
+		
+		OrderStatusDTO orderStatusDto = new OrderStatusDTO();
+		BeanUtils.copyProperties(order, orderStatusDto);
+		return orderStatusDto;
 	}
 	
 	

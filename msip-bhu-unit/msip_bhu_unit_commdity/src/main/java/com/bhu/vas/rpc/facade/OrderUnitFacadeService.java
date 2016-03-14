@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -185,7 +186,7 @@ public class OrderUnitFacadeService {
 	 * @param appId 应用id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid) {
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid, Integer appid) {
 		try{
 			Order order = orderFacadeService.validateOrder(orderid, appid);
 			
@@ -193,8 +194,8 @@ public class OrderUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
 			}
 			
-			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
