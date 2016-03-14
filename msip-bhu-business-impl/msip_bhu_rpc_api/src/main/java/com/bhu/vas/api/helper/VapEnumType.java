@@ -365,17 +365,19 @@ public class VapEnumType {
 	
 	
 	public enum SharedNetworkType{
-		SafeSecure("SafeSecure","壁虎安全共享网络"),
-		Uplink("Uplink","壁虎Uplink网络"),
+		SafeSecure("SafeSecure","必虎安全共享网络","必虎安全共享WiFi"),
+		Uplink("Uplink","必虎Uplink共享网络","必虎Uplink共享WiFi"),
 		;
 		
 		private String key;
 		private String name;
+		private String defalutSsid;
 		static Map<String, SharedNetworkType> allSharedNetworkTypes;
 		
-		private SharedNetworkType(String key,String name){
+		private SharedNetworkType(String key,String name,String defalutSsid){
 			this.key = key;
 			this.name = name;
+			this.defalutSsid = defalutSsid;
 		}
 		public String getName() {
 			return name;
@@ -389,6 +391,13 @@ public class VapEnumType {
 		}
 		public void setKey(String key) {
 			this.key = key;
+		}
+		
+		public String getDefalutSsid() {
+			return defalutSsid;
+		}
+		public void setDefalutSsid(String defalutSsid) {
+			this.defalutSsid = defalutSsid;
 		}
 		public static SharedNetworkType fromKey(String key){
 			return allSharedNetworkTypes.get(key);

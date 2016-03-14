@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.ret.param;
+package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -17,7 +17,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 @SuppressWarnings("serial")
-public class ParamVapVistorWifiDTO implements java.io.Serializable{
+public class ParamSharedNetworkDTO implements java.io.Serializable{
 	//users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	private int users_tx_rate;
 	private int users_rx_rate;
@@ -147,8 +147,8 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 
 	
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
-	public static ParamVapVistorWifiDTO builderDefault(boolean router){
-		ParamVapVistorWifiDTO dto = new ParamVapVistorWifiDTO();
+	public static ParamSharedNetworkDTO builderDefault(String type,boolean router){
+		ParamSharedNetworkDTO dto = new ParamSharedNetworkDTO();
 		dto.setUsers_tx_rate(WifiDeviceHelper.VistorWifi_Default_Users_tx_rate);
 		dto.setUsers_rx_rate(WifiDeviceHelper.VistorWifi_Default_Users_rx_rate);
 		dto.setSignal_limit(WifiDeviceHelper.VistorWifi_Default_Signal_limit);
@@ -158,14 +158,15 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		dto.setOpen_resource(WifiDeviceHelper.VistorWifi_Default_Open_resource);
 		dto.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		dto.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
-		dto.setSsid(SharedNetworkType.Uplink.getDefalutSsid());//WifiDeviceHelper.VistorWifi_Default_SSID);
+		dto.setSsid(
+				SharedNetworkType.Uplink.getKey().equals(type)?
+						SharedNetworkType.Uplink.getDefalutSsid():
+							SharedNetworkType.SafeSecure.getDefalutSsid());//WifiDeviceHelper.VistorWifi_Default_SSID);
 		return dto;
 	}
 	
-	public static ParamVapVistorWifiDTO fufillWithDefault(ParamVapVistorWifiDTO param,boolean router){
-		if(param == null) return builderDefault(router);
-		//if(param.getUsers_tx_rate() == 0) param.setUsers_tx_rate(Default_Users_tx_rate);
-		//if(param.getUsers_rx_rate() == 0) param.setUsers_rx_rate(Default_Users_rx_rate);
+	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param,String type,boolean router){
+		if(param == null) return builderDefault(type,router);
 		
 		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.VistorWifi_Default_Signal_limit);
 		if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(WifiDeviceHelper.VistorWifi_Default_Redirect_url);
@@ -177,15 +178,19 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		//if(StringUtils.isEmpty(param.getSsid())) param.setSsid(WifiDeviceHelper.VistorWifi_Default_SSID);
-		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
+		if(StringUtils.isEmpty(param.getSsid())){
+			param.setSsid(SharedNetworkType.Uplink.getKey().equals(type)?
+					SharedNetworkType.Uplink.getDefalutSsid():
+						SharedNetworkType.SafeSecure.getDefalutSsid());
+		}
 		return param;
 	}
 	
 	public static void main(String[] argv){
-		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null,false)));
+		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null,SharedNetworkType.Uplink.getKey(),false)));
 		
-		ParamVapVistorWifiDTO param = new ParamVapVistorWifiDTO();
+		ParamSharedNetworkDTO param = new ParamSharedNetworkDTO();
 		param.setSsid("GOOO理论");
-		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param,true)));
+		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param,SharedNetworkType.Uplink.getKey(),true)));
 	}
 }
