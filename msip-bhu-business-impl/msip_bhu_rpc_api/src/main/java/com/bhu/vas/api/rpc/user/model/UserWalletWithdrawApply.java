@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.model;
 
 import java.util.Date;
 
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
@@ -119,6 +120,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setMobileno(mobileno);
 		vto.setCash(cash);
 		vto.setWithdraw_oper(withdraw_oper);
+		vto.setWithdraw_oper_desc(BusinessEnumType.UWithdrawStatus.fromKey(withdraw_oper).getName());
 		vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
 		return vto;
 	}

@@ -18,6 +18,7 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private double cash = 0.00d;
 	//当前提现申请的状态
 	private String withdraw_oper;
+	private String withdraw_oper_desc;
 	//交易手续费
 	private double transcost;
 	//交易税费
@@ -89,6 +90,12 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 		return ArithHelper.sub(cash,ArithHelper.add(transcost, taxcost));
 	}
 	
+	public String getWithdraw_oper_desc() {
+		return withdraw_oper_desc;
+	}
+	public void setWithdraw_oper_desc(String withdraw_oper_desc) {
+		this.withdraw_oper_desc = withdraw_oper_desc;
+	}
 	public void calculate(double withdraw_tax_percent,double withdraw_trancost_percent){
 		if(cash > 0){
 			this.setTaxcost(ArithHelper.round(ArithHelper.mul(cash, withdraw_tax_percent),2));
