@@ -1467,7 +1467,7 @@ public class AsyncMsgHandleService {
 //				afterUserSignedonThenCmdDown(dto.getMac(), DeviceHelper.builderSettingVapNames(setting_dto.getVaps()));
 //			}
 //		}
-		deviceFacadeService.generateDeviceMobilePresents(dto.getUid());
+		deviceFacadeService.addMobilePresent(dto.getUid(), dto.getMac());
 		
 		afterUserSignedonThenCmdDown(dto.getMac());
 

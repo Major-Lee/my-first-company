@@ -22,5 +22,5 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderDTO> orderStatusByUmac(String umac, String orderid, Integer appid);
 	
 	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
-			Integer status, int pageNo, int pageSize);
+			Integer status, String dut, int pageNo, int pageSize);
 }

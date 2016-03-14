@@ -9,6 +9,7 @@
     <result property="commdityid" column="commdityid"/>
     <result property="appid" column="appid"/>
     <result property="mac" column="mac"/>
+    <result property="mac_dut" column="mac_dut"/>
     <result property="umac" column="umac"/>
     <result property="uid" column="uid"/> 
     <result property="paymented_at" column="paymented_at"/>
@@ -31,6 +32,7 @@
 	    	commdityid,
 	    	appid,
 	    	mac,
+	    	mac_dut,
 	    	umac,
 	    	uid,
 	    	paymented_at,
@@ -47,6 +49,7 @@
 	    	commdityid,
 	    	appid,
 	    	mac,
+	    	mac_dut,
 	    	umac,
 	    	uid,
 	    	paymented_at,
@@ -64,6 +67,7 @@
 	    	#{commdityid},
 	    	#{appid},
 	    	#{mac},
+	    	#{mac_dut},
 	    	#{umac},
 	    	#{uid},
 	    	#{paymented_at},
@@ -79,6 +83,7 @@
 	    	commdityid = #{commdityid},
 	    	appid = #{appid},
 	    	mac = #{mac},
+	    	mac_dut = #{mac_dut},
 	    	umac = #{umac},
 	    	uid = #{uid},
 	    	paymented_at = #{paymented_at},
