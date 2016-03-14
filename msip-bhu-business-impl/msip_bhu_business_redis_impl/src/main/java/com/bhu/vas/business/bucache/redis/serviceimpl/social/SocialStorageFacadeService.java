@@ -3,6 +3,7 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 import com.bhu.vas.api.dto.social.HandsetMeetDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,11 +19,16 @@ public class SocialStorageFacadeService  {
 
         List<HandsetMeetDTO> meets = getHandsetMeets(hd_mac_self, hd_mac, bssid);
 
-        if (meets != null && meets.size() < MAX_HANDSET_MEET_COUNT) {
-            meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
+        if (meets != null) {
+            if (meets.size() < MAX_HANDSET_MEET_COUNT && meets.size() >= 0) {
+                meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
+            } else {
+                meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
+                meets.remove(MAX_HANDSET_MEET_COUNT);
+            }
         } else {
+            meets = new ArrayList<HandsetMeetDTO>();
             meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
-            meets.remove(MAX_HANDSET_MEET_COUNT);
         }
 
         SocialHandsetMeetHashService.getInstance().hsetHadsetMeets(hd_mac_self, hd_mac, bssid, JsonHelper.getJSONString(meets));
