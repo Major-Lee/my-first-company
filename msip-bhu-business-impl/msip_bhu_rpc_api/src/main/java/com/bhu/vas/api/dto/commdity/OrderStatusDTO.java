@@ -11,7 +11,7 @@ public class OrderStatusDTO implements java.io.Serializable{
 	//订单id
 	private String id;
 	//订单状态
-	private String status;
+	private Integer status;
 	
 	public String getId() {
 		return id;
@@ -19,10 +19,10 @@ public class OrderStatusDTO implements java.io.Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 }
