@@ -246,6 +246,124 @@ public class SocialFacadeRpcService {
 
 
     /**
+     * 获取终端列表
+     *
+     * @param bssid
+     * @param hd_macs
+     * @return
+     */
+    public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
+        WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
+
+        Wifi wifi = wifiService.getById(bssid);
+
+        vto.setBssid(bssid);
+        vto.setSsid(wifi.getSsid());
+
+        List<HandsetUserVTO> hdVTOs = new ArrayList<HandsetUserVTO>();
+        List<String> hds = new ArrayList<String>();
+        String[] list = hd_macs.split(",");
+        if (list != null && list.length > 0) {
+            for (String hd_mac : list) {
+                HandsetUserVTO handsetVTO = new HandsetUserVTO();
+                handsetVTO.setHd_mac(hd_mac);
+                hds.add(hd_mac);
+                hdVTOs.add(handsetVTO);
+            }
+        }
+
+        List<HandsetUser> handsetUsers = handsetUserService.findByIds(hds, true, true);
+        List<Integer> ids = new ArrayList<Integer>();
+
+        int index = 0;
+        if (handsetUsers != null) {
+            for (HandsetUser handsetUser : handsetUsers) {
+                if (handsetUser != null) {
+                    HandsetUserVTO hdVTO = hdVTOs.get(index);
+                    hdVTO.setNick(handsetUser.getNick());
+                    //Todo(bluesand): 用户的头像
+                    //hdVTO.setAvatar();
+                    ids.add((int)handsetUser.getUid());
+                } else {
+                    ids.add(0);
+                }
+                index++;
+            }
+        }
+
+        List<User> users = userService.findByIds(ids, true, true);
+
+        index = 0;
+        for (User user : users) {
+            if (user != null) {
+                HandsetUserVTO hdVTO = hdVTOs.get(index);
+                SocialUserVTO userVTO = new SocialUserVTO();
+                userVTO.setUid((long)user.getId());
+                userVTO.setAvatar(user.getAvatar());
+                if (StringUtils.isEmpty(user.getNick())) {
+                    userVTO.setNick(user.getNick());
+                }
+                userVTO.setMemo(user.getMemo());
+                hdVTO.setUser(userVTO);
+            }
+        }
+
+        vto.setHandsets(hdVTOs);
+
+        return vto;
+    }
+
+    /**
+     * 修改终端信息,暂时只修改终端用户昵称
+     *
+     * @param uid
+     * @param hd_mac
+     * @param nick
+     * @return
+     */
+    public boolean modifyHandset(long uid, String hd_mac, String nick) {
+        HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+        handsetUser.setNick(nick);
+        handsetUserService.update(handsetUser);
+        return true;
+    }
+
+    public HandsetUserDetailVTO fetchHandsetUserDetail(Long uid, String hd_mac_self, String hd_mac, String bssid) {
+
+        List<HandsetMeetDTO> meets = SocialStorageFacadeService.getHandsetMeets(hd_mac_self, hd_mac, bssid);
+
+        HandsetUserVTO handsetUserVTO = new HandsetUserVTO();
+        handsetUserVTO.setHd_mac(hd_mac);
+
+        if (uid != null && uid > 0) {
+            HandsetUser handsetUser = handsetUserService.getById(hd_mac);
+            if (handsetUser != null) {
+                User user = userService.getById((int) handsetUser.getUid());
+                if (user != null) {
+                    handsetUserVTO.setNick(user.getNick());
+
+                    SocialUserVTO socialUserVTO = new SocialUserVTO();
+                    socialUserVTO.setUid(uid);
+                    socialUserVTO.setAvatar(user.getAvatar());
+                    socialUserVTO.setMemo(user.getMemo());
+
+                    handsetUserVTO.setUser(socialUserVTO);
+
+                }
+            }
+        }
+
+        HandsetUserDetailVTO vto = new HandsetUserDetailVTO();
+
+        vto.setHandset(handsetUserVTO);
+        vto.setMeets(meets);
+
+        return vto;
+
+    }
+
+
+    /**
      * 获取wifi详情
      *
      * @param uid
@@ -324,6 +442,10 @@ public class SocialFacadeRpcService {
 
         SocialStatisManufatorDTO old = JsonHelper.getDTO(wifi.getManufacturer(), SocialStatisManufatorDTO.class);
 
+
+        /**
+         * 两个for循环,客户端目前只定义10-15个厂商
+         */
         if (dto != null && !dto.getItems().isEmpty()) {
             for (SocialStatisManufatorItemDTO item : dto.getItems()) {
                 String name  = item.getName().trim();
@@ -350,119 +472,7 @@ public class SocialFacadeRpcService {
     }
 
 
-    /**
-     * 获取终端列表
-     *
-     * @param bssid
-     * @param hd_macs
-     * @return
-     */
-    public WifiHandsetUserVTO fetchHandsetList(Long uid, String bssid, String hd_macs) {
-        WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
 
-        Wifi wifi = wifiService.getById(bssid);
-
-        vto.setBssid(bssid);
-        vto.setSsid(wifi.getSsid());
-
-        List<HandsetUserVTO> hdVTOs = new ArrayList<HandsetUserVTO>();
-        List<String> hds = new ArrayList<String>();
-        String[] list = hd_macs.split(",");
-        if (list != null && list.length > 0) {
-            for (String hd_mac : list) {
-                HandsetUserVTO handsetVTO = new HandsetUserVTO();
-                handsetVTO.setHd_mac(hd_mac);
-                hds.add(hd_mac);
-                hdVTOs.add(handsetVTO);
-            }
-        }
-
-        List<HandsetUser> handsetUsers = handsetUserService.findByIds(hds, true, true);
-        List<Integer> ids = new ArrayList<Integer>();
-
-        int index = 0;
-        if (handsetUsers != null) {
-            for (HandsetUser handsetUser : handsetUsers) {
-                if (handsetUser != null) {
-                    HandsetUserVTO hdVTO = hdVTOs.get(index);
-                    hdVTO.setNick(handsetUser.getNick());
-                    //Todo(bluesand): 用户的头像
-                    //hdVTO.setAvatar();
-                    ids.add((int)handsetUser.getUid());
-                } else {
-                    ids.add(null);
-                }
-                index++;
-            }
-        }
-
-        List<User> users = userService.findByIds(ids, true, true);
-
-        index = 0;
-        for (User user : users) {
-            if (user != null) {
-                HandsetUserVTO hdVTO = hdVTOs.get(index);
-                SocialUserVTO userVTO = new SocialUserVTO();
-                userVTO.setAvatar(user.getAvatar());
-                if (StringUtils.isEmpty(user.getNick())) {
-                    userVTO.setNick(user.getNick());
-                }
-                userVTO.setMemo(user.getMemo());
-                hdVTO.setUser(userVTO);
-            }
-        }
-
-        vto.setHandsets(hdVTOs);
-
-        return vto;
-    }
-
-    /**
-     * 修改终端信息,暂时只修改终端用户昵称
-     *
-     * @param uid
-     * @param hd_mac
-     * @param nick
-     * @return
-     */
-    public boolean modifyHandset(long uid, String hd_mac, String nick) {
-        HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-        handsetUser.setNick(nick);
-        handsetUserService.update(handsetUser);
-        return true;
-    }
-
-    public HandsetUserDetailVTO fetchHandsetUserDetail(Long uid, String hd_mac_self, String hd_mac, String bssid) {
-
-        List<HandsetMeetDTO> meets = SocialStorageFacadeService.getHandsetMeets(hd_mac_self, hd_mac, bssid);
-
-        HandsetUserVTO handsetUserVTO = new HandsetUserVTO();
-        handsetUserVTO.setHd_mac(hd_mac);
-
-        if (uid != null && uid > 0) {
-            HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-            if (handsetUser != null) {
-                User user = userService.getById((int) handsetUser.getUid());
-                if (user != null) {
-                    handsetUserVTO.setNick(user.getNick());
-
-                    SocialUserVTO socialUserVTO = new SocialUserVTO();
-                    socialUserVTO.setUid(uid);
-                    socialUserVTO.setAvatar(user.getAvatar());
-                    socialUserVTO.setMemo(user.getMemo());
-
-                }
-            }
-        }
-
-        HandsetUserDetailVTO vto = new HandsetUserDetailVTO();
-
-        vto.setHandset(handsetUserVTO);
-        vto.setMeets(meets);
-
-        return vto;
-
-    }
 
 
 
