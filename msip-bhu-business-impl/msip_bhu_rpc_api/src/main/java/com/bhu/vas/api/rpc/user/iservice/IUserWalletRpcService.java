@@ -41,6 +41,7 @@ public interface IUserWalletRpcService {
 	 */
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> 	pageWithdrawApplies(int reckoner,int tuid,String withdraw_status,int pageNo,int pageSize);
 	
+	public RpcResponseDTO<String> withdrawApplyStatus(int reckoner,String applyid);
 	/**
 	 * 分页提取用户钱包流水
 	 * @param uid
