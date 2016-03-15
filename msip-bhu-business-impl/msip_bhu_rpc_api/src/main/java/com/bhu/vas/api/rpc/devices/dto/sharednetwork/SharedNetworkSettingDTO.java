@@ -7,7 +7,7 @@ package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 /**
  * Wifi 设置定时开关
  * 存储的数据
- * @author tangzichao
+ * @author Edmond Lee
  *
  */
 @SuppressWarnings("serial")

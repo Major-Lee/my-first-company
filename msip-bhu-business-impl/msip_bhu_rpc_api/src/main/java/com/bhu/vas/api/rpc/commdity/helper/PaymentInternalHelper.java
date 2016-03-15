@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HttpHelper;
@@ -25,7 +26,7 @@ public class PaymentInternalHelper {
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
 	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
 	
-	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";///api/ucloud/withdrawpay";
+	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/withdraw";///api/ucloud/withdrawpay";
 	
 	//模拟支付系统支付成功触发api
 	//public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
@@ -75,21 +76,37 @@ public class PaymentInternalHelper {
 	
 	
 	
-	public static ResponseCreatePaymentUrlDTO createWithdrawUrlCommunication(String payment_type, String amount, 
-			String requestip, String orderid){
-		Map<String, String> api_params = generatePaymentApiParamMap();
-		api_params.put("payment_type", payment_type);
+	public static ResponseCreateWithdrawDTO createWithdrawUrlCommunication(
+			String withdraw_type,
+			String withdraw_no,
+			String userId,String userName,String requestip, 
+			String amount, String transcost,String taxcost,String total){
+		Map<String, String> api_params = generateWithdrawApiParamMap();
+		api_params.put("withdraw_type", withdraw_type);
 		api_params.put("total_fee", amount);
 		api_params.put("exter_invoke_ip", requestip);
-		api_params.put("goods_no", orderid);
-		
-		ResponseCreatePaymentUrlDTO rcp_dto = null;
+		api_params.put("withdraw_no", withdraw_no);
+		api_params.put("userId", userId);
+		api_params.put("userName", userName);
+		api_params.put("transcost", transcost);
+		api_params.put("taxcost", taxcost);
+		api_params.put("total", total);
+		ResponseCreateWithdrawDTO rcp_dto = null;
 		try {
+			logger.info(String.format("CreateWithdrawUrlCommunication Start Request withdraw_no[%s] withdraw_type[%s] "
+					+ "amount[%s] transcost[%s] taxcost[%s] total[%s] ip[%s]", 
+					withdraw_no, 
+					withdraw_type, 
+					amount, 
+					transcost, 
+					taxcost, 
+					total, 
+					requestip));
 			String response = HttpHelper.postUrlAsString(CREATE_WITHDRAWURL_COMMUNICATION_API, api_params);
-			logger.info(String.format("CreateWithdrawUrlCommunication Response orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));
+			logger.info(String.format("CreateWithdrawUrlCommunication Response withdraw_no[%s] withdraw_type[%s] "
+					+ "req[%s]", withdraw_no, withdraw_type, response));
 			if(StringUtils.isNotEmpty(response)){
-				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
+				return JsonHelper.getDTO(response, ResponseCreateWithdrawDTO.class);
 			}
 		} catch (Exception ex) {
 			logger.error("CreateWithdrawUrlCommunication Response Exception", ex);
@@ -117,6 +134,18 @@ public class PaymentInternalHelper {
 		
 		try {
 			String response = HttpHelper.getUrlAsString("http://192.168.66.88:8005/api/ucloud/pay-call", api_params);
+			System.out.println(response);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		}
+	}
+	
+	public static void simulateWithdrawSuccessCommunication(String orderid){
+		Map<String, String> api_params = generatePaymentApiParamMap();
+		api_params.put("wid", orderid);
+		api_params.put("status", "success");
+		try {
+			String response = HttpHelper.getUrlAsString("http://192.168.66.88:8005/api/ucloud/withdraw-call", api_params);
 			System.out.println(response);
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);

@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
@@ -109,10 +108,18 @@ public class ConsoleWithdrawController extends BaseController {
 				return;
 			}*/
 			String orderid = withdrawNotify.getOrderid();
-			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getCash());
+			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
+			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
+			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
+			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
 			String requestIp = WebHelper.getRemoteAddr(request);
-			ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(withdrawNotify.getAccount().getType(), 
-					order_amount, requestIp, orderid);
+			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
+					withdrawNotify.getAccount().getType(), 
+					orderid,
+					withdrawNotify.getAccount().getId(),
+					withdrawNotify.getAccount().getName(),
+					requestIp,
+					order_amount, order_transcost, order_taxcost,order_totalamount);
 			System.out.println("apply_payment step 1:"+JsonHelper.getJSONString(rcp_dto));
 			if(rcp_dto == null){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -124,8 +131,9 @@ public class ConsoleWithdrawController extends BaseController {
 						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE)));
 				return;
 			}
-			System.out.println("apply_payment step 2: successed");
-			if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
+			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto));
+			/*if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
 				//TODO:直接url访问uPay进行支付并得到成功和失败的结果,rpc写入数据结果并返回结果集
 				RpcResponseDTO<UserWithdrawApplyVTO> rpcInnerResult = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, rcp_dto.isSuccess());
 				if(!rpcInnerResult.hasError()){
@@ -134,9 +142,9 @@ public class ConsoleWithdrawController extends BaseController {
 					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcInnerResult));
 				}
 			}else{
-				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会会callback
+				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会进行callback
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
-			}
+			}*/
 			System.out.println("apply_payment step 3: done!");
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
