@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by bluesand on 3/15/16.
  */
 public class WifiInfoController extends BaseController {
-    
+
     @Resource
     private ISocialRpcService socialRpcService;
 
