@@ -694,6 +694,25 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 		}
 		return null;
+	} 
+	
+	/**
+	 * 获得设备的默认昵称
+	 * 获取设备第一个可用的ssid作为名称，如果获取不到，则用mac地址代替
+	 * @param mac
+	 * @return
+	 */
+	public String getBindDeviceName(String mac){
+		String bindDeviceName = mac;
+		try{
+			String ssid = getUrouterSSID(mac);
+			if(StringUtils.isNotEmpty(ssid)){
+				bindDeviceName = ssid;
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+		return bindDeviceName;
 	}
 
 	/**

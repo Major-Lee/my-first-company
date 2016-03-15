@@ -361,9 +361,11 @@ public class DeviceBusinessFacadeService {
 							if(StringUtils.isNotEmpty(keynum)){
 								User user = userFacadeService.getUserByMobileno(keynum);
 								if(user != null){
+									String bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
+									
 						    		UserDevice userDevice = new UserDevice();
 							        userDevice.setId(new UserDevicePK(mac, user.getId()));
-							        userDevice.setDevice_name(mac);
+							        userDevice.setDevice_name(bindDeviceName);
 							        userDevice.setCreated_at(new Date());
 							        userDeviceService.insert(userDevice);
 							        
@@ -373,7 +375,7 @@ public class DeviceBusinessFacadeService {
 								        wifiDeviceService.update(wifiDevice);
 						    		}
 							        
-							        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, userDevice.getDevice_name(), industry);
+							        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, bindDeviceName, industry);
 									keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 								}
 							}
