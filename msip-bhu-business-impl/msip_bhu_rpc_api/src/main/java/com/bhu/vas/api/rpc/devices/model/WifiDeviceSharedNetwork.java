@@ -4,8 +4,10 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
 
 /**
- * 针对设备持久化下发指令，一般都是设备不保存的指令，重启后会丢失的指令
- * 注意事项 涉及到修改配置的指令需要合并成一个
+ * 识别设备的访客网络状态（初始未开启、开启、开启后关闭）
+ * 初始未开启：此表中不存在 设备的记录则为
+ * 开启：此表中存在并且 sharednetwork_type !=null && on = true && psn !=null
+ * 开启后关闭：此表中存在 sharednetwork_type=null && on=false && psn==null
  * @author Edmond Lee
  *
  */
