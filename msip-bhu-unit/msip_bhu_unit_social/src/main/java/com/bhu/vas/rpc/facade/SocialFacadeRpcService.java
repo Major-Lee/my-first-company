@@ -562,17 +562,21 @@ public class SocialFacadeRpcService {
 
         Set<String> wifiSet = WifiCommentSortedSetService.getInstance().fetchUserWifiList(uid);
         List<String> bssidList = new ArrayList<String>(wifiSet);
-        List<Wifi> wifiList = wifiService.findByIds(bssidList);
+        List<Wifi> wifiList = wifiService.findByIds(bssidList,true,true);
         List<CommentedWifiVTO> vtos = new ArrayList<CommentedWifiVTO>();
         if (wifiList != null) {
+        	int i=0;
             CommentedWifiVTO commentedWifiVTO = null;
             for (Wifi wifi : wifiList) {
                 commentedWifiVTO = new CommentedWifiVTO();
-                commentedWifiVTO.setBssid(wifi.getId());
+                commentedWifiVTO.setBssid(bssidList.get(i));
+                if(wifi!=null){
                 commentedWifiVTO.setMax_rate(wifi.getMax_rate());
                 commentedWifiVTO.setLat(wifi.getLat());
                 commentedWifiVTO.setLon(wifi.getLon());
+                }
                 vtos.add(commentedWifiVTO);
+                i++;
             }
         }
         return vtos;
