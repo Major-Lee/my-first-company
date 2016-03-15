@@ -60,7 +60,8 @@ public class PaymentInternalHelper {
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
 		} catch (Exception ex) {
-			logger.error("CreatePaymentUrlCommunication Response Exception", ex);
+			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] Exception ", orderid, payment_type, amount, requestip), ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
@@ -124,7 +125,7 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args){
-		String orderid = "10012016031400000000000000000164";
+		String orderid = "10012016031400000000000000000183";
 		simulatePaysuccessCommunication(orderid);
 		//System.out.println(new String("\u8be5\u5546\u54c1\u8ba2\u5355\u53f7\u5b58\u5728"));
 		//ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","0.8","192.168.66.162",orderid);
