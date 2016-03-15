@@ -59,6 +59,21 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
+    @ResponseBody()
+    @RequestMapping(value = "/apply_status", method = {RequestMethod.POST})
+    public void fetch_apply(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String applyid
+    		) {
+		RpcResponseDTO<String> rpcResult = userWalletRpcService.withdrawApplyStatus(uid, applyid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    }
     
     /**
      * 审核提现申请，只有状态为VP的申请可以被审核，业务实现考虑验证此状态
@@ -149,4 +164,6 @@ public class ConsoleWithdrawController extends BaseController {
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
+    
+    
 }
