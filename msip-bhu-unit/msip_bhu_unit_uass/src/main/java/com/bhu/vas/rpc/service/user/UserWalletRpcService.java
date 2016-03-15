@@ -53,6 +53,12 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status, pageNo, pageSize);
 	}
 
+	@Override
+	public RpcResponseDTO<String> withdrawApplyStatus(int reckoner, String applyid) {
+		logger.info(String.format("withdrawApplyStatus with reckoner[%s] applyid[%s]",reckoner,applyid));
+		return userWalletUnitFacadeService.withdrawApplyStatus(reckoner, applyid);
+	}
+	
 /*	@Override
 	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,
 			boolean passed) {
@@ -124,4 +130,5 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		logger.info(String.format("doWithdrawNotifyFromLocal with reckoner[%s] applyid[%s] successed[%s]",reckoner,applyid,successed));
 		return userWalletUnitFacadeService.doWithdrawNotifyFromLocal(reckoner,applyid,successed);
 	}
+
 }

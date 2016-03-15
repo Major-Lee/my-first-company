@@ -129,6 +129,31 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
+	/**
+	 * 返回指定的applyid的提现状态
+	 * @param reckoner
+	 * @param applyid
+	 * @return
+	 */
+	public RpcResponseDTO<String> withdrawApplyStatus(int reckoner, String applyid){
+		try{
+			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
+			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			}
+			UserWalletWithdrawApply apply = userWalletFacadeService.getUserWalletWithdrawApplyService().getById(applyid);
+			if(apply == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{applyid});
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(apply.getWithdraw_oper());
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	/*public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,boolean passed) {
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
