@@ -128,7 +128,7 @@ public class ConsoleWithdrawController extends BaseController {
 			}
 			if(!rcp_dto.isSuccess()){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE)));
+						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())})));
 				return;
 			}
 			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));

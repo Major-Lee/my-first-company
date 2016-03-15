@@ -153,9 +153,11 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args){
-		String orderid = "10012016031400000000000000000164";
-		simulatePaysuccessCommunication(orderid);
-		//System.out.println(new String("\u8be5\u5546\u54c1\u8ba2\u5355\u53f7\u5b58\u5728"));
+		/*String orderid = "10012016031400000000000000000164";
+		simulatePaysuccessCommunication(orderid);*/
+		String orderid = "10002016031500000001000000000044";
+		simulateWithdrawSuccessCommunication(orderid);
+		//System.out.println(new String("\u53c2\u6570\u9519\u8bef:openid\u5b57\u6bb5\u4e0d\u6b63\u786e,\u8bf7\u68c0\u67e5\u662f\u5426\u5408\u6cd5"));
 		//ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","0.8","192.168.66.162",orderid);
 		//String params = rcp_dto.getParams();
 	}
