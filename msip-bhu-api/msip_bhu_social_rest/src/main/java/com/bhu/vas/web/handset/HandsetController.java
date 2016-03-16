@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
      *
      * @param response
      * @param uid
-     * @param bssid
+     * @param hd_mac
      * @param nick
      */
     @ResponseBody()
@@ -43,11 +43,11 @@ import javax.servlet.http.HttpServletResponse;
     public void modify(
             HttpServletResponse response,
             @RequestParam(required = true, value = "uid") Long uid,
-            @RequestParam(required = true, value = "bssid") String bssid,
+            @RequestParam(required = true, value = "hd_mac") String hd_mac,
             @RequestParam(required = true, value = "nick") String nick) {
 
         try {
-            boolean ret  = socialRpcService.modifyHandset(uid, bssid, nick);
+            boolean ret  = socialRpcService.modifyHandset(uid, hd_mac, nick);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
 
         } catch (Exception e) {
