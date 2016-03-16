@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
 
@@ -141,7 +143,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = new Object[8];
 		properties[0] = name;
 		properties[1] = radio;
-		properties[2] = ssid;
+		properties[2] = StringEscapeUtils.escapeXml(ssid);
 		properties[3] = auth;
 		properties[4] = enable;
 		properties[5] = acl_type;
@@ -160,7 +162,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 			case BuilderType_VapPassword:
 				properties = new Object[6];
 				properties[0] = name;
-				properties[1] = ssid;
+				properties[1] = StringEscapeUtils.escapeXml(ssid);
 				properties[2] = auth;
 				properties[3] = auth_key;
 				properties[4] = auth_key_rsa;
@@ -170,7 +172,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties = new Object[9];
 				properties[0] = name;
 				properties[1] = radio;
-				properties[2] = ssid;
+				properties[2] = StringEscapeUtils.escapeXml(ssid);
 				properties[3] = auth;
 				properties[4] = enable;
 				properties[5] = acl_type;

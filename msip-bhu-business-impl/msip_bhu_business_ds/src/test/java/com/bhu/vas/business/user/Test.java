@@ -6,11 +6,20 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.smartwork.msip.cores.helper.ArithHelper;
 
 public class Test {
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
+		
+		String aaa = "&asdfdsdfgdfgasd^";
+		
+		System.out.println(StringEscapeUtils.unescapeXml(aaa));
+		
+		System.out.println(StringEscapeUtils.escapeXml(aaa));
+		
 		// TODO Auto-generated method stub
 		List<Integer> list = new ArrayList<Integer>();
 		list.add(1);
