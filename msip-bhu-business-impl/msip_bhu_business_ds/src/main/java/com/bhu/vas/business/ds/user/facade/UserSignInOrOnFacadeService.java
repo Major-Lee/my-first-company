@@ -62,7 +62,7 @@ public class UserSignInOrOnFacadeService {
 			user.setLastlogindevice(DeviceEnum.getBySName(device).getSname());
 		}
 		this.userService.update(user);
-		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
+		UserTokenDTO uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
 		{//write header to response header
 			//BusinessWebHelper.setCustomizeHeader(response, uToken);
 			IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
